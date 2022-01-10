@@ -1,0 +1,63 @@
+'''
+Copyright 2022 Airbus SAS
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
+
+from energy_models.core.stream_type.energy_models.kerosene import Kerosene
+from energy_models.core.stream_type.energy_models.gasoline import Gasoline
+from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
+from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
+from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
+from energy_models.core.techno_type.techno_disc import TechnoDiscipline
+from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+
+
+class LiquidFuelTechnoDiscipline(TechnoDiscipline):
+    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                  'namespace': 'ns_liquid_fuel',
+                                  'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
+                                                           'transport': ('float',  None, True)},
+                                  'dataframe_edition_locked': False},
+               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                    'namespace': 'ns_liquid_fuel',
+                                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
+                                                             'margin': ('float',  None, True)},
+                                    'dataframe_edition_locked': False},
+               'data_fuel_dict': {'type': 'dict',
+                                  'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                  'namespace': 'ns_liquid_fuel',
+                                  'default': LiquidFuel.data_energy_dict
+                                  },
+               'other_fuel_dict': {'type': 'dict',
+                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                   'namespace': 'ns_liquid_fuel',
+                                   'default': {Kerosene.name: Kerosene.data_energy_dict,
+                                               Gasoline.name: Gasoline.data_energy_dict,
+                                               LiquefiedPetroleumGas.name: LiquefiedPetroleumGas.data_energy_dict,
+                                               HeatingOil.name: HeatingOil.data_energy_dict,
+                                               UltraLowSulfurDiesel.name: UltraLowSulfurDiesel.data_energy_dict,
+                                               }
+                                   },
+               }
+    DESC_IN.update(TechnoDiscipline.DESC_IN)
+
+    _maturity = 'Research'
+
+    energy_name = "liquid_fuel"
+    kerosene_name = Kerosene.name
+    gasoline_name = Gasoline.name
+    lpg_name = LiquefiedPetroleumGas.name
+    heating_oil_name = HeatingOil.name
+    ulsd_name = UltraLowSulfurDiesel.name
+

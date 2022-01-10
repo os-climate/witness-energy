@@ -1,0 +1,31 @@
+# Wind onshore (or Land-based wind)
+
+**Definition[^1] :**
+Wind farms consist of many individual wind turbines, which are connected to the electric power transmission network. Onshore wind is an inexpensive source of electric power, competitive with or in many places cheaper than coal or gas plants. Onshore wind farms have a greater visual impact on the landscape than other power stations, as they need to be spread over more land and need to be built away from dense population
+
+Growth of wind energy, AIP[^2]
+![](growthofwind.jpg) 
+
+Wind is split into 10 class (speed class m/s).
+
+A wind farm is not producing electricity full time, in order to model yearly production a variable is set : **Capacity Factor (%)**.
+
+**Capacity factor[^3] :** Generally defined as the ratio of actual annual output to output at rated capacity for an entire year.  
+
+## Data     
+Most of the data used for this model is extracted from International Energy Agency (IEA)[^4], 
+International Renewable Energy Agency (IRENA)[^5], Global Wind Energy Council (GWEC)[^6] and National Renewable Energy Laboratory (NREL)[^7].   
+
+Some IRENA data
+![](irena-onshore.png) 
+## Some insight on Wind onshore evolution
+IEA Onshore power generation prediction
+![](IEA-onshore-prediction.PNG) 
+
+[^1]: https://en.wikipedia.org/wiki/Wind_power
+[^2]: American Institute of Physics, Growth of wind energy points to future challenges, promise, https://techxplore.com/news/2019-08-growth-energy-future.html
+[^3]: Capacity factor. NRC.gov, https://www.nrc.gov/reading-rm/basic-ref/glossary/capacity-factor-net.html
+[^4]: IEA (2019), Wind, https://www.iea.org/fuels-and-technologies/wind
+[^5]: IRENA (2020), Future of wind 2019, International Renewable Energy Agency, Abu Dhabi. https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2019/Oct/IRENA_Future_of_wind_2019.pdf
+[^6]: Global Wind Energy Council (GWEC), Global wind report 2019, https://gwec.net/global-wind-report-2019/
+[^7]: National Renewable Energy Laboratory USA (NREL), Annual Technology Baseline 2020, https://atb.nrel.gov/electricity/2020/data.php

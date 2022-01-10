@@ -1,0 +1,3 @@
+## What is Hydrotreated Vegetable Oil Fuel ?
+Vegetable oil can be used as an alternative fuel in diesel engines and in heating oil burners. When vegetable oil is used directly as a fuel, in either modified or unmodified equipment, it is referred to as straight vegetable oil (SVO) or pure plant oil (PPO). Conventional diesel engines can be modified to help ensure that the viscosity of the vegetable oil is low enough to allow proper atomization of the fuel. This prevents incomplete combustion, which would damage the engine by causing a build-up of carbon. Straight vegetable oil can also be blended with conventional diesel or processed into biodiesel, HVO or bioliquids for use under a wider range of conditions. 
+(see [HVO](https://en.wikipedia.org/wiki/Vegetable_oil_fuel))

@@ -1,0 +1,16 @@
+__pycache__
+.project
+.pydevproject
+.settings/
+coverage.xml
+nosetests.xml
+.coverage
+energy_models/tests/*/output/*.png
+build/
+dist/
+energy_models.egg-info/
+/CH_energy_price.png
+/LICENSE
+/MANIFEST.in
+/Makefile
+/README.md
