@@ -1,7 +1,7 @@
 External Dependencies
 ---------------------
 
-sostrades-core depends on software with compatible licenses that are listed below.
+witness-energy depends on software with compatible licenses that are listed below.
 
 `numpy <https://numpy.org/>`_
     BSD 3-Clause
