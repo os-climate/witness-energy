@@ -38,12 +38,6 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  # 259-294). Butterworth-Heinemann.
                                  'CO2_from_production': 0.64,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 # IEA, Average fuel costs and share in total coal mining costs in selected countries,
-                                 # 2018-2020, IEA, Paris
-                                 # https://www.iea.org/data-and-statistics/charts/average-fuel-costs-and-share-in-total-coal-mining-costs-in-selected-countries-2018-2020
-                                 # fuel cost in 2020 : 4.7$/t
-                                 # Fuel is gasoline : 4.7$ --> 3.1L -->
-                                 # 28kWhfuel
                                  'fuel_demand': 0.0040,
                                  'fuel_demand_unit': 'kWh/kWh',
                                  # CF : Crude oil refinery on bibliography folder
@@ -51,11 +45,6 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  'elec_demand': 0.01,
                                  'elec_demand_unit': 'kWh/kWh',
                                  'electricity': 'solar',
-                                 # Fasihi, M., Efimova, O. and Breyer, C., 2019.
-                                 # Techno-economic assessment of CO2 direct air capture plants.
-                                 # Journal of cleaner production, 224, pp.957-980.
-                                 # for now constant in time but should increase
-                                 # with time 10%/10year according to Fasihi2019
                                  'heat_demand': 0.0,
                                  'heat_demand_unit': 'kWh/kgCO2',
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant

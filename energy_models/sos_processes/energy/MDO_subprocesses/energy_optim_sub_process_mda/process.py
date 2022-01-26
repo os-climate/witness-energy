@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
-class ProcessBuilder(BaseProcessBuilder):
+class ProcessBuilder(WITNESSSubProcessBuilder):
     def get_builders(self):
         coupling_name = "EnergyModelEval"
         designvariable_name = "DesignVariableDisc"
@@ -25,7 +26,8 @@ class ProcessBuilder(BaseProcessBuilder):
 
         # retrieve energy process
         chain_builders = self.ee.factory.get_builder_from_process(
-            'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda')
+            'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
+            techno_dict=self.techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
 
         # design variables builder
         design_var_path = 'energy_models.core.design_variables_translation_bspline.design_var_disc.Design_Var_Discipline'

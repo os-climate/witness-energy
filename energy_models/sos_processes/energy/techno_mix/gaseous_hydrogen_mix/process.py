@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.energy_process_builder import EnergyProcessBuilder
+from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
+    INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
@@ -50,7 +51,7 @@ class ProcessBuilder(EnergyProcessBuilder):
                 GaseousHydrogen.short_name, techno_name)
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
-        if not self.one_invest_discipline:
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             mods_dict_invest = {f'{energy_mix}.{gaseous_hydrogen_name}': 'energy_models.core.investments.disciplines.techno_invest_disc.InvestTechnoDiscipline',
                                 }
 

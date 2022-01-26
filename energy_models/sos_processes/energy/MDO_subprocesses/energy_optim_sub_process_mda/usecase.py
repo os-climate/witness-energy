@@ -23,6 +23,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 import numpy as np
 import pandas as pd
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -48,12 +49,12 @@ def update_dspace_with(dspace_dict, name, value, lower, upper):
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2050, time_step=1, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0]):
         super().__init__(__file__, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
-
+        self.invest_discipline = invest_discipline
         self.coupling_name = "EnergyModelEval"
         self.designvariable_name = "DesignVariableDisc"
         self.func_manager_name = "FunctionManagerDisc"
@@ -67,7 +68,7 @@ class Study(StudyManager):
 
         #-- retrieve energy input data
         mda_usecase = Study_MDA(self.year_start, self.year_end,
-                                self.time_step, execution_engine=self.execution_engine)
+                                self.time_step, execution_engine=self.execution_engine, invest_discipline=self.invest_discipline)
         mda_usecase.study_name = f'{self.study_name}.{self.coupling_name}'
 
         usecase_dict_list = mda_usecase.setup_usecase()
@@ -82,7 +83,8 @@ class Study(StudyManager):
 
         for energy in self.energy_list:
             energy_wo_dot = energy.replace('.', '_')
-            dv_arrays_dict[f'{mda_usecase.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = dspace_df[f'{energy_wo_dot}_array_mix']['value']
+            if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
+                dv_arrays_dict[f'{mda_usecase.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = dspace_df[f'{energy_wo_dot}_array_mix']['value']
 
             for technology in self.dict_technos[energy]:
                 technology_wo_dot = technology.replace('.', '_')
@@ -90,12 +92,14 @@ class Study(StudyManager):
 
         for ccs in self.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
-            dv_arrays_dict[f'{mda_usecase.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = dspace_df[f'{ccs_wo_dot}_array_mix']['value']
+            if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
+                dv_arrays_dict[f'{mda_usecase.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = dspace_df[f'{ccs_wo_dot}_array_mix']['value']
 
             for technology in self.dict_technos[ccs]:
                 technology_wo_dot = technology.replace('.', '_')
                 dv_arrays_dict[f'{mda_usecase.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
-        dv_arrays_dict[f'{mda_usecase.study_name}.ccs_percentage_array'] = dspace_df[f'ccs_percentage_array']['value']
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
+            dv_arrays_dict[f'{mda_usecase.study_name}.ccs_percentage_array'] = dspace_df[f'ccs_percentage_array']['value']
         # construct func_df
         func_df = pd.concat([mda_usecase.setup_objectives(),
                              mda_usecase.setup_constraints()])

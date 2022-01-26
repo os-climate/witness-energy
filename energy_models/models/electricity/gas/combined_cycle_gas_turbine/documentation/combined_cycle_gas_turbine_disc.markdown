@@ -31,9 +31,14 @@ Global annual average power sector investment, historical and
 by scenario, 2019-2040[^3]
 ![](investIEA.PNG)
 
-[^1]: Energy Education. Natural gas power plant. https://energyeducation.ca/encyclopedia/Natural_gas_power_plant
-[^2]: Timilsina, Govinda R. (2020). Demystifying the Costs of Electricity Generation Technologies. Policy Research Working Paper;No. 9303. World Bank, Washington, DC. © World Bank. https://openknowledge.worldbank.org/handle/10986/34018 License: CC BY 3.0 IGO
-[^3]: International Energy Agency. (2019). World Energy Outlook 2019, IEA, Paris. https://www.iea.org/reports/world-energy-outlook-2019
-[^4]: Energy Information Agency. (2017). Natural gas generators make up the largest share of overall U.S. generation capacity. https://www.eia.gov/todayinenergy/detail.php?id=30872
-[^5]: Lazard. (2020). Levelized cost of energy analysis. https://www.lazard.com/media/451419/lazards-levelized-cost-of-energy-version-140.pdf
-[^6]: Kost, C., Mayer, J.N., Thomsen, J., Hartmann, N., Senkpiel, C., Philipps, S., Nold, S., Lude, S., Saad, N. and Schlegl, T. (2013). Levelized cost of electricity renewable energy technologies. Fraunhofer Institute for Solar Energy Systems ISE, 144. https://www.ise.fraunhofer.de/content/dam/ise/en/documents/publications/studies/EN2018_Fraunhofer-ISE_LCOE_Renewable_Energy_Technologies.pdf
+[^1]: [Energy Education. Natural gas power plant.](https://energyeducation.ca/encyclopedia/Natural_gas_power_plant)
+
+[^2]: [Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation Technologies.](https://openknowledge.worldbank.org/handle/10986/34018)
+
+[^3]: [International Energy Agency. (2019). World Energy Outlook 2019, IEA, Paris.](https://www.iea.org/reports/world-energy-outlook-2019)
+
+[^4]: [Energy Information Agency. (2017).](Natural gas generators make up the largest share of overall U.S. generation capacity.](https://www.eia.gov/todayinenergy/detail.php?id=30872)
+
+[^5]: [Lazard. (2020). Levelized cost of energy analysis.](https://www.lazard.com/media/451419/lazards-levelized-cost-of-energy-version-140.pdf)
+
+[^6]: [Kost, C., Mayer, J.N., Thomsen, J., Hartmann, N., Senkpiel, C., Philipps, S., Nold, S., Lude, S., Saad, N. and Schlegl, T. (2013). Levelized cost of electricity renewable energy technologies. Fraunhofer Institute for Solar Energy Systems ISE, 144.](https://www.ise.fraunhofer.de/content/dam/ise/en/documents/publications/studies/EN2018_Fraunhofer-ISE_LCOE_Renewable_Energy_Technologies.pdf)

@@ -10,6 +10,7 @@ Natural reserves alone are not sufficient to conserve biodiversity. They are usu
 Globally, 48 percent of the plantation forest estate was for industrial (or production use), 26 percent for non-industrial (or protection) use (fuelwood, soil and water protection other environmental values) and 26 percent was not specified.
 
 ![](global_forests_evolution.png)
+(Image Credit: World In Data [^4])
 
 ## Reforestation[^1]
 

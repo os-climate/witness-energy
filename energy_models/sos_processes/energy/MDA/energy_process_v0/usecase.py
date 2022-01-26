@@ -45,6 +45,8 @@ from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import DEFAULT_FLUE_GAS_LIST
 from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking import PlasmaCracking
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,\
+    INVEST_DISCIPLINE_OPTIONS
 
 
 CCS_NAME = 'CCUS'
@@ -67,14 +69,19 @@ hydropower_name = Electricity.hydropower_name
 
 class Study(EnergyStudyManager):
     def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100., techno_dict=DEFAULT_TECHNO_DICT,
-                 main_study=True, bspline=True, execution_engine=None, one_invest_discipline=False):
+                 main_study=True, bspline=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
         self.years = np.arange(self.year_start, self.year_end + 1)
 
-        self.lower_bound_techno = lower_bound_techno
-        self.upper_bound_techno = upper_bound_techno
+        if invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
+            self.lower_bound_techno = 1.0e-6
+            self.upper_bound_techno = 300.0
+
+        else:
+            self.lower_bound_techno = lower_bound_techno
+            self.upper_bound_techno = upper_bound_techno
         self.sub_study_dict = None
         self.sub_study_path_dict = None
 
@@ -86,7 +93,7 @@ class Study(EnergyStudyManager):
 
         self.create_study_list()
         self.bspline = bspline
-        self.one_invest_discipline = one_invest_discipline
+        self.invest_discipline = invest_discipline
 
     def create_study_list(self):
         self.sub_study_dict = {}
@@ -120,6 +127,14 @@ class Study(EnergyStudyManager):
             [AGGR_TYPE_SUM, AGGR_TYPE_SUM,  AGGR_TYPE_SUM,  AGGR_TYPE_SUM])
         list_ns.extend(['ns_functions', 'ns_functions',
                         'ns_functions', 'ns_functions'])
+
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
+            list_var.append('invest_objective')
+            list_parent.append('objectives')
+            list_ftype.append(OBJECTIVE)
+            list_weight.append(1.0)
+            list_aggr_type.append(AGGR_TYPE_SUM)
+            list_ns.append('ns_functions')
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -169,6 +184,16 @@ class Study(EnergyStudyManager):
                     AGGR_TYPE_SMAX)
                 list_namespaces.append('ns_functions')
 
+        if CarbonStorage.name in self.ccs_list:
+            list_var.extend(
+                ['carbon_storage_constraint'])
+            list_parent.extend([''])
+            list_ftype.extend([INEQ_CONSTRAINT])
+            list_weight.extend([0.])
+            list_aggr_type.append(
+                AGGR_TYPE_SMAX)
+            list_namespaces.append('ns_functions')
+
         list_var.extend(
             [TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF])
         list_parent.extend(['Energy_constraints'])
@@ -203,6 +228,16 @@ class Study(EnergyStudyManager):
             list_var.extend(
                 ['total_prod_h2_liquid'])
             list_parent.extend(['Energy_constraints'])
+            list_ftype.extend([INEQ_CONSTRAINT])
+            list_weight.extend([-1.])
+            list_aggr_type.append(
+                AGGR_TYPE_SMAX)
+            list_namespaces.append('ns_functions')
+
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
+            list_var.extend(
+                ['invest_constraint'])
+            list_parent.extend([''])
             list_ftype.extend([INEQ_CONSTRAINT])
             list_weight.extend([-1.])
             list_aggr_type.append(
@@ -260,8 +295,8 @@ class Study(EnergyStudyManager):
         for column in invest_mix_df_wo_years.columns:
             techno_wo_dot = column.replace('.', '_')
             self.update_dspace_dict_with(
-                f'{techno_wo_dot}_array_mix', np.maximum(
-                    self.lower_bound_techno, invest_mix_df_wo_years[column].values),
+                f'{techno_wo_dot}_array_mix', np.minimum(np.maximum(
+                    self.lower_bound_techno, invest_mix_df_wo_years[column].values), self.upper_bound_techno),
                 self.lower_bound_techno, self.upper_bound_techno)
 
     def get_investments_mix(self):
@@ -462,6 +497,23 @@ class Study(EnergyStudyManager):
 
         return invest_mix_df
 
+    def get_absolute_total_mix(self, instanciated_studies, ccs_percentage, energy_invest, energy_invest_factor):
+
+        invest_mix_df = self.get_total_mix(
+            instanciated_studies, ccs_percentage)
+
+        indep_invest_df = pd.DataFrame(
+            {'years': invest_mix_df['years'].values})
+
+        energy_invest_poles = energy_invest['energy_investment'].values[[
+            i for i in range(len(energy_invest['energy_investment'].values)) if i % 10 == 0]][0:-1]
+        for column in invest_mix_df.columns:
+            if column != 'years':
+                indep_invest_df[column] = invest_mix_df[column].values * \
+                    energy_invest_poles * energy_invest_factor
+
+        return indep_invest_df
+
     def get_co2_taxes_df(self):
 
         co2_taxes = np.asarray([50.] * len(self.years))
@@ -490,12 +542,12 @@ class Study(EnergyStudyManager):
                 prefix_name = 'CCUS'
                 instance_sub_study = sub_study(
                     self.year_start, self.year_end, self.time_step, bspline=self.bspline, main_study=False, prefix_name=prefix_name, execution_engine=self.execution_engine,
-                    one_invest_discipline=self.one_invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
+                    invest_discipline=self.invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
             elif self.techno_dict[sub_study_name]['type'] == ENERGY_TYPE:
                 prefix_name = 'EnergyMix'
                 instance_sub_study = sub_study(
                     self.year_start, self.year_end, self.time_step, bspline=self.bspline, main_study=False, execution_engine=self.execution_engine,
-                    one_invest_discipline=self.one_invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
+                    invest_discipline=self.invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
             else:
                 raise Exception(
                     f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE}]")
@@ -592,7 +644,7 @@ class Study(EnergyStudyManager):
         demand_ratio_dict['years'] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
-        invest_ref = 10.55    # G$
+        invest_ref = 10.55    # 100G$
         invest = np.ones(len(self.years)) * invest_ref
         invest[0] = invest_ref
         for i in range(1, len(self.years)):
@@ -600,7 +652,7 @@ class Study(EnergyStudyManager):
         invest_df = pd.DataFrame(
             {'years': self.years, 'energy_investment': invest})
         invest_df.index = self.years
-
+        scaling_factor_energy_investment = 100.0
         # init land surface for food for biomass dry crop energy
         land_surface_for_food = pd.DataFrame({'years': self.years,
                                               'Agriculture total (Gha)': np.ones(len(self.years)) * 4.8})
@@ -622,6 +674,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.CO2_taxes': self.co2_taxes,
                        f'{self.study_name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.study_name}.{energy_mix_name}.CCS_constraint_factor': self.CCS_constraint_factor,
+                       f'{self.study_name}.scaling_factor_energy_investment': scaling_factor_energy_investment,
                        f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.study_name}.{demand_name}.total_energy_demand': self.total_energy_demand,
                        f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
@@ -649,14 +702,8 @@ class Study(EnergyStudyManager):
 
         if CarbonCapture.name in DEFAULT_TECHNO_DICT:
             values_dict[f'{self.study_name}.{CCS_NAME}.{CarbonCapture.name}.{FlueGas.node_name}.technologies_list'] = flue_gas_list
-        if self.one_invest_discipline:
 
-            invest_mix_df = self.get_total_mix(
-                instanciated_studies, ccs_percentage)
-            values_dict.update(
-                {f'{self.study_name}.{INVEST_DISC_NAME}.invest_mix': invest_mix_df})
-            self.update_dv_arrays_technos(invest_mix_df)
-        else:
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             energy_mix_invest_df = self.get_investments_mix_custom()
             invest_ccs_mix = self.get_investments_ccs_mix_custom()
             values_dict.update({f'{self.study_name}.{energy_mix_name}.invest_energy_mix': energy_mix_invest_df,
@@ -665,11 +712,25 @@ class Study(EnergyStudyManager):
 
         # merge design spaces
             self.merge_design_spaces(dspace_list)
+        elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
+
+            invest_mix_df = self.get_total_mix(
+                instanciated_studies, ccs_percentage)
+            values_dict.update(
+                {f'{self.study_name}.{INVEST_DISC_NAME}.invest_mix': invest_mix_df})
+            self.update_dv_arrays_technos(invest_mix_df)
+        elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
+
+            invest_mix_df = self.get_absolute_total_mix(
+                instanciated_studies, ccs_percentage, invest_df, scaling_factor_energy_investment)
+            values_dict.update(
+                {f'{self.study_name}.{INVEST_DISC_NAME}.invest_mix': invest_mix_df})
+            self.update_dv_arrays_technos(invest_mix_df)
 
         values_dict_list.append(values_dict)
 
         # if not self.main_study:
-        if not self.one_invest_discipline:
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             self.update_dv_arrays()
         self.create_technolist_per_energy(instanciated_studies)
 

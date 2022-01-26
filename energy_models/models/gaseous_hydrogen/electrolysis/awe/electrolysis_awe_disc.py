@@ -46,7 +46,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency_max': 0.70,
                                  'construction_delay': construction_delay}
     # see doc
-    initial_production = 0.76
+    initial_production = 1.6 - 0.4
     # Industrial plants started to emerge around 2015
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [50, 15, 15, 15, 5] + [0.0] * (lifetime - 6)

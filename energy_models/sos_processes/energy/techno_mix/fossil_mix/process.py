@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.energy_process_builder import EnergyProcessBuilder
+from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
+    INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.sos_processes.energy.techno_mix.fossil_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT
 
@@ -48,7 +49,7 @@ class ProcessBuilder(EnergyProcessBuilder):
                 fossil_name, techno_name, sub_dir)
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
-        if not self.one_invest_discipline:
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             mods_dict_invest = {f'{energy_mix}.{fossil_name}': 'energy_models.core.investments.disciplines.techno_invest_disc.InvestTechnoDiscipline',
                                 }
 

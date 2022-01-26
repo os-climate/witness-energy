@@ -19,6 +19,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -39,7 +40,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             dot_list = energy_name.split('.')
             short_name = dot_list[-1]
             energy_builder_list = self.ee.factory.get_builder_from_process('energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
-                                                                           techno_list=self.techno_dict[energy_name]['value'], one_invest_discipline=self.one_invest_discipline)
+                                                                           techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline)
 
             builder_list.extend(energy_builder_list)
 
@@ -62,19 +63,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             mods_dict, ns_dict=ns_dict)
         builder_list.extend(builder_other_list)
 
-        if self.one_invest_discipline:
-            ns_dict = {'ns_public': f'{ns_study}',
-                       'ns_energy_study': f'{ns_study}',
-                       'ns_witness': f'{ns_study}',
-                       'ns_ccs': f'{ns_study}.{CCS_NAME}'}
-            mods_dict = {
-                INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline',
-            }
-
-            builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict)
-            builder_list.extend(builder_invest)
-        else:
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             ns_dict = {'ns_public': f'{ns_study}',
                        'ns_energy_study': f'{ns_study}',
                        'ns_ccs': f'{ns_study}.{CCS_NAME}'}
@@ -103,15 +92,46 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 mods_dict, ns_dict=ns_dict)
             builder_list.extend(builder_invest)
 
+        elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
+            ns_dict = {'ns_public': f'{ns_study}',
+                       'ns_energy_study': f'{ns_study}',
+                       'ns_witness': f'{ns_study}',
+                       'ns_ccs': f'{ns_study}.{CCS_NAME}'}
+            mods_dict = {
+                INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline',
+            }
+
+            builder_invest = self.create_builder_list(
+                mods_dict, ns_dict=ns_dict)
+            builder_list.extend(builder_invest)
+
+        elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
+            ns_dict = {'ns_public': f'{ns_study}',
+                       'ns_energy_study': f'{ns_study}',
+                       'ns_witness': f'{ns_study}',
+                       'ns_ccs': f'{ns_study}.{CCS_NAME}',
+                       'ns_ref': f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
+                       'ns_functions': f'{ns_study}.{func_manager_name}', }
+            mods_dict = {
+                INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.independent_invest_disc.IndependentInvestDiscipline',
+            }
+
+            builder_invest = self.create_builder_list(
+                mods_dict, ns_dict=ns_dict)
+            builder_list.extend(builder_invest)
+        else:
+            raise Exception(
+                f'Wrong option for invest_discipline : {self.invest_discipline} should be in {INVEST_DISCIPLINE_OPTIONS}')
+
         for ccs_name in self.ccs_list:
             dot_list = ccs_name.split('.')
             short_name = dot_list[-1]
             proc_builder = self.ee.factory.get_pb_ist_from_process(
                 'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix')
             proc_builder.prefix_name = 'CCUS'
-            if hasattr(self, 'techno_dict') and hasattr(self, 'one_invest_discipline'):
+            if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
                 proc_builder.setup_process(
-                    techno_list=self.techno_dict[ccs_name]['value'], one_invest_discipline=self.one_invest_discipline)
+                    techno_list=self.techno_dict[ccs_name]['value'], invest_discipline=self.invest_discipline)
             energy_builder_list = proc_builder.get_builders()
             builder_list.extend(energy_builder_list)
 

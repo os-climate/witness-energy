@@ -27,10 +27,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     lifetime = 20
     construction_delay = 3  # years Not Found
     techno_infos_dict_default = {'maturity': 3,
-                                 # IEA (2020), Outlook for biogas and biomethane: Prospects for organic growth, IEA, Paris
-                                 # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
-                                 # Capex and Opex from IEA medium digester
-                                 'Opex_percentage': 5.9 / 6.9,
+                                 'Opex_percentage': 0.85,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': 'years',
                                  'CO2_from_production': 0.0,

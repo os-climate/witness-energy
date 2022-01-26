@@ -24,6 +24,8 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from os.path import dirname
 import numpy as np
 import pandas as pd
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,\
+    INVEST_DISCIPLINE_OPTIONS
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -37,7 +39,7 @@ EXPORT_XVECT = Design_Var_Discipline.EXPORT_XVECT
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, run_usecase=False, execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2050, time_step=1, run_usecase=False, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0]):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -47,12 +49,13 @@ class Study(StudyManager):
         self.coupling_name = "EnergyModelEval"
         self.energy_mix_name = 'EnergyMix'  # should be importer from energy usecase
         self.designvariable_name = "DesignVariableDisc"
+        self.invest_discipline = invest_discipline
 
     def setup_usecase(self):
 
         #-- retrieve study_subproc data
         study_subproc = Study_subprocess(
-            self.year_start, self.year_end, self.time_step, execution_engine=self.execution_engine)
+            self.year_start, self.year_end, self.time_step, execution_engine=self.execution_engine, invest_discipline=self.invest_discipline)
         study_subproc.study_name = f'{self.study_name}.{self.optim_name}'
         study_subproc_data_list = study_subproc.setup_usecase()
 
@@ -86,12 +89,10 @@ class Study(StudyManager):
                              f'{self.study_name}.{self.optim_name}.{self.coupling_name}.warm_start': True,
                              f'{self.study_name}.{self.optim_name}.{self.coupling_name}.alpha': 0.5,
                              f'{self.study_name}.{self.optim_name}.differentiation_method': 'user',
-                             f'{self.study_name}.{self.optim_name}.{self.coupling_name}.linear_solver_MDO': 'gmres',
-                             f'{self.study_name}.{self.optim_name}.{self.coupling_name}.tolerance_linear_solver_MDO': 1.0e-6,
-                             f'{self.study_name}.{self.optim_name}.{self.coupling_name}.max_iter_linear_solver_MDO': 5000,
-                             f'{self.study_name}.{self.optim_name}.{self.coupling_name}.linear_solver_MDA': 'gmres',
-                             f'{self.study_name}.{self.optim_name}.{self.coupling_name}.tolerance_linear_solver_MDA_options': {'tol': 1.0e-7,
-                                                                                                                               'max_iter': 5001},
+                             f'{self.study_name}.{self.optim_name}.{self.coupling_name}.linear_solver_MDO_options': {'tol': 1.0e-6,
+                                                                                                                     'max_iter': 5000},
+                             f'{self.study_name}.{self.optim_name}.{self.coupling_name}.linear_solver_MDA_options': {'tol': 1.0e-7,
+                                                                                                                     'max_iter': 5001},
 
                              #'usecase.EnergyOptimization.{self.coupling_name}.FunctionManagerDisc.linearization_mode':'finite_differences'
                              f'{self.study_name}.{self.optim_name}.{self.coupling_name}.sub_mda_class': 'MDANewtonRaphson',

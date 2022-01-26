@@ -28,5 +28,8 @@ Plus, detailed about the sharing of Capex and Opex are given
 
 
 
-[^1]: https://reader.elsevier.com/reader/sd/pii/S1876610212010934?token=1A3181CEE6756AFE741AAACDFC004EAA641316AEC4BE6238B4712D20B90F53690774128290A7E3032F7D5AF0F8CC38A9
-[^2]: https://pubs.acs.org/doi/pdf/10.1021/acs.iecr.7b02613
+[^1]: Husebye, J., Brunsvold, A.L., Roussanaly, S. and Zhang, X., 2012. Techno economic evaluation of amine based CO2 capture: impact of CO2 concentration and steam supply. Energy Procedia, 23, pp.381-390.
+[^2]: Buijs, W. and De Flart, S., 2017. Direct air capture of CO2 with an amine resin: A molecular modeling study of the CO2 capturing process. Industrial & engineering chemistry research, 56(43), pp.12297-12304.
+[^3]: Fasihi, M., Efimova, O. and Breyer, C., 2019. Techno-economic assessment of CO2 direct air capture plants. Journal of cleaner production, 224, pp.957-980.
+[^4]: Keith, D.W., Holmes, G., Angelo, D.S. and Heidel, K., 2018. A process for capturing CO2 from the atmosphere. Joule, 2(8), pp.1573-1594.
+[^5]: Vo, T.T., Wall, D.M., Ring, D., Rajendran, K. and Murphy, J.D., 2018. Techno-economic analysis of biogas upgrading via amine scrubber, carbon capture and ex-situ methanation. Applied energy, 212, pp.1191-1202.

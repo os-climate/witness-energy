@@ -16,6 +16,7 @@ limitations under the License.
 
 from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
 from energy_models.core.energy_study_manager import DEFAULT_ENERGY_LIST, DEFAULT_CCS_LIST, DEFAULT_TECHNO_DICT
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
 
 
 class WITNESSSubProcessBuilder(BaseProcessBuilder):
@@ -25,9 +26,9 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         self.energy_list = DEFAULT_ENERGY_LIST
         self.ccs_list = DEFAULT_CCS_LIST
         self.techno_dict = DEFAULT_TECHNO_DICT
-        self.one_invest_discipline = False
+        self.invest_discipline = INVEST_DISCIPLINE_DEFAULT
 
-    def setup_process(self, techno_dict, one_invest_discipline=False):
+    def setup_process(self, techno_dict, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         '''
         Setup process function which will be called if the builder is retrieved with get_builder_from_process with args
         This allows to define instance variables inside the class as energy_list or one invest discipline
@@ -38,4 +39,4 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         self.ccs_list = [key for key,
                          value in techno_dict.items() if value['type'] == 'CCUS']
         self.techno_dict = techno_dict
-        self.one_invest_discipline = one_invest_discipline
+        self.invest_discipline = invest_discipline

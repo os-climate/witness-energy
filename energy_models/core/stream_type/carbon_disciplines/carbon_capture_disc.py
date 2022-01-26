@@ -512,7 +512,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             'scaling_factor_energy_production')
         cut_energy_name = self.energy_name.split(".")
         display_energy_name = cut_energy_name[len(
-            cut_energy_name) - 1].replace("_", " ")
+            cut_energy_name) - 1].replace("_", " ").capitalize()
         chart_name = f'{display_energy_name} Energy consumption for CO2 capture<br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Energy [TWh]',

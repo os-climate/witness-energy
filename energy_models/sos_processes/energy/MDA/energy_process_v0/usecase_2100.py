@@ -38,16 +38,19 @@ from energy_models.core.energy_study_manager import EnergyStudyManager,\
     DEFAULT_TECHNO_DICT, CCUS_TYPE, ENERGY_TYPE
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import DEFAULT_FLUE_GAS_LIST
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,\
+    INVEST_DISCIPLINE_OPTIONS
 
 DEFAULT_ENERGY_LIST = [Methane.name, GaseousHydrogen.name, BioGas.name,
                        Syngas.name, LiquidFuel.name, SolidFuel.name, BiomassDry.name, Electricity.name, BioDiesel.name, LiquidHydrogen.name]
 DEFAULT_CCS_LIST = [CarbonCapture.name, CarbonStorage.name]
 CCS_NAME = 'CCUS'
+INVEST_DISC_NAME = 'InvestmentDistribution'
 
 
 class Study(EnergyStudyManager):
     def __init__(self, year_start=2020, year_end=2100, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100., techno_dict=DEFAULT_TECHNO_DICT,
-                 main_study=True, bspline=True, execution_engine=None, one_invest_discipline=False):
+                 main_study=True, bspline=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, main_study=main_study,
                          execution_engine=execution_engine, techno_dict=techno_dict)
         self.year_start = year_start
@@ -65,7 +68,7 @@ class Study(EnergyStudyManager):
 
         self.dict_technos = {}
         self.bspline = bspline
-        self.one_invest_discipline = one_invest_discipline
+        self.invest_discipline = invest_discipline
 
     def create_study_list(self):
         self.sub_study_dict = {}
@@ -158,6 +161,64 @@ class Study(EnergyStudyManager):
 
         return ccs_mix_invest_df
 
+    def get_total_mix(self, instanciated_studies, ccs_percentage):
+        '''
+        Get the total mix of each techno with the invest distribution discipline
+         with ccs percentage, mixes by energy and by techno 
+        '''
+        energy_mix = self.get_investments_mix()
+        invest_mix_df = pd.DataFrame({'years': energy_mix['years'].values})
+        norm_energy_mix = energy_mix.drop(
+            'years', axis=1).sum(axis=1).values
+
+        if self.bspline:
+            ccs_percentage_array = ccs_percentage['ccs_percentage'].values
+        else:
+            ccs_percentage_array = np.ones_like(norm_energy_mix) * 25.0
+
+        ccs_mix = self.get_investments_ccs_mix()
+        norm_ccs_mix = ccs_mix.drop(
+            'years', axis=1).sum(axis=1)
+        for study in instanciated_studies:
+            invest_techno = study.get_investments()
+            if 'years' in invest_techno.columns:
+                norm_techno_mix = invest_techno.drop(
+                    'years', axis=1).sum(axis=1)
+            else:
+                norm_techno_mix = invest_techno.sum(axis=1)
+            energy = study.energy_name
+            if energy in energy_mix.columns:
+                mix_energy = energy_mix[energy].values / norm_energy_mix * \
+                    (100.0 - ccs_percentage_array) / 100.0
+            elif energy in ccs_mix.columns:
+                mix_energy = ccs_mix[energy].values / norm_ccs_mix * \
+                    ccs_percentage_array / 100.0
+            else:
+                raise Exception(f'{energy} not in investment_mixes')
+            for techno in invest_techno.columns:
+                if techno != 'years':
+                    invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values * \
+                        mix_energy / norm_techno_mix
+
+        return invest_mix_df
+
+    def get_absolute_total_mix(self, instanciated_studies, ccs_percentage, energy_invest, energy_invest_factor):
+
+        invest_mix_df = self.get_total_mix(
+            instanciated_studies, ccs_percentage)
+
+        indep_invest_df = pd.DataFrame(
+            {'years': invest_mix_df['years'].values})
+
+        energy_invest_poles = energy_invest['energy_investment'].values[[
+            i for i in range(len(energy_invest['energy_investment'].values)) if i % 10 == 0]][0:-1]
+        for column in invest_mix_df.columns:
+            if column != 'years':
+                indep_invest_df[column] = invest_mix_df[column].values * \
+                    energy_invest_poles * energy_invest_factor
+
+        return indep_invest_df
+
     def setup_usecase_sub_study_list(self):
         """
         Instantiate sub studies and values dict from setup_usecase
@@ -170,12 +231,12 @@ class Study(EnergyStudyManager):
                 prefix_name = 'CCUS'
                 instance_sub_study = sub_study(
                     self.year_start, self.year_end, self.time_step, bspline=self.bspline, main_study=False, prefix_name=prefix_name, execution_engine=self.execution_engine,
-                    one_invest_discipline=self.one_invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
+                    invest_discipline=self.invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
             elif self.techno_dict[sub_study_name]['type'] == ENERGY_TYPE:
                 prefix_name = 'EnergyMix'
                 instance_sub_study = sub_study(
                     self.year_start, self.year_end, self.time_step, bspline=self.bspline, main_study=False, execution_engine=self.execution_engine,
-                    one_invest_discipline=self.one_invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
+                    invest_discipline=self.invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
             else:
                 raise Exception(
                     f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE}]")
@@ -292,7 +353,7 @@ class Study(EnergyStudyManager):
             invest[i] = (1.0 - 0.0253) * invest[i - 1]
         invest_df = pd.DataFrame(
             {'years': self.years, 'energy_investment': invest})
-
+        scaling_factor_energy_investment = 100.0
         ccs_percentage = pd.DataFrame(
             {'years': self.years, 'ccs_percentage': 10.0})
 
@@ -339,6 +400,29 @@ class Study(EnergyStudyManager):
 
         if CarbonCapture.name in DEFAULT_TECHNO_DICT:
             values_dict[f'{self.study_name}.{CCS_NAME}.{CarbonCapture.name}.{FlueGas.node_name}.technologies_list'] = flue_gas_list
+
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
+            energy_mix_invest_df = self.get_investments_mix()
+            invest_ccs_mix = self.get_investments_ccs_mix()
+            values_dict.update({f'{self.study_name}.{energy_mix_name}.invest_energy_mix': energy_mix_invest_df,
+                                f'{self.study_name}.{CCS_NAME}.ccs_percentage': ccs_percentage,
+                                f'{self.study_name}.{CCS_NAME}.invest_ccs_mix': invest_ccs_mix})
+
+        # merge design spaces
+            self.merge_design_spaces(dspace_list)
+        elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
+
+            invest_mix_df = self.get_total_mix(
+                instanciated_studies, ccs_percentage)
+            values_dict.update(
+                {f'{self.study_name}.{INVEST_DISC_NAME}.invest_mix': invest_mix_df})
+
+        elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
+
+            invest_mix_df = self.get_absolute_total_mix(
+                instanciated_studies, ccs_percentage, invest_df, scaling_factor_energy_investment)
+            values_dict.update(
+                {f'{self.study_name}.{INVEST_DISC_NAME}.invest_mix': invest_mix_df})
 
         # merge design spaces
         self.merge_design_spaces(dspace_list)

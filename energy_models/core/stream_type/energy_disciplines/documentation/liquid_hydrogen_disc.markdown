@@ -4,6 +4,7 @@ Hydrogen, naturally in gaseous form at ambient temperature and atmospheric press
 
 $$2H_2 + O_2 → 2H_2O$$
 
+Significant datas for liquid hydrogen [^2]:
   * Chemical Formula : H2
   * Molecular Weight : 2.016 g/mol
   * Boiling Point at 1 atm : -423.2 F (-252.9 C)
@@ -18,3 +19,5 @@ The energy cost to produce 1 kg of LH2 is between 10 to 12 kWh/kg for current in
 The losses of H2 to produce LH2 are estimated around 1.6 % from input stream to output stream.  
 
 [^1]: Hydrogen Fuel Wikipedia page, https://en.wikipedia.org/wiki/Hydrogen_fuel
+
+[^2]: Engineering Toolbox, https://www.engineeringtoolbox.com

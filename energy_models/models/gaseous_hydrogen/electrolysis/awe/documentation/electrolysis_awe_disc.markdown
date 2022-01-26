@@ -7,6 +7,7 @@ AWE is the most established technology for electrolysis with relatively low capi
 At the cathode side, two molecules of water reacts with electrons to form the hydrogen and hydroxyl ions ($OH^-$) .Hydroxyl ions transfer through the porous diaphragm to the anode,resulting in half molecule of oxygen (O2) and one molecule of water (H2O). 
 
 ![](alkaline_electrolysis.PNG) 
+(Image Credit: S.Shiva Kumar & V.Himabindu [^2])
 
 
 The following reactions take place:
@@ -25,13 +26,11 @@ Alkaline CAPEX cost is expected to decrease from EUR 750/kW (2017) to EUR 480/kW
 
 Alkaline electrolyser OPEX costs are 2 - 3 % of CAPEX excluding electricity [^4].
 
-
-High maintenance costs due to the fact that the electrolyte is highly corrosive reduce their lifetime (around 90000 operating hours) [^5]. 
-
-Reported electrical efficiency in Future of Hydrogen are around 60 % evolving to 70% in 2030. [^5]
+The lifetime of an alkaline electrolyser is around 25 years and the construction delay is around 1 year [^5]. Reported electrical efficiency for alkaline electrolyzer is around 60% with a possible improve around 70% [^5].
 
 
-As alkaline electrolysers are the most mature electrolysis technology, they dominate the market, especially for large-scale projects [^6]. In 2020, the global electrolysis capacity is 125.8 MW [^6]. Assuming 8000 yearly load hours, the global production of electrolysis is around 1 TWh. The PEM hydrogen production is of 0.24TWh per year (see PEM documentation) and others electrolysis technologies are not yet commercialized. Then we assume that AWE world production in 2020 is 0.76 TWh. 
+
+As alkaline electrolysers are the most mature electrolysis technology, they dominate the market, especially for large-scale projects. In 2020, the global electrolysis capacity is 200 MW [^6]. Assuming 8000 yearly load hours, the global production of electrolysis is around 1.6 TWh. The PEM hydrogen production is of 0.24TWh per year (see PEM documentation) and others electrolysis technologies are not yet commercialized. Then we assume that AWE world production in 2020 is 0.76 TWh. 
 
 
 Alkakine electrolysers is the lowest efficient electrolysis technology we assume that no investments have been made during the past years.
@@ -45,5 +44,6 @@ Alkakine electrolysers is the lowest efficient electrolysis technology we assume
 
 [^4]: Techno-economic feasibility of hydrogen production via polymer membrane electrolyte electrolysis for future power-to-x systems,M. Lappalainen, Master of Science Thesis, Tampere University (2019)
 
-[^5]: The Future of Hydrogen, Seizing today's opportunities,Report prepared by the IEA for the G20, Japan (2019)
-[^6]: https://www.iea.org/reports/hydrogen (2020)
+[^5]: David, M., Ocampo-Martínez, C. and Sánchez-Peña, R., 2019. Advances in alkaline water electrolyzers: A review. Journal of Energy Storage, 23, pp.392-403.
+
+[^6]: https://auroraer.com/media/companies-are-developing-over-200-gw-of-hydrogen-electrolyser-projects-globally-85-of-which-are-in-europe/

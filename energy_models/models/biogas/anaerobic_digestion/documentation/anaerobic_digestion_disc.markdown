@@ -9,8 +9,9 @@ Anaerobic digestion, or methanization, uses the process of fermentation to break
 The composition of biogas depends on the type of feedstock and the production pathway. The methane content of biogas typically ranges from 45% to 75% and the carbon dioxyde content from 25% to 55% by volume.
 
 
-Biogas and biomethane production pathways [^5]
+Biogas and biomethane production pathways 
 ![](Biogasbiomethaneinfographic.png) 
+(Image Credit: IEA [^5])
 
 
 
@@ -23,9 +24,9 @@ Typical prices of Biogas from anaerobic digestion can be found on IRENA site[^2]
 The efficiency of the anaerobic digester is mentionned in Carlini & al [^3].
 The age distribution of biogas plants from anaerobic digestion has been computed with the plant list in [^4].
 
-[^1]:Techno-economic and life cycle assessments of anaerobic digestion, A review K. Rajendran, G. S. Murthy, Biocatalysis and Agricultural Biotechnology 20 (2019) 101207
+[^1]: Rajendran, K. and Murthy, G.S., 2019. Techno-economic and life cycle assessments of anaerobic digestion–A review. Biocatalysis and Agricultural Biotechnology, 20, p.101207.
 [^2]: Biogas Cost Reductions to Boost Sustainable Transport, https://irena.org/newsroom/articles/2017/Mar/Biogas-Cost-Reductions-to-Boost-Sustainable-Transport
-[^3]:An Economical Evaluation of Anaerobic Digestion Plants Fed with Organic Agro-Industrial Waste,M. Carlini, E. M. Mosconi, S. Castellucci, M. Villarini and A. Colantoni, Energies, 2017
+[^3]:Carlini, M., Mosconi, E.M., Castellucci, S., Villarini, M. and Colantoni, A., 2017. An economical evaluation of anaerobic digestion plants fed with organic agro-industrial waste. Energies, 10(8), p.1165.
 [^4]: http://task37.ieabioenergy.com/plant-list.html
-[^5]: https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
+[^5]: IEA (2020), Outlook for biogas and biomethane: Prospects for organic growth, IEA, Paris https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
 [^6]: https://www.planete-energies.com/en/medias/close/how-does-anaerobic-digester-work

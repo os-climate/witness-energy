@@ -9,7 +9,7 @@ Biodiesel is miscible with petrodiesel in all ratios. This has led to the use of
 
 
 ![](biodiesel.jpg)
-
+(Image Credit: VTT Studio/Shutterstock.com)
 
 
 ## **Transesterification**

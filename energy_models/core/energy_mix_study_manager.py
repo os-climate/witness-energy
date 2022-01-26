@@ -16,6 +16,7 @@ limitations under the License.
 import numpy as np
 from sos_trades_core.study_manager.study_manager import StudyManager
 from sos_trades_core.tools.bspline.bspline_methods import bspline_method
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
 
 
 class EnergyMixStudyManager(StudyManager):
@@ -23,7 +24,7 @@ class EnergyMixStudyManager(StudyManager):
     classdocs
     '''
 
-    def __init__(self, file_path, technologies_list, run_usecase=True, main_study=True, execution_engine=None, one_invest_discipline=False):
+    def __init__(self, file_path, technologies_list, run_usecase=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         '''
         Constructor
         '''
@@ -33,14 +34,14 @@ class EnergyMixStudyManager(StudyManager):
         self.energy_name = None
         super().__init__(file_path, run_usecase=run_usecase, execution_engine=execution_engine)
         self.configure_ds_boundaries()
-        self.one_invest_discipline = one_invest_discipline
+        self.invest_discipline = invest_discipline
         self.main_study = main_study
     #--Overwrite method for technology selection
 
     def setup_process(self):
         StudyManager.setup_process(self)
         self.ee.root_builder_ist.setup_process(
-            self.technologies_list, self.one_invest_discipline)
+            self.technologies_list, self.invest_discipline)
 
     def configure_ds_boundaries(self, lower_bound_techno=1.0, upper_bound_techno=100.):
         """

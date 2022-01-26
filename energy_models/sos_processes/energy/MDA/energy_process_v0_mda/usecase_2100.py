@@ -18,11 +18,12 @@ from sos_trades_core.study_manager.study_manager import StudyManager
 
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase_2100 import Study as Study_v0
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
 
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100., techno_dict=DEFAULT_TECHNO_DICT, bspline=True, one_invest_discipline=False, execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100., techno_dict=DEFAULT_TECHNO_DICT, bspline=True, invest_discipline=INVEST_DISCIPLINE_DEFAULT, execution_engine=None):
 
         self.year_start = year_start
         self.year_end = year_end
@@ -31,7 +32,7 @@ class Study(StudyManager):
         self.ccs_list = None
         self.dict_technos = None
         self.bspline = bspline
-        self.one_invest_discipline = one_invest_discipline
+        self.invest_discipline = invest_discipline
         self.lower_bound_techno = lower_bound_techno
         self.upper_bound_techno = upper_bound_techno
 
@@ -40,7 +41,7 @@ class Study(StudyManager):
 
         self.study_v0 = Study_v0(
             self.year_start, self.year_end, self.time_step, main_study=False, bspline=self.bspline, execution_engine=execution_engine,
-            one_invest_discipline=self.one_invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.study_v0.sub_study_path_dict
 
     def setup_usecase(self):

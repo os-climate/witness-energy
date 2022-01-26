@@ -30,10 +30,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         ccs_mix = CCS_NAME
         # if one invest discipline then we need to setup all subprocesses
         # before get them
-        if hasattr(self, 'techno_dict') and hasattr(self, 'one_invest_discipline'):
+        if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
             builder_list = self.ee.factory.get_builder_from_process(
                 'energy_models.sos_processes.energy.MDA', 'energy_process_v0',
-                techno_dict=self.techno_dict, one_invest_discipline=self.one_invest_discipline)
+                techno_dict=self.techno_dict, invest_discipline=self.invest_discipline)
         else:
             # else we get them the old fashioned way
             builder_list = self.ee.factory.get_builder_from_process(

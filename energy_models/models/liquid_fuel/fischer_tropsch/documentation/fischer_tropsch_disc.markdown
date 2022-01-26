@@ -20,6 +20,8 @@ The most known synthesis fuel production is the Power-to_Liquids conversion wher
 
 ### Difference of fuel synthesis pathways depending on the syngas supply [^2]  
 ![](Xtl.PNG)
+(Image Credit: [^2])
+
 
 On the Figure above, all concepts are influencing the process of syngas upgrading because of the composition of the syngas after production. More technical details are explained in the section Modifying the syngas ratio for the synthesis below.
 
@@ -28,7 +30,8 @@ The first PtL demo plant at industrial scale is in construction in Norway [^3], 
 
 ### Sunfire PtL demonstration plant in Dresden, Germany [^4]
 
-![](Sunfire.PNG) 
+![](Sunfire_PtL_Dresden.jpg) 
+(Image Credit: Sunfire, taken from [^4])
 
 ## Modifying the syngas ratio for the synthesis
 The ratio $\frac{CO}{H_2}$ of the needed syngas (gas composed of carbon monoxyde $CO$ and hydrogen $H_2$) must be equal to : 
@@ -87,14 +90,15 @@ All technical and economical datas are extracted from [^5]. The paper details th
 ### Ptl flow diagram of Fasihi & al  [^5]
 
 ![](fasihi2016.PNG)
+(Image Credit: [^5])
 
 
-[^1]: De Klerk , A. (2013) FischerTropsch Process. Kirk Othmer Encyclopedia of Chemical Technology. Weinheim: Wiley-VCH, available at doi:10.1002/0471238961.fiscdekl.a01
+[^1]: [De Klerk , A. (2013) FischerTropsch Process. Kirk Othmer Encyclopedia of Chemical Technology. Weinheim: Wiley-VCH](https://onlinelibrary.wiley.com/doi/abs/10.1002/0471238961.fiscdekl.a01) 
 
-[^2]: Albrecht, F. (2017) A standardized methodology for the techno-economic evaluation of alternative fuels A case study, Fuel, vol 194, p511-526, available at https://www.sciencedirect.com/science/article/pii/S0016236116312248
+[^2]: [Albrecht, F. (2017) A standardized methodology for the techno-economic evaluation of alternative fuels A case study, Fuel, vol 194, p511-526](https://www.sciencedirect.com/science/article/pii/S0016236116312248)
 
-[^3]: Schmidt, P. (2016) Power-to-Liquids Potentials and Perspectives for the Future Supply of Renewable Aviation Fuel, Umweltbundesamt article, available at https://www.umweltbundesamt.de/en/publikationen/power-to-liquids-potentials-perspectives-for-the
+[^3]: [Schmidt, P. (2016) Power-to-Liquids Potentials and Perspectives for the Future Supply of Renewable Aviation Fuel, Umweltbundesamt article](https://www.umweltbundesamt.de/en/publikationen/power-to-liquids-potentials-perspectives-for-the)
 
-[^4]: Europe’s first power-to-liquid demo plant in Norway plans renewable aviation fuel production in 2023, Greenair online article, available at https://www.greenaironline.com/news.php?viewStory=2711
+[^4]: [Neste acquires stake in PtX developer Sunfire, online article](https://www.greenaironline.com/news.php?viewStory=2711)
 
-[^5]: Fasihi, P. (2016) Techno-Economic Assessment of Power-to-Liquids (PtL) Fuels Production and Global Trading Based on Hybrid PV-Wind Power Plants, 10th International Renewable Energy Storage Conference, IRES 2016, Dusseldorf Germany
+[^5]: [Fasihi, M., Bogdanov, D. and Breyer, C., 2016. Techno-economic assessment of power-to-liquids (PtL) fuels production and global trading based on hybrid PV-wind power plants. Energy Procedia, 99, pp.243-268.](https://www.sciencedirect.com/science/article/pii/S1876610216310761)

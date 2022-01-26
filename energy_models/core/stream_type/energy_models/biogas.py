@@ -20,8 +20,6 @@ class BioGas(EnergyType):
     # Bio gas is bioCH4 + CO2
     name = 'biogas'
     data_energy_dict = {'maturity': 5,
-                        # IEA (2020), Outlook for biogas and biomethane: Prospects for organic growth, IEA, Paris
-                        # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
                         'CH4_per_energy': 0.6,
                         'CH4_per_energy_unit': 'kg/kg',
                         # Valerio Paolini, Francesco Petracchini, Marco Segreto, Laura Tomassetti,
@@ -41,10 +39,7 @@ class BioGas(EnergyType):
                         # Combination of CH4 and CO2 molar mass
                         'molar_mass': 16.04 * 0.6 + 0.4 * 44.01,
                         'molar_mass_unit': 'g/mol',
-                        # IEA (2020), Outlook for biogas and biomethane: Prospects for organic growth, IEA, Paris
-                        # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
-                        # between 16 MJ/m3 and 28 MJ/m3
-                        # MJ/m^3 to kWh/kg you need to divide by 3.6 and by
+                        # around 23 MJ/m^3 to kWh/kg you need to divide by 3.6 and by
                         # density
                         'calorific_value': 23.0 / 3.6 / (0.657 * 0.6 + 0.4 * 1.98),
                         'calorific_value_unit': 'kWh/kg',

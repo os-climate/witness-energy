@@ -39,11 +39,15 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
                                  # Fixed 4.0% and recurrent 0.5 %
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
                                  'WACC': 0.048,  # Weighted averaged cost of capital / ATB NREL 2020
-                                 'learning_rate': 0.05,  # https://publications.jrc.ec.europa.eu/repository/bitstream/JRC109894/cost_development_of_low_carbon_energy_technologies_v2.2_final_online.pdf
+                                 # Zucker, A., 2018. Cost development of low carbon energy technologies.
+                                 # https://publications.jrc.ec.europa.eu/repository/bitstream/JRC109894/cost_development_of_low_carbon_energy_technologies_v2.2_final_online.pdf
+                                 'learning_rate': 0.05,
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
-                                 # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
-                                 'Capex_init': 4275,
+                                 # Timilsina, G.R., 2020.
+                                 # Demystifying the Costs of Electricity Generation Technologies.
+                                 # https://openknowledge.worldbank.org/bitstream/handle/10986/34018/Demystifying-the-Costs-of-Electricity-Generation-Technologies.pdf?sequence=4
+                                 'Capex_init': 4275,  # average
                                  'Capex_init_unit': '$/kW',
                                  'full_load_hours': 8760.0,  # Full year hours
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies
@@ -60,6 +64,8 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
     initial_production = 92
 
     # Invest from IRENA
+    # Renewable Power Generation Costs in 2020
+    # https://www.irena.org/publications/2021/Jun/Renewable-Power-Costs-in-2020
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [2.4, 2.9, 2.5,
                                                                      2.7, 2.4, 2.5,
