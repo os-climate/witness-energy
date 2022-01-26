@@ -223,7 +223,7 @@ class CarbonCapture(BaseStream):
         if self.flue_gas_percentage is not None:
             dfluegas = self.compute_dflue_gas_with_exp_min(
                 self.fg_ratio)
-            dfg_ratio = -self.flue_gas_production / \
+            dfg_ratio = -1.0 * self.flue_gas_production / \
                 (self.carbon_captured_type['flue gas'].values)**2
             dfg_ratio_dfg_prod = 1.0 / \
                 self.carbon_captured_type['flue gas'].values

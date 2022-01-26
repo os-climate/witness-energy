@@ -54,15 +54,6 @@ class OneInvest(BaseInvest):
 
         return all_invest_df
 
-    def compute_distribution_list(self, input_dict):
-        self.distribution_list = []
-        for energy in input_dict['energy_list']:
-            for techno in input_dict[f'{energy}.technologies_list']:
-                self.distribution_list.append(f'{energy}.{techno}')
-        for ccs in input_dict['ccs_list']:
-            for techno in input_dict[f'{ccs}.technologies_list']:
-                self.distribution_list.append(f'{ccs}.{techno}')
-
     def set_invest_mix(self, mix_df):
         '''
         Set the invest mix of the energy mix 

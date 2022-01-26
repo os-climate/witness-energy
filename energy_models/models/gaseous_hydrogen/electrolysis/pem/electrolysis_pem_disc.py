@@ -56,8 +56,8 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency_max': 0.75,
                                  'construction_delay': construction_delay}
 
-    # Around 30MW of nominal power *8000 hours per year
-    initial_production = 0.24
+    # Around 50MW of nominal power *8000 hours per year
+    initial_production = 0.4
     # Industrial plants started to emerge around 2015
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [25, 25, 20, 15, 15] + [0.0] * 5

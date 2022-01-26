@@ -18,7 +18,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
     """
     techno_name = 'Electrolysis.AWE'
     construction_delay = 1  # year
-    # David, M., Ocampo-Martínez, C. and Sánchez-Peña, R., 2019.
+    # David, M., Ocampo-Martinez, C. and Sanchez-Pena, R., 2019.
     # Advances in alkaline water electrolyzers: A review.
     # Journal of Energy Storage, 23, pp.392-403.
     lifetime = 25  # Around 20 and 30 years
@@ -46,7 +46,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency_max': 0.70,
                                  'construction_delay': construction_delay}
     # see doc
-    initial_production = 0.76
+    initial_production = 1.6 - 0.4
     # Industrial plants started to emerge around 2015
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [50, 15, 15, 15, 5] + [0.0] * (lifetime - 6)

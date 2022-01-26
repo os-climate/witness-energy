@@ -315,7 +315,10 @@ class EnergyMixTestCase(unittest.TestCase):
                        'liquid_hydrogen_constraint_ref': 100.0,
                        'CO2_tax_ref':  750.0,
                        'syngas_prod_ref': 100.,
-                       'ratio_ref': 100.
+                       'ratio_ref': 100.,
+                       'carbonstorage_constraint_ref': 1000000.,
+                       'carbonstorage_limit': 1000000.
+
                        }
 
         EM = EnergyMix('EnergyMix')

@@ -56,7 +56,7 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
                                  'construction_delay': construction_delay  # in kWh/kg
                                  }
 
-    # Currently around 3.5 Mtoe of biomethane are produced worldwide and 92.3% are from upgrading biogas, rest is biomass gasification 0.27mtoe
+    # At present, about  3.5 Mtoe of biomethane is produced around the world and 92.3% are from upgrading biogas, rest is biomass gasification 0.27mtoe
     # 1 Mtoe = 11.63 TWh
     initial_production = 3.5 * 0.923 * 11.63  # in TWh at year_start
     # Same as anaerobic digestion since most of biogas from anaerobic

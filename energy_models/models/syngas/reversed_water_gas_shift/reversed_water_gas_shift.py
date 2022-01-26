@@ -122,7 +122,7 @@ class RWGS(SyngasTechno):
         dqlist = []
         qlist = []
         invest_sum = self.initial_production * capex_init
-        dinvest_sum = -self.initial_production * self.slope_capex
+        dinvest_sum = -1.0 * self.initial_production * self.slope_capex
         capex_year = capex_init
         capex_grad[0][0] = -self.slope_capex
         invest_list = self.cost_details['invest'].values

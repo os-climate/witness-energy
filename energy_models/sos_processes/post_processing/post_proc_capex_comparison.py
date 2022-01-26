@@ -37,10 +37,11 @@ def post_processings(execution_engine, namespace, filters):
     chart_results = []
 
     # Overload default value with chart filter
+    graphs_list = []
     if filters is not None:
         for chart_filter in filters:
             if chart_filter.filter_key == 'Charts':
-                graphs_list = chart_filter.selected_values
+                graphs_list.extend(chart_filter.selected_values)
 
     if 'Factory' in graphs_list:
         energy_list = execution_engine.dm.get_value(
@@ -65,7 +66,7 @@ def create_chart_factory_comparison_technos(execution_engine, namespace, energy)
         'techno_detailed_prices')
 
     energy_detailed_prices = [
-        ns for ns in all_ns_detailed_prices if ns.startswith(f'{namespace}.{energy}')]
+        ns for ns in all_ns_detailed_prices if ns.startswith(f'{namespace}.EnergyMix.{energy}')]
 
     if len(energy_detailed_prices) >= 2:
         chart_name = f'Factory for each {energy} technologies over the years'
@@ -74,7 +75,7 @@ def create_chart_factory_comparison_technos(execution_engine, namespace, energy)
                                              chart_name=chart_name)
         for ns in energy_detailed_prices:
             techno_detailed_prices = execution_engine.dm.get_value(ns)
-            techno_name = ns.replace(f'{namespace}.{energy}.', '').replace(
+            techno_name = ns.replace(f'{namespace}.EnergyMix.{energy}.', '').replace(
                 '.techno_detailed_prices', '')
             years = techno_detailed_prices['years'].values.tolist()
             factory = techno_detailed_prices[f'{techno_name}_factory'].values.tolist(
@@ -94,13 +95,13 @@ def create_chart_factory_comparison_energy(execution_engine, namespace, energy_l
     mean_factory = {}
     for energy in energy_list:
         energy_production = execution_engine.dm.get_value(
-            f'{namespace}.{energy}.energy_production')
+            f'{namespace}.EnergyMix.{energy}.energy_production')
         energy_detailed_prices = [
-            ns for ns in all_ns_detailed_prices if ns.startswith(f'{namespace}.{energy}')]
+            ns for ns in all_ns_detailed_prices if ns.startswith(f'{namespace}.EnergyMix.{energy}')]
         years = energy_production['years'].values
         factory_mean = np.zeros(len(years))
         for techno in energy_detailed_prices:
-            techno_name = techno.replace(f'{namespace}.{energy}.', '').replace(
+            techno_name = techno.replace(f'{namespace}.EnergyMix.{energy}.', '').replace(
                 '.techno_detailed_prices', '')
             techno_detailed_prices = execution_engine.dm.get_value(techno)
             factory_techno = techno_detailed_prices[f'{techno_name}_factory'].values

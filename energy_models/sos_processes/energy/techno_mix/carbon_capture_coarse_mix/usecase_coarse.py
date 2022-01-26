@@ -20,6 +20,7 @@ import scipy.interpolate as sc
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
 DEFAULT_TECHNOLOGIES_LIST = [
     'direct_air_capture.DirectAirCaptureTechno', 'flue_gas_capture.FlueGasTechno']
@@ -29,9 +30,9 @@ TECHNOLOGIES_LIST_FOR_OPT = [
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST_FOR_OPT,
-                 bspline=True,  main_study=True, prefix_name=None, execution_engine=None, one_invest_discipline=False):
+                 bspline=True,  main_study=True, prefix_name=None, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
-                         main_study=main_study, execution_engine=execution_engine, one_invest_discipline=one_invest_discipline)
+                         main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
@@ -129,7 +130,7 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.flue_gas_co2_ratio': np.array([0.13]),
 
                     f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.techno_production': fossil_simple_techno_prod, })
-            if self.one_invest_discipline:
+            if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
                     columns=['years']).sum(axis=1)
                 for techno in self.technologies_list:

@@ -183,7 +183,7 @@ class EnergyDiscipline(StreamDiscipline):
 
     def get_chart_comparison_carbon_intensity(self):
         new_charts = []
-        chart_name = f'Comparison of carbon intensity due to production of {self.energy_name} technologies'
+        chart_name = f'Comparison of carbon intensity due to production<br>of {self.energy_name} technologies'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
@@ -220,7 +220,7 @@ class EnergyDiscipline(StreamDiscipline):
 
     def get_chart_co2_emissions(self):
         new_charts = []
-        chart_name = f'Comparison of CO2 emissions due to production and use of {self.energy_name} technologies'
+        chart_name = f'Comparison of CO2 emissions due to production and use<br>of {self.energy_name} technologies'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions (Mt)', chart_name=chart_name, stacked_bar=True)
 

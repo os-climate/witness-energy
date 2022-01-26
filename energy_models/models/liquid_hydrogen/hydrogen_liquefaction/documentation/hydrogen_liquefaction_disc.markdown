@@ -10,6 +10,7 @@ The data used here are taken from a model based on a four steps process:
 The part of the hydrogen stream that isn't liquified is sent back to the beginning of the cycle.
 
 ![liquefaction cycle](./Liquefaction_cycle.PNG)
+(Image Credit: [^3])
 
 > The Joule-Thompson effect occurs when a real gas goes through a throttle and then into a space where it can expand again and if the enthalpy is conserved. If the gas is below the inversion point (around 80 K for hydrogen) it is cooled down and on the contrary, it is heated up if the gas is above the inversion point.
 
@@ -18,16 +19,18 @@ The part of the hydrogen stream that isn't liquified is sent back to the beginni
 The current liquifier plants have capacities ranging from 6000 to 70000. Trying to take into account the future innovations,
 the model is based on a liquifier with a capacity of 200000 kg/day.
 
-<ins>Economic and technical datas are taken from:</ins>
+<ins>Economic and technical datas are taken from [^1] [^2] [^3].
 
-1: [Economically viable large-scale hydrogen liquefaction,U Cardella and L Decker and H Klein (2017)](https://iopscience.iop.org/article/10.1088/1757-899X/171/1/012013)
+<ins>For more technical details please read [^4] [^5]:</ins>
 
-2: [Integrated Design for Demonstration of Efficient Liquefaction of Hydrogen (IDEALHY) (2013)](https://www.idealhy.eu/uploads/documents/IDEALHY_D5-22_Schedule_demonstration_and_location_web.pdf)
+[^1]: [Cardella, U., Decker, L. and Klein, H., 2017, February. Economically viable large-scale hydrogen liquefaction. In IOP conference series: materials science and engineering (Vol. 171, No. 1, p. 012013). IOP Publishing.](https://iopscience.iop.org/article/10.1088/1757-899X/171/1/012013)
 
-3: [Current Status of Hydrogen Liquefaction Costs, E Connelly and M Penev and A Elgowainy and C Hunter (2019)](https://www.hydrogen.energy.gov/pdfs/19001_hydrogen_liquefaction_costs.pdf)
+[^2]: [Integrated Design for Demonstration of Efficient Liquefaction of Hydrogen (IDEALHY) (2013)](https://www.idealhy.eu/uploads/documents/IDEALHY_D5-22_Schedule_demonstration_and_location_web.pdf)
 
-<ins>For more technical details:</ins>
+[^3]: [Current Status of Hydrogen Liquefaction Costs, E Connelly and M Penev and A Elgowainy and C Hunter (2019)](https://www.hydrogen.energy.gov/pdfs/19001_hydrogen_liquefaction_costs.pdf)
 
-4: [Large-scale liquid hydrogen production methods and approaches: A review, M Asadnia and M Mehrpooya (2017)](https://www.researchgate.net/publication/321686488_Large-scale_liquid_hydrogen_production_methods_and_approaches_A_review)
 
-5: [Hydrogen liquefaction and liquid hydrogen storage, G Valenti (2016)](https://www.sciencedirect.com/science/article/pii/B978178242362100002X)
+
+[^4]: [Large-scale liquid hydrogen production methods and approaches: A review, M Asadnia and M Mehrpooya (2017)](https://www.researchgate.net/publication/321686488_Large-scale_liquid_hydrogen_production_methods_and_approaches_A_review)
+
+[^5]: [Hydrogen liquefaction and liquid hydrogen storage, G Valenti (2016)](https://www.sciencedirect.com/science/article/pii/B978178242362100002X)

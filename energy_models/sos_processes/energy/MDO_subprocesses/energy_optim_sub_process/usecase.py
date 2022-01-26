@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sos_trades_core.study_manager.study_manager import StudyManager
 
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as energy_usecase
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
@@ -22,6 +21,9 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 import numpy as np
 import pandas as pd
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS,\
+    INVEST_DISCIPLINE_DEFAULT
+from energy_models.core.energy_study_manager import EnergyStudyManager
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -46,9 +48,9 @@ def update_dspace_with(dspace_dict, name, value, lower, upper):
     dspace_dict['dspace_size'] += len(value)
 
 
-class Study(StudyManager):
+class Study(EnergyStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2050, time_step=1, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0]):
         super().__init__(__file__, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -62,12 +64,13 @@ class Study(StudyManager):
         self.energy_list = None
         self.ccs_list = None
         self.dict_technos = None
+        self.invest_discipline = invest_discipline
 
     def setup_usecase(self):
 
         #-- retrieve energy input data
         energy_uc = energy_usecase(
-            self.year_start, self.year_end, self.time_step, main_study=False, execution_engine=self.execution_engine)
+            self.year_start, self.year_end, self.time_step, main_study=False, execution_engine=self.execution_engine, invest_discipline=self.invest_discipline)
         energy_uc.study_name = f'{self.study_name}.{self.coupling_name}'
 
         usecase_dict_list = energy_uc.setup_usecase()
@@ -83,19 +86,22 @@ class Study(StudyManager):
 
         for energy in self.energy_list:
             energy_wo_dot = energy.replace('.', '_')
-            dv_arrays_dict[f'{energy_uc.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = dspace_df[f'{energy_wo_dot}_array_mix']['value']
+            if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
+                dv_arrays_dict[f'{energy_uc.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = dspace_df[f'{energy_wo_dot}_array_mix']['value']
 
             for technology in self.dict_technos[energy]:
                 technology_wo_dot = technology.replace('.', '_')
                 dv_arrays_dict[f'{energy_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
         for ccs in self.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
-            dv_arrays_dict[f'{energy_uc.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = dspace_df[f'{ccs_wo_dot}_array_mix']['value']
+            if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
+                dv_arrays_dict[f'{energy_uc.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = dspace_df[f'{ccs_wo_dot}_array_mix']['value']
 
             for technology in self.dict_technos[ccs]:
                 technology_wo_dot = technology.replace('.', '_')
                 dv_arrays_dict[f'{energy_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
-        dv_arrays_dict[f'{energy_uc.study_name}.ccs_percentage_array'] = dspace_df[f'ccs_percentage_array']['value']
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
+            dv_arrays_dict[f'{energy_uc.study_name}.ccs_percentage_array'] = dspace_df[f'ccs_percentage_array']['value']
 
         # construct func_df
         func_df = pd.concat([energy_uc.setup_objectives(),

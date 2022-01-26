@@ -6,6 +6,14 @@ Solid fuels, compared to liquid fuels or gaseous fuels, are often cheaper, easie
 
 Solid fuels are composed of organic materials and can contribute to poor air quality. The burning of solid fuels releases more organic aerosol than liquefied petroleum gas and releases many volatile organic compounds, which can contribute to poor air quality through the formation of secondary pollutants such as tropospheric ozone and secondary organic aerosol. The emissions from solid fuels are likely drivers of poor air quality in regions where solid fuels are a dominant fuel source, with volatile organic compound emissions from solid fuels significantly more reactive with the hydroxyl radical compared to those from liquefied petroleum gas.
 
+Significant datas for liquid fuel [^2]:
+
+  * Molecular Weight : 170.0 g/mol
+  * Density: 1300 kg/m^3
+  * CO2 after use : 2.42 kgCO2/kg 
+  * Calorific value : 4.86 kWh/kg[^3]
+
+
 We consider several methods for production:
 
 * Coal extraction
@@ -14,3 +22,5 @@ We consider several methods for production:
 The solid fuel section deals with the coal extraction part, for the burning part (to produce electricity), it is processed in the "electricity" section.
 
 [^1]: Solid Fuel Wikipedia page, https://en.wikipedia.org/wiki/Solid_fuel
+[^2]: Engineering Toolbox, https://www.engineeringtoolbox.com
+[^3]: Lee, J.S., 2015. Calorific value of wood pellets (Doctoral dissertation, University of British Columbia).

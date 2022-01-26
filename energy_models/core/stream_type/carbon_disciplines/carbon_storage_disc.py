@@ -207,7 +207,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
             chart_name = 'Consumption and production with input investments'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Mass [Mt]',
-                                             chart_name=chart_name, stacked_bar=True)
+                                             chart_name=chart_name.capitalize(), stacked_bar=True)
 
         for reactant in energy_consumption.columns:
             if reactant != 'years' and reactant.endswith('(Mt)'):

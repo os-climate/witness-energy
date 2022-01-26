@@ -18,7 +18,8 @@ The low energy density of biomass feedstocks tends to limit the transport distan
 Transforming biomass into **pellets** offers a solution to this problem. Biomass is dried, crushed and pelletized to be converted into pellets that have standardized size and properties, high energy content and high density. It reduses costs of transports, storage and handling.
 Pellets can directly be used in firing or co-firing with coal in boilers.
 
-![](pellets.jpg)
+![](make-pellets-for-biomass-fuel-and-animal-feed1.jpg)
+(Image Credit: GEMCO, taken from http://www.gemco-energy.com/pellet-mill-dies.html)
 
 ## DATA
 

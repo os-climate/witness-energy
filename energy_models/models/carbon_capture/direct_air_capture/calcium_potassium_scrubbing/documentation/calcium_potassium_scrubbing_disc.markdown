@@ -24,5 +24,10 @@ As shown by the picture, this is process allows the re-use of its reactants by t
 
 Note : Datas extracted from [^1] concerns a study about a 1Mt CO2/year DAC plant.
 
+**Datas :**
+Technical data was found in [^1], [^2], [^3] and [^4].
 
 [^1]: https://www.cell.com/joule/pdfExtended/S2542-4351(18)30225-3
+[^2]: Fasihi, M., Efimova, O. and Breyer, C., 2019. Techno-economic assessment of CO2 direct air capture plants. Journal of cleaner production, 224, pp.957-980.
+[^3]: Keith, D.W., Holmes, G., Angelo, D.S. and Heidel, K., 2018. A process for capturing CO2 from the atmosphere. Joule, 2(8), pp.1573-1594.
+[^4]: Vo, T.T., Wall, D.M., Ring, D., Rajendran, K. and Murphy, J.D., 2018. Techno-economic analysis of biogas upgrading via amine scrubber, carbon capture and ex-situ methanation. Applied energy, 212, pp.1191-1202.

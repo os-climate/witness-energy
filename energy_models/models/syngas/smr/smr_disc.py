@@ -33,6 +33,9 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                  'elec_demand': 0.23,
                                  'elec_demand_unit': 'kWh/kg',
                                  'Opex_percentage': 0.05,
+                                 # Diglio, G., Hanak, D.P., Bareschino, P., Mancusi, E., Pepe, F., Montagnaro, F. and Manovic, V., 2017.
+                                 # Techno-economic analysis of sorption-enhanced steam methane reforming in a fixed bed reactor network integrated with fuel cell.
+                                 # Journal of Power Sources, 364, pp.41-51.
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
                                  'Capex_init': 450,
