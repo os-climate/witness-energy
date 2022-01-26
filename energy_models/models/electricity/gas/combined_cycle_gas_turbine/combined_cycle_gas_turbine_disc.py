@@ -26,7 +26,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
     techno_name = 'CombinedCycleGasTurbine'
     lifetime = 30  # Source: U.S. Energy Information Administration 2020
     construction_delay = 2  # years
-    # Taud, R., Karg, J. and O’Leary, D., 1999.
+    # Taud, R., Karg, J. and Oï¿½Leary, D., 1999.
     # Gas turbine based power plants: technology and market status.
     # The World Bank Energy Issues, (20).
     # https://documents1.worldbank.org/curated/en/640981468780885410/pdf/263500Energy0issues020.pdf

@@ -18,7 +18,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
     """
     techno_name = 'Electrolysis.AWE'
     construction_delay = 1  # year
-    # David, M., Ocampo-Martínez, C. and Sánchez-Peña, R., 2019.
+    # David, M., Ocampo-Martinez, C. and Sanchez-Pena, R., 2019.
     # Advances in alkaline water electrolyzers: A review.
     # Journal of Energy Storage, 23, pp.392-403.
     lifetime = 25  # Around 20 and 30 years
