@@ -120,11 +120,6 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
-    DESC_IN.update({'data_fuel_dict': {'type': 'dict',
-                                       'visibility': ElectricityTechnoDiscipline.SHARED_VISIBILITY,
-                                       'namespace': 'ns_solid_fuel',
-                                       'default': SolidFuel.data_energy_dict}})
-
     coal_flue_gas_ratio = np.array([0.13])
     DESC_OUT = {
         'flue_gas_co2_ratio': {'type': 'array', 'default': coal_flue_gas_ratio}
