@@ -40,6 +40,7 @@ from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from copy import deepcopy
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
 
 
 class EnergyMix(BaseStream):
@@ -64,7 +65,7 @@ class EnergyMix(BaseStream):
     SYNGAS_PROD_OBJECTIVE = 'syngas_prod_objective'
     RESOURCE_LIST = ['natural_gas_resource',
                      'uranium_resource', 'coal_resource', 'oil_resource']
-
+    CARBON_STORAGE_CONSTRAINT = 'carbon_storage_constraint'
     energy_class_dict = {GaseousHydrogen.name: GaseousHydrogen,
                          LiquidFuel.name: LiquidFuel,
                          Electricity.name: Electricity,
@@ -150,6 +151,8 @@ class EnergyMix(BaseStream):
         self.co2_for_food = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
                                           f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
+        self.carbonstorage_constraint_ref = inputs_dict['carbonstorage_constraint_ref']
+        self.carbonstorage_limit = inputs_dict['carbonstorage_limit']
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -743,6 +746,14 @@ class EnergyMix(BaseStream):
         else:
             self.syngas_prod_objective = np.zeros(len(self.years))
 
+    def compute_carbon_storage_constraint(self):
+        '''
+        Compute carbon storage constraint
+        '''
+
+        self.carbon_storage_constraint = np.array([- (self.total_co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].sum(
+        ) - self.carbonstorage_limit) / self.carbonstorage_constraint_ref])
+
     def compute_all_streams_demand_ratio(self):
         '''! Computes the demand_ratio dataframe. 
         The ratio is calculated using the production and consumption WITHOUT the ratio applied
@@ -778,15 +789,14 @@ class EnergyMix(BaseStream):
 
     def compute_ratio_objective(self):
 
-        mean_ratio_serie = self.all_streams_demand_ratio.mean(
-        )[[energy for energy in self.energy_list if energy in self.all_streams_demand_ratio]]
+        ratio_arrays = self.all_streams_demand_ratio[self.subelements_list].values
+        # Objective is to minimize the difference between 100 and all ratios
+        # We give as objective the highest difference to start with the max of
+        # the difference
 
-        mean_ratio = mean_ratio_serie.values.mean()
-
-        # Objective is to minimize to the value zero and max of mean_ratio is
-        # 100
+        smooth_max = smooth_maximum(100.0 - ratio_arrays.flatten(), 3)
         self.ratio_objective = np.asarray(
-            [self.ratio_norm_value / mean_ratio - self.ratio_norm_value / 100.0])
+            [smooth_max / self.ratio_norm_value])
 
     def compute_grad_CO2_emissions(self, net_production, co2_emissions, alpha):
         '''
@@ -1165,6 +1175,12 @@ class EnergyMix(BaseStream):
                     (mask * gradient * alpha * tot_co2_emissions_sum /
                      delta_years / (tot_co2_emissions_0)**2)
                 dtot_final_CO2_emissions[new_key] = dco2_emissions_objective_dproduction
+
+            if key.startswith(f'{CarbonStorage.name} Limited by capture (Mt)'):
+                new_key = key.replace(
+                    f'{CarbonStorage.name} Limited by capture (Mt)', 'Carbon storage constraint')
+                dtot_final_CO2_emissions[new_key] = - \
+                    gradient / self.carbonstorage_constraint_ref
 
         return dtot_final_CO2_emissions
 

@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.energy_process_builder import EnergyProcessBuilder
+from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
+    INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.sos_processes.energy.techno_mix.hydrotreated_oil_fuel_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT
 
@@ -45,7 +46,7 @@ class ProcessBuilder(EnergyProcessBuilder):
                 energy_name, techno_name)
         print(mods_dict)
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
-        if not self.one_invest_discipline:
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             mods_dict_invest = {f'{energy_mix}.{energy_name}': 'energy_models.core.investments.disciplines.techno_invest_disc.InvestTechnoDiscipline',
                                 }
 

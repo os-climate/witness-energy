@@ -73,9 +73,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  # liquid_fuel
                                  'carbon_number': 12}  # To review
 
-    # based on world energy investment
-    # IEA (2021), World Energy Investment 2021, IEA, Paris
-    # https://www.iea.org/reports/world-energy-investment-2021
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [2.0, 2.0, 2.0]})
 

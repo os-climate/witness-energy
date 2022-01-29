@@ -33,6 +33,7 @@ class BaseInvest:
         self.mix_df = None
         self.energy_list = None
         self.column_name = None
+        self.distribution_list = None
     #-- Setters
 
     def set_invest_unit(self, unit):
@@ -85,6 +86,15 @@ class BaseInvest:
                 norm_mix.values
 
         return invest_distrib[self.energy_list + ['years']], output_unit
+
+    def compute_distribution_list(self, input_dict):
+        self.distribution_list = []
+        for energy in input_dict['energy_list']:
+            for techno in input_dict[f'{energy}.technologies_list']:
+                self.distribution_list.append(f'{energy}.{techno}')
+        for ccs in input_dict['ccs_list']:
+            for techno in input_dict[f'{ccs}.technologies_list']:
+                self.distribution_list.append(f'{ccs}.{techno}')
 
 
 def compute_norm_mix(mix_df, base_list):

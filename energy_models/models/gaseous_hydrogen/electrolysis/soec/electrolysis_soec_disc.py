@@ -53,8 +53,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency': 0.84,
                                  'efficiency_max': 0.92,  # because of topsoe
                                  'construction_delay': construction_delay}
-    # From Future of hydrogen :less than 0.1% of global dedicated hydrogen
-    # production today (70MT) comes from water electrolysis
+
     initial_production = 0.0
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),

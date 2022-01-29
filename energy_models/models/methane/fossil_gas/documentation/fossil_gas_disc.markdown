@@ -2,7 +2,8 @@
 
 Natural gas is a fossil energy source that formed deep beneath the earth's surface. Natural gas contains many different compounds. The largest component of natural gas is methane, a compound with one carbon atom and four hydrogen atoms (CH4). Natural gas also contains smaller amounts of natural gas liquids (NGL, which are also hydrocarbon gas liquids), and nonhydrocarbon gases, such as carbon dioxide and water vapor. We use natural gas as a fuel and to make materials and chemicals. [^2]
 
-![](Industry_gaz.png) 
+![](Industry_gaz.png)
+(Image Credit EIA: taken from [^2]) 
 
 
 ## Data     

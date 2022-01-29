@@ -3,6 +3,7 @@
 An oil refinery or petroleum refinery is an industrial process plant where crude oil is transformed and refined into useful products such as petroleum naphtha, gasoline, diesel fuel, asphalt base, heating oil, kerosene, liquefied petroleum gas, jet fuel and fuel oils.
 
 ![](crude_oil_breakdown.PNG)
+(Image Credit: Psarianos, Theresa Knott, taken from [^1] )
 
 **Crude oil breakdown:**
 

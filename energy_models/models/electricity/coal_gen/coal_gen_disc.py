@@ -43,24 +43,47 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  # Paris
                                  # https://www.iea.org/reports/world-energy-outlook-2014
                                  'Opex_percentage': 0.0339,  # Mean of IEA World Energy Outlook 2014
+                                 # Bruckner, T., Bashmakov, I.A., Mulugetta, Y., Chum, H., De la Vega Navarro, A., Edmonds,
+                                 # J., Faaij, A., Fungtammasan, B., Garg, A., Hertwich, E. and Honnery, D., 2014.
+                                 # Energy systems. IPCC
+                                 # https://www.ipcc.ch/site/assets/uploads/2018/02/ipcc_wg3_ar5_chapter7.pdf
+                                 # Or for a simplified chart:
                                  # https://www.world-nuclear.org/information-library/energy-and-the-environment/carbon-dioxide-emissions-from-electricity.aspx
                                  'CO2_from_production': 0.82,
                                  'CO2_from_production_unit': 'kg/kWh',
-                                 'elec_demand': 0.16,  # IEA LCOE simulator
+                                 # IEA (2020), Levelised Cost of Electricity Calculator,
+                                 #IEA and NEA, Paris
+                                 # https://www.iea.org/articles/levelised-cost-of-electricity-calculator
+                                 'elec_demand': 0.16,
                                  'elec_demand_unit': 'kWh/kWh',
-                                 'fuel_demand': 0.836,  # 100% efficiency IEA projected cost of generating electricity 2015
+                                 # IEA (2015), Projected Costs of Generating Electricity 2015,
+                                 #IEA, Paris
+                                 # https://www.iea.org/reports/projected-costs-of-generating-electricity-2015
+                                 'fuel_demand': 0.836,  # at 100% efficiency
                                  'fuel_demand_unit': 'kWh/kWh',
-                                 'WACC': 0.075,  # Weighted averaged cost of capital. Source IRENA
-                                 'learning_rate': 0.083,  # IEA 2011
+                                 # Renewable Power Generation Costs in 2020
+                                 #IRENA, 2020
+                                 # https://www.irena.org/publications/2021/Jun/Renewable-Power-Costs-in-2020
+                                 'WACC': 0.075,
+                                 # Rubin, E.S., Azevedo, I.M., Jaramillo, P. and Yeh, S., 2015.
+                                 # A review of learning rates for electricity supply technologies.
+                                 # Energy Policy, 86, pp.198-218.
+                                 # https://www.cmu.edu/epp/iecm/rubin/PDF%20files/2015/A%20review%20of%20learning%20rates%20for%20electricity%20supply%20technologies.pdf
+                                 'learning_rate': 0.083,
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
-                                 'Capex_init': 1900,  # Mean of IEA World Energy Outlook 2014
+                                 # IEA (2014), World Energy Outlook 2014, IEA, Paris
+                                 # https://www.iea.org/reports/world-energy-outlook-2014
+                                 'Capex_init': 1900,
                                  'Capex_init_unit': '$/kW',
                                  'full_load_hours': 8760,
                                  'water_demand': 2.22,
                                  'water_demand_unit': 'kg/kWh',
-                                 'capacity_factor': 0.48,  # IEA Average annual capacity factors by technology
-                                 'transport_cost_unit': '$/kg',  # check if pertient
+                                 # EIA, U., 2021. Electric Power Monthly,
+                                 # Table 6.07.A. Capacity Factors for Utility Scale Generators Primarily Using Fossil Fuels
+                                 # https://www.eia.gov/electricity/monthly/epm_table_grapher.php?t=epmt_6_07_a
+                                 'capacity_factor': 0.405,  # Average value in the US in 2020
+                                 'transport_cost_unit': '$/kg',  # check if pertinent
                                  'techno_evo_eff': 'yes',
                                  'techno_evo_time': 10,
                                  'efficiency': 0.38,
@@ -96,11 +119,6 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
-
-    DESC_IN.update({'data_fuel_dict': {'type': 'dict',
-                                       'visibility': ElectricityTechnoDiscipline.SHARED_VISIBILITY,
-                                       'namespace': 'ns_solid_fuel',
-                                       'default': SolidFuel.data_energy_dict}})
 
     coal_flue_gas_ratio = np.array([0.13])
     DESC_OUT = {

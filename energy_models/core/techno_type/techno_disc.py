@@ -621,7 +621,7 @@ class TechnoDiscipline(SoSDiscipline):
         chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Energy [TWh]',
-                                             chart_name=chart_name, stacked_bar=True)
+                                             chart_name=chart_name.capitalize(), stacked_bar=True)
 
         for reactant in techno_consumption.columns:
             if reactant != 'years' and reactant.endswith('(TWh)'):
@@ -737,7 +737,7 @@ class TechnoDiscipline(SoSDiscipline):
         chart_name = f'{self.energy_name} World Production via {self.techno_name}<br>with 2020 factories distribution'
 
         new_chart = TwoAxesInstanciatedChart('years', f'{self.energy_name} production (TWh)',
-                                             chart_name=chart_name)
+                                             chart_name=chart_name.capitalize())
 
         serie = InstanciatedSeries(
             initial_prod['years'].values.tolist(),
@@ -764,7 +764,7 @@ class TechnoDiscipline(SoSDiscipline):
 
         if 'years' in age_distrib_production.columns:
             new_chart = TwoAxesInstanciatedChart('age', f'{self.energy_name} production (TWh)',
-                                                 chart_name=chart_name)
+                                                 chart_name=chart_name.capitalize())
             years = age_distrib_production['years'].values
             filtered_years = list(
                 set([year for year in years if year % 10 == 0]))
@@ -795,7 +795,7 @@ class TechnoDiscipline(SoSDiscipline):
 
             new_chart = TwoAxesInstanciatedChart('years', 'Mean age', [year_start, year_end],
                                                  [minimum, maximum + 5],
-                                                 chart_name=chart_name)
+                                                 chart_name=chart_name.capitalize())
 
             serie = InstanciatedSeries(
                 age_distrib_production['years'].values.tolist(),

@@ -16,16 +16,25 @@ limitations under the License.
 import re
 from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
+INVEST_DISCIPLINE_OPTIONS = ['one_per_energy',  # Instantiate one disicpline for each energy to distribute investments
+                             'one_invest',  # Only one discipline to distribute all investments with invest mix ratios
+                             'independent_invest'
+                             # Only one discipline with absolute values for
+                             # investments per techno and a constraint
+                             ]
+INVEST_DISCIPLINE_DEFAULT = INVEST_DISCIPLINE_OPTIONS[1]  # 'one_invest'
+
 
 class EnergyProcessBuilder(BaseProcessBuilder):
+
     def __init__(self, ee):
         BaseProcessBuilder.__init__(self, ee)
         self.techno_list = None
-        self.one_invest_discipline = False
+        self.invest_discipline = INVEST_DISCIPLINE_DEFAULT
 
-    def setup_process(self, techno_list, one_invest_discipline=False):
+    def setup_process(self, techno_list, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         self.techno_list = techno_list
-        self.one_invest_discipline = one_invest_discipline
+        self.invest_discipline = invest_discipline
 
     def get_stream_disc_path(self, stream, substream_name):
         list_name = re.findall('[A-Z][^A-Z]*', substream_name)

@@ -9,6 +9,8 @@ $$ MgO + CO_2 --> MgCO_3$$
 
 The researchers report that approximately 80% of the carbon becomes embedded in the minerals over the span of one year, which leads to acceptable reaction time. The storage into basalt has been demonstrated to be cost effective at less than 25$ per ton of CO2.
 
-
+**Datas :**
+Technical data was found in [^2].
 
 [^1]: Carbfix Website, https://www.carbfix.com/
+[^2]: Fasihi, M., Efimova, O. and Breyer, C., 2019. Techno-economic assessment of CO2 direct air capture plants. Journal of cleaner production, 224, pp.957-980.

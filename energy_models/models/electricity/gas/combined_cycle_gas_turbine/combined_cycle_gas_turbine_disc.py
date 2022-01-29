@@ -26,6 +26,10 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
     techno_name = 'CombinedCycleGasTurbine'
     lifetime = 30  # Source: U.S. Energy Information Administration 2020
     construction_delay = 2  # years
+    # Taud, R., Karg, J. and O�Leary, D., 1999.
+    # Gas turbine based power plants: technology and market status.
+    # The World Bank Energy Issues, (20).
+    # https://documents1.worldbank.org/curated/en/640981468780885410/pdf/263500Energy0issues020.pdf
     heat_rate = 6.5  # Gj/Mwh = Mj/kwh from World bank
     # Convert heat rate into kwh/kwh
     methane_needs = heat_rate / 3.6
@@ -39,7 +43,10 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'learning_rate': 0,  # fraunhofer
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': 'years',
-                                 'Capex_init': 940,  # $/KW 2017 for CCGT from IEA WEO 2019,
+                                 # Source: U.S. Energy Information Administration, 2020
+                                 # Capital Cost and Performance Characteristic Estimates for Utility Scale Electric Power Generating Technologies,
+                                 # https://www.eia.gov/analysis/studies/powerplants/capitalcost/pdf/capital_cost_AEO2020.pdf
+                                 'Capex_init': 1084,
                                  'Capex_init_unit': '$/kW',
                                  'capacity_factor': 0.85,  # World bank
                                  'kwh_methane/kwh': methane_needs,

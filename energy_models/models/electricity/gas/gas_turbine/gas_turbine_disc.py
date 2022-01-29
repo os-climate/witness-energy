@@ -13,7 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+'''
+mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
+'''
 import pandas as pd
 import numpy as np
 
@@ -26,7 +28,11 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
     techno_name = 'GasTurbine'
     lifetime = 30  # Source U.S. Energy Information Administration 2020
     construction_delay = 2  # years #Lazard
-    heat_rate = 9.2  # 8.0-10. 5    Gj/Mwh    world bank
+    # Taud, R., Karg, J. and O�Leary, D., 1999.
+    # Gas turbine based power plants: technology and market status.
+    # The World Bank Energy Issues, (20).
+    # https://documents1.worldbank.org/curated/en/640981468780885410/pdf/263500Energy0issues020.pdf
+    heat_rate = 9.2  # 8.0-10. 5    Gj/Mwh
     # Convert heat rate into kwh/kwh
     methane_needs = heat_rate / 3.6
     techno_infos_dict_default = {'maturity': 5,
@@ -39,7 +45,10 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'learning_rate': 0,  # fraunhofer
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': 'years',
-                                 'Capex_init': 740,  # $/KW 2020 Source: U.S. Energy Information Administration
+                                 # Source: U.S. Energy Information Administration, 2020
+                                 # Capital Cost and Performance Characteristic Estimates for Utility Scale Electric Power Generating Technologies,
+                                 # https://www.eia.gov/analysis/studies/powerplants/capitalcost/pdf/capital_cost_AEO2020.pdf
+                                 'Capex_init': 713,  # $/KW 2020 Source: U.S. Energy Information Administration
                                  'Capex_init_unit': '$/kW',
                                  'capacity_factor': 0.85,  # World bank
                                  'kwh_methane/kwh': methane_needs,

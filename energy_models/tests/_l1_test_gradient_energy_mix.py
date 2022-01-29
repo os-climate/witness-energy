@@ -42,7 +42,8 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
             self.test_04_energy_mix_discipline_co2_emissions_gt,
             self.test_05_energy_mix_test_mean_price_grad,
             self.test_06_energy_mix_all_outputs,
-            self.test_07_energy_mix_co2_tax,
+            self._test_07_energy_mix_co2_tax,
+            self._test_09_energy_mix_gradients_cutoff,
             self.test_08_energy_mix_gradients_exponential_limit,
             self.test_10_energy_mix_demand_dataframe,
             self.test_11_energy_mix_detailed_co2_emissions,
@@ -307,10 +308,11 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                          f'{name}.{func_manager_name}.total_prod_solid_fuel_elec',
                          f'{name}.{func_manager_name}.total_prod_h2_liquid',
                          f'{name}.{func_manager_name}.syngas_prod_objective',
+                         f'{name}.{func_manager_name}.carbon_storage_constraint'
                          ]
         outputs_names.extend(
             [f'{name}.{model_name}.{energy}.demand_violation' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']])
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_obj_constraints_wrt_state_variables.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=inputs_names, outputs=outputs_names, parallel=self.parallel)
@@ -642,13 +644,14 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                              f'{name}.{func_manager_name}.primary_energies_production',
                              f'{name}.CCS_price',
                              f'{name}.{func_manager_name}.total_prod_minus_min_prod_constraint_df',
-                             f'{name}.{model_name}.energy_prices_after_tax']
+                             f'{name}.{model_name}.energy_prices_after_tax',
+                             f'{name}.{func_manager_name}.carbon_storage_constraint']
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_outputs.pkl',
                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
                             inputs=inputs_names, outputs=energy_mix_output, parallel=self.parallel)
 
-    def test_07_energy_mix_co2_tax(self):
+    def _test_07_energy_mix_co2_tax(self):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -801,7 +804,8 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                              f'{name}.{model_name}.energy_prices_after_tax',
                              f'{name}.{func_manager_name}.co2_emissions_objective',
                              f'{name}.{func_manager_name}.energy_production_objective',
-                             f'{name}.{func_manager_name}.primary_energies_production']
+                             f'{name}.{func_manager_name}.primary_energies_production',
+                             f'{name}.{func_manager_name}.carbon_storage_constraint']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_outputs_limit.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-3,
@@ -942,7 +946,8 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                              f'{name}.{model_name}.energy_prices_after_tax',
                              f'{name}.{func_manager_name}.co2_emissions_objective',
                              f'{name}.{func_manager_name}.energy_production_objective',
-                             f'{name}.{func_manager_name}.primary_energies_production']
+                             f'{name}.{func_manager_name}.primary_energies_production',
+                             f'{name}.{func_manager_name}.carbon_storage_constraint']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_outputs_cutoff.pkl',
                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
@@ -1155,7 +1160,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = EnergyMixJacobianTestCase()
     cls.setUp()
-    cls.test_08_energy_mix_gradients_exponential_limit()
+    cls.test_11_energy_mix_detailed_co2_emissions()

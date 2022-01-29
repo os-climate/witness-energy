@@ -7,7 +7,8 @@ The reaction can be used to enrich a syngas to obtain a given $CO$ to $H_2$ rati
 In order to achieve large-scale hydrogen production from syngas, an appropriate catalyst must be chosen to facilitate the reaction. 
 
 
-![](WGS_catalysts.PNG) [^1]
+![](WGS_catalysts.PNG) 
+(Image Credit: Pal, D. [^1])
 
 The figure above shows a broad classification of catalysts that have been commonly used for the WGS reaction. WGS catalysts may be divided into five categories: High-Temperature Catalysts, Low-Temperature Catalysts, Ceria and Noble Metal based Catalysts; Carbon based Catalysts and Nanostructured Catalysts. All processes to obtain the catalysts and a comparison of them can be found in [^1]. 
 
@@ -36,9 +37,12 @@ $$ e = \frac{1+r1}{1+r2}$$
 ## Data 
 
 Economic datas are computed following the work in [^2] where a techno-economic analysis is performed on a two-stage WGS combining Low-Temperature and High-Temperature catalysts.  
-Theoretical datas about production and consumption have been computed with coefficients above depending on $CO$ to $H_2$ ratios ($r_1$ and $r_2$). Other technical datas (i.e. construction delay, lifetime or learning rate, efficiency) can be found in [^2]. 
+Theoretical datas about production and consumption have been computed with coefficients above depending on $CO$ to $H_2$ ratios ($r_1$ and $r_2$). Other technical datas (i.e. construction delay, lifetime or learning rate, efficiency) can be found in [^2] or [^3]. 
+
+The initial world production has
 
 
-[^1]: Pal, D. (2018) Performance of water gas shift reaction catalysts: A review, Renewable and Sustainable Energy Reviews, p353-369, available at https://www.sciencedirect.com/science/article/pii/S1364032118303411
+[^1]: Pal, D.B., Chand, R., Upadhyay, S.N. and Mishra, P.K., 2018. Performance of water gas shift reaction catalysts: A review. Renewable and Sustainable Energy Reviews, 93, pp.549-565.available at https://www.sciencedirect.com/science/article/pii/S1364032118303411
 
-[^2]: Giuliano, A. (2020) Techno-Economic Assessment of Bio-Syngas Production for Methanol Synthesis: A Focus on the Water-Gas Shift and Carbon Capture Sections, Bioengineering, 7, 70, available at https://www.mdpi.com/2306-5354/7/3/70
+[^2]: Giuliano, A., Freda, C. and Catizzone, E., 2020. Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water–gas shift and carbon capture sections. Bioengineering, 7(3), p.70. available at https://www.mdpi.com/2306-5354/7/3/70
+[^3]: Wang, Y., Li, G., Liu, Z., Cui, P., Zhu, Z. and Yang, S., 2019. Techno-economic analysis of biomass-to-hydrogen process in comparison with coal-to-hydrogen process. Energy, 185, pp.1063-1075.

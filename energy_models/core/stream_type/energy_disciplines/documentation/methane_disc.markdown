@@ -1,6 +1,8 @@
 **Definition ([^1]):**
 
-Methane is the simplest gaseous hydrocarbon, consisting of one carbon and four hydrogen atoms. It is also a powerful greenhouse gas that is found in small quantities in Earth's atmosphere.
+Methane is the simplest gaseous hydrocarbon, consisting of one carbon and four hydrogen atoms. It is also a powerful greenhouse gas that is found in small quantities in Earth's atmosphere. 
+
+Significant datas for methane [^2]:
 
   * Chemical Formula : CH4
   * Molecular Weight : 16.0425 g/mol
@@ -29,13 +31,15 @@ Although the concentration of methane in Earth's atmosphere is small (around 1.8
 
 The following figure shows the balance between CH4 emissions and sinks, and the main sectors:
 
-![](1200px-The_Global_Methane_Budget_2008–2017.PNG) [^2]
+![](1200px-The_Global_Methane_Budget_2008–2017.PNG) 
+(Image credit: The Global Carbon Project, taken from [^3])
 
 
-**Price:[^3]**
+**Price:[^4]**
 
 The average price of methane around the world is 0.80 U.S. Dollar per liter. However, there is substantial difference in these prices among countries. As a general rule, richer countries have higher prices while poorer countries and the countries that produce and export oil have significantly lower prices.
 
 [^1]: Methane Wikipedia page, https://fr.wikipedia.org/wiki/M%C3%A9thane
-[^2]: By The Global Carbon Project - http://www.globalcarbonatlas.org/en/CH4-emissions / https://essd.copernicus.org/articles/12/1561/2020/, CC BY 4.0, https://commons.wikimedia.org/w/index.php?curid=93292720
-[^3]: Methane prices, 28 Jun 2021, GlobalPetrolPrices.com, https://www.globalpetrolprices.com/methane_prices/
+[^2]: Engineering Toolbox, https://www.engineeringtoolbox.com
+[^3]: By The Global Carbon Project - http://www.globalcarbonatlas.org/en/CH4-emissions / https://essd.copernicus.org/articles/12/1561/2020/, CC BY 4.0, https://commons.wikimedia.org/w/index.php?curid=93292720
+[^4]: Methane prices, 28 Jun 2021, GlobalPetrolPrices.com, https://www.globalpetrolprices.com/methane_prices/

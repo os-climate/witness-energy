@@ -4,6 +4,8 @@ Hydrogen is the chemical element with the symbol H and atomic number 1. With a s
 
 Industrial production is mainly from steam reforming natural gas, and less often from more energy-intensive methods such as the electrolysis of water. Most hydrogen is used near the site of its production, the two largest uses being fossil fuel processing (e.g., hydrocracking) and ammonia production, mostly for the fertilizer market. Hydrogen is problematic in metallurgy because it can embrittle many metals, complicating the design of pipelines and storage tanks.
 
+Significant datas for hydrogen [^2]:
+
   * Chemical Formula : H2
   * Molecular Weight : 2.016 g/mol
   * Boiling Point at 1 atm : -423.2 F (-252.9 C)
@@ -20,4 +22,4 @@ We consider several methods for production:
 
 [^1]: Hydrogen Wikipedia page, https://en.wikipedia.org/wiki/Hydrogen
 
-
+[^2]: Engineering Toolbox, https://www.engineeringtoolbox.com

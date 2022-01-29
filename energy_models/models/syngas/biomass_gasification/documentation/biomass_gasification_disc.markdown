@@ -22,7 +22,7 @@ $$ Biomass(CH_aO_bN_cS_d) + O_2 + H_2O --> CO + CO_2 + H_2 + other species$$
 
 (other species => $N_2$, $H_2S$ less than 0.3 Mole Frac(%))
 
-Economic datas is taken from Rosenfeld et al. [^1], technical datas from Wang et al. [^2] and Albara et al. [^3].
+Economic datas is taken from Rosenfeld et al. [^1], technical datas from Wang et al. [^2], Albara et al. [^3], Sara et al. [^4], Mustafa et. al [^5].
 
 
 
@@ -31,3 +31,7 @@ Economic datas is taken from Rosenfeld et al. [^1], technical datas from Wang et
 [^2]: Wang, Y., Li, G., Liu, Z. , Cui, P., Zhu, Z.  (2019). Techno-economic analysis of biomass-to-hydrogen process in comparison with coal-to-hydrogen process. Energy, 185(2019), 1063-1075.
 
 [^3]: Albara M., Rajnish KC., Mohamad YM.  (2017). A Techno-Economic Study of a Biomass Gasification Plant for the Production of Transport Biofuel for Small Communities. Energy Procedia 112 ( 2017 ) 529 – 536.
+
+[^4]: Sara, H.R., Enrico, B., Mauro, V. and Vincenzo, N., 2016. Techno-economic analysis of hydrogen production using biomass gasification-a small scale power plant study. Energy Procedia, 101, pp.806-813.
+
+[^5]: Mustafa, A., Calay, R.K. and Mustafa, M.Y., 2017. A techno-economic study of a biomass gasification plant for the production of transport biofuel for small communities. Energy Procedia, 112, pp.529-536.

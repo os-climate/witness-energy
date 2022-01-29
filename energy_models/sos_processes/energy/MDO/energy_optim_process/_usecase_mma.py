@@ -101,8 +101,7 @@ class Study(StudyManager):
                              f'{self.study_name}.{self.optim_name}.EnergyModelEval.sub_mda_class': 'MDANewtonRaphson',
                              f'{self.study_name}.{self.optim_name}.EnergyModelEval.linear_solver_tolerance': 1.0e-8,
                              f'{self.study_name}.{self.optim_name}.EnergyModelEval.max_iter_GMRES': 7000,
-                             f'{self.study_name}.{self.optim_name}.EnergyModelEval.linear_solver': 'gmres',
-                             f'{self.study_name}.{self.optim_name}.EnergyModelEval.linear_solver_MDO': 'gmres'}
+                             f'{self.study_name}.{self.optim_name}.EnergyModelEval.linear_solver_MDO': 'GMRES'}
 
         return study_subproc_data_list + [optim_values_dict]
 
