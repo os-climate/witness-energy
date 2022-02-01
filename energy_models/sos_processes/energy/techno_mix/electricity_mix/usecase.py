@@ -32,6 +32,8 @@ TECHNOLOGIES_LIST_FOR_OPT_COARSE = ['WindOffshore', 'WindOnshore', 'SolarPv', 'S
 TECHNOLOGIES_LIST_FOR_OPT_COARSE_0 = ['RenewableElectricitySimpleTechno']
 TECHNOLOGIES_LIST_FOR_OPT_COARSE_3 = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                                       'Nuclear', 'Geothermal', 'Hydropower', 'CoalGen']
+TECHNOLOGIES_LIST_COARSE_MIN_TECH = ['WindOnshore', 'SolarPv', 'SolarThermal',
+                                     'Nuclear', 'Geothermal', 'Hydropower', 'CoalGen']
 
 
 class Study(EnergyMixStudyManager):

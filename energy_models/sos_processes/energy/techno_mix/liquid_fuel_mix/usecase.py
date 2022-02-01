@@ -24,6 +24,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 
 DEFAULT_TECHNOLOGIES_LIST = ['Refinery', 'FischerTropsch']
 TECHNOLOGIES_LIST_FOR_OPT = ['Refinery', 'FischerTropsch']
+TECHNOLOGIES_LIST_COARSE_MIN_TECH = ['Refinery']
 
 
 class Study(EnergyMixStudyManager):
