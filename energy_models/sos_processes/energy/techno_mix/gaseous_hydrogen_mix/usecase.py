@@ -26,6 +26,7 @@ DEFAULT_TECHNOLOGIES_LIST = [
     'WaterGasShift', 'Electrolysis.SOEC', 'Electrolysis.PEM', 'Electrolysis.AWE',  'PlasmaCracking']
 TECHNOLOGIES_LIST_FOR_OPT = ['WaterGasShift', 'Electrolysis.SOEC',
                              'Electrolysis.PEM', 'Electrolysis.AWE', ]  # 'PlasmaCracking']
+TECHNOLOGIES_LIST_COARSE_MIN_TECH = ['WaterGasShift']
 
 
 class Study(EnergyMixStudyManager):

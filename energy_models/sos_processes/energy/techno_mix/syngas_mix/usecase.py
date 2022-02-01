@@ -24,6 +24,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 DEFAULT_TECHNOLOGIES_LIST = ['BiomassGasification', 'SMR',
                              'CoalGasification', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis']
 TECHNOLOGIES_LIST_FOR_OPT = ['BiomassGasification', 'SMR', 'CoalGasification']
+TECHNOLOGIES_LIST_COARSE_MIN_TECH = ['SMR', 'CoalGasification']
 
 
 class Study(EnergyMixStudyManager):
