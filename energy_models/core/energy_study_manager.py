@@ -19,6 +19,7 @@ from sos_trades_core.tools.bspline.bspline_methods import bspline_method
 
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -39,6 +40,7 @@ from energy_models.sos_processes.energy.techno_mix.syngas_mix.usecase import TEC
 
 from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as LiquidFuel_technos
 from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import TECHNOLOGIES_LIST_COARSE_MIN_TECH as liquidfuel_technos_coarse_integration
+from energy_models.sos_processes.energy.techno_mix.hydrotreated_oil_fuel_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as HydrotreatedOilFuel_technos
 from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as SolidFuel_technos
 from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import TECHNOLOGIES_LIST_COARSE_MIN_TECH as solidfuel_technos_coarse_integration
 from energy_models.sos_processes.energy.techno_mix.biomass_dry_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as BiomassDry_technos
@@ -77,6 +79,20 @@ DEFAULT_TECHNO_DICT = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_tech
                        LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos},
                        CarbonCapture.name: {'type': CCUS_TYPE, 'value': CarbonCapture_technos},
                        CarbonStorage.name: {'type': CCUS_TYPE, 'value': CarbonStorage_technos}}
+
+DEFAULT_TECHNO_DICT_DEV = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_technos},
+                           GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': GaseousHydrogen_technos},
+                           BioGas.name: {'type': ENERGY_TYPE, 'value': BioGas_technos},
+                           Syngas.name: {'type': ENERGY_TYPE, 'value': Syngas_technos},
+                           LiquidFuel.name: {'type': ENERGY_TYPE, 'value': LiquidFuel_technos},
+                           HydrotreatedOilFuel.name: {'type': ENERGY_TYPE, 'value': HydrotreatedOilFuel_technos},
+                           SolidFuel.name: {'type': ENERGY_TYPE, 'value': SolidFuel_technos},
+                           BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos},
+                           Electricity.name: {'type': ENERGY_TYPE, 'value': Electricity_technos},
+                           BioDiesel.name: {'type': ENERGY_TYPE, 'value': BioDiesel_technos},
+                           LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos},
+                           CarbonCapture.name: {'type': CCUS_TYPE, 'value': CarbonCapture_technos},
+                           CarbonStorage.name: {'type': CCUS_TYPE, 'value': CarbonStorage_technos}}
 
 DEFAULT_COARSE_TECHNO_DICT = {'renewable': {'type': ENERGY_TYPE, 'value': ['RenewableSimpleTechno']},
                               'fossil': {'type': ENERGY_TYPE, 'value': ['FossilSimpleTechno']},
