@@ -24,6 +24,7 @@ from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_s
 
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -387,6 +388,8 @@ class Study(EnergyStudyManager):
             1.0, 15.625, len(years))
         invest_energy_mix_dict[Fossil.name] = np.linspace(
             100, 77.5, len(years))
+        invest_energy_mix_dict[HydrotreatedOilFuel.name] = [
+            3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
         if self.bspline:
             invest_energy_mix_dict['years'] = self.years
@@ -573,6 +576,7 @@ class Study(EnergyStudyManager):
 
         hydrogen_name = GaseousHydrogen.name
         liquid_fuel_name = LiquidFuel.name
+        hvo_name = HydrotreatedOilFuel.name
         methane_name = Methane.name
         biogas_name = BioGas.name
         biomass_dry_name = BiomassDry.name
@@ -602,7 +606,9 @@ class Study(EnergyStudyManager):
                              biodiesel_name: 210.0,
                              liquid_hydrogen_name: 120.0,
                              renewable_name: 90.0,
-                             fossil_name: 110.0}
+                             fossil_name: 110.0,
+                             hvo_name: 70.0,
+                             }
 
         # price in $/MWh
         self.energy_prices = pd.DataFrame({key: value for key, value in energy_price_dict.items(
@@ -624,7 +630,9 @@ class Study(EnergyStudyManager):
                                         biodiesel_name: 0.0,
                                         liquid_hydrogen_name: 0.0,
                                         renewable_name: 0.0,
-                                        fossil_name: 0.64 / 4.86}
+                                        fossil_name: 0.64 / 4.86,
+                                        hvo_name: 0.0,
+                                        }
         # price in $/MWh
         self.energy_carbon_emissions = pd.DataFrame(
             {key: value for key, value in energy_carbon_emissions_dict.items() if key in self.techno_dict or key == 'years'})
