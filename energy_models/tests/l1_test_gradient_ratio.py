@@ -24,6 +24,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 import pickle
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as WITNESSFull_subprocess
+from energy_models.tests.data_tests.mda_energy_data_generator import launch_data_pickle_generation
 
 
 class RatioJacobianTestCase(AbstractJacobianUnittest):
@@ -46,6 +47,12 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             self.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian
             # self.test_10_energy_mix_discipline_jacobian,
         ]
+
+    def launch_data_pickle_generation(self):
+        '''
+        If the energy_process_v0 usecase changed, launch this function to update the data pickle
+        '''
+        launch_data_pickle_generation()
 
     def setUp(self):
         '''
@@ -1087,4 +1094,5 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = RatioJacobianTestCase()
     cls.setUp()
+    cls.launch_data_pickle_generation()
     cls.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian()
