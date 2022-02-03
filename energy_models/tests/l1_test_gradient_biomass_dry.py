@@ -230,6 +230,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        np.set_printoptions(threshold=np.inf)
 
         inputs_dict = {f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051)),
