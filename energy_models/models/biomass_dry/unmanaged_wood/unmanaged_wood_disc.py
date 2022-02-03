@@ -32,12 +32,17 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
     lifetime = 150
     construction_delay = 3  # years, time for wood to dry
 
-    density = 600.0  # kg/m3
-    # reference : www.eubia.org
-    # 10m3 of residue for 1ha of forests by year in average (66%)
-    residue_density_m3_per_ha = 20.12
-    # 5m3 of residue for 1ha of forests by year in average (33%)
-    wood_density_m3_per_ha = 10.08
+    # reference:
+    # https://qtimber.daf.qld.gov.au/guides/wood-density-and-hardness
+    wood_density = 600.0  # kg/m3
+    residues_density = 150.0  # kg/m3
+
+    # reference :
+    # https://www.eubia.org/cms/wiki-biomass/biomass-resources/challenges-related-to-biomass/recovery-of-forest-residues/
+    # average of 155 and 310 divided by 5
+    residue_density_m3_per_ha = 46.5
+    # average of 360 and 600 divided by 5
+    wood_density_m3_per_ha = 96
 
     # in litterature, average price of residue is 30-50�/t
     # wood price is 100-200�/t => 26% between
@@ -46,14 +51,23 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
     # 1,62% of managed wood is used for energy purpose
     # (3% of goal forest is used for energy purpose and
     # 54% of gobal forest are managed forests)
-    wood_percentage_for_energy = 0.03
-    residue_percentage_for_energy = 0.30
+    wood_percentage_for_energy = 0.48
+    residue_percentage_for_energy = 0.48
 
     density_per_ha = residue_density_m3_per_ha + \
         wood_density_m3_per_ha
 
     wood_percentage = wood_density_m3_per_ha / density_per_ha
     residue_percentage = residue_density_m3_per_ha / density_per_ha
+
+    mean_density = wood_percentage * wood_density + \
+        residue_percentage * residues_density
+
+    # reference :
+    # https://www.eubia.org/cms/wiki-biomass/biomass-resources/challenges-related-to-biomass/recovery-of-forest-residues/
+    years_between_harvest = 20
+
+    recycle_part = 0.52  # 52%
 
     techno_infos_dict_default = {'maturity': 5,
                                  'wood_residues_moisture': 0.35,  # 35% moisture content
@@ -83,7 +97,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                  #(7% of global area is planted forest, 3% is for energy purpose (fao.org))
                                  #'available_land': 3713490000,
                                  #'available_land_unit': 'ha',
-                                 'percentage_for_production': 0.31,  # to compute land use
+                                 'percentage_production': 0.31,
 
                                  'residue_density_percentage': residue_percentage,
                                  'non_residue_density_percentage': wood_percentage,
@@ -92,13 +106,16 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                  'wood_percentage_for_energy': wood_percentage_for_energy,
                                  'residue_percentage_for_energy': residue_percentage_for_energy,
 
-                                 'density_per_ha_unit': 'm^3/ha',
                                  # kg/m3,
                                  # https://qtimber.daf.qld.gov.au/guides/wood-density-and-hardness
-                                 'density': density,
+                                 'density': mean_density,
+                                 'wood_density': wood_density,
+                                 'residues_density': residues_density,
+                                 'density_per_ha_unit': 'm^3/ha',
                                  'efficiency': 1.0,
                                  'techno_evo_eff': 'no',  # yes or no
-
+                                 'years_between_harvest': years_between_harvest,
+                                 'recyle_part': recycle_part,
                                  'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
 
                                  'construction_delay': construction_delay}
@@ -106,9 +123,16 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [0, 0, 0]})
     # www.fao.org : 54% of forest under long-term management plans = 2.05 Billion Ha
-    #=> unmanaged forest = 3.79 - 2.05
-    # 31% of forests is used for production
-    initial_production = 1.66 * 0.31 * density_per_ha * density * 3.36  # in Twh
+    # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
+    # 92% of the production come from managed wood. 8% from unmanaged wood
+    # 3.36 : calorific value of wood kwh/kg
+    # 4.356 : calorific value of residues
+    # initial_production = 1.25 * 0.92 * density_per_ha * density * 3.36  # in
+    # Twh
+    initial_production = 1.25 * 0.08 * \
+        (residue_density_m3_per_ha * residues_density * 4.356 + wood_density_m3_per_ha *
+         wood_density * 3.36) / years_between_harvest / (1 - recycle_part)  # in Twh
+
     # distrib computed, for planted forests since 150 years
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51,
