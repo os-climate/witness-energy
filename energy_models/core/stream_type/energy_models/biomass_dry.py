@@ -53,7 +53,7 @@ class BiomassDry(EnergyType):
                         # https://www.fao.org/3/j4504e/j4504e08.htm
                         # H(w)= [15.40MJ.kg-1*0.27778kWh.MJ-1 *
                         # (100-15)-2.44*15]/100 for wood moisturize
-                        'calorific_value': 3.36,
+                        'calorific_value': 3.6,  # mean calorific value residue / wood,
                         # lower value for electricity use
                         'calorific_value_unit': 'kWh/kg',
                         'high_calorific_value': 5.61,
