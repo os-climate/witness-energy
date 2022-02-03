@@ -1160,6 +1160,10 @@ class TechnoType:
                     dlanduse_dinvest = self.dprod_dinvest / density_per_ha
                     if 'percentage_for_production' in self.techno_infos_dict:
                         dlanduse_dinvest /= self.techno_infos_dict['percentage_for_production']
+                    if 'years_between_harvest' in self.techno_infos_dict:
+                        dlanduse_dinvest *= self.techno_infos_dict['years_between_harvest']
+                    if 'recyle_part' in self.techno_infos_dict:
+                        dlanduse_dinvest *= self.techno_infos_dict['recyle_part']
 
         return dlanduse_dinvest
 

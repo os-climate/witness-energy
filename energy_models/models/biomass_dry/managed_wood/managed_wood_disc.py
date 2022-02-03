@@ -36,13 +36,15 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
     # reference:
     # https://qtimber.daf.qld.gov.au/guides/wood-density-and-hardness
-    density = 600.0  # kg/m3
+    wood_density = 600.0  # kg/m3
+    residues_density = 150.0  # kg/m3
 
-    # reference : www.eubia.org
-    # 10m3 of residue for 1ha of forests by year in average (66%)
-    residue_density_m3_per_ha = 20.12
-    # 5m3 of residue for 1ha of forests by year in average (33%)
-    wood_density_m3_per_ha = 10.08
+    # reference :
+    # https://www.eubia.org/cms/wiki-biomass/biomass-resources/challenges-related-to-biomass/recovery-of-forest-residues/
+    # average of 155 and 310 divided by 5
+    residue_density_m3_per_ha = 46.5
+    # average of 360 and 600 divided by 5
+    wood_density_m3_per_ha = 96
 
     # in litterature, average price of residue is 30-50euro/t
     # wood price is 100-200euro/t => 26% between
@@ -51,15 +53,25 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
     # 1,62% of managed wood is used for energy purpose
     # (3% of global forest is used for energy purpose and
     # 54% of global forest are managed forests)
-    wood_percentage_for_energy = 0.03
-    residue_percentage_for_energy = 0.30
-    managed_wood_percentage = 0.54
+    wood_percentage_for_energy = 0.48
+    residue_percentage_for_energy = 0.48
 
     density_per_ha = residue_density_m3_per_ha + \
         wood_density_m3_per_ha
 
     wood_percentage = wood_density_m3_per_ha / density_per_ha
     residue_percentage = residue_density_m3_per_ha / density_per_ha
+
+    mean_density = wood_percentage * wood_density + \
+        residue_percentage * residues_density
+
+    # reference :
+    # https://www.eubia.org/cms/wiki-biomass/biomass-resources/challenges-related-to-biomass/recovery-of-forest-residues/
+    years_between_harvest = 20
+
+    recycle_part = 0.52  # 52%
+#     mean_calorific_value = BiomassDryTechnoDiscipline.data_energy_dict[
+#         'calorific_value']
 
     techno_infos_dict_default = {'maturity': 5,
                                  'wood_residues_moisture': 0.35,  # 35% moisture content
@@ -88,19 +100,23 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                  'Capex_init_unit': 'euro/ha',
                                  'full_load_hours': 8760.0,
                                  'euro_dollar': 1.1447,  # in 2019, date of the paper
-                                 'percentage_for_production': 0.31,  # to compute land use
+                                 'percentage_production': 0.52,
 
                                  'residue_density_percentage': residue_percentage,
                                  'non_residue_density_percentage': wood_percentage,
                                  'density_per_ha': density_per_ha,
                                  'wood_percentage_for_energy': wood_percentage_for_energy,
                                  'residue_percentage_for_energy': residue_percentage_for_energy,
-                                 'density': density,
+                                 'density': mean_density,
+                                 'wood_density': wood_density,
+                                 'residues_density': residues_density,
                                  'density_per_ha_unit': 'm^3/ha',
                                  'efficiency': 1.0,
                                  'techno_evo_eff': 'no',  # yes or no
+                                 'years_between_harvest': years_between_harvest,
 
                                  'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
+                                 'recyle_part': recycle_part,
 
                                  'construction_delay': construction_delay}
     # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
@@ -108,8 +124,16 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [1.135081, 1.135081, 1.135081]})
     # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
-    # 31% of forests is used for production
-    initial_production = 2.05 * 0.31 * density_per_ha * density * 3.36  # in Twh
+    # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
+    # 92% of the production come from managed wood. 8% from unmanaged wood
+    # 3.36 : calorific value of wood kwh/kg
+    # 4.356 : calorific value of residues
+    # initial_production = 1.25 * 0.92 * density_per_ha * density * 3.36  # in
+    # Twh
+    initial_production = 1.25 * 0.92 * \
+        (residue_density_m3_per_ha * residues_density * 4.356 + wood_density_m3_per_ha *
+         wood_density * 3.36) / years_between_harvest / (1 - recycle_part)  # in Twh
+
     # distrib computed, for planted forests since 150 years
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [2.81, 2.81, 2.81, 2.81, 2.81, 2.78, 2.75, 2.72, 2.69, 2.66,
@@ -127,6 +151,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]})
+
     # distrib computed, for planted forests since 1980 (40years)
 #                                              'distrib': [3.25, 3.26, 3.27, 3.27, 3.27, 3.24, 3.21, 3.17, 3.14, 3.1,
 #                                                           3.04, 2.99, 2.94, 2.89, 2.83, 2.77, 2.71, 2.66, 2.57, 2.51,
@@ -351,7 +376,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
         chart_name = f'{self.energy_name} World Production for energy via {self.techno_name}<br>with 2020 factories distribution'
 
         new_chart = TwoAxesInstanciatedChart('years', f'{self.energy_name} production for energy (TWh)',
-                                             chart_name=chart_name)
+                                             chart_name=chart_name.capitalize())
 
         serie = InstanciatedSeries(
             initial_prod['years'].values.tolist(),
