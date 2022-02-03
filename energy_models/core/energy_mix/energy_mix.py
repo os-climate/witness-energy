@@ -30,6 +30,7 @@ from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
@@ -68,6 +69,7 @@ class EnergyMix(BaseStream):
     CARBON_STORAGE_CONSTRAINT = 'carbon_storage_constraint'
     energy_class_dict = {GaseousHydrogen.name: GaseousHydrogen,
                          LiquidFuel.name: LiquidFuel,
+                         HydrotreatedOilFuel.name: HydrotreatedOilFuel,
                          Electricity.name: Electricity,
                          Methane.name: Methane,
                          BioGas.name: BioGas,
