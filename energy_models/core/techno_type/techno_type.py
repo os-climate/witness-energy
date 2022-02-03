@@ -1163,7 +1163,8 @@ class TechnoType:
                     if 'years_between_harvest' in self.techno_infos_dict:
                         dlanduse_dinvest *= self.techno_infos_dict['years_between_harvest']
                     if 'recyle_part' in self.techno_infos_dict:
-                        dlanduse_dinvest *= self.techno_infos_dict['recyle_part']
+                        dlanduse_dinvest *= (1 -
+                                             self.techno_infos_dict['recyle_part'])
 
         return dlanduse_dinvest
 

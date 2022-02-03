@@ -37,7 +37,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
     # reference:
     # https://qtimber.daf.qld.gov.au/guides/wood-density-and-hardness
     wood_density = 600.0  # kg/m3
-    residues_density = 150.0  # kg/m3
+    residues_density = 200.0  # kg/m3
 
     # reference :
     # https://www.eubia.org/cms/wiki-biomass/biomass-resources/challenges-related-to-biomass/recovery-of-forest-residues/
@@ -130,9 +130,13 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
     # 4.356 : calorific value of residues
     # initial_production = 1.25 * 0.92 * density_per_ha * density * 3.36  # in
     # Twh
+#     initial_production = 1.25 * 0.92 * \
+#         (residue_density_m3_per_ha * residues_density * 4.356 + wood_density_m3_per_ha *
+# wood_density * 3.36) / years_between_harvest / (1 - recycle_part)  # in
+# Twh
     initial_production = 1.25 * 0.92 * \
-        (residue_density_m3_per_ha * residues_density * 4.356 + wood_density_m3_per_ha *
-         wood_density * 3.36) / years_between_harvest / (1 - recycle_part)  # in Twh
+        density_per_ha * mean_density * 3.6 / \
+        years_between_harvest / (1 - recycle_part)  # in Twh
 
     # distrib computed, for planted forests since 150 years
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
