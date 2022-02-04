@@ -104,7 +104,6 @@ if '__main__' == __name__:
 #     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
 #         "reduced.pdf")
 
-    print(len(uc_cls.execution_engine.root_process.sos_disciplines))
     uc_cls.run()
     # Always check if post procs are OK
     ppf = PostProcessingFactory()
