@@ -8,7 +8,8 @@ from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as MDA_Energy
 import pickle
 
-if '__main__' == __name__:
+
+def launch_data_pickle_generation():
     # Run MDA Energy
     name = 'Data_Generator'
     ee = ExecutionEngine(name)
@@ -231,3 +232,7 @@ if '__main__' == __name__:
     output = open('mda_energy_data_technologies_output_dict.pkl', 'wb')
     pickle.dump(mda_energy_data_technologies_output_dict, output)
     output.close()
+
+
+if '__main__' == __name__:
+    launch_data_pickle_generation()
