@@ -26,7 +26,7 @@ The forest products can be divided in two categories: woodfuel and residues.
 
 We can estimate that forests produce 96m3/ha of woodfuel and 46.5 m3/ha of residues per year in average[^4].
 
-Wood have an average density of 600 kg/m3.
+Wood have an average density of 600 kg/m3, while residues have a density of 200 kg/m3.
 Wood is chipped and dried (at ambiant air for a certain period of storage) leading in woodchips biomass of 15% of moisture.
 
 The wood production computed corresponds on a mix of wood and residue available for energy. The wood production dedicated to industry has been removed.
@@ -82,7 +82,7 @@ $$total\_production\_for\_energy=Residue\_production\_for\_energy+Wood\_producti
 
 The computed land-use amount of hectares is the global amount of managed forest with the following computation:
 
-$$NumberOfHa=\frac{WoodProductionForEnergy+WoodProductionForNonEnergy}{mean\_density\_per\_ha * mean\_calorific\_value} * years\_between\_harvest * (1 - recycle\_part)$$
+$$NumberOfHa=\frac{WoodProductionForEnergy+WoodProductionForNonEnergy}{mean\_density\_per\_ha * mean\_calorific\_value} \\ * years\_between\_harvest * (1 - recycle\_part)$$
 
 With: 
 - WoodProductionForEnergy, the production of Managed wood and residue computed by this model
