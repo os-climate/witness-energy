@@ -6,7 +6,7 @@ Managed forests are forests intensively managed for production purposes, but can
 Unmanaged forests, on the contrary, cannot be considered as carbon neutral.
 
 The area of forest under long-term management plans has increased significantly in the past 30 years to an estimated 2.05 billion hectares (Gha) in 2020, equivalent to 54 percent of the global forest area[^1].
-Globally, about 1.15 Gha of forest is managed primarily for the production of wood and non-wood forest products[^1].
+Globally, 1.25 Gha of forest are dedicated to production. About 1.15 Gha of forest is managed forest products[^1], and 0.1Gha of unmanaged forest is for production.
 In addition, 749 million ha is designated for multiple use, which often includes production[^1].
 
 ![](forestry_carbon_cycle.jpg)
@@ -24,10 +24,9 @@ The forest products can be divided in two categories: woodfuel and residues.
 ![](We_use_the_entire_three.jpg)
 (image from SCA[^3])
 
-We can estimate that forests produce 10.08m3/ha of woodfuel and 20.12 m3/ha of residues per year in average[^4].
-We also estimate that the part of woodfuel for energy is 3% and residues for energy is 30%.
+We can estimate that forests produce 96m3/ha of woodfuel and 46.5 m3/ha of residues per year in average[^4].
 
-Wood have an average density of 600 kg/m3.
+Wood have an average density of 600 kg/m3, while residues have a density of 200 kg/m3.
 Wood is chipped and dried (at ambiant air for a certain period of storage) leading in woodchips biomass of 15% of moisture.
 
 The wood production computed corresponds on a mix of wood and residue available for energy. The wood production dedicated to industry has been removed.
@@ -41,14 +40,17 @@ This model has specific inputs:
  - **Capex_init**: CAPEX of managed forest exploitation. See details on costs,
  - **Opex_percentage**: OPEX of managed forest exploitation. See details on costs,
  - **lifetime**: lifetime of a forests, initilized to 150 years,
- - **percentage_for_production**: percentage of forests used for production, at 31% by default. It is used to compute land use,
- - **residue_density_percentage**: percentage of residue for one hectare of forest, at 2/3 by default,
- - **wood_density_percentage**: percentage of woodfuel for one hectare of forest, at 1/3 by default,
- - **density_per_ha**: density of wood product by hectare, at 30 m3/ha by default,
- - **density**: wood density, 600 kg/m3 by default,
+ - **recycle_part**: percentage of the production that comes from recycling. Defualt is 52%.
+ - **residue_density_percentage**: percentage of residue for one hectare of forest, at 1/3 by default,
+ - **wood_density_percentage**: percentage of woodfuel for one hectare of forest, at 2/3 by default,
+ - **density_per_ha**: density of wood product by hectare, at 142.5 m3/ha by default,
+ - **wood_density**: wood density, 600 kg/m3 by default,
+ - **residues_density**: residues density, 200 kg/m3 by default,
  - **wood_percentage_for_energy**: wood percentage for energy
  - **residue_percentage_for_energy**: residue percentage for energy
  - **wood_residue_price_percent_dif**: ratio between the average price of residue price (34€) on average wood price (100€), 34% by default.
+ - **years_between_harvest**: the average number of years between 2 harvest of a forest area. Default is 20 years [^4].
+ - **mean_density**: the average density of product harvested. This is the weighted average of wood and residues density.
 
 This model has in outputs:
 
@@ -64,7 +66,7 @@ This model has in outputs:
 
 initial production: production of wood from managed forest in 2020.
 
-initial_production=1.66 Gha of unmanaged forests * 31% of forest for production * density_per_ha * density * 3.36 kWh/kg calorific value
+initial_production=0.1 Gha of unmanaged forests for production density_per_ha * mean_density * 3.6 kWh/kg calorific value / year\_between\_harvest / (1 - recycle\_part)
 
 To compute the production for the energy sector, the production for industry is assumed to be constant so the production for industry is computed at year start and then removed from the total production each year.
 
@@ -80,12 +82,11 @@ $$total\_production\_for\_energy=Residue\_production\_for\_energy+Wood\_producti
 
 The computed land-use amount of hectares is the global amount of managed forest with the following computation:
 
-$$NumberOfHa=\frac{WoodProductionForEnergy+WoodProductionForNonEnergy}{forest\_percentage\_for\_production*density\_per\_ha*calorific\_value}$$
+$$NumberOfHa=\frac{WoodProductionForEnergy+WoodProductionForNonEnergy}{mean\_density\_per\_ha * mean\_calorific\_value} \\ * years\_between\_harvest * (1 - recycle\_part)$$
 
 With: 
 - WoodProductionForEnergy, the production of Managed wood and residue computed by this model
-- WoodProductionForNonEnergy, the computed amount of Managed Wood used for production using the inputs data wood_percentage_for_non_energy and wood_percentage_for_non_energy.
-- forest_percentage_for_production, the percentage of forest use for production (0.31 here)
+- WoodProductionForNonEnergy, the computed amount of Managed Wood used for production using the inputs data wood_percentage_for_energy and wood_percentage_for_energy.
 
 **Costs**
 
@@ -104,6 +105,6 @@ Information regarding the age distribution of planted forests comes from Our Wor
 [^1]: Food and Agriculture Organization of the United Nations, The state of the worl's forests, 2020, http://www.fao.org/3/ca8642en/CA8642EN.pdf
 [^2]: Tackle Climate Change Use Wood, http://www.softwoodlumber.org/pdfs/Book_Tackle_Climate_Change_Use_Wood_eVersion.pdf
 [^3]: SCA, We use the entire tree, https://www.sca.com/en/about-us/sustainability/sustainable-development/Efficient-use-of-resources/we-use-the-entire-tree/
-[^4]: teagasc, Agriculture and food development authority, https://www.teagasc.ie/crops/forestry/advice/timber-harvesting/number-of-trees-removed-during-thinning/
+[^4]: European Biomass Industry Association, Recovery of forest residues, found online at https://www.eubia.org/cms/wiki-biomass/biomass-resources/challenges-related-to-biomass/recovery-of-forest-residues/
 [^5]: Eubia, Recovery of forests residues, https://www.eubia.org/cms/wiki-biomass/biomass-resources/challenges-related-to-biomass/recovery-of-forest-residues/
 [^6]: OurworldInData, Primary vs. planted forest, https://ourworldindata.org/forest-area#primary-vs-planted-forest
