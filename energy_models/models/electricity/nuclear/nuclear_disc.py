@@ -54,7 +54,10 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'construction_delay': construction_delay, }
+                                 'construction_delay': construction_delay,
+                                 'waste_disposal_levy': 0.1,        # in $/kWh
+                                 'mean_decommissioning_cost': 1000, # in $/kW
+                                 }
 
     techno_info_dict = techno_infos_dict_default
     # Initial production in TWh at year_start IAEA - IAEA_Energy Electricity
