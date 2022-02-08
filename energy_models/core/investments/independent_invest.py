@@ -18,6 +18,8 @@ from .base_invest import BaseInvest
 import pandas as pd
 import numpy as np
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum, get_dsmooth_dvariable
+from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
 
 
 class IndependentInvest(BaseInvest):
@@ -38,7 +40,10 @@ class IndependentInvest(BaseInvest):
 
     def compute_invest_constraint_and_objective(self, inputs_dict):
         '''
-        Compute Investment constraint
+        Compute Investment constraint and objective
+        The objective formulation is the minimization of the absolute relative difference of 
+        available invest compared to the sum of techno invest.
+        The objective is scaled by a reference value.
         '''
 
         energy_investment = inputs_dict['energy_investment']
@@ -54,13 +59,15 @@ class IndependentInvest(BaseInvest):
 
         techno_invest_sum = techno_invests.sum(axis=1).values
 
-        delta = energy_invest_df['energy_investment'].values - \
-            techno_invest_sum
+        # Calculate relative diff
+        delta = (energy_invest_df['energy_investment'].values -
+                 techno_invest_sum) / energy_invest_df['energy_investment'].values
         invest_constraint = delta / invest_constraint_ref
 
         invest_constraint_df = pd.DataFrame({'years': energy_investment['years'].values,
                                              'invest_constraint': invest_constraint})
-
-        invest_objective = compute_func_with_exp_min(
-            delta, 1e-6) / energy_invest_df['energy_investment'].values / invest_objective_ref
+        # Smooth the delta and apply a scaling to compute the objective
+        abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
+        smooth_delta = np.asarray([-smooth_maximum(-abs_delta, alpha=10)])
+        invest_objective = smooth_delta / invest_objective_ref
         return invest_constraint_df, invest_objective

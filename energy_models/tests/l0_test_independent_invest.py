@@ -21,6 +21,7 @@ from os.path import join, dirname
 from energy_models.core.investments.independent_invest import IndependentInvest
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
 
 
 class TestIndependentInvest(unittest.TestCase):
@@ -95,15 +96,16 @@ class TestIndependentInvest(unittest.TestCase):
         invest_constraint, invest_objective = one_invest_model.compute_invest_constraint_and_objective(
             inputs_dict)
 
-        delta = self.energy_investment['energy_investment'].values * scaling_factor_energy_investment - \
-            self.energy_mix[one_invest_model.distribution_list].sum(
-                axis=1).values
+        delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment -
+                 self.energy_mix[one_invest_model.distribution_list].sum(
+            axis=1).values) / (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment)
+        abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
+        smooth_delta = np.asarray([-smooth_maximum(-abs_delta, alpha=10)])
 
-        invest_cosntraint_th = delta / invest_constraint_ref
-        invest_objective_th = compute_func_with_exp_min(
-            delta, 1.0e-6) / (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment) / invest_objective_ref
+        invest_constraint_th = delta / invest_constraint_ref
+        invest_objective_th = smooth_delta / invest_objective_ref
 
-        self.assertListEqual(np.round(invest_cosntraint_th, 8).tolist(
+        self.assertListEqual(np.round(invest_constraint_th, 8).tolist(
         ), np.round(invest_constraint['invest_constraint'].values, 8).tolist())
 
         self.assertListEqual(np.round(invest_objective_th, 8).tolist(

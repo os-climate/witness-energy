@@ -16,6 +16,7 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
     compute_func_with_exp_min
+from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum, get_dsmooth_dvariable
 
 
 class IndependentInvestDiscipline(SoSDiscipline):
@@ -130,22 +131,57 @@ class IndependentInvestDiscipline(SoSDiscipline):
         techno_invest_sum = techno_invests.sum(axis=1).values
         energy_invest = energy_investment['energy_investment'].values * \
             scaling_factor_energy_investment
-        delta = energy_invest - techno_invest_sum
-        exp_min_grad = compute_dfunc_with_exp_min(delta, 1e-6)
+        idt = np.identity(len(years))
+        ddelta_dtech = -idt / energy_invest
+        ddelta_dtot = (idt * energy_invest - (energy_invest -
+                                              techno_invest_sum) * idt) / energy_invest**2
+        dinvest_objective_dtechno_invest, dinvest_objective_dtotal_invest = self.compute_dinvest_objective_dinvest(techno_invest_sum,
+                                                                                                                   energy_invest,
+                                                                                                                   invest_objective_ref)
         for techno in self.independent_invest_model.distribution_list:
             self.set_partial_derivative_for_other_types(
                 (f'{techno}.invest_level', 'invest'), ('invest_mix', techno),  np.identity(len(years)))
             self.set_partial_derivative_for_other_types(
-                ('invest_constraint', 'invest_constraint'), ('invest_mix', techno),  -np.identity(len(years)) / invest_constraint_ref)
+                ('invest_constraint', 'invest_constraint'), ('invest_mix', techno),  ddelta_dtech / invest_constraint_ref)
             self.set_partial_derivative_for_other_types(
-                ('invest_objective', 'invest_constraint'), ('invest_mix', techno),  -np.identity(len(years)) / invest_objective_ref / energy_invest * exp_min_grad)
+                ('invest_objective', 'invest_objective'), ('invest_mix', techno),  dinvest_objective_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_constraint', 'invest_constraint'), ('energy_investment', 'energy_investment'),  np.identity(len(years)) * scaling_factor_energy_investment / invest_constraint_ref)
-        objective_grad = (exp_min_grad * energy_invest - compute_func_with_exp_min(
-            delta, 1.0e-6)) / energy_investment['energy_investment'].values**2 / scaling_factor_energy_investment
+            ('invest_constraint', 'invest_constraint'), ('energy_investment', 'energy_investment'),  ddelta_dtot * scaling_factor_energy_investment / invest_constraint_ref)
         self.set_partial_derivative_for_other_types(
-            ('invest_objective', 'invest_objective'), ('energy_investment', 'energy_investment'),  np.identity(len(years)) * objective_grad / invest_objective_ref)
+            ('invest_objective', 'invest_objective'), ('energy_investment', 'energy_investment'),  dinvest_objective_dtotal_invest * scaling_factor_energy_investment)
+
+    def compute_dinvest_objective_dinvest(self, techno_invest_sum, invest_tot, invest_objective_ref):
+        '''
+        Compute derivative of investment objective compared to investment by techno and
+        compared to total energy invest
+        '''
+
+        delta = (invest_tot - techno_invest_sum) / invest_tot
+        abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
+        smooth_delta = np.asarray([-smooth_maximum(-abs_delta, alpha=10)])
+        invest_objective = smooth_delta / invest_objective_ref
+
+        idt = np.identity(len(invest_tot))
+
+        ddelta_dtech = -idt / invest_tot
+        ddelta_dtot = (idt * invest_tot - (invest_tot -
+                                           techno_invest_sum) * idt) / invest_tot**2
+
+        dabs_delta_dtech = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
+            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtech
+        dabs_delta_dtot = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
+            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtot
+
+        dsmooth_delta_dtech = get_dsmooth_dvariable(
+            -abs_delta, alpha=10) * dabs_delta_dtech.diagonal()
+        dsmooth_delta_dtot = get_dsmooth_dvariable(
+            -abs_delta, alpha=10) * dabs_delta_dtot.diagonal()
+
+        dobj_dtech = dsmooth_delta_dtech / invest_objective_ref
+        dobj_dtot = dsmooth_delta_dtot / invest_objective_ref
+
+        return dobj_dtech, dobj_dtot
 
     def get_chart_filter_list(self):
 
