@@ -90,6 +90,7 @@ class Nuclear(ElectricityTechno):
         Sources:
             - World Nuclear Waste Report 2019 (https://worldnuclearwastereport.org/ and
             https://www.boell.de/sites/default/files/2019-11/World_Nuclear_Waste_Report_2019_Focus_Europe_0.pdf)
+            in chapter 6
             - World Nuclear Association
             (https://world-nuclear.org/information-library/nuclear-fuel-cycle/nuclear-wastes/radioactive-waste-management.aspx)
         """
