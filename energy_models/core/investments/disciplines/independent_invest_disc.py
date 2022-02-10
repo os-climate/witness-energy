@@ -106,7 +106,8 @@ class IndependentInvestDiscipline(SoSDiscipline):
             input_dict)
 
         output_dict = {'invest_constraint': invest_constraint_df,
-                       'invest_objective': invest_objective}
+                       'invest_objective': invest_objective,
+                       'invest_objective_2': invest_objective_2}
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
             for techno in input_dict[f'{energy}.technologies_list']:
