@@ -130,7 +130,7 @@ class Study(EnergyStudyManager):
                         'ns_functions', 'ns_functions'])
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
-            list_var.extend(['invest_objective', 'invest_objective'])
+            list_var.extend(['invest_objective', 'invest_objective_2'])
             list_parent.extend(['objectives', 'objectives'])
             list_ftype.extend([OBJECTIVE, OBJECTIVE])
             list_weight.extend([1.0, 0.0])
