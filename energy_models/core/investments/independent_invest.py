@@ -66,8 +66,10 @@ class IndependentInvest(BaseInvest):
 
         invest_constraint_df = pd.DataFrame({'years': energy_investment['years'].values,
                                              'invest_constraint': invest_constraint})
-        # Smooth the delta and apply a scaling to compute the objective
+        # Get the L1 norm of the delta and apply a scaling to compute the
+        # objective
         abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
         smooth_delta = np.asarray([-smooth_maximum(-abs_delta, alpha=10)])
         invest_objective = smooth_delta / invest_objective_ref
-        return invest_constraint_df, invest_objective
+        invest_objective_2 = abs_delta / invest_objective_ref
+        return invest_constraint_df, invest_objective, invest_objective_2

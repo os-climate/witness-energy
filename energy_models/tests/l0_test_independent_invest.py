@@ -93,7 +93,7 @@ class TestIndependentInvest(unittest.TestCase):
                        'invest_constraint_ref': invest_constraint_ref,
                        'invest_objective_ref': invest_objective_ref}
         one_invest_model = IndependentInvest()
-        invest_constraint, invest_objective = one_invest_model.compute_invest_constraint_and_objective(
+        invest_constraint, invest_objective, invest_objective_2 = one_invest_model.compute_invest_constraint_and_objective(
             inputs_dict)
 
         delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment -
@@ -219,7 +219,7 @@ class TestIndependentInvest(unittest.TestCase):
                                                                           f'{self.name}.{self.model_name}.invest_mix'],
                                       outputs=[
             f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_constraint',
-                                                                                    f'{self.name}.invest_objective'],
+                                                                                    f'{self.name}.invest_objective', ],
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
