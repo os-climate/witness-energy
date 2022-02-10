@@ -165,7 +165,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         delta = (invest_tot - techno_invest_sum) / invest_tot
         abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
-        #smooth_delta = np.asarray([-smooth_maximum(-abs_delta, alpha=10)])
+        #smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
         invest_objective = abs_delta / invest_objective_ref
 
         idt = np.identity(len(invest_tot))
@@ -180,9 +180,9 @@ class IndependentInvestDiscipline(SoSDiscipline):
             delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtot
 
         dsmooth_delta_dtech = get_dsmooth_dvariable(
-            -abs_delta, alpha=10) * dabs_delta_dtech.diagonal()
+            abs_delta, alpha=10) * dabs_delta_dtech.diagonal()
         dsmooth_delta_dtot = get_dsmooth_dvariable(
-            -abs_delta, alpha=10) * dabs_delta_dtot.diagonal()
+            abs_delta, alpha=10) * dabs_delta_dtot.diagonal()
 
         dobj_dtech = dsmooth_delta_dtech / invest_objective_ref
         dobj_dtot = dsmooth_delta_dtot / invest_objective_ref

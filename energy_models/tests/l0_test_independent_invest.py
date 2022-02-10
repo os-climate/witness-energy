@@ -100,7 +100,7 @@ class TestIndependentInvest(unittest.TestCase):
                  self.energy_mix[one_invest_model.distribution_list].sum(
             axis=1).values) / (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment)
         abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
-        smooth_delta = np.asarray([-smooth_maximum(-abs_delta, alpha=10)])
+        smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
 
         invest_constraint_th = delta / invest_constraint_ref
         invest_objective_th = smooth_delta / invest_objective_ref
