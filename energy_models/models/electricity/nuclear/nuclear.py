@@ -33,7 +33,7 @@ class Nuclear(ElectricityTechno):
         self.cost_details[Water.name] = list(self.ressources_prices[Water.name] *
                                              self.cost_details['water_needs'])
 
-        self.cost_details['waste_disposal'] = self.compute_nuclear_waste_disposal_and_decommissioning_cost()
+        self.cost_details['waste_disposal'] = self.compute_nuclear_waste_disposal_cost()
 
         return self.cost_details['uranium fuel'] + self.cost_details[Water.name] + self.cost_details['waste_disposal']
 
@@ -84,18 +84,12 @@ class Nuclear(ElectricityTechno):
 
         return water_needs
 
-    def compute_nuclear_waste_disposal_and_decommissioning_cost(self):
+    def compute_nuclear_waste_disposal_cost(self):
         """
         Computes the cost of waste disposal and decommissioning per kWh of produced electricity.
         Sources:
-            - World Nuclear Waste Report 2019 (https://worldnuclearwastereport.org/ and
-            https://www.boell.de/sites/default/files/2019-11/World_Nuclear_Waste_Report_2019_Focus_Europe_0.pdf)
-            in chapter 6
             - World Nuclear Association
-            (https://world-nuclear.org/information-library/nuclear-fuel-cycle/nuclear-wastes/radioactive-waste-management.aspx)
+            (https://world-nuclear.org/information-library/nuclear-fuel-cycle/nuclear-wastes/radioactive-waste-management.aspx,
         """
-        full_load_hours = self.techno_infos_dict['full_load_hours']
         waste_disposal_levy = self.techno_infos_dict['waste_disposal_levy']
-        mean_decommissioning_cost = self.techno_infos_dict['mean_decommissioning_cost']
-
-        return waste_disposal_levy + mean_decommissioning_cost / full_load_hours
+        return waste_disposal_levy
