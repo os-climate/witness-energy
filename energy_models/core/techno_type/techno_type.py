@@ -344,8 +344,10 @@ class TechnoType:
             (self.crf + self.techno_infos_dict['Opex_percentage'])
 
         if 'decommissioning_percentage' in self.techno_infos_dict:
-            self.cost_details[f'{self.name}_factory'] += self.cost_details[f'Capex_{self.name}'] * \
-                                                        self.techno_infos_dict['decommissioning_percentage']
+            self.cost_details[f'{self.name}_factory_decommissioning'] = self.cost_details[f'Capex_{self.name}'] * \
+                                                                        self.techno_infos_dict[
+                                                                            'decommissioning_percentage']
+            self.cost_details[f'{self.name}_factory'] += self.cost_details[f'{self.name}_factory_decommissioning']
 
         if 'nb_years_amort_capex' in self.techno_infos_dict:
             self.nb_years_amort_capex = self.techno_infos_dict['nb_years_amort_capex']
