@@ -130,12 +130,12 @@ class Study(EnergyStudyManager):
                         'ns_functions', 'ns_functions'])
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
-            list_var.append('invest_objective')
-            list_parent.append('objectives')
-            list_ftype.append(OBJECTIVE)
-            list_weight.append(1.0)
-            list_aggr_type.append(AGGR_TYPE_SUM)
-            list_ns.append('ns_functions')
+            list_var.extend(['invest_objective', 'invest_objective_2'])
+            list_parent.extend(['objectives', 'objectives'])
+            list_ftype.extend([OBJECTIVE, OBJECTIVE])
+            list_weight.extend([1.0, 0.0])
+            list_aggr_type.extend([AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            list_ns.extend(['ns_functions', 'ns_functions'])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
