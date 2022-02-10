@@ -48,7 +48,7 @@ class Study(EnergyMixStudyManager):
             invest_hefa_mix_dict['HefaDecarboxylation'] = np.ones(
                 len(l_ctrl))
         if 'HefaDeoxygenation' in self.technologies_list:
-            invest_hefa_mix_dict['HefaDeoxygenation'] = 2 * np.ones(
+            invest_hefa_mix_dict['HefaDeoxygenation'] = np.ones(
                 len(l_ctrl))
         if self.bspline:
             invest_hefa_mix_dict['years'] = self.years
