@@ -130,12 +130,12 @@ class Study(EnergyStudyManager):
                         'ns_functions', 'ns_functions'])
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
-            list_var.extend(['invest_objective', 'invest_objective_2'])
-            list_parent.extend(['objectives', 'objectives'])
-            list_ftype.extend([OBJECTIVE, OBJECTIVE])
-            list_weight.extend([1.0, 0.0])
-            list_aggr_type.extend([AGGR_TYPE_SUM, AGGR_TYPE_SUM])
-            list_ns.extend(['ns_functions', 'ns_functions'])
+            list_var.extend(['invest_objective'])
+            list_parent.extend(['objectives'])
+            list_ftype.extend([OBJECTIVE])
+            list_weight.extend([1.0])
+            list_aggr_type.extend([AGGR_TYPE_SUM])
+            list_ns.extend(['ns_functions'])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -229,16 +229,6 @@ class Study(EnergyStudyManager):
             list_var.extend(
                 ['total_prod_h2_liquid'])
             list_parent.extend(['Energy_constraints'])
-            list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([-1.])
-            list_aggr_type.append(
-                AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
-
-        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
-            list_var.extend(
-                ['invest_constraint'])
-            list_parent.extend([''])
             list_ftype.extend([INEQ_CONSTRAINT])
             list_weight.extend([-1.])
             list_aggr_type.append(
