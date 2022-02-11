@@ -35,7 +35,6 @@ class IndependentInvestDiscipline(SoSDiscipline):
         'invest_mix': {'type': 'dataframe',
                        'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
                        'dataframe_edition_locked': False},
-        'invest_constraint_ref': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
         'invest_objective_ref': {'type': 'float', 'default': 0.05, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
         'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
@@ -46,7 +45,6 @@ class IndependentInvestDiscipline(SoSDiscipline):
     energy_name = "one_invest"
 
     DESC_OUT = {
-        'invest_constraint': {'type': 'dataframe', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'invest_objective': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
     }
     _maturity = 'Research'
@@ -101,11 +99,10 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         input_dict = self.get_sosdisc_inputs()
 
-        invest_constraint_df, invest_objective = self.independent_invest_model.compute_invest_constraint_and_objective(
+        invest_objective = self.independent_invest_model.compute_invest_objective(
             input_dict)
 
-        output_dict = {'invest_constraint': invest_constraint_df,
-                       'invest_objective': invest_objective}
+        output_dict = {'invest_objective': invest_objective}
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
             for techno in input_dict[f'{energy}.technologies_list']:
@@ -120,7 +117,6 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         scaling_factor_energy_investment = inputs_dict['scaling_factor_energy_investment']
         energy_investment = inputs_dict['energy_investment']
-        invest_constraint_ref = inputs_dict['invest_constraint_ref']
         invest_objective_ref = inputs_dict['invest_objective_ref']
         years = np.arange(inputs_dict['year_start'],
                           inputs_dict['year_end'] + 1)
@@ -131,10 +127,6 @@ class IndependentInvestDiscipline(SoSDiscipline):
         techno_invest_sum = techno_invests.sum(axis=1).values
         energy_invest = energy_investment['energy_investment'].values * \
             scaling_factor_energy_investment
-        idt = np.identity(len(years))
-        ddelta_dtech = -idt / energy_invest
-        ddelta_dtot = (idt * energy_invest - (energy_invest -
-                                              techno_invest_sum) * idt) / energy_invest**2
         dinvest_objective_dtechno_invest, dinvest_objective_dtotal_invest = self.compute_dinvest_objective_dinvest(techno_invest_sum,
                                                                                                                    energy_invest,
                                                                                                                    invest_objective_ref)
@@ -142,25 +134,21 @@ class IndependentInvestDiscipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 (f'{techno}.invest_level', 'invest'), ('invest_mix', techno),  np.identity(len(years)))
             self.set_partial_derivative_for_other_types(
-                ('invest_constraint', 'invest_constraint'), ('invest_mix', techno),  ddelta_dtech / invest_constraint_ref)
-            self.set_partial_derivative_for_other_types(
                 ('invest_objective', 'invest_objective'), ('invest_mix', techno),  dinvest_objective_dtechno_invest)
 
-        self.set_partial_derivative_for_other_types(
-            ('invest_constraint', 'invest_constraint'), ('energy_investment', 'energy_investment'),  ddelta_dtot * scaling_factor_energy_investment / invest_constraint_ref)
         self.set_partial_derivative_for_other_types(
             ('invest_objective', 'invest_objective'), ('energy_investment', 'energy_investment'),  dinvest_objective_dtotal_invest * scaling_factor_energy_investment)
 
     def compute_dinvest_objective_dinvest(self, techno_invest_sum, invest_tot, invest_objective_ref):
         '''
-        Compute derivative of investment objective compared to investment by techno and
+        Compute derivative of investment objective relative to investment by techno and
         compared to total energy invest
         '''
 
         delta = (invest_tot - techno_invest_sum) / invest_tot
         abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
         #smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
-        invest_objective = abs_delta / invest_objective_ref
+        #invest_objective = abs_delta / invest_objective_ref
 
         idt = np.identity(len(invest_tot))
 
@@ -242,7 +230,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
             instanciated_charts.insert(0, new_chart_energy)
 
-            if 'Invest Constraint' in charts:
+            if 'Delta invest' in charts:
 
                 techno_invests = self.get_sosdisc_inputs(
                     'invest_mix')
@@ -255,8 +243,6 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
                 invest_objective = self.get_sosdisc_outputs(
                     'invest_objective')
-                invest_objective_ref = self.get_sosdisc_inputs(
-                    'invest_objective_ref')
 
                 if invest_objective is not None:
                     chart_name = 'Delta of distributed and allocated energy investments'
@@ -267,8 +253,6 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
                     scaling_factor_energy_investment = inputs_dict['scaling_factor_energy_investment']
                     energy_investment = inputs_dict['energy_investment']
-                    invest_constraint_ref = inputs_dict['invest_constraint_ref']
-                    invest_objective_ref = inputs_dict['invest_objective_ref']
                     years = np.arange(inputs_dict['year_start'],
                                       inputs_dict['year_end'] + 1)
                     techno_invests = inputs_dict['invest_mix'][[
