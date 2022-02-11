@@ -71,5 +71,4 @@ class IndependentInvest(BaseInvest):
         abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
         smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
         invest_objective = smooth_delta / invest_objective_ref
-        invest_objective_2 = abs_delta / invest_objective_ref
-        return invest_constraint_df, invest_objective, invest_objective_2
+        return invest_constraint_df, invest_objective

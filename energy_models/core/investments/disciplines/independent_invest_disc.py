@@ -36,7 +36,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                        'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
                        'dataframe_edition_locked': False},
         'invest_constraint_ref': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
-        'invest_objective_ref': {'type': 'float', 'default': 1e-1, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
+        'invest_objective_ref': {'type': 'float', 'default': 0.05, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
         'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
         'ccs_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
@@ -48,7 +48,6 @@ class IndependentInvestDiscipline(SoSDiscipline):
     DESC_OUT = {
         'invest_constraint': {'type': 'dataframe', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'invest_objective': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
-        'invest_objective_2': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'}
     }
     _maturity = 'Research'
 
@@ -102,12 +101,11 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         input_dict = self.get_sosdisc_inputs()
 
-        invest_constraint_df, invest_objective, invest_objective_2 = self.independent_invest_model.compute_invest_constraint_and_objective(
+        invest_constraint_df, invest_objective = self.independent_invest_model.compute_invest_constraint_and_objective(
             input_dict)
 
         output_dict = {'invest_constraint': invest_constraint_df,
-                       'invest_objective': invest_objective,
-                       'invest_objective_2': invest_objective_2}
+                       'invest_objective': invest_objective}
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
             for techno in input_dict[f'{energy}.technologies_list']:
@@ -137,9 +135,9 @@ class IndependentInvestDiscipline(SoSDiscipline):
         ddelta_dtech = -idt / energy_invest
         ddelta_dtot = (idt * energy_invest - (energy_invest -
                                               techno_invest_sum) * idt) / energy_invest**2
-        dinvest_objective_dtechno_invest, dinvest_objective_dtotal_invest, dinvest_objective_2_dtechno_invest, dinvest_objective_2_dtotal_invest = self.compute_dinvest_objective_dinvest(techno_invest_sum,
-                                                                                                                                                                                          energy_invest,
-                                                                                                                                                                                          invest_objective_ref)
+        dinvest_objective_dtechno_invest, dinvest_objective_dtotal_invest = self.compute_dinvest_objective_dinvest(techno_invest_sum,
+                                                                                                                   energy_invest,
+                                                                                                                   invest_objective_ref)
         for techno in self.independent_invest_model.distribution_list:
             self.set_partial_derivative_for_other_types(
                 (f'{techno}.invest_level', 'invest'), ('invest_mix', techno),  np.identity(len(years)))
@@ -147,15 +145,11 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 ('invest_constraint', 'invest_constraint'), ('invest_mix', techno),  ddelta_dtech / invest_constraint_ref)
             self.set_partial_derivative_for_other_types(
                 ('invest_objective', 'invest_objective'), ('invest_mix', techno),  dinvest_objective_dtechno_invest)
-            self.set_partial_derivative_for_other_types(
-                ('invest_objective_2', 'invest_objective_2'), ('invest_mix', techno),  dinvest_objective_2_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
             ('invest_constraint', 'invest_constraint'), ('energy_investment', 'energy_investment'),  ddelta_dtot * scaling_factor_energy_investment / invest_constraint_ref)
         self.set_partial_derivative_for_other_types(
             ('invest_objective', 'invest_objective'), ('energy_investment', 'energy_investment'),  dinvest_objective_dtotal_invest * scaling_factor_energy_investment)
-        self.set_partial_derivative_for_other_types(
-            ('invest_objective_2', 'invest_objective_2'), ('energy_investment', 'energy_investment'),  dinvest_objective_2_dtotal_invest * scaling_factor_energy_investment)
 
     def compute_dinvest_objective_dinvest(self, techno_invest_sum, invest_tot, invest_objective_ref):
         '''
@@ -187,10 +181,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
         dobj_dtech = dsmooth_delta_dtech / invest_objective_ref
         dobj_dtot = dsmooth_delta_dtot / invest_objective_ref
 
-        dobj_2_dtech = dabs_delta_dtech / invest_objective_ref
-        dobj_2_dtot = dabs_delta_dtot / invest_objective_ref
-
-        return dobj_dtech, dobj_dtot, dobj_2_dtech, dobj_2_dtot
+        return dobj_dtech, dobj_dtot
 
     def get_chart_filter_list(self):
 

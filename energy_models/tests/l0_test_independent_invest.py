@@ -93,7 +93,7 @@ class TestIndependentInvest(unittest.TestCase):
                        'invest_constraint_ref': invest_constraint_ref,
                        'invest_objective_ref': invest_objective_ref}
         one_invest_model = IndependentInvest()
-        invest_constraint, invest_objective, invest_objective_2 = one_invest_model.compute_invest_constraint_and_objective(
+        invest_constraint, invest_objective = one_invest_model.compute_invest_constraint_and_objective(
             inputs_dict)
 
         delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment -
