@@ -498,12 +498,18 @@ class Study(EnergyStudyManager):
         indep_invest_df = pd.DataFrame(
             {'years': invest_mix_df['years'].values})
 
-        energy_invest_poles = energy_invest['energy_investment'].values[[
-            i for i in range(len(energy_invest['energy_investment'].values)) if i % 10 == 0]][0:-1]
+        energy_invest_poles = energy_invest['energy_investment'].values[[i for i in range(
+            len(energy_invest['energy_investment'].values)) if i % 10 == 0]][0:-1]
         for column in invest_mix_df.columns:
             if column != 'years':
-                indep_invest_df[column] = invest_mix_df[column].values * \
-                    energy_invest_poles * energy_invest_factor
+                if len(invest_mix_df['years'].values) == len(energy_invest_poles):
+                    indep_invest_df[column] = invest_mix_df[column].values * \
+                        energy_invest_poles * \
+                        energy_invest_factor
+                else:
+                    indep_invest_df[column] = invest_mix_df[column].values * \
+                        energy_invest['energy_investment'].values * \
+                        energy_invest_factor
 
         return indep_invest_df
 

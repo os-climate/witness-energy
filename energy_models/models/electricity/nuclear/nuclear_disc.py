@@ -183,42 +183,8 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
 
         techno_detailed_prices = self.get_sosdisc_outputs(
             'techno_detailed_prices')
-        chart_name = f'Detailed prices of {self.techno_name} technology over the years'
-        year_start = min(techno_detailed_prices['years'].values.tolist())
-        year_end = max(techno_detailed_prices['years'].values.tolist())
-        minimum = 0.0
-        maximum = max(
-            techno_detailed_prices[self.techno_name].values.tolist()) * 1.2
 
-        new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/MWh]', [year_start, year_end], [minimum, maximum],
-                                             chart_name=chart_name)
-
-        if 'percentage_resource' in self._data_in:
-            percentage_resource = self.get_sosdisc_inputs(
-                'percentage_resource')
-            new_chart.annotation_upper_left = {
-                'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
-            tot_price = (techno_detailed_prices[self.techno_name].values) / \
-                (percentage_resource[self.energy_name] / 100.)
-            serie = InstanciatedSeries(
-                techno_detailed_prices['years'].values.tolist(),
-                tot_price.tolist(), 'Total price without percentage', 'lines')
-            new_chart.series.append(serie)
-        # Add total price
-        tot_price_mwh = techno_detailed_prices[self.techno_name].values
-        serie = InstanciatedSeries(
-            techno_detailed_prices['years'].values.tolist(),
-            tot_price_mwh.tolist(), 'Total price with margin', 'lines')
-
-        new_chart.series.append(serie)
-
-        factory_price_mwh = techno_detailed_prices[f'{self.techno_name}_factory'].values
-        # Factory price
-        serie = InstanciatedSeries(
-            techno_detailed_prices['years'].values.tolist(),
-            factory_price_mwh.tolist(), 'Factory', 'lines')
-
-        new_chart.series.append(serie)
+        new_chart = ElectricityTechnoDiscipline.get_chart_detailed_price_in_dollar_kwh(self)
 
         factory_decom_price_mwh = techno_detailed_prices[f'{self.techno_name}_factory_decommissioning'].values
         # Factory Decommissioning price
@@ -226,29 +192,6 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
             techno_detailed_prices['years'].values.tolist(),
             factory_decom_price_mwh.tolist(), 'Factory Decommissioning', 'lines')
 
-        new_chart.series.append(serie)
-
-        if 'energy_costs' in techno_detailed_prices:
-            # energy_costs
-            ec_price_mwh = techno_detailed_prices['energy_costs'].values
-            serie = InstanciatedSeries(
-                techno_detailed_prices['years'].values.tolist(),
-                ec_price_mwh.tolist(), 'Energy costs', 'lines')
-
-            new_chart.series.append(serie)
-
-        transport_price_mwh = techno_detailed_prices['transport'].values
-        # Transport price
-        serie = InstanciatedSeries(
-            techno_detailed_prices['years'].values.tolist(),
-            transport_price_mwh.tolist(), 'Transport', 'lines')
-
-        new_chart.series.append(serie)
-        # CO2 taxes
-        co2_price_mwh = techno_detailed_prices['CO2_taxes_factory'].values
-        serie = InstanciatedSeries(
-            techno_detailed_prices['years'].values.tolist(),
-            co2_price_mwh.tolist(), 'CO2 taxes due to production', 'lines')
         new_chart.series.append(serie)
 
         return new_chart
