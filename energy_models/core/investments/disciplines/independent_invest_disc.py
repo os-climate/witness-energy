@@ -174,7 +174,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Invest Distribution', 'Invest Constraint']
+        chart_list = ['Invest Distribution', 'Delta invest']
         chart_filters.append(ChartFilter(
             'Charts Investments', chart_list, chart_list, 'charts_invest'))
 
