@@ -40,31 +40,23 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
 
     def compute_other_primary_energy_costs(self):
         """
-        Compute primary costs to produce 1kWh of hydrotreated_oil_fuel
+        Compute primary costs to produce 1MWh of hydrotreated_oil_fuel
         """
-        # need in kWh hydrogen per kwh hydrotreated_oil_fuel
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs(
         )
-        # need in kg oil per kWh hydrotreated_oil_fuel ?
+
         naturaloil_data = NaturalOil.data_energy_dict
         self.cost_details[f'{NaturalOil.name}_needs'] = self.get_theoretical_natural_oil_needs(
         ) / naturaloil_data['calorific_value']
-        # need in kWh electricity per kwh hydrotreated_oil_fuel
-        # from source
+
         self.cost_details[f'{Electricity.name}_needs'] = self.elec_consumption_factor
 
-        # Cost of natural oil for 1 kWH of hydrotreated_oil_fuel
-        # $/kwh
         self.cost_details[f'{NaturalOil.name}'] = list(
             self.ressources_prices[f'{NaturalOil.name}'] * self.cost_details[f'{NaturalOil.name}_needs'] / self.cost_details['efficiency'])
 
-        # Cost of 1kg of hydrogen for 1 kWH of hydrotreated_oil_fuel
-        # $/kWh
         self.cost_details[f'{GaseousHydrogen.name}'] = list(
             self.prices[f'{GaseousHydrogen.name}'] * self.cost_details[f'{GaseousHydrogen.name}_needs'] / self.cost_details['efficiency'])
 
-        # Cost of electricity for 1 kWH of hydrotreated_oil_fuel
-        # $/kWh
         self.cost_details[f'{Electricity.name}'] = list(
             self.prices[f'{Electricity.name}'] * self.cost_details[f'{Electricity.name}_needs'])
 
@@ -90,27 +82,23 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
 
         self.compute_primary_energy_production()
 
-        # Theoretical C02 production in kg
         carbon_production_factor = self.get_theoretical_co2_prod()
         self.production[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
             self.production[f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
-        # Consumption
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
             self.production[f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})']  # / \
-        # self.cost_details['efficiency']     # in kWH
 
         self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[f'{GaseousHydrogen.name}_needs'] * \
             self.production[f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']     # in kWH
+            self.cost_details['efficiency']
 
         naturaloil_data = NaturalOil.data_energy_dict
         self.consumption[f'{NaturalOil.name} ({self.product_energy_unit})'] = self.cost_details[f'{NaturalOil.name}_needs'] * \
             self.production[f'{HydrotreatedOilFuel.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency'] * \
             naturaloil_data['calorific_value']
-        # unit ?
 
     def compute_CO2_emissions_from_input_ressources(self):
         """
@@ -118,8 +106,7 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         """
 
         self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details[f'{Electricity.name}_needs']  # / \
-        # self.cost_details['efficiency']
+            self.cost_details[f'{Electricity.name}_needs']
 
         self.carbon_emissions[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
             self.cost_details[f'{GaseousHydrogen.name}_needs'] / \

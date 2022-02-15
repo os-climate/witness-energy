@@ -343,6 +343,12 @@ class TechnoType:
         self.cost_details[f'{self.name}_factory'] = self.cost_details[f'Capex_{self.name}'] * \
             (self.crf + self.techno_infos_dict['Opex_percentage'])
 
+        if 'decommissioning_percentage' in self.techno_infos_dict:
+            self.cost_details[f'{self.name}_factory_decommissioning'] = self.cost_details[f'Capex_{self.name}'] * \
+                                                                        self.techno_infos_dict[
+                                                                            'decommissioning_percentage']
+            self.cost_details[f'{self.name}_factory'] += self.cost_details[f'{self.name}_factory_decommissioning']
+
         if 'nb_years_amort_capex' in self.techno_infos_dict:
             self.nb_years_amort_capex = self.techno_infos_dict['nb_years_amort_capex']
 
@@ -353,18 +359,13 @@ class TechnoType:
                                                            np.array(self.cost_details[f'{self.name}_factory'].values / self.nb_years_amort_capex)).T.sum(axis=0)
         # pylint: enable=no-member
 
-        # Compute transport and CO2 taxes
+        # Compute and add transport
         self.cost_details['transport'] = self.compute_transport()
 
-        self.cost_details['CO2_taxes_factory'] = self.compute_co2_tax()
-
-        # Add transport and CO2 taxes
         self.cost_details[self.name] = self.cost_details[f'{self.name}_factory'] + self.cost_details['transport'] + \
-            self.cost_details['CO2_taxes_factory'] + \
             self.cost_details['energy_costs']
 
         self.cost_details[f'{self.name}_amort'] = self.cost_details[f'{self.name}_factory_amort'] + self.cost_details['transport'] + \
-            self.cost_details['CO2_taxes_factory'] + \
             self.cost_details['energy_costs']
 
         # Add margin in %
@@ -374,11 +375,17 @@ class TechnoType:
         self.cost_details[f'{self.name}_amort'] *= self.margin.loc[self.margin['years']
                                                                    <= self.cost_details['years'].max()]['margin'].values / 100.0
 
+        # Compute and add CO2 taxes
+        self.cost_details['CO2_taxes_factory'] = self.compute_co2_tax()
+
+        # Add transport and CO2 taxes
+        self.cost_details[self.name] += self.cost_details['CO2_taxes_factory']
+
+        self.cost_details[f'{self.name}_amort'] += self.cost_details['CO2_taxes_factory']
+
         if 'CO2_taxes_factory' in self.cost_details:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name] - \
-                self.cost_details['CO2_taxes_factory'] * \
-                self.margin.loc[self.margin['years']
-                                <= self.cost_details['years'].max()]['margin'].values / 100.0
+                self.cost_details['CO2_taxes_factory']
         else:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
         return self.cost_details

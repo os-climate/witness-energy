@@ -21,6 +21,7 @@ from os.path import join, dirname
 from energy_models.core.investments.independent_invest import IndependentInvest
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
 
 
 class TestIndependentInvest(unittest.TestCase):
@@ -75,8 +76,7 @@ class TestIndependentInvest(unittest.TestCase):
 
     def test_01_independent_invest_model(self):
         scaling_factor_energy_investment = 100
-        invest_constraint_ref = 10.0
-        invest_objective_ref = 1000.0
+        invest_objective_ref = 0.05
         inputs_dict = {'year_start': self.y_s,
                        'year_end': self.y_e,
                        'energy_list': self.energy_list,
@@ -89,22 +89,18 @@ class TestIndependentInvest(unittest.TestCase):
                        'invest_mix': self.energy_mix,
                        'energy_investment': self.energy_investment,
                        'scaling_factor_energy_investment': scaling_factor_energy_investment,
-                       'invest_constraint_ref': invest_constraint_ref,
                        'invest_objective_ref': invest_objective_ref}
         one_invest_model = IndependentInvest()
-        invest_constraint, invest_objective = one_invest_model.compute_invest_constraint_and_objective(
+        invest_objective = one_invest_model.compute_invest_objective(
             inputs_dict)
 
-        delta = self.energy_investment['energy_investment'].values * scaling_factor_energy_investment - \
-            self.energy_mix[one_invest_model.distribution_list].sum(
-                axis=1).values
+        delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment -
+                 self.energy_mix[one_invest_model.distribution_list].sum(
+            axis=1).values) / (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment)
+        abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
+        smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
 
-        invest_cosntraint_th = delta / invest_constraint_ref
-        invest_objective_th = compute_func_with_exp_min(
-            delta, 1.0e-6) / (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment) / invest_objective_ref
-
-        self.assertListEqual(np.round(invest_cosntraint_th, 8).tolist(
-        ), np.round(invest_constraint['invest_constraint'].values, 8).tolist())
+        invest_objective_th = smooth_delta / invest_objective_ref
 
         self.assertListEqual(np.round(invest_objective_th, 8).tolist(
         ), np.round(invest_objective, 8).tolist())
@@ -216,8 +212,7 @@ class TestIndependentInvest(unittest.TestCase):
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.energy_investment',
                                                                           f'{self.name}.{self.model_name}.invest_mix'],
                                       outputs=[
-            f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_constraint',
-                                                                                    f'{self.name}.invest_objective'],
+            f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective', ],
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(

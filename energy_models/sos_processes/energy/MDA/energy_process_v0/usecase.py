@@ -130,12 +130,12 @@ class Study(EnergyStudyManager):
                         'ns_functions', 'ns_functions'])
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
-            list_var.append('invest_objective')
-            list_parent.append('objectives')
-            list_ftype.append(OBJECTIVE)
-            list_weight.append(1.0)
-            list_aggr_type.append(AGGR_TYPE_SUM)
-            list_ns.append('ns_functions')
+            list_var.extend(['invest_objective'])
+            list_parent.extend(['objectives'])
+            list_ftype.extend([OBJECTIVE])
+            list_weight.extend([1.0])
+            list_aggr_type.extend([AGGR_TYPE_SUM])
+            list_ns.extend(['ns_functions'])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -229,16 +229,6 @@ class Study(EnergyStudyManager):
             list_var.extend(
                 ['total_prod_h2_liquid'])
             list_parent.extend(['Energy_constraints'])
-            list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([-1.])
-            list_aggr_type.append(
-                AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
-
-        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
-            list_var.extend(
-                ['invest_constraint'])
-            list_parent.extend([''])
             list_ftype.extend([INEQ_CONSTRAINT])
             list_weight.extend([-1.])
             list_aggr_type.append(
@@ -508,12 +498,18 @@ class Study(EnergyStudyManager):
         indep_invest_df = pd.DataFrame(
             {'years': invest_mix_df['years'].values})
 
-        energy_invest_poles = energy_invest['energy_investment'].values[[
-            i for i in range(len(energy_invest['energy_investment'].values)) if i % 10 == 0]][0:-1]
+        energy_invest_poles = energy_invest['energy_investment'].values[[i for i in range(
+            len(energy_invest['energy_investment'].values)) if i % 10 == 0]][0:-1]
         for column in invest_mix_df.columns:
             if column != 'years':
-                indep_invest_df[column] = invest_mix_df[column].values * \
-                    energy_invest_poles * energy_invest_factor
+                if len(invest_mix_df['years'].values) == len(energy_invest_poles):
+                    indep_invest_df[column] = invest_mix_df[column].values * \
+                        energy_invest_poles * \
+                        energy_invest_factor
+                else:
+                    indep_invest_df[column] = invest_mix_df[column].values * \
+                        energy_invest['energy_investment'].values * \
+                        energy_invest_factor
 
         return indep_invest_df
 
