@@ -235,6 +235,16 @@ class Study(EnergyStudyManager):
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
 
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
+            list_var.extend(
+                ['invest_constraint'])
+            list_parent.extend([''])
+            list_ftype.extend([INEQ_CONSTRAINT])
+            list_weight.extend([-1.])
+            list_aggr_type.append(
+                AGGR_TYPE_SMAX)
+            list_namespaces.append('ns_functions')
+
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype
