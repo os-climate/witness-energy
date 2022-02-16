@@ -26,6 +26,20 @@ from energy_models.core.stream_type.stream_disc import StreamDiscipline
 
 class SyngasDiscipline(EnergyDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Syngas Energy Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-burn fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': [
         'Pyrolysis', 'SMR', 'AutothermalReforming', 'CoElectrolysis', 'BiomassGasification', 'CoalGasification'],
         'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas', 'structuring': True},

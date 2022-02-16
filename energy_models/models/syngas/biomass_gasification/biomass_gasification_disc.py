@@ -24,6 +24,20 @@ from energy_models.core.stream_type.energy_models.syngas import compute_calorifi
 
 class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Biomass Gasification Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-burn fa-fw',
+        'version': '',
+    }
+
     techno_name = 'BiomassGasification'
     # Wang, Y., Li, G., Liu, Z., Cui, P., Zhu, Z. and Yang, S., 2019.
     # Techno-economic analysis of biomass-to-hydrogen process in comparison with coal-to-hydrogen process.

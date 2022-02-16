@@ -27,6 +27,20 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
         It has properties similar to electricity technologies
     """
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Renewable Technology Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     techno_name = 'RenewableSimpleTechno'
     lifetime = 30
     construction_delay = 3

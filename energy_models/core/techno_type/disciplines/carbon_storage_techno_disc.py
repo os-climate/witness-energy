@@ -24,6 +24,20 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 
 class CSTechnoDiscipline(TechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Carbon Storage Technology Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_carbon_storage',
                                   'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                            'transport': ('float',  None, True)},

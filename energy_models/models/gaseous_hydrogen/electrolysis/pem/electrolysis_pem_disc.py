@@ -26,6 +26,20 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
     """
     Electrolysis PEM Discipline
     """
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Hydrogen Electrolysis PEM Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-hospital-symbol fa-fw',
+        'version': '',
+    }
     techno_name = 'Electrolysis.PEM'
     # Fuel Cells and Hydrogen 2 Joint Undertaking 2018
     # LAUNCH OF REFHYNE, WORLD'S LARGEST ELECTROLYSIS PLANT IN RHINELAND REFINERY

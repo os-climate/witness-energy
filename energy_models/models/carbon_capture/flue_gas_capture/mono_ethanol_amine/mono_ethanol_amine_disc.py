@@ -24,6 +24,20 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'MonoEthanolamine Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-cloud fa-fw',
+        'version': '',
+    }
     techno_name = 'flue_gas_capture.MonoEthanolAmine'
     lifetime = 25  # SAEECCT Coal USC plant lifetime
     construction_delay = 1

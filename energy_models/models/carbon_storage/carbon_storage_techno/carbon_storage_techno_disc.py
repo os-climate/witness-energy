@@ -27,6 +27,20 @@ class CarbonStorageTechnoDiscipline(CSTechnoDiscipline):
     Modeled after biomass burying fossilization
     """
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Carbon Storage Technology Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     techno_name = 'CarbonStorageTechno'
     lifetime = 35
     construction_delay = 0

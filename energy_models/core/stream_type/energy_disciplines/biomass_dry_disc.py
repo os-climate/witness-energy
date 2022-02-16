@@ -22,6 +22,20 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 class BiomassDryDiscipline(EnergyDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Dry Biomass Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-tree fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {'technologies_list': {'type': 'string_list',
                                      'possible_values': ['ManagedWood', 'UnmanagedWood', 'CropEnergy'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,

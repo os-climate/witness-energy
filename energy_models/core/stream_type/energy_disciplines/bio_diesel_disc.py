@@ -19,6 +19,20 @@ from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 
 
 class BioDieselDiscipline(EnergyDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Biodiesel Energy Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-gas-pump fa-fw',
+        'version': '',
+    }
     # -- add specific techno inputs to this
 
     DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['Transesterification'],

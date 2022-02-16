@@ -23,6 +23,20 @@ from energy_models.models.wet_biomass.wet_crop_residue.wet_crop_residues import 
 
 class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Wet Crop Residues Biomass Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
+
     # wood residues comes from forestry residues
     # prices come from harvest, transport, chipping, drying (depending from
     # where it comes)

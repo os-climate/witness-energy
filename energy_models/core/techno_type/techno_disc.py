@@ -31,6 +31,20 @@ from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plo
 
 class TechnoDiscipline(SoSDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Core Technology Type Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
+
     years_default = np.arange(2020, 2051)
 
     DESC_IN = {

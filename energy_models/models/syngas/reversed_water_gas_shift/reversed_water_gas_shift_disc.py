@@ -24,6 +24,20 @@ from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 
 class RWGSDiscipline(SyngasTechnoDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Reversed Water Gas Shift Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
+
     techno_name = 'ReversedWaterGasShift'
     lifetime = 20
     construction_delay = 2

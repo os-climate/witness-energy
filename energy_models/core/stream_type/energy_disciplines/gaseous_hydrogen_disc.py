@@ -20,6 +20,20 @@ from energy_models.core.stream_type.energy_models.gaseous_hydrogen import Gaseou
 
 class GaseousHydrogenDiscipline(EnergyDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Hydrogen Energy Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-hospital-symbol fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {'technologies_list': {'type': 'string_list',
                                      'possible_values': ['Electrolysis.PEM', 'Electrolysis.AWE',
                                                          'Electrolysis.SOEC', 'WaterGasShift', 'PlasmaCracking'],
