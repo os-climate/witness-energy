@@ -24,6 +24,20 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Unmanaged Wood Biomass Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-tree fa-fw',
+        'version': '',
+    }
+
     # wood residues comes from forestry residues
     # prices come from harvest, transport, chipping, drying (depending from
     # where it comes)

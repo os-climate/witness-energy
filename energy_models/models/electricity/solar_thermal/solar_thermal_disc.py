@@ -32,6 +32,20 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
 
     # mean values for plant with 8 hours storage
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Solar Thermal Energy Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-solar-panel fa-fw',
+        'version': '',
+    }
     techno_name = 'SolarThermal'
     lifetime = 25  # JRC, IRENA, SolarPACES
     construction_delay = 3  # JRC, ATB NREL, database https://solarpaces.nrel.gov/

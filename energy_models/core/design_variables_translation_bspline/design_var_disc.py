@@ -25,6 +25,20 @@ from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilte
 
 
 class Design_Var_Discipline(SoSDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Design Variable Translation BSpline Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-drafting-compass fa-fw',
+        'version': '',
+    }
     EXPORT_XVECT = 'export_xvect'
 
     DESC_IN = {

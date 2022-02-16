@@ -25,6 +25,20 @@ from pandas import DataFrame
 
 class Design_Var_Discipline(SoSDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Design Variable Translation Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-drafting-compass fa-fw',
+        'version': '',
+    }
+
     EXPORT_XVECT = 'export_xvect'
 
     DESC_IN = {  # 'energy_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'possible_values': EnergyMix.energy_list, 'namespace': 'ns_public'},

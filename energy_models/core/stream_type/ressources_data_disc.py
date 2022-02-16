@@ -98,6 +98,20 @@ def get_static_prices(years):
 
 
 class RessourcesDisc(SoSDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Data Ressources Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-cubes fa-fw',
+        'version': '',
+    }
     year_start_default = 2020
     year_end_default = 2050
 

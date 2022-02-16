@@ -24,6 +24,20 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 class CarbonStorageDiscipline(StreamDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Carbon Storage Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-truck-loading fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {'technologies_list': {'type': 'string_list',
                                      'possible_values': ['BiomassBuryingFossilization', 'DeepOceanInjection',
                                                          'DeepSalineFormation', 'DepletedOilGas',

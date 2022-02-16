@@ -21,6 +21,14 @@ from energy_models.sos_processes.energy.techno_mix.biogas_mix.usecase import TEC
 
 
 class ProcessBuilder(EnergyProcessBuilder):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Technology Mix - Biogas Mix',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
         self.techno_list = TECHNOLOGIES_LIST_FOR_OPT

@@ -23,6 +23,20 @@ from energy_models.models.electricity.gas.gas_elec import GasElec
 
 class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Combined Cycle Gas Turbine Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-burn fa-fw',
+        'version': '',
+    }
+
     techno_name = 'CombinedCycleGasTurbine'
     lifetime = 30  # Source: U.S. Energy Information Administration 2020
     construction_delay = 2  # years

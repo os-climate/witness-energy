@@ -15,6 +15,20 @@ from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart imp
 
 
 class InvestTechnoDiscipline(SoSDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Technologies Investment Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]',
                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},

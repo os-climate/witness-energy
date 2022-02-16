@@ -24,6 +24,20 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 class CarbonCaptureDiscipline(StreamDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Carbon Capture Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-air-freshener fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {'technologies_list': {'type': 'string_list',
                                      'possible_values': ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
                                                          'direct_air_capture.DirectAirCaptureTechno',

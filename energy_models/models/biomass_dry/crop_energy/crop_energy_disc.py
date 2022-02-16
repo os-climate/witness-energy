@@ -28,6 +28,20 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         for energy into biomass_dry
     '''
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Crop Energy Biomass Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-tractor fa-fw',
+        'version': '',
+    }
     techno_name = 'CropEnergy'
     lifetime = 50
     construction_delay = 1  # years

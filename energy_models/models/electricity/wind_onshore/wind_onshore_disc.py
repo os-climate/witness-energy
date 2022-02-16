@@ -24,6 +24,20 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Onshore Wind Energy Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-fan fa-fw',
+        'version': '',
+    }
     techno_name = 'WindOnshore'
     lifetime = 30  # ATB NREL 2020
     construction_delay = 3  # ATB NREL 2020
