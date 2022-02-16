@@ -356,9 +356,12 @@ class Study(EnergyStudyManager):
         scaling_factor_energy_investment = 100.0
         ccs_percentage = pd.DataFrame(
             {'years': self.years, 'ccs_percentage': 10.0})
-
+        co2_emissions_from_energy_mix = pd.DataFrame(
+            {'years': self.years, 'carbon_capture from energy mix (Mt)': 25.0})
+        co2_emissions_needed_by_energy_mix = pd.DataFrame(
+            {'years': self.years, 'carbon_capture needed by energy mix (Mt)': 25.0})
         values_dict = {f'{self.study_name}.linearization_mode': 'adjoint',
-                       f'{self.study_name}.sub_mda_class': 'MDANewtonRaphson',
+                       f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
                        f'{self.study_name}.{energy_mix_name}.invest_energy_mix': energy_mix_invest_df,
                        f'{self.study_name}.{CCS_NAME}.ccs_percentage': ccs_percentage,
                        f'{self.study_name}.{CCS_NAME}.invest_ccs_mix': invest_ccs_mix,
@@ -372,6 +375,8 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.CO2_taxes': self.co2_taxes,
                        f'{self.study_name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
+                       f'{self.study_name}.{energy_mix_name}.co2_emissions_needed_by_energy_mix': co2_emissions_needed_by_energy_mix,
                        f'{self.study_name}.{demand_name}.total_energy_demand': self.total_energy_demand,
                        f'{self.study_name}.{energy_mix_name}.CCS_constraint_factor': self.CCS_constraint_factor,
                        f'{self.study_name}.{energy_mix_name}.{hydrogen_name}.energy_demand_mix': self.energy_demand_mix[f'{hydrogen_name}.energy_demand_mix'],

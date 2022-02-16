@@ -535,7 +535,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_co2_emissions_gt.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            inputs=inputs_names, outputs=[f'{name}.{model_name}.co2_emissions_Gt'], parallel=self.parallel)
+                            inputs=inputs_names, outputs=[f'{name}.{model_name}.co2_emissions_Gt', f'{name}.{model_name}.co2_emissions_needed_by_energy_mix', f'{name}.{model_name}.co2_emissions_from_energy_mix'], parallel=False)
 
     def test_05_energy_mix_test_mean_price_grad(self):
 
@@ -1160,7 +1160,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = EnergyMixJacobianTestCase()
     cls.setUp()
-    cls.test_11_energy_mix_detailed_co2_emissions()
+    cls.test_04_energy_mix_discipline_co2_emissions_gt()

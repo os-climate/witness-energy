@@ -16,6 +16,8 @@ limitations under the License.
 
 from energy_models.core.demand.demand_mix import DemandMix
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.ccus.ccus import CCUS
+
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
@@ -38,6 +40,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         demand_name = DemandMix.name
         energy_mix = EnergyMix.name
+        ccus_name = CCUS.name
         func_manager_name = "FunctionManagerDisc"
 
         carbon_storage = PureCarbonSS.energy_name
@@ -65,6 +68,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         mods_dict = {f'Ressources': 'energy_models.core.stream_type.ressources_data_disc.RessourcesDisc',
                      demand_name: 'energy_models.core.demand.demand_mix_disc.DemandMixDiscipline',
                      energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
+                     ccus_name: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline'
                      }
 
         builder_other_list = self.create_builder_list(

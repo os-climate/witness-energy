@@ -676,7 +676,8 @@ class Study(EnergyStudyManager):
 
         ccs_percentage = pd.DataFrame(
             {'years': self.years, 'ccs_percentage': 25.0})
-
+        co2_emissions_from_energy_mix = pd.DataFrame(
+            {'years': self.years, 'carbon_capture from energy mix (Mt)': 25.0})
         values_dict = {f'{self.study_name}.energy_investment': invest_df,
                        f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
@@ -694,6 +695,8 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.study_name}.is_stream_demand': True,
                        f'{self.study_name}.max_mda_iter': 200,
+                       f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
+
                        f'{self.study_name}.sub_mda_class': 'MDANewtonRaphson',
                        }
 
