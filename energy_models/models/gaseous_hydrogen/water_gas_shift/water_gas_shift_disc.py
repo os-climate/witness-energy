@@ -27,6 +27,20 @@ from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 
 class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Water Gas Shift Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-burn fa-fw',
+        'version': '',
+    }
+
     techno_name = 'WaterGasShift'
     # Giuliano, A., Freda, C. and Catizzone, E., 2020.
     # Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water gas shift and carbon capture sections.

@@ -25,6 +25,20 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Biomass Burying Fossilization Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     techno_name = 'BiomassBuryingFossilization'
     lifetime = 35
     construction_delay = 0

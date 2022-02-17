@@ -23,6 +23,20 @@ from energy_models.models.gaseous_hydrogen.smr.smr import SMR
 
 class SMRDiscipline(GaseousHydrogenTechnoDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Hydrogen SMR Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-burn fa-fw',
+        'version': '',
+    }
+
     techno_name = 'SMR'
     lifetime = 25
     construction_delay = 3  # years

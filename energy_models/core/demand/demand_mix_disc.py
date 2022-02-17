@@ -26,6 +26,20 @@ from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonSt
 
 class DemandMixDiscipline(SoSDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Demand Mix Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-battery-full fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
                'ccs_list': {'type': 'string_list', 'possible_values': [CarbonCapture.name, CarbonStorage.name],

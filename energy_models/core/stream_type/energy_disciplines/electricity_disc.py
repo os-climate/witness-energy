@@ -29,6 +29,20 @@ from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import hyd
 
 class ElectricityDiscipline(EnergyDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Electricity Energy Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-plug fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {'technologies_list': {'type': 'string_list',
                                      'possible_values': ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal', 'Hydropower',
                                                          'CoalGen', 'Nuclear', 'CombinedCycleGasTurbine',

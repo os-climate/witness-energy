@@ -22,6 +22,20 @@ from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion import 
 
 
 class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Biogas Anaerobic Digestion Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-burn fa-fw',
+        'version': '',
+    }
     # -- add specific techno inputs to this
     techno_name = 'AnaerobicDigestion'
     lifetime = 20

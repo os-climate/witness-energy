@@ -17,6 +17,20 @@ from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart imp
 
 
 class OneInvestDiscipline(SoSDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Investment Distribution Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-share-alt fa-fw',
+        'version': '',
+    }
     energy_mix_name = EnergyMix.name
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]',

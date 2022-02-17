@@ -13,6 +13,20 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 
 class InvestCCSorEnergyDiscipline(SoSDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Investment CCS Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     DESC_IN = {
         'energy_investment': {'type': 'dataframe', 'unit': '100G$',
                               'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),

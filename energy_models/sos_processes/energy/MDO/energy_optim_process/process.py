@@ -17,6 +17,14 @@ from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilde
 
 
 class ProcessBuilder(BaseProcessBuilder):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Optimisation Process',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
     def get_builders(self):
 
         optim_name = "EnergyOptimization"

@@ -26,6 +26,20 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
     HydrogenLiquefaction Discipline
     """
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Hydrogen Liquefaction Model',
+        'type': '',
+        'source': '',
+        'validated': '',
+        'validated_by': '',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-tint fa-fw',
+        'version': '',
+    }
     techno_name = 'HydrogenLiquefaction'
     construction_delay = 2  # year
     lifetime = 40

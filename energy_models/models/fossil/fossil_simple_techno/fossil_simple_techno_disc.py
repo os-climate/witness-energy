@@ -27,6 +27,20 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
         It has properties similar to the coal generation techno
     """
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Fossil Technology Model ',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     techno_name = 'FossilSimpleTechno'
     lifetime = 25
     construction_delay = 3

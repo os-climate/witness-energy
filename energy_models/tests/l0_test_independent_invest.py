@@ -76,6 +76,7 @@ class TestIndependentInvest(unittest.TestCase):
 
     def test_01_independent_invest_model(self):
         scaling_factor_energy_investment = 100
+        invest_constraint_ref = 10.0
         invest_objective_ref = 0.05
         inputs_dict = {'year_start': self.y_s,
                        'year_end': self.y_e,
@@ -89,9 +90,10 @@ class TestIndependentInvest(unittest.TestCase):
                        'invest_mix': self.energy_mix,
                        'energy_investment': self.energy_investment,
                        'scaling_factor_energy_investment': scaling_factor_energy_investment,
+                       'invest_constraint_ref': invest_constraint_ref,
                        'invest_objective_ref': invest_objective_ref}
         one_invest_model = IndependentInvest()
-        invest_objective = one_invest_model.compute_invest_objective(
+        invest_constraint, invest_objective = one_invest_model.compute_invest_constraint_and_objective(
             inputs_dict)
 
         delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment -
@@ -100,7 +102,11 @@ class TestIndependentInvest(unittest.TestCase):
         abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
         smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
 
+        invest_constraint_th = delta / invest_constraint_ref
         invest_objective_th = smooth_delta / invest_objective_ref
+
+        self.assertListEqual(np.round(invest_constraint_th, 8).tolist(
+        ), np.round(invest_constraint['invest_constraint'].values, 8).tolist())
 
         self.assertListEqual(np.round(invest_objective_th, 8).tolist(
         ), np.round(invest_objective, 8).tolist())

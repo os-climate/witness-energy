@@ -34,6 +34,20 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Refinery Liquid Fuel Model',
+        'type': 'Test',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-gas-pump fa-fw',
+        'version': '',
+    }
     techno_name = 'Refinery'
     lifetime = 35
     construction_delay = 3
