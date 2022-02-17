@@ -25,6 +25,20 @@ class EnhancedOilRecoveryDiscipline(CSTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Enhanced Oil Recovery Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-gas-pump fa-fw',
+        'version': '',
+    }
     techno_name = 'EnhancedOilRecovery'
     lifetime = 35
     construction_delay = 0

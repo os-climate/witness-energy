@@ -23,6 +23,20 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 
 class EnergyDiscipline(StreamDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Core Energy Type Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     DESC_IN = {'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': StreamDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                              'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                       'CO2_tax': ('float',  None, True)},

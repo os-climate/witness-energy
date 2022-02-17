@@ -24,6 +24,14 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy v0 Process',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
+
     def get_builders(self):
 
         ns_study = self.ee.study_name

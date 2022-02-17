@@ -38,6 +38,20 @@ from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import Ul
 
 
 class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Fischer Tropsch Kerosene Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-charging-station fa-fw',
+        'version': '',
+    }
     # -- add specific techno inputs to this
     techno_name = 'FischerTropsch'
     lifetime = 30

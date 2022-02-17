@@ -26,6 +26,20 @@ class TradesDiscipline(SoSDiscipline):
     """
     """
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Core Energy Trades Model',
+        'type': 'Official',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-poll fa-fw',
+        'version': '',
+    }
     _maturity = 'Research'
 
     DESC_IN = {'scenario_list': {SoSDiscipline.TYPE: 'string_list', SoSDiscipline.VISIBILITY:

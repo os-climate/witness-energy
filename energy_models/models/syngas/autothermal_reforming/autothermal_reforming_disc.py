@@ -23,6 +23,20 @@ from energy_models.core.stream_type.energy_models.syngas import compute_calorifi
 
 
 class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Authothermal Reforming Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-fire fa-fw',
+        'version': '',
+    }
     # -- add specific techno inputs to this
 
     techno_name = 'AutothermalReforming'

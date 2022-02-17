@@ -22,6 +22,20 @@ from energy_models.models.methane.fossil_gas.fossil_gas import FossilGas
 
 
 class FossilGasDiscipline(MethaneTechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Fossil Gas Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-gas-pump fa-fw',
+        'version': '',
+    }
     # -- add specific techno inputs to this
 
     techno_name = 'FossilGas'

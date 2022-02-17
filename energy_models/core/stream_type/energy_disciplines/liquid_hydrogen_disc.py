@@ -20,6 +20,20 @@ from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidH
 
 class LiquidHydrogenDiscipline(EnergyDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Liquid Hydrogen Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-tint fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['HydrogenLiquefaction'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_liquid_hydrogen',

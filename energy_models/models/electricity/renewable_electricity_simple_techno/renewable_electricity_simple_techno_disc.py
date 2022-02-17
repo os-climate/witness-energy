@@ -27,6 +27,20 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'energy_models.models.electricity.renewable_electricity_simple_techno.renewable_electricity_simple_techno_disc',
+        'type': 'Test',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     data_fuel_dict_default = Electricity.data_energy_dict
     techno_name = 'RenewableElectricitySimpleTechno'
     # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.

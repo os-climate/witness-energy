@@ -20,6 +20,20 @@ from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumG
 
 class LiquefiedGasPetroleumDiscipline(EnergyDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Liquefied petroleum gas Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
+
     DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['Refinery'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_kerosene',

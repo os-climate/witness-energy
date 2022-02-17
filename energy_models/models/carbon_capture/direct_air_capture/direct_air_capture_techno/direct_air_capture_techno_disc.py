@@ -26,6 +26,20 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
     Modeled after amine scrubbing
     """
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Direct Air Capture Technology Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     techno_name = 'direct_air_capture.DirectAirCaptureTechno'
     lifetime = 35
     construction_delay = 3

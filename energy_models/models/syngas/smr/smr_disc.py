@@ -22,6 +22,20 @@ from energy_models.models.syngas.smr.smr import SMR
 
 
 class SMRDiscipline(SyngasTechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Syngas SMR Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-burn fa-fw',
+        'version': '',
+    }
     # -- add specific techno inputs to this
     DESC_IN = SyngasTechnoDiscipline.DESC_IN
     techno_name = 'SMR'

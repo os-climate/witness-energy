@@ -28,6 +28,20 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Pure Carbon Solid Storage Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-flask fa-fw',
+        'version': '',
+    }
     techno_name = 'PureCarbonSolidStorage'
     lifetime = 35
     construction_delay = 0
