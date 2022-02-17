@@ -73,7 +73,6 @@ class CCUS_Discipline(SoSDiscipline):
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Mt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'co2_emissions_from_energy_mix': {'type': 'dataframe', 'unit': 'Mt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
 
-
     }
 
     DESC_OUT = {

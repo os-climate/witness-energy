@@ -181,7 +181,8 @@ class EnergyMix(BaseStream):
                 self.scaling_factor_energy_production
             self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.energy_consumption'] * \
                 self.scaling_factor_energy_consumption
-
+            self.sub_consumption_woratio_dict[energy] = inputs_dict[f'{energy}.energy_consumption_woratio'] * \
+                self.scaling_factor_energy_consumption
             self.sub_land_use_required_dict[energy] = inputs_dict[f'{energy}.land_use_required']
 
             if energy in self.energy_class_dict:
@@ -192,10 +193,6 @@ class EnergyMix(BaseStream):
         if 'syngas' in self.subelements_list:
             self.data_fuel_dict['syngas']['high_calorific_value'] = compute_calorific_value(
                 inputs_dict['syngas_ratio'] / 100.0)
-
-        for energy in self.subelements_list_energy:
-            self.sub_consumption_woratio_dict[energy] = inputs_dict[f'{energy}.energy_consumption_woratio'] * \
-                self.scaling_factor_energy_consumption
 
         self.co2_emissions = self.sub_carbon_emissions.copy(deep=True)
         self.energy_prices = self.sub_prices.copy(deep=True)
@@ -220,7 +217,7 @@ class EnergyMix(BaseStream):
         # DataFrame stream demand
         self.all_streams_demand_ratio = pd.DataFrame(
             {'years': self.energy_prices['years'].values})
-        for energy in self.subelements_list_energy:
+        for energy in self.subelements_list:
             self.all_streams_demand_ratio[energy] = np.ones(
                 len(self.all_streams_demand_ratio['years'].values)) * 100.
 
@@ -768,7 +765,7 @@ class EnergyMix(BaseStream):
         demand_ratio_df = pd.DataFrame(
             {'years': self.years})
 
-        for energy in self.subelements_list_energy:
+        for energy in self.subelements_list:
 
             # Prod with ratio
             energy_production = deepcopy(
@@ -795,7 +792,7 @@ class EnergyMix(BaseStream):
 
     def compute_ratio_objective(self):
 
-        ratio_arrays = self.all_streams_demand_ratio[self.subelements_list_energy].values
+        ratio_arrays = self.all_streams_demand_ratio[self.subelements_list].values
         # Objective is to minimize the difference between 100 and all ratios
         # We give as objective the highest difference to start with the max of
         # the difference

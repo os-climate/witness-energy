@@ -656,7 +656,13 @@ class Study(EnergyStudyManager):
         demand_ratio_dict = dict(
             zip(self.energy_list, np.ones((len(self.years), len(self.years)))))
         demand_ratio_dict['years'] = self.years
+
+        ccs_demand_ratio_dict = dict(
+            zip(self.ccs_list, np.ones((len(self.years), len(self.years)))))
+        ccs_demand_ratio_dict['years'] = self.years
+
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
+        self.all_ccs_demand_ratio = pd.DataFrame(ccs_demand_ratio_dict)
 
         invest_ref = 10.55    # 100G$
         invest = np.ones(len(self.years)) * invest_ref
@@ -693,6 +699,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.study_name}.{demand_name}.total_energy_demand': self.total_energy_demand,
                        f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.study_name}.{energy_mix_name}.all_ccs_demand_ratio': self.all_ccs_demand_ratio,
                        f'{self.study_name}.is_stream_demand': True,
                        f'{self.study_name}.max_mda_iter': 200,
                        f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,

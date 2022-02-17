@@ -838,21 +838,21 @@ class Energy_Mix_Discipline(SoSDiscipline):
         dobjective_dratio = self.compute_dratio_objective(
             all_streams_demand_ratio, ratio_ref, energy_list)
         ienergy = 0
-        for energy in energies:
+        for energy in energy_list:
 
             ddemand_ratio_denergy_prod, ddemand_ratio_denergy_cons = self.compute_ddemand_ratio_denergy_production(
                 energy, sub_production_dict, sub_consumption_woratio_dict, stream_class_dict, scaling_factor_energy_production, years)
             self.set_partial_derivative_for_other_types(
                 ('all_streams_demand_ratio', f'{energy}'), (f'{energy}.energy_production', energy),  ddemand_ratio_denergy_prod)
             dobjective_dratio_energy = np.array([dobjective_dratio[ienergy + iyear * len(
-                energy_list)] for iyear in range(len(years))]).reshape((1, len(years)))
+                energies)] for iyear in range(len(years))]).reshape((1, len(years)))
             dobjective_dprod = np.matmul(
                 dobjective_dratio_energy, ddemand_ratio_denergy_prod)
 
             self.set_partial_derivative_for_other_types(
                 ('ratio_objective',), (f'{energy}.energy_production', energy), dobjective_dprod)
             #---- Loop on energy again to differentiate production and consumption ----#
-            for energy_input in energies:
+            for energy_input in energy_list:
                 list_columnsenergycons = list(
                     inputs_dict[f'{energy_input}.energy_consumption'].columns)
                 if f'{energy} ({stream_class_dict[energy].unit})' in list_columnsenergycons:
