@@ -654,7 +654,7 @@ class Study(EnergyStudyManager):
             {'years': self.years, 'demand': 25000.0})
 
         demand_ratio_dict = dict(
-            zip(self.energy_list, np.ones((len(self.years), len(self.years)))))
+            zip(self.energy_list + self.ccs_list, np.ones((len(self.years), len(self.years)))))
         demand_ratio_dict['years'] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
@@ -694,7 +694,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.study_name}.is_stream_demand': True,
                        f'{self.study_name}.max_mda_iter': 200,
-                       f'{self.study_name}.sub_mda_class': 'MDANewtonRaphson',
+                       f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
                        }
 
         # ALl energy_demands following energy_list
