@@ -159,8 +159,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         margin = self.techno_model.margin['margin'].values
 
-        dprice_FT_dsyngas_ratio = self.techno_model.dprice_FT_dsyngas_ratio * \
-            np.split(margin, len(margin)) / 100.0 / \
+        dprice_FT_dsyngas_ratio = self.techno_model.dprice_FT_dsyngas_ratio / \
             100.0  # now syngas is in % grad is divided by 100
 
         self.set_partial_derivative_for_other_types(
@@ -197,8 +196,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('CO2_emissions', self.techno_name), ('syngas_ratio',), dco2_emissions_dsyngas_ratio / 100.0)  # now syngas is in % grad is divided by 100
 
-        dprice_FT_wotaxes_dsyngas_ratio = self.techno_model.dprice_FT_wotaxes_dsyngas_ratio * \
-            np.split(margin, len(margin)) / 100
+        dprice_FT_wotaxes_dsyngas_ratio = self.techno_model.dprice_FT_wotaxes_dsyngas_ratio
         self.set_partial_derivative_for_other_types(
             ('techno_prices',
              f'{self.techno_name}_wotaxes'), ('syngas_ratio',),
