@@ -26,6 +26,20 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
     """
     PLasmacracking discipline
     """
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Hydrogen Plasma Cracking Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-hospital-symbol fa-fw',
+        'version': '',
+    }
     techno_name = 'PlasmaCracking'
     lifetime = 25
     construction_delay = 2

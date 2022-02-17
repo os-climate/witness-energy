@@ -25,6 +25,20 @@ from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import H
 
 
 class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation_disc',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     # -- add specific techno inputs to this
     techno_name = 'HefaDecarboxylation'
     energy_name = 'hydrotreated_oil_fuel'

@@ -20,6 +20,20 @@ from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 
 class LiquidFuelDiscipline(EnergyDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Liquid Fuel Energy Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-gas-pump fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['AlcoholToFuel', 'BioFuel',
                                                                                 'EOR', 'Refinery', 'HEFA',
                                                                                 'FischerTropsch'],

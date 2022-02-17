@@ -21,6 +21,14 @@ from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 
 
 class ProcessBuilder(EnergyProcessBuilder):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Technology Mix - Biomass Dry Mix',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
         self.techno_list = TECHNOLOGIES_LIST_FOR_OPT

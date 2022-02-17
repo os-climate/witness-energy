@@ -22,6 +22,14 @@ from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubPr
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy MDA v0 Process',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
+
     def get_builders(self):
 
         ns_study = self.ee.study_name

@@ -19,6 +19,20 @@ from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 
 
 class HydrotreatedOilFuelTechnoDiscipline(TechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Hydrotreated Oil Fuel Technology Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_hydrotreated_oil_fuel',
                                   'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                            'transport': ('float',  None, True)},

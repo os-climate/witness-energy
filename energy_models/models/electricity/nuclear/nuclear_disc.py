@@ -27,6 +27,20 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Nuclear Energy Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-atom fa-fw',
+        'version': '',
+    }
     techno_name = 'Nuclear'
     # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.
     # 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798).

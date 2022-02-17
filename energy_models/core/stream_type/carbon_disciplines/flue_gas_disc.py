@@ -24,6 +24,20 @@ from sos_trades_core.tools.post_processing.tables.instanciated_table import Inst
 
 
 class FlueGasDiscipline(SoSDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Flue Gas Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-cloud fa-fw',
+        'version': '',
+    }
     DESC_IN = {'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'technologies_list': {'type': 'string_list', 'possible_values': ['electricity.CoalGen',

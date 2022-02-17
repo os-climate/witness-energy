@@ -24,6 +24,20 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Calcium Potassium Scrubbing Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-globe-europe fa-fw',
+        'version': '',
+    }
     techno_name = 'direct_air_capture.CalciumPotassiumScrubbing'
     lifetime = 35
     construction_delay = 3

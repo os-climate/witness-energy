@@ -25,6 +25,20 @@ from copy import deepcopy
 
 class ReforestationDiscipline(CSTechnoDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Reforestation Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-tree fa-fw',
+        'version': '',
+    }
+
     # Reforestation is the cost of planting tree with no managing nor cutting
     # Eighteen percent of the world�s forests are now located within
     # protected areas

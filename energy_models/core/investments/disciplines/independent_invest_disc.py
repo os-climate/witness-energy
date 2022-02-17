@@ -20,6 +20,20 @@ from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
 
 
 class IndependentInvestDiscipline(SoSDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'energy_models.core.investments.disciplines.independent_invest_disc',
+        'type': '',
+        'source': '',
+        'validated': '',
+        'validated_by': '',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     energy_mix_name = EnergyMix.name
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]',

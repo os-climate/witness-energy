@@ -25,6 +25,20 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Syngas Pyrolysis Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-fire fa-fw',
+        'version': '',
+    }
     syngas_ratio = Pyrolysis.syngas_COH2_ratio
 
     techno_name = 'Pyrolysis'

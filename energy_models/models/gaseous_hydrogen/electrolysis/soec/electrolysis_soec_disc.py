@@ -25,6 +25,20 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
     """
     Electrolysis SOEC Discipline
     """
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Hydrogen Electrolysis SOEC Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-hospital-symbol fa-fw',
+        'version': '',
+    }
     techno_name = 'Electrolysis.SOEC'
     # Haldor Topsoe, 2021
     # Haldor Topsoe to build large-scale SOEC electrolyzer manufacturing facility to meet customer needs for green hydrogen production

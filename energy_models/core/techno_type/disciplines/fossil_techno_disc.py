@@ -19,6 +19,20 @@ from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 
 
 class FossilTechnoDiscipline(TechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Fossil Technologies Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/MWh', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_fossil',
                                   'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
