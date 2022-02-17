@@ -240,7 +240,7 @@ class Study(EnergyStudyManager):
                 ['invest_constraint'])
             list_parent.extend([''])
             list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([-1.])
+            list_weight.extend([0.0])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
