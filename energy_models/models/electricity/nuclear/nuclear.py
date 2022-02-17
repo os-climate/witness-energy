@@ -93,3 +93,12 @@ class Nuclear(ElectricityTechno):
         """
         waste_disposal_levy = self.techno_infos_dict['waste_disposal_levy']
         return waste_disposal_levy
+
+    def compute_price(self):
+        """
+        overloads techno_type compute price method to add the decommissioning_cost to Capex_init
+        """
+        self.techno_infos_dict['Capex_init'] += self.techno_infos_dict['decommissioning_cost']
+        costs = ElectricityTechno.compute_price(self)
+        return costs
+
