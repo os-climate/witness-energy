@@ -197,8 +197,11 @@ class RWGS(SyngasTechno):
 
         dco2_price_dsyngas_ratio = self.compute_dco2_price_dsyngas_ratio()
 
+        margin = self.margin['margin'].values
+
         denergy_cost_dsyngas_ratio = dsyngas_price_dsyngas_ratio + \
-            delectricity_price_dsyngas_ratio + dco2_price_dsyngas_ratio
+            delectricity_price_dsyngas_ratio + \
+            dco2_price_dsyngas_ratio / (margin / 100)
         # compute d rwgs_factory
         drwgs_factory_dsyngas_ratio = self.compute_drwgs_factory_dsyngas_ratio()
 

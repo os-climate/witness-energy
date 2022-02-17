@@ -27,6 +27,8 @@ DEFAULT_TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection'
                              'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization', 'PureCarbonSolidStorage', 'Reforestation']
 TECHNOLOGIES_LIST_FOR_OPT = ['DeepSalineFormation',
                              'DepletedOilGas', 'GeologicMineralization', 'Reforestation', 'PureCarbonSolidStorage']
+TECHNOLOGIES_LIST_FOR_OPT_DEV = ['DeepSalineFormation',
+                                 'DepletedOilGas', 'GeologicMineralization', 'PureCarbonSolidStorage']
 
 
 class Study(EnergyMixStudyManager):

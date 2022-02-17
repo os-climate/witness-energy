@@ -94,7 +94,7 @@ class FischerTropsch(LiquidFuelTechno):
             dprice_RWGS_dsyngas_ratio = self.syngas_ratio_techno.compute_dprice_RWGS_wo_taxes_dsyngas_ratio()
             dco2_taxes_dsyngas_ratio = self.syngas_ratio_techno.dco2_taxes_dsyngas_ratio()
 
-            self.dprice_FT_wotaxes_dsyngas_ratio = dprice_RWGS_dsyngas_ratio * \
+            self.dprice_FT_wotaxes_dsyngas_ratio = dprice_RWGS_dsyngas_ratio * self.margin['margin'].values / 100.0 * \
                 (np.ones(len(self.years)) * sg_needs_efficiency)
             self.cost_details[self.sg_transformation_name] = self.price_details_sg_techno[
                 f'{self.sg_transformation_name}_wotaxes']
@@ -110,7 +110,8 @@ class FischerTropsch(LiquidFuelTechno):
             self.price_details_sg_techno = self.compute_wgs_contribution(
                 self.syngas_ratio)
             # For WGS dprice is composed of dsyngas, dwater, dCO2_taxes
-            dprice_WGS_dsyngas_ratio = self.syngas_ratio_techno.compute_dprice_WGS_wo_taxes_dsyngas_ratio()
+            dprice_WGS_dsyngas_ratio = self.syngas_ratio_techno.compute_dprice_WGS_wo_taxes_dsyngas_ratio() * \
+                self.margin['margin'].values / 100.0
             dco2_taxes_dsyngas_ratio = self.syngas_ratio_techno.dco2_taxes_dsyngas_ratio()
 
             self.dprice_FT_wotaxes_dsyngas_ratio = dprice_WGS_dsyngas_ratio * \
@@ -133,7 +134,8 @@ class FischerTropsch(LiquidFuelTechno):
             price_details_sg_techno_wgs['sg_ratio'] = self.syngas_ratio
             price_details_sg_techno_wgs[self.sg_transformation_name] = price_details_sg_techno_wgs['WGS']
             # WGS matrix
-            dprice_WGS_dsyngas_ratio = self.syngas_ratio_techno_wgs.compute_dprice_WGS_wo_taxes_dsyngas_ratio()
+            dprice_WGS_dsyngas_ratio = self.syngas_ratio_techno_wgs.compute_dprice_WGS_wo_taxes_dsyngas_ratio() * \
+                self.margin['margin'].values / 100.0
             dco2_taxes_dsyngas_ratio_wgs = self.syngas_ratio_techno_wgs.dco2_taxes_dsyngas_ratio()
 
             dprice_FT_wotaxes_dsyngas_ratio_wgs = dprice_WGS_dsyngas_ratio * \
@@ -154,7 +156,8 @@ class FischerTropsch(LiquidFuelTechno):
             price_details_sg_techno_rwgs[self.sg_transformation_name] = price_details_sg_techno_rwgs['RWGS']
             # RWGS matrix
 
-            dprice_RWGS_dsyngas_ratio = self.syngas_ratio_techno_rwgs.compute_dprice_RWGS_wo_taxes_dsyngas_ratio()
+            dprice_RWGS_dsyngas_ratio = self.syngas_ratio_techno_rwgs.compute_dprice_RWGS_wo_taxes_dsyngas_ratio() * \
+                self.margin['margin'].values / 100.0
             dco2_taxes_dsyngas_ratio_rwgs = self.syngas_ratio_techno_rwgs.dco2_taxes_dsyngas_ratio()
             dprice_FT_wotaxes_dsyngas_ratio_RWGS = dprice_RWGS_dsyngas_ratio * \
                 (np.ones(len(self.years)) * sg_needs_efficiency)
