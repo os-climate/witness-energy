@@ -216,6 +216,9 @@ def launch_data_pickle_generation():
                     is_coupling = True
                 mda_energy_data_technologies_output_dict[techno][key] = {
                     'value': techno_disc.get_sosdisc_outputs(key), 'is_coupling': is_coupling}
+    energy_production_detailed = Energy_Mix_disc.get_sosdisc_outputs(
+        'energy_production_detailed')
+    mda_energy_data_streams_output_dict['energy_production_detailed'] = energy_production_detailed
 
     output = open('mda_energy_data_streams_input_dict.pkl', 'wb')
     pickle.dump(mda_energy_data_streams_input_dict, output)
