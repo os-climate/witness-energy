@@ -518,8 +518,8 @@ class WGS(GaseousHydrogenTechno):
                                                                                                           <= self.year_end]['CO2_tax'].values * CO2_emissions_is_positive
 
         # now syngas is in % grad is divided by 100
-        dprice_dsyngas = (factory_grad + dsyngas_dsyngas_ratio + dwater_dsyngas_ratio + dprice_CO2_fact) \
-            * np.split(margin, len(margin)) / 100.0
+        dprice_dsyngas = (factory_grad + dsyngas_dsyngas_ratio +
+                          dwater_dsyngas_ratio) * (margin / 100.0) + dprice_CO2_fact
 
         return dprice_dsyngas
 

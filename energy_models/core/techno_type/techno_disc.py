@@ -339,8 +339,8 @@ class TechnoDiscipline(SoSDiscipline):
         self.dprices_demissions = {}
         self.grad_total = {}
         for energy, value in grad_dict.items():
-            self.grad_total[energy] = value * np.split(self.techno_model.margin['margin'].values, len(self.techno_model.margin['margin'].values)) / \
-                100.0
+            self.grad_total[energy] = value * \
+                self.techno_model.margin['margin'].values / 100.0
             self.set_partial_derivative_for_other_types(
                 ('techno_prices', self.techno_name), ('energy_prices', energy), self.grad_total[energy])
             self.set_partial_derivative_for_other_types(
@@ -360,17 +360,13 @@ class TechnoDiscipline(SoSDiscipline):
                     self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(
                         0, sign_carbon_emissions).values
 
-                self.dprices_demissions[energy] = grad_on_co2_tax * \
-                    np.split(self.techno_model.margin['margin'].values, len(
-                        self.techno_model.margin['margin'].values)) / 100.0
+                self.dprices_demissions[energy] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(
                     ('techno_prices', self.techno_name), ('energy_CO2_emissions', energy), self.dprices_demissions[energy])
         if carbon_emissions is not None:
             dCO2_taxes_factory = (self.techno_model.CO2_taxes['years'] <= self.techno_model.carbon_emissions['years'].max(
             )) * self.techno_model.carbon_emissions[self.techno_name].clip(0).values
-            dtechno_prices_dCO2_taxes = dCO2_taxes_factory * \
-                self.techno_model.margin.loc[self.techno_model.margin['years'] <=
-                                             self.techno_model.cost_details['years'].max()]['margin'].values / 100.0
+            dtechno_prices_dCO2_taxes = dCO2_taxes_factory
 
             self.set_partial_derivative_for_other_types(
                 ('techno_prices', self.techno_name), ('CO2_taxes', 'CO2_tax'), dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
