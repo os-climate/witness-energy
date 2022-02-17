@@ -168,7 +168,23 @@ class ConsumptionCO2Emissions(BaseStream):
         self.CO2_sources[f'Total {CarbonCapture.flue_gas_name} (Mt)'] = self.CO2_production[[
             col for col in self.CO2_production if col.endswith(f'{CarbonCapture.flue_gas_name} (Mt)')]].sum(axis=1)
 
-        return self.CO2_sources, self.CO2_sinks
+        # update values to Gt
+        self.CO2_sources_Gt = pd.DataFrame(
+            {'years': self.CO2_sources['years']})
+        self.CO2_sinks_Gt = pd.DataFrame(
+            {'years': self.CO2_sinks['years']})
+
+        for column_df in self.CO2_sources.columns:
+            if column_df != 'years':
+                self.CO2_sources_Gt[column_df.replace(
+                    '(Mt)', '(Gt)')] = self.CO2_sources[column_df] / 1e3
+
+        for column_df in self.CO2_sinks.columns:
+            if column_df != 'years':
+                self.CO2_sinks_Gt[column_df.replace(
+                    'Mt', 'Gt')] = self.CO2_sinks[column_df] / 1e3
+
+        return self.CO2_sources_Gt, self.CO2_sinks_Gt
 
     # , co2_emissions):
     def compute_grad_CO2_emissions_sources(self, net_production):
@@ -200,7 +216,7 @@ class ConsumptionCO2Emissions(BaseStream):
             net_prod = net_production[
                 f'production {energy} (TWh)'].values
 
-            dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#co2_per_use'] = np.maximum(
+            dtot_CO2_emissions[f'Total CO2 by use (Gt) vs {energy}#co2_per_use'] = np.maximum(
                 0, net_prod)
 
             # Specific case when net prod is equal to zero
@@ -208,9 +224,9 @@ class ConsumptionCO2Emissions(BaseStream):
             # however if we decrease the cons it does nothing
             net_prod_sign = net_prod.copy()
             net_prod_sign[net_prod_sign == 0] = 1
-            dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#prod'] = self.co2_per_use[energy].values * \
+            dtot_CO2_emissions[f'Total CO2 by use (Gt) vs {energy}#prod'] = self.co2_per_use[energy].values * \
                 np.maximum(0, np.sign(net_prod_sign))
-            dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#cons'] = - self.co2_per_use[energy].values * \
+            dtot_CO2_emissions[f'Total CO2 by use (Gt) vs {energy}#cons'] = - self.co2_per_use[energy].values * \
                 np.maximum(0, np.sign(net_prod))
 
         ''' CARBON CAPTURE from energy mix
@@ -226,7 +242,7 @@ class ConsumptionCO2Emissions(BaseStream):
         if len(energy_producing_carbon_capture_list) != 0:
             for energy1 in energy_producing_carbon_capture_list:
                 dtot_CO2_emissions[
-                    f'{CarbonCapture.name} from energy mix (Mt) vs {energy1}#{CarbonCapture.name} (Mt)#prod'] = np.ones(len_years)
+                    f'{CarbonCapture.name} from energy mix (Gt) vs {energy1}#{CarbonCapture.name} (Mt)#prod'] = np.ones(len_years)
 #             self.total_co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'] = energy_producing_carbon_capture.sum(
 #                 axis=1).values
 #         else:
@@ -244,7 +260,7 @@ class ConsumptionCO2Emissions(BaseStream):
         if len(energy_producing_co2_list) != 0:
             for energy1 in energy_producing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} from energy mix (Mt) vs {energy1}#{CO2.name} (Mt)#prod'] = np.ones(len_years)
+                    f'{CO2.name} from energy mix (Gt) vs {energy1}#{CO2.name} (Mt)#prod'] = np.ones(len_years)
 
 #             self.total_co2_emissions[f'{CO2.name} from energy mix (Mt)'] = energy_producing_co2.sum(
 #                 axis=1).values
@@ -263,7 +279,7 @@ class ConsumptionCO2Emissions(BaseStream):
         if len(energy_removing_co2_list) != 0:
             for energy1 in energy_removing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} (Mt)#cons'] = np.ones(len_years)
+                    f'{CO2.name} removed by energy mix (Gt) vs {energy1}#{CO2.name} (Mt)#cons'] = np.ones(len_years)
 #             self.total_co2_emissions[f'{CO2.name} removed by energy mix (Mt)'] = energy_removing_co2.sum(
 #                 axis=1).values
 #         else:
@@ -278,10 +294,10 @@ class ConsumptionCO2Emissions(BaseStream):
 # col for col in self.co2_production if
 # col.endswith(f'{CarbonCapture.flue_gas_name} (Mt)')]].sum(axis=1)
         for col in co2_production:
-            if col.endswith(f'{CarbonCapture.flue_gas_name} (Mt)'):
+            if col.endswith(f'{CarbonCapture.flue_gas_name} (Gt)'):
                 energy1 = col.replace(
-                    f' {CarbonCapture.flue_gas_name} (Mt)', '')
-                dtot_CO2_emissions[f'Total {CarbonCapture.flue_gas_name} (Mt) vs {energy1}#{CarbonCapture.flue_gas_name} (Mt)#prod'] = np.ones(
+                    f' {CarbonCapture.flue_gas_name} (Gt)', '')
+                dtot_CO2_emissions[f'Total {CarbonCapture.flue_gas_name} (Gt) vs {energy1}#{CarbonCapture.flue_gas_name} (Mt)#prod'] = np.ones(
                     len_years)
 
         return dtot_CO2_emissions

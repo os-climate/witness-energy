@@ -31,16 +31,16 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                         'editable': False, 'structuring': True},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh'},
+        'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
     }
 
     DESC_OUT = {
         'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Mt',
                                          'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                         'namespace': 'ns_emissions'},
+                                         'namespace': 'ns_ccs'},
         'CO2_emissions_by_use_sinks':  {'type': 'dataframe', 'unit': 'Mt',
                                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                        'namespace': 'ns_emissions'},
+                                        'namespace': 'ns_ccs'},
     }
 
     model_name = ConsumptionCO2Emissions.name
@@ -62,11 +62,15 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                     dynamic_inputs[f'{energy}.CO2_per_use'] = {
                         'type': 'dataframe', 'unit': 'kgCO2/kWh',
                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                        'namespace': 'ns_emissions'}
+                        'namespace': 'ns_energy'}
                     dynamic_inputs[f'{energy}.energy_consumption'] = {
-                        'type': 'dataframe', 'unit': 'PWh'}
+                        'type': 'dataframe', 'unit': 'PWh',
+                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'namespace': 'ns_energy'}
                     dynamic_inputs[f'{energy}.energy_production'] = {
-                        'type': 'dataframe', 'unit': 'PWh'}
+                        'type': 'dataframe', 'unit': 'PWh',
+                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'namespace': 'ns_energy'}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -116,7 +120,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                     self.set_partial_derivative_for_other_types(
                         ('CO2_emissions_by_use_sources',
                          co2_emission_column), (f'{energy}.energy_production', energy),
-                        np.identity(len(years)) * scaling_factor_energy_production * value)
+                        np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                 elif last_part_key == 'cons':
                     for energy_df in energy_list:
                         list_columnsenergycons = list(
@@ -125,12 +129,12 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                             self.set_partial_derivative_for_other_types(
                                 ('CO2_emissions_by_use_sources', co2_emission_column), (
                                     f'{energy_df}.energy_consumption', f'{energy} (TWh)'),
-                                np.identity(len(years)) * scaling_factor_energy_consumption * value)
+                                np.identity(len(years)) * scaling_factor_energy_consumption * value / 1e3)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
                         ('CO2_emissions_by_use_sources',
                          co2_emission_column), (f'{energy}.CO2_per_use', 'CO2_per_use'),
-                        np.identity(len(years)) * value)
+                        np.identity(len(years)) * value / 1e3)
 
                 else:
                     very_last_part_key = energy_prod_info.split('#')[2]
@@ -138,12 +142,12 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_by_use_sources', co2_emission_column), (
                                 f'{energy}.energy_production', last_part_key),
-                            np.identity(len(years)) * scaling_factor_energy_production * value)
+                            np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_by_use_sources', co2_emission_column), (
                                 f'{energy}.energy_consumption', last_part_key),
-                            np.identity(len(years)) * scaling_factor_energy_production * value)
+                            np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
 
         #------------------------------------#
         #-- CO2 emissions sinks gradients--#
@@ -162,7 +166,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                     self.set_partial_derivative_for_other_types(
                         ('CO2_emissions_by_use_sinks',
                          co2_emission_column), (f'{energy}.energy_production', energy),
-                        np.identity(len(years)) * scaling_factor_energy_production * value)
+                        np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                 elif last_part_key == 'cons':
                     for energy_df in energy_list:
                         list_columnsenergycons = list(
@@ -171,12 +175,12 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                             self.set_partial_derivative_for_other_types(
                                 ('CO2_emissions_by_use_sinks', co2_emission_column), (
                                     f'{energy_df}.energy_consumption', f'{energy} (TWh)'),
-                                np.identity(len(years)) * scaling_factor_energy_consumption * value)
+                                np.identity(len(years)) * scaling_factor_energy_consumption * value / 1e3)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
                         ('CO2_emissions_by_use_sinks',
                          co2_emission_column), (f'{energy}.CO2_per_use', 'CO2_per_use'),
-                        np.identity(len(years)) * value)
+                        np.identity(len(years)) * value / 1e3)
 
                 else:
                     very_last_part_key = energy_prod_info.split('#')[2]
@@ -184,9 +188,9 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_by_use_sinks', co2_emission_column), (
                                 f'{energy}.energy_production', last_part_key),
-                            np.identity(len(years)) * scaling_factor_energy_production * value)
+                            np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_by_use_sinks', co2_emission_column), (
                                 f'{energy}.energy_consumption', last_part_key),
-                            np.identity(len(years)) * scaling_factor_energy_production * value)
+                            np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)

@@ -81,6 +81,8 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.model_name = 'ConsumptionCO2Emissions'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_emissions': self.name,
+                   'ns_energy': self.name + f'.{self.model_name}',
+                   'ns_ccs': self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -103,7 +105,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}.energy_production_detailed': self.energy_production_detailed,
         }
         for energy in self.energy_list:
-            inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
+            inputs_dict[f'{self.name}.{self.model_name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
             inputs_dict[f'{self.name}.{self.model_name}.{energy}.energy_production'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{self.model_name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -114,7 +116,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0]
 
         coupled_inputs = [
-            f'{self.name}.{energy}.CO2_per_use' for energy in self.energy_list]
+            f'{self.name}.{self.model_name}.{energy}.CO2_per_use' for energy in self.energy_list]
         coupled_outputs = [f'{self.name}.CO2_emissions_by_use_sources',
                            f'{self.name}.CO2_emissions_by_use_sinks']
 
