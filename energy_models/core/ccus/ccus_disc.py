@@ -85,6 +85,8 @@ class CCUS_Discipline(SoSDiscipline):
         'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2'},
         EnergyMix.CARBON_STORAGE_CONSTRAINT: {'type': 'array', 'unit': '',  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'ratio_objective_ccs': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'all_ccs_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+
     }
 
     energy_name = EnergyMix.name
@@ -171,6 +173,7 @@ class CCUS_Discipline(SoSDiscipline):
             'ratio_available_carbon_capture': self.ccus_model.ratio_available_carbon_capture,
             EnergyMix.CARBON_STORAGE_CONSTRAINT: self.ccus_model.carbon_storage_constraint,
             'ratio_objective_ccs': self.ccus_model.ratio_objective,
+            'all_ccs_demand_ratio': self.ccus_model.all_streams_demand_ratio
         }
 
         #-- store outputs
