@@ -21,7 +21,7 @@ from os.path import join, dirname
 import scipy.interpolate as sc
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
     get_static_prices
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -75,7 +75,8 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
                                           'invest': invest
                                           })
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-        co2_taxes = [14.86, 17.22, 20.27, 29.01,  34.05,   39.08,  44.69,   50.29]
+        co2_taxes = [14.86, 17.22, 20.27, 29.01,
+                     34.05,   39.08,  44.69,   50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -117,8 +118,8 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051))}
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -164,8 +165,8 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051))}
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

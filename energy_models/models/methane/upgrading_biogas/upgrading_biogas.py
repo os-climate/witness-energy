@@ -19,7 +19,7 @@ from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.ressources_models.monotethanolamine import Monotethanolamine
+from energy_models.core.stream_type.resources_models.monotethanolamine import Monotethanolamine
 
 import numpy as np
 
@@ -122,7 +122,7 @@ class UpgradingBiogas(MethaneTechno):
 
         return co2_prod
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from electricity production and negative CO2 from biogas
         '''
@@ -135,7 +135,7 @@ class UpgradingBiogas(MethaneTechno):
 
         # This CO2 is captured we do not take it into account in the CO2 emissions
 #         co2_prod = self.get_theoretical_co2_prod()
-#         self.carbon_emissions['CO2'] = -self.ressources_CO2_emissions['CO2'] * \
+#         self.carbon_emissions['CO2'] = -self.resources_CO2_emissions['CO2'] * \
 #             co2_prod
         # + self.carbon_emissions['CO2']
         return self.carbon_emissions[f'{BioGas.name}'] + self.carbon_emissions[Electricity.name]

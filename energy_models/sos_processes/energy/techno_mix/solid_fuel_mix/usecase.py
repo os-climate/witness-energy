@@ -118,9 +118,9 @@ class Study(EnergyMixStudyManager):
         self.transport = pd.DataFrame(
             {'years': years, 'transport': 7.6})
 
-        self.ressources_price = pd.DataFrame(columns=['years', 'CO2'])
-        self.ressources_price['years'] = years
-        self.ressources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
+        self.resources_price = pd.DataFrame(columns=['years', 'CO2'])
+        self.resources_price['years'] = years
+        self.resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
 
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'solid_fuel': 0.64 / 4.86, 'biomass_dry': - 0.425 * 44.01 / 12.0, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})

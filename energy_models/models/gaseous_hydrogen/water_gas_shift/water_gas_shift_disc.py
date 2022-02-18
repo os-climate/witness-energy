@@ -98,6 +98,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                                                   5.609159099363739, 6.3782076592711885, 8.704303197679629,
                                                                   6.1950256610618135, 3.7836557445596464, 1.7560205289962763,
                                                                   ]) + 0.82141})
+    wgs_flue_gas_ratio = np.array([0.175])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
@@ -114,18 +115,10 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                'needed_syngas_ratio': {'type': 'float', 'default': 0.0},
                #                'syngas_ratio_technos': {'type': 'dict', 'visibility': HydrogenTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
                #                'energy_detailed_techno_prices': {'type': 'dataframe', 'visibility': HydrogenTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'}
-
+               'flue_gas_co2_ratio': {'type': 'array', 'default': wgs_flue_gas_ratio}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
-
-    wgs_flue_gas_ratio = np.array([0.175])
-    # -- add specific techno outputs to this
-    #'detailed_prod_syngas_prices': {'type': 'dataframe', 'unit': '$/MWh'},
-    DESC_OUT = {
-        'flue_gas_co2_ratio': {'type': 'array', 'default': wgs_flue_gas_ratio}}
-
-    DESC_OUT.update(GaseousHydrogenTechnoDiscipline.DESC_OUT)
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -215,7 +208,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             ('techno_detailed_prices', 'syngas'),  ('syngas_ratio',), dsyngas_dsyngas_ratio / 100.0)
 
         dwater_dsyngas_ratio = np.identity(len(
-            self.techno_model.years)) * dwater_needs_dsyngas_ratio * self.techno_model.ressources_prices['water'].to_numpy() / efficiency[:, np.newaxis]
+            self.techno_model.years)) * dwater_needs_dsyngas_ratio * self.techno_model.resources_prices['water'].to_numpy() / efficiency[:, np.newaxis]
 
         self.set_partial_derivative_for_other_types(
             ('techno_detailed_prices', 'water'),  ('syngas_ratio',), dwater_dsyngas_ratio / 100.0)

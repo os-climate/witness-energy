@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 from os.path import join, dirname
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction import HydrogenLiquefaction
 from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction_disc import HydrogenLiquefactionDiscipline
 
@@ -87,13 +87,13 @@ class LiquefactionPriceTestCase(unittest.TestCase):
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 500.0})
 
-        self.ressources_price = pd.DataFrame({'years': np.arange(2020, 2051),
-                                              'water': 31 * [0.002],
-                                              'uranium fuel': 1390,
-                                              'CO2': [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119],
-                                              'biomass_dry': [0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812],
-                                              'wet_biomass': [0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056]
-                                              })
+        self.resources_price = pd.DataFrame({'years': np.arange(2020, 2051),
+                                             'water': 31 * [0.002],
+                                             'uranium fuel': 1390,
+                                             'CO2': [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119],
+                                             'biomass_dry': [0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812, 0.06812],
+                                             'wet_biomass': [0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056, 0.056]
+                                             })
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -121,8 +121,8 @@ class LiquefactionPriceTestCase(unittest.TestCase):
                        'transport_margin': self.margin,
                        'initial_production': HydrogenLiquefactionDiscipline.initial_production,
                        'initial_age_distrib': HydrogenLiquefactionDiscipline.initial_age_distribution,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'ressources_price': self.ressources_price,
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_price': self.resources_price,
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -168,8 +168,8 @@ class LiquefactionPriceTestCase(unittest.TestCase):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_price': self.ressources_price,
-                       f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051))}
+                       f'{self.name}.resources_price': self.resources_price,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -204,8 +204,8 @@ class LiquefactionPriceTestCase(unittest.TestCase):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_price': self.ressources_price,
-                       f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051))}
+                       f'{self.name}.resources_price': self.resources_price,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

@@ -18,9 +18,9 @@ import unittest
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 
 
-class RessourcesDisc(unittest.TestCase):
+class ResourcesDisc(unittest.TestCase):
     """
-    Ressources prices test class
+    Resources prices test class
     """
 
     def setUp(self):
@@ -33,17 +33,17 @@ class RessourcesDisc(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_ressources_discipline(self):
+    def test_01_resources_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'ressources'
+        self.model_name = 'resources'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_energy_study': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.core.stream_type.ressources_data_disc.RessourcesDisc'
+        mod_path = 'energy_models.core.stream_type.resources_data_disc.ResourcesDisc'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

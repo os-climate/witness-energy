@@ -15,7 +15,7 @@ limitations under the License.
 '''
 from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.ressources_models.water import Water
+from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -44,7 +44,7 @@ class SMR(GaseousHydrogenTechno):
                                             / self.cost_details['efficiency'])
 
         # Cost of water for 1 kWH of H2
-        self.cost_details['water'] = list(self.ressources_prices['water'] * self.cost_details['water_needs']
+        self.cost_details['water'] = list(self.resources_prices['water'] * self.cost_details['water_needs']
                                           / self.cost_details['efficiency'])
 
         return self.cost_details['electricity'] + self.cost_details['methane'] + self.cost_details['water']
@@ -72,7 +72,7 @@ class SMR(GaseousHydrogenTechno):
             self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']  # in kg
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from CO2 and methane
         Oxygen is not taken into account

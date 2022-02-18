@@ -276,7 +276,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
             'techno_detailed_consumption')
         techno_production = self.get_sosdisc_outputs(
             'techno_detailed_production')
-        chart_name = f'{self.techno_name} ressources production & consumption <br>with input investments'
+        chart_name = f'{self.techno_name} resources production & consumption <br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Mass [Mt]',
                                              chart_name=chart_name, stacked_bar=True)

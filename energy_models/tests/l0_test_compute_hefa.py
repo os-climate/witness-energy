@@ -23,9 +23,9 @@ from energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygen
 from energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation_disc import HefaDecarboxylationDiscipline
 from energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation import HefaDecarboxylation
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_models.natural_oil import NaturalOil
+from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
@@ -68,18 +68,18 @@ class HEFAPriceTestCase(unittest.TestCase):
 
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'electricity': 0.2, f'{GaseousHydrogen.name}': 0.0})
-        default_ressources_price_df = pd.DataFrame({'years': years,
-                                                    # 'water':  years * [2],
-                                                    # 'uranium fuel': 1390000,
-                                                    # 'CO2': np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000,
-                                                    # 'biomass_dry': 68.12,
-                                                    # 'wet_biomass': 56,
-                                                    # 'wood': years * [120],
-                                                    # from
-                                                    # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/3
-                                                    f'{NaturalOil.name}': np.ones(len(years)) * 1.054 * 1000,
-                                                    })
-        self.ressources_prices = default_ressources_price_df
+        default_resources_price_df = pd.DataFrame({'years': years,
+                                                   # 'water':  years * [2],
+                                                   # 'uranium fuel': 1390000,
+                                                   # 'CO2': np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000,
+                                                   # 'biomass_dry': 68.12,
+                                                   # 'wet_biomass': 56,
+                                                   # 'wood': years * [120],
+                                                   # from
+                                                   # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/3
+                                                   f'{NaturalOil.name}': np.ones(len(years)) * 1.054 * 1000,
+                                                   })
+        self.resources_prices = default_resources_price_df
 
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': np.ones(len(years)) * 347.5 / 1000})
@@ -114,7 +114,7 @@ class HEFAPriceTestCase(unittest.TestCase):
                        'year_end': 2050,
                        'techno_infos_dict': HefaDecarboxylationDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
-                       'ressources_price': self.ressources_prices,
+                       'resources_price': self.resources_prices,
                        'invest_level': self.invest_level,
                        'invest_before_ystart': HefaDecarboxylationDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
@@ -124,7 +124,7 @@ class HEFAPriceTestCase(unittest.TestCase):
                        'initial_production': HefaDecarboxylationDiscipline.initial_production,
                        'initial_age_distrib': HefaDecarboxylationDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -163,7 +163,7 @@ class HEFAPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.ressources_price': self.ressources_prices,
+                       f'{self.name}.resources_price': self.resources_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
@@ -189,7 +189,7 @@ class HEFAPriceTestCase(unittest.TestCase):
                        'year_end': 2050,
                        'techno_infos_dict': HefaDeoxygenationDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
-                       'ressources_price': self.ressources_prices,
+                       'resources_price': self.resources_prices,
                        'invest_level': self.invest_level,
                        'invest_before_ystart': HefaDeoxygenationDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
@@ -199,7 +199,7 @@ class HEFAPriceTestCase(unittest.TestCase):
                        'initial_production': HefaDeoxygenationDiscipline.initial_production,
                        'initial_age_distrib': HefaDeoxygenationDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -238,7 +238,7 @@ class HEFAPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.ressources_price': self.ressources_prices,
+                       f'{self.name}.resources_price': self.resources_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
                        f'{self.name}.CO2_taxes': self.co2_taxes,

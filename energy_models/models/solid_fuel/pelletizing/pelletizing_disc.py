@@ -85,6 +85,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                                          0.89, 3.55, 3.55, 4.56, 2.53,
                                                          2.53, 1.27, 0.63, 0.63, 1.01,
                                                          1.01, 1.01, 1.01, 0.92]})
+    pelletizing_flue_gas_ratio = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
@@ -93,15 +94,10 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+                                        'dataframe_edition_locked': False},
+               'flue_gas_co2_ratio': {'type': 'array', 'default': pelletizing_flue_gas_ratio}}
     # -- add specific techno inputs to this
     DESC_IN.update(SolidFuelTechnoDiscipline.DESC_IN)
-
-    # -- add specific techno outputs to this
-    pelletizing_flue_gas_ratio = np.array([0.12])
-    DESC_OUT = {'flue_gas_co2_ratio': {
-        'type': 'array', 'default': pelletizing_flue_gas_ratio}}
-    DESC_OUT.update(SolidFuelTechnoDiscipline.DESC_OUT)
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
