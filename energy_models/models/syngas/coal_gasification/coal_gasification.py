@@ -49,7 +49,7 @@ class CoalGasification(SyngasTechno):
         return {SolidFuel.name: np.identity(len(self.years)) * fuel_needs,
                 }
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from biomass and positive from elec
         '''

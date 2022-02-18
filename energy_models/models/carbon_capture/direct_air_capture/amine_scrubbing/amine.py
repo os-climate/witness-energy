@@ -37,7 +37,7 @@ class Amine(CCTechno):
         self.cost_details['amine_needs'] = self.compute_amine_need()
 
         self.cost_details['amine'] = list(
-            self.ressources_prices['amine'] * self.cost_details['amine_needs'] / self.cost_details['efficiency'])
+            self.resources_prices['amine'] * self.cost_details['amine_needs'] / self.cost_details['efficiency'])
 
         return self.cost_details[Electricity.name] + self.cost_details['amine']
 

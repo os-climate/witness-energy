@@ -62,7 +62,7 @@ class FossilGas(MethaneTechno):
         self.consumption[f'natural_gas_resource'] = self.production[
             f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / Methane.data_energy_dict['calorific_value']  # in Mt
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from electricity production 
         '''

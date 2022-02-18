@@ -20,7 +20,7 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
     get_static_prices
 from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import AmineScrubbingDiscipline
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
@@ -97,9 +97,9 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                            3894500000.0, 3780750000.0, 3567000000.0,
                            ]) * 0.02 / 1000 * 1.0e-9
 
-        self.ressources_prices = pd.DataFrame({'years': years, 'amine': amine_price, 'potassium': KOH_price,
-                                               'calcium': CaO_price,
-                                               })
+        self.resources_prices = pd.DataFrame({'years': years, 'amine': amine_price, 'potassium': KOH_price,
+                                              'calcium': CaO_price,
+                                              })
         self.flue_gas_mean = pd.DataFrame(
             {'years': years, 'flue_gas_mean': np.linspace(0.1, 0.46, len(years))})
         self.invest_level = pd.DataFrame(
@@ -151,8 +151,8 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
@@ -162,7 +162,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.margin':  self.margin,
                        f'{self.name}.{self.model_name}.invest_before_ystart':
                        AmineScrubbingDiscipline.invest_before_year_start,
-                       f'{self.name}.ressources_price': self.ressources_prices,
+                       f'{self.name}.resources_price': self.resources_prices,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -202,8 +202,8 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
@@ -213,7 +213,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.margin':  self.margin,
                        f'{self.name}.{self.model_name}.invest_before_ystart':
                        CalciumPotassiumScrubbingDiscipline.invest_before_year_start,
-                       f'{self.name}.ressources_price': self.ressources_prices,
+                       f'{self.name}.resources_price': self.resources_prices,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -254,8 +254,8 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
@@ -265,7 +265,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.margin':  self.margin,
                        f'{self.name}.{self.model_name}.invest_before_ystart':
                        CalciumLoopingDiscipline.invest_before_year_start,
-                       f'{self.name}.ressources_price': self.ressources_prices,
+                       f'{self.name}.resources_price': self.resources_prices,
                        f'{self.name}.flue_gas_mean': self.flue_gas_mean,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,

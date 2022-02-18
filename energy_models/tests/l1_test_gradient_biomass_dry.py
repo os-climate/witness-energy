@@ -21,7 +21,7 @@ from os.path import join, basename, dirname
 import pickle
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
     get_static_prices
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -35,9 +35,9 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
 
     def analytic_grad_entry(self):
         return [
+            self.test_01_crop_energy_discipline_analytic_grad,
             self.test_02_managed_wood_discipline_analytic_grad,
             self.test_03_unmanaged_wood_discipline_analytic_grad,
-            self.test_crop_energy_discipline_analytic_grad,
             self.test_04_biomass_dry_discipline_jacobian,
         ]
 
@@ -113,7 +113,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
     def tearDown(self):
         pass
 
-    def test_crop_energy_discipline_analytic_grad(self):
+    def test_01_crop_energy_discipline_analytic_grad(self):
 
         self.name = 'Test'
         self.model_name = 'crop_energy'
@@ -134,8 +134,8 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
@@ -183,8 +183,8 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
@@ -232,8 +232,8 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         np.set_printoptions(threshold=np.inf)
 
-        inputs_dict = {f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,

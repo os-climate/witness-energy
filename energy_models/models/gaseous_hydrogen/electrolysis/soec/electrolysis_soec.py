@@ -15,8 +15,8 @@ limitations under the License.
 '''
 
 from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
-from energy_models.core.stream_type.ressources_models.dioxygen import Dioxygen
-from energy_models.core.stream_type.ressources_models.water import Water
+from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
+from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 
 import numpy as np
@@ -46,7 +46,7 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
 
         # Cost of water for 1 kWH of H2
         self.cost_details[Water.name] = list(
-            self.ressources_prices[Water.name] * self.cost_details['water_needs'])
+            self.resources_prices[Water.name] * self.cost_details['water_needs'])
 
         return self.cost_details[Electricity.name] + self.cost_details[Water.name]
 
@@ -60,7 +60,7 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
         return {Electricity.name: np.identity(len(self.years)) / efficiency.values,
                 }
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account positive CO2 from methane and elec prod
         Carbon capture (Methane is not burned but transformed is not taken into account)

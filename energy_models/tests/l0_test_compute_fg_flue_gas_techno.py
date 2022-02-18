@@ -26,7 +26,7 @@ from energy_models.models.carbon_capture.flue_gas_capture.flue_gas_techno.flue_g
 from energy_models.models.carbon_capture.flue_gas_capture.flue_gas_techno.flue_gas_techno import FlueGasTechno
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -85,7 +85,7 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * transport_cost})
 
-        self.ressources_price = pd.DataFrame({'years': years})
+        self.resources_price = pd.DataFrame({'years': years})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -107,9 +107,9 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
                        'invest_before_ystart': FlueGasTechnoDiscipline.invest_before_year_start,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'energy_prices': self.energy_prices,
                        'flue_gas_mean': self.flue_gas_mean,
                        'CO2_taxes': self.co2_taxes,
@@ -156,7 +156,7 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
                        'invest_before_ystart': FlueGasTechnoDiscipline.invest_before_year_start,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'energy_prices': self.energy_prices,
                        'CO2_taxes': self.co2_taxes,
                        'transport_margin': self.margin,
@@ -164,7 +164,7 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
                        'initial_production': FlueGasTechnoDiscipline.initial_capture,
                        'initial_age_distrib': FlueGasTechnoDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -212,7 +212,7 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.ressources_price': self.ressources_price,
+                       f'{self.name}.resources_price': self.resources_price,
                        f'{self.name}.{self.model_name}.margin': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)

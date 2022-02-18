@@ -16,8 +16,8 @@ limitations under the License.
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.ressources_models.water import Water
-from energy_models.core.stream_type.ressources_models.dioxygen import Dioxygen
+from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 
 import numpy as np
@@ -41,11 +41,11 @@ class CoElectrolysis(SyngasTechno):
         self.cost_details['water_needs'] = self.get_theoretical_water_needs()
 
         # Cost of CO2 for 1 kWH of H2
-        self.cost_details[CO2.name] = list(self.ressources_prices[f'{CO2.name}'] * self.cost_details['CO2_needs']
+        self.cost_details[CO2.name] = list(self.resources_prices[f'{CO2.name}'] * self.cost_details['CO2_needs']
                                            / self.cost_details['efficiency'])
 
         # Cost of H20 for 1 kWH of H2
-        self.cost_details[Water.name] = list(self.ressources_prices[f'{Water.name}'] * self.cost_details['water_needs']
+        self.cost_details[Water.name] = list(self.resources_prices[f'{Water.name}'] * self.cost_details['water_needs']
                                              / self.cost_details['efficiency'])
 
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
@@ -62,13 +62,13 @@ class CoElectrolysis(SyngasTechno):
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 }
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from CO2 and positive from elec
         Oxygen is not taken into account
         '''
 
-        self.carbon_emissions[f'{CO2.name}'] = self.ressources_CO2_emissions[f'{CO2.name}'] * \
+        self.carbon_emissions[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
             self.cost_details['CO2_needs'] / \
             self.cost_details['efficiency']
 

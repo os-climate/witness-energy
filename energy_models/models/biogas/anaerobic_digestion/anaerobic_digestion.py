@@ -41,7 +41,7 @@ class AnaerobicDigestion(BioGasTechno):
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    )
         # Cost of biomass is in $/kg
-        self.cost_details[WetBiomass.name] = list(self.ressources_prices[WetBiomass.name] * self.cost_details['wet_biomass_needs']
+        self.cost_details[WetBiomass.name] = list(self.resources_prices[WetBiomass.name] * self.cost_details['wet_biomass_needs']
                                                   )
 
         return self.cost_details[Electricity.name] + self.cost_details[WetBiomass.name]
@@ -69,12 +69,12 @@ class AnaerobicDigestion(BioGasTechno):
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
             self.production[f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from electricity production and negative CO2 from biomass
         '''
 
-        self.carbon_emissions[f'{WetBiomass.name}'] = self.ressources_CO2_emissions[f'{WetBiomass.name}'] * \
+        self.carbon_emissions[f'{WetBiomass.name}'] = self.resources_CO2_emissions[f'{WetBiomass.name}'] * \
             self.cost_details['wet_biomass_needs']
 
         self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \

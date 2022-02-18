@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 from os.path import join, dirname
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
     get_static_prices
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -115,10 +115,10 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
                                                 == 'solid_fuel.CoalExtraction']
 
-        self.ressources_price = pd.DataFrame(columns=['years', 'CO2', 'water'])
-        self.ressources_price['years'] = years
-        self.ressources_price['CO2'] = np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542,
-                                                 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
+        self.resources_price = pd.DataFrame(columns=['years', 'CO2', 'water'])
+        self.resources_price['years'] = years
+        self.resources_price['CO2'] = np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542,
+                                                0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
         #---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
@@ -154,8 +154,8 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
@@ -202,8 +202,8 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_pellet,
@@ -211,7 +211,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport_pellet,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_price': self.ressources_price,
+                       f'{self.name}.resources_price': self.resources_price,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
