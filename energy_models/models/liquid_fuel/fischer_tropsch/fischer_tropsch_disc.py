@@ -101,6 +101,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                                          3.15379843, 1.19113417, 1.70548756, 4.65474781]})  # to review
     ratio_available_cc_default = pd.DataFrame({'years': np.arange(2020, 2050 + 1),
                                                'ratio': 1.0})
+    ft_flue_gas_ratio = np.array([0.12])
+
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -123,15 +125,10 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                          'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY,
                                          'namespace': 'ns_energy',
                                          'default': Syngas.data_energy_dict},
+               'flue_gas_co2_ratio': {'type': 'array', 'default': ft_flue_gas_ratio}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)
-
-    # -- add specific techno outputs to this
-    ft_flue_gas_ratio = np.array([0.12])
-    DESC_OUT = {
-        'flue_gas_co2_ratio': {'type': 'array', 'default': ft_flue_gas_ratio}}
-    DESC_OUT.update(LiquidFuelTechnoDiscipline.DESC_OUT)
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
