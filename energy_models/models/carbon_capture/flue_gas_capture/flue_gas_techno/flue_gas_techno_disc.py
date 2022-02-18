@@ -25,6 +25,20 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
     Modeled after calcium looping
     """
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Flue Gas Technology Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     techno_name = 'flue_gas_capture.FlueGasTechno'
     lifetime = 25
     construction_delay = 1

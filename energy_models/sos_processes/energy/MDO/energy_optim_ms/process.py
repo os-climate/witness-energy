@@ -16,6 +16,14 @@ limitations under the License.
 from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 class ProcessBuilder(BaseProcessBuilder):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Optimisation Multi-Scenario Process',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
     def get_builders(self):
     
         # scenario build map

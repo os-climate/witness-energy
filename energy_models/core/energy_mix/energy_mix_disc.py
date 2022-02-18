@@ -45,6 +45,20 @@ from sos_trades_core.tools.cst_manager.func_manager_common import get_dsmooth_dv
 
 class Energy_Mix_Discipline(SoSDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Mix Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-battery-full fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
                'ccs_list': {'type': 'string_list', 'possible_values': [CarbonCapture.name, CarbonStorage.name],

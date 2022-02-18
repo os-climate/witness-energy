@@ -714,4 +714,4 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = SyngasJacobianTestCase()
     cls.setUp()
-    cls.test_09_generic_syngas_discipline_jacobian()
+    cls.test_04_rwgs_discipline_jacobian()

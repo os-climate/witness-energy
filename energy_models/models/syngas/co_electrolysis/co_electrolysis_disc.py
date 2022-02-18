@@ -25,6 +25,20 @@ from energy_models.core.stream_type.energy_models.syngas import compute_calorifi
 
 
 class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Co-Electrolysis Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-bolt fa-fw',
+        'version': '',
+    }
     # -- add specific techno inputs to this
     DESC_IN = SyngasTechnoDiscipline.DESC_IN
     techno_name = 'CoElectrolysis'

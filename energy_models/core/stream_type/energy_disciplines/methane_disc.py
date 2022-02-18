@@ -19,6 +19,20 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 
 
 class MethaneDiscipline(EnergyDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': ' Methane Energy Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-bong fa-fw',
+        'version': '',
+    }
       # -- add specific techno inputs to this
 
     DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['Methanation', 'UpgradingBiogas', 'FossilGas'],

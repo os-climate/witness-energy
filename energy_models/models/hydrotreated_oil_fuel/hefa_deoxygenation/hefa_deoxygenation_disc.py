@@ -24,6 +24,20 @@ from energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygen
 
 
 class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygenation_disc',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     # -- add specific techno inputs to this
     techno_name = 'HefaDeoxygenation'
     energy_name = 'hydrotreated_oil_fuel'

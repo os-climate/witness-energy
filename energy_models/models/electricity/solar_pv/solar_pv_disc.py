@@ -25,6 +25,20 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Solar Photovoltaic Energy Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-solar-panel fa-fw',
+        'version': '',
+    }
     techno_name = 'SolarPv'
     lifetime = 25  # IRENA, EOLES model
     construction_delay = 1

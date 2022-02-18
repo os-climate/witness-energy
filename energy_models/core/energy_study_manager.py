@@ -50,6 +50,7 @@ from energy_models.sos_processes.energy.techno_mix.biodiesel_mix.usecase import 
 from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as LiquidHydrogen_technos
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as CarbonCapture_technos
 from energy_models.sos_processes.energy.techno_mix.carbon_storage_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as CarbonStorage_technos
+from energy_models.sos_processes.energy.techno_mix.carbon_storage_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT_DEV as CarbonStorage_technos_dev
 from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.sos_processes.energy.techno_mix.renewable_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as Renewable_technos
 from energy_models.sos_processes.energy.techno_mix.renewable_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as Renewable_technos
@@ -92,7 +93,7 @@ DEFAULT_TECHNO_DICT_DEV = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_
                            BioDiesel.name: {'type': ENERGY_TYPE, 'value': BioDiesel_technos},
                            LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos},
                            CarbonCapture.name: {'type': CCUS_TYPE, 'value': CarbonCapture_technos},
-                           CarbonStorage.name: {'type': CCUS_TYPE, 'value': CarbonStorage_technos}}
+                           CarbonStorage.name: {'type': CCUS_TYPE, 'value': CarbonStorage_technos_dev}}
 
 DEFAULT_COARSE_TECHNO_DICT = {'renewable': {'type': ENERGY_TYPE, 'value': ['RenewableSimpleTechno']},
                               'fossil': {'type': ENERGY_TYPE, 'value': ['FossilSimpleTechno']},

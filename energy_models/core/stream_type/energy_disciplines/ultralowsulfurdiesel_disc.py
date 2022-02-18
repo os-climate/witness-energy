@@ -20,6 +20,20 @@ from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import Ul
 
 class UltraLowSulfurDieselDiscipline(EnergyDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Ultra Low Sulfur Diesel Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
+
     DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['Refinery'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_kerosene',

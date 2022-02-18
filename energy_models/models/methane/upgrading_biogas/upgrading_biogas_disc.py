@@ -22,6 +22,20 @@ from energy_models.models.methane.upgrading_biogas.upgrading_biogas import Upgra
 
 
 class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Methane Upgrading Biogas Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-bong fa-fw',
+        'version': '',
+    }
     # -- add specific techno inputs to this
 
     techno_name = 'UpgradingBiogas'

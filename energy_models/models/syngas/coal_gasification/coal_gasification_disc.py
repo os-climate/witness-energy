@@ -24,6 +24,20 @@ from energy_models.core.stream_type.energy_models.syngas import compute_calorifi
 
 class CoalGasificationDiscipline(SyngasTechnoDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Coal Gasification Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-burn fa-fw',
+        'version': '',
+    }
+
     techno_name = 'CoalGasification'
     lifetime = 20
     construction_delay = 4  # years

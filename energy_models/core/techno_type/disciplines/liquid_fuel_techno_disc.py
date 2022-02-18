@@ -24,6 +24,20 @@ from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 
 
 class LiquidFuelTechnoDiscipline(TechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Liquid Fuel Technology Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_liquid_fuel',
                                   'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),

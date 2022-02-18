@@ -24,6 +24,20 @@ import numpy as np
 
 
 class CCTechnoDiscipline(TechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Carbon Capture Techology Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_carbon_capture',
                                   'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),

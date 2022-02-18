@@ -38,6 +38,20 @@ from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import Ul
 
 
 class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Fischer Tropsch Kerosene Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-charging-station fa-fw',
+        'version': '',
+    }
     # -- add specific techno inputs to this
     techno_name = 'FischerTropsch'
     lifetime = 30
@@ -145,8 +159,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         margin = self.techno_model.margin['margin'].values
 
-        dprice_FT_dsyngas_ratio = self.techno_model.dprice_FT_dsyngas_ratio * \
-            np.split(margin, len(margin)) / 100.0 / \
+        dprice_FT_dsyngas_ratio = self.techno_model.dprice_FT_dsyngas_ratio / \
             100.0  # now syngas is in % grad is divided by 100
 
         self.set_partial_derivative_for_other_types(
@@ -183,8 +196,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('CO2_emissions', self.techno_name), ('syngas_ratio',), dco2_emissions_dsyngas_ratio / 100.0)  # now syngas is in % grad is divided by 100
 
-        dprice_FT_wotaxes_dsyngas_ratio = self.techno_model.dprice_FT_wotaxes_dsyngas_ratio * \
-            np.split(margin, len(margin)) / 100
+        dprice_FT_wotaxes_dsyngas_ratio = self.techno_model.dprice_FT_wotaxes_dsyngas_ratio
         self.set_partial_derivative_for_other_types(
             ('techno_prices',
              f'{self.techno_name}_wotaxes'), ('syngas_ratio',),

@@ -19,6 +19,20 @@ from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import H
 
 
 class HydrotreatedOilFuelDiscipline(EnergyDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Hydrotreated Oil Fuel HEFA Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-gas-pump fa-fw',
+        'version': '',
+    }
     # -- add specific techno inputs to this
 
     DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['HefaDecarboxylation', 'HefaDeoxygenation'],

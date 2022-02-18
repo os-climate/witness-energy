@@ -23,6 +23,20 @@ from energy_models.models.solid_fuel.pelletizing.pelletizing import Pelletizing
 
 class PelletizingDiscipline(SolidFuelTechnoDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Solid Fuel Pelletizing Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-circle fa-fw',
+        'version': '',
+    }
+
     techno_name = 'Pelletizing'
     # Wang, Y., Li, G., Liu, Z., Cui, P., Zhu, Z. and Yang, S., 2019.
     # Techno-economic analysis of biomass-to-hydrogen process in comparison with coal-to-hydrogen process.

@@ -12,6 +12,20 @@ from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 
 class ScenarioDiscipline(SoSDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Energy Core Scenario Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
+
     year_index = np.arange(2018, 2051)
 
     # CO2 Taxe Data
