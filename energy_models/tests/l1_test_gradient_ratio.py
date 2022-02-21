@@ -501,6 +501,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             if key in []:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{key}']
+            elif key in ['flue_gas_co2_ratio', ]:
+                pass
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
@@ -589,6 +591,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             if key in []:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{key}']
+            elif key in ['flue_gas_co2_ratio', ]:
+                pass
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
@@ -1095,4 +1099,4 @@ if '__main__' == __name__:
     cls = RatioJacobianTestCase()
     cls.setUp()
     cls.launch_data_pickle_generation()
-    cls.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian()
+    cls.test_06_ratio_FischerTropsch_discipline_jacobian()
