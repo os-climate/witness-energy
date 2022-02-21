@@ -314,7 +314,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=inputs_names, outputs=outputs_names, parallel=self.parallel)
 
-    def test_02_energy_mix_discipline_residual_vars_wrt_state_variables(self):
+    def _test_02_energy_mix_discipline_residual_vars_wrt_state_variables(self):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -423,7 +423,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_full_names = [disc_energy_mix.get_var_full_name(
             inp, disc_energy_mix._data_in) for inp in input_names]
 
-        output_names = ['energy_prices', 'energy_CO2_emissions', 'co2_emissions_objective', 'energy_production_objective', 'methane.demand_violation', 'hydrogen.gaseous_hydrogen.demand_violation',
+        output_names = ['energy_prices', 'energy_CO2_emissions', 'energy_production_objective', 'methane.demand_violation', 'hydrogen.gaseous_hydrogen.demand_violation',
                         'biogas.demand_violation', 'electricity.demand_violation', 'solid_fuel.demand_violation', 'liquid_fuel.demand_violation', 'biodiesel.demand_violation', 'syngas.demand_violation', 'biomass_dry.demand_violation']
         outputs_full_names = [disc_energy_mix.get_var_full_name(
             out, disc_energy_mix._data_out) for out in output_names]
@@ -532,7 +532,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_co2_emissions_gt.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            inputs=inputs_names, outputs=[f'{name}.{model_name}.co2_emissions_Gt', f'{name}.{model_name}.co2_emissions_needed_by_energy_mix', f'{name}.{model_name}.co2_emissions_from_energy_mix'], parallel=False)
+                            inputs=inputs_names, outputs=[f'{name}.{model_name}.co2_emissions_needed_by_energy_mix'], parallel=False)
 
     def test_05_energy_mix_test_mean_price_grad(self):
 
