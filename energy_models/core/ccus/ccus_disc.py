@@ -543,7 +543,7 @@ class CCUS_Discipline(SoSDiscipline):
 
     def get_chart_carbon_storage_constraint(self):
 
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus_Gt')
 
         carbon_storage_limit = self.get_sosdisc_inputs('carbonstorage_limit')
         years = list(co2_emissions['years'])
@@ -559,7 +559,7 @@ class CCUS_Discipline(SoSDiscipline):
         visible_line = True
 
         new_series = InstanciatedSeries(
-            years, list(co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].cumsum().values / 1e3), 'cumulative sum of carbon capture (Gt)', 'lines', visible_line)
+            years, list(co2_emissions[f'{CarbonStorage.name} Limited by capture (Gt)'].cumsum().values), 'cumulative sum of carbon capture (Gt)', 'lines', visible_line)
 
         new_chart.series.append(new_series)
 
