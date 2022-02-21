@@ -16,7 +16,7 @@ limitations under the License.
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.ressources_models.oil import CrudeOil
+from energy_models.core.stream_type.resources_models.oil import CrudeOil
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 import pandas as pd
 import numpy as np
@@ -44,7 +44,7 @@ class Refinery(LiquidFuelTechno):
 
         self.cost_details['crude_oil_needs'] = self.get_fuel_needs()
         self.cost_details[CrudeOil.name] = list(
-            self.ressources_prices[CrudeOil.name] * self.cost_details['crude_oil_needs'] / self.cost_details['efficiency'])
+            self.resources_prices[CrudeOil.name] * self.cost_details['crude_oil_needs'] / self.cost_details['efficiency'])
 
         return self.cost_details[Electricity.name] + self.cost_details[CrudeOil.name]
 
@@ -145,7 +145,7 @@ class Refinery(LiquidFuelTechno):
 
         return self.cost_details
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from electricity/fuel production
         '''
@@ -153,7 +153,7 @@ class Refinery(LiquidFuelTechno):
         self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
             self.cost_details['elec_needs']
 
-        self.carbon_emissions[CrudeOil.name] = self.ressources_CO2_emissions[f'{CrudeOil.name}'] * \
+        self.carbon_emissions[CrudeOil.name] = self.resources_CO2_emissions[f'{CrudeOil.name}'] * \
             self.cost_details['crude_oil_needs']
 
         return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[CrudeOil.name]
@@ -199,7 +199,7 @@ class Refinery(LiquidFuelTechno):
         dprod_list_dcapex_list = np.zeros(
             (nb_years, nb_years), dtype=arr_type)
 
-        crude_oil_price = self.ressources_prices[CrudeOil.name] * \
+        crude_oil_price = self.resources_prices[CrudeOil.name] * \
             self.get_fuel_needs() / self.configure_efficiency()
         # We fill this jacobian column by column because it is the same element
         # in the entire column

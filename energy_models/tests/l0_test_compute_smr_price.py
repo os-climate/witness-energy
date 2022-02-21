@@ -25,7 +25,7 @@ from energy_models.core.stream_type.energy_models.gaseous_hydrogen import Gaseou
 from energy_models.models.gaseous_hydrogen.smr.smr import SMR
 from energy_models.models.gaseous_hydrogen.smr.smr_disc import SMRDiscipline
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -104,12 +104,12 @@ class SMRPriceTestCase(unittest.TestCase):
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 500})
 
-        self.ressources_price = pd.DataFrame(
+        self.resources_price = pd.DataFrame(
             columns=['years', 'sea_water', 'CO2', 'water'])
-        self.ressources_price['years'] = years
-        self.ressources_price['sea_water'] = 0
-        self.ressources_price['water'] = 1.4
-        self.ressources_price['CO2'] = 0
+        self.resources_price['years'] = years
+        self.resources_price['sea_water'] = 0
+        self.resources_price['water'] = 1.4
+        self.resources_price['CO2'] = 0
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -136,9 +136,9 @@ class SMRPriceTestCase(unittest.TestCase):
                        'transport_margin': self.margin,
                        'initial_production': SMRDiscipline.initial_production,
                        'initial_age_distrib': SMRDiscipline.initial_age_distribution,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -183,7 +183,7 @@ class SMRPriceTestCase(unittest.TestCase):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_price': self.ressources_price}
+                       f'{self.name}.resources_price': self.resources_price}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

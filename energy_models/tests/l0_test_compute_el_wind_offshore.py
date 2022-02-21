@@ -25,7 +25,7 @@ from energy_models.models.electricity.wind_offshore.wind_offshore_disc import Wi
 from energy_models.models.electricity.wind_offshore.wind_offshore import WindOffshore
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -80,7 +80,7 @@ class WindOffshoreTestCase(unittest.TestCase):
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * transport_cost})
 
-        self.ressources_price = pd.DataFrame({'years': years})
+        self.resources_price = pd.DataFrame({'years': years})
 
         self.energy_prices = pd.DataFrame({'years': years})
 
@@ -110,9 +110,9 @@ class WindOffshoreTestCase(unittest.TestCase):
                        'invest_before_ystart': WindOffshoreDiscipline.invest_before_year_start,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'energy_CO2_emissions': pd.DataFrame(),
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'energy_prices': self.energy_prices,
                        'CO2_taxes': self.co2_taxes,
                        'transport_margin': self.margin,
@@ -126,7 +126,7 @@ class WindOffshoreTestCase(unittest.TestCase):
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'data_fuel_dict': Electricity.data_energy_dict,
-        }
+                       }
 
         wind_offshore_model = WindOffshore('WindOffshore')
         wind_offshore_model.configure_parameters(inputs_dict)
@@ -157,10 +157,10 @@ class WindOffshoreTestCase(unittest.TestCase):
                        'invest_before_ystart': WindOffshoreDiscipline.invest_before_year_start,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'energy_prices': self.energy_prices,
                        'energy_CO2_emissions': pd.DataFrame(),
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'CO2_taxes': self.co2_taxes,
                        'transport_margin': self.margin,
                        'initial_production': WindOffshoreDiscipline.initial_production,
@@ -210,7 +210,7 @@ class WindOffshoreTestCase(unittest.TestCase):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.{self.model_name}.transport_cost': self.transport,
-                       f'{self.name}.ressources_price': self.ressources_price,
+                       f'{self.name}.resources_price': self.resources_price,
                        f'{self.name}.{self.model_name}.margin':  self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)

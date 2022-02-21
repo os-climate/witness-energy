@@ -93,7 +93,7 @@ class ManagedWood(BiomassDryTechno):
             self.data_energy_dict['high_calorific_value'] * \
             self.production[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from electricity/fuel production
         '''

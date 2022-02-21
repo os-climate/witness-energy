@@ -112,7 +112,7 @@ class CropEnergy(BiomassDryTechno):
             self.data_energy_dict['calorific_value'] / \
             density_per_ha
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from electricity/fuel production
         '''

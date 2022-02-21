@@ -120,8 +120,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'ressources_price',
-                       'ressources_CO2_emissions', 'scaling_factor_techno_consumption',
+                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
                        'residuals_history', 'all_streams_demand_ratio', 'all_resource_ratio_usable_demand']:
@@ -207,8 +207,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'ressources_price',
-                       'ressources_CO2_emissions', 'scaling_factor_techno_consumption',
+                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
                        'residuals_history', 'all_streams_demand_ratio', 'all_resource_ratio_usable_demand']:
@@ -295,8 +295,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'ressources_price',
-                       'ressources_CO2_emissions', 'scaling_factor_techno_consumption',
+                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
                        'residuals_history', 'all_streams_demand_ratio', 'all_resource_ratio_usable_demand']:
@@ -383,8 +383,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'ressources_price',
-                       'ressources_CO2_emissions', 'scaling_factor_techno_consumption',
+                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
                        'residuals_history', 'all_streams_demand_ratio', 'all_resource_ratio_usable_demand']:
@@ -477,13 +477,13 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'ressources_price',
-                       'ressources_CO2_emissions', 'scaling_factor_techno_consumption',
+                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio',
                        'residuals_history', 'all_streams_demand_ratio', 'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
-                if mda_data_input_dict[self.techno_name][key]['is_coupling'] and 'ressources' not in key:
+                if mda_data_input_dict[self.techno_name][key]['is_coupling'] and 'resources' not in key:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
                 inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -501,6 +501,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             if key in []:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{key}']
+            elif key in ['flue_gas_co2_ratio', ]:
+                pass
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
@@ -565,13 +567,13 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'ressources_price',
-                       'ressources_CO2_emissions', 'scaling_factor_techno_consumption',
+                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio', 'ratio_available_carbon_capture',
                        'residuals_history', 'all_streams_demand_ratio', 'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
-                if mda_data_input_dict[self.techno_name][key]['is_coupling'] and 'ressources' not in key:
+                if mda_data_input_dict[self.techno_name][key]['is_coupling'] and 'resources' not in key:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
                 inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
@@ -589,6 +591,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             if key in []:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{key}']
+            elif key in ['flue_gas_co2_ratio', ]:
+                pass
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
@@ -653,8 +657,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'ressources_price',
-                       'ressources_CO2_emissions', 'scaling_factor_techno_consumption',
+                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio', 'flue_gas_mean',
                        'residuals_history', 'all_streams_demand_ratio', 'all_resource_ratio_usable_demand']:
@@ -1053,7 +1057,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.epsilon0'] = 1.0
         full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
         full_values_dict[f'{self.name}.max_mda_iter'] = 50
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'MDANewtonRaphson'
+        full_values_dict[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
         # Overwrite values for ratios with values from setup
         full_values_dict[f'{self.name}.is_apply_ratio'] = self.is_apply_ratio
         full_values_dict[f'{self.name}.is_stream_demand'] = self.is_stream_demand
@@ -1095,4 +1099,4 @@ if '__main__' == __name__:
     cls = RatioJacobianTestCase()
     cls.setUp()
     cls.launch_data_pickle_generation()
-    cls.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian()
+    cls.test_06_ratio_FischerTropsch_discipline_jacobian()

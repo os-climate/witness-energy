@@ -16,8 +16,8 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.ressources_models.potassium_hydroxide import PotassiumHydroxide
-from energy_models.core.stream_type.ressources_models.calcium_oxide import CalciumOxide
+from energy_models.core.stream_type.resources_models.potassium_hydroxide import PotassiumHydroxide
+from energy_models.core.stream_type.resources_models.calcium_oxide import CalciumOxide
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 import numpy as np
 
@@ -37,12 +37,12 @@ class CalciumPotassium(CCTechno):
 
         self.cost_details['potassium_needs'] = self.compute_potassium_need()
 
-        self.cost_details['potassium'] = list(self.ressources_prices['potassium'] * self.cost_details['potassium_needs']
+        self.cost_details['potassium'] = list(self.resources_prices['potassium'] * self.cost_details['potassium_needs']
                                               / self.techno_infos_dict['energy_efficiency'])
 
         self.cost_details['calcium_needs'] = self.compute_calcium_need()
 
-        self.cost_details['calcium'] = list(self.ressources_prices['calcium'] * self.cost_details['calcium_needs']
+        self.cost_details['calcium'] = list(self.resources_prices['calcium'] * self.cost_details['calcium_needs']
                                             / self.techno_infos_dict['energy_efficiency'])
 
         return self.cost_details[Electricity.name] + self.cost_details['potassium'] + self.cost_details['calcium']

@@ -46,9 +46,9 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
                                                              'margin': ('float',  None, True)},
                                     'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict',
-                                      'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                      'namespace': 'ns_syngas',
-                                      'default': Syngas.data_energy_dict},
+                                  'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                  'namespace': 'ns_syngas',
+                                  'default': Syngas.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
     syngas_ratio = None
@@ -74,8 +74,8 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
         TechnoDiscipline.compute_sos_jacobian(self)
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
-        grad_dict_ressources = self.techno_model.grad_price_vs_ressources_price()
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
         carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
 
         self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions, grad_dict_ressources)
+            grad_dict, carbon_emissions, grad_dict_resources)

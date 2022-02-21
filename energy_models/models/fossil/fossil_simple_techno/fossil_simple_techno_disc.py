@@ -27,7 +27,6 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
         It has properties similar to the coal generation techno
     """
 
-
     # ontology information
     _ontology_data = {
         'label': 'Fossil Technology Model ',
@@ -73,6 +72,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                                          1.69619299, 5.12627214, 2.56313607, 5.12627214, 3.43007916,
                                                          3.43007916, 2.56313607, 5.12627214, 3.43007916]
                                              })
+    fossil_flue_gas_ratio = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
@@ -84,13 +84,11 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+                                        'dataframe_edition_locked': False},
+               'flue_gas_co2_ratio': {'type': 'array', 'default': fossil_flue_gas_ratio}}
+
     # -- add specific techno outputs to this
     DESC_IN.update(FossilTechnoDiscipline.DESC_IN)
-    fossil_flue_gas_ratio = np.array([0.12])
-    DESC_OUT = {'flue_gas_co2_ratio': {
-        'type': 'array', 'default': fossil_flue_gas_ratio}}
-    DESC_OUT.update(FossilTechnoDiscipline.DESC_OUT)
 
     _maturity = 'Research'
 

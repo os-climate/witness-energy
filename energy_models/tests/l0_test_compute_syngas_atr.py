@@ -23,7 +23,7 @@ from energy_models.models.syngas.autothermal_reforming.autothermal_reforming imp
 from energy_models.models.syngas.autothermal_reforming.autothermal_reforming_disc import \
     AutothermalReformingDiscipline
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.syngas import Syngas
@@ -40,19 +40,22 @@ class ATRPriceTestCase(unittest.TestCase):
         '''
 
         years = np.arange(2020, 2051)
-        self.resource_list=['oil_resource','natural_gas_resource','uranium_resource','coal_resource']
-        self.ratio_available_resource = pd.DataFrame({'years': np.arange(2020, 2050 + 1)})
+        self.resource_list = [
+            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
+        self.ratio_available_resource = pd.DataFrame(
+            {'years': np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
-            self.ratio_available_resource[types]= np.linspace(1, 1, len(self.ratio_available_resource.index))
+            self.ratio_available_resource[types] = np.linspace(
+                1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({'years': years,
                                            'methane': 0.034
                                            })
 
-        self.ressources_prices = pd.DataFrame({'years': years, 'oxygen': len(years) * [60.0],
-                                               'CO2': np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0,
+        self.resources_prices = pd.DataFrame({'years': years, 'oxygen': len(years) * [60.0],
+                                              'CO2': np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0,
 
-                                               })
+                                              })
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'methane': 0.123 / 15.4})
         self.invest_level = pd.DataFrame(
@@ -78,7 +81,7 @@ class ATRPriceTestCase(unittest.TestCase):
         demand_ratio_dict['years'] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
-        self.is_apply_resource_ratio=True
+        self.is_apply_resource_ratio = True
 
     def tearDown(self):
         pass
@@ -98,8 +101,8 @@ class ATRPriceTestCase(unittest.TestCase):
                        'transport_margin': self.margin,
                        'initial_production': AutothermalReformingDiscipline.initial_production,
                        'initial_age_distrib': AutothermalReformingDiscipline.initial_age_distribution,
-                       'ressources_price': self.ressources_prices,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_price': self.resources_prices,
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -143,7 +146,7 @@ class ATRPriceTestCase(unittest.TestCase):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_price': self.ressources_prices
+                       f'{self.name}.resources_price': self.resources_prices
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

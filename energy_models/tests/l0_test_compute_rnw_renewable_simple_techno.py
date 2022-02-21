@@ -24,7 +24,7 @@ from energy_models.models.renewable.renewable_simple_techno.renewable_simple_tec
 from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno import RenewableSimpleTechno
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.renewable import Renewable
@@ -40,16 +40,19 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
         Initialize third data needed for testing
         '''
         years = np.arange(2020, 2051)
-        self.resource_list=['oil_resource','natural_gas_resource','uranium_resource','coal_resource']
-        self.ratio_available_resource = pd.DataFrame({'years': np.arange(2020, 2050 + 1)})
+        self.resource_list = [
+            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
+        self.ratio_available_resource = pd.DataFrame(
+            {'years': np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
-            self.ratio_available_resource[types]= np.linspace(1, 1, len(self.ratio_available_resource.index))
+            self.ratio_available_resource[types] = np.linspace(
+                1, 1, len(self.ratio_available_resource.index))
 
-        self.ressources_price = pd.DataFrame(
+        self.resources_price = pd.DataFrame(
             columns=['years', 'water'])
-        self.ressources_price['years'] = years
-        self.ressources_price['water'] = 2.0
-        self.ressources_price['uranium fuel'] = 1390.0e3
+        self.resources_price['years'] = years
+        self.resources_price['water'] = 2.0
+        self.resources_price['uranium fuel'] = 1390.0e3
 
         self.invest_level = pd.DataFrame({'years': years})
         self.invest_level['invest'] = 33.0 * \
@@ -78,7 +81,7 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
         demand_ratio_dict['years'] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
-        self.is_apply_resource_ratio=True
+        self.is_apply_resource_ratio = True
 
     def tearDown(self):
         pass
@@ -92,14 +95,14 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
                        'invest_before_ystart': RenewableSimpleTechnoDiscipline.invest_before_year_start,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'energy_prices': self.energy_prices,
                        'CO2_taxes': self.co2_taxes,
                        'transport_margin': self.margin,
                        'initial_production': RenewableSimpleTechnoDiscipline.initial_production,
                        'initial_age_distrib': RenewableSimpleTechnoDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': pd.DataFrame(),
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -124,21 +127,21 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
                        'invest_before_ystart': RenewableSimpleTechnoDiscipline.invest_before_year_start,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'energy_prices': self.energy_prices,
                        'CO2_taxes': self.co2_taxes,
                        'transport_margin': self.margin,
                        'initial_production': RenewableSimpleTechnoDiscipline.initial_production,
                        'initial_age_distrib': RenewableSimpleTechnoDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': pd.DataFrame(),
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio':self.is_apply_resource_ratio,
+                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'data_fuel_dict': Renewable.data_energy_dict,
                        }
 
@@ -176,7 +179,7 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.ressources_price': self.ressources_price,
+                       f'{self.name}.resources_price': self.resources_price,
                        f'{self.name}.{self.model_name}.margin':  self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
