@@ -1515,7 +1515,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         x_serie_1 = co2_emissions['years'].values.tolist()
 
         serie = InstanciatedSeries(
-            x_serie_1, (-co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'].values / 1.0e3).tolist(), f'{CarbonCapture.name} needed by energy mix')
+            x_serie_1, (-co2_emissions[f'{CarbonCapture.name} needed by energy mix (Gt)'].values).tolist(), f'{CarbonCapture.name} needed by energy mix')
         new_chart.add_series(serie)
 
         return new_chart
