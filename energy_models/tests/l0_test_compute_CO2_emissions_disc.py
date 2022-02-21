@@ -61,8 +61,9 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.name = 'Test'
         self.model_name = 'ConsumptionCO2Emissions'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_emissions': self.name,
-                   'ns_public': self.name,
+        ns_dict = {'ns_public': self.name,
+                   'ns_energy': self.name,
+                   'ns_ccs': self.name,
                    'ns_energy_study': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -81,12 +82,12 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
             f'{self.name}.energy_list': self.energy_list,
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
-            f'{self.name}.{self.model_name}.energy_production_detailed': self.energy_production_detailed,
+            f'{self.name}.energy_production_detailed': self.energy_production_detailed,
         }
         for energy in self.energy_list:
             inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
-            inputs_dict[f'{self.name}.{self.model_name}.{energy}.energy_production'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{self.model_name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
+            inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
+            inputs_dict[f'{self.name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -95,8 +96,8 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
 
 
 if '__main__' == __name__:

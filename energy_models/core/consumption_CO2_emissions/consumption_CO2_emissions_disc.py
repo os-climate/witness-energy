@@ -18,6 +18,10 @@ from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 
+from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
+
 import numpy as np
 
 
@@ -35,10 +39,10 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
     }
 
     DESC_OUT = {
-        'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Mt',
+        'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Gt',
                                          'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                          'namespace': 'ns_ccs'},
-        'CO2_emissions_by_use_sinks':  {'type': 'dataframe', 'unit': 'Mt',
+        'CO2_emissions_by_use_sinks':  {'type': 'dataframe', 'unit': 'Gt',
                                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                         'namespace': 'ns_ccs'},
     }
@@ -194,3 +198,71 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                             ('CO2_emissions_by_use_sinks', co2_emission_column), (
                                 f'{energy}.energy_consumption', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
+
+    def get_chart_filter_list(self):
+
+        chart_filters = []
+        chart_list = ['CO2 sources', 'CO2 sinks']
+
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
+
+        return chart_filters
+
+    def get_post_processing_list(self, filters=None):
+
+        # For the outputs, making a graph for block fuel vs range and blocktime vs
+        # range
+
+        instanciated_charts = []
+        charts = []
+        if filters is not None:
+            for chart_filter in filters:
+                charts = chart_filter.selected_values
+
+        if 'CO2 sources' in charts:
+
+            new_chart = self.get_chart_CO2_sources()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
+        if 'CO2 sinks' in charts:
+            new_chart = self.get_chart_CO2_sinks()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
+        return instanciated_charts
+
+    def get_chart_CO2_sources(self):
+        CO2_emissions_by_use_sources = self.get_sosdisc_outputs(
+            'CO2_emissions_by_use_sources')
+
+        chart_name = f'CO2 emissions by consumption - Sources'
+        new_chart = TwoAxesInstanciatedChart(
+            'years', 'CO2 emissions (Gt)', chart_name=chart_name)
+
+        for col in CO2_emissions_by_use_sources:
+            if col != 'years':
+                new_serie = InstanciatedSeries(list(CO2_emissions_by_use_sources['years'].values), list(CO2_emissions_by_use_sources[col].values),
+                                               col, 'lines')
+
+                new_chart.series.append(new_serie)
+
+        return new_chart
+
+    def get_chart_CO2_sinks(self):
+        CO2_emissions_by_use_sinks = self.get_sosdisc_outputs(
+            'CO2_emissions_by_use_sinks')
+
+        chart_name = f'CO2 emissions by consumption - Sinks'
+        new_chart = TwoAxesInstanciatedChart(
+            'years', 'CO2 emissions (Gt)', chart_name=chart_name)
+
+        for col in CO2_emissions_by_use_sinks:
+            if col != 'years':
+                new_serie = InstanciatedSeries(list(CO2_emissions_by_use_sinks['years'].values), list(CO2_emissions_by_use_sinks[col].values),
+                                               col, 'lines')
+
+                new_chart.series.append(new_serie)
+
+        return new_chart
