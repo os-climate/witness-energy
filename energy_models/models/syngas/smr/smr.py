@@ -16,7 +16,7 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.ressources_models.water import Water
+from energy_models.core.stream_type.resources_models.water import Water
 
 import numpy as np
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -44,7 +44,7 @@ class SMR(SyngasTechno):
                                                     / self.cost_details['efficiency'])
 
         # Cost of H20 for 1 kWH of H2
-        self.cost_details['water'] = list(self.ressources_prices[f'{Water.name}'] * self.cost_details['water_needs']
+        self.cost_details['water'] = list(self.resources_prices[f'{Water.name}'] * self.cost_details['water_needs']
                                           / self.cost_details['efficiency'])
 
         self.cost_details['electricity'] = self.cost_details['elec_needs'] * \
@@ -69,9 +69,9 @@ class SMR(SyngasTechno):
                 len(self.years)) * elec_needs
         }
 
-    def grad_price_vs_ressources_price(self):
+    def grad_price_vs_resources_price(self):
         '''
-        Compute the gradient of global price vs ressources prices 
+        Compute the gradient of global price vs resources prices 
         '''
         water_needs = self.get_theoretical_water_needs()
         efficiency = self.configure_efficiency()
@@ -80,7 +80,7 @@ class SMR(SyngasTechno):
                 len(self.years)) * water_needs / efficiency[:, np.newaxis],
         }
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from CO2 and methane
         Oxygen is not taken into account

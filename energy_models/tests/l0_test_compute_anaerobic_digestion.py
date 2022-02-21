@@ -21,7 +21,7 @@ from os.path import join, dirname
 from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion_disc import AnaerobicDigestionDiscipline
 from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion import AnaerobicDigestion
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
     get_static_prices
 
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
@@ -60,8 +60,8 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         # We take biomass price of methane/5.0
         self.energy_prices = pd.DataFrame({'years': years, 'electricity': electricity_price
                                            })
-        self.ressources_prices = pd.DataFrame({'years': years, 'wet_biomass': electricity_price / 100.0
-                                               })
+        self.resources_prices = pd.DataFrame({'years': years, 'wet_biomass': electricity_price / 100.0
+                                              })
 
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'electricity': 0.0})
@@ -110,7 +110,7 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
                        'year_end': 2050,
                        'techno_infos_dict': AnaerobicDigestionDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
-                       'ressources_price': self.ressources_prices,
+                       'resources_price': self.resources_prices,
                        'invest_level': self.invest_level,
                        'invest_before_ystart': AnaerobicDigestionDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
@@ -120,7 +120,7 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
                        'initial_production': AnaerobicDigestionDiscipline.initial_production,
                        'initial_age_distrib': AnaerobicDigestionDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -204,8 +204,8 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.ressources_price': get_static_prices(np.arange(2020, 2051))
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051))
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

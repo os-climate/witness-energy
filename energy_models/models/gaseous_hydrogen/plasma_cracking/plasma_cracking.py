@@ -80,7 +80,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
             self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']  # in kWH
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account positive CO2 from methane and elec prod
         Carbon capture (Methane is not burned but transformed is not taken into account)
@@ -163,7 +163,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
                                  'carbon_demand': carbon_market_demand['carbon_demand'].values,
                                  'CO2_credits': CO2_credits['CO2_credits'].values,
                                  'hydrogen_price': self.prices[GaseousHydrogenTechno.energy_name],
-                                 'carbon_price': self.ressources_prices[Carbon.name],
+                                 'carbon_price': self.resources_prices[Carbon.name],
                                  'is_prod_inf_demand': False,
                                  'is_storage_inf_storage_max': False
                                  })

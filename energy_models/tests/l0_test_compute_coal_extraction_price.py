@@ -22,7 +22,7 @@ from os.path import join, dirname
 from energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc import CoalExtractionDiscipline
 from energy_models.models.solid_fuel.coal_extraction.coal_extraction import CoalExtraction
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_prices,\
+from energy_models.core.stream_type.resources_data_disc import get_static_prices,\
     get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
@@ -41,10 +41,13 @@ class CoalPriceTestCase(unittest.TestCase):
         '''
         # crude oil price : 1.5$/gallon /43.9
         years = np.arange(2020, 2051)
-        self.resource_list=['oil_resource','natural_gas_resource','uranium_resource','coal_resource']
-        self.ratio_available_resource = pd.DataFrame({'years': np.arange(2020, 2050 + 1)})
+        self.resource_list = [
+            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
+        self.ratio_available_resource = pd.DataFrame(
+            {'years': np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
-            self.ratio_available_resource[types]= np.linspace(1, 1, len(self.ratio_available_resource.index))
+            self.ratio_available_resource[types] = np.linspace(
+                1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame({'years': years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                                                                     0.159236536471781, 0.15899046935409588, 0.15874840310033885,
                                                                                     0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
@@ -100,7 +103,7 @@ class CoalPriceTestCase(unittest.TestCase):
         demand_ratio_dict['years'] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
-        self.is_apply_resource_ratio=True
+        self.is_apply_resource_ratio = True
 
     def tearDown(self):
         pass
@@ -111,7 +114,7 @@ class CoalPriceTestCase(unittest.TestCase):
                        'year_end': 2050,
                        'techno_infos_dict': CoalExtractionDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
-                       'ressources_price': get_static_prices(np.arange(2020, 2051)),
+                       'resources_price': get_static_prices(np.arange(2020, 2051)),
                        'invest_level': self.invest_level,
                        'CO2_taxes': self.co2_taxes,
                        'margin':  self.margin,
@@ -121,11 +124,11 @@ class CoalPriceTestCase(unittest.TestCase):
                        'initial_production': CoalExtractionDiscipline.initial_production,
                        'initial_age_distrib': CoalExtractionDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                        AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,

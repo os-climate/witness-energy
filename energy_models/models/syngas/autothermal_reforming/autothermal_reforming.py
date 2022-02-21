@@ -17,9 +17,9 @@ from energy_models.core.techno_type.base_techno_models.syngas_techno import Syng
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.ressources_models.oxygen import Oxygen
-from energy_models.core.stream_type.ressources_models.water import Water
-from energy_models.core.stream_type.ressources_models.dioxygen import Dioxygen
+from energy_models.core.stream_type.resources_models.oxygen import Oxygen
+from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
 
 import numpy as np
 
@@ -43,14 +43,14 @@ class AuthothermalReforming(SyngasTechno):
         self.cost_details['oxygen_needs'] = self.get_theoretical_O2_needs()
 
         # Cost of oxygen for 1 kWH of H2
-        self.cost_details[Oxygen.name] = list(self.ressources_prices[f'{Oxygen.name}'] * self.cost_details['oxygen_needs']
+        self.cost_details[Oxygen.name] = list(self.resources_prices[f'{Oxygen.name}'] * self.cost_details['oxygen_needs']
                                               / self.cost_details['efficiency'])
         # Cost of methane for 1 kWH of H2
         self.cost_details[f'{Methane.name}'] = list(self.prices[f'{Methane.name}'] * self.cost_details['methane_needs']
                                                     / self.cost_details['efficiency'])
 
         # Cost of CO2 for 1 kWH of H2
-        self.cost_details[CO2.name] = list(self.ressources_prices[f'{CO2.name}'] * self.cost_details['CO2_needs']
+        self.cost_details[CO2.name] = list(self.resources_prices[f'{CO2.name}'] * self.cost_details['CO2_needs']
                                            / self.cost_details['efficiency'])
 
         return self.cost_details[Oxygen.name] + self.cost_details[Methane.name] + self.cost_details[CO2.name]
@@ -70,7 +70,7 @@ class AuthothermalReforming(SyngasTechno):
 
         }
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from CO2 and methane
         Oxygen is not taken into account
@@ -79,7 +79,7 @@ class AuthothermalReforming(SyngasTechno):
         self.carbon_emissions[f'{Methane.name}'] = self.energy_CO2_emissions[f'{Methane.name}'] * \
             self.cost_details['methane_needs'] / \
             self.cost_details['efficiency']
-        self.carbon_emissions[CO2.name] = self.ressources_CO2_emissions[CO2.name] * \
+        self.carbon_emissions[CO2.name] = self.resources_CO2_emissions[CO2.name] * \
             self.cost_details['CO2_needs'] / self.cost_details['efficiency']
 
         return self.carbon_emissions[f'{Methane.name}'] + self.carbon_emissions[CO2.name]

@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import AmineScrubbingDiscipline
 from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine import Amine
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
@@ -77,8 +77,8 @@ class AmineScrubbingTestCase(unittest.TestCase):
                            3894500000.0, 3780750000.0, 3567000000.0,
                            ]) * 0.02 / 1000 * 1.0e-9
 
-        self.ressources_price = pd.DataFrame({'years': years, 'amine': amine_price
-                                              })
+        self.resources_price = pd.DataFrame({'years': years, 'amine': amine_price
+                                             })
 
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': invest})
@@ -121,8 +121,8 @@ class AmineScrubbingTestCase(unittest.TestCase):
                        'initial_production': AmineScrubbingDiscipline.initial_capture,
                        'initial_age_distrib': AmineScrubbingDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'ressources_price': self.ressources_price,
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_price': self.resources_price,
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -168,7 +168,7 @@ class AmineScrubbingTestCase(unittest.TestCase):
                        f'{self.name}.{self.model_name}.margin':  self.margin,
                        f'{self.name}.{self.model_name}.invest_before_ystart':
                        AmineScrubbingDiscipline.invest_before_year_start,
-                       f'{self.name}.ressources_price': self.ressources_price,
+                       f'{self.name}.resources_price': self.resources_price,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

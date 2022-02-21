@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 
 from energy_models.models.gaseous_hydrogen.smr.smr_disc import SMRDiscipline
 from energy_models.models.gaseous_hydrogen.smr.smr import SMR
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
@@ -98,10 +98,10 @@ class AdvancedProductionSMRTestCase(unittest.TestCase):
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 500.0})
 
-        self.ressources_price = pd.DataFrame(
+        self.resources_price = pd.DataFrame(
             columns=['years', 'water'])
-        self.ressources_price['years'] = years
-        self.ressources_price['water'] = 1.4
+        self.resources_price['years'] = years
+        self.resources_price['water'] = 1.4
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
         demand_ratio_dict['years'] = years
@@ -127,8 +127,8 @@ class AdvancedProductionSMRTestCase(unittest.TestCase):
                        'initial_production': SMRDiscipline.initial_production,
                        'initial_age_distrib': SMRDiscipline.initial_age_distribution,
                        'invest_before_ystart': SMRDiscipline.invest_before_year_start,
-                       'ressources_price': self.ressources_price,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_price': self.resources_price,
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'energy_CO2_emissions': self.energy_carbon_emissions,
                        'scaling_factor_invest_level': self.scaling_factor_invest_level,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
@@ -178,8 +178,8 @@ class AdvancedProductionSMRTestCase(unittest.TestCase):
                        'initial_production': SMRDiscipline.initial_production,
                        'initial_age_distrib': SMRDiscipline.initial_age_distribution,
                        'invest_before_ystart': SMRDiscipline.invest_before_year_start,
-                       'ressources_price': self.ressources_price,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_price': self.resources_price,
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'energy_CO2_emissions': self.energy_carbon_emissions,
                        'scaling_factor_invest_level': self.scaling_factor_invest_level,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
@@ -190,7 +190,6 @@ class AdvancedProductionSMRTestCase(unittest.TestCase):
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'data_fuel_dict': GaseousHydrogen.data_energy_dict,
                        }
-
 
         smr_model = SMR('SMR')
         smr_model.configure_parameters(inputs_dict)
@@ -252,8 +251,8 @@ class AdvancedProductionSMRTestCase(unittest.TestCase):
                        'initial_production': SMRDiscipline.initial_production,
                        'initial_age_distrib': SMRDiscipline.initial_age_distribution,
                        'invest_before_ystart': SMRDiscipline.invest_before_year_start,
-                       'ressources_price': self.ressources_price,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_price': self.resources_price,
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'energy_CO2_emissions': self.energy_carbon_emissions,
                        'scaling_factor_invest_level': self.scaling_factor_invest_level,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,

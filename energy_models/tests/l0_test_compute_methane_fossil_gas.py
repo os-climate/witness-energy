@@ -22,7 +22,7 @@ import scipy.interpolate as sc
 from energy_models.models.methane.fossil_gas.fossil_gas import FossilGas
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -86,11 +86,11 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 200.0})
-        self.ressources_price = pd.DataFrame(columns=['years', 'CO2', 'water'])
-        self.ressources_price['years'] = years
-        self.ressources_price['CO2'] = np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542,
-                                                 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
-        self.ressources_price['water'] = 1.4
+        self.resources_price = pd.DataFrame(columns=['years', 'CO2', 'water'])
+        self.resources_price['years'] = years
+        self.resources_price['CO2'] = np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542,
+                                                0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
+        self.resources_price['water'] = 1.4
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -114,12 +114,12 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
                        'margin':  self.margin,
                        'transport_cost': self.transport,
                        'transport_margin': self.margin,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'initial_production': FossilGasDiscipline.initial_production,
                        'initial_age_distrib': FossilGasDiscipline.initial_age_distribution,
                        'invest_before_ystart': FossilGasDiscipline.invest_before_year_start,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -161,7 +161,7 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_price': self.ressources_price}
+                       f'{self.name}.resources_price': self.resources_price}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

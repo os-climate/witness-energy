@@ -25,7 +25,6 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
-
     # ontology information
     _ontology_data = {
         'label': 'Syngas Pyrolysis Model',
@@ -80,6 +79,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                                          3.4997533, 4.00989891, 5.10571635, 4.81945507, 4.87417378,
                                                          4.2461254, 5.41593564, 6.62282244, 6.29274159, 6.69463399,
                                                          4.5047143, 4.52828241, 4.75677933, 7.40968989]})
+    pyrolysis_gas_flue_gas_ratio = np.array([0.13])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
@@ -91,17 +91,11 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False}
-
+                                        'dataframe_edition_locked': False},
+               'flue_gas_co2_ratio': {'type': 'array', 'default': pyrolysis_gas_flue_gas_ratio}
                }
     # -- add specific techno outputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
-
-    # -- add specific techno outputs to this
-    pyrolysis_gas_flue_gas_ratio = np.array([0.13])
-    DESC_OUT = {'flue_gas_co2_ratio': {'type': 'array',
-                                       'default': pyrolysis_gas_flue_gas_ratio}}
-    DESC_OUT.update(SyngasTechnoDiscipline.DESC_OUT)
 
     _maturity = 'Research'
 

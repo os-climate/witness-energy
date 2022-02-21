@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.models.syngas.coal_gasification.coal_gasification import CoalGasification
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
     get_static_prices
 
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
@@ -109,9 +109,9 @@ class SyngasCoalGasificationTestCase(unittest.TestCase):
                        'transport_margin': self.margin,
                        'initial_production': CoalGasificationDiscipline.initial_production,
                        'initial_age_distrib': CoalGasificationDiscipline.initial_age_distribution,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_price': get_static_prices(np.arange(2020, 2051)),
+                       'resources_price': get_static_prices(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,

@@ -17,7 +17,7 @@ limitations under the License.
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.techno_type.base_techno_models.solid_fuel_techno import SolidFuelTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.ressources_models.oil import CrudeOil
+from energy_models.core.stream_type.resources_models.oil import CrudeOil
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 
 import numpy as np
@@ -36,7 +36,7 @@ class CoalExtraction(SolidFuelTechno):
                                                    / self.cost_details['efficiency'])
 
         self.cost_details['fuel_needs'] = self.get_fuel_needs()
-        self.cost_details[CrudeOil.name] = list(self.ressources_prices[CrudeOil.name] * self.cost_details['fuel_needs']
+        self.cost_details[CrudeOil.name] = list(self.resources_prices[CrudeOil.name] * self.cost_details['fuel_needs']
                                                 / self.cost_details['efficiency'])
 
         return self.cost_details[Electricity.name] + self.cost_details[CrudeOil.name]
@@ -52,7 +52,7 @@ class CoalExtraction(SolidFuelTechno):
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
                 }
 
-    def grad_ressources(self):
+    def grad_resources(self):
         oil_needs = self.get_fuel_needs()
         efficiency = self.techno_infos_dict['efficiency']
         return {CrudeOil.name: np.identity(len(self.years)) * oil_needs / efficiency}
@@ -82,7 +82,7 @@ class CoalExtraction(SolidFuelTechno):
             self.cost_details['efficiency'] / \
             SolidFuel.data_energy_dict['calorific_value']  # in Mt
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from electricity/fuel production
         '''
@@ -91,7 +91,7 @@ class CoalExtraction(SolidFuelTechno):
             self.cost_details['elec_needs']
 
         if CrudeOil.name in self.energy_CO2_emissions:
-            self.carbon_emissions[CrudeOil.name] = self.ressources_CO2_emissions[f'{CrudeOil.name}'] * \
+            self.carbon_emissions[CrudeOil.name] = self.resources_CO2_emissions[f'{CrudeOil.name}'] * \
                 self.cost_details['fuel_needs']
         else:
             self.carbon_emissions[CrudeOil.name] = 25.33 * \

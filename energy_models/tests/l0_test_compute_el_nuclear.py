@@ -25,7 +25,7 @@ from energy_models.models.electricity.nuclear.nuclear_disc import NuclearDiscipl
 from energy_models.models.electricity.nuclear.nuclear import Nuclear
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 
@@ -41,11 +41,11 @@ class NuclearTestCase(unittest.TestCase):
         '''
         years = np.arange(2020, 2051)
 
-        self.ressources_price = pd.DataFrame(
+        self.resources_price = pd.DataFrame(
             columns=['years', 'water'])
-        self.ressources_price['years'] = years
-        self.ressources_price['water'] = 2.0
-        self.ressources_price['uranium fuel'] = 1390.0e3
+        self.resources_price['years'] = years
+        self.resources_price['water'] = 2.0
+        self.resources_price['uranium fuel'] = 1390.0e3
 
         self.invest_level = pd.DataFrame({'years': years})
         self.invest_level['invest'] = 33.0 * \
@@ -74,17 +74,20 @@ class NuclearTestCase(unittest.TestCase):
                                                 == 'electricity.Nuclear']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
-        self.resource_list=['oil_resource','natural_gas_resource','uranium_resource','coal_resource']
-        self.ratio_available_resource = pd.DataFrame({'years': np.arange(2020, 2050 + 1)})
+        self.resource_list = [
+            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
+        self.ratio_available_resource = pd.DataFrame(
+            {'years': np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
-            self.ratio_available_resource[types]= np.linspace(0.5, 0.5, len(self.ratio_available_resource.index))
+            self.ratio_available_resource[types] = np.linspace(
+                0.5, 0.5, len(self.ratio_available_resource.index))
 
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
         demand_ratio_dict['years'] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
-        self.is_apply_resource_ratio=True
+        self.is_apply_resource_ratio = True
 
     def tearDown(self):
         pass
@@ -98,21 +101,21 @@ class NuclearTestCase(unittest.TestCase):
                        'invest_before_ystart': NuclearDiscipline.invest_before_year_start,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'energy_prices': self.energy_prices,
                        'CO2_taxes': self.co2_taxes,
                        'transport_margin': self.margin,
                        'initial_production': NuclearDiscipline.initial_production,
                        'initial_age_distrib': NuclearDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': pd.DataFrame(),
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio':self.is_apply_resource_ratio,
+                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'data_fuel_dict': Electricity.data_energy_dict,
                        }
 
@@ -120,7 +123,6 @@ class NuclearTestCase(unittest.TestCase):
         nuclear_model.configure_parameters(inputs_dict)
         nuclear_model.configure_parameters_update(inputs_dict)
         price_details = nuclear_model.compute_price()
-
 
     def test_02_compute_nuclear_price_prod_consumption(self):
 
@@ -131,21 +133,21 @@ class NuclearTestCase(unittest.TestCase):
                        'invest_before_ystart': NuclearDiscipline.invest_before_year_start,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'energy_prices': self.energy_prices,
                        'CO2_taxes': self.co2_taxes,
                        'transport_margin': self.margin,
                        'initial_production': NuclearDiscipline.initial_production,
                        'initial_age_distrib': NuclearDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': pd.DataFrame(),
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio':self.is_apply_resource_ratio,
+                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'data_fuel_dict': Electricity.data_energy_dict,
                        }
 
@@ -158,40 +160,42 @@ class NuclearTestCase(unittest.TestCase):
 
     def test_04_compute_nuclear_ratio_prod_consumption(self):
 
-            inputs_dict = {'year_start': 2020,
-                           'year_end': 2050,
-                           'techno_infos_dict': NuclearDiscipline.techno_infos_dict_default,
-                           'invest_level': self.invest_level,
-                           'invest_before_ystart': NuclearDiscipline.invest_before_year_start,
-                           'margin':  self.margin,
-                           'transport_cost': self.transport,
-                           'ressources_price': self.ressources_price,
-                           'energy_prices': self.energy_prices,
-                           'CO2_taxes': self.co2_taxes,
-                           'transport_margin': self.margin,
-                           'initial_production': NuclearDiscipline.initial_production,
-                           'initial_age_distrib': NuclearDiscipline.initial_age_distribution,
-                           'energy_CO2_emissions': pd.DataFrame(),
-                           'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                           'scaling_factor_invest_level': 1e3,
-                           'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                           'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                           AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                           'all_streams_demand_ratio': self.all_streams_demand_ratio,
-                           'is_stream_demand': self.is_stream_demand,
-                           'is_apply_resource_ratio':self.is_apply_resource_ratio,
-                           'data_fuel_dict': Electricity.data_energy_dict,
-                           }
+        inputs_dict = {'year_start': 2020,
+                       'year_end': 2050,
+                       'techno_infos_dict': NuclearDiscipline.techno_infos_dict_default,
+                       'invest_level': self.invest_level,
+                       'invest_before_ystart': NuclearDiscipline.invest_before_year_start,
+                       'margin':  self.margin,
+                       'transport_cost': self.transport,
+                       'resources_price': self.resources_price,
+                       'energy_prices': self.energy_prices,
+                       'CO2_taxes': self.co2_taxes,
+                       'transport_margin': self.margin,
+                       'initial_production': NuclearDiscipline.initial_production,
+                       'initial_age_distrib': NuclearDiscipline.initial_age_distribution,
+                       'energy_CO2_emissions': pd.DataFrame(),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'scaling_factor_invest_level': 1e3,
+                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
+                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
+                       AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       'is_stream_demand': self.is_stream_demand,
+                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                       'data_fuel_dict': Electricity.data_energy_dict,
+                       }
 
-            nuclear_model = Nuclear(NuclearDiscipline.techno_name)
-            nuclear_model.configure_parameters(inputs_dict)
-            nuclear_model.configure_parameters_update(inputs_dict)
-            price_details = nuclear_model.compute_price()
-            nuclear_model.compute_consumption_and_production()
-            consumption_without_ratio= nuclear_model.consumption['uranium_resource'].values*self.ratio_available_resource['uranium_resource'].values
-            nuclear_model.select_ratios()
-            nuclear_model.apply_ratios_on_consumption_and_production(True)
-            #self.assertListEqual(list(nuclear_model.consumption['uranium_resource'].values),list(consumption_without_ratio))
+        nuclear_model = Nuclear(NuclearDiscipline.techno_name)
+        nuclear_model.configure_parameters(inputs_dict)
+        nuclear_model.configure_parameters_update(inputs_dict)
+        price_details = nuclear_model.compute_price()
+        nuclear_model.compute_consumption_and_production()
+        consumption_without_ratio = nuclear_model.consumption['uranium_resource'].values * \
+            self.ratio_available_resource['uranium_resource'].values
+        nuclear_model.select_ratios()
+        nuclear_model.apply_ratios_on_consumption_and_production(True)
+        # self.assertListEqual(list(nuclear_model.consumption['uranium_resource'].values),list(consumption_without_ratio))
+
     def test_03_nuclear_discipline(self):
 
         self.name = 'Test'
@@ -201,7 +205,7 @@ class NuclearTestCase(unittest.TestCase):
                    'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_electricity': self.name,
-                   'ns_resource':self.name}
+                   'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.models.electricity.nuclear.nuclear_disc.NuclearDiscipline'
@@ -219,7 +223,7 @@ class NuclearTestCase(unittest.TestCase):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.ressources_price': self.ressources_price,
+                       f'{self.name}.resources_price': self.resources_price,
                        AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        f'{self.name}.{self.model_name}.margin':  self.margin}
 
@@ -233,5 +237,3 @@ class NuclearTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filters)
         # for graph in graph_list:
         #     graph.to_plotly().show()
-
-

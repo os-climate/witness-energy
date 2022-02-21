@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
-from energy_models.core.stream_type.ressources_models.natural_oil import NaturalOil
+from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.techno_type.base_techno_models.hydrotreated_oil_fuel_techno import HydrotreatedOilFuelTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -52,7 +52,7 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         self.cost_details[f'{Electricity.name}_needs'] = self.elec_consumption_factor
 
         self.cost_details[f'{NaturalOil.name}'] = list(
-            self.ressources_prices[f'{NaturalOil.name}'] * self.cost_details[f'{NaturalOil.name}_needs'] / self.cost_details['efficiency'])
+            self.resources_prices[f'{NaturalOil.name}'] * self.cost_details[f'{NaturalOil.name}_needs'] / self.cost_details['efficiency'])
 
         self.cost_details[f'{GaseousHydrogen.name}'] = list(
             self.prices[f'{GaseousHydrogen.name}'] * self.cost_details[f'{GaseousHydrogen.name}_needs'] / self.cost_details['efficiency'])
@@ -100,7 +100,7 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
             self.cost_details['efficiency'] * \
             naturaloil_data['calorific_value']
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         """
         Need to take into account  CO2 from electricity/hydrogen production
         """
@@ -112,7 +112,7 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
             self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
             self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{NaturalOil.name}'] = self.ressources_CO2_emissions[f'{NaturalOil.name}'] * \
+        self.carbon_emissions[f'{NaturalOil.name}'] = self.resources_CO2_emissions[f'{NaturalOil.name}'] * \
             self.cost_details[f'{NaturalOil.name}_needs'] / \
             self.cost_details['efficiency']
 
