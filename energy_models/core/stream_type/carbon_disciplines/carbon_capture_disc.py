@@ -192,7 +192,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                     for column_name in list_columns_consumption:
 
                         if column_name != 'years':
-                            # loop on ressources
+                            # loop on resources
                             for col_technoprod in list_columnstechnocons:
                                 if column_name == col_technoprod:
                                     self.set_partial_derivative_for_other_types(
@@ -235,7 +235,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
                     for column_name in list_columns_consumption:
                         if column_name != 'years':
-                            # loop on ressources
+                            # loop on resources
                             for col_technoprod in list_columnstechnocons:
                                 if column_name == col_technoprod:
                                     self.set_partial_derivative_for_other_types(
@@ -370,7 +370,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-            new_charts = self.get_charts_consumption_and_production_mass_ressources()
+            new_charts = self.get_charts_consumption_and_production_mass_resources()
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
@@ -482,14 +482,14 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         instanciated_charts.append(new_chart)
         return instanciated_charts
 
-    def get_charts_consumption_and_production_mass_ressources(self):
+    def get_charts_consumption_and_production_mass_resources(self):
         instanciated_charts = []
         # Charts for consumption and prod
         energy_consumption = self.get_sosdisc_outputs('energy_consumption')
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
         energy_production = self.get_sosdisc_outputs('energy_production')
-        chart_name = f'ressources used for CO2 capture <br>with input investments'
+        chart_name = f'resources used for CO2 capture <br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Mass [Mt]',
                                              chart_name=chart_name, stacked_bar=True)

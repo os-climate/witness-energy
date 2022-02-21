@@ -41,7 +41,7 @@ class Pyrolysis(SyngasTechno):
 
         # Cost of wood for 1 kWh of syngas
         self.cost_details['wood'] = list(
-            self.ressources_prices['wood'] * self.cost_details['wood_needs'])
+            self.resources_prices['wood'] * self.cost_details['wood_needs'])
 
         return self.cost_details['wood']
 
@@ -68,13 +68,13 @@ class Pyrolysis(SyngasTechno):
         self.consumption[f'wood ({self.mass_unit})'] = self.cost_details['wood_needs'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from CO2 and positive from elec
         Oxygen is not taken into account
         '''
 
-        self.carbon_emissions['wood'] = self.ressources_CO2_emissions['wood'] * \
+        self.carbon_emissions['wood'] = self.resources_CO2_emissions['wood'] * \
             self.cost_details['wood_needs']
 
         return self.carbon_emissions['wood']

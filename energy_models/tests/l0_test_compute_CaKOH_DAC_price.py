@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import CalciumPotassiumScrubbingDiscipline
 from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing import CalciumPotassium
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
@@ -50,10 +50,13 @@ class CalciumPotassiumTestCase(unittest.TestCase):
                               1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                               1.0, 1.0, 1.0, 1.0]) * 85.0
         years = np.arange(2020, 2051)
-        self.resource_list=['oil_resource','natural_gas_resource','uranium_resource','coal_resource']
-        self.ratio_available_resource = pd.DataFrame({'years': np.arange(2020, 2050 + 1)})
+        self.resource_list = [
+            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
+        self.ratio_available_resource = pd.DataFrame(
+            {'years': np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
-            self.ratio_available_resource[types]= np.linspace(1, 1, len(self.ratio_available_resource.index))
+            self.ratio_available_resource[types] = np.linspace(
+                1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame({'years': years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                                                                     0.159236536471781, 0.15899046935409588, 0.15874840310033885,
                                                                                     0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
@@ -67,9 +70,9 @@ class CalciumPotassiumTestCase(unittest.TestCase):
                                                                                     0.1628246539459331]) * 1000.0,
                                            })
 
-        self.ressources_prices = pd.DataFrame({'years': years, 'potassium': KOH_price,
-                                               'calcium': CaO_price,
-                                               })
+        self.resources_prices = pd.DataFrame({'years': years, 'potassium': KOH_price,
+                                              'calcium': CaO_price,
+                                              })
 
         years = np.arange(2020, 2051)
         self.energy_carbon_emissions = pd.DataFrame(
@@ -107,7 +110,7 @@ class CalciumPotassiumTestCase(unittest.TestCase):
         demand_ratio_dict['years'] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
-        self.is_apply_resource_ratio=True
+        self.is_apply_resource_ratio = True
 
     def tearDown(self):
         pass
@@ -127,8 +130,8 @@ class CalciumPotassiumTestCase(unittest.TestCase):
                        'initial_production': CalciumPotassiumScrubbingDiscipline.initial_capture,
                        'initial_age_distrib': CalciumPotassiumScrubbingDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'ressources_price': self.ressources_prices,
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_price': self.resources_prices,
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -138,7 +141,6 @@ class CalciumPotassiumTestCase(unittest.TestCase):
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'data_fuel_dict': CarbonCapture.data_energy_dict
                        }
-
 
         CaKOH_model = CalciumPotassium(
             'direct_air_capture.CalciumPotassiumScrubbing')
@@ -176,7 +178,7 @@ class CalciumPotassiumTestCase(unittest.TestCase):
                        f'{self.name}.{self.model_name}.margin':  self.margin,
                        f'{self.name}.{self.model_name}.invest_before_ystart':
                        CalciumPotassiumScrubbingDiscipline.invest_before_year_start,
-                       f'{self.name}.ressources_price': self.ressources_prices,
+                       f'{self.name}.resources_price': self.resources_prices,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

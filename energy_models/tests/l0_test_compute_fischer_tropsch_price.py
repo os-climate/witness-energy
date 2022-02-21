@@ -22,7 +22,7 @@ from os.path import join, dirname
 from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import FischerTropschDiscipline
 from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch import FischerTropsch
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_prices,\
+from energy_models.core.stream_type.resources_data_disc import get_static_prices,\
     get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
@@ -122,16 +122,16 @@ class FTPriceTestCase(unittest.TestCase):
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
         self.data_fuel = {Kerosene.name: Kerosene.data_energy_dict,
-                                              Gasoline.name: Gasoline.data_energy_dict,
-                                              LiquefiedPetroleumGas.name: LiquefiedPetroleumGas.data_energy_dict,
-                                              HeatingOil.name: HeatingOil.data_energy_dict,
-                                              UltraLowSulfurDiesel.name: UltraLowSulfurDiesel.data_energy_dict,
-                                              'calorific_value': 12.0,
-                                              'high_calorific_value': 13.0,
-                                              'density': 800,
-                                              'molar_mass': 170.0,
-                                              'molar_mass_unit': 'g/mol',
-                                              }
+                          Gasoline.name: Gasoline.data_energy_dict,
+                          LiquefiedPetroleumGas.name: LiquefiedPetroleumGas.data_energy_dict,
+                          HeatingOil.name: HeatingOil.data_energy_dict,
+                          UltraLowSulfurDiesel.name: UltraLowSulfurDiesel.data_energy_dict,
+                          'calorific_value': 12.0,
+                          'high_calorific_value': 13.0,
+                          'density': 800,
+                          'molar_mass': 170.0,
+                          'molar_mass_unit': 'g/mol',
+                          }
 
     def tearDown(self):
         pass
@@ -152,8 +152,8 @@ class FTPriceTestCase(unittest.TestCase):
                        'initial_production': FischerTropschDiscipline.initial_production,
                        'initial_age_distrib': FischerTropschDiscipline.initial_age_distribution,
                        'invest_before_ystart': FischerTropschDiscipline.invest_before_year_start,
-                       'ressources_price': get_static_prices(np.arange(2020, 2051)),
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_price': get_static_prices(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'syngas_ratio': np.ones(len(years)),
                        'syngas_ratio_technos': self.syngas_ratio_technos,
                        'energy_detailed_techno_prices': self.syngas_detailed_prices,

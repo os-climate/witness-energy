@@ -61,7 +61,7 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
                 GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs,
                 }
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account positive CO2 from methane and elec prod
         Carbon capture (Methane is not burned but transformed is not taken into account)

@@ -17,7 +17,7 @@ from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.techno_type.base_techno_models.methane_techno import MethaneTechno
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.ressources_models.water import Water
+from energy_models.core.stream_type.resources_models.water import Water
 
 import numpy as np
 
@@ -40,7 +40,7 @@ class Methanation(MethaneTechno):
             self.prices[GaseousHydrogen.name] * self.cost_details['hydrogen_needs'] / self.cost_details['efficiency'])
 
         # Cost of CO2 for 1 kg of CH4 (in kg), price is in $/kg
-        self.cost_details[CO2.name] = list(self.ressources_prices[CO2.name] * self.cost_details['dioxide_needs'] /
+        self.cost_details[CO2.name] = list(self.resources_prices[CO2.name] * self.cost_details['dioxide_needs'] /
                                            self.cost_details['efficiency'])
 
         # cost to produce 1Kwh of methane
@@ -84,7 +84,7 @@ class Methanation(MethaneTechno):
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from hydrogen
         '''

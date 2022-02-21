@@ -25,7 +25,6 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
-
     # ontology information
     _ontology_data = {
         'label': 'Coal Generation Model',
@@ -119,7 +118,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                                          3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25,
 
                                                          ]})
-
+    coal_flue_gas_ratio = np.array([0.13])
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -130,16 +129,10 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+                                        'dataframe_edition_locked': False},
+               'flue_gas_co2_ratio': {'type': 'array', 'default': coal_flue_gas_ratio}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
-
-    coal_flue_gas_ratio = np.array([0.13])
-    DESC_OUT = {
-        'flue_gas_co2_ratio': {'type': 'array', 'default': coal_flue_gas_ratio}
-    }
-    # -- add specific techno outputs to this
-    DESC_OUT.update(ElectricityTechnoDiscipline.DESC_OUT)
 
     _maturity = 'Research'
 

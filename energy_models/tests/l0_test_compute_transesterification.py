@@ -19,10 +19,10 @@ import numpy as np
 import scipy.interpolate as sc
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_models.methanol import Methanol
-from energy_models.core.stream_type.ressources_models.natural_oil import NaturalOil
-from energy_models.core.stream_type.ressources_models.sodium_hydroxide import SodiumHydroxide
-from energy_models.core.stream_type.ressources_models.potassium_hydroxide import PotassiumHydroxide
+from energy_models.core.stream_type.resources_models.methanol import Methanol
+from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
+from energy_models.core.stream_type.resources_models.sodium_hydroxide import SodiumHydroxide
+from energy_models.core.stream_type.resources_models.potassium_hydroxide import PotassiumHydroxide
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 
@@ -61,19 +61,19 @@ class TransesterificationPriceTestCase(unittest.TestCase):
 
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'electricity': 0.0})
-        default_ressources_price_df = pd.DataFrame({'years': years,
-                                                    'water':  years * [2],
-                                                    'uranium fuel': 1390000,
-                                                    'CO2': np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000,
-                                                    'biomass_dry': 68.12,
-                                                    'wet_biomass': 56,
-                                                    'wood': years * [120],
-                                                    f'{NaturalOil.name}': 31 * [36.25],
-                                                    f'{Methanol.name}': 31 * [298],
-                                                    f'{SodiumHydroxide.name}': 31 * [425],
-                                                    f'{PotassiumHydroxide.name}': 31 * [772],
-                                                    })
-        self.ressources_prices = default_ressources_price_df
+        default_resources_price_df = pd.DataFrame({'years': years,
+                                                   'water':  years * [2],
+                                                   'uranium fuel': 1390000,
+                                                   'CO2': np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000,
+                                                   'biomass_dry': 68.12,
+                                                   'wet_biomass': 56,
+                                                   'wood': years * [120],
+                                                   f'{NaturalOil.name}': 31 * [36.25],
+                                                   f'{Methanol.name}': 31 * [298],
+                                                   f'{SodiumHydroxide.name}': 31 * [425],
+                                                   f'{PotassiumHydroxide.name}': 31 * [772],
+                                                   })
+        self.resources_prices = default_resources_price_df
 
         # We use the IEA H2 demand to fake the invest level through years and
         # divide by 10 compared to SMR

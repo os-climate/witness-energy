@@ -17,7 +17,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions, get_static_prices
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, get_static_prices
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -61,8 +61,8 @@ class TechnoDiscipline(SoSDiscipline):
                       'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                'CO2_tax': ('float',  None, True)},
                       'dataframe_edition_locked': False},
-        'ressources_price': {'type': 'dataframe', 'unit': '$/t', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
-        'ressources_CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kg', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
+        'resources_price': {'type': 'dataframe', 'unit': '$/t', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
+        'resources_CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kg', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
         'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'user_level': 2},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
@@ -104,9 +104,9 @@ class TechnoDiscipline(SoSDiscipline):
                     ['year_start', 'year_end'])
                 years = np.arange(year_start, year_end + 1)
                 self.dm.set_data(self.get_var_full_name(
-                    'ressources_price', self._data_in), 'default', get_static_prices(years), False)
+                    'resources_price', self._data_in), 'default', get_static_prices(years), False)
                 self.dm.set_data(self.get_var_full_name(
-                    'ressources_CO2_emissions', self._data_in),
+                    'resources_CO2_emissions', self._data_in),
                     'default', get_static_CO2_emissions(years), False)
 
             if 'is_apply_ratio' in self._data_in:
@@ -332,15 +332,15 @@ class TechnoDiscipline(SoSDiscipline):
         self.set_partial_derivative_for_other_types(
             ('land_use_required', f'{self.techno_model.name} (Gha)'), ('invest_level', 'invest'), derivate_land_use * self.techno_model.applied_ratio['applied_ratio'].values[:, np.newaxis] * scaling_factor_invest_level)
 
-    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_ressources={}):
+    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}):
         """
         Generic method to set partial derivatives of techno_prices / energy_prices, energy_CO2_emissions and dco2_emissions/denergy_co2_emissions
         """
         self.dprices_demissions = {}
         self.grad_total = {}
         for energy, value in grad_dict.items():
-            self.grad_total[energy] = value * np.split(self.techno_model.margin['margin'].values, len(self.techno_model.margin['margin'].values)) / \
-                100.0
+            self.grad_total[energy] = value * \
+                self.techno_model.margin['margin'].values / 100.0
             self.set_partial_derivative_for_other_types(
                 ('techno_prices', self.techno_name), ('energy_prices', energy), self.grad_total[energy])
             self.set_partial_derivative_for_other_types(
@@ -360,26 +360,22 @@ class TechnoDiscipline(SoSDiscipline):
                     self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(
                         0, sign_carbon_emissions).values
 
-                self.dprices_demissions[energy] = grad_on_co2_tax * \
-                    np.split(self.techno_model.margin['margin'].values, len(
-                        self.techno_model.margin['margin'].values)) / 100.0
+                self.dprices_demissions[energy] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(
                     ('techno_prices', self.techno_name), ('energy_CO2_emissions', energy), self.dprices_demissions[energy])
         if carbon_emissions is not None:
             dCO2_taxes_factory = (self.techno_model.CO2_taxes['years'] <= self.techno_model.carbon_emissions['years'].max(
             )) * self.techno_model.carbon_emissions[self.techno_name].clip(0).values
-            dtechno_prices_dCO2_taxes = dCO2_taxes_factory * \
-                self.techno_model.margin.loc[self.techno_model.margin['years'] <=
-                                             self.techno_model.cost_details['years'].max()]['margin'].values / 100.0
+            dtechno_prices_dCO2_taxes = dCO2_taxes_factory
 
             self.set_partial_derivative_for_other_types(
                 ('techno_prices', self.techno_name), ('CO2_taxes', 'CO2_tax'), dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
 
-        for ressource, value in grad_dict_ressources.items():
+        for resource, value in grad_dict_resources.items():
             self.set_partial_derivative_for_other_types(
-                ('techno_prices', self.techno_name), ('ressources_price', ressource), value)
+                ('techno_prices', self.techno_name), ('resources_price', resource), value)
             self.set_partial_derivative_for_other_types(
-                ('techno_prices', f'{self.techno_name}_wotaxes'), ('ressources_price', ressource), value)
+                ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_price', resource), value)
 
     def get_chart_filter_list(self):
 

@@ -52,8 +52,8 @@ class TechnoType:
         self.age_distrib_prod_df = None
         self.initial_age_distrib = None
 
-        self.ressources_price = None
-        self.ressources_CO2_emissions = None
+        self.resources_price = None
+        self.resources_CO2_emissions = None
         self.carbon_emissions = None
         self.product_energy_unit = 'TWh'
         self.mass_unit = 'Mt'
@@ -197,8 +197,8 @@ class TechnoType:
         '''
         self.CO2_taxes = inputs_dict['CO2_taxes']
         self.configure_energy_data(inputs_dict)
-        self.ressources_prices = inputs_dict['ressources_price'].loc[inputs_dict['ressources_price']['years']
-                                                                     <= self.year_end]
+        self.resources_prices = inputs_dict['resources_price'].loc[inputs_dict['resources_price']['years']
+                                                                   <= self.year_end]
         self.prices = inputs_dict['energy_prices']
 
         self.invest_level = inputs_dict['invest_level'].loc[inputs_dict['invest_level']['years']
@@ -210,7 +210,7 @@ class TechnoType:
 
         self.scaling_factor_techno_consumption = inputs_dict['scaling_factor_techno_consumption']
         self.scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
-        self.ressources_CO2_emissions = inputs_dict['ressources_CO2_emissions']
+        self.resources_CO2_emissions = inputs_dict['resources_CO2_emissions']
         self.energy_CO2_emissions = inputs_dict['energy_CO2_emissions']
         self.production = pd.DataFrame({'years': self.years})
         self.ratio_df = pd.DataFrame({'years': self.years})
@@ -601,7 +601,7 @@ class TechnoType:
 
         return {}
 
-    def grad_price_vs_ressources_price(self):
+    def grad_price_vs_resources_price(self):
 
         return {}
 
@@ -857,7 +857,7 @@ class TechnoType:
     def compute_carbon_emissions(self):
         '''
         Compute the carbon emissions from the technology taking into account 
-        CO2 from production + CO2 from primary ressources 
+        CO2 from production + CO2 from primary resources 
         '''
 
         if 'CO2_from_production' not in self.techno_infos_dict:
@@ -872,17 +872,17 @@ class TechnoType:
             elif self.techno_infos_dict['CO2_from_production_unit'] == 'kg/kWh':
                 self.carbon_emissions['production'] = self.techno_infos_dict['CO2_from_production']
 
-        # Add carbon emission from input energies (ressources or other
+        # Add carbon emission from input energies (resources or other
         # energies)
 
-        co2_emissions_frominput_energies = self.compute_CO2_emissions_from_input_ressources(
+        co2_emissions_frominput_energies = self.compute_CO2_emissions_from_input_resources(
         )
 
         # Add CO2 from production + C02 from input energies
         self.carbon_emissions[self.name] = self.carbon_emissions['production'] + \
             co2_emissions_frominput_energies
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to be overload in some technologies where input energies need to be taken into account for CO2 emissions
         '''
