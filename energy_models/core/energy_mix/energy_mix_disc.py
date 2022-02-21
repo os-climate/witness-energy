@@ -117,7 +117,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
         'land_demand_df': {'type': 'dataframe', 'unit': 'Gha'},
         'energy_mean_price': {'type': 'dataframe', 'unit': '$/Mwh'},
         'production_energy_net_positive': {'type': 'dataframe', 'unit': 'TWh'},
-        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
         EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: {
             'type': 'dataframe', 'unit': 'TWh',
             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
@@ -319,7 +318,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         'land_demand_df': self.energy_model.land_use_required,
                         'energy_mean_price': mean_price_df,
                         'production_energy_net_positive': production_energy_net_positive,
-                        'CCS_price': self.energy_model.CCS_price,
                         self.energy_model.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: self.energy_model.total_prod_minus_min_prod_constraint_df,
                         EnergyMix.CONSTRAINT_PROD_H2_LIQUID: self.energy_model.constraint_liquid_hydrogen,
                         EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC: self.energy_model.constraint_solid_fuel_elec,
@@ -723,48 +721,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return dobjective_dratio
 
-#     def compute_dco2_emissions_objective_dsyngas_ratio(self, energy):
-#         """
-#             co2_emissions_objective = np.asarray([alpha * self.energy_model.total_co2_emissions['Total CO2 emissions'].sum()
-#                                               / (self.energy_model.total_co2_emissions['Total CO2 emissions'][0] * delta_years), ])
-#             -----
-#             self.total_co2_emissions[f'{energy} CO2 by use (Mt)'] = self.stream_class_dict[energy].data_energy_dict['CO2_per_use'] / \
-#                         self.stream_class_dict[energy].data_energy_dict['high_calorific_value'] * \
-#                         self.production[f'production {energy} ({self.energy_class_dict[energy].unit})'].values
-#             -----
-#             self.stream_class_dict['syngas'].data_energy_dict['high_calorific_value'] = compute_calorific_value(
-#             inputs_dict['syngas_ratio'])
-#         """
-#         net_production = self.get_sosdisc_outputs(
-#             'energy_production_detailed')
-#         alpha = self.get_sosdisc_inputs('alpha')
-#         tot_co2_emissions_sum = self.get_sosdisc_outputs(
-#             'co2_emissions')['Total CO2 emissions'].sum()
-#         tot_co2_emissions_0 = self.get_sosdisc_outputs(
-#             'co2_emissions')['Total CO2 emissions'][0]
-#         years = np.arange(self.get_sosdisc_inputs('year_start'),
-#                           self.get_sosdisc_inputs('year_end') + 1)
-#         delta_years = (years[-1] - years[0] + 1)
-#
-#         dcalval_dsyngas_ratio = compute_dcal_val_dsyngas_ratio(
-#             self.get_sosdisc_inputs('syngas_ratio') / 100.0)
-#
-#         data_fuel_dict = self.get_sosdisc_inputs(f'{energy}.data_fuel_dict')
-#
-#         dtot_CO2_emissions = -data_fuel_dict['CO2_per_use'] * \
-#             dcalval_dsyngas_ratio * \
-#             np.maximum(0.0, net_production[f'production {energy} ({self.stream_class_dict[energy].unit})'].values) / \
-#             (data_fuel_dict['high_calorific_value']**2)
-#
-#         mask = np.insert(np.zeros(len(years) - 1), 0, 1)
-#         dco2_emissions_objective_dsyngas_ratio = (alpha * dtot_CO2_emissions /
-#                                                   (tot_co2_emissions_0 * delta_years)) - \
-#             (mask * dtot_CO2_emissions * alpha * tot_co2_emissions_sum /
-#              delta_years / (tot_co2_emissions_0)**2)
-#
-# return np.atleast_2d(dco2_emissions_objective_dsyngas_ratio),
-# dtot_CO2_emissions * np.identity(len(years))
-
     def compute_ddelta_energy_prices(self, energy):
 
         years = np.arange(self.get_sosdisc_inputs('year_start'),
@@ -948,8 +904,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         chart_list = ['Energy price', 'Energy mean price', 'Energy mix',
                       'production', 'CO2 emissions', 'Carbon intensity', 'Demand violation',
                       'Delta price', 'CO2 taxes over the years', 'Solid energy and electricity production constraint',
-                      'Liquid hydrogen production constraint', 'Stream ratio', 'Carbon storage constraint']
-
+                      'Liquid hydrogen production constraint', 'Stream ratio']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -1011,27 +966,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 instanciated_charts.append(new_chart)
 
         if 'CO2 emissions' in charts:
-            new_chart = self.get_chart_co2_emissions_by_energy()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
-
-            new_chart = self.get_chart_co2_to_store()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
-
-            new_chart = self.get_chart_co2_limited_storage()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
-
-            new_chart = self.get_chart_co2_emissions_sinks()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
-
-            new_chart = self.get_chart_co2_emissions_sources()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
-
-            new_chart = self.get_chart_co2_streams()
+            new_chart = self.get_chart_co2_needed_by_energy_mix()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
@@ -1078,10 +1013,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
             new_chart = self.get_chart_liquid_hydrogen_constraint()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
-        if 'Carbon storage constraint' in charts:
-            new_chart = self.get_chart_carbon_storage_constraint()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
+
         if 'Stream ratio' in charts:
             new_chart = self.get_chart_stream_ratio()
             if new_chart is not None:
@@ -1491,11 +1423,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'].values / 1.0e3).tolist(), f'CO2 captured from energy mix')
-        new_chart.add_series(serie)
-
-        serie = InstanciatedSeries(
-            x_serie_1,
             (-co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'].values / 1.0e3).tolist(), f'{CarbonCapture.name} used by energy mix')
         new_chart.add_series(serie)
 
@@ -1575,33 +1502,20 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_co2_emissions_sinks(self):
+    def get_chart_co2_needed_by_energy_mix(self):
         '''
         Plot all CO2 emissions sinks 
         '''
         chart_name = 'CO2 emissions sinks'
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
+        co2_emissions = self.get_sosdisc_outputs(
+            'co2_emissions_needed_by_energy_mix')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
         x_serie_1 = co2_emissions['years'].values.tolist()
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (-co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1.0e3).tolist(), 'Carbon storage limited by capture')
-        new_chart.add_series(serie)
-
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (-co2_emissions[f'{CO2.name} removed by energy mix (Mt)'].values / 1.0e3).tolist(), f'{CO2.name} removed by energy mix')
-        new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1, (-co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'].values / 1.0e3).tolist(), f'{CarbonCapture.name} needed by energy mix')
-        new_chart.add_series(serie)
-
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (-co2_emissions['CO2 emissions sinks'].values / 1.0e3).tolist(), 'Total sinks')
         new_chart.add_series(serie)
 
         return new_chart
@@ -1670,39 +1584,5 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         new_chart = InstanciatedTable(
             table_name=chart_name, header=header, cells=cells)
-
-        return new_chart
-
-    def get_chart_carbon_storage_constraint(self):
-
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
-
-        carbon_storage_limit = self.get_sosdisc_inputs('carbonstorage_limit')
-        years = list(co2_emissions['years'])
-
-        chart_name = 'Cumulated carbon storage (Gt) vs years'
-
-        year_start = years[0]
-        year_end = years[len(years) - 1]
-
-        new_chart = TwoAxesInstanciatedChart('years', 'Cumulated carbon storage (Gt)',
-                                             chart_name=chart_name)
-
-        visible_line = True
-
-        new_series = InstanciatedSeries(
-            years, list(co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].cumsum().values / 1e3), 'cumulative sum of carbon capture (Gt)', 'lines', visible_line)
-
-        new_chart.series.append(new_series)
-
-        # Rockstrom Limit
-
-        ordonate_data = [carbon_storage_limit / 1e3] * int(len(years) / 5)
-        abscisse_data = np.linspace(
-            year_start, year_end, int(len(years) / 5))
-        new_series = InstanciatedSeries(
-            abscisse_data.tolist(), ordonate_data, 'Carbon storage limit (Gt)', 'scatter')
-
-        new_chart.series.append(new_series)
 
         return new_chart
