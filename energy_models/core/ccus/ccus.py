@@ -135,7 +135,8 @@ class CCUS(BaseStream):
         self.subelements_list = inputs_dict['ccs_list']
         BaseStream.configure_parameters(self, inputs_dict)
 
-        self.co2_for_food = inputs_dict['co2_for_food']
+        self.co2_for_food = pd.DataFrame(
+            {'years': self.production['years'], f'{CO2.name} for food (Mt)': 0.0})
         self.CCS_price = pd.DataFrame(
             {'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1)})
         self.carbonstorage_limit = inputs_dict['carbonstorage_limit']
@@ -186,9 +187,9 @@ class CCUS(BaseStream):
         # initialize ratio available carbon capture
         self.ratio_available_carbon_capture = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
                                                             f'ratio': 1.0})
-        self.co2_for_food = inputs_dict['co2_for_food']
+
         self.co2_emissions_needed_by_energy_mix = inputs_dict['co2_emissions_needed_by_energy_mix']
-        self.co2_emissions_from_energy_mix = inputs_dict['co2_emissions_from_energy_mix']
+        self.co2_emissions_from_energy_mix = inputs_dict['CO2_emissions_by_use_sources']
         #self.co2_emissions = inputs_dict['co2_emissions']
 
     def compute_CO2_emissions(self):
@@ -235,8 +236,8 @@ class CCUS(BaseStream):
         '''
 
         self.total_co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'] = self.total_co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'] + \
-            self.co2_emissions_from_energy_mix[f'{CarbonCapture.name} from energy mix (Mt)'] - \
-            self.co2_emissions_needed_by_energy_mix[f'{CarbonCapture.name} needed by energy mix (Mt)'] -\
+            self.co2_emissions_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'] * 1e3 - \
+            self.co2_emissions_needed_by_energy_mix[f'{CarbonCapture.name} needed by energy mix (Gt)'] * 1e3 -\
             self.co2_for_food[f'{CO2.name} for food (Mt)']
 
         cc_to_be_stored = self.total_co2_emissions[
@@ -246,7 +247,7 @@ class CCUS(BaseStream):
         # or upgrading biogas
         if cc_to_be_stored.min() < 0:
             cc_needed = self.co2_emissions_needed_by_energy_mix[
-                f'{CarbonCapture.name} needed by energy mix (Mt)'].values
+                f'{CarbonCapture.name} needed by energy mix (Gt)'].values * 1e3
             # if cc_needed is lower than 1.0e-15 we put one to the ratio (do
             # not care about small needs lower than 1.0e-15)
             if cc_to_be_stored.dtype != cc_needed.dtype:
@@ -299,7 +300,7 @@ class CCUS(BaseStream):
 
         self.total_co2_emissions_Gt = pd.DataFrame(
             {'years': self.production['years'],
-             f'{CarbonStorage.name} Limited by capture (Mt)': self.total_co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1e3})
+             f'{CarbonStorage.name} Limited by capture (Gt)': self.total_co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1e3})
 
     def compute_CCS_price(self):
         '''
@@ -318,50 +319,6 @@ class CCUS(BaseStream):
 
         self.carbon_storage_constraint = np.array([- (self.total_co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].sum(
         ) - self.carbonstorage_limit) / self.carbonstorage_constraint_ref])
-
-    def compute_ratio_objective(self):
-
-        ratio_arrays = self.all_streams_demand_ratio[self.subelements_list].values
-        # Objective is to minimize the difference between 100 and all ratios
-        # We give as objective the highest difference to start with the max of
-        # the difference
-
-        smooth_max = smooth_maximum(100.0 - ratio_arrays.flatten(), 3)
-        self.ratio_objective = np.asarray(
-            [smooth_max / self.ratio_norm_value])
-
-    def compute_all_streams_demand_ratio(self):
-        '''! Computes the demand_ratio dataframe. 
-        The ratio is calculated using the production and consumption WITHOUT the ratio applied
-        The value of the ratio is capped to 100.0
-        '''
-        demand_ratio_df = pd.DataFrame(
-            {'years': self.years})
-
-        for energy in self.subelements_list:
-
-            # Prod with ratio
-            energy_production = deepcopy(
-                self.sub_production_dict[f'{energy}'][f'{energy}'].values)
-            # consumption without ratio
-            sub_cons = self.sub_consumption_woratio_dict
-
-            energy_consumption = np.zeros(len(self.years))
-            for idx, consu in sub_cons.items():
-                if f'{energy} ({self.stream_class_dict[energy].unit})' in consu.columns:
-                    energy_consumption = np.sum([energy_consumption, consu[
-                        f'{energy} ({self.stream_class_dict[energy].unit})'].values], axis=0)
-            energy_prod_limited = compute_func_with_exp_min(
-                energy_production, 1.0e-10)
-            energy_cons_limited = compute_func_with_exp_min(
-                energy_consumption, 1.0e-10)
-
-            demand_ratio_df[f'{energy}'] = np.minimum(
-                energy_prod_limited / energy_cons_limited, 1.0) * 100.0
-        self.all_streams_demand_ratio = demand_ratio_df
-
-        # COmpute ratio_objective
-        self.compute_ratio_objective()
 
     def compute_grad_CO2_emissions(self, co2_emissions, alpha):
         '''
@@ -517,18 +474,18 @@ class CCUS(BaseStream):
             dtot_CO2_emissions, key_dep_tuple_list, new_key)
 
         cc_to_be_stored = co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'].values + \
-            self.co2_emissions_from_energy_mix[f'{CarbonCapture.name} from energy mix (Mt)'].values - \
-            self.co2_emissions_needed_by_energy_mix[f'{CarbonCapture.name} needed by energy mix (Mt)'].values -\
+            self.co2_emissions_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'].values * 1e3 - \
+            self.co2_emissions_needed_by_energy_mix[f'{CarbonCapture.name} needed by energy mix (Gt)'].values * 1e3 -\
             self.co2_for_food[f'{CO2.name} for food (Mt)'].values
         # if the carbon to be stored is lower than zero that means that we need
         # more carbon capture for energy mix than the one created by CC technos
         # or upgrading biogas
         if cc_to_be_stored.min() < 0:
             cc_needed = self.co2_emissions_needed_by_energy_mix[
-                f'{CarbonCapture.name} needed by energy mix (Mt)'].values
+                f'{CarbonCapture.name} needed by energy mix (Gt)'].values * 1e3
             cc_provided = co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'].values + \
                 self.co2_emissions_from_energy_mix[
-                    f'{CarbonCapture.name} from energy mix (Mt)'].values
+                    f'{CarbonCapture.name} from energy mix (Gt)'].values * 1e3
             dtot_CO2_emissions_old = dtot_CO2_emissions.copy()
             dratio_dkey = {}
             # The gradient is (u/v)' = (u'v -uv')/v**2 = u'/v -uv'/v**2
@@ -638,56 +595,6 @@ class CCUS(BaseStream):
                               (f'Solid {Carbon.name} storage (Mt)', (-limit_is_storage + limit_is_solid_storage) * Carbon.data_energy_dict['CO2_per_use'])]
         dtot_CO2_emissions = update_new_gradient(
             dtot_CO2_emissions, key_dep_tuple_list, new_key)
-
-
-#         self.total_co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'] = np.minimum(
-#             self.total_co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values,
-#             self.total_co2_emissions[f'{CarbonStorage.name} (Mt)'].values - self.total_co2_emissions[f'Solid {Carbon.name} storage (Mt)'].values * Carbon.data_energy_dict['CO2_per_use']) + \
-#             np.minimum(
-#             self.total_co2_emissions[f'{Carbon.name} to be stored (Mt)'].values,
-# self.total_co2_emissions[f'Solid {Carbon.name} storage (Mt)'].values) *
-# Carbon.data_energy_dict['CO2_per_use']
-
-        '''  CO2 EMISSIONS SINKS
-        Only carbon stored or used or removed is deduced from total CO2 emissions
-        '''
-
-        new_key = 'CO2 emissions sinks'
-        key_dep_tuple_list = [(f'{CarbonStorage.name} Limited by capture (Mt)', 1.0),
-                              (f'{CO2.name} removed by energy mix (Mt)', 1.0),
-                              (f'{CarbonCapture.name} needed by energy mix (Mt)', 1.0)]
-        dtot_CO2_emissions = update_new_gradient(
-            dtot_CO2_emissions, key_dep_tuple_list, new_key)
-
-#         self.total_co2_emissions['CO2 emissions sinks'] = self.total_co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'] + \
-#             self.total_co2_emissions[f'{CO2.name} removed by energy mix (Mt)'] + \
-#             self.total_co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)']
-
-        '''  CO2 EMISSIONS SOURCES
-        All sources of carbon emissions by energy including : 
-            - the flue gas from technos
-            - the carbon captured from technos (maybe not stored)
-            - the carbon emitted by the energy mix (cannot be stored)
-            - the carbon emitted after use of net production
-            
-        '''
-        new_key = 'CO2 emissions sources'
-        key_dep_tuple_list = [(f'Total {CarbonCapture.flue_gas_name} (Mt)', 1.0),
-                              (f'{CarbonCapture.name} from energy mix (Mt)', 1.0),
-                              (f'{CO2.name} from energy mix (Mt)', 1.0),
-                              (f'Total CO2 by use (Mt)', 1.0)]
-        dtot_CO2_emissions = update_new_gradient(
-            dtot_CO2_emissions, key_dep_tuple_list, new_key)
-
-#         self.total_co2_emissions['CO2 emissions sources'] =  \
-#             self.total_co2_emissions[f'Total {CarbonCapture.flue_gas_name} (Mt)'] + \
-#             self.total_co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'] + \
-#             self.total_co2_emissions[f'{CO2.name} from energy mix (Mt)'] + \
-#             self.total_co2_emissions[f'Total CO2 by use (Mt)']
-
-        # Total is sources minus sinks
-#         self.total_co2_emissions['Total CO2 emissions'] = self.total_co2_emissions['CO2 emissions sources'] - \
-#             self.total_co2_emissions['CO2 emissions sinks']
 
         dtot_final_CO2_emissions = dtot_CO2_emissions.copy()
         for key, gradient in dtot_CO2_emissions.items():
