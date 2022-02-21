@@ -98,8 +98,6 @@ class Study(EnergyMixStudyManager):
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 
-        ratio_available_cc = pd.DataFrame({'years': years,
-                                           'ratio': np.linspace(1.0, 1.0, len(years))})
         # define invest mix
         investment_mix = self.get_investments()
 
@@ -111,7 +109,6 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.transport_cost': self.transport,
                        f'{self.study_name}.{energy_name}.transport_margin': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
-                       f'{self.study_name}.{energy_mix_name}.ratio_available_carbon_capture': ratio_available_cc,
                        }
         if self.main_study:
             values_dict.update(
