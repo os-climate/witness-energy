@@ -115,18 +115,18 @@ class Study(EnergyStudyManager):
         list_aggr_type = []
         list_ns = []
         #-- add objectives to func_manager
-        list_var.extend([f'co2_emissions_objective',
-                         f'energy_production_objective', 'syngas_prod_objective', 'ratio_objective'])
-        list_parent.extend(['objectives', 'objectives',
+        list_var.extend([f'energy_production_objective',
+                         'syngas_prod_objective', 'ratio_objective'])
+        list_parent.extend(['objectives',
                             'objectives',  'objectives'])
-        list_ftype.extend([OBJECTIVE, OBJECTIVE,  OBJECTIVE,  OBJECTIVE])
+        list_ftype.extend([OBJECTIVE,  OBJECTIVE,  OBJECTIVE])
         if Syngas.name in self.energy_list:
-            list_weight.extend([0., 0.,  1.,  0.])
+            list_weight.extend([0.,  1.,  0.])
         else:
-            list_weight.extend([0., 0., 0.,  0.])
+            list_weight.extend([0., 0.,  0.])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM, AGGR_TYPE_SUM,  AGGR_TYPE_SUM,  AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions', 'ns_functions',
+            [AGGR_TYPE_SUM,  AGGR_TYPE_SUM,  AGGR_TYPE_SUM])
+        list_ns.extend(['ns_functions',
                         'ns_functions', 'ns_functions'])
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
@@ -704,7 +704,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.max_mda_iter': 200,
                        f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
 
-                       f'{self.study_name}.sub_mda_class': 'MDANewtonRaphson',
+                       f'{self.study_name}.sub_mda_class': 'GSNewtonMDA',
                        }
 
         # ALl energy_demands following energy_list
