@@ -35,7 +35,7 @@ class CSTechnoDiscipline(TechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fas fa-truck-loading fa-fw',
         'version': '',
     }
     DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_carbon_storage',

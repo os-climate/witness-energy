@@ -664,6 +664,12 @@ class Study(EnergyStudyManager):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.all_ccs_demand_ratio = pd.DataFrame(ccs_demand_ratio_dict)
 
+        ratio_available_resource_dict = dict(
+            zip(EnergyMix.RESOURCE_LIST, np.ones((len(self.years), len(self.years)))))
+        ratio_available_resource_dict['years'] = self.years
+        self.all_resource_ratio_usable_demand = pd.DataFrame(
+            ratio_available_resource_dict)
+
         invest_ref = 10.55    # 100G$
         invest = np.ones(len(self.years)) * invest_ref
         invest[0] = invest_ref
@@ -700,10 +706,10 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{demand_name}.total_energy_demand': self.total_energy_demand,
                        f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.study_name}.{energy_mix_name}.all_ccs_demand_ratio': self.all_ccs_demand_ratio,
+                       f'{self.study_name}.{energy_mix_name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
                        f'{self.study_name}.is_stream_demand': True,
                        f'{self.study_name}.max_mda_iter': 200,
-                       f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
-
                        f'{self.study_name}.sub_mda_class': 'GSNewtonMDA',
                        }
 

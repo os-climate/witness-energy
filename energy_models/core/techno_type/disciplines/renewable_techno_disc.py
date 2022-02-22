@@ -30,7 +30,7 @@ class RenewableTechnoDiscipline(TechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fas fa-fan fa-fw',
         'version': '',
     }
     DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/MWh', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
