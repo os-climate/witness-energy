@@ -137,8 +137,6 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         price_details = smr_model.compute_price()
         smr_model.compute_consumption_and_production()
 
-        assert 1 == 2
-
     def test_02_biomass_gas_discipline(self):
 
         self.name = 'Test'
