@@ -37,7 +37,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fas fa-smog fa-fw',
         'version': '',
     }
     techno_name = 'FossilSimpleTechno'

@@ -23,15 +23,15 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'energy_models.core.investments.disciplines.independent_invest_disc',
-        'type': '',
-        'source': '',
+        'label': 'InvestmentsDistribution',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
         'validated': '',
-        'validated_by': '',
+        'validated_by': 'SoSTrades Project',
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fas fa-coins fa-fw',
         'version': '',
     }
     energy_mix_name = EnergyMix.name
