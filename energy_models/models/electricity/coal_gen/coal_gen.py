@@ -18,7 +18,7 @@ import numpy as np
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.ressources_models.water import Water
+from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 
 
@@ -44,7 +44,7 @@ class CoalGen(ElectricityTechno):
         # Cost of water for 1 kWH of electricity - Efficiency removed as data
         # is the process global water consumption
         self.cost_details[Water.name] = list(
-            self.ressources_prices[Water.name] * self.cost_details['water_needs'])
+            self.resources_prices[Water.name] * self.cost_details['water_needs'])
 
         # + self.cost_details['electricity']
         return self.cost_details[SolidFuel.name] + self.cost_details[Water.name]
@@ -67,7 +67,7 @@ class CoalGen(ElectricityTechno):
         self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from coal extraction and electricity production
         '''

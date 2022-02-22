@@ -175,7 +175,7 @@ class StreamDiscipline(SoSDiscipline):
                             ('energy_consumption_woratio', column_name), (f'{techno}.techno_consumption_woratio', techno_prod_name_with_unit), inputs_dict['scaling_factor_techno_consumption'] * np.identity(len(years)) / scaling_factor_energy_consumption)
 
                     else:
-                        # loop on ressources
+                        # loop on resources
                         for col_technoprod in list_columnstechnocons:
                             if column_name == col_technoprod:
                                 self.set_partial_derivative_for_other_types(

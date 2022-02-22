@@ -26,7 +26,7 @@ from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDisc
 from energy_models.models.liquid_fuel.refinery.refinery import Refinery
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
     get_static_prices
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -35,7 +35,6 @@ from energy_models.core.stream_type.energy_models.gasoline import Gasoline
 from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
 from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
 from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
-
 
 
 class RefineryPriceTestCase(unittest.TestCase):
@@ -114,11 +113,11 @@ class RefineryPriceTestCase(unittest.TestCase):
         self.is_apply_resource_ratio = True
         self.data_fuel = LiquidFuel.data_energy_dict
         self.other_fuel = {Kerosene.name: Kerosene.data_energy_dict,
-                          Gasoline.name: Gasoline.data_energy_dict,
-                          LiquefiedPetroleumGas.name: LiquefiedPetroleumGas.data_energy_dict,
-                          HeatingOil.name: HeatingOil.data_energy_dict,
-                          UltraLowSulfurDiesel.name: UltraLowSulfurDiesel.data_energy_dict,
-                          }
+                           Gasoline.name: Gasoline.data_energy_dict,
+                           LiquefiedPetroleumGas.name: LiquefiedPetroleumGas.data_energy_dict,
+                           HeatingOil.name: HeatingOil.data_energy_dict,
+                           UltraLowSulfurDiesel.name: UltraLowSulfurDiesel.data_energy_dict,
+                           }
 
     def tearDown(self):
         pass
@@ -129,7 +128,7 @@ class RefineryPriceTestCase(unittest.TestCase):
                        'year_end': 2050,
                        'techno_infos_dict': RefineryDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
-                       'ressources_price': get_static_prices(np.arange(2020, 2051)),
+                       'resources_price': get_static_prices(np.arange(2020, 2051)),
                        'invest_level': self.invest_level,
                        'CO2_taxes': self.co2_taxes,
                        'margin':  self.margin,
@@ -139,7 +138,7 @@ class RefineryPriceTestCase(unittest.TestCase):
                        'initial_production': RefineryDiscipline.initial_production,
                        'initial_age_distrib': RefineryDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,

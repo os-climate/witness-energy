@@ -15,7 +15,7 @@ limitations under the License.
 '''
 
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
-from energy_models.core.stream_type.ressources_models.water import Water
+from energy_models.core.stream_type.resources_models.water import Water
 
 
 class Nuclear(ElectricityTechno):
@@ -26,14 +26,15 @@ class Nuclear(ElectricityTechno):
         """
         self.cost_details['uranium_fuel_needs'] = self.get_theoretical_uranium_fuel_needs(
         )
-        self.cost_details['uranium fuel'] = list(self.ressources_prices['uranium fuel'] *
+        self.cost_details['uranium fuel'] = list(self.resources_prices['uranium fuel'] *
                                                  self.cost_details['uranium_fuel_needs'])
 
         self.cost_details['water_needs'] = self.get_theoretical_water_needs()
-        self.cost_details[Water.name] = list(self.ressources_prices[Water.name] *
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] *
                                              self.cost_details['water_needs'])
 
-        self.cost_details['waste_disposal'] = self.compute_nuclear_waste_disposal_cost()
+        self.cost_details['waste_disposal'] = self.compute_nuclear_waste_disposal_cost(
+        )
 
         return self.cost_details['uranium fuel'] + self.cost_details[Water.name] + self.cost_details['waste_disposal']
 
@@ -94,11 +95,10 @@ class Nuclear(ElectricityTechno):
         waste_disposal_levy = self.techno_infos_dict['waste_disposal_levy']
         return waste_disposal_levy
 
-    def compute_price(self):
-        """
-        overloads techno_type compute price method to add the decommissioning_cost to Capex_init
-        """
-        self.techno_infos_dict['Capex_init'] += self.techno_infos_dict['decommissioning_cost']
-        costs = ElectricityTechno.compute_price(self)
-        return costs
-
+    # def compute_price(self):
+        # """
+        # overloads techno_type compute price method to add the decommissioning_cost to Capex_init
+        # """
+        # self.techno_infos_dict['Capex_init'] += self.techno_infos_dict['decommissioning_cost']
+        # costs = ElectricityTechno.compute_price(self)
+        # return costs

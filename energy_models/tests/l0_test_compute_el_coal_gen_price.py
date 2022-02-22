@@ -22,8 +22,8 @@ from os.path import join, dirname
 from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
 from energy_models.models.electricity.coal_gen.coal_gen import CoalGen
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_models.water import Water
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
@@ -41,10 +41,13 @@ class CoalGenPriceTestCase(unittest.TestCase):
         solid_fuel_price = np.array(
             [5.7] * 31)
         years = np.arange(2020, 2051)
-        self.resource_list=['oil_resource','natural_gas_resource','uranium_resource','coal_resource']
-        self.ratio_available_resource = pd.DataFrame({'years': np.arange(2020, 2050 + 1)})
+        self.resource_list = [
+            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
+        self.ratio_available_resource = pd.DataFrame(
+            {'years': np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
-            self.ratio_available_resource[types]= np.linspace(1, 1, len(self.ratio_available_resource.index))
+            self.ratio_available_resource[types] = np.linspace(
+                1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame({'years': years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                                     0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                                                                     0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
@@ -85,12 +88,12 @@ class CoalGenPriceTestCase(unittest.TestCase):
 
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * transport_cost})
-        self.ressources_price = pd.DataFrame()
+        self.resources_price = pd.DataFrame()
 
-        self.ressources_price = pd.DataFrame(
+        self.resources_price = pd.DataFrame(
             columns=['years', 'water'])
-        self.ressources_price['years'] = years
-        self.ressources_price['water'] = Water.data_energy_dict['cost_now']
+        self.resources_price['years'] = years
+        self.resources_price['water'] = Water.data_energy_dict['cost_now']
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
@@ -104,7 +107,7 @@ class CoalGenPriceTestCase(unittest.TestCase):
         demand_ratio_dict['years'] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
-        self.is_apply_resource_ratio=True
+        self.is_apply_resource_ratio = True
 
     def tearDown(self):
         pass
@@ -122,10 +125,10 @@ class CoalGenPriceTestCase(unittest.TestCase):
                        'transport_margin': self.margin,
                        'initial_production': CoalGenDiscipline.initial_production,
                        'initial_age_distrib': CoalGenDiscipline.initial_age_distribution,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'energy_prices': self.energy_prices,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -152,12 +155,12 @@ class CoalGenPriceTestCase(unittest.TestCase):
                        'CO2_taxes': self.co2_taxes,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
-                       'ressources_price': self.ressources_price,
+                       'resources_price': self.resources_price,
                        'transport_margin': self.margin,
                        'initial_production': CoalGenDiscipline.initial_production,
                        'initial_age_distrib': CoalGenDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -208,7 +211,7 @@ class CoalGenPriceTestCase(unittest.TestCase):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.ressources_price': self.ressources_price,
+                       f'{self.name}.resources_price': self.resources_price,
                        f'{self.name}.{self.model_name}.margin':  self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)

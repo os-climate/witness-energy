@@ -45,7 +45,7 @@ class WetCropResidues(WetBiomassTechno):
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{WetBiomassTechno.energy_name} (kWh)']
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from electricity/fuel production
         '''

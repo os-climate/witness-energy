@@ -101,6 +101,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                                          3.15379843, 1.19113417, 1.70548756, 4.65474781]})  # to review
     ratio_available_cc_default = pd.DataFrame({'years': np.arange(2020, 2050 + 1),
                                                'ratio': 1.0})
+    ft_flue_gas_ratio = np.array([0.12])
+
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -123,15 +125,10 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                          'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY,
                                          'namespace': 'ns_energy',
                                          'default': Syngas.data_energy_dict},
+               'flue_gas_co2_ratio': {'type': 'array', 'default': ft_flue_gas_ratio}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)
-
-    # -- add specific techno outputs to this
-    ft_flue_gas_ratio = np.array([0.12])
-    DESC_OUT = {
-        'flue_gas_co2_ratio': {'type': 'array', 'default': ft_flue_gas_ratio}}
-    DESC_OUT.update(LiquidFuelTechnoDiscipline.DESC_OUT)
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -146,7 +143,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         # Grad of price vs energyprice
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
-        grad_dict_ressources = self.techno_model.grad_price_vs_ressources_price()
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
         carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
 
         scaling_factor_techno_consumption = self.get_sosdisc_inputs(
@@ -155,12 +152,11 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             'scaling_factor_techno_production')
 
         self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions, grad_dict_ressources)
+            grad_dict, carbon_emissions, grad_dict_resources)
 
         margin = self.techno_model.margin['margin'].values
 
-        dprice_FT_dsyngas_ratio = self.techno_model.dprice_FT_dsyngas_ratio * \
-            np.split(margin, len(margin)) / 100.0 / \
+        dprice_FT_dsyngas_ratio = self.techno_model.dprice_FT_dsyngas_ratio / \
             100.0  # now syngas is in % grad is divided by 100
 
         self.set_partial_derivative_for_other_types(
@@ -197,8 +193,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('CO2_emissions', self.techno_name), ('syngas_ratio',), dco2_emissions_dsyngas_ratio / 100.0)  # now syngas is in % grad is divided by 100
 
-        dprice_FT_wotaxes_dsyngas_ratio = self.techno_model.dprice_FT_wotaxes_dsyngas_ratio * \
-            np.split(margin, len(margin)) / 100
+        dprice_FT_wotaxes_dsyngas_ratio = self.techno_model.dprice_FT_wotaxes_dsyngas_ratio
         self.set_partial_derivative_for_other_types(
             ('techno_prices',
              f'{self.techno_name}_wotaxes'), ('syngas_ratio',),

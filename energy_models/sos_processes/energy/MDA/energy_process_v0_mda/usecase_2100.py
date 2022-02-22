@@ -23,7 +23,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100., techno_dict=DEFAULT_TECHNO_DICT, bspline=True, invest_discipline=INVEST_DISCIPLINE_DEFAULT, execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100., techno_dict=DEFAULT_TECHNO_DICT, bspline=True, invest_discipline=INVEST_DISCIPLINE_DEFAULT, execution_engine=None):
 
         self.year_start = year_start
         self.year_end = year_end
@@ -62,7 +62,7 @@ class Study(StudyManager):
             f'{self.study_name}.tolerance': 1.0e-7,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'MDANewtonRaphson'}
+            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA'}
         values_dict_list.append(numerical_values_dict)
 
         return values_dict_list

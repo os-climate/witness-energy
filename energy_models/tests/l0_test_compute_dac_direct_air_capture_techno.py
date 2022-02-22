@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import DirectAirCaptureTechnoDiscipline
 from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno import DirectAirCaptureTechno
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -71,7 +71,7 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
                            4169400000.0, 4071800000.0, 4174200000.0,
                            3894500000.0, 3780750000.0, 3567000000.0,
                            ]) * 0.02 / 1000 * 1.0e-9
-        self.ressources_price = pd.DataFrame({'years': years})
+        self.resources_price = pd.DataFrame({'years': years})
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': invest})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
@@ -113,8 +113,8 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
                        'initial_production': DirectAirCaptureTechnoDiscipline.initial_capture,
                        'initial_age_distrib': DirectAirCaptureTechnoDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'ressources_price': self.ressources_price,
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_price': self.resources_price,
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -128,7 +128,8 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
         direct_air_capture_techno_model = DirectAirCaptureTechno(
             'direct_air_capture.DirectAirCaptureTechno')
         direct_air_capture_techno_model.configure_parameters(inputs_dict)
-        direct_air_capture_techno_model.configure_parameters_update(inputs_dict)
+        direct_air_capture_techno_model.configure_parameters_update(
+            inputs_dict)
         price_details = direct_air_capture_techno_model.compute_price()
         direct_air_capture_techno_model.compute_consumption_and_production()
 
@@ -161,7 +162,7 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
                        f'{self.name}.{self.model_name}.margin':  self.margin,
                        f'{self.name}.{self.model_name}.invest_before_ystart':
                        DirectAirCaptureTechnoDiscipline.invest_before_year_start,
-                       f'{self.name}.ressources_price': self.ressources_price,
+                       f'{self.name}.resources_price': self.resources_price,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

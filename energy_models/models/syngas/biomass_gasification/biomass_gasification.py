@@ -16,7 +16,7 @@ limitations under the License.
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.stream_type.ressources_models.water import Water
+from energy_models.core.stream_type.resources_models.water import Water
 
 import numpy as np
 
@@ -76,7 +76,7 @@ class BiomassGasification(SyngasTechno):
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
-    def compute_CO2_emissions_from_input_ressources(self):
+    def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from biomass and positive from elec
         '''

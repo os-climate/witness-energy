@@ -22,7 +22,7 @@ import scipy.interpolate as sc
 from energy_models.models.syngas.pyrolysis.pyrolysis import Pyrolysis
 from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -51,8 +51,8 @@ class PyrolysisPriceTestCase(unittest.TestCase):
 
         self.energy_prices = pd.DataFrame({'years': years})
         # price of 1 kg of wood
-        self.ressources_prices = pd.DataFrame({'years': years, 'wood': len(years) * [130]
-                                               })
+        self.resources_prices = pd.DataFrame({'years': years, 'wood': len(years) * [130]
+                                              })
 
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': len(years) * [0.01]})
@@ -88,7 +88,7 @@ class PyrolysisPriceTestCase(unittest.TestCase):
                        'year_end': 2050,
                        'techno_infos_dict': PyrolysisDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
-                       'ressources_price': self.ressources_prices,
+                       'resources_price': self.resources_prices,
                        'invest_level': self.invest_level,
                        'invest_before_ystart': PyrolysisDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
@@ -98,7 +98,7 @@ class PyrolysisPriceTestCase(unittest.TestCase):
                        'initial_production': PyrolysisDiscipline.initial_production,
                        'initial_age_distrib': PyrolysisDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': pd.DataFrame(),
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -142,7 +142,7 @@ class PyrolysisPriceTestCase(unittest.TestCase):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_price': self.ressources_prices
+                       f'{self.name}.resources_price': self.resources_prices
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

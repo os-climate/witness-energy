@@ -26,7 +26,7 @@ from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec_d
 from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe import ElectrolysisAWE
 from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe_disc import ElectrolysisAWEDiscipline
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.ressources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -56,8 +56,8 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         self.energy_co2_emissions = pd.DataFrame(
             {'years': years, 'electricity': 0.0})
         # price of 1 kg of wood
-        self.ressources_prices = pd.DataFrame({'years': years, 'water': 0.0
-                                               })
+        self.resources_prices = pd.DataFrame({'years': years, 'water': 0.0
+                                              })
 
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': len(years) * [0.3]})
@@ -93,7 +93,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        'year_end': 2050,
                        'techno_infos_dict': ElectrolysisPEMDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
-                       'ressources_price': self.ressources_prices,
+                       'resources_price': self.resources_prices,
                        'invest_level': self.invest_level,
                        'invest_before_ystart': ElectrolysisPEMDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
@@ -103,7 +103,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        'initial_production': ElectrolysisPEMDiscipline.initial_production,
                        'initial_age_distrib': ElectrolysisPEMDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_co2_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -147,7 +147,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_price': self.ressources_prices,
+                       f'{self.name}.resources_price': self.resources_prices,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        }
@@ -169,7 +169,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        'year_end': 2050,
                        'techno_infos_dict': ElectrolysisSOECDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
-                       'ressources_price': self.ressources_prices,
+                       'resources_price': self.resources_prices,
                        'invest_level': self.invest_level,
                        'invest_before_ystart': ElectrolysisSOECDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
@@ -179,7 +179,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        'initial_production': ElectrolysisSOECDiscipline.initial_production,
                        'initial_age_distrib': ElectrolysisSOECDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_co2_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -223,7 +223,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_price': self.ressources_prices,
+                       f'{self.name}.resources_price': self.resources_prices,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        }
@@ -245,7 +245,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        'year_end': 2050,
                        'techno_infos_dict': ElectrolysisAWEDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
-                       'ressources_price': self.ressources_prices,
+                       'resources_price': self.resources_prices,
                        'invest_level': self.invest_level,
                        'invest_before_ystart': ElectrolysisAWEDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
@@ -255,7 +255,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        'initial_production': ElectrolysisAWEDiscipline.initial_production,
                        'initial_age_distrib': ElectrolysisAWEDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_co2_emissions,
-                       'ressources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -299,7 +299,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.ressources_price': self.ressources_prices
+                       f'{self.name}.resources_price': self.resources_prices
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
