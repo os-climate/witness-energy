@@ -710,7 +710,8 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
                        f'{self.study_name}.is_stream_demand': True,
                        f'{self.study_name}.max_mda_iter': 200,
-                       f'{self.study_name}.sub_mda_class': 'GSNewtonMDA',
+                       f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
+                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.ones(len(self.years)) / 3
                        }
 
         # ALl energy_demands following energy_list
