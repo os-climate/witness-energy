@@ -36,7 +36,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fa-solid fa-gas-pump fa-fw',
         'version': '',
     }
     # -- add specific techno inputs to this
