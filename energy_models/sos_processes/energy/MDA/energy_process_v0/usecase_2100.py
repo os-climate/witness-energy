@@ -360,6 +360,12 @@ class Study(EnergyStudyManager):
             {'years': self.years, 'carbon_capture from energy mix (Mt)': 25.0})
         co2_emissions_needed_by_energy_mix = pd.DataFrame(
             {'years': self.years, 'carbon_capture needed by energy mix (Mt)': 25.0})
+
+        demand_ratio_dict = dict(
+            zip(self.energy_list, np.ones((len(self.years), len(self.years)))))
+        demand_ratio_dict['years'] = self.years
+
+        self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         values_dict = {f'{self.study_name}.linearization_mode': 'adjoint',
                        f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
                        f'{self.study_name}.{energy_mix_name}.invest_energy_mix': energy_mix_invest_df,
@@ -390,7 +396,10 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.{biomass_dry_name}.energy_demand_mix': self.energy_demand_mix[f'{biomass_dry_name}.energy_demand_mix'],
                        f'{self.study_name}.{CCS_NAME}.{carbon_capture_name}.energy_demand_mix': self.energy_demand_mix[f'{carbon_capture_name}.energy_demand_mix'],
                        f'{self.study_name}.{CCS_NAME}.{carbon_storage_name}.energy_demand_mix': self.energy_demand_mix[f'{carbon_storage_name}.energy_demand_mix'],
-                       f'{self.study_name}.{energy_mix_name}.{liquid_hydrogen_name}.energy_demand_mix': self.energy_demand_mix[f'{liquid_hydrogen_name}.energy_demand_mix']
+                       f'{self.study_name}.{energy_mix_name}.{liquid_hydrogen_name}.energy_demand_mix': self.energy_demand_mix[f'{liquid_hydrogen_name}.energy_demand_mix'],
+                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.ones(len(self.years)) / 3,
+                       f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+
                        }
 
         values_dict_list, dspace_list, instanciated_studies = self.setup_usecase_sub_study_list(

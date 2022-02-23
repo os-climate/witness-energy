@@ -177,13 +177,6 @@ class CCUS(BaseStream):
                         inputs_dict[f'{energy}.energy_consumption'][elements].values * \
                         self.scaling_factor_energy_consumption
 
-        # DataFrame stream demand
-        self.all_streams_demand_ratio = pd.DataFrame(
-            {'years': self.energy_prices['years'].values})
-        for energy in self.subelements_list:
-            self.all_streams_demand_ratio[energy] = np.ones(
-                len(self.all_streams_demand_ratio['years'].values)) * 100.
-
         # initialize ratio available carbon capture
         self.ratio_available_carbon_capture = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
                                                             f'ratio': 1.0})
