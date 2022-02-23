@@ -69,7 +69,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production_unit': 'kg/kg',
                                  'construction_delay': construction_delay,
                                  'waste_disposal_levy': 0.1 * 1e-2 * 1e3,   # conversion from c/kWh to $/MWh
-                                 'decommissioning_percentage': 0.15 / lifetime,
+                                 'decommissioning_cost': 1000,
                                  # World Nuclear Waste Report 2019, Chapter 6 (https://worldnuclearwastereport.org)
                                  # average of 1000 $/kW
                                  }
