@@ -27,7 +27,7 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygenation_disc',
+        'label': 'HEFA deoxygenation',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -35,7 +35,7 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fa-solid fa-gas-pump fa-fw',
         'version': '',
     }
     # -- add specific techno inputs to this
