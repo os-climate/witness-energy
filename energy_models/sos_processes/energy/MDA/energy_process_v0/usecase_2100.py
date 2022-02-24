@@ -367,7 +367,7 @@ class Study(EnergyStudyManager):
 
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         values_dict = {f'{self.study_name}.linearization_mode': 'adjoint',
-                       f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
+                       f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
                        f'{self.study_name}.{energy_mix_name}.invest_energy_mix': energy_mix_invest_df,
                        f'{self.study_name}.{CCS_NAME}.ccs_percentage': ccs_percentage,
                        f'{self.study_name}.{CCS_NAME}.invest_ccs_mix': invest_ccs_mix,
