@@ -30,8 +30,8 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
     """
     Energy mix jacobian test class
     """
-    AbstractJacobianUnittest.DUMP_JACOBIAN = False
-    parallel = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    parallel = False
 
     def analytic_grad_entry(self):
         return [
@@ -301,14 +301,11 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_names.extend(
             [f'{name}.CO2_taxes'])
 
-        outputs_names = [f'{name}.{func_manager_name}.co2_emissions_objective',
-                         f'{name}.{func_manager_name}.energy_production_objective',
+        outputs_names = [f'{name}.{func_manager_name}.energy_production_objective',
                          f'{name}.{func_manager_name}.primary_energies_production',
-                         f'{name}.CCS_price',
                          f'{name}.{func_manager_name}.total_prod_solid_fuel_elec',
                          f'{name}.{func_manager_name}.total_prod_h2_liquid',
                          f'{name}.{func_manager_name}.syngas_prod_objective',
-                         f'{name}.{func_manager_name}.carbon_storage_constraint'
                          ]
         outputs_names.extend(
             [f'{name}.{model_name}.{energy}.demand_violation' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']])
@@ -317,7 +314,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=inputs_names, outputs=outputs_names, parallel=self.parallel)
 
-    def test_02_energy_mix_discipline_residual_vars_wrt_state_variables(self):
+    def _test_02_energy_mix_discipline_residual_vars_wrt_state_variables(self):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -426,7 +423,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_full_names = [disc_energy_mix.get_var_full_name(
             inp, disc_energy_mix._data_in) for inp in input_names]
 
-        output_names = ['energy_prices', 'energy_CO2_emissions', 'co2_emissions_objective', 'energy_production_objective', 'methane.demand_violation', 'hydrogen.gaseous_hydrogen.demand_violation',
+        output_names = ['energy_prices', 'energy_CO2_emissions', 'energy_production_objective', 'methane.demand_violation', 'hydrogen.gaseous_hydrogen.demand_violation',
                         'biogas.demand_violation', 'electricity.demand_violation', 'solid_fuel.demand_violation', 'liquid_fuel.demand_violation', 'biodiesel.demand_violation', 'syngas.demand_violation', 'biomass_dry.demand_violation']
         outputs_full_names = [disc_energy_mix.get_var_full_name(
             out, disc_energy_mix._data_out) for out in output_names]
@@ -535,7 +532,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_co2_emissions_gt.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            inputs=inputs_names, outputs=[f'{name}.{model_name}.co2_emissions_Gt'], parallel=self.parallel)
+                            inputs=inputs_names, outputs=[f'{name}.{model_name}.co2_emissions_needed_by_energy_mix'], parallel=False)
 
     def test_05_energy_mix_test_mean_price_grad(self):
 
@@ -636,22 +633,19 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_names.extend(
             [f'{name}.{model_name}.syngas.syngas_ratio'])
 
-        energy_mix_output = [f'{name}.{model_name}.energy_production', f'{name}.{model_name}.co2_emissions_Gt',
+        energy_mix_output = [f'{name}.{model_name}.energy_production',
                              f'{name}.{func_manager_name}.energy_production_objective',
-                             f'{name}.{func_manager_name}.co2_emissions_objective',
                              f'{name}.{model_name}.energy_mean_price',
                              f'{name}.{model_name}.land_demand_df',
                              f'{name}.{func_manager_name}.primary_energies_production',
-                             f'{name}.CCS_price',
                              f'{name}.{func_manager_name}.total_prod_minus_min_prod_constraint_df',
-                             f'{name}.{model_name}.energy_prices_after_tax',
-                             f'{name}.{func_manager_name}.carbon_storage_constraint']
+                             f'{name}.{model_name}.energy_prices_after_tax']
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_outputs.pkl',
                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
                             inputs=inputs_names, outputs=energy_mix_output, parallel=self.parallel)
 
-    def _test_07_energy_mix_co2_tax(self):
+    def test_07_energy_mix_co2_tax(self):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -800,7 +794,6 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                              f'{name}.{model_name}.land_demand_df',
                              f'{name}.{func_manager_name}.primary_energies_production',
                              f'{name}.{func_manager_name}.total_prod_minus_min_prod_constraint_df',
-                             f'{name}.CCS_price',
                              f'{name}.{model_name}.energy_prices_after_tax',
                              f'{name}.{func_manager_name}.co2_emissions_objective',
                              f'{name}.{func_manager_name}.energy_production_objective',
@@ -811,7 +804,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-3,
                             inputs=inputs_names, outputs=energy_mix_output)
 
-    def _test_09_energy_mix_gradients_cutoff(self):
+    def test_09_energy_mix_gradients_cutoff(self):
         '''
             Same test as test 08 except:
             this test is performed with the cutoffs options on the mixes at energy and techno level
@@ -942,7 +935,6 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                              f'{name}.{model_name}.land_demand_df',
                              f'{name}.{func_manager_name}.primary_energies_production',
                              f'{name}.{func_manager_name}.total_prod_minus_min_prod_constraint_df',
-                             f'{name}.CCS_price',
                              f'{name}.{model_name}.energy_prices_after_tax',
                              f'{name}.{func_manager_name}.co2_emissions_objective',
                              f'{name}.{func_manager_name}.energy_production_objective',
@@ -1151,7 +1143,6 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                                            f'{name}.{model_name}.land_demand_df',
                                                            f'{name}.{func_manager_name}.primary_energies_production',
                                                            f'{name}.{func_manager_name}.total_prod_minus_min_prod_constraint_df',
-                                                           f'{name}.CCS_price',
                                                            f'{name}.{model_name}.energy_prices_after_tax',
                                                            f'{name}.{func_manager_name}.co2_emissions_objective',
                                                            f'{name}.{func_manager_name}.energy_production_objective',
@@ -1160,7 +1151,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = EnergyMixJacobianTestCase()
     cls.setUp()
-    cls.test_11_energy_mix_detailed_co2_emissions()
+    cls.test_06_energy_mix_all_outputs()

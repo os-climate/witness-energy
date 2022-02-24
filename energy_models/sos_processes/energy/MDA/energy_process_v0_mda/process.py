@@ -49,7 +49,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         ns_dict = {'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_carb':  f'{ns_study}.{ccs_mix}.{carbon_storage}.PureCarbonSolidStorage',
-                   'ns_ref': f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences'}
+                   'ns_ref': f'{ns_study}.NormalizationReferences',
+                   'ns_emissions': f'{ns_study}.{energy_mix}', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

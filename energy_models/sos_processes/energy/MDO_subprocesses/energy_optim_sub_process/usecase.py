@@ -113,7 +113,7 @@ class Study(EnergyStudyManager):
                              f'{energy_uc.study_name}.tolerance': 1.0e-8,
                              f'{energy_uc.study_name}.n_processes': 1,
                              f'{energy_uc.study_name}.linearization_mode': 'adjoint',
-                             f'{energy_uc.study_name}.sub_mda_class': 'MDANewtonRaphson'}
+                             f'{energy_uc.study_name}.sub_mda_class': 'GSPureNewtonMDA'}
         # design space
 
         dspace = energy_uc.dspace

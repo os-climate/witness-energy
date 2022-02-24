@@ -16,6 +16,8 @@ limitations under the License.
 
 from energy_models.core.demand.demand_mix import DemandMix
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.ccus.ccus import CCUS
+
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
@@ -38,6 +40,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         demand_name = DemandMix.name
         energy_mix = EnergyMix.name
+        ccus_name = CCUS.name
         func_manager_name = "FunctionManagerDisc"
 
         carbon_storage = PureCarbonSS.energy_name
@@ -59,12 +62,14 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                    'ns_energy': f'{ns_study}',
                    'ns_energy_mix': f'{ns_study}.{energy_mix}', 'ns_carb':  f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
                    'ns_resource': f'{ns_study}.{energy_mix}.resource',
-                   'ns_ref': f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences'}
+                   'ns_ref': f'{ns_study}.NormalizationReferences'}
 
         # Add demand, energymix and resources discipline
         mods_dict = {f'Resources': 'energy_models.core.stream_type.resources_data_disc.ResourcesDisc',
                      demand_name: 'energy_models.core.demand.demand_mix_disc.DemandMixDiscipline',
                      energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
+                     ccus_name: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
+                     'consumptionco2': 'energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions_disc.ConsumptionCO2EmissionsDiscipline'
                      }
 
         builder_other_list = self.create_builder_list(
@@ -74,7 +79,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             ns_dict = {'ns_public': f'{ns_study}',
                        'ns_energy_study': f'{ns_study}',
-                       'ns_ccs': f'{ns_study}.{CCS_NAME}'}
+                       'ns_emissions': f'{ns_study}',
+
+                       'ns_ccs': f'{ns_study}.{CCS_NAME}',
+
+                       }
             mods_dict = {
                 energy_mix: 'energy_models.core.investments.disciplines.energy_invest_disc.InvestEnergyDiscipline',
             }
@@ -116,6 +125,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
             ns_dict = {'ns_public': f'{ns_study}',
                        'ns_energy_study': f'{ns_study}',
+                       'ns_emissions': f'{ns_study}',
                        'ns_witness': f'{ns_study}',
                        'ns_ccs': f'{ns_study}.{CCS_NAME}',
                        'ns_ref': f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',

@@ -28,7 +28,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation_disc',
+        'label': 'HEFA decarboxylation',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -36,13 +36,14 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fa-solid fa-gas-pump fa-fw',
         'version': '',
     }
     # -- add specific techno inputs to this
     techno_name = 'HefaDecarboxylation'
     energy_name = 'hydrotreated_oil_fuel'
-    # Source: https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
+    # Source:
+    # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
     lifetime = 30   # years
     construction_delay = 3  # years
 
@@ -53,7 +54,8 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     techno_infos_dict_default = {
 
         'Opex_percentage': 0.0715,
-        # https://dspace.mit.edu/bitstream/handle/1721.1/65508/746766700-MIT.pdf?sequence=2&isAllowed=y (page 67)
+        # https://dspace.mit.edu/bitstream/handle/1721.1/65508/746766700-MIT.pdf?sequence=2&isAllowed=y
+        # (page 67)
 
         'lifetime': lifetime,  # for now constant in time but should increase with time
         'lifetime_unit': 'years',
@@ -63,7 +65,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'Invest_init': 347.5,
         'Invest_init_unit': 'M$',
         'Capex_init': 347.5 * 1e6 * dollar_per_gallon_to_dollar_per_m3 / 780
-                      / (48.64 * 1e6),
+        / (48.64 * 1e6),
         # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3
         # Mean value computed for production volume (mean value)
         'Capex_init_unit': '$/kg',
@@ -71,7 +73,8 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'efficiency': 0.753,     # https://core.ac.uk/download/pdf/37440495.pdf
 
         'CO2_from_production': 0.03 * 44,
-        # https://theicct.org/sites/default/files/publications/Alt-aviation-fuel-sustainability-mar2021.pdf     to review
+        # https://theicct.org/sites/default/files/publications/Alt-aviation-fuel-sustainability-mar2021.pdf
+        # to review
         'CO2_from_production_unit': 'kg/kg',
 
         'maturity': 5,
@@ -86,18 +89,19 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3
     # (mean value computed from Table 3)
     initial_production = (48.64 * 1e6) * gallon_to_mc * 780 / \
-                         44 / 3.6 * 1e-6   # TWh/year
+        44 / 3.6 * 1e-6   # TWh/year
 
     # https://www.ieabioenergy.com/wp-content/uploads/2021/06/IEA-Bioenergy-Task-39-Progress-in-the-commercialisation-of-biojet-fuels-May-2021-1.pdf
     # (page 23)
     # Existing: Neste(2014), Total(2015), Eni(2015).
-    # Source https://www.etipbioenergy.eu/value-chains/products-end-use/products/hvo-hefa
+    # Source
+    # https://www.etipbioenergy.eu/value-chains/products-end-use/products/hvo-hefa
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [100*3/6, 0, 0, 0, 100*2/6, 100*1/6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                             'distrib': [100 * 3 / 6, 0, 0, 0, 100 * 2 / 6, 100 * 1 / 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [347.5/1000 * i for i in [0.0, 0.0, 3.0]]})  # in G$
+        {'past years': np.arange(-construction_delay, 0), 'invest': [347.5 / 1000 * i for i in [0.0, 0.0, 3.0]]})  # in G$
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},

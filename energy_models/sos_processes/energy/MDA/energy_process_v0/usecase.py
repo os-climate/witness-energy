@@ -115,18 +115,18 @@ class Study(EnergyStudyManager):
         list_aggr_type = []
         list_ns = []
         #-- add objectives to func_manager
-        list_var.extend([f'co2_emissions_objective',
-                         f'energy_production_objective', 'syngas_prod_objective', 'ratio_objective'])
-        list_parent.extend(['objectives', 'objectives',
+        list_var.extend([f'energy_production_objective',
+                         'syngas_prod_objective', 'ratio_objective'])
+        list_parent.extend(['objectives',
                             'objectives',  'objectives'])
-        list_ftype.extend([OBJECTIVE, OBJECTIVE,  OBJECTIVE,  OBJECTIVE])
+        list_ftype.extend([OBJECTIVE,  OBJECTIVE,  OBJECTIVE])
         if Syngas.name in self.energy_list:
-            list_weight.extend([0., 0.,  1.,  0.])
+            list_weight.extend([0.,  1.,  0.])
         else:
-            list_weight.extend([0., 0., 0.,  0.])
+            list_weight.extend([0., 0.,  0.])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM, AGGR_TYPE_SUM,  AGGR_TYPE_SUM,  AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions', 'ns_functions',
+            [AGGR_TYPE_SUM,  AGGR_TYPE_SUM,  AGGR_TYPE_SUM])
+        list_ns.extend(['ns_functions',
                         'ns_functions', 'ns_functions'])
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
@@ -240,7 +240,7 @@ class Study(EnergyStudyManager):
                 ['invest_constraint'])
             list_parent.extend([''])
             list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([0.0])
+            list_weight.extend([-1.])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
@@ -654,9 +654,16 @@ class Study(EnergyStudyManager):
             {'years': self.years, 'demand': 25000.0})
 
         demand_ratio_dict = dict(
-            zip(self.energy_list + self.ccs_list, np.ones((len(self.years), len(self.years)))))
+            zip(self.energy_list, np.ones((len(self.years), len(self.years)))))
         demand_ratio_dict['years'] = self.years
+
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
+
+        ratio_available_resource_dict = dict(
+            zip(EnergyMix.RESOURCE_LIST, np.ones((len(self.years), len(self.years)))))
+        ratio_available_resource_dict['years'] = self.years
+        self.all_resource_ratio_usable_demand = pd.DataFrame(
+            ratio_available_resource_dict)
 
         invest_ref = 10.55    # 100G$
         invest = np.ones(len(self.years)) * invest_ref
@@ -676,7 +683,8 @@ class Study(EnergyStudyManager):
 
         ccs_percentage = pd.DataFrame(
             {'years': self.years, 'ccs_percentage': 25.0})
-
+        co2_emissions_from_energy_mix = pd.DataFrame(
+            {'years': self.years, 'carbon_capture from energy mix (Mt)': 25.0})
         values_dict = {f'{self.study_name}.energy_investment': invest_df,
                        f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
@@ -692,9 +700,12 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.study_name}.{demand_name}.total_energy_demand': self.total_energy_demand,
                        f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.study_name}.{energy_mix_name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
                        f'{self.study_name}.is_stream_demand': True,
                        f'{self.study_name}.max_mda_iter': 200,
                        f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
+                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.ones(len(self.years)) / 3
                        }
 
         # ALl energy_demands following energy_list

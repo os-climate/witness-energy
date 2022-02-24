@@ -35,7 +35,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fas fa-air-freshener fa-fw',
         'version': '',
     }
     DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
