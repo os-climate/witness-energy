@@ -16,6 +16,7 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.stream_type.resources_models.water import Water
+import numpy as np
 
 
 class Nuclear(ElectricityTechno):
@@ -95,10 +96,89 @@ class Nuclear(ElectricityTechno):
         waste_disposal_levy = self.techno_infos_dict['waste_disposal_levy']
         return waste_disposal_levy
 
-    # def compute_price(self):
-        # """
-        # overloads techno_type compute price method to add the decommissioning_cost to Capex_init
-        # """
-        # self.techno_infos_dict['Capex_init'] += self.techno_infos_dict['decommissioning_cost']
-        # costs = ElectricityTechno.compute_price(self)
-        # return costs
+    def compute_capex(self, invest_list, data_config):
+        """
+        overloads check_capex_unity that return the capex in $/MW to add the decommissioning cost
+        decommissioning_cost unit is $/kW
+        """
+        expo_factor = self.compute_expo_factor(data_config)
+        capex_init = self.check_capex_unity(data_config)
+
+        # add decommissioning_cost
+        capex_init += self.techno_infos_dict['decommissioning_cost'] * 1.0e3 \
+                                     / self.techno_infos_dict['full_load_hours'] \
+                                     / self.techno_infos_dict['capacity_factor']
+
+        if expo_factor != 0.0:
+            capacity_factor_list = None
+            if 'capacity_factor_at_year_end' in data_config \
+                    and 'capacity_factor' in data_config:
+                capacity_factor_list = np.linspace(data_config['capacity_factor'],
+                                                   data_config['capacity_factor_at_year_end'],
+                                                   len(invest_list))
+
+            capex_calc_list = []
+            invest_sum = self.initial_production * capex_init
+            capex_year = capex_init
+
+            for i, invest in enumerate(invest_list):
+
+                # below 1M$ investments has no influence on learning rate for capex
+                # decrease
+                if invest_sum.real < 10.0 or i == 0.0:
+                    capex_year = capex_init
+                    # first capex calculation
+                else:
+                    np.seterr('raise')
+                    if capacity_factor_list is not None:
+                        try:
+                            ratio_invest = ((invest_sum + invest) / invest_sum *
+                                            (capacity_factor_list[i] / data_config['capacity_factor'])) \
+                                           ** (-expo_factor)
+
+                        except:
+                            raise Exception(
+                                f'invest is {invest} and invest sum {invest_sum} on techno {self.name}')
+
+                    else:
+                        np.seterr('raise')
+                        try:
+                            # try to calculate capex_year "normally"
+                            ratio_invest = ((invest_sum + invest) /
+                                            invest_sum) ** (-expo_factor)
+
+                            pass
+
+                        except FloatingPointError:
+                            # set invest as a complex to calculate capex_year as a
+                            # complex
+                            ratio_invest = ((invest_sum + np.complex128(invest)) /
+                                            invest_sum) ** (-expo_factor)
+
+                            pass
+                        np.seterr('warn')
+
+                    # Check that the ratio is always above 0.95 but no strict threshold for
+                    # optim is equal to 0.92 when tends to zero:
+                    if ratio_invest.real < 0.95:
+                        ratio_invest = 0.9 + \
+                                       0.05 * np.exp(ratio_invest - 0.9)
+                    capex_year = capex_year * ratio_invest
+
+                capex_calc_list.append(capex_year)
+                invest_sum += invest
+
+            if 'maximum_learning_capex_ratio' in data_config:
+                maximum_learning_capex_ratio = data_config['maximum_learning_capex_ratio']
+            else:
+                # if maximum learning_capex_ratio is not specified, the learning
+                # rate on capex ratio cannot decrease the initial capex mor ethan
+                # 10%
+                maximum_learning_capex_ratio = 0.9
+
+            capex_calc_list = capex_init * (maximum_learning_capex_ratio + (
+                    1.0 - maximum_learning_capex_ratio) * np.array(capex_calc_list) / capex_init)
+        else:
+            capex_calc_list = capex_init * np.ones(len(invest_list))
+
+        return capex_calc_list.tolist()
