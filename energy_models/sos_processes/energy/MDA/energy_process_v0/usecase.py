@@ -264,7 +264,7 @@ class Study(EnergyStudyManager):
         for energy in self.energy_list:
             energy_wo_dot = energy.replace('.', '_')
             self.update_dspace_dict_with(
-                f'{energy_wo_dot}_array_mix',
+                f'{energy}.{energy_wo_dot}_array_mix',
                 list(np.maximum(self.lower_bound_techno,
                                 invest_mix_dict[energy].values)),
                 self.lower_bound_techno, self.upper_bound_techno)
@@ -272,7 +272,7 @@ class Study(EnergyStudyManager):
         for ccs in self.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
             self.update_dspace_dict_with(
-                f'{ccs_wo_dot}_array_mix',
+                f'{ccs}.{ccs_wo_dot}_array_mix',
                 list(np.maximum(self.lower_bound_techno,
                                 invest_ccs_mix_dict[ccs].values)),
                 self.lower_bound_techno, self.upper_bound_techno)
