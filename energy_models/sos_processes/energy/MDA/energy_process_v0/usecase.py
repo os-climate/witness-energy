@@ -296,7 +296,7 @@ class Study(EnergyStudyManager):
         for column in invest_mix_df_wo_years.columns:
             techno_wo_dot = column.replace('.', '_')
             self.update_dspace_dict_with(
-                f'{techno_wo_dot}_array_mix', np.minimum(np.maximum(
+                f'{column}.{techno_wo_dot}_array_mix', np.minimum(np.maximum(
                     self.lower_bound_techno, invest_mix_df_wo_years[column].values), self.upper_bound_techno),
                 self.lower_bound_techno, self.upper_bound_techno)
 
