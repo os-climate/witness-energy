@@ -25,7 +25,6 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
     Modeled after calcium looping
     """
 
-
     # ontology information
     _ontology_data = {
         'label': 'Flue Gas Technology Model',
@@ -36,7 +35,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fa-solid fa-cloud fa-fw',
         'version': '',
     }
     techno_name = 'flue_gas_capture.FlueGasTechno'

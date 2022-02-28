@@ -26,7 +26,6 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
     Modeled after amine scrubbing
     """
 
-
     # ontology information
     _ontology_data = {
         'label': 'Direct Air Capture Technology Model',
@@ -37,7 +36,7 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fa-solid fa-globe-europe fa-fw',
         'version': '',
     }
     techno_name = 'direct_air_capture.DirectAirCaptureTechno'
