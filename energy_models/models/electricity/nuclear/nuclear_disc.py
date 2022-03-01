@@ -70,7 +70,6 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'construction_delay': construction_delay,
                                  'waste_disposal_levy': 0.1 * 1e-2 * 1e3,   # conversion from c/kWh to $/MWh
                                  'decommissioning_cost': 1000,
-                                 'decommissioning_unit': '$/kW',
                                  # World Nuclear Waste Report 2019, Chapter 6 (https://worldnuclearwastereport.org)
                                  # average of 1000 $/kW
                                  }
@@ -192,3 +191,24 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         instanciated_charts.append(new_chart_uranium)
 
         return instanciated_charts
+
+    def get_chart_detailed_price_in_dollar_kwh(self):
+        """
+        overloads the price chart from techno_disc to display decommissioning costs
+        """
+
+        new_chart = ElectricityTechnoDiscipline.get_chart_detailed_price_in_dollar_kwh(self)
+
+        # decommissioning price part
+        techno_infos_dict = self.get_sosdisc_inputs('techno_infos_dict')
+        techno_detailed_prices = self.get_sosdisc_outputs('techno_detailed_prices')
+        ratio = techno_infos_dict['decommissioning_cost']/techno_infos_dict['Capex_init']
+        decommissioning_price = ratio * techno_detailed_prices[f'{self.techno_name}_factory'].values
+
+        serie = InstanciatedSeries(
+            techno_detailed_prices['years'].values.tolist(),
+            decommissioning_price.tolist(), 'Decommissioning (part of Factory)', 'lines')
+
+        new_chart.series.append(serie)
+
+        return new_chart

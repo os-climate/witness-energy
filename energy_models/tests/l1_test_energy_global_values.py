@@ -284,13 +284,13 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Total CO2 emissions are emissions from oil energy 
         '''
 
-        computed_total_co2_emissions = co2_emissions[
-            'Total CO2 emissions'].loc[co2_emissions['years'] == 2020].values[0]
-        # we compare in Mt and must be near 10% of error
-        self.assertLessEqual(computed_total_co2_emissions,
-                             total_co2_emissions * 1.1)
-        self.assertGreaterEqual(
-            computed_total_co2_emissions, total_co2_emissions * 0.9)
+#         computed_total_co2_emissions = co2_emissions[
+#             'Total CO2 emissions'].loc[co2_emissions['years'] == 2020].values[0]
+#         # we compare in Mt and must be near 10% of error
+#         self.assertLessEqual(computed_total_co2_emissions,
+#                              total_co2_emissions * 1.1)
+#         self.assertGreaterEqual(
+#             computed_total_co2_emissions, total_co2_emissions * 0.9)
 
 
 if '__main__' == __name__:
