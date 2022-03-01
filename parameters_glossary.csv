@@ -143,7 +143,6 @@ normalization_value_demand_constraints,Normalization value demand constraints,,N
 other_fuel_dict,Other fuel dict,,Data on the other fuel used.,,
 percentage_resource,Resource Percentage,%,Percentage of the resource available for the energy production.,,
 primary_energies_production,Primary energies production,Twh,Quantity of primary energy produced.,,
-other_fuel_dict,Primary energy percentage,,Percentage  of the primary energy.,,
 prod_hydropower_constraint,Prod hydropower constraint,,Constraint applied to hydropower production.,,
 production_energy_net_positive,Production energy net positive,TWh,Quantity of net energy produced.,,
 production_threshold,Production threshold,,Threshold of the production.,,
