@@ -81,32 +81,53 @@ class Study(StudyManager):
 
         dv_arrays_dict = {}
         output_descriptor = {}
+        years = np.arange(self.year_start, self.year_end + 1, self.time_step)
 
         for energy in self.energy_list:
             energy_wo_dot = energy.replace('.', '_')
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
                 dv_arrays_dict[f'{mda_usecase.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = dspace_df[f'{energy}.{energy_wo_dot}_array_mix']['value']
-                output_descriptor[f'{energy}.{energy_wo_dot}_array_mix'] = {'out_name': 'invest_mix', 'type': 'dataframe', 'key': f'{energy}', 'namespace_in': 'ns_energy_mix', 'namespace_out': 'ns_invest'}
+                output_descriptor[f'{energy}.{energy_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
+                                                                            'type': 'dataframe',
+                                                                            'key': f'{energy}',
+                                                                            'index': years,
+                                                                            'index_name': 'years',
+                                                                            'namespace_in': 'ns_energy_mix',
+                                                                            'namespace_out': 'ns_invest'}
 
             for technology in self.dict_technos[energy]:
                 technology_wo_dot = technology.replace('.', '_')
                 dv_arrays_dict[f'{mda_usecase.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
-                output_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix', 'type': 'dataframe', 'key': f'{energy}.{technology}', 'namespace_in': 'ns_energy_mix', 'namespace_out': 'ns_invest'}
+                output_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
+                                                                                                             'type': 'dataframe',
+                                                                                                             'key': f'{energy}.{technology}',
+                                                                                                             'index': years,
+                                                                                                             'index_name': 'years',
+                                                                                                             'namespace_in': 'ns_energy_mix',
+                                                                                                             'namespace_out': 'ns_invest'}
 
         for ccs in self.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
                 dv_arrays_dict[f'{mda_usecase.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = dspace_df[f'{ccs}.{ccs_wo_dot}_array_mix']['value']
-                output_descriptor[f'{ccs}.{ccs_wo_dot}_array_mix'] = {'out_name': 'invest_mix', 'type': 'dataframe', 'key': f'{ccs}', 'namespace_in': 'ns_ccs', 'namespace_out': 'ns_invest'}
+                output_descriptor[f'{ccs}.{ccs_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
+                                                                      'type': 'dataframe',
+                                                                      'key': f'{ccs}',
+                                                                      'index': years,
+                                                                      'index_name': 'years',
+                                                                      'namespace_in': 'ns_ccs',
+                                                                      'namespace_out': 'ns_invest'}
 
             for technology in self.dict_technos[ccs]:
                 technology_wo_dot = technology.replace('.', '_')
                 dv_arrays_dict[f'{mda_usecase.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 output_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
-                                                                                               'type': 'dataframe',
-                                                                                               'key': f'{ccs}.{technology}',
-                                                                                               'namespace_in': 'ns_ccs',
-                                                                                               'namespace_out': 'ns_invest'}
+                                                                                                       'type': 'dataframe',
+                                                                                                       'key': f'{ccs}.{technology}',
+                                                                                                       'index': years,
+                                                                                                       'index_name': 'years',
+                                                                                                       'namespace_in': 'ns_ccs',
+                                                                                                       'namespace_out': 'ns_invest'}
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             dv_arrays_dict[f'{mda_usecase.study_name}.ccs_percentage_array'] = dspace_df[f'ccs_percentage_array']['value']
