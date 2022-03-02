@@ -17,6 +17,7 @@ limitations under the License.
 from energy_models.core.techno_type.base_techno_models.biogas_techno import BioGasTechno
 from energy_models.core.stream_type.energy_models.wet_biomass import WetBiomass
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 import numpy as np
 
@@ -41,7 +42,7 @@ class AnaerobicDigestion(BioGasTechno):
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    )
         # Cost of biomass is in $/kg
-        self.cost_details[WetBiomass.name] = list(self.resources_prices[WetBiomass.name] * self.cost_details['wet_biomass_needs']
+        self.cost_details[WetBiomass.name] = list(self.resources_prices[ResourceGlossary.WetBiomass['name']] * self.cost_details['wet_biomass_needs']
                                                   )
 
         return self.cost_details[Electricity.name] + self.cost_details[WetBiomass.name]
@@ -74,7 +75,7 @@ class AnaerobicDigestion(BioGasTechno):
         Need to take into account  CO2 from electricity production and negative CO2 from biomass
         '''
 
-        self.carbon_emissions[f'{WetBiomass.name}'] = self.resources_CO2_emissions[f'{WetBiomass.name}'] * \
+        self.carbon_emissions[f'{WetBiomass.name}'] = self.resources_CO2_emissions[ResourceGlossary.WetBiomass['name']] * \
             self.cost_details['wet_biomass_needs']
 
         self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \

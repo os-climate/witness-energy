@@ -26,6 +26,7 @@ from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.syngas import Syngas
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class CoelectrolysisPriceTestCase(unittest.TestCase):
@@ -59,10 +60,9 @@ class CoelectrolysisPriceTestCase(unittest.TestCase):
                                                                                     0.0928246539459331]) * 1000.0,
                                            })
 
-        self.resources_prices = pd.DataFrame({'years': years, 'CO2': np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0,
-                                              'oxygen': 60,
-                                              'water': 1.4
-
+        self.resources_prices = pd.DataFrame({'years': years, ResourceGlossary.CO2['name']: np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0,
+                                              ResourceGlossary.Oxygen['name']: 60,
+                                              ResourceGlossary.Water['name']: 1.4
                                               })
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'electricity': 0.0})

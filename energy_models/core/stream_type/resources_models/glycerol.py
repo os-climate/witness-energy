@@ -14,12 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.base_stream import BaseStream
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class Glycerol(BaseStream):
     """Glycerol also called glycerine or glycerin) is a simple polyol compound.
     It is a colorless, odorless, viscous liquid that is sweet-tasting and non-toxic."""
-    name = 'Glycerol'
+    name = ResourceGlossary.Glycerol['name']
     data_energy_dict = {
         'reference': 'https://en.wikipedia.org/wiki/Glycerol',
         'chemical_formula': 'C3H8O3',

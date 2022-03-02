@@ -25,6 +25,7 @@ from energy_models.core.stream_type.resources_data_disc import get_static_CO2_em
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class AmineScrubbingTestCase(unittest.TestCase):
@@ -64,7 +65,7 @@ class AmineScrubbingTestCase(unittest.TestCase):
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'amine': 0.0, 'electricity': 0.0})
+            {'years': years, ResourceGlossary.Amine['name']: 0.0, 'electricity': 0.0})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -77,7 +78,7 @@ class AmineScrubbingTestCase(unittest.TestCase):
                            3894500000.0, 3780750000.0, 3567000000.0,
                            ]) * 0.02 / 1000 * 1.0e-9
 
-        self.resources_price = pd.DataFrame({'years': years, 'amine': amine_price
+        self.resources_price = pd.DataFrame({'years': years, ResourceGlossary.Amine['name']: amine_price
                                              })
 
         self.invest_level = pd.DataFrame(
