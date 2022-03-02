@@ -18,12 +18,7 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from energy_models.core.stream_type.resources_models.methanol import Methanol
-from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
-from energy_models.core.stream_type.resources_models.oil import CrudeOil
-from energy_models.core.stream_type.resources_models.oxygen import Oxygen
-from energy_models.core.stream_type.resources_models.potassium_hydroxide import PotassiumHydroxide
-from energy_models.core.stream_type.resources_models.sodium_hydroxide import SodiumHydroxide
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -35,29 +30,9 @@ def get_static_CO2_emissions(years):
     resources_CO2_emissions = pd.DataFrame()
 
     resources_CO2_emissions['years'] = years
-    resources_CO2_emissions['water'] = 0.0
-    resources_CO2_emissions['sea_water'] = 0.0
-    # feedstock_recovery from GHGenius
-    resources_CO2_emissions['uranium fuel'] = 0.474 / 277.78
-    resources_CO2_emissions['CO2'] = -1.0
-    # https://bioenergykdf.net/system/files/Net%20CO2...Coal-Fired%20Power.pdf
-    # 0.425g of C in 1 kg of dry-biomass meaning in term of CO2
-    resources_CO2_emissions['biomass_dry'] = - 0.425 * 44.01 / 12.0
-    resources_CO2_emissions['wet_biomass'] = - 0.425 * 44.01 / 12.0
-    # Carbon Footprint ofStrait Vegetable Oil and Bio Diesel Fuel Produced
-    # from Used Cooking Oil
-    resources_CO2_emissions[NaturalOil.name] = -2.95
-    # https://methanolfuels.org/about-methanol/environment/
-    resources_CO2_emissions[Methanol.name] = 0.54
-    resources_CO2_emissions[SodiumHydroxide.name] = 0.6329
-    resources_CO2_emissions['wood'] = 1.78
-    resources_CO2_emissions['managed_wood'] = 0.0
-    resources_CO2_emissions['oxygen'] = 0.0
-    resources_CO2_emissions['crude oil'] = 0.02533
-    resources_CO2_emissions['solid_fuel'] = 0.64 / 4.86
-    resources_CO2_emissions['calcium'] = 0.0
-    resources_CO2_emissions['potassium'] = 0.0
-    resources_CO2_emissions['amine'] = 0.0
+    for resource in ResourceGlossary.GlossaryDict.keys():
+        resources_CO2_emissions[ResourceGlossary.GlossaryDict[resource]
+                                ['name']] = ResourceGlossary.GlossaryDict[resource]['CO2_emissions']
 
     return resources_CO2_emissions
 
@@ -73,26 +48,11 @@ def get_static_prices(years):
                        kind='linear', fill_value='extrapolate')
 
     resources_prices_default = pd.DataFrame({'years': years,
-                                             'CO2': func(years),
-                                             'uranium fuel': 1390000.0,
-                                             'biomass_dry': 68.12,
-                                             'wet_biomass': 56.0,
-                                             'wood': 120.0,
-                                             'carbon': 25000.0,
-                                             CrudeOil.name: 44.0,
-                                             # https://www.neste.com/investors/market-data/palm-and-rapeseed-oil-prices
-                                             f'{NaturalOil.name}': 1100.0,
+                                             ResourceGlossary.GlossaryDict['CO2']['name']: func(years), })
 
-                                             f'{Methanol.name}': 400.0,
-                                             f'{SodiumHydroxide.name}': 425.0,
-                                             # https://www.ceicdata.com/en/china/china-petroleum--chemical-industry-association-petrochemical-price-inorganic-chemical-material/cn-market-price-monthly-avg-inorganic-chemical-material-potassium-hydroxide-92
-                                             f'{PotassiumHydroxide.name}': 772.0,
-                                             f'{Oxygen.name}': 60.0,
-                                             f'calcium': 85.0,
-                                             f'potassium': 500.0,
-                                             f'amine': 1300.0,
-                                             'sea_water': 1.4313,
-                                             'water': 1.78})
+    for resource in ResourceGlossary.GlossaryDict.keys():
+        resources_prices_default[ResourceGlossary.GlossaryDict[resource]
+                                 ['name']] = ResourceGlossary.GlossaryDict[resource]['price']
 
     return resources_prices_default
 

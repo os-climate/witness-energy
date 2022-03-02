@@ -23,6 +23,7 @@ from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
 from energy_models.core.stream_type.energy_models.syngas import compute_molar_mass as compute_syngas_molar_mass
 from energy_models.core.stream_type.energy_models.syngas import compute_calorific_value as compute_syngas_calorific_value
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
@@ -208,10 +209,10 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             ('techno_detailed_prices', 'syngas'),  ('syngas_ratio',), dsyngas_dsyngas_ratio / 100.0)
 
         dwater_dsyngas_ratio = np.identity(len(
-            self.techno_model.years)) * dwater_needs_dsyngas_ratio * self.techno_model.resources_prices['water'].to_numpy() / efficiency[:, np.newaxis]
+            self.techno_model.years)) * dwater_needs_dsyngas_ratio * self.techno_model.resources_prices[ResourceGlossary.Water['name']].to_numpy() / efficiency[:, np.newaxis]
 
         self.set_partial_derivative_for_other_types(
-            ('techno_detailed_prices', 'water'),  ('syngas_ratio',), dwater_dsyngas_ratio / 100.0)
+            ('techno_detailed_prices', ResourceGlossary.Water['name']),  ('syngas_ratio',), dwater_dsyngas_ratio / 100.0)
 
         self.set_partial_derivative_for_other_types(
             ('techno_detailed_prices', 'energy_costs'),  ('syngas_ratio',), (dsyngas_dsyngas_ratio + dwater_dsyngas_ratio) / 100.0)
@@ -319,11 +320,11 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
         dwater_consumption_dsyngas_ratio = self.techno_model.compute_dwater_consumption_dsyngas_ratio(
             dwater_needs_dsyngas_ratio, dprodenergy_dsyngas_ratio * self.techno_model.applied_ratio['applied_ratio'].values[:, np.newaxis] / scaling_factor_techno_consumption, production_energy * scaling_factor_techno_production / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'water (Mt)'),  ('syngas_ratio',),  dwater_consumption_dsyngas_ratio / 100.0)
+            ('techno_consumption', f"{ResourceGlossary.Water['name']} (Mt)"),  ('syngas_ratio',),  dwater_consumption_dsyngas_ratio / 100.0)
         dwater_consumption_woratio_dsyngas_ratio = self.techno_model.compute_dwater_consumption_dsyngas_ratio(
             dwater_needs_dsyngas_ratio, dprodenergy_dsyngas_ratio / scaling_factor_techno_consumption, production_energy_woratio * scaling_factor_techno_production / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', 'water (Mt)'),  ('syngas_ratio',),  dwater_consumption_woratio_dsyngas_ratio / 100.0)
+            ('techno_consumption_woratio', f"{ResourceGlossary.Water['name']} (Mt)"),  ('syngas_ratio',),  dwater_consumption_woratio_dsyngas_ratio / 100.0)
 
         ###################################
 

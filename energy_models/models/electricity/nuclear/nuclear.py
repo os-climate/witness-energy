@@ -27,7 +27,7 @@ class Nuclear(ElectricityTechno):
         """
         self.cost_details['uranium_fuel_needs'] = self.get_theoretical_uranium_fuel_needs(
         )
-        self.cost_details['uranium fuel'] = list(self.resources_prices['uranium fuel'] *
+        self.cost_details['uranium fuel'] = list(self.resources_prices['uranium_resource'] *
                                                  self.cost_details['uranium_fuel_needs'])
 
         self.cost_details['water_needs'] = self.get_theoretical_water_needs()
@@ -106,8 +106,8 @@ class Nuclear(ElectricityTechno):
 
         # add decommissioning_cost
         capex_init += self.techno_infos_dict['decommissioning_cost'] * 1.0e3 \
-                                     / self.techno_infos_dict['full_load_hours'] \
-                                     / self.techno_infos_dict['capacity_factor']
+            / self.techno_infos_dict['full_load_hours'] \
+            / self.techno_infos_dict['capacity_factor']
 
         if expo_factor != 0.0:
             capacity_factor_list = None
@@ -134,7 +134,7 @@ class Nuclear(ElectricityTechno):
                         try:
                             ratio_invest = ((invest_sum + invest) / invest_sum *
                                             (capacity_factor_list[i] / data_config['capacity_factor'])) \
-                                           ** (-expo_factor)
+                                ** (-expo_factor)
 
                         except:
                             raise Exception(
@@ -162,7 +162,7 @@ class Nuclear(ElectricityTechno):
                     # optim is equal to 0.92 when tends to zero:
                     if ratio_invest.real < 0.95:
                         ratio_invest = 0.9 + \
-                                       0.05 * np.exp(ratio_invest - 0.9)
+                            0.05 * np.exp(ratio_invest - 0.9)
                     capex_year = capex_year * ratio_invest
 
                 capex_calc_list.append(capex_year)
@@ -177,7 +177,7 @@ class Nuclear(ElectricityTechno):
                 maximum_learning_capex_ratio = 0.9
 
             capex_calc_list = capex_init * (maximum_learning_capex_ratio + (
-                    1.0 - maximum_learning_capex_ratio) * np.array(capex_calc_list) / capex_init)
+                1.0 - maximum_learning_capex_ratio) * np.array(capex_calc_list) / capex_init)
         else:
             capex_calc_list = capex_init * np.ones(len(invest_list))
 

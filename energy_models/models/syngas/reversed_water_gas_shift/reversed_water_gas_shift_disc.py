@@ -20,6 +20,7 @@ import numpy as np
 from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift import RWGS
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class RWGSDiscipline(SyngasTechnoDiscipline):
@@ -220,7 +221,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
             dprodenergy_dsyngas_ratio, prod_energy)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'water (Mt)'),  ('syngas_ratio',), dwater_prod_dsyngas_ratio / 100.0 / scaling_factor_techno_production)
+            ('techno_production', f"{ResourceGlossary.Water['name']} (Mt)"),  ('syngas_ratio',), dwater_prod_dsyngas_ratio / 100.0 / scaling_factor_techno_production)
 
         dcons_electricity_dsyngas_ratio = self.techno_model.compute_dcons_electricity_dsyngas_ratio(
             dprodenergy_dsyngas_ratio, prod_energy)

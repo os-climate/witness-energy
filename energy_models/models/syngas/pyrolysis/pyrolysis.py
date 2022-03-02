@@ -17,6 +17,7 @@ limitations under the License.
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 import numpy as np
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class Pyrolysis(SyngasTechno):
@@ -41,7 +42,7 @@ class Pyrolysis(SyngasTechno):
 
         # Cost of wood for 1 kWh of syngas
         self.cost_details['wood'] = list(
-            self.resources_prices['wood'] * self.cost_details['wood_needs'])
+            self.resources_prices[ResourceGlossary.Wood['name']] * self.cost_details['wood_needs'])
 
         return self.cost_details['wood']
 
@@ -74,7 +75,7 @@ class Pyrolysis(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_emissions['wood'] = self.resources_CO2_emissions['wood'] * \
+        self.carbon_emissions['wood'] = self.resources_CO2_emissions[ResourceGlossary.Wood['name']] * \
             self.cost_details['wood_needs']
 
         return self.carbon_emissions['wood']

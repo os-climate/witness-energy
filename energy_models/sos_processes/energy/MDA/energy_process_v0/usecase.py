@@ -15,6 +15,7 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+import scipy.interpolate as sc
 
 from energy_models.core.energy_study_manager import EnergyStudyManager,\
     DEFAULT_TECHNO_DICT, CCUS_TYPE, ENERGY_TYPE
@@ -45,9 +46,9 @@ from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import DEFAULT_FLUE_GAS_LIST
-from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking import PlasmaCracking
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,\
     INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, get_static_prices
 
 
 CCS_NAME = 'CCUS'
@@ -240,7 +241,7 @@ class Study(EnergyStudyManager):
                 ['invest_constraint'])
             list_parent.extend([''])
             list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([-1.])
+            list_weight.extend([0.])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
@@ -643,6 +644,10 @@ class Study(EnergyStudyManager):
         self.energy_carbon_emissions = pd.DataFrame(
             {key: value for key, value in energy_carbon_emissions_dict.items() if key in self.techno_dict or key == 'years'})
 
+        #--- resources price and co2 emissions
+        self.resources_CO2_emissions = get_static_CO2_emissions(self.years)
+        self.resources_prices = get_static_prices(self.years)
+
         #-- energy demand mix and total demand
         self.energy_demand_mix = {f'{energy}.energy_demand_mix': pd.DataFrame({'years': self.years,
                                                                                'mix': np.zeros(len(self.years))}) for energy in self.techno_dict.keys()}
@@ -705,7 +710,9 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.is_stream_demand': True,
                        f'{self.study_name}.max_mda_iter': 200,
                        f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
-                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.ones(len(self.years)) / 3
+                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.ones(len(self.years)) / 3,
+                       f'{self.study_name}.{energy_mix_name}.resources_CO2_emissions': self.resources_CO2_emissions,
+                       f'{self.study_name}.{energy_mix_name}.resources_price': self.resources_prices,
                        }
 
         # ALl energy_demands following energy_list
