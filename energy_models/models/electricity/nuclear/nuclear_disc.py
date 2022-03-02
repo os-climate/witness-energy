@@ -69,7 +69,9 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production_unit': 'kg/kg',
                                  'construction_delay': construction_delay,
                                  'waste_disposal_levy': 0.1 * 1e-2 * 1e3,   # conversion from c/kWh to $/MWh
+                                 'waste_disposal_levy_unit': '$/MWh',
                                  'decommissioning_cost': 1000,
+                                 'decommissioning_cost_unit': '$/kW',
                                  # World Nuclear Waste Report 2019, Chapter 6 (https://worldnuclearwastereport.org)
                                  # average of 1000 $/kW
                                  }
@@ -208,6 +210,14 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         serie = InstanciatedSeries(
             techno_detailed_prices['years'].values.tolist(),
             decommissioning_price.tolist(), 'Decommissioning (part of Factory)', 'lines')
+
+        new_chart.series.append(serie)
+
+
+        waste_disposal_levy_mwh = self.techno_model.cost_details['waste_disposal']
+        serie = InstanciatedSeries(
+            techno_detailed_prices['years'].values.tolist(),
+            waste_disposal_levy_mwh.tolist(), 'Waste Disposal (part of Energy)', 'lines')
 
         new_chart.series.append(serie)
 
