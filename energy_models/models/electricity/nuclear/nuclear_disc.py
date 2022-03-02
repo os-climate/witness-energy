@@ -213,8 +213,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
 
         new_chart.series.append(serie)
 
-
-        waste_disposal_levy_mwh = self.techno_model.cost_details['waste_disposal']
+        waste_disposal_levy_mwh = techno_detailed_prices['waste_disposal']
         serie = InstanciatedSeries(
             techno_detailed_prices['years'].values.tolist(),
             waste_disposal_levy_mwh.tolist(), 'Waste Disposal (part of Energy)', 'lines')
