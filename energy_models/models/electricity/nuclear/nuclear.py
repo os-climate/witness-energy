@@ -55,7 +55,7 @@ class Nuclear(ElectricityTechno):
         One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel
         => 1 kg of fuel => 8.33 kg of ore
         '''
-        self.consumption[f'{self.URANIUM_NAME}'] = self.consumption[
+        self.consumption[f'{self.URANIUM_NAME} ({self.mass_unit})'] = self.consumption[
             f'{self.URANIUM_NAME} ({self.mass_unit})'] * 8.33
         water_needs = self.get_theoretical_water_needs()
 
