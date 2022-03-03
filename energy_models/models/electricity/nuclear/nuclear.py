@@ -16,19 +16,22 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 
 
 class Nuclear(ElectricityTechno):
 
+    URANIUM_NAME = ResourceGlossary.Uranium['name']
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs which depends on the technology
         """
-        self.cost_details['uranium_fuel_needs'] = self.get_theoretical_uranium_fuel_needs(
+        self.cost_details[f'{self.URANIUM_NAME}_needs'] = self.get_theoretical_uranium_fuel_needs(
         )
-        self.cost_details['uranium fuel'] = list(self.resources_prices['uranium_resource'] *
-                                                 self.cost_details['uranium_fuel_needs'])
+        self.cost_details[self.URANIUM_NAME] = list(self.resources_prices[self.URANIUM_NAME] *
+                                                    self.cost_details[f'{self.URANIUM_NAME}_needs'])
 
         self.cost_details['water_needs'] = self.get_theoretical_water_needs()
         self.cost_details[Water.name] = list(self.resources_prices[Water.name] *
@@ -37,7 +40,7 @@ class Nuclear(ElectricityTechno):
         self.cost_details['waste_disposal'] = self.compute_nuclear_waste_disposal_cost(
         )
 
-        return self.cost_details['uranium fuel'] + self.cost_details[Water.name] + self.cost_details['waste_disposal']
+        return self.cost_details[f'{self.URANIUM_NAME}'] + self.cost_details[Water.name] + self.cost_details['waste_disposal']
 
     def compute_consumption_and_production(self):
         """
@@ -46,14 +49,14 @@ class Nuclear(ElectricityTechno):
         """
         self.compute_primary_energy_production()
 
-        self.consumption[f'uranium fuel ({self.mass_unit})'] = self.cost_details['uranium_fuel_needs'] * \
+        self.consumption[f'{self.URANIUM_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_NAME}_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
         '''
         One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel
         => 1 kg of fuel => 8.33 kg of ore
         '''
-        self.consumption[f'uranium_resource'] = self.consumption[
-            f'uranium fuel ({self.mass_unit})'] * 8.33
+        self.consumption[f'{self.URANIUM_NAME}'] = self.consumption[
+            f'{self.URANIUM_NAME} ({self.mass_unit})'] * 8.33
         water_needs = self.get_theoretical_water_needs()
 
         # uranium consumption
