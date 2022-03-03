@@ -329,4 +329,4 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = BiomassDryJacobianTestCase()
     cls.setUp()
-    cls.test_04_biomass_dry_discipline_jacobian()
+    cls.test_01_crop_energy_discipline_analytic_grad()

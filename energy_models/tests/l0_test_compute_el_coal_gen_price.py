@@ -27,6 +27,7 @@ from energy_models.core.stream_type.resources_data_disc import get_static_CO2_em
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class CoalGenPriceTestCase(unittest.TestCase):
@@ -91,9 +92,10 @@ class CoalGenPriceTestCase(unittest.TestCase):
         self.resources_price = pd.DataFrame()
 
         self.resources_price = pd.DataFrame(
-            columns=['years', 'water'])
+            columns=['years', ResourceGlossary.Water['name']])
         self.resources_price['years'] = years
-        self.resources_price['water'] = Water.data_energy_dict['cost_now']
+        self.resources_price[ResourceGlossary.Water['name']
+                             ] = Water.data_energy_dict['cost_now']
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')

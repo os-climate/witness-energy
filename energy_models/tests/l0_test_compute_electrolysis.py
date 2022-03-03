@@ -31,6 +31,7 @@ from energy_models.core.stream_type.resources_data_disc import get_static_CO2_em
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class ElectrolysisPriceTestCase(unittest.TestCase):
@@ -56,7 +57,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         self.energy_co2_emissions = pd.DataFrame(
             {'years': years, 'electricity': 0.0})
         # price of 1 kg of wood
-        self.resources_prices = pd.DataFrame({'years': years, 'water': 0.0
+        self.resources_prices = pd.DataFrame({'years': years, ResourceGlossary.Water['name']: 0.0
                                               })
 
         self.invest_level = pd.DataFrame(

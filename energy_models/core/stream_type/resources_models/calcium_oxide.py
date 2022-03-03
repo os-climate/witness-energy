@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.base_stream import BaseStream
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class CalciumOxide(BaseStream):
-    name = 'Calcium_Oxide'
+    name = ResourceGlossary.CalciumOxyde['name']
     data_energy_dict = {'chemical_formula': 'KOH',
                         'maturity': 5,
 

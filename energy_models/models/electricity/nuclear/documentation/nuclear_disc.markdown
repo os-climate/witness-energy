@@ -26,6 +26,10 @@ Uranium as fuel cost[^9]
 Nuclear power plants age distribution[^3]
 ![](nuclear_age_distribution.png) 
 
+## Waste disposal and Decommissioning
+Following an analysis from the World Nuclear Waste Report [^10], waste disposal cost is added as a levy and is part of the energy price.
+Decommissioning costs are integrated to the Factory Capex and is consequently spread on its lifespan. 
+
 ## Some insight on Nuclear evolution
 IEA Nuclear power generation prediction[^4]
 ![](nuclear_capacity_forecast.PNG) 
@@ -38,3 +42,4 @@ IEA Nuclear power generation prediction[^4]
 [^7]: Water use of electricity technologies: A global meta-analysis, https://www.sciencedirect.com/science/article/pii/S1364032119305994
 [^8]: WNA, https://www.world-nuclear.org/information-library/nuclear-fuel-cycle/conversion-enrichment-and-fabrication/uranium-enrichment.aspx
 [^9]: WNA, https://www.world-nuclear.org/information-library/economic-aspects/economics-of-nuclear-power.aspx
+[^10]: World Nuclear Waste Report (2019), https://worldnuclearwastereport.org/

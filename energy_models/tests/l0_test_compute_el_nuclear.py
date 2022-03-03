@@ -28,6 +28,7 @@ from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class NuclearTestCase(unittest.TestCase):
@@ -42,10 +43,10 @@ class NuclearTestCase(unittest.TestCase):
         years = np.arange(2020, 2051)
 
         self.resources_price = pd.DataFrame(
-            columns=['years', 'water'])
+            columns=['years', ResourceGlossary.Water['name'], ResourceGlossary.Uranium['name']])
         self.resources_price['years'] = years
-        self.resources_price['water'] = 2.0
-        self.resources_price['uranium fuel'] = 1390.0e3
+        self.resources_price[ResourceGlossary.Water['name']] = 2.0
+        self.resources_price[ResourceGlossary.Uranium['name']] = 1390.0e3
 
         self.invest_level = pd.DataFrame({'years': years})
         self.invest_level['invest'] = 33.0 * \

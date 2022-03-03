@@ -267,7 +267,7 @@ class CCUS_Discipline(SoSDiscipline):
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
                         ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.CO2_per_use', 'CO2_per_use'), np.identity(len(years)) * value / 1.0e3)
-                elif energy_prod_info.startswith('CO2 for food (Mt)'):
+                elif energy_prod_info.startswith(f'{CO2.name} for food (Mt)'):
                     self.set_partial_derivative_for_other_types(
                         ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('co2_for_food', f'{CO2.name} for food (Mt)'), np.identity(len(years)) * value / 1.0e3)
 
@@ -307,7 +307,7 @@ class CCUS_Discipline(SoSDiscipline):
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
                         (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.CO2_per_use', 'CO2_per_use'),  value)
-                elif energy_prod_info.startswith('CO2 for food (Mt)'):
+                elif energy_prod_info.startswith(f'{CO2.name} for food (Mt)'):
                     self.set_partial_derivative_for_other_types(
                         (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('co2_for_food', f'{CO2.name} for food (Mt)'), value)
 

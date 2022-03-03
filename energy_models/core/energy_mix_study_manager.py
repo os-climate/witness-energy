@@ -65,7 +65,7 @@ class EnergyMixStudyManager(StudyManager):
         for techno in self.technologies_list:
             techno_wo_dot = techno.replace('.', '_')
             self.update_dspace_dict_with(
-                f'{energy_wodot}_{techno_wo_dot}_array_mix', np.maximum(
+                f'{self.energy_name}.{techno}.{energy_wodot}_{techno_wo_dot}_array_mix', np.maximum(
                     self.lower_bound_techno, invest_mix_dict[techno].values),
                 self.lower_bound_techno, self.upper_bound_techno, enable_variable=enable_variable)
 

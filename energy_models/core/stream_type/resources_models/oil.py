@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.base_stream import BaseStream
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class CrudeOil(BaseStream):
-    name = 'crude oil'
+    name = ResourceGlossary.CrudeOil['name']
     data_energy_dict = {'reference': 'engineeringtoolbox',
                         'maturity': 5,
                         'WACC': 0.1,
