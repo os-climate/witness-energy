@@ -91,7 +91,8 @@ class Study(EnergyStudyManager):
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
                 dv_arrays_dict[f'{energy_uc.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = dspace_df[f'{energy}.{energy_wo_dot}_array_mix']['value']
                 output_descriptor[f'{energy}.{energy_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
-                                                                            'type': 'dataframe',
+                                                                            'type': 'array',
+                                                                            'out_type': 'dataframe',
                                                                             'key': f'{energy}',
                                                                             'index': years,
                                                                             'index_name': 'years',
@@ -102,7 +103,8 @@ class Study(EnergyStudyManager):
                 technology_wo_dot = technology.replace('.', '_')
                 dv_arrays_dict[f'{energy_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 output_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
-                                                                                                             'type': 'dataframe',
+                                                                                                             'type': 'array',
+                                                                                                             'out_type': 'dataframe',
                                                                                                              'key': f'{energy}.{technology}',
                                                                                                              'index': years,
                                                                                                              'index_name': 'years',
@@ -115,7 +117,8 @@ class Study(EnergyStudyManager):
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
                 dv_arrays_dict[f'{energy_uc.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = dspace_df[f'{ccs}.{ccs_wo_dot}_array_mix']['value']
                 output_descriptor[f'{ccs}.{ccs_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
-                                                                      'type': 'dataframe',
+                                                                      'type': 'array',
+                                                                      'out_type': 'dataframe',
                                                                       'key': f'{ccs}',
                                                                       'index': years,
                                                                       'index_name': 'years',
@@ -126,7 +129,8 @@ class Study(EnergyStudyManager):
                 technology_wo_dot = technology.replace('.', '_')
                 dv_arrays_dict[f'{energy_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 output_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
-                                                                                                       'type': 'dataframe',
+                                                                                                       'type': 'array',
+                                                                                                       'out_type': 'dataframe',
                                                                                                        'key': f'{ccs}.{technology}',
                                                                                                        'index': years,
                                                                                                        'index_name': 'years',
