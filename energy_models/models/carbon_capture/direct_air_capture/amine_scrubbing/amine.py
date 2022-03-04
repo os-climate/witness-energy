@@ -17,6 +17,7 @@ limitations under the License.
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 import numpy as np
 
@@ -37,7 +38,7 @@ class Amine(CCTechno):
         self.cost_details['amine_needs'] = self.compute_amine_need()
 
         self.cost_details['amine'] = list(
-            self.resources_prices['amine'] * self.cost_details['amine_needs'] / self.cost_details['efficiency'])
+            self.resources_prices[ResourceGlossary.Amine['name']] * self.cost_details['amine_needs'] / self.cost_details['efficiency'])
 
         return self.cost_details[Electricity.name] + self.cost_details['amine']
 

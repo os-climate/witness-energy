@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.base_stream import BaseStream
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class Dioxygen(BaseStream):
-    name = 'dioxygen'
+    name = ResourceGlossary.Dioxygen['name']
     data_energy_dict = {'maturity': 5,
                         'density': 1.314,
                         'density_unit': 'kg/m^3',

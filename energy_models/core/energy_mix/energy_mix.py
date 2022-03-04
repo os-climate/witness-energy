@@ -223,7 +223,7 @@ class EnergyMix(BaseStream):
 
         # initialize ratio available carbon capture
         self.ratio_available_carbon_capture = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
-                                                            f'ratio': 1.0})
+                                                            'ratio': 1.0})
 
     def set_energy_prices_in(self, energy_prices):
         '''

@@ -27,7 +27,6 @@ class CarbonStorageTechnoDiscipline(CSTechnoDiscipline):
     Modeled after biomass burying fossilization
     """
 
-
     # ontology information
     _ontology_data = {
         'label': 'Carbon Storage Technology Model',
@@ -38,7 +37,7 @@ class CarbonStorageTechnoDiscipline(CSTechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fa-solid fa-truck-loading fa-fw',
         'version': '',
     }
     techno_name = 'CarbonStorageTechno'

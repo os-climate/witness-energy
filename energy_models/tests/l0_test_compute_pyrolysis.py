@@ -27,6 +27,7 @@ from energy_models.core.stream_type.resources_data_disc import get_static_CO2_em
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.syngas import Syngas
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class PyrolysisPriceTestCase(unittest.TestCase):
@@ -51,7 +52,7 @@ class PyrolysisPriceTestCase(unittest.TestCase):
 
         self.energy_prices = pd.DataFrame({'years': years})
         # price of 1 kg of wood
-        self.resources_prices = pd.DataFrame({'years': years, 'wood': len(years) * [130]
+        self.resources_prices = pd.DataFrame({'years': years, ResourceGlossary.Wood['name']: len(years) * [130]
                                               })
 
         self.invest_level = pd.DataFrame(

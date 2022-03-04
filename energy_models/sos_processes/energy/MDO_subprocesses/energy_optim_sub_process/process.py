@@ -38,7 +38,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             techno_dict=self.techno_dict, invest_discipline=self.invest_discipline)
 
         # design variables builder
-        design_var_path = 'energy_models.core.design_variables_translation_bspline.design_var_disc.Design_Var_Discipline'
+        design_var_path = 'sos_trades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
         design_var_builder = self.ee.factory.get_builder_from_module(
             f'{designvariable_name}', design_var_path)
         chain_builders.append(design_var_builder)
@@ -54,7 +54,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             self.ee.ns_manager.update_namespace_with_extra_ns(
                 ns, coupling_name, after_name=self.ee.study_name)
 
-        ns_dict = {'ns_optim': f'{self.ee.study_name}'}
+        ns_dict = {'ns_optim': f'{self.ee.study_name}',
+                   'ns_invest': f'{self.ee.study_name}.{coupling_name}',
+                   }
+
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         # create coupling builder

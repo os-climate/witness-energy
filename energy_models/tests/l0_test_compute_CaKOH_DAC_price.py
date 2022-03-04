@@ -22,9 +22,10 @@ from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_sc
 from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing import CalciumPotassium
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class CalciumPotassiumTestCase(unittest.TestCase):
@@ -70,8 +71,8 @@ class CalciumPotassiumTestCase(unittest.TestCase):
                                                                                     0.1628246539459331]) * 1000.0,
                                            })
 
-        self.resources_prices = pd.DataFrame({'years': years, 'potassium': KOH_price,
-                                              'calcium': CaO_price,
+        self.resources_prices = pd.DataFrame({'years': years, ResourceGlossary.Potassium['name']: KOH_price,
+                                              ResourceGlossary.Calcium['name']: CaO_price,
                                               })
 
         years = np.arange(2020, 2051)

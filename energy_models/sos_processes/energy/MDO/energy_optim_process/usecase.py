@@ -18,7 +18,7 @@ from sos_trades_core.study_manager.study_manager import StudyManager
 
 from energy_models.sos_processes.energy.MDO_subprocesses.energy_optim_sub_process_mda.usecase import Study as Study_subprocess
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from energy_models.core.design_variables_translation.design_var_disc import Design_Var_Discipline
+from sos_trades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 from os.path import dirname
@@ -34,7 +34,7 @@ OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
 FUNC_DF = FunctionManagerDisc.FUNC_DF
 DEMAND_VIOLATION = EnergyMix.DEMAND_VIOLATION
 EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
-EXPORT_XVECT = Design_Var_Discipline.EXPORT_XVECT
+EXPORT_XVECT = DesignVarDiscipline.EXPORT_XVECT
 
 
 class Study(StudyManager):

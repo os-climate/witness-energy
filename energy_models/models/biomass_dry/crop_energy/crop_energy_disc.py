@@ -20,6 +20,7 @@ import numpy as np
 from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import BiomassDryTechnoDiscipline
 from energy_models.models.biomass_dry.crop_energy.crop_energy import CropEnergy
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 
 
 class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
@@ -27,7 +28,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         Crop energy is the technology that transforms crops and crops residues
         for energy into biomass_dry
     '''
-
 
     # ontology information
     _ontology_data = {
@@ -181,9 +181,9 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('techno_production', f'{self.energy_name} ({self.techno_model.product_energy_unit})'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_prod_dland_for_food / scaling_factor_techno_production)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', f'CO2 (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
+            ('techno_consumption', f'{CO2.name} (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', f'CO2 (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
+            ('techno_consumption_woratio', f'{CO2.name} (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
 
     def get_post_processing_list(self, filters=None):
         charts = []

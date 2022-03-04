@@ -32,6 +32,7 @@ from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc 
 from _functools import reduce
 from _operator import mul
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class FischerTropsch(LiquidFuelTechno):
@@ -518,7 +519,7 @@ class FischerTropsch(LiquidFuelTechno):
                 self.cost_details['efficiency']
 
         self.carbon_emissions[CO2.name] = self.resources_CO2_emissions[
-            f'{CO2.name}'] * co2_needs
+            ResourceGlossary.CO2['name']] * co2_needs
 
         return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[Syngas.name] + self.carbon_emissions[CO2.name]
 

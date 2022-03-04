@@ -26,6 +26,7 @@ from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amin
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import CalciumPotassiumScrubbingDiscipline
 from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import CalciumLoopingDiscipline
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -97,8 +98,8 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                            3894500000.0, 3780750000.0, 3567000000.0,
                            ]) * 0.02 / 1000 * 1.0e-9
 
-        self.resources_prices = pd.DataFrame({'years': years, 'amine': amine_price, 'potassium': KOH_price,
-                                              'calcium': CaO_price,
+        self.resources_prices = pd.DataFrame({'years': years, ResourceGlossary.Amine['name']: amine_price, ResourceGlossary.Potassium['name']: KOH_price,
+                                              ResourceGlossary.Calcium['name']: CaO_price,
                                               })
         self.flue_gas_mean = pd.DataFrame(
             {'years': years, 'flue_gas_mean': np.linspace(0.1, 0.46, len(years))})

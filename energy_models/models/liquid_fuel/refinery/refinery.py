@@ -18,11 +18,14 @@ from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.oil import CrudeOil
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import pandas as pd
 import numpy as np
 
 
 class Refinery(LiquidFuelTechno):
+
+    OIL_NAME = ResourceGlossary.Oil['name']
 
     def configure_energy_data(self, inputs_dict):
         '''
@@ -85,7 +88,7 @@ class Refinery(LiquidFuelTechno):
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # oil consumption:
-        self.consumption[f'oil_resource'] = self.cost_details['crude_oil_needs'] * \
+        self.consumption[f'{self.OIL_NAME}'] = self.cost_details['crude_oil_needs'] * \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
             CrudeOil.data_energy_dict['calorific_value']  # in Mt
 
