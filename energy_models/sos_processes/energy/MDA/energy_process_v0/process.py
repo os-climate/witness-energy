@@ -62,7 +62,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                    'ns_energy': f'{ns_study}',
                    'ns_energy_mix': f'{ns_study}.{energy_mix}', 'ns_carb':  f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
                    'ns_resource': f'{ns_study}.{energy_mix}.resource',
-                   'ns_ref': f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences'}
+                   'ns_ref': f'{ns_study}.NormalizationReferences'}
 
         # Add demand, energymix and resources discipline
         mods_dict = {f'Resources': 'energy_models.core.stream_type.resources_data_disc.ResourcesDisc',

@@ -23,6 +23,7 @@ from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
     get_static_prices
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 import pickle
 
@@ -31,7 +32,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
     """
     Hydrogen jacobian test class
     """
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -126,7 +127,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                              'hydrogen.gaseous_hydrogen (TWh)': [230.779470] * len(years),
                                              'electricity (TWh)': [82.649011] * len(years),
                                              'syngas (TWh)': [3579.828092] * len(years),
-                                             'water (Mt)': [381.294427] * len(years)})
+                                             f"{ResourceGlossary.Water['name']} (Mt)": [381.294427] * len(years)})
 
         self.smr_production = pd.DataFrame({'years': years,
                                             'hydrogen.gaseous_hydrogen (TWh)': [2304.779470] * len(years),
@@ -134,7 +135,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.plasmacracking_production = pd.DataFrame({'years': years,
                                                        'hydrogen.gaseous_hydrogen (TWh)': np.linspace(1e-5, 1, len(years)),
-                                                       'carbon (Mt)':   [0.008622] * len(years)})
+                                                       f"{ResourceGlossary.Carbon['name']} (Mt)":   [0.008622] * len(years)})
 
         self.plasmacracking_consumption = pd.DataFrame({'years': years,
                                                         'electricity (TWh)': [0.019325] * len(years),
@@ -142,11 +143,11 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.electrolysis_consumption = pd.DataFrame({'years': years,
                                                       'electricity (TWh)': [4.192699] * len(years),
-                                                      'water (Mt)': [0.021638] * len(years)})
+                                                      f"{ResourceGlossary.Water['name']} (Mt)": [0.021638] * len(years)})
 
         self.electrolysis_production = pd.DataFrame({'years': years,
                                                      'hydrogen.gaseous_hydrogen (TWh)': [2.684940] * len(years),
-                                                     'O2 (Mt)': [0.019217] * len(years)})
+                                                     f"{ResourceGlossary.Dioxygen['name']} (Mt)": [0.019217] * len(years)})
 
         self.electrolysis_carbon_emissions = pd.DataFrame(
             {'years': years, 'Electrolysis': 0.0, 'electricity': 0.0, 'production': 0.0})
@@ -795,8 +796,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = HydrogenJacobianTestCase()
     cls.setUp()
-    cls.test_01_wgs_jacobian()
+    cls.test_02_plasma_cracking_jacobian()
     print('------')

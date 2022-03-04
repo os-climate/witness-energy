@@ -27,6 +27,7 @@ from energy_models.core.stream_type.resources_data_disc import get_static_CO2_em
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biogas import BioGas
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class AnaerobicDigestionPriceTestCase(unittest.TestCase):
@@ -60,7 +61,7 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         # We take biomass price of methane/5.0
         self.energy_prices = pd.DataFrame({'years': years, 'electricity': electricity_price
                                            })
-        self.resources_prices = pd.DataFrame({'years': years, 'wet_biomass': electricity_price / 100.0
+        self.resources_prices = pd.DataFrame({'years': years, ResourceGlossary.WetBiomass['name']: electricity_price / 100.0
                                               })
 
         self.energy_carbon_emissions = pd.DataFrame(
@@ -136,8 +137,6 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         smr_model.configure_parameters_update(inputs_dict)
         price_details = smr_model.compute_price()
         smr_model.compute_consumption_and_production()
-
-        assert 1 == 2
 
     def test_02_biomass_gas_discipline(self):
 

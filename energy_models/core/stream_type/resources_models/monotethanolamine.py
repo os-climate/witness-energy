@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.base_stream import BaseStream
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class Monotethanolamine(BaseStream):
     """Monoethanolamine(MEA) is an amine molecule used in amine scrubbing technology"""
-    name = 'Monoethanolamine'
+    name = ResourceGlossary.MonoEthanolAmine['name']
     data_energy_dict = {'reference': 'https://en.wikipedia.org/wiki/Ethanolamine',
                         'chemical_formula': 'C2H7NO',
                         'maturity': 5,

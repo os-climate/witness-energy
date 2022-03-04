@@ -265,6 +265,7 @@ class EnergyMixTestCase(unittest.TestCase):
         demand_ratio_dict['years'] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
+        self.liquid_hydrogen_percentage = np.ones(len(self.years))
 
     def test_01_energy_mix(self):
         """
@@ -385,7 +386,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.energy_demand': self.energy_demand['methane.energy_demand'],
                        f'{name}.{model_name}.methane.land_use_required': self.land_use_required_mock,
                        f'{name}.{model_name}.CCS_constraint_factor': self.CCS_constraint_factor,
-                       f'{name}.CO2_taxes': self.co2_taxes
+                       f'{name}.CO2_taxes': self.co2_taxes,
+                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
@@ -509,7 +511,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.energy_demand': self.energy_demand['methane.energy_demand'],
                        f'{name}.{model_name}.methane.land_use_required': self.land_use_required_mock,
                        f'{name}.{model_name}.CCS_constraint_factor': self.CCS_constraint_factor,
-                       f'{name}.CO2_taxes': self.co2_taxes
+                       f'{name}.CO2_taxes': self.co2_taxes,
+                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
@@ -589,7 +592,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.energy_demand': self.energy_demand['methane.energy_demand'],
                        f'{name}.{model_name}.methane.land_use_required': self.land_use_required_mock,
                        f'{name}.{model_name}.CCS_constraint_factor': self.CCS_constraint_factor,
-                       f'{name}.CO2_taxes': self.co2_taxes
+                       f'{name}.CO2_taxes': self.co2_taxes,
+                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage
                        }
 
         ee.load_study_from_input_dict(inputs_dict)

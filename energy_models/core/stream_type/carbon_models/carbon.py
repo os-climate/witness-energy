@@ -15,13 +15,14 @@ limitations under the License.
 '''
 
 from energy_models.core.stream_type.base_stream import BaseStream
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class Carbon(BaseStream):
-    name = 'carbon'
+    name = ResourceGlossary.Carbon['name']
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
-                        'CO2_per_use': 44.01 / 12.0,
+                        'CO2_per_use': ResourceGlossary.Carbon['CO2_emissions'],
                         'CO2_per_use_unit': 'kg/kg',
                         'density': 2267.0,
                         'density_unit': 'kg/m^3',

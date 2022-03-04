@@ -15,6 +15,7 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+import scipy.interpolate as sc
 
 from energy_models.core.energy_study_manager import EnergyStudyManager,\
     DEFAULT_TECHNO_DICT, CCUS_TYPE, ENERGY_TYPE
@@ -45,9 +46,9 @@ from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import DEFAULT_FLUE_GAS_LIST
-from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking import PlasmaCracking
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,\
     INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, get_static_prices
 
 
 CCS_NAME = 'CCUS'
@@ -240,7 +241,7 @@ class Study(EnergyStudyManager):
                 ['invest_constraint'])
             list_parent.extend([''])
             list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([-1.])
+            list_weight.extend([0.])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
@@ -264,7 +265,7 @@ class Study(EnergyStudyManager):
         for energy in self.energy_list:
             energy_wo_dot = energy.replace('.', '_')
             self.update_dspace_dict_with(
-                f'{energy_wo_dot}_array_mix',
+                f'{energy}.{energy_wo_dot}_array_mix',
                 list(np.maximum(self.lower_bound_techno,
                                 invest_mix_dict[energy].values)),
                 self.lower_bound_techno, self.upper_bound_techno)
@@ -272,7 +273,7 @@ class Study(EnergyStudyManager):
         for ccs in self.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
             self.update_dspace_dict_with(
-                f'{ccs_wo_dot}_array_mix',
+                f'{ccs}.{ccs_wo_dot}_array_mix',
                 list(np.maximum(self.lower_bound_techno,
                                 invest_ccs_mix_dict[ccs].values)),
                 self.lower_bound_techno, self.upper_bound_techno)
@@ -296,7 +297,7 @@ class Study(EnergyStudyManager):
         for column in invest_mix_df_wo_years.columns:
             techno_wo_dot = column.replace('.', '_')
             self.update_dspace_dict_with(
-                f'{techno_wo_dot}_array_mix', np.minimum(np.maximum(
+                f'{column}.{techno_wo_dot}_array_mix', np.minimum(np.maximum(
                     self.lower_bound_techno, invest_mix_df_wo_years[column].values), self.upper_bound_techno),
                 self.lower_bound_techno, self.upper_bound_techno)
 
@@ -643,6 +644,10 @@ class Study(EnergyStudyManager):
         self.energy_carbon_emissions = pd.DataFrame(
             {key: value for key, value in energy_carbon_emissions_dict.items() if key in self.techno_dict or key == 'years'})
 
+        #--- resources price and co2 emissions
+        self.resources_CO2_emissions = get_static_CO2_emissions(self.years)
+        self.resources_prices = get_static_prices(self.years)
+
         #-- energy demand mix and total demand
         self.energy_demand_mix = {f'{energy}.energy_demand_mix': pd.DataFrame({'years': self.years,
                                                                                'mix': np.zeros(len(self.years))}) for energy in self.techno_dict.keys()}
@@ -657,12 +662,7 @@ class Study(EnergyStudyManager):
             zip(self.energy_list, np.ones((len(self.years), len(self.years)))))
         demand_ratio_dict['years'] = self.years
 
-        ccs_demand_ratio_dict = dict(
-            zip(self.ccs_list, np.ones((len(self.years), len(self.years)))))
-        ccs_demand_ratio_dict['years'] = self.years
-
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
-        self.all_ccs_demand_ratio = pd.DataFrame(ccs_demand_ratio_dict)
 
         ratio_available_resource_dict = dict(
             zip(EnergyMix.RESOURCE_LIST, np.ones((len(self.years), len(self.years)))))
@@ -705,12 +705,14 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.study_name}.{demand_name}.total_energy_demand': self.total_energy_demand,
                        f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
-                       f'{self.study_name}.{energy_mix_name}.all_ccs_demand_ratio': self.all_ccs_demand_ratio,
                        f'{self.study_name}.{energy_mix_name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
                        f'{self.study_name}.is_stream_demand': True,
                        f'{self.study_name}.max_mda_iter': 200,
-                       f'{self.study_name}.sub_mda_class': 'GSNewtonMDA',
+                       f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
+                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.ones(len(self.years)) / 3,
+                       f'{self.study_name}.{energy_mix_name}.resources_CO2_emissions': self.resources_CO2_emissions,
+                       f'{self.study_name}.{energy_mix_name}.resources_price': self.resources_prices,
                        }
 
         # ALl energy_demands following energy_list

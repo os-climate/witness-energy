@@ -26,6 +26,7 @@ from energy_models.core.stream_type.energy_models.syngas import compute_molar_ma
 from energy_models.core.stream_type.energy_models.syngas import compute_calorific_value as compute_syngas_calorific_value
 from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class RWGS(SyngasTechno):
@@ -291,7 +292,7 @@ class RWGS(SyngasTechno):
         efficiency = self.configure_efficiency()
 
         dco2_price_dsyngas_ratio = np.identity(len(
-            self.years)) * dco2_needs_dsyngas_ratio * self.resources_prices[CO2.name].to_numpy() / efficiency[:, np.newaxis]
+            self.years)) * dco2_needs_dsyngas_ratio * self.resources_prices[ResourceGlossary.CO2['name']].to_numpy() / efficiency[:, np.newaxis]
 
         return dco2_price_dsyngas_ratio
 
@@ -409,7 +410,7 @@ class RWGS(SyngasTechno):
                                               / self.cost_details['efficiency'])
 
 #         # Cost of CO2 for 1 kWH of H2
-        self.cost_details[CO2.name] = list(self.resources_prices[CO2.name] * self.cost_details['CO2_needs']
+        self.cost_details[CO2.name] = list(self.resources_prices[ResourceGlossary.CO2['name']] * self.cost_details['CO2_needs']
                                            / self.cost_details['efficiency'])
 
         # self.cost_details[CO2.name]
@@ -506,7 +507,7 @@ class RWGS(SyngasTechno):
         self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
             self.cost_details['elec_needs']
 
-        self.carbon_emissions[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
+        self.carbon_emissions[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2['name']] * \
             self.cost_details['CO2_needs'] / \
             self.cost_details['efficiency']
 
@@ -515,7 +516,7 @@ class RWGS(SyngasTechno):
     def compute_dco2_emissions_dsyngas_ratio(self):
         dco2_needs_dsyngas_ratio = self.compute_dco2_needs_dsyngas_ratio()
         dco2_emissions_dsyngas_ratio = self.resources_CO2_emissions[
-            f'{CO2.name}'] * dco2_needs_dsyngas_ratio
+            ResourceGlossary.CO2['name']] * dco2_needs_dsyngas_ratio
 
         return dco2_emissions_dsyngas_ratio
 

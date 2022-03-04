@@ -69,8 +69,8 @@ class CCUS_Discipline(SoSDiscipline):
         'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'ratio_ref': {'type': 'float', 'default': 100., 'unit': '', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Mt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
-        'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Mt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
+        'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+        'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
     }
 
     DESC_OUT = {
@@ -267,7 +267,7 @@ class CCUS_Discipline(SoSDiscipline):
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
                         ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.CO2_per_use', 'CO2_per_use'), np.identity(len(years)) * value / 1.0e3)
-                elif energy_prod_info.startswith('CO2 for food (Mt)'):
+                elif energy_prod_info.startswith(f'{CO2.name} for food (Mt)'):
                     self.set_partial_derivative_for_other_types(
                         ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('co2_for_food', f'{CO2.name} for food (Mt)'), np.identity(len(years)) * value / 1.0e3)
 
@@ -307,7 +307,7 @@ class CCUS_Discipline(SoSDiscipline):
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
                         (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.CO2_per_use', 'CO2_per_use'),  value)
-                elif energy_prod_info.startswith('CO2 for food (Mt)'):
+                elif energy_prod_info.startswith(f'{CO2.name} for food (Mt)'):
                     self.set_partial_derivative_for_other_types(
                         (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('co2_for_food', f'{CO2.name} for food (Mt)'), value)
 

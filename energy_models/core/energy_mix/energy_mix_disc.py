@@ -85,7 +85,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'solid_fuel_elec_percentage': {'type': 'float', 'default': 0.75, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'solid_fuel_elec_constraint_ref': {'type': 'float', 'default': 10000., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'liquid_hydrogen_percentage': {'type': 'float', 'default': 0.3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'liquid_hydrogen_percentage': {'type': 'array', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'CO2_tax_ref': {'type': 'float', 'default': 1.0, 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                'namespace': 'ns_ref', 'user_level': 2},
@@ -677,7 +677,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('all_streams_demand_ratio', f'{energy}'), (f'{energy}.energy_production', energy),  ddemand_ratio_denergy_prod)
             dobjective_dratio_energy = np.array([dobjective_dratio[ienergy + iyear * len(
-                energies)] for iyear in range(len(years))]).reshape((1, len(years)))
+                energy_list)] for iyear in range(len(years))]).reshape((1, len(years)))
             dobjective_dprod = np.matmul(
                 dobjective_dratio_energy, ddemand_ratio_denergy_prod)
 

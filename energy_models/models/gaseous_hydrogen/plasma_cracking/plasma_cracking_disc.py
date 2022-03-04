@@ -20,6 +20,7 @@ import numpy as np
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
 
 from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking import PlasmaCracking
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
@@ -256,7 +257,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
 
         dhydro_prod_dinvest = self.dprod_dinvest * \
             scaling_factor_invest_level / scaling_factor_techno_production
-        dcarbon_prod_dinvest = self.dprod_column_dinvest['carbon (Mt)'] * \
+        dcarbon_prod_dinvest = self.dprod_column_dinvest[f"{ResourceGlossary.Carbon['name']} (Mt)"] * \
             scaling_factor_invest_level / scaling_factor_techno_production
 
         if (dhydro_prod_dinvest is not None) & (dcarbon_prod_dinvest is not None):
