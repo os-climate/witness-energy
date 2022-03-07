@@ -32,6 +32,7 @@ from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.demand.demand_mix import DemandMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.energy_study_manager import EnergyStudyManager,\
@@ -118,6 +119,8 @@ class Study(EnergyStudyManager):
         invest_energy_mix_dict[Syngas.name] = [
             20.0 * (1 + 0.01)**i for i in range(len(self.years))]
         invest_energy_mix_dict[LiquidHydrogen.name] = [
+            0.4 + 0.0006 * i for i in range(len(self.years))]
+        invest_energy_mix_dict[HydrotreatedOilFuel.name] = [
             0.4 + 0.0006 * i for i in range(len(self.years))]
 
         if self.bspline:
@@ -271,6 +274,7 @@ class Study(EnergyStudyManager):
         carbon_capture_name = CarbonCapture.name
         carbon_storage_name = CarbonStorage.name
         liquid_hydrogen_name = LiquidHydrogen.name
+        hydrotreated_oil_fuel_name = HydrotreatedOilFuel.name
         demand_name = DemandMix.name
         energy_mix_name = EnergyMix.name
 
@@ -287,7 +291,8 @@ class Study(EnergyStudyManager):
                                            carbon_capture_name: 0.0,
                                            carbon_storage_name: 0.0,
                                            biodiesel_name: np.linspace(210.0, 210.0 / 2.0, len(self.years)),
-                                           liquid_hydrogen_name: np.linspace(120.0, 120.0 / 2.0, len(self.years))})
+                                           liquid_hydrogen_name: np.linspace(120.0, 120.0 / 2.0, len(self.years)),
+                                           hydrotreated_oil_fuel_name: np.linspace(120.0, 120.0 / 2.0, len(self.years))})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035,
                           2040, 2045, 2050, 2060, 2070, 2080, 2090, 2100]
@@ -303,7 +308,7 @@ class Study(EnergyStudyManager):
             {'years': self.years, biomass_dry_name: - 0.425 * 44.01 / 12.0 / 3.36, solid_fuel_name: 0.64 / 4.86,
              electricity_name: 0.0, methane_name: 0.123 / 15.4, syngas_name: 0.0,
              hydrogen_name: 0.0, carbon_capture_name: 0.0, carbon_storage_name: 0.0,
-             biogas_name: -0.618, liquid_hydrogen_name: 0.0})
+             biogas_name: -0.618, liquid_hydrogen_name: 0.0, hydrotreated_oil_fuel_name: 0.0})
 
         # Relax constraint for 15 first years
         self.CCS_constraint_factor = np.concatenate(
@@ -336,6 +341,8 @@ class Study(EnergyStudyManager):
                                                                                            'mix': np.zeros(len(self.years))})
         self.energy_demand_mix[f'{liquid_hydrogen_name}.energy_demand_mix'] = pd.DataFrame({'years': self.years,
                                                                                             'mix': np.zeros(len(self.years))})
+        self.energy_demand_mix[f'{hydrotreated_oil_fuel_name}.energy_demand_mix'] = pd.DataFrame({'years': self.years,
+                                                                                                  'mix': np.zeros(len(self.years))})
         self.total_energy_demand = pd.DataFrame(
             {'years': self.years, 'demand': 25000 * np.linspace(1, 1.5, len(self.years))})  # 25679 TWh electricity prod in 2017 http://www.mineralinfo.fr/ecomine/production-mondiale-delectricite-empreinte-matiere-en-transition
 
@@ -397,7 +404,8 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{CCS_NAME}.{carbon_capture_name}.energy_demand_mix': self.energy_demand_mix[f'{carbon_capture_name}.energy_demand_mix'],
                        f'{self.study_name}.{CCS_NAME}.{carbon_storage_name}.energy_demand_mix': self.energy_demand_mix[f'{carbon_storage_name}.energy_demand_mix'],
                        f'{self.study_name}.{energy_mix_name}.{liquid_hydrogen_name}.energy_demand_mix': self.energy_demand_mix[f'{liquid_hydrogen_name}.energy_demand_mix'],
-                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.ones(len(self.years)) / 3,
+                       f'{self.study_name}.{energy_mix_name}.{hydrotreated_oil_fuel_name}.energy_demand_mix': self.energy_demand_mix[f'{hydrotreated_oil_fuel_name}.energy_demand_mix'],
+                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.concatenate((np.ones(5) * 1e-4,np.ones(len(self.years)-5)/4), axis=None),
                        f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
 
                        }
