@@ -405,7 +405,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{CCS_NAME}.{carbon_storage_name}.energy_demand_mix': self.energy_demand_mix[f'{carbon_storage_name}.energy_demand_mix'],
                        f'{self.study_name}.{energy_mix_name}.{liquid_hydrogen_name}.energy_demand_mix': self.energy_demand_mix[f'{liquid_hydrogen_name}.energy_demand_mix'],
                        f'{self.study_name}.{energy_mix_name}.{hydrotreated_oil_fuel_name}.energy_demand_mix': self.energy_demand_mix[f'{hydrotreated_oil_fuel_name}.energy_demand_mix'],
-                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.concatenate((np.ones(5)/1e-4,np.ones(len(self.years)-5)/4), axis=None),
+                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.concatenate((np.ones(5) * 1e-4,np.ones(len(self.years)-5)/4), axis=None),
                        f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
 
                        }
