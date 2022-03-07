@@ -122,9 +122,9 @@ class Study(EnergyStudyManager):
                             'objectives',  'objectives'])
         list_ftype.extend([OBJECTIVE,  OBJECTIVE,  OBJECTIVE])
         if Syngas.name in self.energy_list:
-            list_weight.extend([0.,  1.,  0.])
+            list_weight.extend([0.,  1.,  1.])
         else:
-            list_weight.extend([0., 0.,  0.])
+            list_weight.extend([0., 0.,  1.])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM,  AGGR_TYPE_SUM,  AGGR_TYPE_SUM])
         list_ns.extend(['ns_functions',
