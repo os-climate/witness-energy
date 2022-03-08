@@ -122,9 +122,9 @@ class Study(EnergyStudyManager):
                             'objectives',  'objectives'])
         list_ftype.extend([OBJECTIVE,  OBJECTIVE,  OBJECTIVE])
         if Syngas.name in self.energy_list:
-            list_weight.extend([0.,  1.,  0.])
+            list_weight.extend([0.,  1.,  1.])
         else:
-            list_weight.extend([0., 0.,  0.])
+            list_weight.extend([0., 0.,  1.])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM,  AGGR_TYPE_SUM,  AGGR_TYPE_SUM])
         list_ns.extend(['ns_functions',
@@ -710,7 +710,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.is_stream_demand': True,
                        f'{self.study_name}.max_mda_iter': 200,
                        f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
-                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.ones(len(self.years)) / 3,
+                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.concatenate((np.ones(5)*1e-4,np.ones(len(self.years)-5)/4), axis=None),
                        f'{self.study_name}.{energy_mix_name}.resources_CO2_emissions': self.resources_CO2_emissions,
                        f'{self.study_name}.{energy_mix_name}.resources_price': self.resources_prices,
                        }

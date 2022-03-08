@@ -72,6 +72,7 @@ DEFAULT_TECHNO_DICT = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_tech
                        BioGas.name: {'type': ENERGY_TYPE, 'value': BioGas_technos},
                        Syngas.name: {'type': ENERGY_TYPE, 'value': Syngas_technos},
                        LiquidFuel.name: {'type': ENERGY_TYPE, 'value': LiquidFuel_technos},
+                       HydrotreatedOilFuel.name: {'type': ENERGY_TYPE, 'value': HydrotreatedOilFuel_technos},
                        SolidFuel.name: {'type': ENERGY_TYPE, 'value': SolidFuel_technos},
                        BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos},
                        Electricity.name: {'type': ENERGY_TYPE, 'value': Electricity_technos},
