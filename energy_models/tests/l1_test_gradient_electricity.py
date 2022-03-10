@@ -670,7 +670,9 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions'],
+                                    f'{self.name}.energy_CO2_emissions',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions'],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -748,4 +750,4 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = ElectricityJacobianTestCase()
     cls.setUp()
-    cls.test_11_electricity_discipline_jacobian()
+    cls.test_10_nuclear_discipline_analytic_grad()

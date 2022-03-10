@@ -64,7 +64,6 @@ class CCUS_Discipline(SoSDiscipline):
         'tol_constraint': {'type': 'float', 'default': 1e-3},
         'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
         'production_threshold': {'type': 'float', 'default': 1e-3},
-        'co2_emissions': {'type': 'dataframe', 'unit': 'Mt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
 
         'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
@@ -95,7 +94,6 @@ class CCUS_Discipline(SoSDiscipline):
     GASEOUS_HYDROGEN_NAME = GaseousHydrogen.name
 
     energy_constraint_list = EnergyMix.energy_constraint_list
-    movable_fuel_list = EnergyMix.movable_fuel_list
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -273,11 +271,11 @@ class CCUS_Discipline(SoSDiscipline):
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} from energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('CO2_emissions_by_use_sources', f'{CarbonCapture.name} from energy mix (Gt)'), np.identity(len(years)) * value / 1.0e3)
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('CO2_emissions_by_use_sources', f'{CarbonCapture.name} from energy mix (Gt)'), np.identity(len(years)) * value )
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} needed by energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('co2_emissions_needed_by_energy_mix', f'{CarbonCapture.name} needed by energy mix (Gt)'), np.identity(len(years)) * value / 1.0e3)
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('co2_emissions_needed_by_energy_mix', f'{CarbonCapture.name} needed by energy mix (Gt)'), np.identity(len(years)) * value )
 
                 else:
                     very_last_part_key = energy_prod_info.split('#')[2]
@@ -313,11 +311,11 @@ class CCUS_Discipline(SoSDiscipline):
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} from energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('CO2_emissions_by_use_sources', f'{CarbonCapture.name} from energy mix (Gt)'), value)
+                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('CO2_emissions_by_use_sources', f'{CarbonCapture.name} from energy mix (Gt)'), value * 1e3)
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} needed by energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('co2_emissions_needed_by_energy_mix', f'{CarbonCapture.name} needed by energy mix (Gt)'), value)
+                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('co2_emissions_needed_by_energy_mix', f'{CarbonCapture.name} needed by energy mix (Gt)'), value * 1e3)
 
                 else:
                     very_last_part_key = energy_prod_info.split('#')[2]
@@ -378,7 +376,7 @@ class CCUS_Discipline(SoSDiscipline):
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['CCS price', 'Carbon storage constraint']
+        chart_list = ['CCS price', 'Carbon storage constraint', 'CO2 storage limited by capture', 'CO2 emissions captured, used and to store']
 
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -424,6 +422,18 @@ class CCUS_Discipline(SoSDiscipline):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
+        if 'CO2 storage limited by capture' in charts:
+            new_chart = self.get_chart_co2_limited_storage()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
+        if 'CO2 emissions captured, used and to store' in charts:
+            new_chart = self.get_chart_co2_to_store()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
+
+
         return instanciated_charts
 
     def get_chart_CCS_price(self):
@@ -432,7 +442,7 @@ class CCUS_Discipline(SoSDiscipline):
 
         years = list(ccs_prices['years'].values)
 
-        chart_name = 'CO2 taxes over time'
+        chart_name = 'CCS price over time'
 
         new_chart = TwoAxesInstanciatedChart('Years', 'CCS price ($/tCO2)',
                                              chart_name=chart_name)
@@ -444,7 +454,6 @@ class CCUS_Discipline(SoSDiscipline):
             years, ccs_prices['ccs_price_per_tCO2'].values.tolist(), 'CCS price', 'lines', visible_line)
         new_chart.series.append(new_series)
 
-        new_chart.series.append(new_series)
 
         return new_chart
 
@@ -453,7 +462,10 @@ class CCUS_Discipline(SoSDiscipline):
         Plot a graph to understand CO2 to store
         '''
         chart_name = 'CO2 emissions captured, used and to store'
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
+        co2_for_food = self.get_sosdisc_inputs('co2_for_food')
+        CO2_emissions_by_use_sources = self.get_sosdisc_inputs('CO2_emissions_by_use_sources')
+        co2_emissions_needed_by_energy_mix = self.get_sosdisc_inputs('co2_emissions_needed_by_energy_mix')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
@@ -466,17 +478,17 @@ class CCUS_Discipline(SoSDiscipline):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'].values / 1.0e3).tolist(), f'CO2 captured from energy mix')
+            (CO2_emissions_by_use_sources[f'{CarbonCapture.name} from energy mix (Gt)'].values).tolist(), f'CO2 captured from energy mix')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (-co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'].values / 1.0e3).tolist(), f'{CarbonCapture.name} used by energy mix')
+            (-co2_emissions_needed_by_energy_mix[f'{CarbonCapture.name} needed by energy mix (Gt)'].values).tolist(), f'{CarbonCapture.name} used by energy mix')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (-co2_emissions[f'{CO2.name} for food (Mt)'].values / 1.0e3).tolist(), f'{CO2.name} used for food')
+            (-co2_for_food[f'{CO2.name} for food (Mt)'].values / 1.0e3).tolist(), f'{CO2.name} used for food')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
@@ -491,15 +503,24 @@ class CCUS_Discipline(SoSDiscipline):
         Plot a graph to understand storage
         '''
         chart_name = 'CO2 emissions storage limited by CO2 to store'
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus_Gt')
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
         x_serie_1 = co2_emissions['years'].values.tolist()
+        serie = InstanciatedSeries(
+            x_serie_1,
+            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 to store')
+        new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonStorage.name} Limited by capture (Gt)'].values / 1.0e3).tolist(), f'CO2 storage limited by CO2 to store')
+            (co2_emissions[f'{CarbonStorage.name} (Mt)'].values / 1.0e3).tolist(), f'CO2 storage by invest')
+        new_chart.add_series(serie)
+
+        serie = InstanciatedSeries(
+            x_serie_1,
+            (co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1.0e3).tolist(), f'CO2 storage limited by CO2 to store')
         new_chart.add_series(serie)
 
         return new_chart

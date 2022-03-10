@@ -47,15 +47,17 @@ class CoalExtraction(SolidFuelTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
-        oil_needs = self.get_fuel_needs()
         efficiency = self.techno_infos_dict['efficiency']
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
                 }
 
-    def grad_resources(self):
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
         oil_needs = self.get_fuel_needs()
         efficiency = self.techno_infos_dict['efficiency']
-        return {CrudeOil.name: np.identity(len(self.years)) * oil_needs / efficiency}
+        return {CrudeOil.name: np.identity(len(self.years)) * oil_needs / efficiency,}
 
     def compute_consumption_and_production(self):
         """

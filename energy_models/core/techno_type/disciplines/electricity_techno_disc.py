@@ -62,7 +62,9 @@ class ElectricityTechnoDiscipline(TechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
 
+        grad_dict_resource = self.techno_model.grad_price_vs_resources_price()
+
         carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
 
         self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions)
+            grad_dict, carbon_emissions, grad_dict_resource)

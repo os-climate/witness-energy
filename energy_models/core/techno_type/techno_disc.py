@@ -373,9 +373,11 @@ class TechnoDiscipline(SoSDiscipline):
 
         for resource, value in grad_dict_resources.items():
             self.set_partial_derivative_for_other_types(
-                ('techno_prices', self.techno_name), ('resources_price', resource), value)
+                ('techno_prices', self.techno_name), ('resources_price', resource), value * \
+                self.techno_model.margin['margin'].values / 100.0)
             self.set_partial_derivative_for_other_types(
-                ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_price', resource), value)
+                ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_price', resource), value * \
+                self.techno_model.margin['margin'].values / 100.0)
 
     def get_chart_filter_list(self):
 
