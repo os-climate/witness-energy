@@ -151,13 +151,15 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
 
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
+
         carbon_emissions = self.get_sosdisc_outputs(
             'CO2_emissions')
 
         self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions)
+            grad_dict, carbon_emissions, grad_dict_resources)
 
-    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions):
+    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}):
         """
         Generic method to set partial derivatives of techno_prices / energy_prices, energy_CO2_emissions and dco2_emissions/denergy_co2_emissions
         """
@@ -196,6 +198,29 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 ('techno_prices', self.techno_name), ('CO2_taxes', 'CO2_tax'), dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
+
+        for resource, value in grad_dict_resources.items():
+            self.set_partial_derivative_for_other_types(
+                ('techno_prices', self.techno_name), ('resources_price', resource), value / self.techno_model.configure_efficiency() * \
+                                                                                    self.techno_model.margin[
+                                                                                        'margin'].values / 100.0)
+            self.set_partial_derivative_for_other_types(
+                ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_price', resource), value / self.techno_model.configure_efficiency() * \
+                                                                                                 self.techno_model.margin[
+                                                                                                     'margin'].values / 100.0)
+            grad_on_co2_tax = value  *\
+                              self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years']
+                                                              <= self.techno_model.year_end]['CO2_tax'].values[:,
+                              np.newaxis] * np.maximum(
+                0, np.sign(carbon_emissions[self.techno_name]))[:, np.newaxis]
+            self.set_partial_derivative_for_other_types(
+                ('techno_prices', self.techno_name), ('resources_CO2_emissions', resource), grad_on_co2_tax * np.split(self.techno_model.margin['margin'].values,
+                                                                                                                       len(self.techno_model.margin['margin'].values)) /100.0)
+            self.set_partial_derivative_for_other_types(
+                ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_CO2_emissions', resource), np.zeros(len(self.techno_model.years)))
+
+            self.set_partial_derivative_for_other_types(
+                ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)
 
     def get_chart_filter_list(self):
 
