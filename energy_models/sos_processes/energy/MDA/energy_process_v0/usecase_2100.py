@@ -41,6 +41,7 @@ from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase im
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,\
     INVEST_DISCIPLINE_OPTIONS
+from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 
 DEFAULT_ENERGY_LIST = [Methane.name, GaseousHydrogen.name, BioGas.name,
                        Syngas.name, LiquidFuel.name, SolidFuel.name, BiomassDry.name, Electricity.name, BioDiesel.name, LiquidHydrogen.name]
@@ -454,7 +455,11 @@ class Study(EnergyStudyManager):
         if not self.main_study:
             self.get_dv_arrays()
             self.create_technolist_per_energy(instanciated_studies)
-
+        dc_resource = datacase_resource(
+            self.year_start, self.year_end)
+        dc_resource.study_name = self.study_name
+        resource_input_list = dc_resource.setup_usecase()
+        values_dict_list.extend(resource_input_list)
         return values_dict_list
 
 
