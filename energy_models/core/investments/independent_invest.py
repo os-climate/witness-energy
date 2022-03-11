@@ -54,9 +54,11 @@ class IndependentInvest(BaseInvest):
 
         self.compute_distribution_list(inputs_dict)
 
-        techno_invests = inputs_dict['invest_mix'][self.distribution_list]
-
+        techno_invests = inputs_dict['invest_mix'][self.distribution_list]       
         techno_invest_sum = techno_invests.sum(axis=1).values
+
+        if inputs_dict['is_dev']:
+            techno_invest_sum += inputs_dict['forest_investment']['forest_investment'].values
 
         # Calculate relative diff
         delta = (energy_invest_df['energy_investment'].values -
