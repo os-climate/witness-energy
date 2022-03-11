@@ -115,7 +115,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 dynamic_inputs['forest_investment'] = {
                         'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
                         'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
-                        'namespace': 'ns_witness', 'dataframe_edition_locked': False}
+                        'namespace': 'ns_invest', 'dataframe_edition_locked': False}
                 if 'forest_investment' in self._data_in:
                     forest_investment = self.get_sosdisc_inputs('forest_investment')
                     if forest_investment is not None :
