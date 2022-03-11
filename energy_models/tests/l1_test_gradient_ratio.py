@@ -1027,7 +1027,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=coupled_inputs,  outputs=coupled_outputs,)
 
-    def test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian(self):
+    def _test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian(self):
         '''
         Test the gradients of the ratios on EnergyMix discipline.
         For now do not include it to the test routine (not sure how volatile this test it)
