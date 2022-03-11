@@ -105,7 +105,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     # Invest from WEI2020
     invest_before_year_start = pd.DataFrame(
 
-        {'past years': np.arange(-construction_delay, 0), 'invest': [462, 477, 470]})
+        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 477, 470]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [4.7, 4.63, 4.52, 4.85, 4.299999999999999,
@@ -201,21 +201,21 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         for resource, value in grad_dict_resources.items():
             self.set_partial_derivative_for_other_types(
-                ('techno_prices', self.techno_name), ('resources_price', resource), value / self.techno_model.configure_efficiency() * \
-                                                                                    self.techno_model.margin[
-                                                                                        'margin'].values / 100.0)
+                ('techno_prices', self.techno_name), ('resources_price', resource), value / self.techno_model.configure_efficiency() *
+                self.techno_model.margin[
+                    'margin'].values / 100.0)
             self.set_partial_derivative_for_other_types(
-                ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_price', resource), value / self.techno_model.configure_efficiency() * \
-                                                                                                 self.techno_model.margin[
-                                                                                                     'margin'].values / 100.0)
-            grad_on_co2_tax = value  *\
-                              self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years']
-                                                              <= self.techno_model.year_end]['CO2_tax'].values[:,
-                              np.newaxis] * np.maximum(
-                0, np.sign(carbon_emissions[self.techno_name]))[:, np.newaxis]
+                ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_price', resource), value / self.techno_model.configure_efficiency() *
+                self.techno_model.margin[
+                    'margin'].values / 100.0)
+            grad_on_co2_tax = value *\
+                self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years']
+                                                <= self.techno_model.year_end]['CO2_tax'].values[:,
+                                                                                                 np.newaxis] * np.maximum(
+                    0, np.sign(carbon_emissions[self.techno_name]))[:, np.newaxis]
             self.set_partial_derivative_for_other_types(
                 ('techno_prices', self.techno_name), ('resources_CO2_emissions', resource), grad_on_co2_tax * np.split(self.techno_model.margin['margin'].values,
-                                                                                                                       len(self.techno_model.margin['margin'].values)) /100.0)
+                                                                                                                       len(self.techno_model.margin['margin'].values)) / 100.0)
             self.set_partial_derivative_for_other_types(
                 ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_CO2_emissions', resource), np.zeros(len(self.techno_model.years)))
 

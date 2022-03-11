@@ -26,7 +26,8 @@ import numpy as np
 class Refinery(LiquidFuelTechno):
 
     OIL_NAME = ResourceGlossary.Oil['name']
-    oil_extraction_capex = 44.0
+    # corresponds to crude oil price divided by efficiency TO BE MODIFIED
+    oil_extraction_capex = 44.0 / 0.89
 
     def configure_energy_data(self, inputs_dict):
         '''
@@ -190,7 +191,8 @@ class Refinery(LiquidFuelTechno):
         # Added a cost of 50.0$/TWh to account for the price of oil extraction
         # (until an extraction model is connected)
         production_from_invest['prod_from_invest'] = production_from_invest['invest'] / \
-            (production_from_invest[f'Capex_{self.name}'] + self.oil_extraction_capex)
+            (production_from_invest[f'Capex_{self.name}'] +
+             self.oil_extraction_capex)
         production_from_invest['years'] += construction_delay
         production_from_invest = production_from_invest[production_from_invest['years']
                                                         <= self.year_end]
