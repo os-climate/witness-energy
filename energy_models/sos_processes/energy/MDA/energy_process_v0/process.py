@@ -132,8 +132,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                        'ns_witness': f'{ns_study}',
                        'ns_ccs': f'{ns_study}.{CCS_NAME}',
                        'ns_ref': f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
-                       'ns_functions': f'{ns_study}.{func_manager_name}',
-                       'ns_invest': f'{ns_study}.InvestmentDistribution',}
+                       'ns_functions': f'{ns_study}.{func_manager_name}',}
             mods_dict = {
                 INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.independent_invest_disc.IndependentInvestDiscipline',
             }

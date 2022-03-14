@@ -369,4 +369,4 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = MethaneJacobianTestCase()
     cls.setUp()
-    cls.test_01_fossil_gas_discipline_jacobian()
+    cls.test_04_methane_discipline_jacobian()

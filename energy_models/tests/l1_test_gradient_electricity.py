@@ -750,4 +750,4 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = ElectricityJacobianTestCase()
     cls.setUp()
-    cls.test_10_nuclear_discipline_analytic_grad()
+    cls.test_11_electricity_discipline_jacobian()
