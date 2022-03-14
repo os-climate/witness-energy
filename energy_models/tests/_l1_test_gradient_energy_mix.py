@@ -42,9 +42,9 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
             self.test_04_energy_mix_discipline_co2_emissions_gt,
             self.test_05_energy_mix_test_mean_price_grad,
             self.test_06_energy_mix_all_outputs,
-            self._test_07_energy_mix_co2_tax,
-            self._test_09_energy_mix_gradients_cutoff,
+            self.test_07_energy_mix_co2_tax,
             self.test_08_energy_mix_gradients_exponential_limit,
+            self.test_09_energy_mix_gradients_cutoff,
             self.test_10_energy_mix_demand_dataframe,
             self.test_11_energy_mix_detailed_co2_emissions,
             self.test_12_energy_mix_detailed_co2_emissions_ratio_available_capture,
@@ -314,7 +314,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=inputs_names, outputs=outputs_names, parallel=self.parallel)
 
-    def _test_02_energy_mix_discipline_residual_vars_wrt_state_variables(self):
+    def test_02_energy_mix_discipline_residual_vars_wrt_state_variables(self):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
