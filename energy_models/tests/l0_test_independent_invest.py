@@ -244,6 +244,7 @@ class TestIndependentInvest(unittest.TestCase):
                    'ns_energy': self.name,
                    'ns_ccs': f'{self.name}',
                    'ns_functions': self.name,
+                   'ns_invest': self.name,
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
