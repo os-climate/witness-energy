@@ -226,8 +226,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         self.ee.execute()
 
         # These emissions are in Gt
-        co2_emissions = self.ee.dm.get_value(
-            f'{self.name}.consumptionco2.co2_emissions')
+
         co2_emissions_by_energy = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.co2_emissions_by_energy')
 
@@ -299,7 +298,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             'Test.CCUS.CO2_emissions_by_use_sources')
         sinks = self.ee.dm.get_value('Test.CCUS.CO2_emissions_by_use_sinks')[
             'CO2_resource removed by energy mix (Gt)'].values[0]
-        sources_sum = sources.loc[co2_emissions['years'] == 2020][[
+        sources_sum = sources.loc[sources['years'] == 2020][[
             col for col in sources.columns if col != 'years']].sum(axis=1)[0]
         computed_total_co2_emissions = (sources_sum - sinks) * 1000
         # we compare in Mt and must be near 10% of error
