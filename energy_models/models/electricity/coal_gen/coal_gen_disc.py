@@ -105,10 +105,10 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  'construction_delay': construction_delay, }
 
     techno_info_dict = techno_infos_dict_default
-    initial_production = 10000  # in TWh at year_start source IEA 2019
+    initial_production = 9914.45  # in TWh at year_start source IEA 2019
     # Invest before year start in $ source IEA 2019
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [100.0, 87.0, 76.5, 90.0, 67.5]})
+        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 87.0, 76.5, 90.0, 67.5]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [2.6, 2.6, 2.6, 2.6, 2.6, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
