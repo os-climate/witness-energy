@@ -90,8 +90,9 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
 
+    energy_own_use = 952.78  # TWh
     # From ourworldindata
-    initial_production = 43752.
+    initial_production = 43752. - energy_own_use
     # First invest is zero to get exactly the initial production in 2020
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 7.8, 9.0]})

@@ -45,7 +45,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
     def test_01_check_global_production_values(self):
         '''
-        Test order of magnitude of brut energy production with values from ourworldindata
+        Test order of magnitude of raw energy production with values from ourworldindata
         https://ourworldindata.org/energy-mix?country=
 
         '''
@@ -57,8 +57,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         '''
         Theory in 2019 from ourwolrdindata  expressed in TWh (2020 is a covid year)
+        we need to substract energy own use to get same hypthesis than our models (enrgy own_use is substracted from raw production
         '''
-        oil_production = 53620.
+        oil_production = 53620. - 2485.89
         wind_production = 1590.19  # in 2020
         nuclear_production = 2616.61
         hydropower_production = 4355.
@@ -68,8 +69,8 @@ class TestGlobalEnergyValues(unittest.TestCase):
         # in 2020
         # https://ourworldindata.org/renewable-energy#solar-energy-generation
         solar_production = 844.37
-        coal_production = 43752.
-        gas_production = 39893.
+        coal_production = 43752. - 952.78
+        gas_production = 39893. - 3782.83
         total_production = 166824.
 
         '''
@@ -225,8 +226,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         self.ee.execute()
 
         # These emissions are in Gt
-        co2_emissions = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.co2_emissions')
+
         co2_emissions_by_energy = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.co2_emissions_by_energy')
 
@@ -258,6 +258,8 @@ class TestGlobalEnergyValues(unittest.TestCase):
         self.assertGreaterEqual(
             computed_methane_co2_emissions, gas_co2_emissions * 0.9)
 
+        print(
+            f'Methane CO2 emissions : ourworldindata {gas_co2_emissions} Mt vs WITNESS {computed_methane_co2_emissions} TWh')
         '''
         Coal CO2 emissions are emissions from coal energy + CoalGeneration from electricity
         '''
@@ -273,6 +275,8 @@ class TestGlobalEnergyValues(unittest.TestCase):
         self.assertGreaterEqual(
             computed_coal_co2_emissions, coal_co2_emissions * 0.9)
 
+        print(
+            f'Coal CO2 emissions : ourworldindata {coal_co2_emissions} Mt vs WITNESS {computed_coal_co2_emissions} TWh')
         '''
         Oil CO2 emissions are emissions from oil energy 
         '''
@@ -285,17 +289,26 @@ class TestGlobalEnergyValues(unittest.TestCase):
         self.assertGreaterEqual(
             computed_oil_co2_emissions, oil_co2_emissions * 0.9)
 
+        print(
+            f'Oil CO2 emissions : ourworldindata {oil_co2_emissions} Mt vs WITNESS {computed_oil_co2_emissions} TWh')
         '''
         Total CO2 emissions are emissions from oil energy 
         '''
+        sources = self.ee.dm.get_value(
+            'Test.CCUS.CO2_emissions_by_use_sources')
+        sinks = self.ee.dm.get_value('Test.CCUS.CO2_emissions_by_use_sinks')[
+            'CO2_resource removed by energy mix (Gt)'].values[0]
+        sources_sum = sources.loc[sources['years'] == 2020][[
+            col for col in sources.columns if col != 'years']].sum(axis=1)[0]
+        computed_total_co2_emissions = (sources_sum - sinks) * 1000
+        # we compare in Mt and must be near 10% of error
 
-#         computed_total_co2_emissions = co2_emissions[
-#             'Total CO2 emissions'].loc[co2_emissions['years'] == 2020].values[0]
-#         # we compare in Mt and must be near 10% of error
-#         self.assertLessEqual(computed_total_co2_emissions,
-#                              total_co2_emissions * 1.1)
-#         self.assertGreaterEqual(
-#             computed_total_co2_emissions, total_co2_emissions * 0.9)
+        print(
+            f'Total CO2 emissions : ourworldindata {total_co2_emissions} Mt vs WITNESS {computed_total_co2_emissions} TWh')
+        self.assertLessEqual(computed_total_co2_emissions,
+                             total_co2_emissions * 1.1)
+        self.assertGreaterEqual(
+            computed_total_co2_emissions, total_co2_emissions * 0.9)
 
     def test_03_check_net_production_values(self):
         '''
@@ -318,16 +331,20 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Coal balances 
         '''
         print('----------  Coal balances -------------')
-        energy_production_brut_coal_iea = 46666  # TWH
-        coal_brut_prod = energy_production['production solid_fuel (TWh)'][0]
-        error_coalbrut_prod = np.abs(
-            energy_production_brut_coal_iea - coal_brut_prod) / energy_production_brut_coal_iea * 100.0
+
+        coal_energy_own_use = 952.78
+        print(
+            f'Energy own use for coal production is {coal_energy_own_use} TWh and now taken into account into raw production')
+        energy_production_raw_coal_iea = 46666 - coal_energy_own_use  # TWH
+        coal_raw_prod = energy_production['production solid_fuel (TWh)'][0]
+        error_coalraw_prod = np.abs(
+            energy_production_raw_coal_iea - coal_raw_prod) / energy_production_raw_coal_iea * 100.0
         # we compare in TWh and must be near 10% of error
 #         self.assertLessEqual(error_coalnet_prod,
 #                              10.0)
 
-        print('coal brut production error : ', error_coalbrut_prod, ' %',
-              f'IEA :{energy_production_brut_coal_iea} TWh vs WITNESS :{coal_brut_prod} TWh')
+        print('coal raw production error : ', error_coalraw_prod, ' %',
+              f'IEA :{energy_production_raw_coal_iea} TWh vs WITNESS :{coal_raw_prod} TWh')
 
         # elec plants needs
         elec_plants = self.ee.dm.get_value(f'{self.name}.{self.energymixname}.electricity.energy_consumption')[
@@ -387,23 +404,28 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('coal net production error : ', error_coalnet_prod, ' %',
               f'IEA :{coal_total_final_consumption_iea} TWh vs WITNESS :{coal_total_final_consumption} TWh')
         print('CHP and heat plants not taken into account for coal consumption explains the differences')
-        coal_energy_own_use = 952.78
-        print(
-            f'Energy own use for coal production is {coal_energy_own_use} TWh')
+
         '''
         Gas balances
         '''
         print('----------  Gas balances -------------')
-        energy_production_brut_gas_iea = 40000  # TWH
-        gas_brut_prod = energy_production['production methane (TWh)'][0]
-        error_gasbrut_prod = np.abs(
-            energy_production_brut_gas_iea - gas_brut_prod) / energy_production_brut_gas_iea * 100.0
+
+        energy_own_use = 3732.83
+
+        print('Energy industry own use covers the amount of fuels used by the energy producing industries (e.g. for heating, lighting and operation of all equipment used in the extraction process, for traction and for distribution)')
+        print(
+            f'Energy own use for methane production is {energy_own_use} TWh and now taken into account into raw production')
+
+        energy_production_raw_gas_iea = 40000 - energy_own_use  # TWH
+        gas_raw_prod = energy_production['production methane (TWh)'][0]
+        error_gasraw_prod = np.abs(
+            energy_production_raw_gas_iea - gas_raw_prod) / energy_production_raw_gas_iea * 100.0
         # we compare in TWh and must be near 10% of error
 #         self.assertLessEqual(error_coalnet_prod,
 #                              10.0)
 
-        print('gas brut production error : ', error_gasbrut_prod, ' %',
-              f'IEA :{energy_production_brut_gas_iea} TWh vs WITNESS :{gas_brut_prod} TWh')
+        print('gas raw production error : ', error_gasraw_prod, ' %',
+              f'IEA :{energy_production_raw_gas_iea} TWh vs WITNESS :{gas_raw_prod} TWh')
 
         # elec plants needs
         elec_plants = self.ee.dm.get_value(f'{self.name}.{self.energymixname}.electricity.energy_consumption')[
@@ -454,15 +476,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
         # we compare in TWh and must be near 10% of error
 #         self.assertLessEqual(error_coalnet_prod,
 #                              10.0)
-        energy_own_use = 3732.83
         print('methane net production error : ', error_methanenet_prod, ' %',
               f'IEA :{methane_total_final_consumption_iea} TWh vs WITNESS :{methane_total_final_consumption} TWh')
         print('CHP and heat plants not taken into account for methane consumption explains some differences')
-        print('Energy industry own use covers the amount of fuels used by the energy producing industries (e.g. for heating, lighting and operation of all equipment used in the extraction process, for traction and for distribution)')
-        print(f'Energy own use for methane production is {energy_own_use} TWh')
-        print(
-            f'In our model energy own use is directly deduced from production, then brut production in our model should be compared to brut production - energy_own_use : {energy_production_brut_gas_iea-energy_own_use} TWh instead of {energy_production_brut_gas_iea} TWh')
-
         '''
         Electricity balances
         '''
@@ -482,23 +498,23 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('Net electricity production error : ', error_net_elec_prod, ' %',
               f'IEA :{net_elec_prod_iea} TWh vs WITNESS :{net_elec_prod} TWh')
 
-        energy_production_brut_hydro_iea = 4222.22  # TWH
+        energy_production_raw_hydro_iea = 4222.22  # TWH
         elec_hydropower_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.electricity.Hydropower.techno_production')
 
         computed_hydropower_production = elec_hydropower_prod['electricity (TWh)'].loc[
             elec_hydropower_prod['years'] == 2020].values[0] * 1000
 
-        error_hydropowerbrut_prod = np.abs(
-            energy_production_brut_hydro_iea - computed_hydropower_production) / energy_production_brut_hydro_iea * 100.0
+        error_hydropowerraw_prod = np.abs(
+            energy_production_raw_hydro_iea - computed_hydropower_production) / energy_production_raw_hydro_iea * 100.0
         # we compare in TWh and must be near 10% of error
 #         self.assertLessEqual(error_coalnet_prod,
 #                              10.0)
 
-        print('hydropower brut production error : ', error_hydropowerbrut_prod, ' %',
-              f'IEA :{energy_production_brut_hydro_iea} TWh vs WITNESS :{computed_hydropower_production} TWh')
+        print('hydropower raw production error : ', error_hydropowerraw_prod, ' %',
+              f'IEA :{energy_production_raw_hydro_iea} TWh vs WITNESS :{computed_hydropower_production} TWh')
 
-        energy_production_brut_wind_solar_renew_iea = 3722.22  # TWH
+        energy_production_raw_wind_iea = 1427.41  # TWH
 
         elec_windonshore_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.electricity.WindOnshore.techno_production')
@@ -510,16 +526,44 @@ class TestGlobalEnergyValues(unittest.TestCase):
             elec_windoffshore_prod['electricity (TWh)'].loc[
             elec_windoffshore_prod['years'] == 2020].values[0] * 1000.0
 
+        error_wind_prod = np.abs(
+            energy_production_raw_wind_iea - computed_wind_production) / energy_production_raw_wind_iea * 100.0
+        # we compare in TWh and must be near 10% of error
+#         self.assertLessEqual(error_wind_prod,
+#                              10.0)
+
+        print('Wind raw production error : ', error_wind_prod, ' %',
+              f'IEA :{energy_production_raw_wind_iea} TWh vs WITNESS :{computed_wind_production} TWh')
+
         elec_solar_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.electricity.SolarPv.techno_production')
+
+        computed_solarpv_production = elec_solar_prod['electricity (TWh)'].loc[
+            elec_solar_prod['years'] == 2020].values[0] * 1000
+        energy_production_solarpv_iea = 680.9  # TWh
+        error_solarpv_prod = np.abs(
+            energy_production_solarpv_iea - computed_solarpv_production) / energy_production_solarpv_iea * 100.0
+        # we compare in TWh and must be near 10% of error
+#         self.assertLessEqual(error_solarpv_prod,
+#                              10.0)
+
+        print('Solar PV raw production error : ', error_solarpv_prod, ' %',
+              f'IEA :{energy_production_solarpv_iea} TWh vs WITNESS :{computed_solarpv_production} TWh')
 
         elec_solarth_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.electricity.SolarThermal.techno_production')
 
-        computed_solar_production = elec_solar_prod['electricity (TWh)'].loc[
-            elec_solar_prod['years'] == 2020].values[0] * 1000.0 + \
-            elec_solarth_prod['electricity (TWh)'].loc[
-            elec_solarth_prod['years'] == 2020].values[0] * 1000.0
+        computed_solarth_production = elec_solarth_prod['electricity (TWh)'].loc[
+            elec_solarth_prod['years'] == 2020].values[0] * 1000
+        energy_production_solarth_iea = 13.36  # TWh
+        error_solarth_prod = np.abs(
+            energy_production_solarth_iea - computed_solarth_production) / energy_production_solarth_iea * 100.0
+        # we compare in TWh and must be near 10% of error
+#         self.assertLessEqual(error_solarpv_prod,
+#                              10.0)
+
+        print('Solar Thermal raw production error : ', error_solarth_prod, ' %',
+              f'IEA :{energy_production_solarth_iea} TWh vs WITNESS :{computed_solarth_production} TWh')
 
         elec_geoth_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.electricity.Geothermal.techno_production')
@@ -527,37 +571,79 @@ class TestGlobalEnergyValues(unittest.TestCase):
         computed_geoth_production = elec_geoth_prod['electricity (TWh)'].loc[
             elec_geoth_prod['years'] == 2020].values[0] * 1000.0
 
-        error_windsolar_prod = np.abs(
-            energy_production_brut_wind_solar_renew_iea - computed_wind_production - computed_solar_production - computed_geoth_production) / energy_production_brut_wind_solar_renew_iea * 100.0
+        energy_production_geoth_iea = 91.09  # TWh
+        error_geoth_prod = np.abs(
+            energy_production_geoth_iea - computed_geoth_production) / energy_production_geoth_iea * 100.0
         # we compare in TWh and must be near 10% of error
-#         self.assertLessEqual(error_coalnet_prod,
+#         self.assertLessEqual(error_solarpv_prod,
 #                              10.0)
 
-        print('Wind solar and geothermal brut production error : ', error_windsolar_prod, ' %',
-              f'IEA :{energy_production_brut_wind_solar_renew_iea} TWh vs WITNESS :{computed_wind_production+computed_solar_production+computed_geoth_production} TWh')
-        computed_solarth_prod = elec_solarth_prod['electricity (TWh)'].loc[
-            elec_solarth_prod['years'] == 2020].values[0] * 1000.0
-        energy_production_brut_solar_th_iea = 1560365 / 3600
-        error_solarth_prod = np.abs(
-            energy_production_brut_solar_th_iea - computed_solarth_prod) / energy_production_brut_solar_th_iea * 100.0
+        print('Geothermal raw production error : ', error_geoth_prod, ' %',
+              f'IEA :{energy_production_geoth_iea} TWh vs WITNESS :{computed_geoth_production} TWh')
 
-        print('Solarthermal brut production error : ', error_solarth_prod, ' %',
-              f'IEA :{energy_production_brut_solar_th_iea} TWh vs WITNESS :{computed_solarth_prod} TWh')
+        elec_coalgen_prod = self.ee.dm.get_value(
+            f'{self.name}.{self.energymixname}.electricity.CoalGen.techno_production')
 
-        energy_production_brut_geoth_iea = 4205020 / 3600
+        computed_coalgen_production = elec_coalgen_prod['electricity (TWh)'].loc[
+            elec_coalgen_prod['years'] == 2020].values[0] * 1000.0
+
+        energy_production_coalgen_iea = 9914.45  # TWh
         error_geoth_prod = np.abs(
-            energy_production_brut_geoth_iea - computed_geoth_production) / energy_production_brut_geoth_iea * 100.0
+            energy_production_coalgen_iea - computed_coalgen_production) / energy_production_coalgen_iea * 100.0
+        # we compare in TWh and must be near 10% of error
+#         self.assertLessEqual(error_solarpv_prod,
+#                              10.0)
 
-        print('Geothermal brut production error : ', error_geoth_prod, ' %',
-              f'IEA :{energy_production_brut_geoth_iea} TWh vs WITNESS :{computed_geoth_production} TWh')
+        print('Coal generation raw production error : ', error_geoth_prod, ' %',
+              f'IEA :{energy_production_coalgen_iea} TWh vs WITNESS :{computed_coalgen_production} TWh')
 
+        elec_gt_prod = self.ee.dm.get_value(
+            f'{self.name}.{self.energymixname}.electricity.GasTurbine.techno_production')
+        elec_cgt_prod = self.ee.dm.get_value(
+            f'{self.name}.{self.energymixname}.electricity.CombinedCycleGasTurbine.techno_production')
+
+        computed_gasgen_production = elec_gt_prod['electricity (TWh)'].loc[
+            elec_gt_prod['years'] == 2020].values[0] * 1000.0 + elec_cgt_prod['electricity (TWh)'].loc[
+            elec_cgt_prod['years'] == 2020].values[0] * 1000.0
+
+        energy_production_gasgen_iea = 6346  # TWh
+        error_gasgen_prod = np.abs(
+            energy_production_gasgen_iea - computed_gasgen_production) / energy_production_gasgen_iea * 100.0
+        # we compare in TWh and must be near 10% of error
+#         self.assertLessEqual(error_solarpv_prod,
+#                              10.0)
+
+        print('Gas generation raw production error : ', error_gasgen_prod, ' %',
+              f'IEA :{energy_production_gasgen_iea} TWh vs WITNESS :{computed_gasgen_production} TWh')
+
+        elec_nuclear_prod = self.ee.dm.get_value(
+            f'{self.name}.{self.energymixname}.electricity.Nuclear.techno_production')
+
+        computed_nuclear_production = elec_nuclear_prod['electricity (TWh)'].loc[
+            elec_nuclear_prod['years'] == 2020].values[0] * 1000.0
+
+        energy_production_nuclear_iea = 2789.69  # TWh
+        error_geoth_prod = np.abs(
+            energy_production_nuclear_iea - computed_nuclear_production) / energy_production_nuclear_iea * 100.0
+        # we compare in TWh and must be near 10% of error
+#         self.assertLessEqual(error_solarpv_prod,
+#                              10.0)
+
+        print('Nuclear raw production error : ', error_geoth_prod, ' %',
+              f'IEA :{energy_production_nuclear_iea} TWh vs WITNESS :{computed_nuclear_production} TWh')
+
+        energy_production_oilgen_iea = 747  # TWh
+        energy_production_biofuelgen_iea = 542.56  # TWh
+
+        print(
+            f'Technologies of electricity generation with oil ({energy_production_oilgen_iea} TWh) and biofuel ({energy_production_biofuelgen_iea} TWh) are not yet implemented')
         '''
         Biofuels and waste balances
         '''
         print('----------  Biomass dry balances -------------')
 
         print('We consider biomass_dry equals to the sum of primary solid biofuels (no municipal/industiral waste) but in the doc they do not consider crop residues')
-        biomass_dry_brut_prod_iea = (
+        biomass_dry_raw_prod_iea = (
             48309940) / 3600  # TWh 1414648 + 1142420 +
         biomass_dry_net_prod_iea = (36537355) / 3600  # TWh + 150882 + 519300
 
@@ -582,13 +668,13 @@ class TestGlobalEnergyValues(unittest.TestCase):
         biomass_dry_net_prod = net_energy_production[
             'production biomass_dry (TWh)'][0] - computed_crop_energy_prod
 
-        biomass_dry_brut_prod = computed_managed_wood_prod + computed_unmanaged_wood_prod
+        biomass_dry_raw_prod = computed_managed_wood_prod + computed_unmanaged_wood_prod
 
-        error_biomassdry_brut_prod = np.abs(
-            biomass_dry_brut_prod_iea - biomass_dry_brut_prod) / biomass_dry_brut_prod_iea * 100.0
+        error_biomassdry_raw_prod = np.abs(
+            biomass_dry_raw_prod_iea - biomass_dry_raw_prod) / biomass_dry_raw_prod_iea * 100.0
 
-        print('Biomass dry brut production error : ', error_biomassdry_brut_prod, ' %',
-              f'IEA :{biomass_dry_brut_prod_iea} TWh vs WITNESS :{biomass_dry_brut_prod} TWh')
+        print('Biomass dry raw production error : ', error_biomassdry_raw_prod, ' %',
+              f'IEA :{biomass_dry_raw_prod_iea} TWh vs WITNESS :{biomass_dry_raw_prod} TWh')
 
         error_biomassdry_net_prod = np.abs(
             biomass_dry_net_prod_iea - biomass_dry_net_prod) / biomass_dry_net_prod_iea * 100.0
@@ -601,9 +687,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
         biomass_dry_otherrtransf = 5220384 / 3600  # TWh
 
         print('CHP and heat plants using biomass are not implemented corresponds to ',
-              biomass_dry_chp_plants / biomass_dry_brut_prod_iea * 100.0, ' % of biomass raw production : ', biomass_dry_chp_plants, ' TWh')
+              biomass_dry_chp_plants / biomass_dry_raw_prod_iea * 100.0, ' % of biomass raw production : ', biomass_dry_chp_plants, ' TWh')
         print('Electricity plants using biomass are not implemented corresponds to ',
-              biomass_dry_elec_plants / biomass_dry_brut_prod_iea * 100.0, ' % of biomass raw production : ', biomass_dry_elec_plants, ' TWh')
+              biomass_dry_elec_plants / biomass_dry_raw_prod_iea * 100.0, ' % of biomass raw production : ', biomass_dry_elec_plants, ' TWh')
 
         biogas_cons = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.biogas.energy_consumption')
@@ -644,26 +730,26 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('IEA biofuels includes bioethanol (ethanol produced from biomass), biomethanol (methanol produced from biomass), bioETBE (ethyl-tertio-butyl-ether produced on the basis of bioethanol) and bioMTBE (methyl-tertio-butyl-ether produced on the basis of biomethanol')
         print('and biodiesel (a methyl-ester produced from vegetable or animal oil, of diesel quality), biodimethylether (dimethylether produced from biomass), Fischer Tropsch (Fischer Tropsch produced from biomass), cold pressed bio-oil (oil produced from oil seed through mechanical processing only) ')
 
-        brut_biodiesel_prod = energy_production[
+        raw_biodiesel_prod = energy_production[
             'production biodiesel (TWh)'][0]
-        brut_hydrotreated_oil_fuel_prod = energy_production[
+        raw_hydrotreated_oil_fuel_prod = energy_production[
             'production hydrotreated_oil_fuel (TWh)'][0]
 
-        brut_fischertropsch_prod = self.ee.dm.get_value(
+        raw_fischertropsch_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.liquid_fuel.FischerTropsch.techno_production')
 
-        computed_ft_production = brut_fischertropsch_prod['liquid_fuel (TWh)'].loc[
-            brut_fischertropsch_prod['years'] == 2020].values[0] * 1000.0
+        computed_ft_production = raw_fischertropsch_prod['liquid_fuel (TWh)'].loc[
+            raw_fischertropsch_prod['years'] == 2020].values[0] * 1000.0
 
-        brut_liquid_fuel = brut_biodiesel_prod + \
-            brut_hydrotreated_oil_fuel_prod + computed_ft_production
-        liquidbiofuels_brut_prod_iea = 131224 * 1e6 * 11.9 / 1e9  # in kt
+        raw_liquid_fuel = raw_biodiesel_prod + \
+            raw_hydrotreated_oil_fuel_prod + computed_ft_production
+        liquidbiofuels_raw_prod_iea = 131224 * 1e6 * 11.9 / 1e9  # in kt
 
-        error_liquid_fuel_brut_prod = np.abs(
-            liquidbiofuels_brut_prod_iea - brut_liquid_fuel) / liquidbiofuels_brut_prod_iea * 100.0
+        error_liquid_fuel_raw_prod = np.abs(
+            liquidbiofuels_raw_prod_iea - raw_liquid_fuel) / liquidbiofuels_raw_prod_iea * 100.0
 
-        print('Liquid fuels brut production error : ', error_liquid_fuel_brut_prod, ' %',
-              f'IEA :{liquidbiofuels_brut_prod_iea} TWh vs WITNESS :{brut_liquid_fuel} TWh')
+        print('Liquid fuels raw production error : ', error_liquid_fuel_raw_prod, ' %',
+              f'IEA :{liquidbiofuels_raw_prod_iea} TWh vs WITNESS :{raw_liquid_fuel} TWh')
         print(
             'A lot of biofuels are not implemented (no details of specific biofuels productions ')
         print('----------  Biogases balances -------------')
@@ -671,15 +757,15 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('In IEA, biogas are mainly gases from the anaerobic digestion but also can be produced from thermal processes (pyrolysis) or from syngas')
         print('WITNESS model considers only anaerobic digestion')
 
-        brut_biogas_prod = energy_production[
+        raw_biogas_prod = energy_production[
             'production biogas (TWh)'][0]
-        biogas_brut_prod_iea = 1434008 / 3600
+        biogas_raw_prod_iea = 1434008 / 3600
 
-        error_biogas_brut_prod = np.abs(
-            biogas_brut_prod_iea - brut_biogas_prod) / biogas_brut_prod_iea * 100.0
+        error_biogas_raw_prod = np.abs(
+            biogas_raw_prod_iea - raw_biogas_prod) / biogas_raw_prod_iea * 100.0
 
-        print('Biogas brut production error : ', error_biogas_brut_prod, ' %',
-              f'IEA :{biogas_brut_prod_iea} TWh vs WITNESS :{brut_biogas_prod} TWh')
+        print('Biogas raw production error : ', error_biogas_raw_prod, ' %',
+              f'IEA :{biogas_raw_prod_iea} TWh vs WITNESS :{raw_biogas_prod} TWh')
 
         print(
             f'Biogas is used in energy industry mainly for electricity plants {448717/3600} TWh and CHP plants {385127/3600} TWh')
@@ -709,24 +795,24 @@ class TestGlobalEnergyValues(unittest.TestCase):
                         'liquid_fuel': 190442343 / 3600  # total of crude oil
                         }
 
-        brut_refinery_prod = self.ee.dm.get_value(
+        raw_refinery_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.liquid_fuel.Refinery.techno_production')
 
-        brut_refinery_prod_2020 = brut_refinery_prod.loc[
-            brut_refinery_prod['years'] == 2020] * 1000.0
+        raw_refinery_prod_2020 = raw_refinery_prod.loc[
+            raw_refinery_prod['years'] == 2020] * 1000.0
 
         for oil_name, oil_prod in iea_data_oil.items():
 
-            oil_prod_witness = brut_refinery_prod_2020[
+            oil_prod_witness = raw_refinery_prod_2020[
                 f'{oil_name} (TWh)'].values[0]
             error_oil_prod = np.abs(
                 oil_prod - oil_prod_witness) / oil_prod * 100.0
 
-            print(f'{oil_name} brut production error : ', error_oil_prod, ' %',
+            print(f'{oil_name} raw production error : ', error_oil_prod, ' %',
                   f'IEA :{oil_prod} TWh vs WITNESS :{oil_prod_witness} TWh')
 
         print(
-            'WITNESS model only takes for now brut liquid_fuel production which is correct')
+            'WITNESS model only takes for now raw liquid_fuel production which is correct')
 
         net_liquid_fuel_prod = net_energy_production[
             'production liquid_fuel (TWh)'][0]
@@ -739,22 +825,40 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{liquid_fuel_net_prod_iea} TWh vs WITNESS :{net_liquid_fuel_prod} TWh')
 
         liquid_fuel_own_use = 2485.89  # TWH
-        liquid_fuel_brut_prod = brut_refinery_prod_2020[f'liquid_fuel (TWh)'].values[0]
+        liquid_fuel_raw_prod = raw_refinery_prod_2020[f'liquid_fuel (TWh)'].values[0]
         print(
             f'Energy own use for liquid fuel production is {liquid_fuel_own_use} TWh')
         print(
-            f"In our model energy own use is directly deduced from production, then brut production in our model \n \
-            should be compared to brut production - energy_own_use : {energy_production_brut_gas_iea-liquid_fuel_own_use} TWh instead of {liquid_fuel_brut_prod} TWh")
+            f"In our model energy own use is directly deduced from production, then raw production in our model \n \
+            should be compared to raw production - energy_own_use : {energy_production_raw_gas_iea-liquid_fuel_own_use} TWh instead of {liquid_fuel_raw_prod} TWh")
 
         chp_plants = 159.62 + 99.81  # TWh
 
         print('CHP and heat plants not implemented corresponds to ',
-              chp_plants / liquid_fuel_brut_prod * 100.0, ' % of total brut liquid fuel production : ', chp_plants, ' TWh')
+              chp_plants / liquid_fuel_raw_prod * 100.0, ' % of total raw liquid fuel production : ', chp_plants, ' TWh')
 
         oil_elec_plants = 1591.67  # TWh
 
         print('oil to electricity plants not implemented corresponds to ',
-              oil_elec_plants / liquid_fuel_brut_prod * 100.0, ' % of total brut liquid fuel production : ', oil_elec_plants, ' TWh')
+              oil_elec_plants / liquid_fuel_raw_prod * 100.0, ' % of total raw liquid fuel production : ', oil_elec_plants, ' TWh')
+
+        print('----------------- Total production -------------------')
+
+        total_raw_prod_iea = 183316  # TWh
+        total_raw_prod = energy_production['Total production'][0]
+        error_total_raw_prod = np.abs(
+            total_raw_prod_iea - total_raw_prod) / total_raw_prod_iea * 100.0
+
+        print('Total raw production error : ', error_total_raw_prod, ' %',
+              f'IEA :{total_raw_prod_iea} TWh vs WITNESS :{total_raw_prod} TWh')
+
+        total_net_prod_iea = 116103  # TWh
+        total_net_prod = net_energy_production['Total production'][0]
+        error_total_net_prod = np.abs(
+            total_net_prod_iea - total_net_prod) / total_net_prod_iea * 100.0
+
+        print('Total net production error : ', error_total_net_prod, ' %',
+              f'IEA :{total_net_prod_iea} TWh vs WITNESS :{total_net_prod} TWh')
 
     def test_04_check_prices_values(self):
         '''

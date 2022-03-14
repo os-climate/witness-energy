@@ -65,8 +65,9 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'construction_delay': construction_delay,  # in kWh/kg
                                  'maturity': 5
                                  }
-
-    initial_production = 39893.  # in TWh in 2019 in ourworldindata gas production
+    energy_own_use = 3732.83  # TWh
+    # in TWh in 2019 in ourworldindata gas production
+    initial_production = 39893. - energy_own_use
 
     # From World gas production of ourworldindata
     # We take the variation for the last 25 years (which is new factories - old factories) and not new factories
@@ -81,7 +82,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                              'distrib': distrib_our_world_indata * 100.0 / distrib_our_world_indata.sum()})  # to do
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [31.2, 31.2, 31.2]})
+        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 31.2, 31.2]})
     fg_flue_gas_ratio = np.array([0.085])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',

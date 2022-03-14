@@ -56,16 +56,17 @@ class CoalGen(ElectricityTechno):
 
         self.compute_primary_energy_production()
         elec_needs = self.get_electricity_needs()
-        self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = self.production[
-            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
         self.consumption[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
+
+        self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = self.production[
+            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
+        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
+            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
