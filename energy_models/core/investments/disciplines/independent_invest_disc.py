@@ -116,10 +116,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                         'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
                         'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
                         'namespace': 'ns_invest', 'dataframe_edition_locked': False}
-                if 'forest_investment' in self._data_in:
-                    forest_investment = self.get_sosdisc_inputs('forest_investment')
-                    if forest_investment is not None :
-                        dynamic_outputs[f'Land.Forest.forest_investment'] = {
+                dynamic_outputs[f'forest_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_witness'}
 
         self.add_inputs(dynamic_inputs)
@@ -140,7 +137,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 output_dict[f'{energy}.{techno}.invest_level'] = pd.DataFrame({'years': input_dict['energy_investment']['years'].values,
                                                                                'invest': input_dict['invest_mix'][f'{energy}.{techno}'].values})
         if input_dict['is_dev']:
-            output_dict['Land.Forest.forest_investment'] = pd.DataFrame({'years': input_dict['energy_investment']['years'].values,
+            output_dict['forest_investment'] = pd.DataFrame({'years': input_dict['energy_investment']['years'].values,
                                                                                'forest_investment': input_dict['forest_investment']['forest_investment'].values})
         self.store_sos_outputs_values(output_dict)
 
@@ -183,7 +180,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
         
         if inputs_dict['is_dev']:
             self.set_partial_derivative_for_other_types(
-                ('Land.Forest.forest_investment', 'forest_investment'), ('forest_investment', 'forest_investment'),  np.identity(len(years)))
+                ('forest_investment', 'forest_investment'), ('forest_investment', 'forest_investment'),  np.identity(len(years)))
             self.set_partial_derivative_for_other_types(
                 ('invest_constraint', 'invest_constraint'), ('forest_investment', 'forest_investment'),  ddelta_dtech / invest_constraint_ref)
             self.set_partial_derivative_for_other_types(
