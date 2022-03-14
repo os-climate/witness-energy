@@ -49,6 +49,7 @@ from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase im
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,\
     INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, get_static_prices
+from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 
 
 CCS_NAME = 'CCUS'
@@ -766,6 +767,13 @@ class Study(EnergyStudyManager):
             self.update_dv_arrays()
         self.create_technolist_per_energy(instanciated_studies)
 
+        #-- load data from resource
+
+        dc_resource = datacase_resource(
+            self.year_start, self.year_end)
+        dc_resource.study_name = self.study_name
+        resource_input_list = dc_resource.setup_usecase()
+        values_dict_list.extend(resource_input_list)
         return values_dict_list
 
 

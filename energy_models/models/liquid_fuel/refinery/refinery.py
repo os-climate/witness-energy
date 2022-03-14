@@ -26,6 +26,8 @@ import numpy as np
 class Refinery(LiquidFuelTechno):
 
     OIL_NAME = ResourceGlossary.Oil['name']
+    # corresponds to crude oil price divided by efficiency TO BE MODIFIED
+    oil_extraction_capex = 44.0 / 0.89
 
     def configure_energy_data(self, inputs_dict):
         '''
@@ -59,6 +61,16 @@ class Refinery(LiquidFuelTechno):
         elec_needs = self.get_electricity_needs()
 
         return {Electricity.name: np.identity(len(self.years)) * elec_needs}
+
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
+        oil_needs = self.get_fuel_needs()
+        return {
+            CrudeOil.name: np.identity(
+                len(self.years)) * oil_needs,
+        }
 
     def compute_consumption_and_production(self):
         """
@@ -176,9 +188,11 @@ class Refinery(LiquidFuelTechno):
             [self.cost_details[['years', 'invest', f'Capex_{self.name}']], prod_before_ystart], ignore_index=True)
         production_from_invest.sort_values(by=['years'], inplace=True)
         # invest from G$ to M$
+        # Added a cost of 44.0$/TWh / 0.89 (efficiency) to account for the price of oil extraction
+        # (until an extraction model is connected)
         production_from_invest['prod_from_invest'] = production_from_invest['invest'] / \
             (production_from_invest[f'Capex_{self.name}'] +
-             self.cost_details[CrudeOil.name])
+             self.oil_extraction_capex)
         production_from_invest['years'] += construction_delay
         production_from_invest = production_from_invest[production_from_invest['years']
                                                         <= self.year_end]
@@ -202,14 +216,12 @@ class Refinery(LiquidFuelTechno):
         dprod_list_dcapex_list = np.zeros(
             (nb_years, nb_years), dtype=arr_type)
 
-        crude_oil_price = self.resources_prices[CrudeOil.name] * \
-            self.get_fuel_needs() / self.configure_efficiency()
         # We fill this jacobian column by column because it is the same element
         # in the entire column
         for i in range(nb_years):
 
             dpprod_dpinvest = 1.0 / \
-                (capex_list[i] + crude_oil_price[i])
+                (capex_list[i] + self.oil_extraction_capex)
             len_non_zeros = min(max(0, nb_years -
                                     techno_dict['construction_delay'] - i),
                                 techno_dict['lifetime'])
@@ -230,7 +242,7 @@ class Refinery(LiquidFuelTechno):
             # Same for capex
             dpprod_dpcapex = - \
                 invest_list[i] / (capex_list[i] +
-                                  crude_oil_price[i])**2
+                                  self.oil_extraction_capex)**2
 
             dprod_list_dcapex_list[:, i] = np.hstack((np.zeros(first_len_zeros),
                                                       np.ones(
@@ -239,7 +251,7 @@ class Refinery(LiquidFuelTechno):
         # but the capex[0] is used for invest before
         # year_start then we need to add it to the first column
         dpprod_dpcapex0_list = [- invest / (capex_list[0] +
-                                            crude_oil_price[0]) ** 2
+                                            self.oil_extraction_capex) ** 2
                                 for invest in invest_before_year_start]
 
         for index, dpprod_dpcapex0 in enumerate(dpprod_dpcapex0_list):

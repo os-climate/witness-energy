@@ -192,6 +192,7 @@ class CCUS(BaseStream):
         # Initialize dataframes
 
         self.co2_production = pd.DataFrame({'years': self.production['years']})
+        self.total_co2_emissions['years'] = self.production['years']
         self.co2_consumption = pd.DataFrame(
             {'years': self.production['years']})
         self.emissions_by_energy = pd.DataFrame(
