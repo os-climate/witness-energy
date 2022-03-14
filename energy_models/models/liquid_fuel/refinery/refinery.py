@@ -188,7 +188,7 @@ class Refinery(LiquidFuelTechno):
             [self.cost_details[['years', 'invest', f'Capex_{self.name}']], prod_before_ystart], ignore_index=True)
         production_from_invest.sort_values(by=['years'], inplace=True)
         # invest from G$ to M$
-        # Added a cost of 50.0$/TWh to account for the price of oil extraction
+        # Added a cost of 44.0$/TWh / 0.89 (efficiency) to account for the price of oil extraction
         # (until an extraction model is connected)
         production_from_invest['prod_from_invest'] = production_from_invest['invest'] / \
             (production_from_invest[f'Capex_{self.name}'] +
