@@ -441,4 +441,4 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = LiquidFuelJacobianCase()
     cls.setUp()
-    cls.test_01_refinery_jacobian()
+    cls.test_05_liquid_fuel_discipline_jacobian()
