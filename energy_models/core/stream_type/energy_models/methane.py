@@ -24,7 +24,7 @@ class Methane(EnergyType):
                         # Combustion of Fuels - Carbon Dioxide Emission. [online]
                         # Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
                         #[Accessed 17 12 2021].
-                        'CO2_per_use': 2.36,
+                        'CO2_per_use': 2.75,
                         'CO2_per_use_unit': 'kg/kg',
                         'NOx_per_energy': 0.1,
                         'NOX_per_energy_unit': 'yy',
