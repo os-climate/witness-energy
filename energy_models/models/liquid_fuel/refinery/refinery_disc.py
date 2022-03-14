@@ -99,8 +99,9 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'product_break_down': product_break_down}
 
     techno_info_dict = techno_infos_dict_default
-
-    initial_production = 53200.0  # in TWh at year_start from ourworldindata
+    energy_own_use = 2485.89  # TWh
+    # in TWh at year_start from ourworldindata
+    initial_production = 53200.0 - energy_own_use
 
     # Invest from WEI2020
     invest_before_year_start = pd.DataFrame(
