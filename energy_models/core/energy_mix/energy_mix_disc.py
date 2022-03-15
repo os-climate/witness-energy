@@ -93,7 +93,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-
+               'losses_percentage': {'type': 'float', 'default': 2654. / 183316 * 100, 'unit': '%', 'range': [0., 100.]}
                }
 
     DESC_OUT = {
@@ -429,7 +429,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 self.set_partial_derivative_for_other_types(
                     ('energy_production_detailed', 'Total production (uncut)'), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production)
                 self.set_partial_derivative_for_other_types(
-                    ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'), (f'{energy}.energy_production', energy), np.identity(len(years))* scaling_factor_energy_production)
+                    ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production)
                 self.set_partial_derivative_for_other_types(
                     ('energy_production_brut', 'Total production'), (f'{energy}.energy_production', energy),  scaling_factor_energy_production * np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
@@ -473,19 +473,25 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         dprod_objective_dcons = self.compute_denergy_production_objective_dprod(
                             dtotal_prod_denergy_cons)
                         self.set_partial_derivative_for_other_types(
-                            ('energy_production', 'Total production'), (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                            ('energy_production', 'Total production'), (
+                                f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
                             scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production)
                         self.set_partial_derivative_for_other_types(
                             ('energy_production_detailed', 'Total production'),
-                            (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                            (f'{energy_input}.energy_consumption',
+                             f'{energy} ({stream_class_dict[energy].unit})'),
                             scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * scaling_factor_energy_production)
                         self.set_partial_derivative_for_other_types(
-                            ('energy_production_detailed', 'Total production (uncut)'),
-                            (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                            ('energy_production_detailed',
+                             'Total production (uncut)'),
+                            (f'{energy_input}.energy_consumption',
+                             f'{energy} ({stream_class_dict[energy].unit})'),
                             -scaling_factor_energy_consumption * np.identity(len(years)) / scaling_factor_energy_production * scaling_factor_energy_production)
                         self.set_partial_derivative_for_other_types(
-                            ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'),
-                            (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                            ('energy_production_detailed',
+                             f'production {energy} ({stream_class_dict[energy].unit})'),
+                            (f'{energy_input}.energy_consumption',
+                             f'{energy} ({stream_class_dict[energy].unit})'),
                             -scaling_factor_energy_consumption * np.identity(len(years)) / scaling_factor_energy_production * scaling_factor_energy_production)
 
                         self.set_partial_derivative_for_other_types(
@@ -518,9 +524,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
                                 (EnergyMix.SYNGAS_PROD_OBJECTIVE,), (
                                     f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),  - scaling_factor_energy_production * np.sign(production_detailed_df['production syngas (TWh)'].values) * np.identity(len(years)) / syngas_prod_ref)
             else:
-                #CCUS
+                # CCUS
                 self.set_partial_derivative_for_other_types(
-                    ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'),
+                    ('energy_production_detailed',
+                     f'production {energy} ({stream_class_dict[energy].unit})'),
                     (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production)
                 # ---- Loop on energy again to differentiate production and consumption ----#
                 for energy_input in energy_list:
@@ -528,8 +535,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         inputs_dict[f'{energy_input}.energy_consumption'].columns)
                     if f'{energy} ({stream_class_dict[energy].unit})' in list_columnsenergycons:
                         self.set_partial_derivative_for_other_types(
-                            ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'),
-                            (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                            ('energy_production_detailed',
+                             f'production {energy} ({stream_class_dict[energy].unit})'),
+                            (f'{energy_input}.energy_consumption',
+                             f'{energy} ({stream_class_dict[energy].unit})'),
                             -scaling_factor_energy_consumption * np.identity(
                                 len(years)) / scaling_factor_energy_production * scaling_factor_energy_production)
         #-------------------------#

@@ -260,6 +260,8 @@ class EnergyMix(BaseStream):
 
         self.production['Total production'] = self.production[[
             column for column in self.production if column.endswith('(TWh)')]].sum(axis=1)
+
+        self.substract_energy_losses()
         self.production['Total production (uncut)'] = self.production['Total production'].values
         min_energy = self.minimum_energy_production
         for year in self.production.index:
@@ -270,6 +272,13 @@ class EnergyMix(BaseStream):
                     self.production.at[year, 'Total production'], -200.0 * min_energy)
                 self.production.loc[year, 'Total production'] = min_energy / 10. * \
                     (9 + np.exp(production_year / min_energy) * np.exp(-1))
+
+    def substract_energy_losses(self):
+        '''
+        Substract energy losses of net production which contains distribution,transmission and transport of energy
+        USe a percentage of raw production
+        '''
+        pass
 
     def compute_energy_brut_production(self):
         """
