@@ -129,16 +129,28 @@ DEFAULT_COARSE_TECHNO_DICT_ccs_3 = {Electricity.name: {'type': ENERGY_TYPE, 'val
                                     'carbon_capture': {'type': CCUS_TYPE, 'value': CarbonCapture_technos},
                                     'carbon_storage': {'type': CCUS_TYPE, 'value': CarbonStorage_technos}}
 
-DEFAULT_COARSE_MIN_TECH_DICT = {Electricity.name: {'type': ENERGY_TYPE, 'value': electricity_technos_coarse_integration},
-                                LiquidFuel.name: {'type': ENERGY_TYPE, 'value': ['Refinery']},
-                                SolidFuel.name: {'type': ENERGY_TYPE, 'value': solidfuel_technos_coarse_integration},
-                                BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos},
-                                Syngas.name: {'type': ENERGY_TYPE, 'value': syngas_technos_coarse_integration},
-                                LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos},
-                                GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': gaseoushydrogen_technos_coarse_integration},
-                                Methane.name: {'type': ENERGY_TYPE, 'value': ['FossilGas']},
+DEFAULT_MIN_TECH_DICT = {Electricity.name: {'type': ENERGY_TYPE, 'value': electricity_technos_coarse_integration},
+                         LiquidFuel.name: {'type': ENERGY_TYPE, 'value': ['Refinery']},
+                         SolidFuel.name: {'type': ENERGY_TYPE, 'value': solidfuel_technos_coarse_integration},
+                         BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos},
+                         Syngas.name: {'type': ENERGY_TYPE, 'value': syngas_technos_coarse_integration},
+                         LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos},
+                         GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': gaseoushydrogen_technos_coarse_integration},
+                         Methane.name: {'type': ENERGY_TYPE, 'value': ['FossilGas']},
                                 'carbon_capture': {'type': CCUS_TYPE, 'value': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.MonoEthanolAmine']},
-                                'carbon_storage': {'type': CCUS_TYPE, 'value': ['PureCarbonSolidStorage', 'Reforestation']}}
+                                'carbon_storage': {'type': CCUS_TYPE, 'value': ['PureCarbonSolidStorage']}}
+
+# DEFAULT_MIN_TECH_DEV_DICT, same as DEFAULT_MIN_TECH_DICT but with deepSalineFormation into carbon_storage
+DEFAULT_MIN_TECH_DEV_DICT = {Electricity.name: {'type': ENERGY_TYPE, 'value': electricity_technos_coarse_integration},
+                         LiquidFuel.name: {'type': ENERGY_TYPE, 'value': ['Refinery']},
+                         SolidFuel.name: {'type': ENERGY_TYPE, 'value': solidfuel_technos_coarse_integration},
+                         BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos},
+                         Syngas.name: {'type': ENERGY_TYPE, 'value': syngas_technos_coarse_integration},
+                         LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos},
+                         GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': gaseoushydrogen_technos_coarse_integration},
+                         Methane.name: {'type': ENERGY_TYPE, 'value': ['FossilGas']},
+                                'carbon_capture': {'type': CCUS_TYPE, 'value': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.MonoEthanolAmine']},
+                                'carbon_storage': {'type': CCUS_TYPE, 'value': ['PureCarbonSolidStorage', 'DeepSalineFormation']}}
 
 DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_TECHNO_DICT.items(
 ) if value['type'] == 'energy']

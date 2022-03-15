@@ -1027,7 +1027,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=coupled_inputs,  outputs=coupled_outputs,)
 
-    def test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian(self):
+    def _test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian(self):
         '''
         Test the gradients of the ratios on EnergyMix discipline.
         For now do not include it to the test routine (not sure how volatile this test it)
@@ -1057,11 +1057,11 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.epsilon0'] = 1.0
         full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
         full_values_dict[f'{self.name}.max_mda_iter'] = 50
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+        full_values_dict[f'{self.name}.sub_mda_class'] = 'MDAGaussSeidel'
         # Overwrite values for ratios with values from setup
         full_values_dict[f'{self.name}.is_apply_ratio'] = self.is_apply_ratio
         full_values_dict[f'{self.name}.is_stream_demand'] = self.is_stream_demand
-        full_values_dict[f'{self.name}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
+        full_values_dict[f'{self.name}.is_apply_resource_ratio'] = False
         full_values_dict[f'{self.name}.all_streams_demand_ratio'] = self.all_streams_demand_ratio
         full_values_dict[f'{self.name}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
         self.ee.load_study_from_input_dict(full_values_dict)
@@ -1076,18 +1076,21 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_outputs = disc.get_output_data_names()
 
 
-#         coupled_inputs = [input for input in full_inputs if self.ee.dm.get_data(
-#             input, 'coupling')]
-#         coupled_outputs = [output for output in full_outputs if self.ee.dm.get_data(
-#             output, 'coupling')]
+        coupled_inputs = [input for input in full_inputs if self.ee.dm.get_data(
+            input, 'coupling')]
+        coupled_outputs = [output for output in full_outputs if self.ee.dm.get_data(
+            output, 'coupling')]
 
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-        coupled_inputs = [
-            'Test_Ratio.EnergyMix.liquid_fuel.energy_consumption_woratio',
-            'Test_Ratio.EnergyMix.methane.energy_production']
-        coupled_outputs = ['Test_Ratio.EnergyMix.all_streams_demand_ratio',
-                           'Test_Ratio.FunctionManagerDisc.ratio_objective']
+        # coupled_inputs = [
+        #     'Test_Ratio.EnergyMix.liquid_fuel.energy_consumption_woratio',
+        #     'Test_Ratio.EnergyMix.methane.energy_production']
+        # coupled_outputs = ['Test_Ratio.EnergyMix.all_streams_demand_ratio',
+        #                    'Test_Ratio.FunctionManagerDisc.ratio_objective']
+
+        #coupled_inputs = ['Test_Ratio.EnergyMix.hydrogen.gaseous_hydrogen.energy_production',]
+        #coupled_outputs = ['Test_Ratio.EnergyMix.output_test']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_false_true_{self.model_name}.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
