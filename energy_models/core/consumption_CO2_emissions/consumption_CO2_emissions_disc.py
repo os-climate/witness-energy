@@ -27,6 +27,20 @@ import numpy as np
 
 class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'CO2 emissions consumption Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-cloud fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
