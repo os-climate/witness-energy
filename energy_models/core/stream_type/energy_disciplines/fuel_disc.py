@@ -70,6 +70,9 @@ class FuelDiscipline(SoSDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
 
     def setup_sos_disciplines(self):
+        '''
+        Overload SoSDiscipline setup_sos_disciplines
+        '''
 
         dynamic_inputs = {}
 
@@ -104,7 +107,7 @@ class FuelDiscipline(SoSDiscipline):
 
     def run(self):
         '''
-        Overload EnergyDiscipline run
+        Overload SoSDiscipline run
         '''
 
         # energy_prices
@@ -198,10 +201,10 @@ class FuelDiscipline(SoSDiscipline):
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
         if 'Technology production' in charts:
-            # new_charts = self.get_chart_technology_mix(years_list)
-            # for new_chart in new_charts:
-            #     if new_chart is not None:
-            #         instanciated_charts.append(new_chart)
+            new_charts = self.get_chart_technology_mix(years_list)
+            for new_chart in new_charts:
+                if new_chart is not None:
+                    instanciated_charts.append(new_chart)
             new_charts = self.get_charts_production_by_techno()
             for new_chart in new_charts:
                 if new_chart is not None:
@@ -216,9 +219,10 @@ class FuelDiscipline(SoSDiscipline):
             'years', 'Prices [$/MWh]', chart_name=chart_name)
 
         for energy in ['fuel'] + self.energy_list:
+            display_energy_name = energy.split(".")[-1].replace("_", " ")
             serie = InstanciatedSeries(
                 energy_prices['years'].values.tolist(),
-                energy_prices[energy].values.tolist(), f'{energy} mix price', 'lines')
+                energy_prices[energy].values.tolist(), f'{display_energy_name} mix price', 'lines')
 
             new_chart.series.append(serie)
 
@@ -233,9 +237,10 @@ class FuelDiscipline(SoSDiscipline):
         techno_list = [techno for techno in techno_prices if techno != 'years']
 
         for techno in techno_list:
+            display_techno_name = techno.split(".")[-1].replace("_", " ")
             serie = InstanciatedSeries(
                 techno_prices['years'].values.tolist(),
-                techno_prices[techno].values.tolist(), f'{techno} mix price', 'lines')
+                techno_prices[techno].values.tolist(), f'{display_techno_name} mix price', 'lines')
 
             new_chart.series.append(serie)
 
@@ -260,8 +265,8 @@ class FuelDiscipline(SoSDiscipline):
                 energy_twh = - \
                     energy_consumption[reactant].values * \
                     scaling_factor_energy_consumption
-                legend_title = f'{reactant} consumption'.replace(
-                    "(TWh)", "")
+                display_reactant_name = reactant.split(".")[-1].replace("_", " ")
+                legend_title = f'{display_reactant_name} consumption'.replace("(TWh)", "")
                 serie = InstanciatedSeries(
                     energy_consumption['years'].values.tolist(),
                     energy_twh.tolist(), legend_title, 'bar')
@@ -273,27 +278,30 @@ class FuelDiscipline(SoSDiscipline):
             # Pie charts are here to see difference of production between
             # technologies
             if products != 'years' and products.endswith('(TWh)') and self.energy_name not in products:
-                energy_twh = energy_production[products].values * \
-                    scaling_factor_energy_production
-                legend_title = f'{products} production'.replace(
-                    "(TWh)", "")
-                serie = InstanciatedSeries(
-                    energy_production['years'].values.tolist(),
-                    energy_twh.tolist(), legend_title, 'bar')
+                energy_twh = energy_production[products].values * scaling_factor_energy_production
+
+                display_products_name = products.split(".")[-1].replace("_", " ")
+                legend_title = f'{display_products_name} production'.replace("(TWh)", "")
+                serie = InstanciatedSeries(energy_production['years'].values.tolist(),
+                                           energy_twh.tolist(),
+                                           legend_title,
+                                           'bar')
 
                 new_chart.series.append(serie)
+
         for energy in self.energy_list:
-            energy_prod_twh = energy_production[f'{energy}'].values * \
-                scaling_factor_energy_production
-            serie = InstanciatedSeries(
-                energy_production['years'].values.tolist(),
-                energy_prod_twh.tolist(), energy, 'bar')
+            display_energy_name = energy.split(".")[-1].replace("_", " ")
+            legend_title = f'{display_energy_name} production'.replace("(TWh)", "")
+            energy_prod_twh = energy_production[f'{energy}'].values * scaling_factor_energy_production
+            serie = InstanciatedSeries(energy_production['years'].values.tolist(),
+                                       energy_prod_twh.tolist(),
+                                       legend_title,
+                                       'bar')
 
             new_chart.series.append(serie)
         instanciated_charts.append(new_chart)
 
         # Check if we have kg in the consumption or prod :
-
         kg_values_consumption = 0
         reactant_found = ''
         for reactant in energy_consumption.columns:
@@ -308,12 +316,11 @@ class FuelDiscipline(SoSDiscipline):
                 kg_values_production += 1
                 product_found = product
         if kg_values_consumption == 1 and kg_values_production == 0:
-            legend_title = f'{reactant_found} consumption'.replace(
-                "(Mt)", "")
+            legend_title = f'{reactant_found} consumption'.replace("(Mt)", "")
             chart_name = f'{legend_title} of {self.energy_name} with input investments'
         elif kg_values_production == 1 and kg_values_consumption == 0:
-            legend_title = f'{product_found} production'.replace(
-                "(Mt)", "")
+            display_product_found_name = product_found.split(".")[-1].replace("_", " ")
+            legend_title = f'{display_product_found_name} production'.replace("(Mt)", "")
             chart_name = f'{legend_title} of {self.energy_name} with input investments'
         else:
             chart_name = f'{self.energy_name} mass Production & consumption<br>with input investments'
@@ -323,23 +330,24 @@ class FuelDiscipline(SoSDiscipline):
 
         for reactant in energy_consumption.columns:
             if reactant != 'years' and reactant.endswith('(Mt)'):
-                legend_title = f'{reactant} consumption'.replace(
-                    "(Mt)", "")
-                mass = -energy_consumption[reactant].values / \
-                    1.0e3 * scaling_factor_energy_consumption
-                serie = InstanciatedSeries(
-                    energy_consumption['years'].values.tolist(),
-                    mass.tolist(), legend_title, 'bar')
+                display_reactant_name = reactant.split(".")[-1].replace("_", " ")
+                legend_title = f'{display_reactant_name} consumption'.replace("(Mt)", "")
+                mass = -energy_consumption[reactant].values / 1.0e3 * scaling_factor_energy_consumption
+                serie = InstanciatedSeries(energy_consumption['years'].values.tolist(),
+                                           mass.tolist(),
+                                           legend_title,
+                                           'bar')
                 new_chart.series.append(serie)
+
         for product in energy_production.columns:
             if product != 'years' and product.endswith('(Mt)'):
-                legend_title = f'{product} production'.replace(
-                    "(Mt)", "")
-                mass = energy_production[product].values / \
-                    1.0e3 * scaling_factor_energy_production
-                serie = InstanciatedSeries(
-                    energy_production['years'].values.tolist(),
-                    mass.tolist(), legend_title, 'bar')
+                display_product_name = product.split(".")[-1].replace("_", " ")
+                legend_title = f'{display_product_name} production'.replace("(Mt)", "")
+                mass = energy_production[product].values / 1.0e3 * scaling_factor_energy_production
+                serie = InstanciatedSeries(energy_production['years'].values.tolist(),
+                                           mass.tolist(),
+                                           legend_title,
+                                           'bar')
                 new_chart.series.append(serie)
 
         if kg_values_consumption > 0 or kg_values_production > 0:
@@ -362,12 +370,38 @@ class FuelDiscipline(SoSDiscipline):
 
         for techno in techno_list:
             techno_prod = energy_production[techno].values
+            display_techno_name = techno.split(".")[-1].replace("_", " ")
 
             serie = InstanciatedSeries(
                 energy_production['years'].values.tolist(),
-                techno_prod.tolist(), techno, 'bar')
+                techno_prod.tolist(), display_techno_name, 'bar')
             new_chart.series.append(serie)
 
         instanciated_charts.append(new_chart)
+
+        return instanciated_charts
+
+    def get_chart_technology_mix(self, years_list):
+        instanciated_charts = []
+
+        energy_production = self.get_sosdisc_outputs(
+            'energy_production_detailed')
+        techno_list = [techno for techno in energy_production if techno != 'years']
+        display_techno_list = []
+
+        for techno in techno_list:
+            cut_techno_name = techno.split(".")
+            display_techno_name = cut_techno_name[len(
+                cut_techno_name) - 1].replace("_", " ")
+            display_techno_list.append(display_techno_name)
+
+        for year in years_list:
+            values = [energy_production.loc[energy_production['years']
+                                            == year][techno].sum() for techno in techno_list]
+
+            if sum(values) != 0.0:
+                pie_chart = InstanciatedPieChart(
+                    f'Technology productions in {year}', display_techno_list, values)
+                instanciated_charts.append(pie_chart)
 
         return instanciated_charts
