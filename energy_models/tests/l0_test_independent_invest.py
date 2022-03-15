@@ -180,7 +180,71 @@ class TestIndependentInvest(unittest.TestCase):
 #         for graph in graph_list:
 #             graph.to_plotly().show()
 
-    def test_03_independent_invest_disc_check_jacobian(self):
+    def test_03_independent_invest_with_forest_disc(self):
+
+        self.name = 'Energy'
+        self.model_name = 'Invest'
+        self.ee = ExecutionEngine(self.name)
+        ns_dict = {'ns_witness': self.name,
+                   'ns_ref': self.name,
+                   'ns_public': self.name,
+                   'ns_energy_study': self.name,
+                   'ns_ccs': f'{self.name}.CCUS',
+                   'ns_energy': self.name,
+                   'ns_functions': self.name,
+                   'ns_invest': self.name,
+                   }
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'energy_models.core.investments.disciplines.independent_invest_disc.IndependentInvestDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        inputs_dict = {f'{self.name}.year_start': self.y_s,
+                       f'{self.name}.year_end': self.y_e,
+                       f'{self.name}.energy_list': self.energy_list,
+                       f'{self.name}.ccs_list': self.ccs_list,
+                       f'{self.name}.electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
+                       f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
+                       f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
+                       f'{self.name}.energy_investment': self.energy_investment,
+                       f'{self.name}.is_dev': True,
+                       f'{self.name}.forest_investment': self.forest_invest_df}
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+
+        self.ee.execute()
+
+        for column in self.energy_mix.columns:
+            if column != 'years':
+                invest_techno_in = self.energy_mix[column].values
+
+                if 'carbon_capture' in column or 'carbon_storage' in column:
+                    invest_techno_out = self.ee.dm.get_value(
+                        f'{self.name}.CCUS.{column}.invest_level')['invest'].values
+                else:
+                    invest_techno_out = self.ee.dm.get_value(
+                        f'{self.name}.{column}.invest_level')['invest'].values
+
+                self.assertListEqual(
+                    invest_techno_in.tolist(), invest_techno_out.tolist())
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.model_name}')[0]
+        filters = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filters)
+        for graph in graph_list:
+            graph.to_plotly().show()
+
+    def test_04_independent_invest_disc_check_jacobian(self):
 
         self.name = 'Energy'
         self.model_name = 'Invest'
@@ -232,7 +296,7 @@ class TestIndependentInvest(unittest.TestCase):
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
 
-    def test_04_independent_invest_with_forest_disc_check_jacobian(self):
+    def test_05_independent_invest_with_forest_disc_check_jacobian(self):
         
         self.name = 'Energy'
         self.model_name = 'Invest'
