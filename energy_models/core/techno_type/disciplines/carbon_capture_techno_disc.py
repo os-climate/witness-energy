@@ -48,7 +48,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
                                     'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                              'margin': ('float',  None, True)},
                                     'dataframe_edition_locked': False},
-               'flue_gas_effect': {'type': 'bool', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               'fg_ratio_effect': {'type': 'bool', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                    'namespace': 'ns_carbon_capture', 'default': True},
                'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_carbon_capture', 'default': CarbonCapture.data_energy_dict},
@@ -72,14 +72,14 @@ class CCTechnoDiscipline(TechnoDiscipline):
             inputs_dict['flue_gas_mean']['flue_gas_mean'].values,
             inputs_dict['invest_level'].loc[inputs_dict['invest_level']['years'] <=
                                             inputs_dict['year_end']]['invest'].values,
-            inputs_dict['techno_infos_dict'], inputs_dict['flue_gas_effect'])
+            inputs_dict['techno_infos_dict'], inputs_dict['fg_ratio_effect'])
 
         crf = self.techno_model.compute_crf(inputs_dict['techno_infos_dict'])
         dfactory_dfluegas = dcapex_dfluegas * \
             (crf + inputs_dict['techno_infos_dict']['Opex_percentage'])
 
         delec_dflue_gas = self.techno_model.compute_delec_dfg_ratio(
-            inputs_dict['flue_gas_mean']['flue_gas_mean'].values, inputs_dict['flue_gas_effect'], energy_name)
+            inputs_dict['flue_gas_mean']['flue_gas_mean'].values, inputs_dict['fg_ratio_effect'], energy_name)
 
         margin = inputs_dict['margin'].loc[inputs_dict['margin']['years']
                                            <= inputs_dict['year_end']]['margin'].values

@@ -123,7 +123,7 @@ class CCTechno(TechnoType):
                 np.array(capex)[:, np.newaxis] / 479.8
 
         else:
-            grad = 1.0
+            grad = 0.0
 
         return np.identity(len(fg_mean_ratio)) * grad
 
@@ -174,7 +174,7 @@ class CCTechno(TechnoType):
                 * elec_needs / 8.5 / self.techno_infos_dict['efficiency'] *\
                 self.prices[energy_name][:, np.newaxis]
         else:
-            grad = 1.0
+            grad = 0.0
         return np.identity(len(fg_mean_ratio)) * grad
 
     def compute_dprod_dfluegas(self,  capex_list, invest_list, invest_before_year_start, techno_dict, dcapexdfluegas):
