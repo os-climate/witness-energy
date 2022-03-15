@@ -239,6 +239,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         instanciated_charts = []
         charts = []
+        is_dev = self.get_sosdisc_inputs('is_dev')
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -280,14 +281,34 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
                 new_chart_energy.series.append(serie)
 
+            if is_dev:
+                forest_investment = self.get_sosdisc_inputs('forest_investment')
+                chart_name = f'Distribution of reforestation investments vs years'
+                agriculture_chart = TwoAxesInstanciatedChart('years', 'Invest [G$]',
+                                                        chart_name=chart_name, stacked_bar=True)
+                serie_agriculture = InstanciatedSeries(
+                    forest_investment['years'].values.tolist(),
+                    forest_investment['forest_investment'].values.tolist(), 'Reforestation', 'bar')
+                agriculture_chart.series.append(serie_agriculture)
+                instanciated_charts.append(agriculture_chart)
+                serie = InstanciatedSeries(
+                    forest_investment['years'].values.tolist(),
+                    forest_investment['forest_investment'].tolist(), 'Reforestation', 'bar')
+
+            new_chart_energy.series.append(serie)
+
             instanciated_charts.insert(0, new_chart_energy)
 
             if 'Delta invest' in charts:
 
                 techno_invests = self.get_sosdisc_inputs(
-                    'invest_mix')
+                    'invest_mix')       
+
                 techno_invests_sum = techno_invests[[column for column in techno_invests.columns if column != 'years']].sum(
                     axis=1)
+                if is_dev:
+                    forest_investment = self.get_sosdisc_inputs('forest_investment')
+                    techno_invests_sum += forest_investment['forest_investment']
                 energy_investment = self.get_sosdisc_inputs(
                     'energy_investment')
                 scaling_factor_energy_investment = self.get_sosdisc_inputs(
@@ -336,7 +357,6 @@ class IndependentInvestDiscipline(SoSDiscipline):
                     energy_investment['years'].values.tolist(),
                     techno_invests_sum.values.tolist(), 'Sum of distributed investments',)
                 new_chart_constraint.series.append(serie)
-
                 instanciated_charts.insert(0, new_chart_constraint)
 
         return instanciated_charts
