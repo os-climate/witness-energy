@@ -169,7 +169,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 f'ns_{energy}',
                 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
 
-        if len(set(FuelDiscipline.energy_list).intersection(set(self.energy_list))) > 0:
+        if len(set(FuelDiscipline.fuel_list).intersection(set(self.energy_list))) > 0:
             ns_dict = {'ns_fuel': f'{ns_study}.{energy_mix}.fuel'}
             mods_dict = {
                 f'{energy_mix}.{FuelDiscipline.name}': 'energy_models.core.stream_type.energy_disciplines.fuel_disc.FuelDiscipline',
