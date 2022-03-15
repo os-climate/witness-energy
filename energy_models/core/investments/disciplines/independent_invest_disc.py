@@ -295,7 +295,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                     forest_investment['years'].values.tolist(),
                     forest_investment['forest_investment'].tolist(), 'Reforestation', 'bar')
 
-            new_chart_energy.series.append(serie)
+                new_chart_energy.series.append(serie)
 
             instanciated_charts.insert(0, new_chart_energy)
 
