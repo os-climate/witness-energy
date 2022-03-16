@@ -30,8 +30,8 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
     """
     Energy mix jacobian test class
     """
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    parallel = False
+    AbstractJacobianUnittest.DUMP_JACOBIAN = False
+    parallel = True
 
     def analytic_grad_entry(self):
         return [
@@ -44,10 +44,8 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
             self.test_06_energy_mix_all_outputs,
             self.test_07_energy_mix_co2_tax,
             self.test_08_energy_mix_gradients_exponential_limit,
-            self.test_09_energy_mix_gradients_cutoff,
             self.test_10_energy_mix_demand_dataframe,
             self.test_11_energy_mix_detailed_co2_emissions,
-            self.test_12_energy_mix_detailed_co2_emissions_ratio_available_capture,
             self.test_13_energy_mix_co2_per_use_gradients]
 
     def setUp(self):
@@ -804,7 +802,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-3,
                             inputs=inputs_names, outputs=energy_mix_output)
 
-    def test_09_energy_mix_gradients_cutoff(self):
+    def _test_09_energy_mix_gradients_cutoff(self):
         '''
             Same test as test 08 except:
             this test is performed with the cutoffs options on the mixes at energy and techno level
@@ -1033,65 +1031,64 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_detailed_co2_emissions.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.co2_emissions',
-                                                           f'{name}.{model_name}.co2_emissions_Gt',
-                                                           f'{name}.FunctionManagerDisc.co2_emissions_objective',
-                                                           f'{name}.{model_name}.ratio_available_carbon_capture'])
+                                                           f'{name}.FunctionManagerDisc.ratio_objective',
+                                                           f'{name}.{model_name}.co2_emissions_needed_by_energy_mix'], parallel=self.parallel)
 
-    def test_12_energy_mix_detailed_co2_emissions_ratio_available_capture(self):
-        '''
-        Test when the carbon capture needed by the technos (FT) is higher than the one rally captured
-        '''
-        self.name = 'Test'
-        self.ee = ExecutionEngine(self.name)
-        name = 'Test'
-        model_name = 'EnergyMix'
-
-        repo = 'energy_models.sos_processes.energy.MDA'
-        builder = self.ee.factory.get_builder_from_process(
-            repo, 'energy_process_v0')
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-        self.ee.configure()
-        usecase = Study_open(execution_engine=self.ee)
-        usecase.study_name = self.name
-        values_dict = usecase.setup_usecase()
-
-        self.ee.display_treeview_nodes()
-        full_values_dict = {}
-        for dict_v in values_dict:
-            full_values_dict.update(dict_v)
-
-        full_values_dict[f'{name}.epsilon0'] = 1.0
-        full_values_dict[f'{name}.tolerance'] = 1.0e-8
-        full_values_dict[f'{name}.max_mda_iter'] = 50
-
-        #full_values_dict[f'{name}.sub_mda_class'] = 'MDANewtonRaphson'
-        self.ee.load_study_from_input_dict(full_values_dict)
-
-        self.ee.execute()
-
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{name}.{model_name}')[0]
-        energy_list = full_values_dict['Test.energy_list']
-        consumption_liquid_fuel = self.ee.dm.get_value(
-            f'{name}.{model_name}.liquid_fuel.energy_consumption')
-        consumption_liquid_fuel['carbon_capture (Mt)'] *= 1.0e6
-        inputs_names = [
-            f'{name}.{model_name}.{energy}.energy_production' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']]
-        inputs_names.extend(
-            [f'{name}.{model_name}.{energy}.energy_consumption' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend(
-            [f'{name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend(
-            [f'{name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_detailed_co2_emissions_ratio_available_capture.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step',
-                            inputs=inputs_names,  outputs=[f'{name}.{model_name}.co2_emissions',
-                                                           f'{name}.{model_name}.co2_emissions_Gt',
-                                                           f'{name}.FunctionManagerDisc.co2_emissions_objective',
-                                                           f'{name}.{model_name}.ratio_available_carbon_capture'], parallel=self.parallel)
+#     def test_12_energy_mix_detailed_co2_emissions_ratio_available_capture(self):
+#         '''
+#         Test when the carbon capture needed by the technos (FT) is higher than the one rally captured
+#         '''
+#         self.name = 'Test'
+#         self.ee = ExecutionEngine(self.name)
+#         name = 'Test'
+#         model_name = 'EnergyMix'
+#
+#         repo = 'energy_models.sos_processes.energy.MDA'
+#         builder = self.ee.factory.get_builder_from_process(
+#             repo, 'energy_process_v0')
+#
+#         self.ee.factory.set_builders_to_coupling_builder(builder)
+#         self.ee.configure()
+#         usecase = Study_open(execution_engine=self.ee)
+#         usecase.study_name = self.name
+#         values_dict = usecase.setup_usecase()
+#
+#         self.ee.display_treeview_nodes()
+#         full_values_dict = {}
+#         for dict_v in values_dict:
+#             full_values_dict.update(dict_v)
+#
+#         full_values_dict[f'{name}.epsilon0'] = 1.0
+#         full_values_dict[f'{name}.tolerance'] = 1.0e-8
+#         full_values_dict[f'{name}.max_mda_iter'] = 50
+#
+#         #full_values_dict[f'{name}.sub_mda_class'] = 'MDANewtonRaphson'
+#         self.ee.load_study_from_input_dict(full_values_dict)
+#
+#         self.ee.execute()
+#
+#         disc = self.ee.dm.get_disciplines_with_name(
+#             f'{name}.{model_name}')[0]
+#         energy_list = full_values_dict['Test.energy_list']
+#         consumption_liquid_fuel = self.ee.dm.get_value(
+#             f'{name}.{model_name}.liquid_fuel.energy_consumption')
+#         consumption_liquid_fuel['carbon_capture (Mt)'] *= 1.0e6
+#         inputs_names = [
+#             f'{name}.{model_name}.{energy}.energy_production' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']]
+#         inputs_names.extend(
+#             [f'{name}.{model_name}.{energy}.energy_consumption' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']])
+#         inputs_names.extend(
+#             [f'{name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
+#         inputs_names.extend(
+#             [f'{name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
+#         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+#
+#         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_detailed_co2_emissions_ratio_available_capture.pkl',
+#                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
+#                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.co2_emissions',
+#                                                            f'{name}.FunctionManagerDisc.ratio_objective',
+# f'{name}.{model_name}.co2_emissions_needed_by_energy_mix'],
+# parallel=self.parallel)
 
     def test_13_energy_mix_co2_per_use_gradients(self):
         '''
@@ -1136,7 +1133,6 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_mix_co2_per_use_gradients',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
-                                                           f'{name}.{model_name}.co2_emissions_Gt',
                                                            f'{name}.{model_name}.co2_emissions',
                                                            f'{name}.{model_name}.energy_CO2_emissions',
                                                            f'{name}.{model_name}.energy_mean_price',
@@ -1144,10 +1140,8 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                                            f'{name}.{func_manager_name}.primary_energies_production',
                                                            f'{name}.{func_manager_name}.total_prod_minus_min_prod_constraint_df',
                                                            f'{name}.{model_name}.energy_prices_after_tax',
-                                                           f'{name}.{func_manager_name}.co2_emissions_objective',
                                                            f'{name}.{func_manager_name}.energy_production_objective',
-                                                           f'{name}.{func_manager_name}.primary_energies_production',
-                                                           f'{name}.{model_name}.ratio_available_carbon_capture'], parallel=self.parallel)
+                                                           f'{name}.{func_manager_name}.primary_energies_production', ], parallel=self.parallel)
 
 
 if '__main__' == __name__:

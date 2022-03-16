@@ -373,20 +373,6 @@ class CCUS_Discipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('CCS_price', 'ccs_price_per_tCO2'), (f'{CarbonStorage.name}.energy_prices', CarbonStorage.name), np.identity(len(years)))
 
-    def compute_dratio_objective(self, stream_ratios,  ratio_ref, energy_list):
-        '''
-        Compute the ratio_objective with the gradient of stream_ratios vs any input and the ratio ojective value 
-        obj = smooth_maximum(100.0 - ratio_arrays, 3)/ratio_ref
-
-        dobj/dratio = -dsmooth_max(100.0 - ratio_arrays, 3)/ratio_ref
-        '''
-
-        dsmooth_dvar = get_dsmooth_dvariable(
-            100.0 - stream_ratios[energy_list].values.flatten(), 3)
-        dobjective_dratio = -np.asarray(dsmooth_dvar) / ratio_ref
-
-        return dobjective_dratio
-
     def get_chart_filter_list(self):
 
         chart_filters = []
