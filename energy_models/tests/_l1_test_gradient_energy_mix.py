@@ -991,6 +991,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         name = 'Test'
         model_name = 'EnergyMix'
+        func_manager_name = 'FunctionManagerDisc'
 
         repo = 'energy_models.sos_processes.energy.MDA'
         builder = self.ee.factory.get_builder_from_process(
@@ -1031,8 +1032,17 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_detailed_co2_emissions.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
-                            inputs=inputs_names,  outputs=[f'{name}.{model_name}.co2_emissions',
-                                                           f'{name}.FunctionManagerDisc.ratio_objective',
+                            inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
+                                                           f'{name}.{model_name}.co2_emissions',
+                                                           f'{name}.{model_name}.energy_CO2_emissions',
+                                                           f'{name}.{model_name}.energy_mean_price',
+                                                           f'{name}.{model_name}.land_demand_df',
+                                                           f'{name}.{func_manager_name}.primary_energies_production',
+                                                           f'{name}.{func_manager_name}.total_prod_minus_min_prod_constraint_df',
+                                                           f'{name}.{model_name}.energy_prices_after_tax',
+                                                           f'{name}.{func_manager_name}.energy_production_objective',
+                                                           f'{name}.{func_manager_name}.primary_energies_production',
+                                                           f'{name}.{func_manager_name}.ratio_objective',
                                                            f'{name}.{model_name}.co2_emissions_needed_by_energy_mix'], parallel=self.parallel)
 
 #     def test_12_energy_mix_detailed_co2_emissions_ratio_available_capture(self):
