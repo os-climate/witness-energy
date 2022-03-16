@@ -119,12 +119,17 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
             energy = energy_prod_info.split('#')[0]
             last_part_key = energy_prod_info.split('#')[1]
             if co2_emission_column in CO2_emissions_by_use_sources.columns and energy in energy_list:
-
                 if last_part_key == 'prod':
-                    self.set_partial_derivative_for_other_types(
-                        ('CO2_emissions_by_use_sources',
-                         co2_emission_column), (f'{energy}.energy_production', energy),
-                        np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
+                    if 'Total CO2 by use' in co2_emission_column:
+                        self.set_partial_derivative_for_other_types(
+                            ('CO2_emissions_by_use_sources',
+                             co2_emission_column), ('energy_production_detailed', f'production {energy} (TWh)'),
+                            np.identity(len(years)) * value / 1e3)
+                    else:
+                        self.set_partial_derivative_for_other_types(
+                            ('CO2_emissions_by_use_sources',
+                             co2_emission_column), (f'{energy}.energy_production', energy),
+                            np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                 elif last_part_key == 'cons':
                     for energy_df in energy_list:
                         list_columnsenergycons = list(
@@ -165,7 +170,6 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
             energy = energy_prod_info.split('#')[0]
             last_part_key = energy_prod_info.split('#')[1]
             if co2_emission_column in CO2_emissions_by_use_sinks.columns and energy in energy_list:
-
                 if last_part_key == 'prod':
                     self.set_partial_derivative_for_other_types(
                         ('CO2_emissions_by_use_sinks',
