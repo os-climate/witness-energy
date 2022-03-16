@@ -1641,7 +1641,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 'losses_percentage')
             heat_losses_percentage = self.get_sosdisc_inputs(
                 'heat_losses_percentage')
-            years = raw_prod['years'].values
+            years = raw_prod['years'].values.tolist()
 
             losses = losses_percentage / 100.0 * \
                 raw_prod['Total production'].values
