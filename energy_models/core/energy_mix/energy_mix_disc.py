@@ -1613,6 +1613,11 @@ class Energy_Mix_Discipline(SoSDiscipline):
         streams = [
             col for col in all_streams_demand_ratio.columns if col not in ['years', ]]
 
+        min_objective_energy_loc = all_streams_demand_ratio[streams].min(
+        ).idxmin()
+        min_objective_year_loc = all_streams_demand_ratio['years'][all_streams_demand_ratio[streams].idxmin()[
+            min_objective_energy_loc]]
+        chart_name += f'\n Minimum ratio is at year {min_objective_year_loc} for {min_objective_energy_loc}'
         z = np.asarray(all_streams_demand_ratio[streams].values).T
         fig = go.Figure()
         fig.add_trace(go.Heatmap(z=list(z), x=list(years), y=list(streams),
