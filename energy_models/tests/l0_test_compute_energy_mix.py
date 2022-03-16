@@ -318,13 +318,16 @@ class EnergyMixTestCase(unittest.TestCase):
                        'syngas_prod_ref': 100.,
                        'ratio_ref': 100.,
                        'carbonstorage_constraint_ref': 1000000.,
-                       'carbonstorage_limit': 1000000.
+                       'carbonstorage_limit': 1000000.,
+                       'is_dev': False,
+                       'losses_percentage': 1.,
+                       'heat_losses_percentage': 5.
 
                        }
 
         EM = EnergyMix('EnergyMix')
         EM.configure(inputs_dict)
-        EM.compute_energy_net_production()
+        EM.compute_energy_net_and_raw_production()
         EM.compute_price_after_carbon_tax()
         EM.compute_CO2_emissions()
 

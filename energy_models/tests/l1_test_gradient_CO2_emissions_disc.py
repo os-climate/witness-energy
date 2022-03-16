@@ -36,6 +36,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
     def analytic_grad_entry(self):
         return [
             self.test_01_Consumption_CO2_emissions_discipline_CO2_per_use_jacobian,
+            self.test_02_Consumption_CO2_emissions_discipline_energy_prod_cons_jacobian,
 
         ]
 
@@ -127,10 +128,67 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
+    def test_02_Consumption_CO2_emissions_discipline_energy_prod_cons_jacobian(self):
+        '''
+        Test the gradients of the Consumption CO2 emissions discipline
+        for inputs energy production and consumption
+        '''
+        self.name = 'Test'
+        self.model_name = 'ConsumptionCO2Emissions'
+        self.ee = ExecutionEngine(self.name)
+        ns_dict = {'ns_emissions': self.name,
+                   'ns_energy': self.name + f'.{self.model_name}',
+                   'ns_ccs': self.name,
+                   'ns_public': self.name,
+                   'ns_energy_study': self.name}
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions_disc.ConsumptionCO2EmissionsDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        inputs_dict = {
+            f'{self.name}.year_start': self.year_start,
+            f'{self.name}.year_end': self.year_end,
+            f'{self.name}.energy_list': self.energy_list,
+            f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
+            f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
+            f'{self.name}.{self.model_name}.energy_production_detailed': self.energy_production_detailed,
+        }
+        for energy in self.energy_list:
+            inputs_dict[f'{self.name}.{self.model_name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
+            inputs_dict[f'{self.name}.{self.model_name}.{energy}.energy_production'] = self.energy_production[energy]
+            inputs_dict[f'{self.name}.{self.model_name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
+        self.ee.load_study_from_input_dict(inputs_dict)
+
+        self.ee.execute()
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.model_name}')[0]
+
+        coupled_inputs = [
+            f'{self.name}.{self.model_name}.{energy}.energy_production' for energy in self.energy_list]
+        coupled_inputs.extend([f'{self.name}.{self.model_name}.{energy}.energy_consumption' for energy in self.energy_list])
+
+        coupled_outputs = [f'{self.name}.CO2_emissions_by_use_sources',
+                           f'{self.name}.CO2_emissions_by_use_sinks']
+
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_prodcons.pkl',
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            inputs=coupled_inputs,
+                            outputs=coupled_outputs,)
+
 
 if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = ConsumptionCO2EmissionsDiscJacobianTestCase()
     cls.setUp()
     # cls.launch_data_pickle_generation()
-    cls.test_01_Consumption_CO2_emissions_discipline_CO2_per_use_jacobian()
+    cls.test_02_Consumption_CO2_emissions_discipline_energy_prod_cons_jacobian()
