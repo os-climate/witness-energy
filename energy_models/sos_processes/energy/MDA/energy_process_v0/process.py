@@ -83,9 +83,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             ns_dict = {'ns_public': f'{ns_study}',
                        'ns_energy_study': f'{ns_study}',
                        'ns_emissions': f'{ns_study}',
-
                        'ns_ccs': f'{ns_study}.{CCS_NAME}',
-
                        }
             mods_dict = {
                 energy_mix: 'energy_models.core.investments.disciplines.energy_invest_disc.InvestEnergyDiscipline',

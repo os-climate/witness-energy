@@ -1027,7 +1027,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=coupled_inputs,  outputs=coupled_outputs,)
 
-    def _test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian(self):
+    def test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian(self):
         '''
         Test the gradients of the ratios on EnergyMix discipline.
         For now do not include it to the test routine (not sure how volatile this test it)
@@ -1080,6 +1080,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             input, 'coupling')]
         coupled_outputs = [output for output in full_outputs if self.ee.dm.get_data(
             output, 'coupling')]
+        coupled_outputs.extend(['Test_Ratio.EnergyMix.all_streams_demand_ratio',
+                                'Test_Ratio.FunctionManagerDisc.ratio_objective'])
 
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
