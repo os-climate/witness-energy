@@ -46,7 +46,8 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
             self.test_08_energy_mix_gradients_exponential_limit,
             self.test_10_energy_mix_demand_dataframe,
             self.test_11_energy_mix_detailed_co2_emissions,
-            self.test_13_energy_mix_co2_per_use_gradients]
+            self.test_13_energy_mix_co2_per_use_gradients,
+            self.test_14_energy_mix_with_losses]
 
     def setUp(self):
         '''
@@ -1138,6 +1139,66 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                                            f'{name}.{model_name}.energy_mean_price',
                                                            f'{name}.{model_name}.land_demand_df',
                                                            f'{name}.{func_manager_name}.primary_energies_production',
+                                                           f'{name}.{func_manager_name}.total_prod_minus_min_prod_constraint_df',
+                                                           f'{name}.{model_name}.energy_prices_after_tax',
+                                                           f'{name}.{func_manager_name}.energy_production_objective',
+                                                           f'{name}.{func_manager_name}.primary_energies_production', ], parallel=self.parallel)
+
+    def test_14_energy_mix_with_losses(self):
+        '''
+        Test CO2 per use gradients 
+        '''
+        self.name = 'Test'
+        self.ee = ExecutionEngine(self.name)
+        name = 'Test'
+        model_name = 'EnergyMix'
+        func_manager_name = 'FunctionManagerDisc'
+        repo = 'energy_models.sos_processes.energy.MDA'
+        builder = self.ee.factory.get_builder_from_process(
+            repo, 'energy_process_v0')
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+        self.ee.configure()
+        usecase = Study_open(execution_engine=self.ee)
+        usecase.study_name = self.name
+        values_dict = usecase.setup_usecase()
+
+        self.ee.display_treeview_nodes()
+        full_values_dict = {}
+        for dict_v in values_dict:
+            full_values_dict.update(dict_v)
+
+        full_values_dict[f'{name}.epsilon0'] = 1.0
+        full_values_dict[f'{name}.tolerance'] = 1.0e-8
+        full_values_dict[f'{name}.max_mda_iter'] = 50
+        full_values_dict[f'{name}.is_dev'] = True
+        #full_values_dict[f'{name}.sub_mda_class'] = 'MDANewtonRaphson'
+        self.ee.load_study_from_input_dict(full_values_dict)
+
+        self.ee.execute()
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{name}.{model_name}')[0]
+        energy_list = full_values_dict['Test.energy_list']
+
+        inputs_names = [
+            f'{name}.{model_name}.{energy}.energy_production' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']]
+        inputs_names.extend(
+            [f'{name}.{model_name}.{energy}.energy_consumption' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']])
+        inputs_names.extend(
+            [f'{name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
+        inputs_names.extend(
+            [f'{name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_mix_co2_per_use_gradients',
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step',
+                            inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
+                                                           f'{name}.{model_name}.co2_emissions',
+                                                           f'{name}.{model_name}.energy_CO2_emissions',
+                                                           f'{name}.{model_name}.energy_mean_price',
+                                                           f'{name}.{model_name}.land_demand_df',
+                                                           f'{name}.{func_manager_name}.primary_energies_production',
+                                                           f'{name}.{func_manager_name}.ratio_objective',
                                                            f'{name}.{func_manager_name}.total_prod_minus_min_prod_constraint_df',
                                                            f'{name}.{model_name}.energy_prices_after_tax',
                                                            f'{name}.{func_manager_name}.energy_production_objective',
