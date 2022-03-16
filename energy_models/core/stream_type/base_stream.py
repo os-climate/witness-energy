@@ -61,7 +61,7 @@ class BaseStream:
         self.mix_weights = base_df.copy(deep=True)
         self.energy_prices_after_carbon_tax = base_df.copy(deep=True)
         self.production = base_df.copy(deep=True)
-        self.production_brut = base_df.copy(deep=True)
+        self.production_raw = base_df.copy(deep=True)
         self.production_by_techno = base_df.copy(deep=True)
         self.consumption = base_df.copy(deep=True)
         self.land_use_required = base_df.copy(deep=True)

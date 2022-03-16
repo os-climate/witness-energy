@@ -156,6 +156,10 @@ class EnergyMix(BaseStream):
         self.carbonstorage_constraint_ref = inputs_dict['carbonstorage_constraint_ref']
         self.carbonstorage_limit = inputs_dict['carbonstorage_limit']
 
+        self.is_dev = inputs_dict['is_dev']
+        self.losses_percentage = inputs_dict['losses_percentage']
+        self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
+
     def configure_parameters_update(self, inputs_dict):
         '''
         COnfigure parameters with possible update (variables that does change during the run)
@@ -237,15 +241,17 @@ class EnergyMix(BaseStream):
         '''
         self.co2_emissions_in = co2_emissions
 
-    def compute_energy_net_production(self):
+    def compute_energy_net_and_raw_production(self):
         """
-        Compute the energy net production
+        Compute the energy net production and the energy raw production
         If the value of total energy production is under the specified min_energy value
         an exponential decrease toward the limit is applied to always remain
         above it
         """
         for energy in self.subelements_list:
             self.production[f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'] = pd.Series(
+                self.sub_production_dict[energy][energy].values)
+            self.production_raw[f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'] = pd.Series(
                 self.sub_production_dict[energy][energy].values)
             for idx, consu in self.sub_consumption_dict.items():
                 if f'{energy} ({self.stream_class_dict[energy].unit})' in consu.columns:
@@ -258,10 +264,19 @@ class EnergyMix(BaseStream):
                         logging.warning(
                             f'The columns {wrong_columns} in the energy_consumption out of {idx} cannot be taken into account for an error of unity')
 
+        # Sum on netenergy production
         self.production['Total production'] = self.production[[
             column for column in self.production if column.endswith('(TWh)')]].sum(axis=1)
 
-        self.substract_energy_losses()
+        # sum of positive energy production --> raw total production
+        self.production_raw['Total production'] = self.production_raw[[
+            column for column in self.production_raw if column.endswith('(TWh)')]].sum(axis=1)
+
+        # substract a percentage of raw production into net production only in
+        # dev mode
+        if self.is_dev:
+            self.substract_energy_losses()
+
         self.production['Total production (uncut)'] = self.production['Total production'].values
         min_energy = self.minimum_energy_production
         for year in self.production.index:
@@ -276,20 +291,11 @@ class EnergyMix(BaseStream):
     def substract_energy_losses(self):
         '''
         Substract energy losses of net production which contains distribution,transmission and transport of energy
-        USe a percentage of raw production
+        USe a percentage losses_percentage of raw production to substract losses of net energy production
+        Substract heat losses due to heat stream (not implemented yet) 
         '''
-        pass
-
-    def compute_energy_brut_production(self):
-        """
-        Compute the energy net production
-        """
-        for energy in self.subelements_list:
-            self.production_brut[f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'] = pd.Series(
-                self.sub_production_dict[energy][energy].values)
-
-        self.production_brut['Total production'] = self.production_brut[[
-            column for column in self.production_brut if column.endswith('(TWh)')]].sum(axis=1)
+        self.production['Total production'] -= self.production_raw['Total production'] * \
+            (self.losses_percentage + self.heat_losses_percentage) / 100.0
 
     def compute_price_after_carbon_tax(self):
         '''

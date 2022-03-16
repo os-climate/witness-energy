@@ -58,6 +58,14 @@ class Energy_Mix_Discipline(SoSDiscipline):
         'icon': 'fas fa-battery-full fa-fw',
         'version': '',
     }
+    # All values used to calibrate heat loss percentage
+    heat_tfc_2019 = 3561.87
+    heat_use_energy_2019 = 14181.
+    total_raw_prod_2019 = 183316.
+    total_losses_2019 = 2654.
+    losses_percentage_default = total_losses_2019 / total_raw_prod_2019 * 100
+    heat_losses_percentage_default = (heat_use_energy_2019 -
+                                      heat_tfc_2019) / total_raw_prod_2019 * 100
 
     DESC_IN = {'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
@@ -93,7 +101,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'losses_percentage': {'type': 'float', 'default': 2654. / 183316 * 100, 'unit': '%', 'range': [0., 100.]}
+               'losses_percentage': {'type': 'float', 'default': losses_percentage_default, 'unit': '%', 'range': [0., 100.]},
+               'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%', 'range': [0., 100.]},
+               # WIP is_dev to remove once its validated on dev processes
+               'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                }
 
     DESC_OUT = {
@@ -260,8 +271,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         self.energy_model.set_co2_emissions_in(
             co2_emissions_in.copy(deep=True))
         #-- compute informations
-        self.energy_model.compute_energy_net_production()
-        self.energy_model.compute_energy_brut_production()
+        self.energy_model.compute_energy_net_and_raw_production()
         self.energy_model.compute_price_after_carbon_tax()
         self.energy_model.compute_CO2_emissions()
 
@@ -310,8 +320,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         'energy_CO2_emissions_after_use': self.energy_model.carbon_emissions_after_use,
                         'energy_production': scaled_energy_production,
                         'energy_production_detailed': self.energy_model.production,
-                        'energy_production_brut': self.energy_model.production_brut[['years', 'Total production']],
-                        'energy_production_brut_detailed': self.energy_model.production_brut,
+                        'energy_production_brut': self.energy_model.production_raw[['years', 'Total production']],
+                        'energy_production_brut_detailed': self.energy_model.production_raw,
                         'energy_mix': self.energy_model.mix_weights,
                         'energy_prices_after_tax': self.energy_model.energy_prices_after_carbon_tax,
                         'energy_production_objective':  energy_production_objective,
