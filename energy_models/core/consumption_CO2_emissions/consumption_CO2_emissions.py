@@ -226,8 +226,6 @@ class ConsumptionCO2Emissions(BaseStream):
             net_prod_sign[net_prod_sign == 0] = 1
             dtot_CO2_emissions[f'Total CO2 by use (Gt) vs {energy}#prod'] = self.co2_per_use[energy].values * \
                 np.maximum(0, np.sign(net_prod_sign))
-            dtot_CO2_emissions[f'Total CO2 by use (Gt) vs {energy}#cons'] = - self.co2_per_use[energy].values * \
-                np.maximum(0, np.sign(net_prod))
 
         ''' CARBON CAPTURE from energy mix
         Total carbon capture from energy mix if the technology offers carbon_capture
@@ -294,9 +292,9 @@ class ConsumptionCO2Emissions(BaseStream):
 # col for col in self.co2_production if
 # col.endswith(f'{CarbonCapture.flue_gas_name} (Mt)')]].sum(axis=1)
         for col in co2_production:
-            if col.endswith(f'{CarbonCapture.flue_gas_name} (Gt)'):
+            if col.endswith(f'{CarbonCapture.flue_gas_name} (Mt)'):
                 energy1 = col.replace(
-                    f' {CarbonCapture.flue_gas_name} (Gt)', '')
+                    f' {CarbonCapture.flue_gas_name} (Mt)', '')
                 dtot_CO2_emissions[f'Total {CarbonCapture.flue_gas_name} (Gt) vs {energy1}#{CarbonCapture.flue_gas_name} (Mt)#prod'] = np.ones(
                     len_years)
 
@@ -332,19 +330,6 @@ class ConsumptionCO2Emissions(BaseStream):
             net_prod = net_production[
                 f'production {energy} (TWh)'].values
 
-            dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#co2_per_use'] = np.maximum(
-                0, net_prod)
-
-            # Specific case when net prod is equal to zero
-            # if we increase the prod of an energy the net prod will react
-            # however if we decrease the cons it does nothing
-            net_prod_sign = net_prod.copy()
-            net_prod_sign[net_prod_sign == 0] = 1
-            dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#prod'] = self.co2_per_use[energy].values * \
-                np.maximum(0, np.sign(net_prod_sign))
-            dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#cons'] = - self.co2_per_use[energy].values * \
-                np.maximum(0, np.sign(net_prod))
-
         ''' CO2 removed by energy mix       
          CO2 removed by energy mix technologies during the process 
          i.e. biomass processes as managed wood or crop energy
@@ -356,7 +341,7 @@ class ConsumptionCO2Emissions(BaseStream):
         if len(energy_removing_co2_list) != 0:
             for energy1 in energy_removing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} (Mt)#cons'] = np.ones(len_years)
+                    f'{CO2.name} removed by energy mix (Gt) vs {energy1}#{CO2.name} (Mt)#cons'] = np.ones(len_years)
 #             self.total_co2_emissions[f'{CO2.name} removed by energy mix (Mt)'] = energy_removing_co2.sum(
 #                 axis=1).values
 #         else:
