@@ -376,6 +376,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     def test_05_liquid_fuel_discipline_jacobian(self):
 
         self.name = 'Test'
+        self.energy_name = 'fuel.liquid_fuel'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_liquid_fuel': f'{self.name}',
@@ -429,8 +430,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0]
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=coupled_inputs,
