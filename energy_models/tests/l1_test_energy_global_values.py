@@ -77,7 +77,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Oil production
         '''
 
-        computed_oil_production = energy_production['production liquid_fuel (TWh)'].loc[
+        computed_oil_production = energy_production['production fuel.liquid_fuel (TWh)'].loc[
             energy_production['years'] == 2020].values[0]
 
         # we compare in TWh and must be near 10% of error
@@ -132,7 +132,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Biofuel production
         '''
 
-        computed_biodiesel_production = energy_production['production biodiesel (TWh)'].loc[
+        computed_biodiesel_production = energy_production['production fuel.biodiesel (TWh)'].loc[
             energy_production['years'] == 2020].values[0]
 
         computed_biogas_production = energy_production['production biogas (TWh)'].loc[
@@ -281,7 +281,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Oil CO2 emissions are emissions from oil energy 
         '''
 
-        computed_oil_co2_emissions = co2_emissions_by_energy['liquid_fuel'].loc[
+        computed_oil_co2_emissions = co2_emissions_by_energy['fuel.liquid_fuel'].loc[
             co2_emissions_by_energy['years'] == 2020].values[0]
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_oil_co2_emissions,
@@ -731,14 +731,14 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('and biodiesel (a methyl-ester produced from vegetable or animal oil, of diesel quality), biodimethylether (dimethylether produced from biomass), Fischer Tropsch (Fischer Tropsch produced from biomass), cold pressed bio-oil (oil produced from oil seed through mechanical processing only) ')
 
         raw_biodiesel_prod = energy_production[
-            'production biodiesel (TWh)'][0]
+            'production fuel.biodiesel (TWh)'][0]
         raw_hydrotreated_oil_fuel_prod = energy_production[
-            'production hydrotreated_oil_fuel (TWh)'][0]
+            'production fuel.hydrotreated_oil_fuel (TWh)'][0]
 
         raw_fischertropsch_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.liquid_fuel.FischerTropsch.techno_production')
+            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.FischerTropsch.techno_production')
 
-        computed_ft_production = raw_fischertropsch_prod['liquid_fuel (TWh)'].loc[
+        computed_ft_production = raw_fischertropsch_prod['fuel.liquid_fuel (TWh)'].loc[
             raw_fischertropsch_prod['years'] == 2020].values[0] * 1000.0
 
         raw_liquid_fuel = raw_biodiesel_prod + \
@@ -792,11 +792,11 @@ class TestGlobalEnergyValues(unittest.TestCase):
                         'heating_oil': 16475667 / 3600,  # equivalent to fuel oil
                         #'other_oil_products' :25409482/3600,
                         'liquefied_petroleum_gas': 5672984 / 3600,  # LPG/ethane
-                        'liquid_fuel': 190442343 / 3600  # total of crude oil
+                        'fuel.liquid_fuel': 190442343 / 3600  # total of crude oil
                         }
 
         raw_refinery_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.liquid_fuel.Refinery.techno_production')
+            f'{self.name}.{self.energymixname}.fuel.liquid_fuel.Refinery.techno_production')
 
         raw_refinery_prod_2020 = raw_refinery_prod.loc[
             raw_refinery_prod['years'] == 2020] * 1000.0
@@ -815,7 +815,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             'WITNESS model only takes for now raw liquid_fuel production which is correct')
 
         net_liquid_fuel_prod = net_energy_production[
-            'production liquid_fuel (TWh)'][0]
+            'production fuel.liquid_fuel (TWh)'][0]
         liquid_fuel_net_prod_iea = 168375005 / 3600
 
         error_liquid_fuel_net_prod = np.abs(
@@ -825,7 +825,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{liquid_fuel_net_prod_iea} TWh vs WITNESS :{net_liquid_fuel_prod} TWh')
 
         liquid_fuel_own_use = 2485.89  # TWH
-        liquid_fuel_raw_prod = raw_refinery_prod_2020[f'liquid_fuel (TWh)'].values[0]
+        liquid_fuel_raw_prod = raw_refinery_prod_2020[f'fuel.liquid_fuel (TWh)'].values[0]
         print(
             f'Energy own use for liquid fuel production is {liquid_fuel_own_use} TWh')
         print(
@@ -902,7 +902,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         kerosene_price_iea = 0.92 / 0.0095  # $/MWh in 2022
         kerosene_price_iea_2021 = 2.8 / 39.5 * 1000  # $/MWh in 2021
         kerosene_price = energy_prices[
-            'liquid_fuel'][0]
+            'fuel.liquid_fuel'][0]
 
         error_kerosene_price = np.abs(
             kerosene_price_iea_2021 - kerosene_price) / kerosene_price_iea_2021 * 100.0
@@ -961,7 +961,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         biodiesel_price_neste = 1500 / 10.42
 
         biodiesel_price = energy_prices[
-            'biodiesel'][0]
+            'fuel.biodiesel'][0]
 
         error_biodiesel_price = np.abs(
             biodiesel_price_neste - biodiesel_price) / biodiesel_price_neste * 100.0
@@ -983,7 +983,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         hefa_price_iea = 1.2 / 780e-3 / 12.2 * 1000
 
         hefa_price = energy_prices[
-            'hydrotreated_oil_fuel'][0]
+            'fuel.hydrotreated_oil_fuel'][0]
 
         error_hefa_price = np.abs(
             hefa_price_iea - hefa_price) / hefa_price_iea * 100.0
