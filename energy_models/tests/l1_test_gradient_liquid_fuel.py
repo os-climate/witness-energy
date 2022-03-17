@@ -420,8 +420,11 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         pkl_file.close()
 
         coupled_outputs = []
+        # remove some outputs that we know are not coupled for this discipline
+        not_coupled_ouputs = ['energy_detailed_techno_prices', 'energy_production_detailed']
+
         for key in mda_data_output_dict[self.energy_name].keys():
-            if mda_data_output_dict[self.energy_name][key]['is_coupling']:
+            if mda_data_output_dict[self.energy_name][key]['is_coupling'] and key not in not_coupled_ouputs:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
         self.ee.load_study_from_input_dict(inputs_dict)
