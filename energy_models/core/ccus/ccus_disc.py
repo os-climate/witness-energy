@@ -45,6 +45,20 @@ from energy_models.core.ccus.ccus import CCUS
 
 class CCUS_Discipline(SoSDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Carbon Capture and Storage Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fa-solid fa-people-carry-box fa-fw',
+        'version': '',
+    }
+
     DESC_IN = {
         'ccs_list': {'type': 'string_list', 'possible_values': [CarbonCapture.name, CarbonStorage.name],
                      'default': [CarbonCapture.name, CarbonStorage.name],
@@ -271,11 +285,11 @@ class CCUS_Discipline(SoSDiscipline):
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} from energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('CO2_emissions_by_use_sources', f'{CarbonCapture.name} from energy mix (Gt)'), np.identity(len(years)) * value )
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('CO2_emissions_by_use_sources', f'{CarbonCapture.name} from energy mix (Gt)'), np.identity(len(years)) * value)
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} needed by energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('co2_emissions_needed_by_energy_mix', f'{CarbonCapture.name} needed by energy mix (Gt)'), np.identity(len(years)) * value )
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('co2_emissions_needed_by_energy_mix', f'{CarbonCapture.name} needed by energy mix (Gt)'), np.identity(len(years)) * value)
 
                 else:
                     very_last_part_key = energy_prod_info.split('#')[2]
@@ -359,24 +373,11 @@ class CCUS_Discipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('CCS_price', 'ccs_price_per_tCO2'), (f'{CarbonStorage.name}.energy_prices', CarbonStorage.name), np.identity(len(years)))
 
-    def compute_dratio_objective(self, stream_ratios,  ratio_ref, energy_list):
-        '''
-        Compute the ratio_objective with the gradient of stream_ratios vs any input and the ratio ojective value 
-        obj = smooth_maximum(100.0 - ratio_arrays, 3)/ratio_ref
-
-        dobj/dratio = -dsmooth_max(100.0 - ratio_arrays, 3)/ratio_ref
-        '''
-
-        dsmooth_dvar = get_dsmooth_dvariable(
-            100.0 - stream_ratios[energy_list].values.flatten(), 3)
-        dobjective_dratio = -np.asarray(dsmooth_dvar) / ratio_ref
-
-        return dobjective_dratio
-
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['CCS price', 'Carbon storage constraint', 'CO2 storage limited by capture', 'CO2 emissions captured, used and to store']
+        chart_list = ['CCS price', 'Carbon storage constraint',
+                      'CO2 storage limited by capture', 'CO2 emissions captured, used and to store']
 
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -432,8 +433,6 @@ class CCUS_Discipline(SoSDiscipline):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-
-
         return instanciated_charts
 
     def get_chart_CCS_price(self):
@@ -454,7 +453,6 @@ class CCUS_Discipline(SoSDiscipline):
             years, ccs_prices['ccs_price_per_tCO2'].values.tolist(), 'CCS price', 'lines', visible_line)
         new_chart.series.append(new_series)
 
-
         return new_chart
 
     def get_chart_co2_to_store(self):
@@ -464,8 +462,10 @@ class CCUS_Discipline(SoSDiscipline):
         chart_name = 'CO2 emissions captured, used and to store'
         co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
         co2_for_food = self.get_sosdisc_inputs('co2_for_food')
-        CO2_emissions_by_use_sources = self.get_sosdisc_inputs('CO2_emissions_by_use_sources')
-        co2_emissions_needed_by_energy_mix = self.get_sosdisc_inputs('co2_emissions_needed_by_energy_mix')
+        CO2_emissions_by_use_sources = self.get_sosdisc_inputs(
+            'CO2_emissions_by_use_sources')
+        co2_emissions_needed_by_energy_mix = self.get_sosdisc_inputs(
+            'co2_emissions_needed_by_energy_mix')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 

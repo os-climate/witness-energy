@@ -58,6 +58,14 @@ class Energy_Mix_Discipline(SoSDiscipline):
         'icon': 'fas fa-battery-full fa-fw',
         'version': '',
     }
+    # All values used to calibrate heat loss percentage
+    heat_tfc_2019 = 3561.87
+    heat_use_energy_2019 = 14181.
+    total_raw_prod_2019 = 183316.
+    total_losses_2019 = 2654.
+    losses_percentage_default = total_losses_2019 / total_raw_prod_2019 * 100
+    heat_losses_percentage_default = (heat_use_energy_2019 -
+                                      heat_tfc_2019) / total_raw_prod_2019 * 100
 
     DESC_IN = {'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
@@ -93,7 +101,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-
+               'losses_percentage': {'type': 'float', 'default': losses_percentage_default, 'unit': '%', 'range': [0., 100.]},
+               'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%', 'range': [0., 100.]},
+               # WIP is_dev to remove once its validated on dev processes
+               'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                }
 
     DESC_OUT = {
@@ -260,8 +271,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         self.energy_model.set_co2_emissions_in(
             co2_emissions_in.copy(deep=True))
         #-- compute informations
-        self.energy_model.compute_energy_net_production()
-        self.energy_model.compute_energy_brut_production()
+        self.energy_model.compute_energy_net_and_raw_production()
         self.energy_model.compute_price_after_carbon_tax()
         self.energy_model.compute_CO2_emissions()
 
@@ -310,8 +320,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         'energy_CO2_emissions_after_use': self.energy_model.carbon_emissions_after_use,
                         'energy_production': scaled_energy_production,
                         'energy_production_detailed': self.energy_model.production,
-                        'energy_production_brut': self.energy_model.production_brut[['years', 'Total production']],
-                        'energy_production_brut_detailed': self.energy_model.production_brut,
+                        'energy_production_brut': self.energy_model.production_raw[['years', 'Total production']],
+                        'energy_production_brut_detailed': self.energy_model.production_raw,
                         'energy_mix': self.energy_model.mix_weights,
                         'energy_prices_after_tax': self.energy_model.energy_prices_after_carbon_tax,
                         'energy_production_objective':  energy_production_objective,
@@ -385,6 +395,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
         years = np.arange(inputs_dict['year_start'],
                           inputs_dict['year_end'] + 1)
         energy_list = inputs_dict['energy_list'] + inputs_dict['ccs_list']
+        is_dev = inputs_dict['is_dev']
+        loss_percent = (inputs_dict['losses_percentage'] +
+                        inputs_dict['heat_losses_percentage']) / 100.0
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
         normalization_value = inputs_dict['normalization_value_demand_constraints']
         production_detailed_df = outputs_dict['energy_production_detailed']
@@ -419,7 +432,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
             if energy in energies:
                 #---- Production gradients----#
                 dtotal_prod_denergy_prod = self.compute_dtotal_production_denergy_production(
-                    production_detailed_df, minimum_energy_production)
+                    production_detailed_df, minimum_energy_production, is_dev, loss_percent)
                 dprod_objective_dprod = self.compute_denergy_production_objective_dprod(
                     dtotal_prod_denergy_prod)
                 self.set_partial_derivative_for_other_types(
@@ -429,7 +442,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 self.set_partial_derivative_for_other_types(
                     ('energy_production_detailed', 'Total production (uncut)'), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production)
                 self.set_partial_derivative_for_other_types(
-                    ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'), (f'{energy}.energy_production', energy), np.identity(len(years))* scaling_factor_energy_production)
+                    ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production)
                 self.set_partial_derivative_for_other_types(
                     ('energy_production_brut', 'Total production'), (f'{energy}.energy_production', energy),  scaling_factor_energy_production * np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
@@ -469,23 +482,29 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         #---- Consumption gradients----#
                         dtotal_prod_denergy_cons = - \
                             self.compute_dtotal_production_denergy_production(
-                                production_detailed_df, minimum_energy_production)
+                                production_detailed_df, minimum_energy_production, is_dev, loss_percent)
                         dprod_objective_dcons = self.compute_denergy_production_objective_dprod(
                             dtotal_prod_denergy_cons)
                         self.set_partial_derivative_for_other_types(
-                            ('energy_production', 'Total production'), (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                            ('energy_production', 'Total production'), (
+                                f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
                             scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production)
                         self.set_partial_derivative_for_other_types(
                             ('energy_production_detailed', 'Total production'),
-                            (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                            (f'{energy_input}.energy_consumption',
+                             f'{energy} ({stream_class_dict[energy].unit})'),
                             scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * scaling_factor_energy_production)
                         self.set_partial_derivative_for_other_types(
-                            ('energy_production_detailed', 'Total production (uncut)'),
-                            (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                            ('energy_production_detailed',
+                             'Total production (uncut)'),
+                            (f'{energy_input}.energy_consumption',
+                             f'{energy} ({stream_class_dict[energy].unit})'),
                             -scaling_factor_energy_consumption * np.identity(len(years)) / scaling_factor_energy_production * scaling_factor_energy_production)
                         self.set_partial_derivative_for_other_types(
-                            ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'),
-                            (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                            ('energy_production_detailed',
+                             f'production {energy} ({stream_class_dict[energy].unit})'),
+                            (f'{energy_input}.energy_consumption',
+                             f'{energy} ({stream_class_dict[energy].unit})'),
                             -scaling_factor_energy_consumption * np.identity(len(years)) / scaling_factor_energy_production * scaling_factor_energy_production)
 
                         self.set_partial_derivative_for_other_types(
@@ -518,9 +537,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
                                 (EnergyMix.SYNGAS_PROD_OBJECTIVE,), (
                                     f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),  - scaling_factor_energy_production * np.sign(production_detailed_df['production syngas (TWh)'].values) * np.identity(len(years)) / syngas_prod_ref)
             else:
-                #CCUS
+                # CCUS
                 self.set_partial_derivative_for_other_types(
-                    ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'),
+                    ('energy_production_detailed',
+                     f'production {energy} ({stream_class_dict[energy].unit})'),
                     (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production)
                 # ---- Loop on energy again to differentiate production and consumption ----#
                 for energy_input in energy_list:
@@ -528,8 +548,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         inputs_dict[f'{energy_input}.energy_consumption'].columns)
                     if f'{energy} ({stream_class_dict[energy].unit})' in list_columnsenergycons:
                         self.set_partial_derivative_for_other_types(
-                            ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'),
-                            (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                            ('energy_production_detailed',
+                             f'production {energy} ({stream_class_dict[energy].unit})'),
+                            (f'{energy_input}.energy_consumption',
+                             f'{energy} ({stream_class_dict[energy].unit})'),
                             -scaling_factor_energy_consumption * np.identity(
                                 len(years)) / scaling_factor_energy_production * scaling_factor_energy_production)
         #-------------------------#
@@ -662,14 +684,21 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
                 if True in list_index_prod:
                     dtotal_prod_denergy_prod = self.compute_dtotal_production_denergy_production(
-                        production_detailed_df, minimum_energy_production)
+                        production_detailed_df, minimum_energy_production, is_dev, loss_percent)
                     self.set_partial_derivative_for_other_types((f'{energy}.demand_violation', 'demand_violation'),
                                                                 (f'{energy_input}.energy_production',
                                                                  energy), scaling_factor_energy_production * np.identity(len(years)) / normalization_value)
-                    self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
-                                                                 EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
-                                                                (f'{energy_input}.energy_production',
-                                                                 energy), scaling_factor_energy_production * np.identity(len(years)) / total_prod_minus_min_prod_constraint_ref)
+                    if is_dev:
+                        self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
+                                                                     EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
+                                                                    (f'{energy_input}.energy_production',
+                                                                     energy), scaling_factor_energy_production * np.identity(len(years)) / total_prod_minus_min_prod_constraint_ref * (1.0 - loss_percent))
+
+                    else:
+                        self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
+                                                                     EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
+                                                                    (f'{energy_input}.energy_production',
+                                                                     energy), scaling_factor_energy_production * np.identity(len(years)) / total_prod_minus_min_prod_constraint_ref)
                     if energy == self.SYNGAS_NAME or energy == self.BIOMASS_DRY_NAME:
                         self.set_partial_derivative_for_other_types((f'{energy}.{EnergyMix.DEMAND_MAX_PRODUCTION}', 'demand_max_production'),
                                                                     (f'{energy_input}.energy_production',
@@ -678,16 +707,24 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 if True in list_index_conso:
                     dtotal_prod_denergy_cons = - \
                         self.compute_dtotal_production_denergy_production(
-                            production_detailed_df, minimum_energy_production)
+                            production_detailed_df, minimum_energy_production, is_dev, loss_percent)
                     self.set_partial_derivative_for_other_types((f'{energy}.demand_violation', 'demand_violation'),
                                                                 (f'{energy_input}.energy_consumption',
                                                                  list_columnsenergycons[list_index_conso.index(True)]),
                                                                 -scaling_factor_energy_consumption * np.identity(len(years)) / normalization_value)
-                    self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
-                                                                 EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
-                                                                (f'{energy_input}.energy_consumption',
-                                                                 list_columnsenergycons[list_index_conso.index(True)]),
-                                                                -scaling_factor_energy_consumption * np.identity(len(years)) / total_prod_minus_min_prod_constraint_ref)
+                    if is_dev:
+                        self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
+                                                                     EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
+                                                                    (f'{energy_input}.energy_consumption',
+                                                                     list_columnsenergycons[list_index_conso.index(True)]),
+                                                                    -scaling_factor_energy_consumption * np.identity(len(years)) / total_prod_minus_min_prod_constraint_ref * (1.0 - loss_percent))
+
+                    else:
+                        self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
+                                                                     EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
+                                                                    (f'{energy_input}.energy_consumption',
+                                                                     list_columnsenergycons[list_index_conso.index(True)]),
+                                                                    -scaling_factor_energy_consumption * np.identity(len(years)) / total_prod_minus_min_prod_constraint_ref)
                     if energy == self.SYNGAS_NAME or energy == self.BIOMASS_DRY_NAME:
 
                         self.set_partial_derivative_for_other_types((f'{energy}.{EnergyMix.DEMAND_MAX_PRODUCTION}', 'demand_max_production'),
@@ -812,7 +849,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         denergy_mean_prod.loc[index_l] = 0
         return denergy_mean_prod
 
-    def compute_dtotal_production_denergy_production(self, production_detailed_df, min_energy):
+    def compute_dtotal_production_denergy_production(self, production_detailed_df, min_energy, is_dev, loss_percent):
         '''
         Compute gradient of production['Total production'] by {energy}.energy_prod[{energy}] taking into account 
         the exponential decrease towards the limit applied on the calculation of the total net energy production
@@ -822,6 +859,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
         years = production_detailed_df['years']
         dtotal_production_denergy_production = np.ones(len(years))
 
+        if is_dev:
+            dtotal_production_denergy_production *= (
+                1.0 - loss_percent)
         pre_limit_total_production = pd.DataFrame({'years': years,
                                                    'Total production': 0.0})
         pre_limit_total_production['Total production'] = production_detailed_df[[
@@ -939,7 +979,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         chart_list = ['Energy price', 'Energy mean price', 'Energy mix',
                       'production', 'CO2 emissions', 'Carbon intensity', 'Demand violation',
                       'Delta price', 'CO2 taxes over the years', 'Solid energy and electricity production constraint',
-                      'Liquid hydrogen production constraint', 'Stream ratio']
+                      'Liquid hydrogen production constraint', 'Stream ratio', 'Energy mix losses']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -1058,6 +1098,11 @@ class Energy_Mix_Discipline(SoSDiscipline):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
+        if 'Energy mix losses' in charts:
+
+            new_chart = self.get_chart_energy_mix_losses()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
         return instanciated_charts
 
     def get_chart_solid_energy_elec_constraint(self):
@@ -1568,6 +1613,11 @@ class Energy_Mix_Discipline(SoSDiscipline):
         streams = [
             col for col in all_streams_demand_ratio.columns if col not in ['years', ]]
 
+        min_objective_energy_loc = all_streams_demand_ratio[streams].min(
+        ).idxmin()
+        min_objective_year_loc = all_streams_demand_ratio['years'][all_streams_demand_ratio[streams].idxmin()[
+            min_objective_energy_loc]]
+        chart_name += f'\n Minimum ratio is at year {min_objective_year_loc} for {min_objective_energy_loc}'
         z = np.asarray(all_streams_demand_ratio[streams].values).T
         fig = go.Figure()
         fig.add_trace(go.Heatmap(z=list(z), x=list(years), y=list(streams),
@@ -1576,6 +1626,42 @@ class Energy_Mix_Discipline(SoSDiscipline):
                                  opacity=0.5, zmax=100.0, zmin=0.0,))
         new_chart = InstantiatedPlotlyNativeChart(
             fig, chart_name=chart_name, default_title=True)
+        return new_chart
+
+    def get_chart_energy_mix_losses(self):
+        '''
+        Plot chart on energy mix losses 
+        '''
+
+        new_chart = None
+
+        is_dev = self.get_sosdisc_inputs('is_dev')
+
+        if is_dev:
+            chart_name = f'Energy mix losses'
+
+            raw_prod = self.get_sosdisc_outputs(
+                'energy_production_brut')
+            losses_percentage = self.get_sosdisc_inputs(
+                'losses_percentage')
+            heat_losses_percentage = self.get_sosdisc_inputs(
+                'heat_losses_percentage')
+            years = raw_prod['years'].values.tolist()
+
+            losses = losses_percentage / 100.0 * \
+                raw_prod['Total production'].values
+            heat_losses = heat_losses_percentage / \
+                100.0 * raw_prod['Total production'].values
+            new_chart = TwoAxesInstanciatedChart('years', 'Energy losses (TWh)',
+                                                 chart_name=chart_name)
+
+            serie = InstanciatedSeries(
+                years, losses.tolist(), f'Distribution Transmission and Transport losses')
+            new_chart.add_series(serie)
+
+            serie = InstanciatedSeries(
+                years, heat_losses.tolist(), f'Energy losses from heat production')
+            new_chart.add_series(serie)
         return new_chart
 
     def get_chart_stream_consumed_by_techno(self):
