@@ -19,6 +19,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.ccus.ccus import CCUS
 
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
+from energy_models.core.stream_type.energy_disciplines.fuel_disc import FuelDiscipline
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -60,7 +61,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         ns_dict = {'ns_functions': f'{ns_study}.{func_manager_name}',
                    'ns_demand': f'{ns_study}.{demand_name}',
                    'ns_energy': f'{ns_study}',
-                   'ns_energy_mix': f'{ns_study}.{energy_mix}', 'ns_carb':  f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
+                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   'ns_carb':  f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
                    'ns_resource': f'{ns_study}.{energy_mix}.resource',
                    'ns_ref': f'{ns_study}.NormalizationReferences'}
 
@@ -166,5 +168,14 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 f'ns_{energy}',
                 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+
+        if len(set(FuelDiscipline.fuel_list).intersection(set(self.energy_list))) > 0:
+            ns_dict = {'ns_fuel': f'{ns_study}.{energy_mix}.fuel'}
+            mods_dict = {
+                f'{energy_mix}.{FuelDiscipline.name}': 'energy_models.core.stream_type.energy_disciplines.fuel_disc.FuelDiscipline',
+            }
+
+            builder_fuel = self.create_builder_list(mods_dict, ns_dict=ns_dict)
+            builder_list.extend(builder_fuel)
 
         return builder_list

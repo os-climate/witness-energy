@@ -19,7 +19,9 @@ from energy_models.core.stream_type.energy_type import EnergyType
 class BioDiesel(EnergyType):
     # Biodiesel is a fuel comprised of mono-alkyl esters of long chain fatty acids derived from vegetable oils or animal fats, designated B100, and meeting the requirements of ASTM D 6751.
     # fatty acid methyl esters (FAME).
-    name = 'biodiesel'
+    name = 'fuel.biodiesel'
+    short_name = 'biodiesel'
+
     data_energy_dict = {'maturity': 5,
 
                         # Coronado, C.R., de Carvalho Jr, J.A. and Silveira, J.L., 2009.
