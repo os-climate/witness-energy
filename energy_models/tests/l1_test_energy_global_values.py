@@ -41,6 +41,8 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         full_values_dict[f'{self.name}.CO2_taxes'] = pd.DataFrame({'years': np.arange(2020, 2051),
                                                                    'CO2_tax': 20.0}, index=np.arange(2020, 2051))
+
+        full_values_dict[f'{self.name}.is_dev'] = True
         self.ee.load_study_from_input_dict(full_values_dict)
 
     def test_01_check_global_production_values(self):
@@ -825,13 +827,14 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{liquid_fuel_net_prod_iea} TWh vs WITNESS :{net_liquid_fuel_prod} TWh')
 
         liquid_fuel_own_use = 2485.89  # TWH
-        liquid_fuel_raw_prod = raw_refinery_prod_2020[f'fuel.liquid_fuel (TWh)'].values[0]
+        liquid_fuel_raw_prod = raw_refinery_prod_2020[
+            f'fuel.liquid_fuel (TWh)'].values[0]
+        energy_production_raw_liquidfuel_iea = 52900 - liquid_fuel_own_use
         print(
             f'Energy own use for liquid fuel production is {liquid_fuel_own_use} TWh')
-        print(
-            f"In our model energy own use is directly deduced from production, then raw production in our model \n \
-            should be compared to raw production - energy_own_use : {energy_production_raw_gas_iea-liquid_fuel_own_use} TWh instead of {liquid_fuel_raw_prod} TWh")
 
+        print('Liquid fuel raw production error : ', error_liquid_fuel_net_prod, ' %',
+              f'IEA :{energy_production_raw_liquidfuel_iea} TWh vs WITNESS :{liquid_fuel_raw_prod} TWh')
         chp_plants = 159.62 + 99.81  # TWh
 
         print('CHP and heat plants not implemented corresponds to ',
@@ -1003,5 +1006,5 @@ if '__main__' == __name__:
     t0 = time.time()
     cls = TestGlobalEnergyValues()
     cls.setUp()
-    cls.test_02_check_global_co2_emissions_values()
+    cls.test_03_check_net_production_values()
     print(f'Time : {time.time() - t0} s')
