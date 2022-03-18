@@ -530,12 +530,12 @@ class EnergyMixTestCase(unittest.TestCase):
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-        for graph in graph_list:
-            try:
-                if graph.chart_name == 'Net Energies Total Production and Limit':
-                    graph.to_plotly().show()
-            except:
-                pass
+#        for graph in graph_list:
+#            try:
+#                if graph.chart_name == 'Net Energies Total Production and Limit':
+#                    graph.to_plotly().show()
+#            except:
+#                pass
 
     def test_04_energy_mix_resource(self):
         """
