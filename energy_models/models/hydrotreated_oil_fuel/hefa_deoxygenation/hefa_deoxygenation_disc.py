@@ -21,6 +21,8 @@ from energy_models.core.techno_type.disciplines.hydrotreated_oil_fuel_techno_dis
     HydrotreatedOilFuelTechnoDiscipline
 from energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygenation import \
     HefaDeoxygenation
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+
 
 
 class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
@@ -40,7 +42,7 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = 'HefaDeoxygenation'
-    energy_name = 'hydrotreated_oil_fuel'
+    energy_name = HydrotreatedOilFuel.name
     # Tao, L., Milbrandt, A., Zhang, Y. and Wang, W.C., 2017.
     # Techno-economic and resource analysis of hydroprocessed renewable jet fuel.
     # Biotechnology for biofuels, 10(1), pp.1-16.

@@ -26,7 +26,8 @@ class HydrotreatedOilFuel(EnergyType):
     oil can also be blended with conventional diesel or processed into biodiesel, HVO or bioliquids for use
     under a wider range of conditions. (Source: https://en.wikipedia.org/wiki/Vegetable_oil_fuel)
     """
-    name = 'hydrotreated_oil_fuel'
+    name = 'fuel.hydrotreated_oil_fuel'
+    short_name = 'hydrotreated_oil_fuel'
     data_energy_dict = {'maturity': 5,
                         # Ref: The swedish knowledge centre for renewable transportation fuels (f3)
                         # https://f3centre.se/en/fact-sheets/hefa-hvo-hydroprocessed-esters-and-fatty-acids/

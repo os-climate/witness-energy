@@ -68,7 +68,7 @@ class LiquidFuelTechnoDiscipline(TechnoDiscipline):
 
     _maturity = 'Research'
 
-    energy_name = "liquid_fuel"
+    energy_name = LiquidFuel.name
     kerosene_name = Kerosene.name
     gasoline_name = Gasoline.name
     lpg_name = LiquefiedPetroleumGas.name
