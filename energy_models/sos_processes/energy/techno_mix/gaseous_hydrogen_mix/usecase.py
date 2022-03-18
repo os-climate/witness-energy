@@ -28,7 +28,8 @@ TECHNOLOGIES_LIST = ['WaterGasShift', 'Electrolysis.SOEC',
                              'Electrolysis.PEM', 'Electrolysis.AWE', ]  # 'PlasmaCracking']
 TECHNOLOGIES_LIST_MIN_TECH = ['WaterGasShift']
 TECHNOLOGIES_LIST_DEV = ['WaterGasShift', 'Electrolysis.SOEC', 'Electrolysis.PEM', 'Electrolysis.AWE',
-                         'PlasmaCracking']
+                         #'PlasmaCracking'
+                         ]
 
 
 class Study(EnergyMixStudyManager):
