@@ -116,6 +116,7 @@ class EnergyMix(BaseStream):
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
         self.ratio_available_carbon_capture = None
+        self.losses_percentage_dict = {}
 
     def configure(self, inputs_dict):
         '''
@@ -158,6 +159,9 @@ class EnergyMix(BaseStream):
 
         self.is_dev = inputs_dict['is_dev']
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
+
+        for energy in self.subelements_list:
+            self.losses_percentage_dict[energy] = inputs_dict[f'{energy}.losses_percentage']
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -263,6 +267,8 @@ class EnergyMix(BaseStream):
                         logging.warning(
                             f'The columns {wrong_columns} in the energy_consumption out of {idx} cannot be taken into account for an error of unity')
 
+        if self.is_dev:
+            self.substract_losses_by_energy()
         # Sum on netenergy production
         self.production['Total production'] = self.production[[
             column for column in self.production if column.endswith('(TWh)')]].sum(axis=1)
@@ -293,6 +299,14 @@ class EnergyMix(BaseStream):
         '''
         self.production['Total production'] -= self.production_raw['Total production'] * \
             self.heat_losses_percentage / 100.0
+
+    def substract_losses_by_energy(self):
+        '''
+        Substract energy losses percentage to each net energy production before the sum of total net production
+        '''
+        for energy, percentage in self.losses_percentage_dict.items():
+            self.production[f'production {energy} (TWh)'] -= self.production_raw[f'production {energy} (TWh)'] * \
+                percentage / 100.0
 
     def compute_price_after_carbon_tax(self):
         '''
