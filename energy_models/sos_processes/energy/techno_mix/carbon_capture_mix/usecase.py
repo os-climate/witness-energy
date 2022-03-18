@@ -24,22 +24,27 @@ from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
 
-DEFAULT_TECHNOLOGIES_LIST = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing', 'flue_gas_capture.CalciumLooping',
-                             'flue_gas_capture.ChilledAmmoniaProcess', 'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine', 'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption']
-TECHNOLOGIES_LIST_FOR_OPT = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing', 'flue_gas_capture.CalciumLooping',
-                             'flue_gas_capture.MonoEthanolAmine']
-TECHNOLOGIES_LIST_FOR_OPT_COARSE = [
-    'direct_air_capture.CalciumPotassiumScrubbing', 'flue_gas_capture.CalciumLooping']
+DEFAULT_TECHNOLOGIES_LIST = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
+                             'flue_gas_capture.CalciumLooping','flue_gas_capture.ChilledAmmoniaProcess',
+                             'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine',
+                             'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption']
+TECHNOLOGIES_LIST = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing', 'flue_gas_capture.CalciumLooping',
+                     'flue_gas_capture.MonoEthanolAmine']
+TECHNOLOGIES_LIST_COARSE = ['direct_air_capture.CalciumPotassiumScrubbing', 'flue_gas_capture.CalciumLooping']
 
 TECHNOLOGIES_FLUE_GAS_LIST_COARSE = ['electricity.GasTurbine']
 DEFAULT_FLUE_GAS_LIST = ['electricity.CoalGen', 'electricity.GasTurbine', 'electricity.CombinedCycleGasTurbine',
                          'hydrogen.gaseous_hydrogen.WaterGasShift', 'liquid_fuel.FischerTropsch', 'liquid_fuel.Refinery', 'methane.FossilGas',
                          'solid_fuel.Pelletizing', 'syngas.CoalGasification', 'fossil.FossilSimpleTechno']
+TECHNOLOGIES_LIST_DEV = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
+                             'flue_gas_capture.CalciumLooping','flue_gas_capture.ChilledAmmoniaProcess',
+                             'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine',
+                             'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption']
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST_FOR_OPT,
-                 bspline=True,  main_study=True, prefix_name=None, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
+    def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST,
+                 bspline=True, main_study=True, prefix_name=None, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
         self.year_start = year_start

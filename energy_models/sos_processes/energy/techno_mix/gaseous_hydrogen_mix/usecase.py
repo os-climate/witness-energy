@@ -24,14 +24,16 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 
 DEFAULT_TECHNOLOGIES_LIST = [
     'WaterGasShift', 'Electrolysis.SOEC', 'Electrolysis.PEM', 'Electrolysis.AWE',  'PlasmaCracking']
-TECHNOLOGIES_LIST_FOR_OPT = ['WaterGasShift', 'Electrolysis.SOEC',
+TECHNOLOGIES_LIST = ['WaterGasShift', 'Electrolysis.SOEC',
                              'Electrolysis.PEM', 'Electrolysis.AWE', ]  # 'PlasmaCracking']
-TECHNOLOGIES_LIST_COARSE_MIN_TECH = ['WaterGasShift']
+TECHNOLOGIES_LIST_MIN_TECH = ['WaterGasShift']
+TECHNOLOGIES_LIST_DEV = ['WaterGasShift', 'Electrolysis.SOEC', 'Electrolysis.PEM', 'Electrolysis.AWE',
+                         'PlasmaCracking']
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST_FOR_OPT,
-                 bspline=True,  main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
+    def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST,
+                 bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
         self.year_start = year_start
