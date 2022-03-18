@@ -157,7 +157,6 @@ class EnergyMix(BaseStream):
         self.carbonstorage_limit = inputs_dict['carbonstorage_limit']
 
         self.is_dev = inputs_dict['is_dev']
-        self.losses_percentage = inputs_dict['losses_percentage']
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
 
     def configure_parameters_update(self, inputs_dict):
@@ -275,7 +274,7 @@ class EnergyMix(BaseStream):
         # substract a percentage of raw production into net production only in
         # dev mode
         if self.is_dev:
-            self.substract_energy_losses()
+            self.substract_energy_heat_losses()
 
         self.production['Total production (uncut)'] = self.production['Total production'].values
         min_energy = self.minimum_energy_production
@@ -288,14 +287,12 @@ class EnergyMix(BaseStream):
                 self.production.loc[year, 'Total production'] = min_energy / 10. * \
                     (9 + np.exp(production_year / min_energy) * np.exp(-1))
 
-    def substract_energy_losses(self):
+    def substract_energy_heat_losses(self):
         '''
-        Substract energy losses of net production which contains distribution,transmission and transport of energy
-        USe a percentage losses_percentage of raw production to substract losses of net energy production
         Substract heat losses due to heat stream (not implemented yet) 
         '''
         self.production['Total production'] -= self.production_raw['Total production'] * \
-            (self.losses_percentage + self.heat_losses_percentage) / 100.0
+            self.heat_losses_percentage / 100.0
 
     def compute_price_after_carbon_tax(self):
         '''

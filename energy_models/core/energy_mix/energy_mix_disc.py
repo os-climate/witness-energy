@@ -62,8 +62,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
     heat_tfc_2019 = 3561.87
     heat_use_energy_2019 = 14181.
     total_raw_prod_2019 = 183316.
-    total_losses_2019 = 2654.
-    losses_percentage_default = total_losses_2019 / total_raw_prod_2019 * 100
+    #total_losses_2019 = 2654.
+    #losses_percentage_default = total_losses_2019 / total_raw_prod_2019 * 100
     heat_losses_percentage_default = (heat_use_energy_2019 -
                                       heat_tfc_2019) / total_raw_prod_2019 * 100
 
@@ -101,7 +101,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'losses_percentage': {'type': 'float', 'default': losses_percentage_default, 'unit': '%', 'range': [0., 100.]},
                'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%', 'range': [0., 100.]},
                # WIP is_dev to remove once its validated on dev processes
                'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -396,8 +395,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                           inputs_dict['year_end'] + 1)
         energy_list = inputs_dict['energy_list'] + inputs_dict['ccs_list']
         is_dev = inputs_dict['is_dev']
-        loss_percent = (inputs_dict['losses_percentage'] +
-                        inputs_dict['heat_losses_percentage']) / 100.0
+        loss_percent = inputs_dict['heat_losses_percentage'] / 100.0
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
         normalization_value = inputs_dict['normalization_value_demand_constraints']
         production_detailed_df = outputs_dict['energy_production_detailed']
@@ -1630,7 +1628,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
     def get_chart_energy_mix_losses(self):
         '''
-        Plot chart on energy mix losses 
+        Plot chart on energy mix heat losses 
         '''
 
         new_chart = None
@@ -1638,26 +1636,24 @@ class Energy_Mix_Discipline(SoSDiscipline):
         is_dev = self.get_sosdisc_inputs('is_dev')
 
         if is_dev:
-            chart_name = f'Energy mix losses'
+            chart_name = f'Energy mix heat losses'
 
             raw_prod = self.get_sosdisc_outputs(
                 'energy_production_brut')
-            losses_percentage = self.get_sosdisc_inputs(
-                'losses_percentage')
+#             losses_percentage = self.get_sosdisc_inputs(
+#                 'losses_percentage')
             heat_losses_percentage = self.get_sosdisc_inputs(
                 'heat_losses_percentage')
             years = raw_prod['years'].values.tolist()
 
-            losses = losses_percentage / 100.0 * \
-                raw_prod['Total production'].values
             heat_losses = heat_losses_percentage / \
                 100.0 * raw_prod['Total production'].values
-            new_chart = TwoAxesInstanciatedChart('years', 'Energy losses (TWh)',
+            new_chart = TwoAxesInstanciatedChart('years', 'Energy heat losses (TWh)',
                                                  chart_name=chart_name)
 
-            serie = InstanciatedSeries(
-                years, losses.tolist(), f'Distribution Transmission and Transport losses')
-            new_chart.add_series(serie)
+#             serie = InstanciatedSeries(
+#                 years, losses.tolist(), f'Distribution Transmission and Transport losses')
+#             new_chart.add_series(serie)
 
             serie = InstanciatedSeries(
                 years, heat_losses.tolist(), f'Energy losses from heat production')
