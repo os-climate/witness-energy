@@ -320,7 +320,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        'carbonstorage_constraint_ref': 1000000.,
                        'carbonstorage_limit': 1000000.,
                        'is_dev': False,
-                       'losses_percentage': 1.,
+                       'hydrogen.gaseous_hydrogen.losses_percentage': 1.,
+                       'methane.losses_percentage': 2.,
                        'heat_losses_percentage': 5.
 
                        }
@@ -406,6 +407,7 @@ class EnergyMixTestCase(unittest.TestCase):
         filters = ppf.get_post_processing_filters_by_discipline(disc)
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
+
 #        for graph in graph_list:
 #            graph.to_plotly().show()
 
