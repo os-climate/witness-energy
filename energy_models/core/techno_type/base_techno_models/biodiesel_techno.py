@@ -22,7 +22,7 @@ from energy_models.core.techno_type.techno_type import TechnoType
 class BioDieselTechno(TechnoType):
     def __init__(self, name):
         TechnoType.__init__(self, name)
-        self.energy_name = 'biodiesel'
+        self.energy_name = BioDiesel.name
 
     @abstractmethod
     def compute_other_primary_energy_costs(self):

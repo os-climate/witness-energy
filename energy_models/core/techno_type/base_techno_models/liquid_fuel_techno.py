@@ -20,11 +20,12 @@ from energy_models.core.stream_type.energy_models.gasoline import Gasoline
 from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
 from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
 from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
+from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.techno_type.techno_type import TechnoType
 
 
 class LiquidFuelTechno(TechnoType):
-    energy_name = "liquid_fuel"
+    energy_name = LiquidFuel.name
 
     def __init__(self, name):
         TechnoType.__init__(self, name)

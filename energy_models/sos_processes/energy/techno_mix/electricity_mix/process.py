@@ -18,7 +18,7 @@ from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
     INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
-from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT
+from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -33,7 +33,7 @@ class ProcessBuilder(EnergyProcessBuilder):
 
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
-        self.techno_list = TECHNOLOGIES_LIST_FOR_OPT
+        self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
 

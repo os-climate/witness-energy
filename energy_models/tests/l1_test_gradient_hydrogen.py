@@ -799,5 +799,5 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = HydrogenJacobianTestCase()
     cls.setUp()
-    cls.test_02_plasma_cracking_jacobian()
+    cls.test_08_gaseous_hydrogen_discipline_jacobian()
     print('------')

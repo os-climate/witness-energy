@@ -17,7 +17,7 @@ limitations under the License.
 from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
     INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
-from energy_models.sos_processes.energy.techno_mix.biodiesel_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT
+from energy_models.sos_processes.energy.techno_mix.biodiesel_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -31,7 +31,7 @@ class ProcessBuilder(EnergyProcessBuilder):
     }
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
-        self.techno_list = TECHNOLOGIES_LIST_FOR_OPT
+        self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
 
@@ -51,7 +51,7 @@ class ProcessBuilder(EnergyProcessBuilder):
             'energy_disciplines', 'BioDiesel')
         for techno_name in self.techno_list:
             mods_dict[f'{energy_mix}.{biodiesel_name}.{techno_name}'] = self.get_techno_disc_path(
-                biodiesel_name, techno_name)
+                BioDiesel.short_name, techno_name)
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:

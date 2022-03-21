@@ -22,7 +22,7 @@ from energy_models.core.techno_type.techno_type import TechnoType
 class HydrotreatedOilFuelTechno(TechnoType):
     def __init__(self, name):
         TechnoType.__init__(self, name)
-        self.energy_name = 'hydrotreated_oil_fuel'
+        self.energy_name = HydrotreatedOilFuel.name
 
     @abstractmethod
     def compute_other_primary_energy_costs(self):

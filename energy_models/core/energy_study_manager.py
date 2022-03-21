@@ -31,35 +31,61 @@ from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidH
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 
-from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as Methane_technos
-from energy_models.sos_processes.energy.techno_mix.gaseous_hydrogen_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as GaseousHydrogen_technos
-from energy_models.sos_processes.energy.techno_mix.gaseous_hydrogen_mix.usecase import TECHNOLOGIES_LIST_COARSE_MIN_TECH as gaseoushydrogen_technos_coarse_integration
-from energy_models.sos_processes.energy.techno_mix.biogas_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as BioGas_technos
-from energy_models.sos_processes.energy.techno_mix.syngas_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as Syngas_technos
-from energy_models.sos_processes.energy.techno_mix.syngas_mix.usecase import TECHNOLOGIES_LIST_COARSE_MIN_TECH as syngas_technos_coarse_integration
+from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import TECHNOLOGIES_LIST as Methane_technos
+from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import TECHNOLOGIES_LIST_DEV as Methane_technos_dev
 
-from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as LiquidFuel_technos
-from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import TECHNOLOGIES_LIST_COARSE_MIN_TECH as liquidfuel_technos_coarse_integration
-from energy_models.sos_processes.energy.techno_mix.hydrotreated_oil_fuel_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as HydrotreatedOilFuel_technos
-from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as SolidFuel_technos
-from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import TECHNOLOGIES_LIST_COARSE_MIN_TECH as solidfuel_technos_coarse_integration
-from energy_models.sos_processes.energy.techno_mix.biomass_dry_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as BiomassDry_technos
-from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as Electricity_technos
-from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST_COARSE_MIN_TECH as electricity_technos_coarse_integration
-from energy_models.sos_processes.energy.techno_mix.biodiesel_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as BioDiesel_technos
-from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as LiquidHydrogen_technos
-from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as CarbonCapture_technos
-from energy_models.sos_processes.energy.techno_mix.carbon_storage_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as CarbonStorage_technos
+from energy_models.sos_processes.energy.techno_mix.gaseous_hydrogen_mix.usecase import TECHNOLOGIES_LIST as GaseousHydrogen_technos
+from energy_models.sos_processes.energy.techno_mix.gaseous_hydrogen_mix.usecase import TECHNOLOGIES_LIST_DEV as GaseousHydrogen_technos_dev
+from energy_models.sos_processes.energy.techno_mix.gaseous_hydrogen_mix.usecase import TECHNOLOGIES_LIST_MIN_TECH as gaseoushydrogen_technos_coarse_integration
+
+from energy_models.sos_processes.energy.techno_mix.biogas_mix.usecase import TECHNOLOGIES_LIST as BioGas_technos
+from energy_models.sos_processes.energy.techno_mix.biogas_mix.usecase import TECHNOLOGIES_LIST_DEV as BioGas_technos_dev
+
+from energy_models.sos_processes.energy.techno_mix.syngas_mix.usecase import TECHNOLOGIES_LIST as Syngas_technos
+from energy_models.sos_processes.energy.techno_mix.syngas_mix.usecase import TECHNOLOGIES_LIST_DEV as Syngas_technos_dev
+from energy_models.sos_processes.energy.techno_mix.syngas_mix.usecase import TECHNOLOGIES_LIST_MIN_TECH as syngas_technos_coarse_integration
+
+from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import TECHNOLOGIES_LIST as LiquidFuel_technos
+from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import TECHNOLOGIES_LIST_DEV as LiquidFuel_technos_dev
+from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import TECHNOLOGIES_LIST_MIN_TECH as liquidfuel_technos_coarse_integration
+
+from energy_models.sos_processes.energy.techno_mix.hydrotreated_oil_fuel_mix.usecase import TECHNOLOGIES_LIST as HydrotreatedOilFuel_technos
+from energy_models.sos_processes.energy.techno_mix.hydrotreated_oil_fuel_mix.usecase import TECHNOLOGIES_LIST_DEV as HydrotreatedOilFuel_technos_dev
+
+from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import TECHNOLOGIES_LIST as SolidFuel_technos
+from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import TECHNOLOGIES_LIST_DEV as SolidFuel_technos_dev
+from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import TECHNOLOGIES_LIST_MIN_TECH as solidfuel_technos_coarse_integration
+
+from energy_models.sos_processes.energy.techno_mix.biomass_dry_mix.usecase import TECHNOLOGIES_LIST as BiomassDry_technos
+from energy_models.sos_processes.energy.techno_mix.biomass_dry_mix.usecase import TECHNOLOGIES_LIST_DEV as BiomassDry_technos_dev
+
+from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST as Electricity_technos
+from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST_DEV as Electricity_technos_dev
+from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST_MIN_TECH as electricity_technos_coarse_integration
+from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST_COARSE as Electricity_technos_coarse
+
+from energy_models.sos_processes.energy.techno_mix.biodiesel_mix.usecase import TECHNOLOGIES_LIST as BioDiesel_technos
+from energy_models.sos_processes.energy.techno_mix.biodiesel_mix.usecase import TECHNOLOGIES_LIST_DEV as BioDiesel_technos_dev
+
+from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase import TECHNOLOGIES_LIST as LiquidHydrogen_technos
+from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase import TECHNOLOGIES_LIST_DEV as LiquidHydrogen_technos_dev
+
+from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import TECHNOLOGIES_LIST as CarbonCapture_technos
+from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import TECHNOLOGIES_LIST_DEV as CarbonCapture_technos_dev
+
+from energy_models.sos_processes.energy.techno_mix.carbon_storage_mix.usecase import TECHNOLOGIES_LIST as CarbonStorage_technos
+from energy_models.sos_processes.energy.techno_mix.carbon_storage_mix.usecase import TECHNOLOGIES_LIST_DEV as CarbonStorage_technos_dev
+
 from energy_models.core.stream_type.energy_models.renewable import Renewable
-from energy_models.sos_processes.energy.techno_mix.renewable_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as Renewable_technos
-from energy_models.sos_processes.energy.techno_mix.renewable_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT as Renewable_technos
+from energy_models.sos_processes.energy.techno_mix.renewable_mix.usecase import TECHNOLOGIES_LIST as Renewable_technos
+from energy_models.sos_processes.energy.techno_mix.renewable_mix.usecase import TECHNOLOGIES_LIST as Renewable_technos
 
 from energy_models.core.stream_type.energy_models.fossil import Fossil
-from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT_COARSE as Electricity_technos_coarse
+
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import TECHNOLOGIES_FLUE_GAS_LIST_COARSE as CarbonCapture_technos_coarse
-from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT_COARSE as Methane_technos_coarse
-from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT_COARSE_0 as Electricity_technos_coarse_0
-from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST_FOR_OPT_COARSE_3 as Electricity_technos_coarse_3
+from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import TECHNOLOGIES_LIST_COARSE as Methane_technos_coarse
+from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST_COARSE_0 as Electricity_technos_coarse_0
+from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import TECHNOLOGIES_LIST_COARSE_3 as Electricity_technos_coarse_3
 
 import numpy as np
 from sos_trades_core.tools.base_functions.specific_check import specific_check_years
@@ -81,19 +107,19 @@ DEFAULT_TECHNO_DICT = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_tech
                        CarbonCapture.name: {'type': CCUS_TYPE, 'value': CarbonCapture_technos},
                        CarbonStorage.name: {'type': CCUS_TYPE, 'value': CarbonStorage_technos}}
 
-DEFAULT_TECHNO_DICT_DEV = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_technos},
-                           GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': GaseousHydrogen_technos},
-                           BioGas.name: {'type': ENERGY_TYPE, 'value': BioGas_technos},
-                           Syngas.name: {'type': ENERGY_TYPE, 'value': Syngas_technos},
-                           LiquidFuel.name: {'type': ENERGY_TYPE, 'value': LiquidFuel_technos},
-                           HydrotreatedOilFuel.name: {'type': ENERGY_TYPE, 'value': HydrotreatedOilFuel_technos},
-                           SolidFuel.name: {'type': ENERGY_TYPE, 'value': SolidFuel_technos},
-                           BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos},
-                           Electricity.name: {'type': ENERGY_TYPE, 'value': Electricity_technos},
-                           BioDiesel.name: {'type': ENERGY_TYPE, 'value': BioDiesel_technos},
-                           LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos},
-                           CarbonCapture.name: {'type': CCUS_TYPE, 'value': CarbonCapture_technos},
-                           CarbonStorage.name: {'type': CCUS_TYPE, 'value': CarbonStorage_technos}}
+DEFAULT_TECHNO_DICT_DEV = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_technos_dev},
+                           GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': GaseousHydrogen_technos_dev},
+                           BioGas.name: {'type': ENERGY_TYPE, 'value': BioGas_technos_dev},
+                           Syngas.name: {'type': ENERGY_TYPE, 'value': Syngas_technos_dev},
+                           LiquidFuel.name: {'type': ENERGY_TYPE, 'value': LiquidFuel_technos_dev},
+                           HydrotreatedOilFuel.name: {'type': ENERGY_TYPE, 'value': HydrotreatedOilFuel_technos_dev},
+                           SolidFuel.name: {'type': ENERGY_TYPE, 'value': SolidFuel_technos_dev},
+                           BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos_dev},
+                           Electricity.name: {'type': ENERGY_TYPE, 'value': Electricity_technos_dev},
+                           BioDiesel.name: {'type': ENERGY_TYPE, 'value': BioDiesel_technos_dev},
+                           LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos_dev},
+                           CarbonCapture.name: {'type': CCUS_TYPE, 'value': CarbonCapture_technos_dev},
+                           CarbonStorage.name: {'type': CCUS_TYPE, 'value': CarbonStorage_technos_dev}}
 
 DEFAULT_COARSE_TECHNO_DICT = {'renewable': {'type': ENERGY_TYPE, 'value': ['RenewableSimpleTechno']},
                               'fossil': {'type': ENERGY_TYPE, 'value': ['FossilSimpleTechno']},
@@ -129,16 +155,28 @@ DEFAULT_COARSE_TECHNO_DICT_ccs_3 = {Electricity.name: {'type': ENERGY_TYPE, 'val
                                     'carbon_capture': {'type': CCUS_TYPE, 'value': CarbonCapture_technos},
                                     'carbon_storage': {'type': CCUS_TYPE, 'value': CarbonStorage_technos}}
 
-DEFAULT_COARSE_MIN_TECH_DICT = {Electricity.name: {'type': ENERGY_TYPE, 'value': electricity_technos_coarse_integration},
-                                LiquidFuel.name: {'type': ENERGY_TYPE, 'value': ['Refinery']},
-                                SolidFuel.name: {'type': ENERGY_TYPE, 'value': solidfuel_technos_coarse_integration},
-                                BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos},
-                                Syngas.name: {'type': ENERGY_TYPE, 'value': syngas_technos_coarse_integration},
-                                LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos},
-                                GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': gaseoushydrogen_technos_coarse_integration},
-                                Methane.name: {'type': ENERGY_TYPE, 'value': ['FossilGas']},
+DEFAULT_MIN_TECH_DICT = {Electricity.name: {'type': ENERGY_TYPE, 'value': electricity_technos_coarse_integration},
+                         LiquidFuel.name: {'type': ENERGY_TYPE, 'value': ['Refinery']},
+                         SolidFuel.name: {'type': ENERGY_TYPE, 'value': solidfuel_technos_coarse_integration},
+                         BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos},
+                         Syngas.name: {'type': ENERGY_TYPE, 'value': syngas_technos_coarse_integration},
+                         LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos},
+                         GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': gaseoushydrogen_technos_coarse_integration},
+                         Methane.name: {'type': ENERGY_TYPE, 'value': ['FossilGas']},
                                 'carbon_capture': {'type': CCUS_TYPE, 'value': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.MonoEthanolAmine']},
-                                'carbon_storage': {'type': CCUS_TYPE, 'value': ['PureCarbonSolidStorage', 'Reforestation']}}
+                                'carbon_storage': {'type': CCUS_TYPE, 'value': ['PureCarbonSolidStorage']}}
+
+# DEFAULT_MIN_TECH_DEV_DICT, same as DEFAULT_MIN_TECH_DICT but with deepSalineFormation into carbon_storage
+DEFAULT_MIN_TECH_DEV_DICT = {Electricity.name: {'type': ENERGY_TYPE, 'value': electricity_technos_coarse_integration},
+                         LiquidFuel.name: {'type': ENERGY_TYPE, 'value': ['Refinery']},
+                         SolidFuel.name: {'type': ENERGY_TYPE, 'value': solidfuel_technos_coarse_integration},
+                         BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos},
+                         Syngas.name: {'type': ENERGY_TYPE, 'value': syngas_technos_coarse_integration},
+                         LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos},
+                         GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': gaseoushydrogen_technos_coarse_integration},
+                         Methane.name: {'type': ENERGY_TYPE, 'value': ['FossilGas']},
+                                'carbon_capture': {'type': CCUS_TYPE, 'value': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.MonoEthanolAmine']},
+                                'carbon_storage': {'type': CCUS_TYPE, 'value': ['PureCarbonSolidStorage', 'DeepSalineFormation']}}
 
 DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_TECHNO_DICT.items(
 ) if value['type'] == 'energy']
