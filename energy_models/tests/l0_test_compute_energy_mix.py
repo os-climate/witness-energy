@@ -254,7 +254,6 @@ class EnergyMixTestCase(unittest.TestCase):
             {'years': years, 'CO2_tax': func(years)})
         self.CCS_constraint_factor = np.concatenate(
             (np.linspace(0.5, 1.1, 15), np.asarray([1.1] * (len(years) - 15))))
-        self.delta_co2_price = 200.
         self.minimum_energy_production = 1e4
         self.production_threshold = 1e-3
         self.total_prod_minus_min_prod_constraint_ref = 1e4
@@ -303,7 +302,6 @@ class EnergyMixTestCase(unittest.TestCase):
                        'methane.CO2_emissions': pd.DataFrame({'years': self.years, 'methane': 0.0}),
                        'CO2_taxes': self.co2_taxes,
                        'CCS_constraint_factor': self.CCS_constraint_factor,
-                       'delta_co2_price': self.delta_co2_price,
                        'minimum_energy_production': self.minimum_energy_production,
                        'total_prod_minus_min_prod_constraint_ref': self.total_prod_minus_min_prod_constraint_ref,
                        'tol_constraint': 1.0e-3,
@@ -431,34 +429,6 @@ class EnergyMixTestCase(unittest.TestCase):
                     self.assertListEqual(
                         list(demand_viol[col].values), list(ref_prod[col].values))
         tol_constraint = disc.get_sosdisc_inputs('tol_constraint')
-        #-- check delta on prices
-        for e_name in self.energy_list:
-            # ref data
-            prices_in = disc.get_sosdisc_inputs(f'{e_name}.energy_prices')
-            prices_out = disc.get_sosdisc_outputs('energy_prices_after_tax')
-
-            delta_prices_ref = prices_out[['years']].copy(deep=True)
-            delta_prices_ref[e_name] = prices_out[e_name] - \
-                prices_in[e_name] - tol_constraint
-            # retrieve delta on prices as computed in the disc
-            dprice_name = f'{e_name}.{EnergyMix.DELTA_ENERGY_PRICES}'
-            delta_prices = disc.get_sosdisc_outputs(dprice_name)
-            # compare output with ref
-            assert_frame_equal(delta_prices, delta_prices_ref)
-
-        for e_name in self.energy_list:
-            # ref data
-            co2_in = disc.get_sosdisc_inputs(f'{e_name}.CO2_emissions')
-            co2_out = disc.get_sosdisc_outputs(
-                'energy_CO2_emissions_after_use')
-            delta_co2_ref = co2_out[['years']].copy(deep=True)
-            delta_co2_ref[e_name] = co2_out[e_name] - \
-                co2_in[e_name] - tol_constraint
-            # retrieve delta on prices as computed in the disc
-            dprice_name = f'{e_name}.{EnergyMix.DELTA_CO2_EMISSIONS}'
-            delta_co2 = disc.get_sosdisc_outputs(dprice_name)
-            # compare output with ref
-            assert_frame_equal(delta_co2, delta_co2_ref)
 
     def test_03_energy_mix_discipline_exponential_limit(self):
         """
