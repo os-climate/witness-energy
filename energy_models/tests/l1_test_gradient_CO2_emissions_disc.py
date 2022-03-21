@@ -132,5 +132,5 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = ConsumptionCO2EmissionsDiscJacobianTestCase()
     cls.setUp()
-    # cls.launch_data_pickle_generation()
+    # self.launch_data_pickle_generation()
     cls.test_01_Consumption_CO2_emissions_discipline_CO2_per_use_jacobian()
