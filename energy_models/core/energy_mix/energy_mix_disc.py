@@ -1704,7 +1704,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 stream + '.technologies_list')
             if len(technologies_list_namespace_list) != 0:
                 technologies_list += self.ee.dm.get_data(
-                    technologies_list_namespace_list)[0]['value']
+                    technologies_list_namespace_list[0])['value']
         techno_cons_dict = {}
         for techno in technologies_list:
             techno_disc = self.ee.dm.get_disciplines_with_name(self.ee.dm.get_all_namespaces_from_var_name(
