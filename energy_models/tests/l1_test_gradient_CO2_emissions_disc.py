@@ -192,3 +192,4 @@ if '__main__' == __name__:
     cls.setUp()
     # cls.launch_data_pickle_generation()
     cls.test_02_Consumption_CO2_emissions_discipline_energy_prod_cons_jacobian()
+

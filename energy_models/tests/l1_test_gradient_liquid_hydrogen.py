@@ -37,7 +37,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
     def analytic_grad_entry(self):
         return [
             self.test_01_hydrogen_liquefaction_jacobian,
-            self.test_02_liquid_hydrogen_jacobian,
+            self.test_02_liquid_hydrogen_discipline_jacobian,
         ]
 
     def setUp(self):

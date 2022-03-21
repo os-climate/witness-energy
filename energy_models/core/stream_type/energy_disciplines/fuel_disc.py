@@ -81,33 +81,34 @@ class FuelDiscipline(SoSDiscipline):
 
         if 'energy_list' in self._data_in:
             energy_mix_list = self.get_sosdisc_inputs('energy_list')
-            self.energy_list = list(set(FuelDiscipline.fuel_list).intersection(set(energy_mix_list)))
-            for energy in self.energy_list:
-                dynamic_inputs[f'{energy}.energy_prices'] = {'type': 'dataframe',
-                                                             'unit': '$/MWh',
-                                                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                             'namespace': 'ns_energy_mix'
-                                                             }
-                dynamic_inputs[f'{energy}.energy_detailed_techno_prices'] = {'type': 'dataframe',
-                                                                             'unit': '$/MWh',
-                                                                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                             'namespace': 'ns_energy_mix'
-                                                                             }
-                dynamic_inputs[f'{energy}.energy_consumption'] = {'type': 'dataframe',
-                                                                  'unit': 'PWh',
-                                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                  'namespace': 'ns_energy_mix'
-                                                                  }
-                dynamic_inputs[f'{energy}.energy_production'] = {'type': 'dataframe',
-                                                                 'unit': 'PWh',
+            if energy_mix_list is not None:
+                self.energy_list = list(set(FuelDiscipline.fuel_list).intersection(set(energy_mix_list)))
+                for energy in self.energy_list:
+                    dynamic_inputs[f'{energy}.energy_prices'] = {'type': 'dataframe',
+                                                                 'unit': '$/MWh',
                                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                  'namespace': 'ns_energy_mix'
                                                                  }
-                dynamic_inputs[f'{energy}.energy_production_detailed'] = {'type': 'dataframe',
-                                                                          'unit': 'TWh',
-                                                                          'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                          'namespace': 'ns_energy_mix'
-                                                                          }
+                    dynamic_inputs[f'{energy}.energy_detailed_techno_prices'] = {'type': 'dataframe',
+                                                                                 'unit': '$/MWh',
+                                                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                                 'namespace': 'ns_energy_mix'
+                                                                                 }
+                    dynamic_inputs[f'{energy}.energy_consumption'] = {'type': 'dataframe',
+                                                                      'unit': 'PWh',
+                                                                      'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                      'namespace': 'ns_energy_mix'
+                                                                      }
+                    dynamic_inputs[f'{energy}.energy_production'] = {'type': 'dataframe',
+                                                                     'unit': 'PWh',
+                                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                     'namespace': 'ns_energy_mix'
+                                                                     }
+                    dynamic_inputs[f'{energy}.energy_production_detailed'] = {'type': 'dataframe',
+                                                                              'unit': 'TWh',
+                                                                              'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                              'namespace': 'ns_energy_mix'
+                                                                              }
 
         self.add_inputs(dynamic_inputs)
 
