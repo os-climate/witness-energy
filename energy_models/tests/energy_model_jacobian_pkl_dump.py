@@ -9,6 +9,8 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 if __name__ == '__main__':
+    AbstractJacobianUnittest.launch_all_pickle_generation(
+        jacobian_target)
 
     AbstractJacobianUnittest.launch_all_pickle_generation(
         jacobian_target, '_l1_test_gradient_energy_mix.py')

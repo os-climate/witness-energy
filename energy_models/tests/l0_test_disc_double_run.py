@@ -22,7 +22,7 @@ from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as StudyMDA
 from copy import deepcopy
-from sos_trades_core.sos_processes.compare_data_manager_tooling import compare_dict
+from gemseo.utils.compare_data_manager_tooling import compare_dict
 
 
 class DiscDoubleRunTestCase(unittest.TestCase):

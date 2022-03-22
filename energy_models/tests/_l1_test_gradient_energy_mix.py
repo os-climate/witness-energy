@@ -1141,7 +1141,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_names = [
             f'{name}.{model_name}.{energy}.CO2_per_use' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_mix_co2_per_use_gradients',
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_mix_co2_per_use_gradients.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
                                                            f'{name}.{model_name}.co2_emissions',
@@ -1200,7 +1200,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_names.extend(
             [f'{name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_mix_co2_per_use_gradients',
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_with_losses',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
                                                            f'{name}.{model_name}.co2_emissions',
@@ -1212,11 +1212,11 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                                            f'{name}.{func_manager_name}.total_prod_minus_min_prod_constraint_df',
                                                            f'{name}.{model_name}.energy_prices_after_tax',
                                                            f'{name}.{func_manager_name}.energy_production_objective',
-                                                           f'{name}.{func_manager_name}.primary_energies_production', ], parallel=self.parallel)
+                                                           f'{name}.{func_manager_name}.primary_energies_production', ])
 
 
 if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = EnergyMixJacobianTestCase()
     cls.setUp()
-    cls.test_06_energy_mix_all_outputs()
+    cls.test_14_energy_mix_with_losses()

@@ -376,6 +376,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     def test_05_liquid_fuel_discipline_jacobian(self):
 
         self.name = 'Test'
+        self.energy_name = 'fuel.liquid_fuel'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_liquid_fuel': f'{self.name}',
@@ -419,8 +420,11 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         pkl_file.close()
 
         coupled_outputs = []
+        # remove some outputs that we know are not coupled for this discipline
+        not_coupled_ouputs = ['energy_detailed_techno_prices', 'energy_production_detailed']
+
         for key in mda_data_output_dict[self.energy_name].keys():
-            if mda_data_output_dict[self.energy_name][key]['is_coupling']:
+            if mda_data_output_dict[self.energy_name][key]['is_coupling'] and key not in not_coupled_ouputs:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -429,8 +433,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0]
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=coupled_inputs,

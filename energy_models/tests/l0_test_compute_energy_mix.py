@@ -320,7 +320,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        'carbonstorage_constraint_ref': 1000000.,
                        'carbonstorage_limit': 1000000.,
                        'is_dev': False,
-                       'losses_percentage': 1.,
+                       'hydrogen.gaseous_hydrogen.losses_percentage': 1.,
+                       'methane.losses_percentage': 2.,
                        'heat_losses_percentage': 5.
 
                        }
@@ -369,6 +370,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.year_end': self.year_end,
                        f'{name}.energy_list': self.energy_list,
                        f'{name}.ccs_list': [],
+                       f'{name}.is_dev': True,
                        f'{name}.{model_name}.energy_prices': pd.DataFrame({'hydrogen.gaseous_hydrogen': self.prices_hydro['hydrogen.gaseous_hydrogen'], 'methane': self.cost_details['methane']}),
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_consumption': self.consumption_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_consumption_woratio': self.consumption_hydro,
@@ -390,7 +392,9 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.land_use_required': self.land_use_required_mock,
                        f'{name}.{model_name}.CCS_constraint_factor': self.CCS_constraint_factor,
                        f'{name}.CO2_taxes': self.co2_taxes,
-                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage
+                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage,
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.loss_percentage': 1.0,
+                       f'{name}.{model_name}.methane.loss_percentage': 2.0,
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
@@ -403,8 +407,9 @@ class EnergyMixTestCase(unittest.TestCase):
         filters = ppf.get_post_processing_filters_by_discipline(disc)
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+
+#        for graph in graph_list:
+#            graph.to_plotly().show()
 
         #-- check demand violation value
         for e_name in self.energy_list:
@@ -530,12 +535,12 @@ class EnergyMixTestCase(unittest.TestCase):
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-        for graph in graph_list:
-            try:
-                if graph.chart_name == 'Net Energies Total Production and Limit':
-                    graph.to_plotly().show()
-            except:
-                pass
+#        for graph in graph_list:
+#            try:
+#                if graph.chart_name == 'Net Energies Total Production and Limit':
+#                    graph.to_plotly().show()
+#            except:
+#                pass
 
     def test_04_energy_mix_resource(self):
         """

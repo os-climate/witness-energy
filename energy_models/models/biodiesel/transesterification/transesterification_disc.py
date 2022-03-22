@@ -17,6 +17,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.biodiesel_techno_disc import BioDieselTechnoDiscipline
+from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.models.biodiesel.transesterification.transesterification import Transesterification
 
 
@@ -37,7 +38,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = 'Transesterification'
-    energy_name = 'biodiesel'
+    energy_name = BioDiesel.name
     lifetime = 15
     construction_delay = 3  # years
 
