@@ -242,7 +242,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
                         dynamic_inputs[f'{ccs_name}.data_fuel_dict'] = {
                             'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                            'namespace': f'ns_{ccs_name}', 'default': self.stream_class_dict[ccs_name].data_energy_dict}
+                            'namespace': f'ns_ccs', 'default': self.stream_class_dict[ccs_name].data_energy_dict}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
