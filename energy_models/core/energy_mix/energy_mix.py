@@ -174,7 +174,6 @@ class EnergyMix(BaseStream):
             inputs_dict['ccs_list']
         self.subelements_list_energy = inputs_dict['energy_list']
         self.CCS_constraint_factor = inputs_dict['CCS_constraint_factor']
-        self.delta_co2_price = inputs_dict['delta_co2_price']
         self.total_prod_minus_min_prod_constraint_ref = inputs_dict[
             'total_prod_minus_min_prod_constraint_ref']
         # Specific configure for energy mix
@@ -417,41 +416,6 @@ class EnergyMix(BaseStream):
 
                     self.demand_max_production[energy] = base_df
 
-    def compute_delta_on_prices(self):
-        ''' computes the difference between the prices computed by the energy mix discipline 
-        vs. the prices as inputs of the process
-        NB: corresponds to the gap between two iterations of an MDA on prices
-        '''
-        prices_in = self.energy_prices_in  # df
-        prices_out = self.energy_prices  # df
-        delta_prices = {}
-        base_df = pd.DataFrame({'years': self.years})
-        for energy in self.subelements_list:
-            delta = base_df.copy(deep=True)
-            delta[energy] = prices_out[energy] - \
-                prices_in[energy] - self.tol_constraint
-            delta_prices[energy] = delta
-
-        self.delta_energy_prices = delta_prices
-
-    def compute_delta_on_co2_emissions(self):
-        ''' computes the difference between the co2 emissions computed by the energy mix discipline 
-        vs. the co2 as inputs of the process
-        NB: corresponds to the gap between two iterations of an MDA on prices
-        '''
-        co2_in = self.co2_emissions_in  # df
-        co2_out = self.carbon_emissions_after_use  # df
-        delta_co2_emissions = {}
-        base_df = pd.DataFrame({'years': self.years})
-        for energy in self.subelements_list:
-            if energy in self.energy_class_dict:
-                delta = base_df.copy(deep=True)
-                delta[energy] = co2_out[energy] - \
-                    co2_in[energy] - self.tol_constraint
-                delta_co2_emissions[energy] = delta
-
-        self.delta_co2_emissions = delta_co2_emissions
-
     def compute_mean_price(self, exp_min=True):
         '''
         Compute energy mean price and price of each energy after carbon tax
@@ -526,19 +490,6 @@ class EnergyMix(BaseStream):
 
         production_energy_net_pos['energy_price_pond'] = energy_mean_price['energy_price']
         return energy_mean_price, production_energy_net_pos
-
-    def compute_CO2_tax_minus_CCS_constraint(self):
-        '''
-        Compute CCS_price and constraint (CO2_taxes - self.CCS_constraint_factor*CCS_price)/delta_co2_price
-        '''
-        self.CCS_price['ccs_price_per_tCO2'] = 0.
-        if CarbonCapture.name in self.sub_prices:
-            self.CCS_price['ccs_price_per_tCO2'] += self.energy_prices[CarbonCapture.name]
-        if CarbonStorage.name in self.sub_prices:
-            self.CCS_price['ccs_price_per_tCO2'] += self.sub_prices[CarbonStorage.name]
-
-        self.CO2_tax_minus_CCS_constraint[self.CO2_TAX_MINUS_CCS_CONSTRAINT] = (self.carbon_tax['CO2_tax'].values -
-                                                                                self.CCS_constraint_factor * self.CCS_price['ccs_price_per_tCO2'].values) / self.delta_co2_price
 
     def compute_total_prod_minus_min_prod_constraint(self):
         '''

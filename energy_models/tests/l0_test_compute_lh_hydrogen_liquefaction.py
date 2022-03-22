@@ -26,7 +26,7 @@ from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefa
 from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction_disc import HydrogenLiquefactionDiscipline
 
 from copy import deepcopy
-from sos_trades_core.sos_processes.compare_data_manager_tooling import compare_dict
+from gemseo.utils.compare_data_manager_tooling import compare_dict
 
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
