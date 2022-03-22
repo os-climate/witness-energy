@@ -484,7 +484,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         if 'production ' + self.LIQUID_FUEL_NAME + ' (TWh)' in production_detailed_df.columns and 'production ' + self.HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns and 'production ' + self.LIQUID_HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns:
                             if energy == self.HYDROGEN_NAME or energy == self.LIQUID_HYDROGEN_NAME or energy == self.LIQUID_FUEL_NAME:
                                 self.set_partial_derivative_for_other_types(
-                                    ('primary_energies_production', 'primary_energies'), (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),  -scaling_factor_energy_consumption * (primary_energy_percentage * dtotal_prod_denergy_cons - np.identity(len(years))))
+                                    ('primary_energies_production', 'primary_energies'), (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),  -scaling_factor_energy_consumption * (primary_energy_percentage * dtotal_prod_denergy_cons + np.identity(len(years))))
                             else:
                                 self.set_partial_derivative_for_other_types(
                                     ('primary_energies_production', 'primary_energies'), (f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),  -scaling_factor_energy_consumption * primary_energy_percentage * dtotal_prod_denergy_cons)
