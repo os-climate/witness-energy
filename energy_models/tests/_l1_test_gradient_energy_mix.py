@@ -1199,7 +1199,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_names.extend(
             [f'{name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_with_losses',
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_with_losses.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
                                                            f'{name}.{model_name}.co2_emissions_needed_by_energy_mix',
