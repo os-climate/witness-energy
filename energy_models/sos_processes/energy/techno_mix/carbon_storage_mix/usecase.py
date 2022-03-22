@@ -24,13 +24,17 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 
 
 DEFAULT_TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
-                             'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization', 'PureCarbonSolidStorage', 'Reforestation']
-TECHNOLOGIES_LIST_FOR_OPT = ['DeepSalineFormation',
-                             'DepletedOilGas', 'GeologicMineralization', 'Reforestation', 'PureCarbonSolidStorage']
+                             'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
+                             'PureCarbonSolidStorage', 'Reforestation']
+TECHNOLOGIES_LIST = ['DeepSalineFormation', 'DepletedOilGas', 'GeologicMineralization', 'Reforestation',
+                     'PureCarbonSolidStorage']
+TECHNOLOGIES_LIST_DEV = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
+                             'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
+                             'PureCarbonSolidStorage', 'Reforestation']
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST_FOR_OPT,
+    def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST,
                  bspline=True, main_study=True, prefix_name=None, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
