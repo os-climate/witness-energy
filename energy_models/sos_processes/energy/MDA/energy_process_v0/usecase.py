@@ -118,26 +118,26 @@ class Study(EnergyStudyManager):
         list_ns = []
         #-- add objectives to func_manager
         list_var.extend([f'energy_production_objective',
-                         'syngas_prod_objective', 'ratio_objective'])
+                         'syngas_prod_objective'])
         list_parent.extend(['objectives',
-                            'objectives',  'objectives'])
-        list_ftype.extend([OBJECTIVE,  OBJECTIVE,  OBJECTIVE])
+                            'objectives'])
+        list_ftype.extend([OBJECTIVE,  OBJECTIVE])
         if Syngas.name in self.energy_list:
-            list_weight.extend([0.,  1.,  1.])
+            list_weight.extend([0.,  1.])
         else:
-            list_weight.extend([0., 0.,  1.])
+            list_weight.extend([0., 0.])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM,  AGGR_TYPE_SUM,  AGGR_TYPE_SUM])
+            [AGGR_TYPE_SUM,  AGGR_TYPE_SUM])
         list_ns.extend(['ns_functions',
-                        'ns_functions', 'ns_functions'])
+                        'ns_functions'])
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
-            list_var.extend(['invest_objective'])
-            list_parent.extend(['objectives'])
-            list_ftype.extend([OBJECTIVE])
-            list_weight.extend([1.0])
-            list_aggr_type.extend([AGGR_TYPE_SUM])
-            list_ns.extend(['ns_functions'])
+            list_var.extend(['invest_objective', 'invest_objective_sum'])
+            list_parent.extend(['objectives', 'objectives'])
+            list_ftype.extend([OBJECTIVE, OBJECTIVE])
+            list_weight.extend([1.0, 0.0])
+            list_aggr_type.extend([AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            list_ns.extend(['ns_functions', 'ns_functions'])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -711,7 +711,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.is_stream_demand': True,
                        f'{self.study_name}.max_mda_iter': 200,
                        f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
-                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.concatenate((np.ones(5)*1e-4,np.ones(len(self.years)-5)/4), axis=None),
+                       f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.concatenate((np.ones(5) * 1e-4, np.ones(len(self.years) - 5) / 4), axis=None),
                        f'{self.study_name}.{energy_mix_name}.resources_CO2_emissions': self.resources_CO2_emissions,
                        f'{self.study_name}.{energy_mix_name}.resources_price': self.resources_prices,
                        }

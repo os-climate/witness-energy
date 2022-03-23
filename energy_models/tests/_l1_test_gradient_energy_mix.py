@@ -1033,7 +1033,6 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_detailed_co2_emissions.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
-                                                           f'{name}.{model_name}.co2_emissions',
                                                            f'{name}.{model_name}.energy_CO2_emissions',
                                                            f'{name}.{model_name}.energy_mean_price',
                                                            f'{name}.{model_name}.land_demand_df',
@@ -1144,7 +1143,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_mix_co2_per_use_gradients.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
-                                                           f'{name}.{model_name}.co2_emissions',
+                                                           f'{name}.{model_name}.co2_emissions_Gt',
                                                            f'{name}.{model_name}.energy_CO2_emissions',
                                                            f'{name}.{model_name}.energy_mean_price',
                                                            f'{name}.{model_name}.land_demand_df',
@@ -1200,10 +1199,10 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_names.extend(
             [f'{name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_with_losses',
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_with_losses.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
-                                                           f'{name}.{model_name}.co2_emissions',
+                                                           f'{name}.{model_name}.co2_emissions_needed_by_energy_mix',
                                                            f'{name}.{model_name}.energy_CO2_emissions',
                                                            f'{name}.{model_name}.energy_mean_price',
                                                            f'{name}.{model_name}.land_demand_df',

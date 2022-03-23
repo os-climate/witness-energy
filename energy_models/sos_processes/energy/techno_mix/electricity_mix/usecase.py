@@ -25,19 +25,21 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 
 DEFAULT_TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                              'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'Geothermal', 'CoalGen']
-TECHNOLOGIES_LIST_FOR_OPT = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
+TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                              'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'Geothermal', 'CoalGen']
-TECHNOLOGIES_LIST_FOR_OPT_COARSE = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
+TECHNOLOGIES_LIST_COARSE = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                                     'Nuclear', 'Geothermal', 'Hydropower']
-TECHNOLOGIES_LIST_FOR_OPT_COARSE_0 = ['RenewableElectricitySimpleTechno']
-TECHNOLOGIES_LIST_FOR_OPT_COARSE_3 = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
+TECHNOLOGIES_LIST_COARSE_0 = ['RenewableElectricitySimpleTechno']
+TECHNOLOGIES_LIST_COARSE_3 = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                                       'Nuclear', 'Geothermal', 'Hydropower', 'CoalGen']
-TECHNOLOGIES_LIST_COARSE_MIN_TECH = ['WindOnshore', 'SolarPv', 'SolarThermal',
+TECHNOLOGIES_LIST_MIN_TECH = ['WindOnshore', 'SolarPv', 'SolarThermal',
                                      'Nuclear', 'Geothermal', 'Hydropower', 'CoalGen']
+TECHNOLOGIES_LIST_DEV = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
+                         'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'Geothermal', 'CoalGen']
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST_FOR_OPT,
+    def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=DEFAULT_TECHNOLOGIES_LIST,
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)

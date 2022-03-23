@@ -67,6 +67,9 @@ class TechnoType:
         self.is_stream_demand = False
         self.is_resource_ratio = False
         self.ratio_df = None
+        self.lost_capital = None
+        self.techno_capital = None
+        self.applied_ratio = None
 
     def check_inputs_dict(self, inputs_dict):
         '''
@@ -148,6 +151,9 @@ class TechnoType:
         self.techno_land_use = pd.DataFrame({'years': self.years})
 
         self.all_streams_demand_ratio = pd.DataFrame({'years': self.years})
+
+        self.lost_capital = pd.DataFrame({'years': self.years})
+        self.techno_capital = pd.DataFrame({'years': self.years})
 
     def configure_parameters(self, inputs_dict):
         '''
@@ -311,6 +317,54 @@ class TechnoType:
         self.applied_ratio = pd.DataFrame({'years': self.years,
                                            'min_ratio_name': min_ratio_name,
                                            'applied_ratio': ratio_values})
+
+    def compute_lost_capital(self):
+        '''
+        Compute the loss of capital because of the unusability of the technology. 
+        When the applied ratio is below 1, the technology does not produce all the energy possible.
+        Investments on this technology is consequently lost. 
+        This method computes the lost of capital 
+
+        Capex is in $/MWh
+        Prod in TWh 
+        then capex*prod_wo_ratio is in $/MWh*(1e6MWh)= M$
+        The investment is for the lifetime of the technology then each year you loose one over lifetime the initial investment
+        We divide by scaling_factor_invest_level to put lost_capital in G$
+        '''
+        self.techno_capital[self.name] = self.cost_details[f'Capex_{self.name}'].values \
+            * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values \
+            / self.scaling_factor_invest_level / self.techno_infos_dict['lifetime']
+
+        self.lost_capital[self.name] = self.techno_capital[self.name].values * (
+            1.0 - self.applied_ratio['applied_ratio'].values)
+
+    def compute_dlostcapital_dinvest(self, dcapex_dinvest, dprod_dinvest):
+        '''
+        Compute the gradient of lost capital by invest_level
+
+        dlostcapital_dinvest = dcapex_dinvest*prod(1-ratio) + dprod_dinvest*capex(1-ratio) - dratiodinvest*prod*capex
+        dratiodinvest = 0.0
+        '''
+
+        dtechnocapital_dinvest = (dcapex_dinvest * self.scaling_factor_techno_production * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
+                                  dprod_dinvest * self.cost_details[f'Capex_{self.name}'].values.reshape((len(self.years), 1))) / self.techno_infos_dict['lifetime']
+
+        dlostcapital_dinvest = dtechnocapital_dinvest * (
+            1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
+
+        # we do not divide by / self.scaling_factor_invest_level because invest
+        # and lost_capital are in G$
+        return dlostcapital_dinvest, dtechnocapital_dinvest
+
+    def compute_dlostcapital_dratio(self, dapplied_ratio_dratio):
+        '''
+        Compute the lost_capital gradient vs all_stream_demand_ratio 
+        In input we already have the gradient of applied_ratio on stream_demand_ratio
+        '''
+        mult_vect = self.cost_details[f'Capex_{self.name}'].values * \
+            self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values
+        dlost_capital_dratio = -dapplied_ratio_dratio * mult_vect
+        return dlost_capital_dratio / self.techno_infos_dict['lifetime']
 
     def compute_price(self):
         """
@@ -982,7 +1036,7 @@ class TechnoType:
         dinvest_exp_min = compute_dfunc_with_exp_min(
             invest_list, self.min_value_invest)
 
-        dcapex_list_dinvest_list *= dinvest_exp_min
+        dcapex_list_dinvest_list_withexp = dcapex_list_dinvest_list * dinvest_exp_min
         dprod_dinvest = np.zeros(
             (nb_years, nb_years), dtype=arr_type)
         #dprod_dinvest= dpprod_dpinvest + dprod_dcapex*dcapex_dinvest
@@ -990,7 +1044,7 @@ class TechnoType:
             for column in range(nb_years):
                 dprod_dinvest[line, column] = dprod_list_dinvest_list[line, column] + \
                     np.matmul(
-                        dprod_list_dcapex_list[line, :], dcapex_list_dinvest_list[:, column])
+                        dprod_list_dcapex_list[line, :], dcapex_list_dinvest_list_withexp[:, column])
 
         self.dprod_dinvest = dprod_dinvest
 
@@ -1051,6 +1105,22 @@ class TechnoType:
         '''
         dprod_dratio = np.zeros(
             (len(self.years), len(self.years)))
+
+        dsmooth_dvariable = self.compute_dapplied_ratio_dratios(is_apply_ratio)
+
+        if ratio_name:
+            # Check that the ratio corresponds to something consumed
+            for col in self.consumption.columns:
+                if ratio_name in col and ratio_name not in ['years']:
+                    dprod_dratio = (np.identity(len(self.years)) * prod.values) *\
+                        dsmooth_dvariable[ratio_name]
+        return dprod_dratio
+
+    def compute_dapplied_ratio_dratios(self, is_apply_ratio=True):
+        '''
+        Compute the gradient of applied ratio vs all_stream_demand_ratios
+        only if is_apply_ratio is True
+        '''
         dsmooth_dvariable = {}
         elements = []
         for i, element in enumerate(self.ratio_df.columns):
@@ -1069,13 +1139,7 @@ class TechnoType:
                 for i, element in enumerate(self.ratio_df[elements].columns):
                     dsmooth_dvariable[element] = dsmooth_matrix.T[i]
 
-        if ratio_name:
-            # Check that the ratio corresponds to something consumed
-            for col in self.consumption.columns:
-                if ratio_name in col and ratio_name not in ['years']:
-                    dprod_dratio = (np.identity(len(self.years)) * prod.values) *\
-                        dsmooth_dvariable[ratio_name]
-        return dprod_dratio
+        return dsmooth_dvariable
 
     def compute_aging_distribution_production(self):
         '''
@@ -1188,7 +1252,7 @@ class TechnoType:
         production_from_invest = pd.concat(
             [self.cost_details[['years', 'invest', f'Capex_{self.name}']], prod_before_ystart], ignore_index=True)
         production_from_invest.sort_values(by=['years'], inplace=True)
-        # Need prod_from invest in TWh we have $ and $/MWh
+        # Need prod_from invest in TWh we have M$ and $/MWh  M$/($/MWh)= TWh
         #invest_minimized = production_from_invest['invest'].values
 
         production_from_invest['prod_from_invest'] = production_from_invest['invest'].values / \

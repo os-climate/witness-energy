@@ -50,6 +50,8 @@ class IndependentInvestDiscipline(SoSDiscipline):
                        'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
                        'dataframe_edition_locked': False},
         'invest_objective_ref': {'type': 'float', 'default': 1.0, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
+        'invest_sum_ref': {'type': 'float', 'default': 10., 'user_level': 2, 'visibility': 'Shared',
+                                 'namespace': 'ns_ref'},
         'invest_constraint_ref': {'type': 'float', 'default': 80.0, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
         'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
@@ -64,6 +66,9 @@ class IndependentInvestDiscipline(SoSDiscipline):
     DESC_OUT = {
         'invest_constraint': {'type': 'dataframe', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'invest_objective': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'invest_objective_sum': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                             'namespace': 'ns_functions'},
+
     }
     _maturity = 'Research'
 
@@ -126,11 +131,12 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         input_dict = self.get_sosdisc_inputs()
 
-        invest_constraint_df, invest_objective = self.independent_invest_model.compute_invest_constraint_and_objective(
+        invest_constraint_df, invest_objective, abs_delta = self.independent_invest_model.compute_invest_constraint_and_objective(
             input_dict)
 
         output_dict = {'invest_constraint': invest_constraint_df,
-                       'invest_objective': invest_objective}
+                       'invest_objective': invest_objective,
+                       'invest_objective_sum': abs_delta}
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
             for techno in input_dict[f'{energy}.technologies_list']:
@@ -151,7 +157,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
         invest_objective_ref = inputs_dict['invest_objective_ref']
         years = np.arange(inputs_dict['year_start'],
                           inputs_dict['year_end'] + 1)
-
+        invest_sum_ref = inputs_dict['invest_sum_ref']
         techno_invests = inputs_dict['invest_mix'][[
             col for col in inputs_dict['invest_mix'] if col != 'years']]
 
@@ -170,6 +176,8 @@ class IndependentInvestDiscipline(SoSDiscipline):
         dinvest_objective_dtechno_invest, dinvest_objective_dtotal_invest = self.compute_dinvest_objective_dinvest(techno_invest_sum,
                                                                                                                    energy_invest,
                                                                                                                    invest_objective_ref)
+
+        dinvest_objective_sum_dtechno_invest, dinvest_objective_sum_dtotal_invest = self.compute_dinvest_objective_sum_dinvest(techno_invest_sum,energy_invest,invest_sum_ref)
         for techno in self.independent_invest_model.distribution_list:
             self.set_partial_derivative_for_other_types(
                 (f'{techno}.invest_level', 'invest'), ('invest_mix', techno),  np.identity(len(years)))
@@ -177,7 +185,9 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 ('invest_constraint', 'invest_constraint'), ('invest_mix', techno),  ddelta_dtech / invest_constraint_ref)
             self.set_partial_derivative_for_other_types(
                 ('invest_objective', 'invest_objective'), ('invest_mix', techno),  dinvest_objective_dtechno_invest)
-        
+            self.set_partial_derivative_for_other_types(
+                ('invest_objective_sum',), ('invest_mix', techno), dinvest_objective_sum_dtechno_invest)
+
         if inputs_dict['is_dev']:
             self.set_partial_derivative_for_other_types(
                 ('forest_investment', 'forest_investment'), ('forest_investment', 'forest_investment'),  np.identity(len(years)))
@@ -191,6 +201,8 @@ class IndependentInvestDiscipline(SoSDiscipline):
         self.set_partial_derivative_for_other_types(
             ('invest_objective', 'invest_objective'), ('energy_investment', 'energy_investment'),  dinvest_objective_dtotal_invest * scaling_factor_energy_investment)
 
+        self.set_partial_derivative_for_other_types(
+            ('invest_objective_sum',), ('energy_investment', 'energy_investment'), dinvest_objective_sum_dtotal_invest* scaling_factor_energy_investment)
     def compute_dinvest_objective_dinvest(self, techno_invest_sum, invest_tot, invest_objective_ref):
         '''
         Compute derivative of investment objective relative to investment by techno and
@@ -222,6 +234,30 @@ class IndependentInvestDiscipline(SoSDiscipline):
         dobj_dtot = dsmooth_delta_dtot / invest_objective_ref
 
         return dobj_dtech, dobj_dtot
+
+    def compute_dinvest_objective_sum_dinvest(self, techno_invest_sum, invest_tot, invest_sum_ref):
+        '''
+        Compute derivative of investment objective relative to investment by techno and
+        compared to total energy invest
+        '''
+
+        delta = (invest_tot - techno_invest_sum) / invest_sum_ref
+        abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
+        #smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
+        #invest_objective = abs_delta
+
+        idt = np.identity(len(invest_tot))
+
+        ddelta_dtech = -idt / invest_sum_ref
+        ddelta_dtot = idt/ invest_sum_ref
+
+        dabs_delta_dtech = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
+            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtech
+        dabs_delta_dtot = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
+            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtot
+
+        return dabs_delta_dtech, dabs_delta_dtot
+
 
     def get_chart_filter_list(self):
 
