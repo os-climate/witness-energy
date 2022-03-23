@@ -596,7 +596,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
         energy_production_detailed = self.get_sosdisc_outputs(
             'energy_production_detailed')
         alpha = self.get_sosdisc_inputs('alpha')
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions_needed_by_energy_mix')
+        co2_emissions = self.get_sosdisc_outputs(
+            'co2_emissions_needed_by_energy_mix')
         self.energy_model.configure_parameters_update(inputs_dict)
         dtot_co2_emissions = self.energy_model.compute_grad_CO2_emissions(
             energy_production_detailed, co2_emissions, alpha)
@@ -611,30 +612,29 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 '''
                 Needed by energy mix gradient
                 '''
-                if co2_emission_column == 'carbon_capture needed by energy mix (Mt)':
-                    co2_emission_column_new = 'carbon_capture needed by energy mix (Gt)'
-                    if last_part_key == 'prod':
-                        self.set_partial_derivative_for_other_types(
-                            ('co2_emissions_needed_by_energy_mix', co2_emission_column_new), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
-                    elif last_part_key == 'cons':
-                        for energy_df in energy_list:
-                            list_columnsenergycons = list(
-                                inputs_dict[f'{energy_df}.energy_consumption'].columns)
-                            if f'{energy} (TWh)' in list_columnsenergycons:
-                                self.set_partial_derivative_for_other_types(
-                                    ('co2_emissions_needed_by_energy_mix', co2_emission_column_new), (f'{energy_df}.energy_consumption', f'{energy} (TWh)'), np.identity(len(years)) * scaling_factor_energy_consumption * value / 1.0e3)
-                    elif last_part_key == 'co2_per_use':
-                        self.set_partial_derivative_for_other_types(
-                            ('co2_emissions_needed_by_energy_mix', co2_emission_column_new), (f'{energy}.CO2_per_use', 'CO2_per_use'), np.identity(len(years)) * value / 1.0e3)
 
-                    else:
-                        very_last_part_key = energy_prod_info.split('#')[2]
-                        if very_last_part_key == 'prod':
+                if last_part_key == 'prod':
+                    self.set_partial_derivative_for_other_types(
+                        ('co2_emissions_needed_by_energy_mix', co2_emission_column), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
+                elif last_part_key == 'cons':
+                    for energy_df in energy_list:
+                        list_columnsenergycons = list(
+                            inputs_dict[f'{energy_df}.energy_consumption'].columns)
+                        if f'{energy} (TWh)' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
-                                ('co2_emissions_needed_by_energy_mix', co2_emission_column_new), (f'{energy}.energy_production', last_part_key), np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
-                        elif very_last_part_key == 'cons':
-                            self.set_partial_derivative_for_other_types(
-                                ('co2_emissions_needed_by_energy_mix', co2_emission_column_new), (f'{energy}.energy_consumption', last_part_key), np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
+                                ('co2_emissions_needed_by_energy_mix', co2_emission_column), (f'{energy_df}.energy_consumption', f'{energy} (TWh)'), np.identity(len(years)) * scaling_factor_energy_consumption * value / 1.0e3)
+                elif last_part_key == 'co2_per_use':
+                    self.set_partial_derivative_for_other_types(
+                        ('co2_emissions_needed_by_energy_mix', co2_emission_column), (f'{energy}.CO2_per_use', 'CO2_per_use'), np.identity(len(years)) * value / 1.0e3)
+
+                else:
+                    very_last_part_key = energy_prod_info.split('#')[2]
+                    if very_last_part_key == 'prod':
+                        self.set_partial_derivative_for_other_types(
+                            ('co2_emissions_needed_by_energy_mix', co2_emission_column), (f'{energy}.energy_production', last_part_key), np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
+                    elif very_last_part_key == 'cons':
+                        self.set_partial_derivative_for_other_types(
+                            ('co2_emissions_needed_by_energy_mix', co2_emission_column), (f'{energy}.energy_consumption', last_part_key), np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
 
         #-----------------------------------#
         #---- Demand Violation gradients----#
