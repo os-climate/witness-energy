@@ -1104,4 +1104,4 @@ if '__main__' == __name__:
     cls = RatioJacobianTestCase()
     cls.setUp()
     # cls.launch_data_pickle_generation()
-    cls.test_01_ratio_hydrogen_liquefaction_discipline_jacobian()
+    cls.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian()
