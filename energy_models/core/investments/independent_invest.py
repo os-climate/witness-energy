@@ -49,6 +49,7 @@ class IndependentInvest(BaseInvest):
         self.scaling_factor_energy_investment = inputs_dict['scaling_factor_energy_investment']
         invest_constraint_ref = inputs_dict['invest_constraint_ref']
         invest_objective_ref = inputs_dict['invest_objective_ref']
+        invest_sum_ref = inputs_dict['invest_sum_ref']
         energy_invest_df = pd.DataFrame({'years': energy_investment['years'].values,
                                          'energy_investment': energy_investment['energy_investment'].values * self.scaling_factor_energy_investment})
 
@@ -69,9 +70,14 @@ class IndependentInvest(BaseInvest):
         invest_constraint_df = pd.DataFrame({'years': energy_investment['years'].values,
                                              'invest_constraint': invest_constraint})
 
+        delta_sum = (energy_invest_df['energy_investment'].values - techno_invest_sum) / invest_sum_ref
+
+        abs_delta_sum = np.sqrt(compute_func_with_exp_min(delta_sum ** 2, 1e-15))
+
+
         # Get the L1 norm of the delta and apply a scaling to compute the
         # objective
         abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
         smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
         invest_objective = smooth_delta / invest_objective_ref
-        return invest_constraint_df, invest_objective
+        return invest_constraint_df, invest_objective, abs_delta_sum
