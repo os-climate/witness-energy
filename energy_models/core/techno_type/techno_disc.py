@@ -86,7 +86,7 @@ class TechnoDiscipline(SoSDiscipline):
         'land_use_required': {'type': 'dataframe', 'unit': 'Gha'},
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
         'lost_capital': {'type': 'dataframe', 'unit': 'G$'},
-        'energy_capital': {'type': 'dataframe', 'unit': 'G$'},
+        'techno_capital': {'type': 'dataframe', 'unit': 'G$'},
     }
     _maturity = 'Research'
 
@@ -191,7 +191,7 @@ class TechnoDiscipline(SoSDiscipline):
                         'land_use_required': self.techno_model.techno_land_use,
                         'applied_ratio': self.techno_model.applied_ratio,
                         'lost_capital': self.techno_model.lost_capital,
-                        'energy_capital': self.techno_model.energy_capital,
+                        'techno_capital': self.techno_model.techno_capital,
                         }
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
@@ -344,10 +344,13 @@ class TechnoDiscipline(SoSDiscipline):
         '''
         Lost capital gradients vs invest_level and all_stream_demand_ratio
         '''
-        dlost_capital_dinvest = self.techno_model.compute_dlostcapital_dinvest(
+        dlost_capital_dinvest, dtechnocapital_dinvest = self.techno_model.compute_dlostcapital_dinvest(
             dcapex_dinvest, self.dprod_dinvest)
         self.set_partial_derivative_for_other_types(
             ('lost_capital', self.techno_model.name), ('invest_level', 'invest'), dlost_capital_dinvest)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_capital', self.techno_model.name), ('invest_level', 'invest'), dtechnocapital_dinvest)
 
         dapplied_ratio_dratio = self.techno_model.compute_dapplied_ratio_dratios()
         for ratio_name in ratio_df.columns:
@@ -966,16 +969,16 @@ class TechnoDiscipline(SoSDiscipline):
     def get_chart_lost_capital(self):
         lost_capital = self.get_sosdisc_outputs(
             'lost_capital')
-        energy_capital = self.get_sosdisc_outputs(
-            'energy_capital')
+        techno_capital = self.get_sosdisc_outputs(
+            'techno_capital')
         chart_name = f'Lost capital due to unused {self.techno_name} factories vs total capital'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Capitals (G$)',
                                              chart_name=chart_name)
 
         serie = InstanciatedSeries(
-            energy_capital['years'].values.tolist(),
-            energy_capital[self.techno_name].values.tolist(), 'Total capital', 'bar')
+            techno_capital['years'].values.tolist(),
+            techno_capital[self.techno_name].values.tolist(), 'Total capital', 'bar')
         serie = InstanciatedSeries(
             lost_capital['years'].values.tolist(),
             lost_capital[self.techno_name].values.tolist(), 'Lost Capital', 'bar')

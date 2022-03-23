@@ -68,7 +68,7 @@ class TechnoType:
         self.is_resource_ratio = False
         self.ratio_df = None
         self.lost_capital = None
-        self.energy_capital = None
+        self.techno_capital = None
         self.applied_ratio = None
 
     def check_inputs_dict(self, inputs_dict):
@@ -153,7 +153,7 @@ class TechnoType:
         self.all_streams_demand_ratio = pd.DataFrame({'years': self.years})
 
         self.lost_capital = pd.DataFrame({'years': self.years})
-        self.energy_capital = pd.DataFrame({'years': self.years})
+        self.techno_capital = pd.DataFrame({'years': self.years})
 
     def configure_parameters(self, inputs_dict):
         '''
@@ -331,11 +331,11 @@ class TechnoType:
         The investment is for the lifetime of the technology then each year you loose one over lifetime the initial investment
         We divide by scaling_factor_invest_level to put lost_capital in G$
         '''
-        self.energy_capital[self.name] = self.cost_details[f'Capex_{self.name}'].values \
+        self.techno_capital[self.name] = self.cost_details[f'Capex_{self.name}'].values \
             * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values \
             / self.scaling_factor_invest_level / self.techno_infos_dict['lifetime']
 
-        self.lost_capital[self.name] = self.energy_capital[self.name].values * (
+        self.lost_capital[self.name] = self.techno_capital[self.name].values * (
             1.0 - self.applied_ratio['applied_ratio'].values)
 
     def compute_dlostcapital_dinvest(self, dcapex_dinvest, dprod_dinvest):
@@ -346,13 +346,15 @@ class TechnoType:
         dratiodinvest = 0.0
         '''
 
-        dlostcapital_dinvest = (dcapex_dinvest * self.scaling_factor_techno_production * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
-                                dprod_dinvest * self.cost_details[f'Capex_{self.name}'].values.reshape((len(self.years), 1))) * (
+        dtechnocapital_dinvest = (dcapex_dinvest * self.scaling_factor_techno_production * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
+                                  dprod_dinvest * self.cost_details[f'Capex_{self.name}'].values.reshape((len(self.years), 1))) / self.techno_infos_dict['lifetime']
+
+        dlostcapital_dinvest = dtechnocapital_dinvest * (
             1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
 
         # we do not divide by / self.scaling_factor_invest_level because invest
         # and lost_capital are in G$
-        return dlostcapital_dinvest / self.techno_infos_dict['lifetime']
+        return dlostcapital_dinvest, dtechnocapital_dinvest
 
     def compute_dlostcapital_dratio(self, dapplied_ratio_dratio):
         '''

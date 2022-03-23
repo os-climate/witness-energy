@@ -346,30 +346,30 @@ class EnergyMix(BaseStream):
         # Do not loop over carbon capture and carbon storage which will be
         # handled differently
 
-#         for energy in self.subelements_list:
-#             self.emissions_by_energy[energy] = np.zeros_like(
-#                 self.production['years'].values)
-#             if energy in self.only_energy_list:
-#
-#                 # gather all production columns with a CO2 name in it
-#                 for col, production in self.sub_production_dict[energy].items():
-#                     if col in self.CO2_list:
-#                         self.co2_production[f'{energy} {col}'] = production.values
-#                         self.emissions_by_energy[
-#                             energy] += self.co2_production[f'{energy} {col}'].values
-#                 # gather all consumption columns with a CO2 name in it
-#                 for col, consumption in self.sub_consumption_dict[energy].items():
-#                     if col in self.CO2_list:
-#                         self.co2_consumption[f'{energy} {col}'] = consumption.values
-#                         self.emissions_by_energy[
-#                             energy] -= self.co2_consumption[f'{energy} {col}'].values
-#                 # Compute the CO2 emitted during the use of the net energy
-#                 # If net energy is negative, CO2 by use is equals to zero
-#
-#                 self.co2_production[f'{energy} CO2 by use (Mt)'] = self.co2_per_use[energy]['CO2_per_use'] * np.maximum(
-#                     0.0, self.production[f'production {energy} ({self.energy_class_dict[energy].unit})'].values)
-#                 self.emissions_by_energy[
-# energy] += self.co2_production[f'{energy} CO2 by use (Mt)'].values
+        for energy in self.subelements_list:
+            self.emissions_by_energy[energy] = np.zeros_like(
+                self.production['years'].values)
+            if energy in self.only_energy_list:
+
+                # gather all production columns with a CO2 name in it
+                for col, production in self.sub_production_dict[energy].items():
+                    if col in self.CO2_list:
+                        self.co2_production[f'{energy} {col}'] = production.values
+                        self.emissions_by_energy[
+                            energy] += self.co2_production[f'{energy} {col}'].values
+                # gather all consumption columns with a CO2 name in it
+                for col, consumption in self.sub_consumption_dict[energy].items():
+                    if col in self.CO2_list:
+                        self.co2_consumption[f'{energy} {col}'] = consumption.values
+                        self.emissions_by_energy[
+                            energy] -= self.co2_consumption[f'{energy} {col}'].values
+                # Compute the CO2 emitted during the use of the net energy
+                # If net energy is negative, CO2 by use is equals to zero
+
+                self.co2_production[f'{energy} CO2 by use (Mt)'] = self.co2_per_use[energy]['CO2_per_use'] * np.maximum(
+                    0.0, self.production[f'production {energy} ({self.energy_class_dict[energy].unit})'].values)
+                self.emissions_by_energy[
+                    energy] += self.co2_production[f'{energy} CO2 by use (Mt)'].values
 
         ''' CARBON CAPTURE needed by energy mix
         Total carbon capture needed by energy mix if a technology needs carbon_capture
