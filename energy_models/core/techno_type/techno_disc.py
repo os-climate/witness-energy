@@ -86,6 +86,7 @@ class TechnoDiscipline(SoSDiscipline):
         'land_use_required': {'type': 'dataframe', 'unit': 'Gha'},
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
         'lost_capital': {'type': 'dataframe', 'unit': 'G$'},
+        'energy_capital': {'type': 'dataframe', 'unit': 'G$'},
     }
     _maturity = 'Research'
 
@@ -189,7 +190,8 @@ class TechnoDiscipline(SoSDiscipline):
                         'CO2_emissions_detailed': self.techno_model.carbon_emissions,
                         'land_use_required': self.techno_model.techno_land_use,
                         'applied_ratio': self.techno_model.applied_ratio,
-                        'lost_capital': self.techno_model.lost_capital
+                        'lost_capital': self.techno_model.lost_capital,
+                        'energy_capital': self.techno_model.energy_capital,
                         }
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
@@ -964,15 +966,19 @@ class TechnoDiscipline(SoSDiscipline):
     def get_chart_lost_capital(self):
         lost_capital = self.get_sosdisc_outputs(
             'lost_capital')
+        energy_capital = self.get_sosdisc_outputs(
+            'energy_capital')
+        chart_name = f'Lost capital due to unused {self.techno_name} factories vs total capital'
 
-        chart_name = f'Lost capital due to unused {self.techno_name} factories'
-
-        new_chart = TwoAxesInstanciatedChart('years', 'Lost Capital (G$)',
+        new_chart = TwoAxesInstanciatedChart('years', 'Capitals (G$)',
                                              chart_name=chart_name)
 
         serie = InstanciatedSeries(
+            energy_capital['years'].values.tolist(),
+            energy_capital[self.techno_name].values.tolist(), 'Total capital', 'bar')
+        serie = InstanciatedSeries(
             lost_capital['years'].values.tolist(),
-            lost_capital[self.techno_name].values.tolist(), '', 'lines')
+            lost_capital[self.techno_name].values.tolist(), 'Lost Capital', 'bar')
 
         new_chart.series.append(serie)
 
