@@ -68,6 +68,7 @@ class TechnoType:
         self.is_resource_ratio = False
         self.ratio_df = None
         self.lost_capital = None
+        self.applied_ratio = None
 
     def check_inputs_dict(self, inputs_dict):
         '''
