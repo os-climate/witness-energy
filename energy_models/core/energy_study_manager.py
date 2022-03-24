@@ -176,7 +176,7 @@ DEFAULT_MIN_TECH_DEV_DICT = {Electricity.name: {'type': ENERGY_TYPE, 'value': el
                          GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': gaseoushydrogen_technos_coarse_integration},
                          Methane.name: {'type': ENERGY_TYPE, 'value': ['FossilGas']},
                                 'carbon_capture': {'type': CCUS_TYPE, 'value': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.MonoEthanolAmine']},
-                                'carbon_storage': {'type': CCUS_TYPE, 'value': ['PureCarbonSolidStorage', 'DeepSalineFormation']}}
+                                'carbon_storage': {'type': CCUS_TYPE, 'value': ['DeepSalineFormation']}}
 
 DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_TECHNO_DICT.items(
 ) if value['type'] == 'energy']
