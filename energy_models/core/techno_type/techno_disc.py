@@ -978,7 +978,7 @@ class TechnoDiscipline(SoSDiscipline):
 
         serie = InstanciatedSeries(
             techno_capital['years'].values.tolist(),
-            techno_capital[self.techno_name].values.tolist(), 'Total capital', 'line')
+            techno_capital[self.techno_name].values.tolist(), 'Total capital', 'lines')
 
         new_chart.series.append(serie)
 
