@@ -139,7 +139,7 @@ class CCUS_Discipline(SoSDiscipline):
 
                     dynamic_inputs[f'{ccs_name}.data_fuel_dict'] = {
                         'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                        'namespace': f'ns_{ccs_name}', 'default': self.stream_class_dict[ccs_name].data_energy_dict}
+                        'namespace': f'ns_ccs', 'default': self.stream_class_dict[ccs_name].data_energy_dict}
 
         if 'year_start' in self._data_in and 'year_end' in self._data_in:
             year_start = self.get_sosdisc_inputs('year_start')

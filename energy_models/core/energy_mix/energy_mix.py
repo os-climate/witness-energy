@@ -174,7 +174,6 @@ class EnergyMix(BaseStream):
             inputs_dict['ccs_list']
         self.subelements_list_energy = inputs_dict['energy_list']
         self.CCS_constraint_factor = inputs_dict['CCS_constraint_factor']
-        self.delta_co2_price = inputs_dict['delta_co2_price']
         self.total_prod_minus_min_prod_constraint_ref = inputs_dict[
             'total_prod_minus_min_prod_constraint_ref']
         # Specific configure for energy mix
@@ -346,6 +345,7 @@ class EnergyMix(BaseStream):
             {'years': self.production['years']})
         # Do not loop over carbon capture and carbon storage which will be
         # handled differently
+
         for energy in self.subelements_list:
             self.emissions_by_energy[energy] = np.zeros_like(
                 self.production['years'].values)
@@ -386,6 +386,7 @@ class EnergyMix(BaseStream):
             self.total_co2_emissions[
                 f'{CarbonCapture.name} needed by energy mix (Mt)'] = 0.0
 
+        # Put in Gt carbon capture needed by energy mix
         self.co2_emissions_needed_by_energy_mix = pd.DataFrame(
             {'years': self.production['years'],
              f'{CarbonCapture.name} needed by energy mix (Gt)': self.total_co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'].values / 1e3})
@@ -416,41 +417,6 @@ class EnergyMix(BaseStream):
                         net_prod + demand
 
                     self.demand_max_production[energy] = base_df
-
-    def compute_delta_on_prices(self):
-        ''' computes the difference between the prices computed by the energy mix discipline 
-        vs. the prices as inputs of the process
-        NB: corresponds to the gap between two iterations of an MDA on prices
-        '''
-        prices_in = self.energy_prices_in  # df
-        prices_out = self.energy_prices  # df
-        delta_prices = {}
-        base_df = pd.DataFrame({'years': self.years})
-        for energy in self.subelements_list:
-            delta = base_df.copy(deep=True)
-            delta[energy] = prices_out[energy] - \
-                prices_in[energy] - self.tol_constraint
-            delta_prices[energy] = delta
-
-        self.delta_energy_prices = delta_prices
-
-    def compute_delta_on_co2_emissions(self):
-        ''' computes the difference between the co2 emissions computed by the energy mix discipline 
-        vs. the co2 as inputs of the process
-        NB: corresponds to the gap between two iterations of an MDA on prices
-        '''
-        co2_in = self.co2_emissions_in  # df
-        co2_out = self.carbon_emissions_after_use  # df
-        delta_co2_emissions = {}
-        base_df = pd.DataFrame({'years': self.years})
-        for energy in self.subelements_list:
-            if energy in self.energy_class_dict:
-                delta = base_df.copy(deep=True)
-                delta[energy] = co2_out[energy] - \
-                    co2_in[energy] - self.tol_constraint
-                delta_co2_emissions[energy] = delta
-
-        self.delta_co2_emissions = delta_co2_emissions
 
     def compute_mean_price(self, exp_min=True):
         '''
@@ -526,19 +492,6 @@ class EnergyMix(BaseStream):
 
         production_energy_net_pos['energy_price_pond'] = energy_mean_price['energy_price']
         return energy_mean_price, production_energy_net_pos
-
-    def compute_CO2_tax_minus_CCS_constraint(self):
-        '''
-        Compute CCS_price and constraint (CO2_taxes - self.CCS_constraint_factor*CCS_price)/delta_co2_price
-        '''
-        self.CCS_price['ccs_price_per_tCO2'] = 0.
-        if CarbonCapture.name in self.sub_prices:
-            self.CCS_price['ccs_price_per_tCO2'] += self.energy_prices[CarbonCapture.name]
-        if CarbonStorage.name in self.sub_prices:
-            self.CCS_price['ccs_price_per_tCO2'] += self.sub_prices[CarbonStorage.name]
-
-        self.CO2_tax_minus_CCS_constraint[self.CO2_TAX_MINUS_CCS_CONSTRAINT] = (self.carbon_tax['CO2_tax'].values -
-                                                                                self.CCS_constraint_factor * self.CCS_price['ccs_price_per_tCO2'].values) / self.delta_co2_price
 
     def compute_total_prod_minus_min_prod_constraint(self):
         '''
@@ -664,25 +617,25 @@ class EnergyMix(BaseStream):
                     if col in self.CO2_list:
                         co2_consumption[f'{energy} {col}'] = consumption.values
 
-                # Compute the CO2 emitted during the use of the net energy
-                # If net energy is negative, CO2 by use is equals to zero
-                net_prod = net_production[
-                    f'production {energy} ({self.energy_class_dict[energy].unit})'].values
-
-                dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#co2_per_use'] = np.maximum(
-                    0, net_prod)
-
-                # Specific case when net prod is equal to zero
-                # if we increase the prod of an energy the net prod will react
-                # however if we decrease the cons it does nothing
-                net_prod_sign = net_prod.copy()
-                net_prod_sign[net_prod_sign == 0] = 1
-                dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#prod'] = self.co2_per_use[energy]['CO2_per_use'].values * \
-                    np.maximum(0, np.sign(net_prod_sign))
-                dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#cons'] = - self.co2_per_use[energy]['CO2_per_use'].values * \
-                    np.maximum(0, np.sign(net_prod))
-#                         co2_production[f'{energy} CO2 by use (Mt)'] = self.stream_class_dict[energy].data_energy_dict['CO2_per_use'] / \
-#                             high_calorific_value * np.maximum(
+#                 # Compute the CO2 emitted during the use of the net energy
+#                 # If net energy is negative, CO2 by use is equals to zero
+#                 net_prod = net_production[
+#                     f'production {energy} ({self.energy_class_dict[energy].unit})'].values
+#
+#                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#co2_per_use'] = np.maximum(
+#                     0, net_prod)
+#
+#                 # Specific case when net prod is equal to zero
+#                 # if we increase the prod of an energy the net prod will react
+#                 # however if we decrease the cons it does nothing
+#                 net_prod_sign = net_prod.copy()
+#                 net_prod_sign[net_prod_sign == 0] = 1
+#                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#prod'] = self.co2_per_use[energy]['CO2_per_use'].values * \
+#                     np.maximum(0, np.sign(net_prod_sign))
+#                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#cons'] = - self.co2_per_use[energy]['CO2_per_use'].values * \
+#                     np.maximum(0, np.sign(net_prod))
+# #                         co2_production[f'{energy} CO2 by use (Mt)'] = self.stream_class_dict[energy].data_energy_dict['CO2_per_use'] / \
+# #                             high_calorific_value * np.maximum(
 # 0.0, self.production[f'production {energy}
 # ({self.energy_class_dict[energy].unit})'].values)
 
@@ -743,7 +696,7 @@ class EnergyMix(BaseStream):
         if len(energy_needing_carbon_capture_list) != 0:
             for energy1 in energy_needing_carbon_capture_list:
                 dtot_CO2_emissions[
-                    f'{CarbonCapture.name} needed by energy mix (Mt) vs {energy1}#{CarbonCapture.name} (Mt)#cons'] = np.ones(len_years)
+                    f'{CarbonCapture.name} needed by energy mix (Gt) vs {energy1}#{CarbonCapture.name} (Mt)#cons'] = np.ones(len_years)
 #             self.total_co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'] = energy_needing_carbon_capture.sum(
 #                 axis=1).values
 #         else:
