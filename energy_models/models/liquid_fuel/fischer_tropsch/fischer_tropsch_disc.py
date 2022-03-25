@@ -205,13 +205,15 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         techno_cons = deepcopy(self.get_sosdisc_outputs('techno_consumption'))
 
         years = techno_prod['years'].values
+        dapplied_ratio_dratio = self.techno_model.compute_dapplied_ratio_dratios(
+            self.get_sosdisc_inputs('is_apply_ratio'))
         for column in techno_prod:
             if column != 'years':
                 production_woratio = self.techno_model.production_woratio[
                     column]
                 dprod_dratio = self.techno_model.compute_dprod_dratio(
                     production_woratio, ratio_name='carbon_capture',
-                    is_apply_ratio=self.get_sosdisc_inputs('is_apply_ratio'))
+                    dapplied_ratio_dratio=dapplied_ratio_dratio)
                 # If the ratio on cc from all_streams_demand_ratio is more constraining, set
                 # the grad value to 0.0
                 if self.get_sosdisc_inputs('is_stream_demand'):
@@ -227,7 +229,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                     column]
                 dcons_dratio = self.techno_model.compute_dprod_dratio(
                     consumption_woratio, ratio_name='carbon_capture',
-                    is_apply_ratio=self.get_sosdisc_inputs('is_apply_ratio'))
+                    dapplied_ratio_dratio=dapplied_ratio_dratio)
                 # If the ratio on cc from all_streams_demand_ratio is more constraining, set
                 # the grad value to 0.0
                 if self.get_sosdisc_inputs('is_stream_demand'):
