@@ -371,7 +371,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         production_energy_net_pos = outputs_dict['production_energy_net_positive']
         energies = [j for j in energy_list if j not in [
             'carbon_storage', 'carbon_capture']]
-        mix_weight = self.get_sosdisc_outputs('energy_mix')
+        mix_weight = outputs_dict['energy_mix']
         scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
         energy_price_after_tax = outputs_dict['energy_prices_after_tax']
@@ -393,14 +393,13 @@ class Energy_Mix_Discipline(SoSDiscipline):
         #-------------------------------------------#
         for energy in energy_list:
             if energy in energies:
-                loss_percentage = self.get_sosdisc_inputs(
-                    f'{energy}.losses_percentage') / 100.0
+                loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
                 loss_percent = heat_losses_percentage + loss_percentage
                 #---- Production gradients----#
                 dtotal_prod_denergy_prod = self.compute_dtotal_production_denergy_production(
                     production_detailed_df, minimum_energy_production, is_dev, loss_percent)
                 dprod_objective_dprod = self.compute_denergy_production_objective_dprod(
-                    dtotal_prod_denergy_prod)
+                    dtotal_prod_denergy_prod, inputs_dict['alpha'], outputs_dict['energy_production'], years)
                 self.set_partial_derivative_for_other_types(
                     ('energy_production', 'Total production'), (f'{energy}.energy_production', energy),  dtotal_prod_denergy_prod)
                 self.set_partial_derivative_for_other_types(
@@ -450,7 +449,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                             self.compute_dtotal_production_denergy_production(
                                 production_detailed_df, minimum_energy_production, is_dev)
                         dprod_objective_dcons = self.compute_denergy_production_objective_dprod(
-                            dtotal_prod_denergy_cons)
+                            dtotal_prod_denergy_cons, inputs_dict['alpha'], outputs_dict['energy_production'], years)
                         self.set_partial_derivative_for_other_types(
                             ('energy_production', 'Total production'), (
                                 f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
@@ -565,8 +564,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 dmean_price_dprod = self.compute_dmean_price_dprod(energy, energies, mix_weight, energy_price_after_tax,
                                                                    production_energy_net_pos, production_detailed_df)
                 if is_dev:
-                    loss_percentage = self.get_sosdisc_inputs(
-                        f'{energy}.losses_percentage') / 100.0
+                    loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
                     self.set_partial_derivative_for_other_types(
                         ('energy_mean_price', 'energy_price'), (f'{energy}.energy_production', energy), scaling_factor_energy_production * dmean_price_dprod * (1.0 - loss_percentage))
 
@@ -593,11 +591,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
         #-- New CO2 emissions gradients--#
         #--------------------------------#
 
-        energy_production_detailed = self.get_sosdisc_outputs(
-            'energy_production_detailed')
-        alpha = self.get_sosdisc_inputs('alpha')
-        co2_emissions = self.get_sosdisc_outputs(
-            'co2_emissions_needed_by_energy_mix')
+        energy_production_detailed = outputs_dict['energy_production_detailed']
+        alpha = inputs_dict['alpha']
+        co2_emissions = outputs_dict['co2_emissions_needed_by_energy_mix']
         self.energy_model.configure_parameters_update(inputs_dict)
         dtot_co2_emissions = self.energy_model.compute_grad_CO2_emissions(
             energy_production_detailed, co2_emissions, alpha)
@@ -656,8 +652,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                     j == f'{energy} ({self.stream_class_dict[energy].unit})' for j in list_columnsenergycons]
 
                 if True in list_index_prod:
-                    loss_percentage = self.get_sosdisc_inputs(
-                        f'{energy}.losses_percentage') / 100.0
+                    loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
                     loss_percent = heat_losses_percentage + loss_percentage
                     dtotal_prod_denergy_prod = self.compute_dtotal_production_denergy_production(
                         production_detailed_df, minimum_energy_production, is_dev, loss_percent)
@@ -705,9 +700,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
         #--------------------------------------#
         #---- Stream Demand ratio gradients ---#
         #--------------------------------------#
-        all_streams_demand_ratio = self.get_sosdisc_outputs(
-            'all_streams_demand_ratio')
-        ratio_ref = self.get_sosdisc_inputs('ratio_ref')
+        all_streams_demand_ratio = outputs_dict['all_streams_demand_ratio']
+        ratio_ref = inputs_dict['ratio_ref']
         # Loop on streams
         dobjective_dratio = self.compute_dratio_objective(
             all_streams_demand_ratio, ratio_ref, energy_list)
@@ -763,20 +757,17 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return dobjective_dratio
 
-    def compute_denergy_production_objective_dprod(self, dtotal_production_denergy_production):
+    def compute_denergy_production_objective_dprod(self, dtotal_production_denergy_production, alpha, prod, years):
         ''' energy_production_objective = np.asarray([(1. - alpha) * self.energy_model.production['Total production'][0] * delta_years
                                                   / self.energy_model.production['Total production'].sum(), ])
         '''
-        alpha = self.get_sosdisc_inputs('alpha')
-        tot_energy_production_sum = self.get_sosdisc_outputs(
-            'energy_production')['Total production'].sum()
+
+        tot_energy_production_sum = prod['Total production'].sum()
         dtot_energy_production_sum = dtotal_production_denergy_production.sum(
             axis=0)
-        tot_energy_production_0 = self.get_sosdisc_outputs(
-            'energy_production')['Total production'][0]
+        tot_energy_production_0 = prod['Total production'][0]
         dtot_energy_production_0 = dtotal_production_denergy_production[0]
-        years = np.arange(self.get_sosdisc_inputs('year_start'),
-                          self.get_sosdisc_inputs('year_end') + 1)
+
         delta_years = (years[-1] - years[0] + 1)
 
         u = (1. - alpha) * \
