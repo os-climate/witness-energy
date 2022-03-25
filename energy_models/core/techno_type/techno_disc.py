@@ -199,15 +199,13 @@ class TechnoDiscipline(SoSDiscipline):
     def compute_sos_jacobian(self):
 
         years = self.techno_model.years
-        invest_level = self.get_sosdisc_inputs('invest_level')
-        scaling_factor_invest_level = self.get_sosdisc_inputs(
-            'scaling_factor_invest_level')
-        scaling_factor_techno_consumption = self.get_sosdisc_inputs(
-            'scaling_factor_techno_consumption')
-        scaling_factor_techno_production = self.get_sosdisc_inputs(
-            'scaling_factor_techno_production')
-        production, consumption = self.get_sosdisc_outputs(
-            ['techno_production', 'techno_consumption'])
+        inputs_dict = self.get_sosdisc_inputs()
+        outputs_dict = self.get_sosdisc_outputs()
+        invest_level = inputs_dict['invest_level']
+        scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
+        scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
+        production = outputs_dict['techno_production']
+        consumption = outputs_dict['techno_consumption']
         ratio_df = self.techno_model.ratio_df
         dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
             invest_level.loc[invest_level['years']
@@ -227,7 +225,7 @@ class TechnoDiscipline(SoSDiscipline):
         self.set_partial_derivative_for_other_types(
             ('techno_prices', f'{self.techno_name}_wotaxes'), ('invest_level', 'invest'), self.dprice_dinvest * scaling_factor_invest_level)
 
-        capex = self.get_sosdisc_outputs('techno_detailed_prices')[
+        capex = outputs_dict['techno_detailed_prices'][
             f'Capex_{self.techno_name}'].values
         # Compute jacobian for enegy_type production
         self.dprod_dinvest = self.techno_model.compute_dprod_dinvest(
@@ -235,8 +233,7 @@ class TechnoDiscipline(SoSDiscipline):
             self.techno_model.invest_before_ystart['invest'].values,
             self.techno_model.techno_infos_dict, dcapex_dinvest)
 
-        applied_ratio = self.get_sosdisc_outputs(
-            'applied_ratio')['applied_ratio'].values
+        applied_ratio = outputs_dict['applied_ratio']['applied_ratio'].values
         dprod_name_dinvest = (
             self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
         self.set_partial_derivative_for_other_types(
@@ -244,15 +241,16 @@ class TechnoDiscipline(SoSDiscipline):
                 'invest_level', 'invest'), dprod_name_dinvest)
 
         #---Gradient main techno prod vs each ratio
-
-        if 'all_streams_demand_ratio' in self.get_sosdisc_inputs().keys():
-            for ratio_name in self.get_sosdisc_inputs('all_streams_demand_ratio').columns:
+        dapplied_ratio_dratio = self.techno_model.compute_dapplied_ratio_dratios(
+            inputs_dict['is_apply_ratio'])
+        if 'all_streams_demand_ratio' in inputs_dict.keys():
+            for ratio_name in inputs_dict['all_streams_demand_ratio'].columns:
                 if ratio_name not in ['years']:
                     production_woratio = self.techno_model.production_woratio[
                         f'{self.energy_name} ({self.techno_model.product_energy_unit})']
                     dprod_dratio = self.techno_model.compute_dprod_dratio(
                         production_woratio, ratio_name=ratio_name,
-                        is_apply_ratio=self.get_sosdisc_inputs('is_apply_ratio'))
+                        dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
                         ('techno_production',
                          f'{self.energy_name} ({self.techno_model.product_energy_unit})'), ('all_streams_demand_ratio', ratio_name),
@@ -260,7 +258,7 @@ class TechnoDiscipline(SoSDiscipline):
                     dland_use_dratio = self.techno_model.compute_dprod_dratio(
                         self.techno_model.techno_land_use_woratio[
                             f'{self.techno_model.name} (Gha)'], ratio_name=ratio_name,
-                        is_apply_ratio=self.get_sosdisc_inputs('is_apply_ratio'))
+                        dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
                         ('land_use_required', f'{self.techno_model.name} (Gha)'), ('all_streams_demand_ratio', ratio_name),  dland_use_dratio / 100.)
 
@@ -288,13 +286,13 @@ class TechnoDiscipline(SoSDiscipline):
 
                 #---Gradient other techno prods vs each ratio
                 for ratio_name in ratio_df.columns:
-                    if 'all_streams_demand_ratio' in self.get_sosdisc_inputs().keys():
-                        if ratio_name in self.get_sosdisc_inputs('all_streams_demand_ratio').columns and ratio_name not in ['years']:
+                    if 'all_streams_demand_ratio' in inputs_dict.keys():
+                        if ratio_name in inputs_dict['all_streams_demand_ratio'].columns and ratio_name not in ['years']:
                             production_woratio = self.techno_model.production_woratio[
                                 column]
                             dprod_dratio = self.techno_model.compute_dprod_dratio(
                                 production_woratio, ratio_name=ratio_name,
-                                is_apply_ratio=self.get_sosdisc_inputs('is_apply_ratio'))
+                                dapplied_ratio_dratio=dapplied_ratio_dratio)
                             self.set_partial_derivative_for_other_types(
                                 ('techno_production',
                                  column), ('all_streams_demand_ratio', ratio_name),
@@ -323,13 +321,13 @@ class TechnoDiscipline(SoSDiscipline):
                     self.dcons_column_dinvest * scaling_factor_invest_level / scaling_factor_techno_production)
                 #---Gradient techno cons vs each ratio
                 for ratio_name in ratio_df.columns:
-                    if 'all_streams_demand_ratio' in self.get_sosdisc_inputs().keys():
-                        if ratio_name in self.get_sosdisc_inputs('all_streams_demand_ratio').columns and ratio_name not in ['years']:
+                    if 'all_streams_demand_ratio' in inputs_dict.keys():
+                        if ratio_name in inputs_dict['all_streams_demand_ratio'].columns and ratio_name not in ['years']:
                             consumption_woratio = self.techno_model.consumption_woratio[
                                 column]
                             dprod_dratio = self.techno_model.compute_dprod_dratio(
                                 consumption_woratio, ratio_name=ratio_name,
-                                is_apply_ratio=self.get_sosdisc_inputs('is_apply_ratio'))
+                                dapplied_ratio_dratio=dapplied_ratio_dratio)
                             self.set_partial_derivative_for_other_types(
                                 ('techno_consumption',
                                  column), ('all_streams_demand_ratio', ratio_name),
@@ -354,8 +352,8 @@ class TechnoDiscipline(SoSDiscipline):
 
         dapplied_ratio_dratio = self.techno_model.compute_dapplied_ratio_dratios()
         for ratio_name in ratio_df.columns:
-            if 'all_streams_demand_ratio' in self.get_sosdisc_inputs().keys():
-                if ratio_name in self.get_sosdisc_inputs('all_streams_demand_ratio').columns and ratio_name not in ['years']:
+            if 'all_streams_demand_ratio' in inputs_dict.keys():
+                if ratio_name in inputs_dict['all_streams_demand_ratio'].columns and ratio_name not in ['years']:
                     dlost_capital_dratio = self.techno_model.compute_dlostcapital_dratio(
                         dapplied_ratio_dratio[ratio_name])
                     self.set_partial_derivative_for_other_types(

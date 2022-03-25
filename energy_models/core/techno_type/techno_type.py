@@ -1093,7 +1093,7 @@ class TechnoType:
 
         return dprod_list_dcapex_list
 
-    def compute_dprod_dratio(self, prod, ratio_name, is_apply_ratio=True):
+    def compute_dprod_dratio(self, prod, ratio_name, dapplied_ratio_dratio):
         '''! Select the most constraining ratio and apply it to production and consumption.
         To avoid clipping effects, the applied ratio is not the minimum value between all the ratios, 
         but the smoothed minimum value between all the ratio (see func_manager documentation for more).
@@ -1106,14 +1106,12 @@ class TechnoType:
         dprod_dratio = np.zeros(
             (len(self.years), len(self.years)))
 
-        dsmooth_dvariable = self.compute_dapplied_ratio_dratios(is_apply_ratio)
-
         if ratio_name:
             # Check that the ratio corresponds to something consumed
             for col in self.consumption.columns:
                 if ratio_name in col and ratio_name not in ['years']:
                     dprod_dratio = (np.identity(len(self.years)) * prod.values) *\
-                        dsmooth_dvariable[ratio_name]
+                        dapplied_ratio_dratio[ratio_name]
         return dprod_dratio
 
     def compute_dapplied_ratio_dratios(self, is_apply_ratio=True):
@@ -1129,9 +1127,10 @@ class TechnoType:
                 (len(self.years), len(self.years)))
             # Same as for the main function, search for matches between
             # ratio_df and consumptions
-            for col in self.consumption.columns:
-                if element in col and element not in ['years']:
-                    elements += [element, ]
+            if is_apply_ratio:
+                for col in self.consumption.columns:
+                    if element in col and element not in ['years']:
+                        elements += [element, ]
         if is_apply_ratio:
             if len(elements) > 0:
                 dsmooth_matrix = get_dsmooth_dvariable_vect(
