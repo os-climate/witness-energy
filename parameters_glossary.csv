@@ -131,6 +131,7 @@ liquid_fuel_Refinery_array_mix,Liquid fuel Refinery array mix,%,Refinery data mi
 liquid_fuel_array_mix,Liquid fuel array mix,%,Liquid fuel data mix.,,
 liquid_hydrogen_constraint_ref,Liquid hydrogen constraint reference,,Liquid hydrogen production reference for constraint computation.,,
 liquid_hydrogen_percentage,Liquid hydrogen percentage,,Liquid hydrogen percentage.,,
+lost_capital,Lost Capital,G$,Capital loss for a given technology,,
 margin,Price Margin,%,Margin on service price.,,CC - Costs
 market_demand,Market Demand,Mt/year,Market Demand.,,
 mean_age_production,Average age of production plants,,Production Plants Average Age.,,
@@ -188,6 +189,7 @@ techno_production,Technology Production Quantities,TWh or Mt,Quantity of the dif
 technologies_list,Technologies List,,List of the technologies considered.,,
 time_step,Time step,year,Time step in years per period.,,AAAFAA - duration
 tol_constraint,Tol constraint,,Constraint tolerance.,,
+total_capital,Total Capital,G$,Total capital for a given technology,,
 total_energy_demand,Total Energy Demand,TWh,Total energy demand for activities.,,
 total_prod_h2_liquid,Total prod h2 liquid,TWh,Total amount of energy coming from liquid H2 production.,,
 total_prod_minus_min_prod_constraint_df,Total prod minus min prod constraint df,TWh,Total production of energy minus the production constraint.,,

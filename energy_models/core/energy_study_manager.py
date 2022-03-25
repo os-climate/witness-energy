@@ -164,7 +164,7 @@ DEFAULT_MIN_TECH_DICT = {Electricity.name: {'type': ENERGY_TYPE, 'value': electr
                          GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': gaseoushydrogen_technos_coarse_integration},
                          Methane.name: {'type': ENERGY_TYPE, 'value': ['FossilGas']},
                                 'carbon_capture': {'type': CCUS_TYPE, 'value': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.MonoEthanolAmine']},
-                                'carbon_storage': {'type': CCUS_TYPE, 'value': ['PureCarbonSolidStorage']}}
+                                'carbon_storage': {'type': CCUS_TYPE, 'value': ['DeepSalineFormation']}}
 
 # DEFAULT_MIN_TECH_DEV_DICT, same as DEFAULT_MIN_TECH_DICT but with deepSalineFormation into carbon_storage
 DEFAULT_MIN_TECH_DEV_DICT = {Electricity.name: {'type': ENERGY_TYPE, 'value': electricity_technos_coarse_integration},
