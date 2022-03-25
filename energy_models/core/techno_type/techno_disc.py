@@ -973,12 +973,15 @@ class TechnoDiscipline(SoSDiscipline):
             'techno_capital')
         chart_name = f'Lost capital due to unused {self.techno_name} factories vs total capital'
 
-        new_chart = TwoAxesInstanciatedChart('years', 'Capitals (G$)',
+        new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
                                              chart_name=chart_name)
 
         serie = InstanciatedSeries(
             techno_capital['years'].values.tolist(),
-            techno_capital[self.techno_name].values.tolist(), 'Total capital', 'bar')
+            techno_capital[self.techno_name].values.tolist(), 'Total capital', 'lines')
+
+        new_chart.series.append(serie)
+
         serie = InstanciatedSeries(
             lost_capital['years'].values.tolist(),
             lost_capital[self.techno_name].values.tolist(), 'Lost Capital', 'bar')
