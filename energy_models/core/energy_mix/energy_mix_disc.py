@@ -146,7 +146,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         EnergyMix.SYNGAS_PROD_OBJECTIVE: {'type': 'array', 'unit': 'TWh',
                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
-        #'ratio_available_carbon_capture': {'type': 'dataframe', 'unit': '-'},
         'all_streams_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
