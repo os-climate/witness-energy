@@ -45,7 +45,6 @@ class FischerTropsch(LiquidFuelTechno):
         self.needed_syngas_ratio = self.techno_infos_dict['carbon_number'] / (
             2 * self.techno_infos_dict['carbon_number'] + 1)
 
-        self.ratio_available_carbon_capture = inputs_dict['ratio_available_carbon_capture']
 
     def configure_energy_data(self, inputs_dict):
         '''
@@ -61,14 +60,9 @@ class FischerTropsch(LiquidFuelTechno):
         """
         ratio_df = LiquidFuelTechno.select_ratios(self)
         if 'carbon_capture' in ratio_df.columns and self.is_stream_demand:
-            ratio_df['carbon_capture'] = np.where(np.real(self.ratio_available_carbon_capture['ratio'].values) <= np.real(ratio_df['carbon_capture'].values),
-                                                  self.ratio_available_carbon_capture['ratio'].values,
-                                                  ratio_df['carbon_capture'].values)
+            ratio_df['carbon_capture'] =  ratio_df['carbon_capture'].values
         else:
-            if not np.all(self.ratio_available_carbon_capture['ratio'].values == 1.0):
-                ratio_df['carbon_capture'] = self.ratio_available_carbon_capture['ratio'].values
-            else:
-                ratio_df['carbon_capture'] = np.ones(len(self.years))
+            ratio_df['carbon_capture'] = np.ones(len(self.years))
         self.ratio_df = ratio_df
         return ratio_df
 

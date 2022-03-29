@@ -177,9 +177,7 @@ class CCUS(BaseStream):
                         inputs_dict[f'{energy}.energy_consumption'][elements].values * \
                         self.scaling_factor_energy_consumption
 
-        # initialize ratio available carbon capture
-        self.ratio_available_carbon_capture = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
-                                                            f'ratio': 1.0})
+
 
         self.co2_emissions_needed_by_energy_mix = inputs_dict['co2_emissions_needed_by_energy_mix']
         self.co2_emissions_from_energy_mix = inputs_dict['CO2_emissions_by_use_sources']
@@ -234,26 +232,7 @@ class CCUS(BaseStream):
             self.co2_emissions_needed_by_energy_mix[f'{CarbonCapture.name} needed by energy mix (Gt)'] * 1e3 -\
             self.co2_for_food[f'{CO2.name} for food (Mt)']
 
-        cc_to_be_stored = self.total_co2_emissions[
-            f'{CarbonCapture.name} to be stored (Mt)'].values
-        # if the carbon to be stored is lower than zero that means that we need
-        # more carbon capture for energy mix than the one created by CC technos
-        # or upgrading biogas
-        if cc_to_be_stored.min() < 0:
-            cc_needed = self.co2_emissions_needed_by_energy_mix[
-                f'{CarbonCapture.name} needed by energy mix (Gt)'].values * 1e3
-            # if cc_needed is lower than 1.0e-15 we put one to the ratio (do
-            # not care about small needs lower than 1.0e-15)
-            if cc_to_be_stored.dtype != cc_needed.dtype:
-                cc_needed = cc_needed.astype(cc_to_be_stored.dtype)
-            self.ratio_available_carbon_capture['ratio'] = np.divide(cc_to_be_stored + cc_needed, cc_needed,
-                                                                     out=np.ones_like(cc_needed), where=cc_needed > 1.0e-15)
 
-        # Waiting for production ratio effect we clip the prod
-        carbon_to_be_stored = self.total_co2_emissions[
-            f'{CarbonCapture.name} to be stored (Mt)'].values
-        carbon_to_be_stored[carbon_to_be_stored.real < 0.0] = 0.0
-        self.total_co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'] = carbon_to_be_stored
 
         '''
             Solid Carbon to be stored to limit the carbon solid storage

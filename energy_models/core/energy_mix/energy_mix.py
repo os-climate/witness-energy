@@ -115,7 +115,6 @@ class EnergyMix(BaseStream):
         self.total_co2_emissions = None
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
-        self.ratio_available_carbon_capture = None
         self.losses_percentage_dict = {}
 
     def configure(self, inputs_dict):
@@ -228,9 +227,7 @@ class EnergyMix(BaseStream):
             self.all_streams_demand_ratio[energy] = np.ones(
                 len(self.all_streams_demand_ratio['years'].values)) * 100.
 
-        # initialize ratio available carbon capture
-        self.ratio_available_carbon_capture = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
-                                                            'ratio': 1.0})
+
 
     def set_energy_prices_in(self, energy_prices):
         '''

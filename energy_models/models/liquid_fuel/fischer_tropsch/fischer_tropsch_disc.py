@@ -115,8 +115,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False},
                'syngas_ratio': {'type': 'array', 'unit': '%', 'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
-               'ratio_available_carbon_capture': {'type': 'dataframe', 'default': ratio_available_cc_default,
-                                                  'unit': '-', 'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+
                'hydrogen.gaseous_hydrogen.data_fuel_dict': {'type': 'dict',
                                                             'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY,
                                                             'namespace': 'ns_energy',
@@ -138,8 +137,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     def compute_sos_jacobian(self):
 
         LiquidFuelTechnoDiscipline.compute_sos_jacobian(self)
-        ratio = self.get_sosdisc_inputs('ratio_available_carbon_capture')[
-            'ratio'].values
         # Grad of price vs energyprice
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
@@ -198,48 +195,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             ('techno_prices',
              f'{self.techno_name}_wotaxes'), ('syngas_ratio',),
             dprice_FT_wotaxes_dsyngas_ratio / 100.0)  # now syngas is in % grad is divided by 100
-        '''
-            Gradient vs ratio_available_carbon_capture
-        '''
-        techno_prod = deepcopy(self.get_sosdisc_outputs('techno_production'))
-        techno_cons = deepcopy(self.get_sosdisc_outputs('techno_consumption'))
 
-        years = techno_prod['years'].values
-        dapplied_ratio_dratio = self.techno_model.compute_dapplied_ratio_dratios(
-            self.get_sosdisc_inputs('is_apply_ratio'))
-        for column in techno_prod:
-            if column != 'years':
-                production_woratio = self.techno_model.production_woratio[
-                    column]
-                dprod_dratio = self.techno_model.compute_dprod_dratio(
-                    production_woratio, ratio_name='carbon_capture',
-                    dapplied_ratio_dratio=dapplied_ratio_dratio)
-                # If the ratio on cc from all_streams_demand_ratio is more constraining, set
-                # the grad value to 0.0
-                if self.get_sosdisc_inputs('is_stream_demand'):
-                    dprod_dratiocc = np.where(ratio <= self.get_sosdisc_inputs('all_streams_demand_ratio')['carbon_capture'].values / 100.,
-                                              dprod_dratio, 0.0)
-                else:
-                    dprod_dratiocc = dprod_dratio
-                self.set_partial_derivative_for_other_types(
-                    ('techno_production', column), ('ratio_available_carbon_capture', 'ratio'), dprod_dratiocc)  # np.identity(len(years)) * np.divide(techno_prod[column].values, ratio, where=ratio != 0.0))  # now syngas is in % grad is divided by 100
-        for column in techno_cons:
-            if column != 'years':
-                consumption_woratio = self.techno_model.consumption_woratio[
-                    column]
-                dcons_dratio = self.techno_model.compute_dprod_dratio(
-                    consumption_woratio, ratio_name='carbon_capture',
-                    dapplied_ratio_dratio=dapplied_ratio_dratio)
-                # If the ratio on cc from all_streams_demand_ratio is more constraining, set
-                # the grad value to 0.0
-                if self.get_sosdisc_inputs('is_stream_demand'):
-                    dcons_dratiocc = np.where(ratio <= self.get_sosdisc_inputs('all_streams_demand_ratio')['carbon_capture'].values / 100.,
-                                              dcons_dratio, 0.0)
-                else:
-                    dcons_dratiocc = dcons_dratio
-                self.set_partial_derivative_for_other_types(
-                    ('techno_consumption',
-                     column), ('ratio_available_carbon_capture', 'ratio'), dcons_dratiocc)
 
     def set_partial_derivatives_output_wr_input(self, output_name, input_name, grad_dict):
         """
