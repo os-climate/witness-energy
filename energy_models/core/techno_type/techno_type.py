@@ -31,8 +31,7 @@ class TechnoType:
     """
     Class for energy production technology type
     """
-    input_needed_list = ['year_start', 'year_end', 'techno_infos_dict', 'CO2_taxes', 'margin', 'transport_cost',
-                         'transport_margin', 'invest_before_ystart']
+
     energy_name = 'energy'
     min_value_invest = 1.e-12
 
@@ -70,24 +69,6 @@ class TechnoType:
         self.lost_capital = None
         self.techno_capital = None
         self.applied_ratio = None
-
-    def check_inputs_dict(self, inputs_dict):
-        '''
-        Check if all inputs are filled in the configure
-        '''
-        for input_d in self.input_needed_list:
-            if input_d not in inputs_dict:
-                raise Exception(
-                    f'The input {input_d} is missing to configure the technology {self.name}')
-            else:
-                if inputs_dict[input_d] is None:
-                    raise Exception(
-                        f'The input {input_d} is None to configure the technology {self.name}')
-            if input_d == 'techno_infos_dict':
-                if 'learning_rate' in inputs_dict['techno_infos_dict']:
-                    if not (0.0 <= inputs_dict['techno_infos_dict']['learning_rate'] <= 1.0):
-                        raise(
-                            Exception(f'The input {input_d} is not between 0.0 and 1.0'))
 
     def check_outputs_dict(self, biblio_data):
         '''
@@ -159,20 +140,23 @@ class TechnoType:
         '''
         Configure with inputs_dict from the discipline
         '''
-        self.check_inputs_dict(inputs_dict)
 
         self.year_start = inputs_dict['year_start']  # year start
         self.year_end = inputs_dict['year_end']  # year end
 
         self.init_dataframes()
         self.techno_infos_dict = inputs_dict['techno_infos_dict']
-        self.margin = inputs_dict['margin'].loc[inputs_dict['margin']['years']
-                                                <= self.year_end]
-        self.maturity = self.techno_infos_dict['maturity']
+
+        if inputs_dict['margin'] is not None:
+            self.margin = inputs_dict['margin'].loc[inputs_dict['margin']['years']
+                                                    <= self.year_end]
+
+        if 'maturity' in self.techno_infos_dict:
+            self.maturity = self.techno_infos_dict['maturity']
 
         self.initial_production = inputs_dict['initial_production']
         self.initial_age_distrib = inputs_dict['initial_age_distrib']
-        if self.initial_age_distrib['distrib'].sum() > 100.001 or self.initial_age_distrib[
+        if self.initial_age_distrib is not None and self.initial_age_distrib['distrib'].sum() > 100.001 or self.initial_age_distrib[
                 'distrib'].sum() < 99.999:
             sum_distrib = self.initial_age_distrib['distrib'].sum()
             raise Exception(
@@ -413,6 +397,9 @@ class TechnoType:
         self.cost_details[self.name] *= self.margin.loc[self.margin['years']
                                                         <= self.cost_details['years'].max()]['margin'].values / 100.0
 
+        # Compute and add CO2 taxes
+        self.cost_details['CO2_taxes_factory'] = self.compute_co2_tax()
+
         if 'nb_years_amort_capex' in self.techno_infos_dict:
             self.nb_years_amort_capex = self.techno_infos_dict['nb_years_amort_capex']
 
@@ -427,9 +414,6 @@ class TechnoType:
             self.cost_details[f'{self.name}_amort'] *= self.margin.loc[self.margin['years']
                                                                        <= self.cost_details['years'].max()]['margin'].values / 100.0
             self.cost_details[f'{self.name}_amort'] += self.cost_details['CO2_taxes_factory']
-
-        # Compute and add CO2 taxes
-        self.cost_details['CO2_taxes_factory'] = self.compute_co2_tax()
 
         # Add transport and CO2 taxes
         self.cost_details[self.name] += self.cost_details['CO2_taxes_factory']
