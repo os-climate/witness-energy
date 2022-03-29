@@ -146,13 +146,17 @@ class TechnoType:
 
         self.init_dataframes()
         self.techno_infos_dict = inputs_dict['techno_infos_dict']
-        self.margin = inputs_dict['margin'].loc[inputs_dict['margin']['years']
-                                                <= self.year_end]
-        self.maturity = self.techno_infos_dict['maturity']
+
+        if inputs_dict['margin'] is not None:
+            self.margin = inputs_dict['margin'].loc[inputs_dict['margin']['years']
+                                                    <= self.year_end]
+
+        if 'maturity' in self.techno_infos_dict:
+            self.maturity = self.techno_infos_dict['maturity']
 
         self.initial_production = inputs_dict['initial_production']
         self.initial_age_distrib = inputs_dict['initial_age_distrib']
-        if self.initial_age_distrib['distrib'].sum() > 100.001 or self.initial_age_distrib[
+        if self.initial_age_distrib is not None and self.initial_age_distrib['distrib'].sum() > 100.001 or self.initial_age_distrib[
                 'distrib'].sum() < 99.999:
             sum_distrib = self.initial_age_distrib['distrib'].sum()
             raise Exception(
