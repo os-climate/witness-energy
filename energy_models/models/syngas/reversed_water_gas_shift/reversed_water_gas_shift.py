@@ -31,9 +31,6 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 
 class RWGS(SyngasTechno):
 
-    input_needed_list = SyngasTechno.input_needed_list + \
-        ['syngas_ratio', 'needed_syngas_ratio']
-
     def configure_parameters(self, inputs_dict):
 
         # We need these lines if both configure because syngas is the coupling variable (so in configure_parameters_update)
