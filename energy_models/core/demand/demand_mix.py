@@ -49,8 +49,10 @@ class DemandMix(object):
         self.energy_demand_mix = base_df.copy(deep=True)
         self.total_energy_demand = base_df.copy(
             deep=True)  # overall energy demand per year
-        for energy in self.energy_list:
-            self.energy_demand_per_energy[energy] = base_df.copy(deep=True)
+
+        if self.energy_list is not None:
+            for energy in self.energy_list:
+                self.energy_demand_per_energy[energy] = base_df.copy(deep=True)
 
     def configure_parameters(self, inputs_dict):
 
