@@ -397,6 +397,9 @@ class TechnoType:
         self.cost_details[self.name] *= self.margin.loc[self.margin['years']
                                                         <= self.cost_details['years'].max()]['margin'].values / 100.0
 
+        # Compute and add CO2 taxes
+        self.cost_details['CO2_taxes_factory'] = self.compute_co2_tax()
+
         if 'nb_years_amort_capex' in self.techno_infos_dict:
             self.nb_years_amort_capex = self.techno_infos_dict['nb_years_amort_capex']
 
@@ -411,9 +414,6 @@ class TechnoType:
             self.cost_details[f'{self.name}_amort'] *= self.margin.loc[self.margin['years']
                                                                        <= self.cost_details['years'].max()]['margin'].values / 100.0
             self.cost_details[f'{self.name}_amort'] += self.cost_details['CO2_taxes_factory']
-
-        # Compute and add CO2 taxes
-        self.cost_details['CO2_taxes_factory'] = self.compute_co2_tax()
 
         # Add transport and CO2 taxes
         self.cost_details[self.name] += self.cost_details['CO2_taxes_factory']
