@@ -56,7 +56,9 @@ class DemandMix(object):
 
         self.year_start = inputs_dict['year_start']
         self.year_end = inputs_dict['year_end']
-        self.energy_list = inputs_dict['energy_list'] + inputs_dict['ccs_list']
+        if inputs_dict['energy_list'] is not None and inputs_dict['ccs_list'] is not None:
+            self.energy_list = inputs_dict['energy_list'] + \
+                inputs_dict['ccs_list']
         self.reload_df()
 
     def configure_parameters_update(self, inputs_dict):
