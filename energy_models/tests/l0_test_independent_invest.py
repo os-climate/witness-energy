@@ -296,7 +296,7 @@ class TestIndependentInvest(unittest.TestCase):
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
-
+        assert 1==2
     def test_05_independent_invest_with_forest_disc_check_jacobian(self):
         
         self.name = 'Energy'
