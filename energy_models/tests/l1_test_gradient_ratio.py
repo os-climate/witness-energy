@@ -571,7 +571,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio', 'ratio_available_carbon_capture',
+                       'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio',
                        'residuals_history', 'all_streams_demand_ratio', 'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling'] and 'resources' not in key:
@@ -612,7 +612,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0]
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=coupled_inputs,
