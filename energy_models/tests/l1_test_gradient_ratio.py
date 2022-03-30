@@ -1100,8 +1100,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = RatioJacobianTestCase()
     cls.setUp()
-    # cls.launch_data_pickle_generation()
+    cls.launch_data_pickle_generation()
     cls.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian()
