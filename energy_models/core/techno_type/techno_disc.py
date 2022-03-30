@@ -138,27 +138,15 @@ class TechnoDiscipline(SoSDiscipline):
             year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
-            self.dm.set_data(self.get_var_full_name(
-                'resources_price', self._data_in), 'default', get_static_prices(years), False)
-            self.dm.set_data(self.get_var_full_name(
-                'resources_CO2_emissions', self._data_in),
-                'default', get_static_CO2_emissions(years), False)
-
             default_margin = pd.DataFrame({'years': years,
                                            'margin': 110.0})
-            self.dm.set_data(self.get_var_full_name(
-                'margin', self._data_in),
-                'default', default_margin, False)
 
-            if 'transport_cost' in self._data_in:
-                self.dm.set_data(self.get_var_full_name(
-                    'transport_cost', self._data_in),
-                    'default', pd.DataFrame({'years': years,
-                                             'transport': 0.0}), False)
-            if 'transport_margin' in self._data_in:
-                self.dm.set_data(self.get_var_full_name(
-                    'transport_margin', self._data_in),
-                    'default', default_margin, False)
+            self.dynamic_default_values({'resources_price': get_static_prices(years),
+                                         'resources_CO2_emissions': get_static_CO2_emissions(years),
+                                         'margin': default_margin,
+                                         'transport_cost': pd.DataFrame({'years': years,
+                                                                         'transport': 0.0}),
+                                         'transport_margin': default_margin})
 
     def run(self):
         '''

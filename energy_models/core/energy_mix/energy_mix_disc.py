@@ -246,9 +246,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
             year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
-            self.dm.set_data(self.get_var_full_name(
-                'liquid_hydrogen_percentage', self._data_in), 'default',
-                np.concatenate((np.ones(5) * 1e-4, np.ones(len(years) - 5) / 4), axis=None), False)
+            lh_perc_default = np.concatenate(
+                (np.ones(5) * 1e-4, np.ones(len(years) - 5) / 4), axis=None)
+            self.set_dynamic_default_values(
+                {'liquid_hydrogen_percentage': lh_perc_default})
 
     def run(self):
         #-- get inputs
