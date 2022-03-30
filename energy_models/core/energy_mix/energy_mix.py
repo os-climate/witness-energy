@@ -160,8 +160,9 @@ class EnergyMix(BaseStream):
         self.is_dev = inputs_dict['is_dev']
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
 
-        for energy in self.subelements_list:
-            self.losses_percentage_dict[energy] = inputs_dict[f'{energy}.losses_percentage']
+        if self.subelements_list is not None:
+            for energy in self.subelements_list:
+                self.losses_percentage_dict[energy] = inputs_dict[f'{energy}.losses_percentage']
 
     def configure_parameters_update(self, inputs_dict):
         '''
