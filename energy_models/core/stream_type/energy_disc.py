@@ -63,7 +63,11 @@ class EnergyDiscipline(StreamDiscipline):
         dynamic_inputs = {}
 
         if 'technologies_list' in self._data_in:
+            found_technos = self.found_technos_under_energy()
             techno_list = self.get_sosdisc_inputs('technologies_list')
+            self.dm.set_data(self.get_var_full_name(
+                'technologies_list', self._data_in),
+                'default', found_technos, False)
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.techno_consumption'] = {
@@ -80,6 +84,21 @@ class EnergyDiscipline(StreamDiscipline):
                         'type': 'dataframe', 'unit': '(Gha)'}
 
         self.add_inputs(dynamic_inputs)
+
+    def found_technos_under_energy(self):
+        '''
+        Set the default value of the technology list with discipline under the energy which are in possible values
+        '''
+        my_name = self.get_disc_full_name()
+        possible_technos = self._data_in['technologies_list'][self.POSSIBLE_VALUES]
+        found_technos_list = self.dm.get_discipline_names_with_starting_name(
+            my_name)
+        short_technos_list = [name.split(
+            f'{my_name}.')[-1] for name in found_technos_list if f'{my_name}.' in name]
+
+        possible_short_technos_list = [
+            techno for techno in short_technos_list if techno in possible_technos]
+        return possible_short_technos_list
 
     def run(self):
         '''

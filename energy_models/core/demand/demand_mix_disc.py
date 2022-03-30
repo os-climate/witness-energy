@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+import numpy as np
+import pandas as pd
+
 from energy_models.core.demand.demand_mix import DemandMix
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
@@ -90,6 +93,20 @@ class DemandMixDiscipline(SoSDiscipline):
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
+
+        self.update_default_dataframes_with_years()
+
+    def update_default_dataframes_with_years(self):
+        '''
+        Update all default dataframes with years 
+        '''
+        if 'year_start' in self._data_in:
+            year_start, year_end = self.get_sosdisc_inputs(
+                ['year_start', 'year_end'])
+            years = np.arange(year_start, year_end + 1)
+            self.dm.set_data(self.get_var_full_name(
+                'total_energy_demand', self._data_in), 'default', pd.DataFrame({'years': years,
+                                                                                'demand': 0.0}), False)
 
     def run(self):
         #-- get inputs
