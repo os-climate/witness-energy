@@ -104,9 +104,8 @@ class DemandMixDiscipline(SoSDiscipline):
             year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
-            self.dm.set_data(self.get_var_full_name(
-                'total_energy_demand', self._data_in), 'default', pd.DataFrame({'years': years,
-                                                                                'demand': 0.0}), False)
+            self.set_dynamic_default_values({'total_energy_demand': pd.DataFrame({'years': years,
+                                                                                  'demand': 0.0})})
 
     def run(self):
         #-- get inputs

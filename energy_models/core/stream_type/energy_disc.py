@@ -88,9 +88,7 @@ class EnergyDiscipline(StreamDiscipline):
         '''
 
         found_technos = self.found_technos_under_energy()
-        self.dm.set_data(self.get_var_full_name(
-            'technologies_list', self._data_in),
-            'default', found_technos, False)
+        self.set_dynamic_default_values({'technologies_list': found_technos})
 
     def found_technos_under_energy(self):
         '''
