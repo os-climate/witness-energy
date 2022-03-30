@@ -61,14 +61,11 @@ class EnergyDiscipline(StreamDiscipline):
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
-
         if 'technologies_list' in self._data_in:
-            found_technos = self.found_technos_under_energy()
             techno_list = self.get_sosdisc_inputs('technologies_list')
-            self.dm.set_data(self.get_var_full_name(
-                'technologies_list', self._data_in),
-                'default', found_technos, False)
+            self.update_default_technology_list()
             if techno_list is not None:
+                techno_list = self.get_sosdisc_inputs('technologies_list')
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.techno_consumption'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt'}
@@ -84,6 +81,16 @@ class EnergyDiscipline(StreamDiscipline):
                         'type': 'dataframe', 'unit': '(Gha)'}
 
         self.add_inputs(dynamic_inputs)
+
+    def update_default_technology_list(self):
+        '''
+        Update the default value of technologies list with techno discipline below the energy node and in possible values
+        '''
+
+        found_technos = self.found_technos_under_energy()
+        self.dm.set_data(self.get_var_full_name(
+            'technologies_list', self._data_in),
+            'default', found_technos, False)
 
     def found_technos_under_energy(self):
         '''
