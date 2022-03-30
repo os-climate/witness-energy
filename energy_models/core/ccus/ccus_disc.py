@@ -25,21 +25,6 @@ from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
-from energy_models.core.stream_type.energy_models.syngas import Syngas
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
-from copy import deepcopy
-from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
-    compute_func_with_exp_min
-from plotly import graph_objects as go
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import InstantiatedPlotlyNativeChart
-from sos_trades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
-from sos_trades_core.tools.cst_manager.func_manager_common import get_dsmooth_dvariable
 from energy_models.core.ccus.ccus import CCUS
 
 
@@ -60,8 +45,7 @@ class CCUS_Discipline(SoSDiscipline):
     }
 
     DESC_IN = {
-        'ccs_list': {'type': 'string_list', 'possible_values': [CarbonCapture.name, CarbonStorage.name],
-                     'default': [CarbonCapture.name, CarbonStorage.name],
+        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -95,6 +79,7 @@ class CCUS_Discipline(SoSDiscipline):
 
         if 'ccs_list' in self._data_in:
             ccs_list = self.get_sosdisc_inputs('ccs_list')
+            self.update_default_ccs_list()
             if ccs_list is not None:
                 for ccs_name in ccs_list:
                     dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
@@ -122,6 +107,30 @@ class CCUS_Discipline(SoSDiscipline):
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
+
+    def update_default_ccs_list(self):
+        '''
+        Update the default value of technologies list with techno discipline below the ccs node and in possible values
+        '''
+
+        found_ccs = self.found_ccs_under_ccsmix()
+        self.set_dynamic_default_values({'ccs_list': found_ccs})
+
+    def found_ccs_under_ccsmix(self):
+        '''
+        Set the default value of the ccs list and the ccs_list with discipline under the ccs_mix which are in possible values
+        '''
+        my_name = self.get_disc_full_name()
+        possible_ccs = CCUS.ccs_list
+        found_ccs_list = self.dm.get_discipline_names_with_starting_name(
+            my_name)
+        short_ccs_list = [name.split(
+            f'{my_name}.')[-1] for name in found_ccs_list if f'{my_name}.' in name]
+
+        possible_short_ccs_list = [
+            techno for techno in short_ccs_list if techno in possible_ccs]
+
+        return possible_short_ccs_list
 
     def run(self):
         #-- get inputs

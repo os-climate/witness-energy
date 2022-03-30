@@ -173,6 +173,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         if 'energy_list' in self._data_in:
             energy_list = self.get_sosdisc_inputs('energy_list')
+            self.update_default_energy_list()
             if energy_list is not None:
                 for energy in energy_list:
                     dynamic_inputs[f'{energy}.energy_consumption'] = {
@@ -250,6 +251,30 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 (np.ones(5) * 1e-4, np.ones(len(years) - 5) / 4), axis=None)
             self.set_dynamic_default_values(
                 {'liquid_hydrogen_percentage': lh_perc_default})
+
+    def update_default_energy_list(self):
+        '''
+        Update the default value of technologies list with techno discipline below the energy node and in possible values
+        '''
+
+        found_energies = self.found_energy_under_energymix()
+        self.set_dynamic_default_values({'energy_list': found_energies})
+
+    def found_energy_under_energymix(self):
+        '''
+        Set the default value of the energy list and the ccs_list with discipline under the energy_mix which are in possible values
+        '''
+        my_name = self.get_disc_full_name()
+        possible_energy = EnergyMix.energy_list
+        found_energy_list = self.dm.get_discipline_names_with_starting_name(
+            my_name)
+        short_energy_list = [name.split(
+            f'{my_name}.')[-1] for name in found_energy_list if f'{my_name}.' in name]
+
+        possible_short_energy_list = [
+            techno for techno in short_energy_list if techno in possible_energy]
+
+        return possible_short_energy_list
 
     def run(self):
         #-- get inputs
