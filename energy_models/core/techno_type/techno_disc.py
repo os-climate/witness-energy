@@ -157,7 +157,7 @@ class TechnoDiscipline(SoSDiscipline):
                                              'transport': 0.0}), False)
             if 'transport_margin' in self._data_in:
                 self.dm.set_data(self.get_var_full_name(
-                    'transport_cost', self._data_in),
+                    'transport_margin', self._data_in),
                     'default', default_margin, False)
 
     def run(self):
