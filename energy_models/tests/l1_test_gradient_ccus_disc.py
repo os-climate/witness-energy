@@ -27,7 +27,7 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 from energy_models.tests.data_tests.mda_energy_data_generator import launch_data_pickle_generation
 
 
-class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
+class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
     """
     Consumption CO2 Emissions Discipline jacobian test class
     """
@@ -179,7 +179,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
 if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    cls = ConsumptionCO2EmissionsDiscJacobianTestCase()
+    cls = CCUSDiscJacobianTestCase()
     cls.setUp()
     # self.launch_data_pickle_generation()
     cls.test_01_Consumption_ccus_disciplinejacobian()
