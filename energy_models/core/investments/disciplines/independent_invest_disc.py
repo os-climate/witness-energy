@@ -70,7 +70,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
         'invest_objective': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'invest_objective_sum': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
                              'namespace': 'ns_functions'},
-        'invest_objective_sum_cons': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'invest_sum_cons': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
                              'namespace': 'ns_functions'}
 
     }
@@ -141,7 +141,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
         output_dict = {'invest_constraint': invest_constraint_df,
                        'invest_objective': invest_objective,
                        'invest_objective_sum': abs_delta,
-                       'invest_objective_sum_cons': abs_delta_cons}
+                       'invest_sum_cons': abs_delta_cons}
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
             for techno in input_dict[f'{energy}.technologies_list']:
@@ -194,7 +194,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('invest_objective_sum',), ('invest_mix', techno), dinvest_objective_sum_dtechno_invest)
             self.set_partial_derivative_for_other_types(
-                ('invest_objective_sum_cons',), ('invest_mix', techno), dinvest_objective_sum_cons_dtechno_invest)
+                ('invest_sum_cons',), ('invest_mix', techno), dinvest_objective_sum_cons_dtechno_invest)
         if inputs_dict['is_dev']:
             self.set_partial_derivative_for_other_types(
                 ('forest_investment', 'forest_investment'), ('forest_investment', 'forest_investment'),  np.identity(len(years)))
@@ -212,7 +212,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
             ('invest_objective_sum',), ('energy_investment', 'energy_investment'), dinvest_objective_sum_dtotal_invest* scaling_factor_energy_investment)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_objective_sum_cons',), ('energy_investment', 'energy_investment'), dinvest_objective_sum_cons_dtotal_invest* scaling_factor_energy_investment)
+            ('invest_sum_cons',), ('energy_investment', 'energy_investment'), dinvest_objective_sum_cons_dtotal_invest* scaling_factor_energy_investment)
 
 
     def compute_dinvest_objective_dinvest(self, techno_invest_sum, invest_tot, invest_objective_ref):
