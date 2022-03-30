@@ -95,6 +95,7 @@ class CCUS_Discipline(SoSDiscipline):
 
         if 'ccs_list' in self._data_in:
             ccs_list = self.get_sosdisc_inputs('ccs_list')
+            self.update_default_ccs_list()
             if ccs_list is not None:
                 for ccs_name in ccs_list:
                     dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
@@ -122,6 +123,30 @@ class CCUS_Discipline(SoSDiscipline):
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
+
+    def update_default_ccs_list(self):
+        '''
+        Update the default value of technologies list with techno discipline below the ccs node and in possible values
+        '''
+
+        found_ccs = self.found_ccs_under_ccsmix()
+        self.set_dynamic_default_values({'ccs_list': found_ccs})
+
+    def found_ccs_under_ccsmix(self):
+        '''
+        Set the default value of the ccs list and the ccs_list with discipline under the ccs_mix which are in possible values
+        '''
+        my_name = self.get_disc_full_name()
+        possible_ccs = self._data_in['ccs_list'][self.POSSIBLE_VALUES]
+        found_ccs_list = self.dm.get_discipline_names_with_starting_name(
+            my_name)
+        short_ccs_list = [name.split(
+            f'{my_name}.')[-1] for name in found_ccs_list if f'{my_name}.' in name]
+
+        possible_short_ccs_list = [
+            techno for techno in short_ccs_list if techno in possible_ccs]
+
+        return possible_short_ccs_list
 
     def run(self):
         #-- get inputs
