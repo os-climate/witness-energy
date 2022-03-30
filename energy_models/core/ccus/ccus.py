@@ -58,7 +58,6 @@ class CCUS(BaseStream):
         self.total_co2_emissions = pd.DataFrame()
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
-        self.ratio_available_carbon_capture = None
         self.scaling_factor_energy_production = None
         self.scaling_factor_energy_consumption = None
         self.co2_emissions_needed_by_energy_mix = None
@@ -426,12 +425,8 @@ class CCUS(BaseStream):
                     else:
                         dratio_dkey[grad_info_x] = np.divide(grad_cc, cc_needed,
                                                              out=np.zeros_like(cc_needed), where=cc_needed > 1.0e-15)
-            # finally we can fill the dtotco2_emissions with the u'v-uv'/v**2
-            for key, grad in dratio_dkey.items():
-                key_dratio = f'ratio_available_carbon_capture vs {key}'
-                dtot_CO2_emissions[key_dratio] = grad
-#             self.ratio_available_carbon_capture['ratio'] = np.divide(cc_to_be_stored + cc_needed, cc_needed,
-# out=np.zeros_like(cc_needed), where=cc_needed > 1.0e-15)
+
+
 
         grad_max = np.maximum(0.0, np.sign(
             cc_to_be_stored))
