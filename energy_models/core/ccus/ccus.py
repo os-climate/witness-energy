@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import logging
-import re
-
 import numpy as np
 import pandas as pd
 
@@ -48,6 +45,7 @@ class CCUS(BaseStream):
                 f'{CarbonStorage.name} (Mt)',
                 f'{CO2.name} (Mt)',
                 f'{Carbon.name} (Mt)']
+    ccs_list = [CarbonCapture.name, CarbonStorage.name]
 
     def __init__(self, name):
         '''
@@ -425,8 +423,6 @@ class CCUS(BaseStream):
                     else:
                         dratio_dkey[grad_info_x] = np.divide(grad_cc, cc_needed,
                                                              out=np.zeros_like(cc_needed), where=cc_needed > 1.0e-15)
-
-
 
         grad_max = np.maximum(0.0, np.sign(
             cc_to_be_stored))

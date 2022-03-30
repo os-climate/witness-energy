@@ -265,7 +265,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         Set the default value of the energy list and the ccs_list with discipline under the energy_mix which are in possible values
         '''
         my_name = self.get_disc_full_name()
-        possible_energy = self._data_in['energy_list'][self.POSSIBLE_VALUES]
+        possible_energy = EnergyMix.energy_list
         found_energy_list = self.dm.get_discipline_names_with_starting_name(
             my_name)
         short_energy_list = [name.split(
