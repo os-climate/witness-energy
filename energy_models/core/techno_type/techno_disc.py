@@ -101,17 +101,13 @@ class TechnoDiscipline(SoSDiscipline):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
         if self._data_in is not None:
-            if 'year_start' in self._data_in:
+
+            self.update_default_dataframes_with_years()
+
+            if 'is_apply_ratio' in self._data_in:
                 year_start, year_end = self.get_sosdisc_inputs(
                     ['year_start', 'year_end'])
                 years = np.arange(year_start, year_end + 1)
-                self.dm.set_data(self.get_var_full_name(
-                    'resources_price', self._data_in), 'default', get_static_prices(years), False)
-                self.dm.set_data(self.get_var_full_name(
-                    'resources_CO2_emissions', self._data_in),
-                    'default', get_static_CO2_emissions(years), False)
-
-            if 'is_apply_ratio' in self._data_in:
                 if self.get_sosdisc_inputs('is_stream_demand'):
                     demand_ratio_dict = dict(
                         zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years)) * 100.0))
@@ -133,6 +129,36 @@ class TechnoDiscipline(SoSDiscipline):
                                                                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                             'namespace': 'ns_resource'}
             self.add_inputs(dynamic_inputs)
+
+    def update_default_dataframes_with_years(self):
+        '''
+        Update all default dataframes with years 
+        '''
+        if 'year_start' in self._data_in:
+            year_start, year_end = self.get_sosdisc_inputs(
+                ['year_start', 'year_end'])
+            years = np.arange(year_start, year_end + 1)
+            self.dm.set_data(self.get_var_full_name(
+                'resources_price', self._data_in), 'default', get_static_prices(years), False)
+            self.dm.set_data(self.get_var_full_name(
+                'resources_CO2_emissions', self._data_in),
+                'default', get_static_CO2_emissions(years), False)
+
+            default_margin = pd.DataFrame({'years': years,
+                                           'margin': 110.0})
+            self.dm.set_data(self.get_var_full_name(
+                'margin', self._data_in),
+                'default', default_margin, False)
+
+            if 'transport_cost' in self._data_in:
+                self.dm.set_data(self.get_var_full_name(
+                    'transport_cost', self._data_in),
+                    'default', pd.DataFrame({'years': years,
+                                             'transport': 0.0}), False)
+            if 'transport_margin' in self._data_in:
+                self.dm.set_data(self.get_var_full_name(
+                    'transport_cost', self._data_in),
+                    'default', default_margin, False)
 
     def run(self):
         '''

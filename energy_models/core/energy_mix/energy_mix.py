@@ -148,13 +148,10 @@ class EnergyMix(BaseStream):
         self.solid_fuel_elec_constraint_ref = inputs_dict['solid_fuel_elec_constraint_ref']
         self.liquid_hydrogen_percentage = inputs_dict['liquid_hydrogen_percentage']
         self.liquid_hydrogen_constraint_ref = inputs_dict['liquid_hydrogen_constraint_ref']
-        self.CO2_tax_ref = inputs_dict['CO2_tax_ref']
         self.syngas_prod_ref = inputs_dict['syngas_prod_ref']
         self.co2_for_food = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
                                           f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
-        self.carbonstorage_constraint_ref = inputs_dict['carbonstorage_constraint_ref']
-        self.carbonstorage_limit = inputs_dict['carbonstorage_limit']
 
         self.is_dev = inputs_dict['is_dev']
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
@@ -173,7 +170,6 @@ class EnergyMix(BaseStream):
         self.subelements_list = inputs_dict['energy_list'] + \
             inputs_dict['ccs_list']
         self.subelements_list_energy = inputs_dict['energy_list']
-        self.CCS_constraint_factor = inputs_dict['CCS_constraint_factor']
         self.total_prod_minus_min_prod_constraint_ref = inputs_dict[
             'total_prod_minus_min_prod_constraint_ref']
         # Specific configure for energy mix
@@ -204,7 +200,6 @@ class EnergyMix(BaseStream):
         self.energy_prices = self.sub_prices.copy(deep=True)
         self.energy_prices_after_carbon_tax = pd.DataFrame(
             {'years': self.energy_prices['years'].values})
-        self.tol_constraint = inputs_dict['tol_constraint']
 
         # dataframe resource demand
         self.all_resource_demand = pd.DataFrame(
@@ -226,8 +221,6 @@ class EnergyMix(BaseStream):
         for energy in self.subelements_list:
             self.all_streams_demand_ratio[energy] = np.ones(
                 len(self.all_streams_demand_ratio['years'].values)) * 100.
-
-
 
     def set_energy_prices_in(self, energy_prices):
         '''
