@@ -141,12 +141,12 @@ class TechnoDiscipline(SoSDiscipline):
             default_margin = pd.DataFrame({'years': years,
                                            'margin': 110.0})
 
-            self.dynamic_default_values({'resources_price': get_static_prices(years),
-                                         'resources_CO2_emissions': get_static_CO2_emissions(years),
-                                         'margin': default_margin,
-                                         'transport_cost': pd.DataFrame({'years': years,
-                                                                         'transport': 0.0}),
-                                         'transport_margin': default_margin})
+            self.set_dynamic_default_values({'resources_price': get_static_prices(years),
+                                             'resources_CO2_emissions': get_static_CO2_emissions(years),
+                                             'margin': default_margin,
+                                             'transport_cost': pd.DataFrame({'years': years,
+                                                                             'transport': 0.0}),
+                                             'transport_margin': default_margin})
 
     def run(self):
         '''
