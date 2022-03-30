@@ -291,12 +291,11 @@ class TestIndependentInvest(unittest.TestCase):
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.energy_investment',
                                                                           f'{self.name}.{self.model_name}.invest_mix'],
                                       outputs=[
-            f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective', f'{self.name}.invest_objective_sum' , f'{self.name}.invest_objective_sum_cons'],
+            f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective', f'{self.name}.invest_objective_sum' , f'{self.name}.invest_sum_cons'],
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
-        assert 1==2
     def test_05_independent_invest_with_forest_disc_check_jacobian(self):
         
         self.name = 'Energy'
