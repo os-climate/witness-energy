@@ -42,6 +42,7 @@ from energy_models.core.stream_type.energy_models.fossil import Fossil
 from copy import deepcopy
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class EnergyMix(BaseStream):
@@ -66,6 +67,7 @@ class EnergyMix(BaseStream):
     SYNGAS_PROD_OBJECTIVE = 'syngas_prod_objective'
     RESOURCE_LIST = ['natural_gas_resource',
                      'uranium_resource', 'coal_resource', 'oil_resource']
+    RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
     CARBON_STORAGE_CONSTRAINT = 'carbon_storage_constraint'
     energy_class_dict = {GaseousHydrogen.name: GaseousHydrogen,
                          LiquidFuel.name: LiquidFuel,
@@ -210,9 +212,9 @@ class EnergyMix(BaseStream):
                 self.all_resource_demand[elements] = np.linspace(
                     0, 0, len(self.all_resource_demand.index)) * 100.
         for energy in self.subelements_list:
-            for elements in self.sub_consumption_dict[energy]:
-                if elements in self.resource_list:
-                    self.all_resource_demand[elements] = self.all_resource_demand[elements] + \
+            for resource in self.resource_list:
+                if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.resource_list:
+                    self.all_resource_demand[resource] = self.all_resource_demand[f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'] + \
                         inputs_dict[f'{energy}.energy_consumption'][elements].values * \
                         self.scaling_factor_energy_consumption
 

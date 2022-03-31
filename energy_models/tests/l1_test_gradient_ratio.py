@@ -1061,7 +1061,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # Overwrite values for ratios with values from setup
         full_values_dict[f'{self.name}.is_apply_ratio'] = self.is_apply_ratio
         full_values_dict[f'{self.name}.is_stream_demand'] = self.is_stream_demand
-        full_values_dict[f'{self.name}.is_apply_resource_ratio'] = False
+        full_values_dict[f'{self.name}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
         full_values_dict[f'{self.name}.all_streams_demand_ratio'] = self.all_streams_demand_ratio
         full_values_dict[f'{self.name}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
         self.ee.load_study_from_input_dict(full_values_dict)

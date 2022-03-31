@@ -58,7 +58,6 @@ class Study(EnergyMixStudyManager):
         if 'Methanation' in self.technologies_list:
             invest_methane_mix_dict['Methanation'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
-            print('---')
 
         if self.bspline:
             invest_methane_mix_dict['years'] = self.years
@@ -86,7 +85,6 @@ class Study(EnergyMixStudyManager):
         if 'Methanation' in self.technologies_list:
             invest_methane_mix_dict['Methanation'] = np.ones(
                 len(l_ctrl)) * 0.001
-            print('---')
 
         if self.bspline:
             invest_methane_mix_dict['years'] = self.years
