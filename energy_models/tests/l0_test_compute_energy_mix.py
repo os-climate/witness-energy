@@ -161,7 +161,7 @@ class EnergyMixTestCase(unittest.TestCase):
                                                                2.18480439e+10, 2.27308280e+10, 2.37294403e+10, 2.46389349e+10,
                                                                2.54784398e+10, 2.62574611e+10, 2.69814895e+10, 2.76539416e+10,
                                                                2.82736254e+10, 2.88415743e+10, 2.93583576e+10]) / 1.0e9,
-                                         'oil_resource': np.array([7.43925657e+08, 1.35209717e+09, 1.86660126e+09, 2.48016441e+09,
+                                         'oil_resource (Mt)': np.array([7.43925657e+08, 1.35209717e+09, 1.86660126e+09, 2.48016441e+09,
                                                                    3.17712645e+09, 3.96302600e+09, 4.81151986e+09, 5.71680869e+09,
                                                                    6.67898370e+09, 7.71731095e+09, 8.82387839e+09, 9.99165585e+09,
                                                                    1.12401304e+10, 1.25328754e+10, 1.38574154e+10, 1.52116089e+10,
@@ -574,7 +574,7 @@ class EnergyMixTestCase(unittest.TestCase):
             f'{name}.{model_name}.resource.All_Demand')
         scaling_factor = 1000
         zero_line = np.linspace(0, 0, len(all_demand.index))
-        self.assertListEqual(list(self.consumption['oil_resource'].values), list(
+        self.assertListEqual(list(self.consumption['oil_resource (Mt)'].values), list(
             all_demand['oil_resource'].values / scaling_factor))  # in (Mt)
         self.assertListEqual(list(zero_line), list(
             all_demand['coal_resource'].values))
