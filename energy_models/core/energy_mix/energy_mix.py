@@ -213,9 +213,9 @@ class EnergyMix(BaseStream):
                     0, 0, len(self.all_resource_demand.index)) * 100.
         for energy in self.subelements_list:
             for resource in self.resource_list:
-                if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.resource_list:
-                    self.all_resource_demand[resource] = self.all_resource_demand[f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'] + \
-                        inputs_dict[f'{energy}.energy_consumption'][elements].values * \
+                if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.sub_consumption_dict[energy].columns:
+                    self.all_resource_demand[resource] = self.all_resource_demand[resource] + \
+                        inputs_dict[f'{energy}.energy_consumption'][f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                         self.scaling_factor_energy_consumption
 
         # DataFrame stream demand
