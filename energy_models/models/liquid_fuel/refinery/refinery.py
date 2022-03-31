@@ -22,10 +22,9 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 import pandas as pd
 import numpy as np
 
-
 class Refinery(LiquidFuelTechno):
 
-    OIL_NAME = ResourceGlossary.Oil['name']
+    OIL_RESOURCE_NAME = ResourceGlossary.Oil['name']
     # corresponds to crude oil price divided by efficiency TO BE MODIFIED
     oil_extraction_capex = 44.0 / 0.89
 
@@ -47,11 +46,11 @@ class Refinery(LiquidFuelTechno):
         self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details['elec_needs'] / self.cost_details['efficiency'])
 
-        self.cost_details['crude_oil_needs'] = self.get_fuel_needs()
-        self.cost_details[CrudeOil.name] = list(
-            self.resources_prices[CrudeOil.name] * self.cost_details['crude_oil_needs'] / self.cost_details['efficiency'])
+        self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] = self.get_fuel_needs()
+        self.cost_details[self.OIL_RESOURCE_NAME] = list(
+            self.resources_prices[self.OIL_RESOURCE_NAME] * self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] / self.cost_details['efficiency'])
 
-        return self.cost_details[Electricity.name] + self.cost_details[CrudeOil.name]
+        return self.cost_details[Electricity.name] + self.cost_details[self.OIL_RESOURCE_NAME]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -68,7 +67,7 @@ class Refinery(LiquidFuelTechno):
         '''
         oil_needs = self.get_fuel_needs()
         return {
-            CrudeOil.name: np.identity(
+            self.OIL_RESOURCE_NAME: np.identity(
                 len(self.years)) * oil_needs,
         }
 
@@ -96,11 +95,8 @@ class Refinery(LiquidFuelTechno):
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'{CrudeOil.name} ({self.product_energy_unit})'] = self.cost_details['crude_oil_needs'] * \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-
         # oil consumption:
-        self.consumption[f'{self.OIL_NAME}'] = self.cost_details['crude_oil_needs'] * \
+        self.consumption[f'{self.OIL_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] * \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
             CrudeOil.data_energy_dict['calorific_value']  # in Mt
 
@@ -168,10 +164,10 @@ class Refinery(LiquidFuelTechno):
         self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
             self.cost_details['elec_needs']
 
-        self.carbon_emissions[CrudeOil.name] = self.resources_CO2_emissions[f'{CrudeOil.name}'] * \
-            self.cost_details['crude_oil_needs']
+        self.carbon_emissions[self.OIL_RESOURCE_NAME] = self.resources_CO2_emissions[f'{self.OIL_RESOURCE_NAME}'] * \
+            self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs']
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[CrudeOil.name]
+        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[self.OIL_RESOURCE_NAME]
 
     def compute_prod_from_invest(self, construction_delay):
         '''
