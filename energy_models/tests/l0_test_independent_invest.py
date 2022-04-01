@@ -99,9 +99,10 @@ class TestIndependentInvest(unittest.TestCase):
                        'invest_constraint_ref': invest_constraint_ref,
                        'invest_objective_ref': invest_objective_ref,
                        'is_dev': is_dev,
-                       'invest_sum_ref': 10.}
+                       'invest_sum_ref': 10.,
+                       'invest_limit_ref': 300.}
         one_invest_model = IndependentInvest()
-        invest_constraint, invest_objective, invest_objective_sum = one_invest_model.compute_invest_constraint_and_objective(
+        invest_constraint, invest_objective, invest_objective_sum, invest_objective_cons = one_invest_model.compute_invest_constraint_and_objective(
             inputs_dict)
 
         delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment -
@@ -284,19 +285,17 @@ class TestIndependentInvest(unittest.TestCase):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         disc = self.ee.root_process.sos_disciplines[0]
-        print(disc._data_out.keys())
         all_technos_list = [
             f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in inputs_dict[f'{self.name}.{energy}.technologies_list']]
 
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.energy_investment',
                                                                           f'{self.name}.{self.model_name}.invest_mix'],
                                       outputs=[
-            f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective', f'{self.name}.invest_objective_sum' ],
+            f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective', f'{self.name}.invest_objective_sum' , f'{self.name}.invest_sum_cons'],
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
-
     def test_05_independent_invest_with_forest_disc_check_jacobian(self):
         
         self.name = 'Energy'
@@ -348,7 +347,7 @@ class TestIndependentInvest(unittest.TestCase):
                                                                           f'{self.name}.forest_investment'],
                                       outputs=[
             f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective', f'{self.name}.invest_constraint', f'{self.name}.forest_investment'],
-            dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
+            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_with_forest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")

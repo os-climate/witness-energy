@@ -77,25 +77,23 @@ class Energy_Mix_Discipline(SoSDiscipline):
     loss_percentage_default_dict['fuel.liquid_fuel'] = 90.15 / \
         RefineryDiscipline.initial_production * 100.0
 
-    DESC_IN = {'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
+    DESC_IN = {'energy_list': {'type': 'string_list', 'default': EnergyMix.energy_list, 'possible_values': EnergyMix.energy_list,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
                'ccs_list': {'type': 'string_list', 'possible_values': [CarbonCapture.name, CarbonStorage.name],
                             'default': [CarbonCapture.name, CarbonStorage.name],
                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
-               'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+               'year_start': {'type': 'int', 'default': 2020, 'unit': 'year', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+               'year_end': {'type': 'int', 'default': 2050, 'unit': 'year', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
-               'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'default': 0.8, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'normalization_value_demand_constraints': {'type': 'float', 'default': 1000.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                              'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                       'CO2_tax': ('float',  None, True)},
                              'dataframe_edition_locked': False},
-               'CCS_constraint_factor': {'type': 'array', 'user_level': 2},
                'minimum_energy_production': {'type': 'float', 'default': 1e4, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public',
                                              'unit': 'TWh'},
                'total_prod_minus_min_prod_constraint_ref': {'type': 'float', 'default': 1e4, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'tol_constraint': {'type': 'float', 'default': 1e-3},
                'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
                'production_threshold': {'type': 'float', 'default': 1e-3},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -104,12 +102,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
                'solid_fuel_elec_constraint_ref': {'type': 'float', 'default': 10000., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'liquid_hydrogen_percentage': {'type': 'array', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'CO2_tax_ref': {'type': 'float', 'default': 1.0, 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                               'namespace': 'ns_ref', 'user_level': 2},
                'syngas_prod_ref': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'MT', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%', 'range': [0., 100.]},
                # WIP is_dev to remove once its validated on dev processes
                'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -146,7 +140,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         EnergyMix.SYNGAS_PROD_OBJECTIVE: {'type': 'array', 'unit': 'TWh',
                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
-        #'ratio_available_carbon_capture': {'type': 'dataframe', 'unit': '-'},
         'all_streams_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
@@ -180,6 +173,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         if 'energy_list' in self._data_in:
             energy_list = self.get_sosdisc_inputs('energy_list')
+            self.update_default_energy_list()
             if energy_list is not None:
                 for energy in energy_list:
                     dynamic_inputs[f'{energy}.energy_consumption'] = {
@@ -240,8 +234,47 @@ class Energy_Mix_Discipline(SoSDiscipline):
                             'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
                             'namespace': f'ns_ccs', 'default': self.stream_class_dict[ccs_name].data_energy_dict}
 
+        self.update_default_with_years()
+
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
+
+    def update_default_with_years(self):
+        '''
+        Update default variables knowing the year start and the year end 
+        '''
+        if 'year_start' in self._data_in:
+            year_start, year_end = self.get_sosdisc_inputs(
+                ['year_start', 'year_end'])
+            years = np.arange(year_start, year_end + 1)
+            lh_perc_default = np.concatenate(
+                (np.ones(5) * 1e-4, np.ones(len(years) - 5) / 4), axis=None)
+            self.set_dynamic_default_values(
+                {'liquid_hydrogen_percentage': lh_perc_default})
+
+    def update_default_energy_list(self):
+        '''
+        Update the default value of technologies list with techno discipline below the energy node and in possible values
+        '''
+
+        found_energies = self.found_energy_under_energymix()
+        self.set_dynamic_default_values({'energy_list': found_energies})
+
+    def found_energy_under_energymix(self):
+        '''
+        Set the default value of the energy list and the ccs_list with discipline under the energy_mix which are in possible values
+        '''
+        my_name = self.get_disc_full_name()
+        possible_energy = EnergyMix.energy_list
+        found_energy_list = self.dm.get_discipline_names_with_starting_name(
+            my_name)
+        short_energy_list = [name.split(
+            f'{my_name}.')[-1] for name in found_energy_list if f'{my_name}.' in name]
+
+        possible_short_energy_list = [
+            techno for techno in short_energy_list if techno in possible_energy]
+
+        return possible_short_energy_list
 
     def run(self):
         #-- get inputs

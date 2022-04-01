@@ -72,6 +72,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
         if 'technologies_list' in self._data_in:
             techno_list = self.get_sosdisc_inputs('technologies_list')
+            self.update_default_technology_list()
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.techno_consumption'] = {

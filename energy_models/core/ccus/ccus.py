@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import logging
-import re
-
 import numpy as np
 import pandas as pd
 
@@ -24,24 +21,7 @@ from energy_models.core.stream_type.base_stream import BaseStream
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
-from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
-from energy_models.core.stream_type.energy_models.biogas import BioGas
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
-from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
-from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
-from energy_models.core.stream_type.energy_models.syngas import Syngas,\
-    compute_calorific_value
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
-from energy_models.core.stream_type.energy_models.renewable import Renewable
-from energy_models.core.stream_type.energy_models.fossil import Fossil
-from copy import deepcopy
-from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
 
 
 class CCUS(BaseStream):
@@ -55,56 +35,17 @@ class CCUS(BaseStream):
     DELTA_CO2_EMISSIONS = 'delta_co2_emissions'
     DEMAND_MAX_PRODUCTION = 'demand_max_production'
     TOTAL_PRODUCTION = 'Total production'
-    CO2_TAX_MINUS_CCS_CONSTRAINT_DF = 'CO2_tax_minus_CCS_constraint_df'
-    CO2_TAX_MINUS_CCS_CONSTRAINT = 'CO2_tax_minus_CCS_constraint'
-    TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF = 'total_prod_minus_min_prod_constraint_df'
-    TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT = 'total_prod_minus_min_prod_constraint'
-    CONSTRAINT_PROD_H2_LIQUID = 'total_prod_h2_liquid'
-    CONSTRAINT_PROD_SOLID_FUEL_ELEC = 'total_prod_solid_fuel_elec'
-    CONSTRAINT_PROD_HYDROELECTRIC = 'total_prod_hydroelectric'
-    CO2_TAX_OBJECTIVE = 'CO2_tax_objective'
-    SYNGAS_PROD_OBJECTIVE = 'syngas_prod_objective'
     RESOURCE_LIST = ['natural_gas_resource',
                      'uranium_resource', 'coal_resource', 'oil_resource']
     CARBON_STORAGE_CONSTRAINT = 'carbon_storage_constraint'
-    energy_class_dict = {GaseousHydrogen.name: GaseousHydrogen,
-                         LiquidFuel.name: LiquidFuel,
-                         HydrotreatedOilFuel.name: HydrotreatedOilFuel,
-                         Electricity.name: Electricity,
-                         Methane.name: Methane,
-                         BioGas.name: BioGas,
-                         BioDiesel.name: BioDiesel,
-                         SolidFuel.name: SolidFuel,
-                         Syngas.name: Syngas,
-                         BiomassDry.name: BiomassDry,
-                         LiquidHydrogen.name: LiquidHydrogen,
-                         Renewable.name: Renewable,
-                         Fossil.name: Fossil}
 
-    only_energy_list = list(energy_class_dict.keys())
-
-    stream_class_dict = {CarbonCapture.name: CarbonCapture,
-                         CarbonStorage.name: CarbonStorage, }
-    stream_class_dict.update(energy_class_dict)
-
-    energy_list = list(stream_class_dict.keys())
     resource_list = RESOURCE_LIST
     CO2_list = [f'{CarbonCapture.name} (Mt)',
                 f'{CarbonCapture.flue_gas_name} (Mt)',
                 f'{CarbonStorage.name} (Mt)',
                 f'{CO2.name} (Mt)',
                 f'{Carbon.name} (Mt)']
-    solidFuel_name = SolidFuel.name
-    electricity_name = Electricity.name
-    gaseousHydrogen_name = GaseousHydrogen.name
-    liquidHydrogen_name = LiquidHydrogen.name
-    biomass_name = BiomassDry.name
-    syngas_name = Syngas.name
-
-    energy_constraint_list = [solidFuel_name,
-                              electricity_name, biomass_name]
-    movable_fuel_list = [liquidHydrogen_name,
-                         LiquidFuel.name, BioDiesel.name, Methane.name]
+    ccs_list = [CarbonCapture.name, CarbonStorage.name]
 
     def __init__(self, name):
         '''
@@ -115,7 +56,6 @@ class CCUS(BaseStream):
         self.total_co2_emissions = pd.DataFrame()
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
-        self.ratio_available_carbon_capture = None
         self.scaling_factor_energy_production = None
         self.scaling_factor_energy_consumption = None
         self.co2_emissions_needed_by_energy_mix = None
@@ -141,7 +81,6 @@ class CCUS(BaseStream):
             {'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1)})
         self.carbonstorage_limit = inputs_dict['carbonstorage_limit']
         self.carbonstorage_constraint_ref = inputs_dict['carbonstorage_constraint_ref']
-        self.ratio_norm_value = inputs_dict['ratio_ref']
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -176,10 +115,6 @@ class CCUS(BaseStream):
                     self.all_resource_demand[elements] = self.all_resource_demand[elements] + \
                         inputs_dict[f'{energy}.energy_consumption'][elements].values * \
                         self.scaling_factor_energy_consumption
-
-        # initialize ratio available carbon capture
-        self.ratio_available_carbon_capture = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
-                                                            f'ratio': 1.0})
 
         self.co2_emissions_needed_by_energy_mix = inputs_dict['co2_emissions_needed_by_energy_mix']
         self.co2_emissions_from_energy_mix = inputs_dict['CO2_emissions_by_use_sources']
@@ -233,27 +168,6 @@ class CCUS(BaseStream):
             self.co2_emissions_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'] * 1e3 - \
             self.co2_emissions_needed_by_energy_mix[f'{CarbonCapture.name} needed by energy mix (Gt)'] * 1e3 -\
             self.co2_for_food[f'{CO2.name} for food (Mt)']
-
-        cc_to_be_stored = self.total_co2_emissions[
-            f'{CarbonCapture.name} to be stored (Mt)'].values
-        # if the carbon to be stored is lower than zero that means that we need
-        # more carbon capture for energy mix than the one created by CC technos
-        # or upgrading biogas
-        if cc_to_be_stored.min() < 0:
-            cc_needed = self.co2_emissions_needed_by_energy_mix[
-                f'{CarbonCapture.name} needed by energy mix (Gt)'].values * 1e3
-            # if cc_needed is lower than 1.0e-15 we put one to the ratio (do
-            # not care about small needs lower than 1.0e-15)
-            if cc_to_be_stored.dtype != cc_needed.dtype:
-                cc_needed = cc_needed.astype(cc_to_be_stored.dtype)
-            self.ratio_available_carbon_capture['ratio'] = np.divide(cc_to_be_stored + cc_needed, cc_needed,
-                                                                     out=np.ones_like(cc_needed), where=cc_needed > 1.0e-15)
-
-        # Waiting for production ratio effect we clip the prod
-        carbon_to_be_stored = self.total_co2_emissions[
-            f'{CarbonCapture.name} to be stored (Mt)'].values
-        carbon_to_be_stored[carbon_to_be_stored.real < 0.0] = 0.0
-        self.total_co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'] = carbon_to_be_stored
 
         '''
             Solid Carbon to be stored to limit the carbon solid storage
@@ -509,12 +423,6 @@ class CCUS(BaseStream):
                     else:
                         dratio_dkey[grad_info_x] = np.divide(grad_cc, cc_needed,
                                                              out=np.zeros_like(cc_needed), where=cc_needed > 1.0e-15)
-            # finally we can fill the dtotco2_emissions with the u'v-uv'/v**2
-            for key, grad in dratio_dkey.items():
-                key_dratio = f'ratio_available_carbon_capture vs {key}'
-                dtot_CO2_emissions[key_dratio] = grad
-#             self.ratio_available_carbon_capture['ratio'] = np.divide(cc_to_be_stored + cc_needed, cc_needed,
-# out=np.zeros_like(cc_needed), where=cc_needed > 1.0e-15)
 
         grad_max = np.maximum(0.0, np.sign(
             cc_to_be_stored))

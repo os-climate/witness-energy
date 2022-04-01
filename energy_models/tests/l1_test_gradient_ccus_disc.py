@@ -27,7 +27,7 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 from energy_models.tests.data_tests.mda_energy_data_generator import launch_data_pickle_generation
 
 
-class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
+class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
     """
     Consumption CO2 Emissions Discipline jacobian test class
     """
@@ -49,6 +49,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
+        #self.launch_data_pickle_generation()
         self.year_start = 2020
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
@@ -125,6 +126,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.year_start': self.year_start,
             f'{self.name}.year_end': self.year_end,
             f'{self.name}.energy_list': self.energy_list,
+            f'{self.name}.ccs_list':['carbon_capture', 'carbon_storage'],
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
             f'{self.name}.energy_production_detailed': self.energy_production_detailed,
@@ -166,11 +168,10 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.carbon_storage.land_use_required',
         ]
         coupled_outputs = [f'{self.name}.co2_emissions_ccus_Gt',
-                           f'{self.name}.ratio_available_carbon_capture',
                            f'{self.name}.CCS_price',
                            f'{self.name}.carbon_storage_constraint']
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -180,7 +181,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
 if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    cls = ConsumptionCO2EmissionsDiscJacobianTestCase()
+    cls = CCUSDiscJacobianTestCase()
     cls.setUp()
     # self.launch_data_pickle_generation()
     cls.test_01_Consumption_ccus_disciplinejacobian()
