@@ -11,11 +11,12 @@ import os
 
 if __name__ == '__main__':
 
-    launch_data_pickle_generation()
-    os.system(f'git add ./data_tests/*.pkl')
+    directory = 'data_tests'
+    launch_data_pickle_generation(directory)
+    os.system(f'git add ./{directory}/*.pkl')
     os.system('git commit -m "regeneration of mda_energy data pickles"')
-    # os.system('git pull')
-    # os.system('git push')
+    os.system('git pull')
+    os.system('git push')
 
     AbstractJacobianUnittest.launch_all_pickle_generation(
         jacobian_target, 'l1_test_gradient_biomass_dry.py', test_names=['test_04_biomass_dry_discipline_jacobian'])
