@@ -38,8 +38,8 @@ class CoalExtraction(SolidFuelTechno):
         # self.cost_details['fuel_needs'] = self.get_fuel_needs()
         # self.cost_details[LiquidFuel.name] = list(self.prices[LiquidFuel.name] * self.cost_details['fuel_needs']
         #                                         / self.cost_details['efficiency'])
-
-        self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'] = np.ones(len(self.years)) / SolidFuel.data_energy_dict['calorific_value'] #kg/kWh
+        # calorific value in kWh/kg * 1000 to have needs in t/kWh
+        self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'] = np.ones(len(self.years)) / (SolidFuel.data_energy_dict['calorific_value'] * 1000.0) #kg/kWh
         self.cost_details[f'{self.COAL_RESOURCE_NAME}'] = list(self.resources_prices[f'{self.COAL_RESOURCE_NAME}'] * self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'])
 
         return self.cost_details[Electricity.name] + self.cost_details[self.COAL_RESOURCE_NAME]# + self.cost_details[LiquidFuel.name]

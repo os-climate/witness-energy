@@ -19,8 +19,10 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.oil import CrudeOil
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+
 import pandas as pd
 import numpy as np
+
 
 class Refinery(LiquidFuelTechno):
 
@@ -45,8 +47,8 @@ class Refinery(LiquidFuelTechno):
 
         self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details['elec_needs'] / self.cost_details['efficiency'])
-
-        self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] = self.get_fuel_needs()
+        # calorific value in kWh/kg * 1000 to have needs in t/kWh
+        self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / (self.data_energy_dict['calorific_value'] * 1000.0)
         self.cost_details[self.OIL_RESOURCE_NAME] = list(
             self.resources_prices[self.OIL_RESOURCE_NAME] * self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] / self.cost_details['efficiency'])
 
@@ -65,10 +67,10 @@ class Refinery(LiquidFuelTechno):
         '''
         Compute the gradient of global price vs resources prices
         '''
-        oil_needs = self.get_fuel_needs()
+        oil_needs = self.get_fuel_needs() / (self.data_energy_dict['calorific_value'] * 1000.0)
         return {
             self.OIL_RESOURCE_NAME: np.identity(
-                len(self.years)) * oil_needs,
+                len(self.years)) * oil_needs / self.cost_details['efficiency'].values,
         }
 
     def compute_consumption_and_production(self):
