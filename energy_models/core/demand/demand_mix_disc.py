@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+import numpy as np
+import pandas as pd
+
 from energy_models.core.demand.demand_mix import DemandMix
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
@@ -67,11 +70,17 @@ class DemandMixDiscipline(SoSDiscipline):
         if 'energy_list' in self._data_in:
             energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
+                year_start, year_end = self.get_sosdisc_inputs(
+                    ['year_start', 'year_end'])
+                years = np.arange(year_start, year_end + 1)
+                energy_demand_default = pd.DataFrame({'years': years,
+                                                      'mix': 0.0})
                 for energy in energy_list:
                     dynamic_inputs[f'{energy}.energy_demand_mix'] = {'type': 'dataframe', 'unit': '%',
                                                                      'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                                                               'mix': ('float',  None, True)},
                                                                      'dataframe_edition_locked': False,
+                                                                     'default': energy_demand_default,
                                                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix'}
                     dynamic_outputs[f'{energy}.energy_demand'] = {
                         'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_demand'}
@@ -79,17 +88,36 @@ class DemandMixDiscipline(SoSDiscipline):
         if 'ccs_list' in self._data_in:
             ccs_list = self.get_sosdisc_inputs('ccs_list')
             if ccs_list is not None:
+                year_start, year_end = self.get_sosdisc_inputs(
+                    ['year_start', 'year_end'])
+                years = np.arange(year_start, year_end + 1)
+                energy_demand_default = pd.DataFrame({'years': years,
+                                                      'mix': 0.0})
                 for ccs_name in ccs_list:
                     dynamic_inputs[f'{ccs_name}.energy_demand_mix'] = {'type': 'dataframe', 'unit': '%',
                                                                        'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                                                                 'mix': ('float',  None, True)},
                                                                        'dataframe_edition_locked': False,
+                                                                       'default': energy_demand_default,
                                                                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
                     dynamic_outputs[f'{ccs_name}.energy_demand'] = {
                         'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_demand'}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
+
+        self.update_default_dataframes_with_years()
+
+    def update_default_dataframes_with_years(self):
+        '''
+        Update all default dataframes with years 
+        '''
+        if 'year_start' in self._data_in:
+            year_start, year_end = self.get_sosdisc_inputs(
+                ['year_start', 'year_end'])
+            years = np.arange(year_start, year_end + 1)
+            self.set_dynamic_default_values({'total_energy_demand': pd.DataFrame({'years': years,
+                                                                                  'demand': 0.0})})
 
     def run(self):
         #-- get inputs

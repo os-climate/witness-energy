@@ -42,6 +42,7 @@ from energy_models.core.stream_type.energy_models.fossil import Fossil
 from copy import deepcopy
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class EnergyMix(BaseStream):
@@ -66,6 +67,7 @@ class EnergyMix(BaseStream):
     SYNGAS_PROD_OBJECTIVE = 'syngas_prod_objective'
     RESOURCE_LIST = ['natural_gas_resource',
                      'uranium_resource', 'coal_resource', 'oil_resource']
+    RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
     CARBON_STORAGE_CONSTRAINT = 'carbon_storage_constraint'
     energy_class_dict = {GaseousHydrogen.name: GaseousHydrogen,
                          LiquidFuel.name: LiquidFuel,
@@ -115,7 +117,6 @@ class EnergyMix(BaseStream):
         self.total_co2_emissions = None
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
-        self.ratio_available_carbon_capture = None
         self.losses_percentage_dict = {}
 
     def configure(self, inputs_dict):
@@ -149,20 +150,18 @@ class EnergyMix(BaseStream):
         self.solid_fuel_elec_constraint_ref = inputs_dict['solid_fuel_elec_constraint_ref']
         self.liquid_hydrogen_percentage = inputs_dict['liquid_hydrogen_percentage']
         self.liquid_hydrogen_constraint_ref = inputs_dict['liquid_hydrogen_constraint_ref']
-        self.CO2_tax_ref = inputs_dict['CO2_tax_ref']
         self.syngas_prod_ref = inputs_dict['syngas_prod_ref']
         self.co2_for_food = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
                                           f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
-        self.carbonstorage_constraint_ref = inputs_dict['carbonstorage_constraint_ref']
-        self.carbonstorage_limit = inputs_dict['carbonstorage_limit']
 
         self.is_dev = inputs_dict['is_dev']
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
 
         if self.subelements_list is not None:
             for energy in self.subelements_list:
-                self.losses_percentage_dict[energy] = inputs_dict[f'{energy}.losses_percentage']
+                if f'{energy}.losses_percentage' in inputs_dict:
+                    self.losses_percentage_dict[energy] = inputs_dict[f'{energy}.losses_percentage']
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -174,7 +173,6 @@ class EnergyMix(BaseStream):
         self.subelements_list = inputs_dict['energy_list'] + \
             inputs_dict['ccs_list']
         self.subelements_list_energy = inputs_dict['energy_list']
-        self.CCS_constraint_factor = inputs_dict['CCS_constraint_factor']
         self.total_prod_minus_min_prod_constraint_ref = inputs_dict[
             'total_prod_minus_min_prod_constraint_ref']
         # Specific configure for energy mix
@@ -205,7 +203,6 @@ class EnergyMix(BaseStream):
         self.energy_prices = self.sub_prices.copy(deep=True)
         self.energy_prices_after_carbon_tax = pd.DataFrame(
             {'years': self.energy_prices['years'].values})
-        self.tol_constraint = inputs_dict['tol_constraint']
 
         # dataframe resource demand
         self.all_resource_demand = pd.DataFrame(
@@ -215,10 +212,10 @@ class EnergyMix(BaseStream):
                 self.all_resource_demand[elements] = np.linspace(
                     0, 0, len(self.all_resource_demand.index)) * 100.
         for energy in self.subelements_list:
-            for elements in self.sub_consumption_dict[energy]:
-                if elements in self.resource_list:
-                    self.all_resource_demand[elements] = self.all_resource_demand[elements] + \
-                        inputs_dict[f'{energy}.energy_consumption'][elements].values * \
+            for resource in self.resource_list:
+                if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.sub_consumption_dict[energy].columns:
+                    self.all_resource_demand[resource] = self.all_resource_demand[resource] + \
+                        inputs_dict[f'{energy}.energy_consumption'][f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                         self.scaling_factor_energy_consumption
 
         # DataFrame stream demand
@@ -227,10 +224,6 @@ class EnergyMix(BaseStream):
         for energy in self.subelements_list:
             self.all_streams_demand_ratio[energy] = np.ones(
                 len(self.all_streams_demand_ratio['years'].values)) * 100.
-
-        # initialize ratio available carbon capture
-        self.ratio_available_carbon_capture = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
-                                                            'ratio': 1.0})
 
     def set_energy_prices_in(self, energy_prices):
         '''

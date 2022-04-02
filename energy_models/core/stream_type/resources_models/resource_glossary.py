@@ -22,6 +22,8 @@ class ResourceGlossary():
     Prices [$/t]
     '''
 
+    UNITS={'production': 'Mt', 'consumption': 'Mt', 'price': '$/t', 'CO2_emissions': 'kgCO2/kg'}
+
     ResourceList = ['Uranium', 'Water', 'SeaWater', 'CO2', 'BiomassDry', 'WetBiomass', 'NaturalOil', 'Methanol',
                     'SodiumHydroxide', 'Wood', 'Carbon', 'ManagedWood', 'Oxygen', 'CrudeOil', 'SolidFuel',
                     'Calcium', 'CalciumOxyde', 'Potassium', 'PotassiumHydroxide', 'Amine', 'Dioxygen',
@@ -106,8 +108,8 @@ class ResourceGlossary():
             'CO2_emissions': 0.0,
             'price': 0.0}
     Oil = {'name': 'oil_resource',
-           'CO2_emissions': 0.0,
-           'price': 0.0}
+           'CO2_emissions': 0.02533,
+           'price': 44.0}
 
     GlossaryDict = {
         'Uranium': Uranium, 'Water': Water, 'SeaWater': SeaWater, 'CO2': CO2, 'BiomassDry': BiomassDry,

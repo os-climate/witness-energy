@@ -15,7 +15,6 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-import scipy.interpolate as sc
 
 from energy_models.core.energy_study_manager import EnergyStudyManager,\
     DEFAULT_TECHNO_DICT, CCUS_TYPE, ENERGY_TYPE
@@ -239,13 +238,13 @@ class Study(EnergyStudyManager):
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
             list_var.extend(
-                ['invest_constraint'])
-            list_parent.extend([''])
-            list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([0.])
-            list_aggr_type.append(
-                AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
+                ['invest_constraint', 'invest_sum_cons'])
+            list_parent.extend(['', ''])
+            list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
+            list_weight.extend([0., 0.])
+            list_aggr_type.extend(
+                [AGGR_TYPE_SMAX, AGGR_TYPE_SUM])
+            list_namespaces.extend(['ns_functions', 'ns_functions'])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -683,9 +682,6 @@ class Study(EnergyStudyManager):
         # init land surface for food for biomass dry crop energy
         land_surface_for_food = pd.DataFrame({'years': self.years,
                                               'Agriculture total (Gha)': np.ones(len(self.years)) * 4.8})
-        # Relax constraint for 15 first years
-        self.CCS_constraint_factor = np.concatenate(
-            (np.linspace(0.5, 0.5, 20), np.asarray([1.1] * (len(self.years) - 20))))
 
         ccs_percentage = pd.DataFrame(
             {'years': self.years, 'ccs_percentage': 25.0})
@@ -701,7 +697,6 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.land_surface_for_food_df': land_surface_for_food,
                        f'{self.study_name}.CO2_taxes': self.co2_taxes,
                        f'{self.study_name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.study_name}.{energy_mix_name}.CCS_constraint_factor': self.CCS_constraint_factor,
                        f'{self.study_name}.scaling_factor_energy_investment': scaling_factor_energy_investment,
                        f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.study_name}.{demand_name}.total_energy_demand': self.total_energy_demand,

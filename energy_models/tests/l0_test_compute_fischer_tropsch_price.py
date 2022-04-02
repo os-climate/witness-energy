@@ -160,7 +160,6 @@ class FTPriceTestCase(unittest.TestCase):
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       'ratio_available_carbon_capture': FischerTropschDiscipline.ratio_available_cc_default,
                        AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
@@ -276,9 +275,7 @@ class FTPriceTestCase(unittest.TestCase):
         self.ee2.factory.set_builders_to_coupling_builder(builder)
 
         self.ee2.configure()
-        ratio = np.linspace(1.0, 0.0, len(years))
-        inputs_dict[f'{self.name}.ratio_available_carbon_capture'] = pd.DataFrame({'years': years,
-                                                                                   'ratio': ratio})
+
         self.ee2.load_study_from_input_dict(inputs_dict)
 
         self.ee2.execute()
@@ -295,10 +292,7 @@ class FTPriceTestCase(unittest.TestCase):
                     self.assertAlmostEqual(techno_production_with_ratio[column].values[i],
                                            techno_production_wo_ratio[column].values[i] * ratio2[i] / ratio[i], delta=1.0e-8)
 
-        # ratio_cc = self.ee.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[
-            # 0].get_sosdisc_inputs('ratio_available_carbon_capture')['ratio'].values
-        # ratio_cc2 = self.ee2.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[
-            # 0].get_sosdisc_inputs('ratio_available_carbon_capture')['ratio'].values
+
         techno_consumption_with_ratio = self.ee2.dm.get_value(
             f'{self.name}.{self.model_name}.techno_consumption')
         for column in techno_consumption_with_ratio.columns:

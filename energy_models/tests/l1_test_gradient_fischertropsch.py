@@ -374,8 +374,6 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.syngas_ratio': np.ones(len(years)) * 80.0,
             f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
             f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
-            f'{self.name}.ratio_available_carbon_capture': pd.DataFrame({'years': years,
-                                                                         'ratio': np.linspace(1.0, 0.001, len(years))}),
             f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
             f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand, }
 
@@ -388,8 +386,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices', f'{self.name}.energy_CO2_emissions',
                                     f'{self.name}.syngas_ratio',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.ratio_available_carbon_capture'],
+                                    f'{self.name}.CO2_taxes'
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',

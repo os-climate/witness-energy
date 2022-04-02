@@ -571,7 +571,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio', 'ratio_available_carbon_capture',
+                       'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio',
                        'residuals_history', 'all_streams_demand_ratio', 'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling'] and 'resources' not in key:
@@ -612,7 +612,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0]
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=coupled_inputs,
@@ -1062,7 +1061,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # Overwrite values for ratios with values from setup
         full_values_dict[f'{self.name}.is_apply_ratio'] = self.is_apply_ratio
         full_values_dict[f'{self.name}.is_stream_demand'] = self.is_stream_demand
-        full_values_dict[f'{self.name}.is_apply_resource_ratio'] = False
+        full_values_dict[f'{self.name}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
         full_values_dict[f'{self.name}.all_streams_demand_ratio'] = self.all_streams_demand_ratio
         full_values_dict[f'{self.name}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
         self.ee.load_study_from_input_dict(full_values_dict)
@@ -1100,8 +1099,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = RatioJacobianTestCase()
     cls.setUp()
-    # cls.launch_data_pickle_generation()
+    cls.launch_data_pickle_generation()
     cls.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian()
