@@ -90,9 +90,6 @@ class CCUS_Discipline(SoSDiscipline):
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
                     dynamic_inputs[f'{ccs_name}.energy_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
-                    dynamic_inputs[f'{ccs_name}.energy_demand'] = {'type': 'dataframe', 'unit': 'TWh',
-                                                                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_demand'}
-
                     dynamic_inputs[f'{ccs_name}.land_use_required'] = {
                         'type': 'dataframe', 'unit': '(Gha)', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
 

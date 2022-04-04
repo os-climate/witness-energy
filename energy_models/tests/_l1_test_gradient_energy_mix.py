@@ -228,13 +228,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                                                0.30355508, 0.3071769, 0.31104297, 0.31440867, 0.31709487,
                                                                0.32047716, 0.32392652, 0.32739837, 0.33021771, 0.33313758,
                                                                0.3361545]) * 1000.0})
-        self.energy_demand = {}
-        self.energy_demand['hydrogen.gaseous_hydrogen.energy_demand'] = pd.DataFrame({'years': self.years,
-                                                                                      'demand': np.arange(50, 81)})
-        self.energy_demand['methane.energy_demand'] = pd.DataFrame({'years': self.years,
-                                                                    'demand': np.arange(20, 51)})
-        self.energy_demand['biogas.energy_demand'] = pd.DataFrame({'years': self.years,
-                                                                   'demand': np.arange(10, 41)})
+
         #---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(0.2, 0.8, len(self.years))))

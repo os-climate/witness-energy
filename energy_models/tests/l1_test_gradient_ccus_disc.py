@@ -35,7 +35,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
 
     def analytic_grad_entry(self):
         return [
-            self.test_01_Consumption_CO2_emissions_discipline_CO2_per_use_jacobian,
+            self.test_01_Consumption_ccus_disciplinejacobian,
 
         ]
 
@@ -49,7 +49,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        #self.launch_data_pickle_generation()
+        # self.launch_data_pickle_generation()
         self.year_start = 2020
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
@@ -62,7 +62,6 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
 
         self.CO2_per_use = {}
         self.energy_prices = {}
-        self.energy_demand = {}
         self.energy_consumption_woratio = {}
         self.energy_production, self.energy_consumption, self.land_use_required = {}, {}, {}
         for i, energy in enumerate(self.energy_list):
@@ -74,21 +73,22 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
             self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
             self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
             self.energy_prices[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_prices']['value']
-            self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption_woratio']['value']
+            self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[
+                f'{energy}']['energy_consumption_woratio']['value']
 
-            #self.energy_demand[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_demand']['value']
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
         self.energy_production_detailed = streams_outputs_dict['energy_production_detailed']
         years = streams_outputs_dict[f'{energy}']['energy_consumption']['value']['years']
         self.CO2_taxes = pd.DataFrame(data={'years': years, 'CO2_tax': 150.})
-        self.energy_demand_unit = pd.DataFrame(data={'years': years, 'CO2_tax': 0.})
-        self.co2_emissions = pd.DataFrame(data={'years': years, 'carbon_capture needed by energy mix (Mt)':0.005})
-        self.co2_emissions = pd.DataFrame(data={'years': years, 'carbon_capture needed by energy mix (Mt)':0.005})
-        self.co2_emissions_needed_by_energy_mix = pd.DataFrame(data={'years': years, 'carbon_capture needed by energy mix (Gt)':0.005})
-        self.CO2_emissions_by_use_sources = pd.DataFrame(data={'years': years, 'CO2_resource from energy mix (Gt)':1.2, 'carbon_capture from energy mix (Gt)': 1e-15,
+        self.co2_emissions = pd.DataFrame(
+            data={'years': years, 'carbon_capture needed by energy mix (Mt)': 0.005})
+        self.co2_emissions = pd.DataFrame(
+            data={'years': years, 'carbon_capture needed by energy mix (Mt)': 0.005})
+        self.co2_emissions_needed_by_energy_mix = pd.DataFrame(
+            data={'years': years, 'carbon_capture needed by energy mix (Gt)': 0.005})
+        self.CO2_emissions_by_use_sources = pd.DataFrame(data={'years': years, 'CO2_resource from energy mix (Gt)': 1.2, 'carbon_capture from energy mix (Gt)': 1e-15,
                                                                'Total CO2 by use (Gt)': 6.5, 'Total CO2 from Flue Gas (Gt)': 1e-3})
-
 
     def tearDown(self):
         pass
@@ -126,12 +126,12 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.year_start': self.year_start,
             f'{self.name}.year_end': self.year_end,
             f'{self.name}.energy_list': self.energy_list,
-            f'{self.name}.ccs_list':['carbon_capture', 'carbon_storage'],
+            f'{self.name}.ccs_list': ['carbon_capture', 'carbon_storage'],
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
             f'{self.name}.energy_production_detailed': self.energy_production_detailed,
         }
-        for energy in self.energy_list :
+        for energy in self.energy_list:
             inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
             inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
@@ -142,7 +142,6 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
             inputs_dict[f'{self.name}.{energy}.energy_prices'] = self.energy_prices[energy]
             inputs_dict[f'{self.name}.{energy}.land_use_required'] = self.land_use_required[energy]
             inputs_dict[f'{self.name}.{energy}.energy_consumption_woratio'] = self.energy_consumption_woratio[energy]
-            inputs_dict[f'{self.name}.{energy}.energy_demand'] = self.energy_demand_unit
             inputs_dict[f'{self.name}.{energy}.co2_emissions'] = self.co2_emissions
         inputs_dict[f'{self.name}.CO2_taxes'] = self.CO2_taxes
         inputs_dict[f'{self.name}.CO2_emissions_by_use_sources'] = self.CO2_emissions_by_use_sources

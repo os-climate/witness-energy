@@ -45,7 +45,6 @@ class CCUSDiscTestCase(unittest.TestCase):
 
         self.CO2_per_use = {}
         self.energy_prices = {}
-        self.energy_demand = {}
         self.energy_consumption_woratio = {}
         self.energy_production, self.energy_consumption, self.land_use_required = {}, {}, {}
         for i, energy in enumerate(self.energy_list):
@@ -57,21 +56,22 @@ class CCUSDiscTestCase(unittest.TestCase):
             self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
             self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
             self.energy_prices[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_prices']['value']
-            self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption_woratio']['value']
+            self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[
+                f'{energy}']['energy_consumption_woratio']['value']
 
-            #self.energy_demand[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_demand']['value']
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
         self.energy_production_detailed = streams_outputs_dict['energy_production_detailed']
         years = streams_outputs_dict[f'{energy}']['energy_consumption']['value']['years']
         self.CO2_taxes = pd.DataFrame(data={'years': years, 'CO2_tax': 150.})
-        self.energy_demand_unit = pd.DataFrame(data={'years': years, 'CO2_tax': 0.})
-        self.co2_emissions = pd.DataFrame(data={'years': years, 'carbon_capture needed by energy mix (Mt)':0.005})
-        self.co2_emissions = pd.DataFrame(data={'years': years, 'carbon_capture needed by energy mix (Mt)':0.005})
-        self.co2_emissions_needed_by_energy_mix = pd.DataFrame(data={'years': years, 'carbon_capture needed by energy mix (Gt)':0.005})
-        self.CO2_emissions_by_use_sources = pd.DataFrame(data={'years': years, 'CO2_resource from energy mix (Gt)':1.2, 'carbon_capture from energy mix (Gt)': 1e-15,
+        self.co2_emissions = pd.DataFrame(
+            data={'years': years, 'carbon_capture needed by energy mix (Mt)': 0.005})
+        self.co2_emissions = pd.DataFrame(
+            data={'years': years, 'carbon_capture needed by energy mix (Mt)': 0.005})
+        self.co2_emissions_needed_by_energy_mix = pd.DataFrame(
+            data={'years': years, 'carbon_capture needed by energy mix (Gt)': 0.005})
+        self.CO2_emissions_by_use_sources = pd.DataFrame(data={'years': years, 'CO2_resource from energy mix (Gt)': 1.2, 'carbon_capture from energy mix (Gt)': 1e-15,
                                                                'Total CO2 by use (Gt)': 6.5, 'Total CO2 from Flue Gas (Gt)': 1e-3})
-
 
     def tearDown(self):
         pass
@@ -109,7 +109,7 @@ class CCUSDiscTestCase(unittest.TestCase):
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
             f'{self.name}.energy_production_detailed': self.energy_production_detailed,
         }
-        for energy in self.energy_list :
+        for energy in self.energy_list:
             inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
             inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
@@ -120,7 +120,6 @@ class CCUSDiscTestCase(unittest.TestCase):
             inputs_dict[f'{self.name}.{energy}.energy_prices'] = self.energy_prices[energy]
             inputs_dict[f'{self.name}.{energy}.land_use_required'] = self.land_use_required[energy]
             inputs_dict[f'{self.name}.{energy}.energy_consumption_woratio'] = self.energy_consumption_woratio[energy]
-            inputs_dict[f'{self.name}.{energy}.energy_demand'] = self.energy_demand_unit
             inputs_dict[f'{self.name}.{energy}.co2_emissions'] = self.co2_emissions
         inputs_dict[f'{self.name}.CO2_taxes'] = self.CO2_taxes
         inputs_dict[f'{self.name}.CO2_emissions_by_use_sources'] = self.CO2_emissions_by_use_sources

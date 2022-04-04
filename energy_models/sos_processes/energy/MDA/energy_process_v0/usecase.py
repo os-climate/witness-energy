@@ -31,7 +31,6 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.syngas import Syngas
-from energy_models.core.demand.demand_mix import DemandMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
@@ -60,8 +59,6 @@ AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 FUNC_DF = FunctionManagerDisc.FUNC_DF
-DEMAND_VIOLATION = EnergyMix.DEMAND_VIOLATION
-DELTA_ENERGY_PRICES = EnergyMix.DELTA_ENERGY_PRICES
 CO2_TAX_MINUS_CCS_CONSTRAINT_DF = EnergyMix.CO2_TAX_MINUS_CCS_CONSTRAINT_DF
 CARBON_TO_BE_STORED_CONSTRAINT = PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT
 TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF = EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF
@@ -157,15 +154,6 @@ class Study(EnergyStudyManager):
         list_aggr_type = []
         list_namespaces = []
 
-        for energy in self.energy_list:
-            if energy in EnergyMix.energy_class_dict:
-                list_var.append(f'{energy}.{DEMAND_VIOLATION}')
-                list_parent.append('Energy_constraints-Demand_violation')
-                list_ftype.append(INEQ_CONSTRAINT)
-                list_weight.append(0.0)
-                list_aggr_type.append(
-                    AGGR_TYPE_SMAX)
-                list_namespaces.append('ns_energy_mix')
         if LiquidFuel.name in self.energy_list and GaseousHydrogen.name in self.energy_list and LiquidHydrogen.name in self.energy_list:
             list_var.append('primary_energies_production')
             list_parent.append('Energy_constraints')
@@ -597,7 +585,6 @@ class Study(EnergyStudyManager):
 
         renewable_name = Renewable.name
         fossil_name = Fossil.name
-        demand_name = DemandMix.name
         energy_mix_name = EnergyMix.name
         energy_price_dict = {'years': self.years,
                              electricity_name: 9.0,
@@ -648,16 +635,6 @@ class Study(EnergyStudyManager):
         self.resources_CO2_emissions = get_static_CO2_emissions(self.years)
         self.resources_prices = get_static_prices(self.years)
 
-        #-- energy demand mix and total demand
-        self.energy_demand_mix = {f'{energy}.energy_demand_mix': pd.DataFrame({'years': self.years,
-                                                                               'mix': np.zeros(len(self.years))}) for energy in self.techno_dict.keys()}
-
-        if electricity_name in self.energy_list:
-            self.energy_demand_mix[f'{electricity_name}.energy_demand_mix'] = pd.DataFrame({'years': self.years,
-                                                                                            'mix': np.ones(len(self.years)) * 100.0})
-        self.total_energy_demand = pd.DataFrame(
-            {'years': self.years, 'demand': 25000.0})
-
         demand_ratio_dict = dict(
             zip(self.energy_list, np.ones((len(self.years), len(self.years)))))
         demand_ratio_dict['years'] = self.years
@@ -699,7 +676,6 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.study_name}.scaling_factor_energy_investment': scaling_factor_energy_investment,
                        f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.study_name}.{demand_name}.total_energy_demand': self.total_energy_demand,
                        f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.study_name}.{energy_mix_name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
@@ -711,13 +687,6 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.resources_price': self.resources_prices,
                        }
 
-        # ALl energy_demands following energy_list
-        energy_demand_mix_dict = {
-            f'{self.study_name}.{energy_mix_name}.{energy}.energy_demand_mix': self.energy_demand_mix[f'{energy}.energy_demand_mix'] for energy in self.energy_list}
-        values_dict.update(energy_demand_mix_dict)
-        ccs_demand_mix_dict = {
-            f'{self.study_name}.{CCS_NAME}.{energy}.energy_demand_mix': self.energy_demand_mix[f'{energy}.energy_demand_mix'] for energy in self.ccs_list}
-        values_dict.update(ccs_demand_mix_dict)
         values_dict_list, dspace_list, instanciated_studies = self.setup_usecase_sub_study_list(
         )
 
