@@ -134,7 +134,7 @@ class Study(EnergyStudyManager):
             list_var.extend(['invest_objective', 'invest_objective_sum'])
             list_parent.extend(['objectives', 'objectives'])
             list_ftype.extend([OBJECTIVE, OBJECTIVE])
-            list_weight.extend([1.0, 0.0])
+            list_weight.extend([0.0, 1.0])
             list_aggr_type.extend([AGGR_TYPE_SUM, AGGR_TYPE_SUM])
             list_ns.extend(['ns_functions', 'ns_functions'])
 
