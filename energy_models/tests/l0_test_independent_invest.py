@@ -106,9 +106,9 @@ class TestIndependentInvest(unittest.TestCase):
         invest_constraint, invest_objective, invest_objective_sum, invest_objective_cons = one_invest_model.compute_invest_constraint_and_objective(
             inputs_dict)
 
-        delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment -
+        delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment  -
                  self.energy_mix[one_invest_model.distribution_list].sum(
-            axis=1).values) / (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment)
+            axis=1).values - self.forest_invest_df['forest_investment'].values) / (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment)
         abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
         smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
 
