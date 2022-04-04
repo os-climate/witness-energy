@@ -297,7 +297,7 @@ class TestIndependentInvest(unittest.TestCase):
                                                                           f'{self.name}.{self.model_name}.invest_mix', f'{self.name}.forest_investment'],
                                       outputs=[
             f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective', f'{self.name}.invest_objective_sum' , f'{self.name}.invest_sum_cons'],
-            dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
+            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
@@ -352,7 +352,7 @@ class TestIndependentInvest(unittest.TestCase):
                                                                           f'{self.name}.forest_investment'],
                                       outputs=[
             f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective_sum', f'{self.name}.invest_constraint'],
-            dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
+            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_with_forest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
