@@ -184,12 +184,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
                     dynamic_inputs[f'{energy}.land_use_required'] = {
                         'type': 'dataframe', 'unit': '(Gha)'}
 
-                    dynamic_inputs[f'{energy}.data_fuel_dict'] = {
-                        'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                        'namespace': 'ns_energy_mix', 'default':  self.energy_class_dict[energy].data_energy_dict}
-
                     if energy in self.energy_class_dict:
-
+                        dynamic_inputs[f'{energy}.data_fuel_dict'] = {
+                            'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'namespace': 'ns_energy_mix', 'default':  self.energy_class_dict[energy].data_energy_dict}
                         dynamic_inputs[f'{energy}.CO2_emissions'] = {
                             'type': 'dataframe', 'unit': 'kgCO2/kWh'}
                         dynamic_inputs[f'{energy}.CO2_per_use'] = {

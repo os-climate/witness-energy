@@ -30,8 +30,6 @@ INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
 OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
 FUNC_DF = FunctionManagerDisc.FUNC_DF
-DEMAND_VIOLATION = EnergyMix.DEMAND_VIOLATION
-#DELTA_ENERGY_PRICES = EnergyMix.DELTA_ENERGY_PRICES
 
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):
@@ -71,12 +69,8 @@ class Study(StudyManager):
 
         # setup constraints
         list_var = []
-        for energy in energy_list:
-            if energy in EnergyMix.energy_class_dict:
-                out_name = f'{self.study_name}.{self.optim_name}.{self.coupling_name}.EnergyMix.{energy}.{DEMAND_VIOLATION}'
-                sign = SoSOptimScenario.INEQ_POSITIVE
-                list_var.append((out_name, sign))
 
+        sign = SoSOptimScenario.INEQ_POSITIVE
         list_var.append(
             (f'{self.study_name}.{self.optim_name}.{self.coupling_name}.EnergyMix.primary_energies_production', sign))
 

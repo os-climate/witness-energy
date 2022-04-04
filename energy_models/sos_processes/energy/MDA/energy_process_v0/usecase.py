@@ -48,6 +48,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
     INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, get_static_prices
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
+from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 
 
 CCS_NAME = 'CCUS'
@@ -233,6 +234,17 @@ class Study(EnergyStudyManager):
             list_aggr_type.extend(
                 [AGGR_TYPE_SMAX, AGGR_TYPE_SUM])
             list_namespaces.extend(['ns_functions', 'ns_functions'])
+
+        if set(EnergyDemandDiscipline.energy_constraint_list).issubset(self.energy_list):
+            for energy in EnergyDemandDiscipline.energy_constraint_list:
+                list_var.extend(
+                    [f'{energy}_demand_constraint'])
+                list_parent.extend(['demand_constraint'])
+                list_ftype.extend([INEQ_CONSTRAINT])
+                list_weight.extend([0.])
+                list_aggr_type.extend(
+                    [AGGR_TYPE_SUM])
+                list_namespaces.extend(['ns_functions'])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent

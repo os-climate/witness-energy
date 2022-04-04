@@ -20,6 +20,8 @@ import pandas as pd
 from pandas.testing import assert_frame_equal
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.core.demand.energy_demand import EnergyDemand
+from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 
 
 class DemandTestCase(unittest.TestCase):
@@ -35,21 +37,8 @@ class DemandTestCase(unittest.TestCase):
         self.year_end = 2051
         self.years = np.arange(self.year_start, self.year_end)
 
-        self.total_energy_demand = pd.DataFrame(
-            {'years': self.years, 'demand': np.arange(10, 41)})
-        self.energy_list = ['hydrogen.gaseous_hydrogen', 'methane']
-
-        self.energy_demand_mix = {}
-        self.energy_demand_mix['hydrogen.gaseous_hydrogen.energy_demand_mix'] = pd.DataFrame({'years': self.years,
-                                                                                              'mix': np.arange(50, 81)})
-        self.energy_demand_mix['methane.energy_demand_mix'] = pd.DataFrame({'years': self.years,
-                                                                            'mix': np.arange(20, 51)})
-        self.energy_demand_mix['carbon_storage.energy_demand_mix'] = pd.DataFrame({'years': self.years,
-                                                                                   'mix': np.arange(50, 81)})
-        self.energy_demand_mix['carbon_capture.energy_demand_mix'] = pd.DataFrame({'years': self.years,
-                                                                                   'mix': np.arange(50, 81)})
-        self.scaling_factor_techno_consumption = 1e3
-        self.scaling_factor_techno_production = 1e3
+        self.energy_production_detailed = pd.DataFrame({'years': self.years,
+                                                        EnergyDemand.elec_prod_column: 20000.0})
 
     def tearDown(self):
         pass
@@ -60,13 +49,12 @@ class DemandTestCase(unittest.TestCase):
         self.model_name = 'Demand'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_demand': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}.{self.model_name}',
-                   'ns_ccs': f'{self.name}.{self.model_name}'}
+                   'ns_ref': f'{self.name}',
+                   'ns_functions': f'{self.name}.{self.model_name}',
+                   'ns_energy_mix': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.core.demand.demand_mix_disc.DemandMixDiscipline'
+        mod_path = 'energy_models.core.demand.energy_demand_disc.EnergyDemandDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -76,13 +64,9 @@ class DemandTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{self.model_name}.year_start': 2020,
-                       f'{self.name}.{self.model_name}.year_end': 2050,
-                       f'{self.name}.energy_list': self.energy_list,
-                       f'{self.name}.{self.model_name}.hydrogen.gaseous_hydrogen.energy_demand_mix': self.energy_demand_mix['hydrogen.gaseous_hydrogen.energy_demand_mix'],
-                       f'{self.name}.{self.model_name}.methane.energy_demand_mix': self.energy_demand_mix['methane.energy_demand_mix'],
-                       f'{self.name}.{self.model_name}.carbon_storage.energy_demand_mix': self.energy_demand_mix['carbon_storage.energy_demand_mix'],
-                       f'{self.name}.{self.model_name}.carbon_capture.energy_demand_mix': self.energy_demand_mix['carbon_capture.energy_demand_mix'],
-                       f'{self.name}.{self.model_name}.total_energy_demand': self.total_energy_demand}
+                       f'{self.name}.{self.model_name}.year_end': 2100,
+                       f'{self.name}.energy_production_detailed': self.energy_production_detailed,
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -91,18 +75,8 @@ class DemandTestCase(unittest.TestCase):
         # gather discipline outputs
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
-        h2_demand = disc.get_sosdisc_outputs(
-            'hydrogen.gaseous_hydrogen.energy_demand')
-        ch4_demand = disc.get_sosdisc_outputs('methane.energy_demand')
 
-        # build ref data
-        total_demand = self.total_energy_demand['demand']
-        h2_mix = self.energy_demand_mix['hydrogen.gaseous_hydrogen.energy_demand_mix']['mix']
-        h2_dmd_ref = pd.DataFrame(
-            {'years': self.years, 'demand': total_demand * h2_mix / 100.})
-        ch4_mix = self.energy_demand_mix['methane.energy_demand_mix']['mix']
-        ch4_dmd_ref = pd.DataFrame(
-            {'years': self.years, 'demand': total_demand * ch4_mix / 100.})
-        # compare outputs to ref
-        assert_frame_equal(h2_demand, h2_dmd_ref)
-        assert_frame_equal(ch4_demand, ch4_dmd_ref)
+        filters = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filters)
+#         for graph in graph_list:
+#             graph.to_plotly().show()

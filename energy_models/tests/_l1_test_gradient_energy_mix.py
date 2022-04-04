@@ -300,8 +300,6 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                          f'{name}.{func_manager_name}.total_prod_h2_liquid',
                          f'{name}.{func_manager_name}.syngas_prod_objective',
                          ]
-        outputs_names.extend(
-            [f'{name}.{model_name}.{energy}.demand_violation' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']])
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_obj_constraints_wrt_state_variables.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
@@ -416,8 +414,8 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_full_names = [disc_energy_mix.get_var_full_name(
             inp, disc_energy_mix._data_in) for inp in input_names]
 
-        output_names = ['energy_prices', 'energy_CO2_emissions', 'energy_production_objective', 'methane.demand_violation', 'hydrogen.gaseous_hydrogen.demand_violation',
-                        'biogas.demand_violation', 'electricity.demand_violation', 'solid_fuel.demand_violation', 'liquid_fuel.demand_violation', 'biodiesel.demand_violation', 'syngas.demand_violation', 'biomass_dry.demand_violation']
+        output_names = ['energy_prices',
+                        'energy_CO2_emissions', 'energy_production_objective']
         outputs_full_names = [disc_energy_mix.get_var_full_name(
             out, disc_energy_mix._data_out) for out in output_names]
 

@@ -108,7 +108,6 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
                    'ns_energy_study': self.name,
                    'ns_ref': self.name,
                    'ns_functions': self.name,
-                   'ns_demand': self.name,
                    'ns_carbon_capture': self.name,
                    'ns_carbon_storage': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
