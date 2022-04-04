@@ -434,9 +434,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 self.set_partial_derivative_for_other_types(
                     ('energy_production_detailed', 'Total production'), (f'{energy}.energy_production', energy), dtotal_prod_denergy_prod * scaling_factor_energy_production)
                 self.set_partial_derivative_for_other_types(
-                    ('energy_production_detailed', 'Total production (uncut)'), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production)
+                    ('energy_production_detailed', 'Total production (uncut)'), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production * (1.0 - loss_percent))
                 self.set_partial_derivative_for_other_types(
-                    ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production)
+                    ('energy_production_detailed', f'production {energy} ({stream_class_dict[energy].unit})'), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production * (1.0 - loss_percentage))
                 self.set_partial_derivative_for_other_types(
                     ('energy_production_brut', 'Total production'), (f'{energy}.energy_production', energy),  scaling_factor_energy_production * np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
@@ -814,7 +814,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         denergy_mean_prod.loc[index_l] = 0
         return denergy_mean_prod
 
-    def compute_dtotal_production_denergy_production(self, production_detailed_df, min_energy, loss_percent=0.0):
+    def compute_dtotal_production_denergy_production(self, production_detailed_df, min_energy, heat_percent, loss_percent=0.0):
         '''
         Compute gradient of production['Total production'] by {energy}.energy_prod[{energy}] taking into account 
         the exponential decrease towards the limit applied on the calculation of the total net energy production
@@ -823,21 +823,22 @@ class Energy_Mix_Discipline(SoSDiscipline):
         '''
         years = production_detailed_df['years']
         dtotal_production_denergy_production = np.ones(len(years))
-
+        total_loss_percent = heat_percent + loss_percent
         dtotal_production_denergy_production *= (
-            1.0 - loss_percent)
+            1.0 - total_loss_percent)
         pre_limit_total_production = pd.DataFrame({'years': years,
                                                    'Total production': 0.0})
         pre_limit_total_production['Total production'] = production_detailed_df[[
             column for column in production_detailed_df if column.endswith('(TWh)')]].sum(axis=1)
 
-        total_prod = pre_limit_total_production['Total production'].values
+        total_prod = pre_limit_total_production['Total production'].values * (
+            1.0 - heat_percent)
         if total_prod.min() < min_energy:
                 # To avoid underflow : exp(-200) is considered to be the
                 # minimum value for the exp
             total_prod[total_prod < -200.0 * min_energy] = -200.0 * min_energy
             dtotal_production_denergy_production[total_prod < min_energy] = np.exp(
-                total_prod[total_prod < min_energy] / min_energy) * np.exp(-1) / 10.0
+                total_prod[total_prod < min_energy] / min_energy) * np.exp(-1) / 10.0 * (1.0 - total_loss_percent)
 
         return np.identity(len(years)) * dtotal_production_denergy_production
 
