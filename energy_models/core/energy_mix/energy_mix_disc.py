@@ -476,7 +476,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         #---- Consumption gradients----#
                         dtotal_prod_denergy_cons = - \
                             self.compute_dtotal_production_denergy_production(
-                                production_detailed_df, minimum_energy_production)
+                                production_detailed_df, minimum_energy_production, 0.0)
                         dprod_objective_dcons = self.compute_denergy_production_objective_dprod(
                             dtotal_prod_denergy_cons, inputs_dict['alpha'], outputs_dict['energy_production'], years)
                         self.set_partial_derivative_for_other_types(
@@ -699,7 +699,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
                     dtotal_prod_denergy_cons = - \
                         self.compute_dtotal_production_denergy_production(
-                            production_detailed_df, minimum_energy_production)
+                            production_detailed_df, minimum_energy_production, 0.0)
                     self.set_partial_derivative_for_other_types((f'{energy}.demand_violation', 'demand_violation'),
                                                                 (f'{energy_input}.energy_consumption',
                                                                  list_columnsenergycons[list_index_conso.index(True)]),
@@ -826,13 +826,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
         total_loss_percent = heat_percent + loss_percent
         dtotal_production_denergy_production *= (
             1.0 - total_loss_percent)
-        pre_limit_total_production = pd.DataFrame({'years': years,
-                                                   'Total production': 0.0})
-        pre_limit_total_production['Total production'] = production_detailed_df[[
-            column for column in production_detailed_df if column.endswith('(TWh)')]].sum(axis=1)
 
-        total_prod = pre_limit_total_production['Total production'].values * (
-            1.0 - heat_percent)
+        total_prod = production_detailed_df['Total production (uncut)'].values
         if total_prod.min() < min_energy:
                 # To avoid underflow : exp(-200) is considered to be the
                 # minimum value for the exp
