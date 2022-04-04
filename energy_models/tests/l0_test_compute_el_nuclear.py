@@ -191,7 +191,7 @@ class NuclearTestCase(unittest.TestCase):
         nuclear_model.configure_parameters_update(inputs_dict)
         price_details = nuclear_model.compute_price()
         nuclear_model.compute_consumption_and_production()
-        consumption_without_ratio = nuclear_model.consumption['uranium_resource'].values * \
+        consumption_without_ratio = nuclear_model.consumption['uranium_resource (Mt)'].values * \
             self.ratio_available_resource['uranium_resource'].values
         nuclear_model.select_ratios()
         nuclear_model.apply_ratios_on_consumption_and_production(True)

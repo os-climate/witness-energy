@@ -1180,7 +1180,6 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{name}.epsilon0'] = 1.0
         full_values_dict[f'{name}.tolerance'] = 1.0e-8
         full_values_dict[f'{name}.max_mda_iter'] = 50
-        full_values_dict[f'{name}.is_dev'] = True
         #full_values_dict[f'{name}.sub_mda_class'] = 'MDANewtonRaphson'
         self.ee.load_study_from_input_dict(full_values_dict)
 
@@ -1202,6 +1201,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_with_losses.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
+                                                           f'{name}.{model_name}.energy_production_detailed',
                                                            f'{name}.{model_name}.co2_emissions_needed_by_energy_mix',
                                                            f'{name}.{model_name}.energy_CO2_emissions',
                                                            f'{name}.{model_name}.energy_mean_price',

@@ -42,6 +42,7 @@ from energy_models.core.stream_type.energy_models.fossil import Fossil
 from copy import deepcopy
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class EnergyMix(BaseStream):
@@ -66,6 +67,7 @@ class EnergyMix(BaseStream):
     SYNGAS_PROD_OBJECTIVE = 'syngas_prod_objective'
     RESOURCE_LIST = ['natural_gas_resource',
                      'uranium_resource', 'coal_resource', 'oil_resource']
+    RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
     CARBON_STORAGE_CONSTRAINT = 'carbon_storage_constraint'
     energy_class_dict = {GaseousHydrogen.name: GaseousHydrogen,
                          LiquidFuel.name: LiquidFuel,
@@ -153,7 +155,6 @@ class EnergyMix(BaseStream):
                                           f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
 
-        self.is_dev = inputs_dict['is_dev']
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
 
         if self.subelements_list is not None:
@@ -210,10 +211,10 @@ class EnergyMix(BaseStream):
                 self.all_resource_demand[elements] = np.linspace(
                     0, 0, len(self.all_resource_demand.index)) * 100.
         for energy in self.subelements_list:
-            for elements in self.sub_consumption_dict[energy]:
-                if elements in self.resource_list:
-                    self.all_resource_demand[elements] = self.all_resource_demand[elements] + \
-                        inputs_dict[f'{energy}.energy_consumption'][elements].values * \
+            for resource in self.resource_list:
+                if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.sub_consumption_dict[energy].columns:
+                    self.all_resource_demand[resource] = self.all_resource_demand[resource] + \
+                        inputs_dict[f'{energy}.energy_consumption'][f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                         self.scaling_factor_energy_consumption
 
         # DataFrame stream demand
@@ -258,8 +259,7 @@ class EnergyMix(BaseStream):
                         logging.warning(
                             f'The columns {wrong_columns} in the energy_consumption out of {idx} cannot be taken into account for an error of unity')
 
-        if self.is_dev:
-            self.substract_losses_by_energy()
+        self.substract_losses_by_energy()
         # Sum on netenergy production
         self.production['Total production'] = self.production[[
             column for column in self.production if column.endswith('(TWh)')]].sum(axis=1)
@@ -268,10 +268,8 @@ class EnergyMix(BaseStream):
         self.production_raw['Total production'] = self.production_raw[[
             column for column in self.production_raw if column.endswith('(TWh)')]].sum(axis=1)
 
-        # substract a percentage of raw production into net production only in
-        # dev mode
-        if self.is_dev:
-            self.substract_energy_heat_losses()
+        # substract a percentage of raw production into net production
+        self.substract_energy_heat_losses()
 
         self.production['Total production (uncut)'] = self.production['Total production'].values
         min_energy = self.minimum_energy_production
