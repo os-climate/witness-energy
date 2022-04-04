@@ -335,6 +335,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.techno_capital',
+                                     f'{self.name}.{self.model_name}.lost_capital',
                                      ],)
 
     def test_02_plasma_cracking_jacobian(self):
@@ -799,5 +801,5 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = HydrogenJacobianTestCase()
     cls.setUp()
-    cls.test_08_gaseous_hydrogen_discipline_jacobian()
+    cls.test_07_wgs_jacobian_invest_negative()
     print('------')

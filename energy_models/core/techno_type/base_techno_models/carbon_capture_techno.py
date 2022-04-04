@@ -196,3 +196,21 @@ class CCTechno(TechnoType):
                     dprod_dcapex[line, :], dcapexdfluegas[:, column])
 
         return dprod_dfluegas
+
+    def compute_dlostcapital_dfluegas(self, dcapex_dfluegas, dprod_dfluegas):
+        '''
+        Compute the gradient of lost capital by invest_level
+
+        dlostcapital_dfluegas = dcapex_dfluegas*prod(1-ratio) + dprod_dfluegas*capex(1-ratio) - dratiodfluegas*prod*capex
+        dratiodfluegas = 0.0
+        '''
+
+        dtechnocapital_dfluegas = (dcapex_dfluegas * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
+                                   dprod_dfluegas * self.cost_details[f'Capex_{self.name}'].values.reshape((len(self.years), 1))) / self.techno_infos_dict['lifetime']
+
+        dlostcapital_dfluegas = dtechnocapital_dfluegas * (
+            1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
+
+        # we do not divide by / self.scaling_factor_invest_level because invest
+        # and lost_capital are in G$
+        return dlostcapital_dfluegas, dtechnocapital_dfluegas

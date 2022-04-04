@@ -9,7 +9,7 @@ from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Stu
 import pickle
 
 
-def launch_data_pickle_generation():
+def launch_data_pickle_generation(directory=''):
     # Run MDA Energy
     name = 'Data_Generator'
     ee = ExecutionEngine(name)
@@ -220,19 +220,24 @@ def launch_data_pickle_generation():
         'energy_production_detailed')
     mda_energy_data_streams_output_dict['energy_production_detailed'] = energy_production_detailed
 
-    output = open('mda_energy_data_streams_input_dict.pkl', 'wb')
+    if directory =='':
+        prefix='.'
+    else:
+        prefix=f'./{directory}'
+
+    output = open(f'{prefix}/mda_energy_data_streams_input_dict.pkl', 'wb')
     pickle.dump(mda_energy_data_streams_input_dict, output)
     output.close()
 
-    output = open('mda_energy_data_streams_output_dict.pkl', 'wb')
+    output = open(f'{prefix}/mda_energy_data_streams_output_dict.pkl', 'wb')
     pickle.dump(mda_energy_data_streams_output_dict, output)
     output.close()
 
-    output = open('mda_energy_data_technologies_input_dict.pkl', 'wb')
+    output = open(f'{prefix}/mda_energy_data_technologies_input_dict.pkl', 'wb')
     pickle.dump(mda_energy_data_technologies_input_dict, output)
     output.close()
 
-    output = open('mda_energy_data_technologies_output_dict.pkl', 'wb')
+    output = open(f'{prefix}/mda_energy_data_technologies_output_dict.pkl', 'wb')
     pickle.dump(mda_energy_data_technologies_output_dict, output)
     output.close()
 

@@ -61,9 +61,9 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                  'construction_delay': construction_delay, }
 
     techno_info_dict = techno_infos_dict_default
-    initial_production = 152000
+    initial_production = 90717.76  # TWh
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [1481.48, 1483.79, 1489.95]})
+        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 1483.79, 1489.95]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [5.12627214, 7.68940822, 3.43007916, 8.5563513, 8.5563513,

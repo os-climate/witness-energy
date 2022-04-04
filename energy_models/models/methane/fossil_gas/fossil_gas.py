@@ -28,7 +28,8 @@ class FossilGas(MethaneTechno):
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
-        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = np.ones(len(self.years)) / Methane.data_energy_dict['calorific_value'] #kg/kWh
+        #calorific value in kWh/kg * 1000 to have needs in t/kWh
+        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = np.ones(len(self.years)) / (1000 * Methane.data_energy_dict['calorific_value']) #kg/kWh
         self.cost_details[f'{Electricity.name}'] = list(
             self.prices[f'{Electricity.name}'] * self.cost_details['elec_needs'])
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}'] = list(

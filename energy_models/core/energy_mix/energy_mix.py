@@ -155,7 +155,6 @@ class EnergyMix(BaseStream):
                                           f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
 
-        self.is_dev = inputs_dict['is_dev']
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
 
         if self.subelements_list is not None:
@@ -260,8 +259,7 @@ class EnergyMix(BaseStream):
                         logging.warning(
                             f'The columns {wrong_columns} in the energy_consumption out of {idx} cannot be taken into account for an error of unity')
 
-        if self.is_dev:
-            self.substract_losses_by_energy()
+        self.substract_losses_by_energy()
         # Sum on netenergy production
         self.production['Total production'] = self.production[[
             column for column in self.production if column.endswith('(TWh)')]].sum(axis=1)
@@ -270,10 +268,8 @@ class EnergyMix(BaseStream):
         self.production_raw['Total production'] = self.production_raw[[
             column for column in self.production_raw if column.endswith('(TWh)')]].sum(axis=1)
 
-        # substract a percentage of raw production into net production only in
-        # dev mode
-        if self.is_dev:
-            self.substract_energy_heat_losses()
+        # substract a percentage of raw production into net production
+        self.substract_energy_heat_losses()
 
         self.production['Total production (uncut)'] = self.production['Total production'].values
         min_energy = self.minimum_energy_production
