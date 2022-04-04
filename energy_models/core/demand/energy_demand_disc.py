@@ -41,7 +41,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
     }
 
     DESC_IN = {'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+               'year_end': {'type': 'int', 'default': 2100, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh',
                                               'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                                        'demand': ('float',  None, True)},
@@ -84,7 +84,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
         '''
         delec_demand_cosntraint_delec_prod = self.demand_model.compute_delec_demand_constraint_delec_prod()
         self.set_partial_derivative_for_other_types(
-            ('electricity_demand_constraint', 'electricity_demand_constraint'), ('energy_production_detailed', self.elec_prod_column),  delec_demand_cosntraint_delec_prod)
+            ('electricity_demand_constraint', 'elec_demand_constraint'), ('energy_production_detailed', self.elec_prod_column),  delec_demand_cosntraint_delec_prod)
 
     def get_chart_filter_list(self):
 

@@ -13,21 +13,34 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
 import unittest
 
 import numpy as np
 import pandas as pd
-from pandas.testing import assert_frame_equal
+from os.path import join, dirname
+import scipy.interpolate as sc
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+    get_static_prices
+from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+import pickle
 from energy_models.core.demand.energy_demand import EnergyDemand
-from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 
 
-class DemandTestCase(unittest.TestCase):
+class DemandModelJacobianTestCase(AbstractJacobianUnittest):
     """
-    Demand computation tests
+    DemandModel jacobian test class
     """
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    def analytic_grad_entry(self):
+        return [
+            self.test_01_demand_model_discipline_jacobian
+        ]
 
     def setUp(self):
         '''
@@ -38,15 +51,15 @@ class DemandTestCase(unittest.TestCase):
         self.years = np.arange(self.year_start, self.year_end + 1)
 
         self.energy_production_detailed = pd.DataFrame({'years': self.years,
-                                                        EnergyDemand.elec_prod_column: 20000.0})
+                                                        EnergyDemand.elec_prod_column: np.linspace(20000, 19000, len(self.years))})
 
     def tearDown(self):
         pass
 
-    def test_01_demand_discipline(self):
+    def test_01_demand_model_discipline_jacobian(self):
 
         self.name = 'Test'
-        self.model_name = 'Demand'
+        self.model_name = 'demand_model'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}',
@@ -55,6 +68,7 @@ class DemandTestCase(unittest.TestCase):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.demand.energy_demand_disc.EnergyDemandDiscipline'
+
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -67,16 +81,19 @@ class DemandTestCase(unittest.TestCase):
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.energy_production_detailed': self.energy_production_detailed,
                        }
-
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        self.ee.execute()
+        disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        # gather discipline outputs
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            inputs=[f'{self.name}.energy_production_detailed'],
+                            outputs=[f'{self.name}.{self.model_name}.electricity_demand_constraint'
+                                     ],)
 
-        filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+
+if '__main__' == __name__:
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    cls = DemandModelJacobianTestCase()
+    cls.setUp()
+    cls.test_01_demand_model_discipline_jacobian()

@@ -76,8 +76,8 @@ class EnergyDemand(object):
         '''
         self.elec_demand['elec_demand (TWh)'] = self.compute_elec_demand_with_efficiency(
         )
-        self.demand_elec_constraint['demand_elec_constraint'] = (
-            self.energy_production_detailed[self.elec_prod_column].values - self.elec_demand['elec_demand (TWh)']) / self.electricity_demand_constraint_ref / self.delta_years
+        self.demand_elec_constraint['elec_demand_constraint'] = (
+            self.energy_production_detailed[self.elec_prod_column].values - self.elec_demand['elec_demand (TWh)'].values) / self.electricity_demand_constraint_ref / self.delta_years
 
     def compute_elec_demand_with_efficiency(self):
         '''
