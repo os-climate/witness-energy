@@ -269,20 +269,19 @@ class IndependentInvestDiscipline(SoSDiscipline):
         compared to total energy invest
         '''
 
-        delta = ((invest_tot - techno_invest_sum) - invest_limit_ref) / invest_sum_ref
-        abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
-        #smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
-        #invest_objective = abs_delta
+        delta = (invest_tot - techno_invest_sum)
+        abs_delta = (np.sqrt(compute_func_with_exp_min(delta**2, 1e-15)) - invest_limit_ref) / invest_sum_ref
+
 
         idt = np.identity(len(invest_tot))
 
-        ddelta_dtech = -idt / invest_sum_ref
-        ddelta_dtot = idt/ invest_sum_ref
+        ddelta_dtech = -idt
+        ddelta_dtot = idt
 
         dabs_delta_dtech = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
-            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtech
+            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtech / invest_sum_ref
         dabs_delta_dtot = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
-            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtot
+            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtot / invest_sum_ref
 
         return dabs_delta_dtech, dabs_delta_dtot
 
