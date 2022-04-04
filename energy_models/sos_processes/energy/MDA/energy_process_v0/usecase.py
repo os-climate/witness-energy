@@ -731,6 +731,11 @@ class Study(EnergyStudyManager):
         if CarbonCapture.name in DEFAULT_TECHNO_DICT:
             values_dict[f'{self.study_name}.{CCS_NAME}.{CarbonCapture.name}.{FlueGas.node_name}.technologies_list'] = flue_gas_list
 
+        # IF coarse process no need of heat loss percentage (raw prod is net prod)
+        # IF renewable and fossil in energy_list then coarse process
+        if renewable_name in self.energy_list and fossil_name in self.energy_list:
+            values_dict.update(
+                {f'{self.study_name}.EnergyMix.heat_losses_percentage': 0.0})
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             energy_mix_invest_df = self.get_investments_mix_custom()
             invest_ccs_mix = self.get_investments_ccs_mix_custom()
