@@ -95,6 +95,7 @@ class TestIndependentInvest(unittest.TestCase):
                        'carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        'invest_mix': self.energy_mix,
                        'energy_investment': self.energy_investment,
+                       'forest_investment': self.forest_invest_df,
                        'scaling_factor_energy_investment': scaling_factor_energy_investment,
                        'invest_constraint_ref': invest_constraint_ref,
                        'invest_objective_ref': invest_objective_ref,
@@ -132,6 +133,7 @@ class TestIndependentInvest(unittest.TestCase):
                    'ns_ccs': f'{self.name}.CCUS',
                    'ns_energy': self.name,
                    'ns_functions': self.name,
+                   'ns_invest': f'{self.name}.{self.model_name}'
                    }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -258,6 +260,8 @@ class TestIndependentInvest(unittest.TestCase):
                    'ns_energy': self.name,
                    'ns_ccs': f'{self.name}',
                    'ns_functions': self.name,
+                   'ns_invest': self.name,
+
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -280,7 +284,8 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
-                       f'{self.name}.energy_investment': self.energy_investment}
+                       f'{self.name}.energy_investment': self.energy_investment,
+                       f'{self.name}.forest_investment': self.forest_invest_df}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -289,10 +294,10 @@ class TestIndependentInvest(unittest.TestCase):
             f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in inputs_dict[f'{self.name}.{energy}.technologies_list']]
 
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.energy_investment',
-                                                                          f'{self.name}.{self.model_name}.invest_mix'],
+                                                                          f'{self.name}.{self.model_name}.invest_mix', f'{self.name}.forest_investment'],
                                       outputs=[
             f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective', f'{self.name}.invest_objective_sum' , f'{self.name}.invest_sum_cons'],
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+            dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
@@ -346,8 +351,8 @@ class TestIndependentInvest(unittest.TestCase):
                                                                           f'{self.name}.{self.model_name}.invest_mix',
                                                                           f'{self.name}.forest_investment'],
                                       outputs=[
-            f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective', f'{self.name}.invest_constraint', f'{self.name}.forest_investment'],
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+            f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective_sum', f'{self.name}.invest_constraint'],
+            dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_with_forest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
