@@ -45,7 +45,7 @@ class EnergyDiscipline(StreamDiscipline):
     DESC_IN.update(StreamDiscipline.DESC_IN)
 
     # -- Here are the results of concatenation of each techno prices,consumption and production
-#     CST_DEMAND_VIOLATION = 'cst_energy_demand_violation'
+
     DESC_OUT = {
         'CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kWh'},
         'CO2_per_use': {'type': 'dataframe', 'unit': 'kgCO2/kWh'}}

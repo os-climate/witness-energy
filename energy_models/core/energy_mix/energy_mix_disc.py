@@ -181,17 +181,13 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         'type': 'dataframe', 'unit': 'PWh'}
                     dynamic_inputs[f'{energy}.energy_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh'}
-                    dynamic_inputs[f'{energy}.energy_demand'] = {'type': 'dataframe', 'unit': 'TWh',
-                                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_demand'}
                     dynamic_inputs[f'{energy}.land_use_required'] = {
                         'type': 'dataframe', 'unit': '(Gha)'}
 
-                    dynamic_inputs[f'{energy}.data_fuel_dict'] = {
-                        'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                        'namespace': 'ns_energy_mix', 'default':  self.energy_class_dict[energy].data_energy_dict}
-
                     if energy in self.energy_class_dict:
-
+                        dynamic_inputs[f'{energy}.data_fuel_dict'] = {
+                            'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'namespace': 'ns_energy_mix', 'default':  self.energy_class_dict[energy].data_energy_dict}
                         dynamic_inputs[f'{energy}.CO2_emissions'] = {
                             'type': 'dataframe', 'unit': 'kgCO2/kWh'}
                         dynamic_inputs[f'{energy}.CO2_per_use'] = {
@@ -199,12 +195,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
                         dynamic_inputs[f'{energy}.losses_percentage'] = {
                             'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy], 'range': [0., 100.]}
-                        if energy == self.SYNGAS_NAME or energy == self.BIOMASS_DRY_NAME:
-                            dynamic_outputs[f'{energy}.{EnergyMix.DEMAND_MAX_PRODUCTION}'] = {
-                                'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix'}
-
-                        dynamic_outputs[f'{energy}.{EnergyMix.DEMAND_VIOLATION}'] = {
-                            'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix'}
 
                 if 'syngas' in energy_list:
                     dynamic_inputs[f'syngas_ratio'] = {
@@ -222,8 +212,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
                         dynamic_inputs[f'{ccs_name}.energy_prices'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
-                        dynamic_inputs[f'{ccs_name}.energy_demand'] = {'type': 'dataframe', 'unit': 'TWh',
-                                                                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_demand'}
                         dynamic_inputs[f'{ccs_name}.land_use_required'] = {
                             'type': 'dataframe', 'unit': '(Gha)', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
 
@@ -286,7 +274,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
         self.energy_model.compute_CO2_emissions()
 
         self.energy_model.compute_CO2_emissions_ratio()
-        self.energy_model.compute_energy_demand_violation()
 
         self.energy_model.aggregate_land_use_required()
 
@@ -339,24 +326,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         'ratio_objective': self.energy_model.ratio_objective,
                         'co2_emissions_needed_by_energy_mix': self.energy_model.co2_emissions_needed_by_energy_mix,
                         }
-        normalization_value = inputs_dict['normalization_value_demand_constraints']
-        energy_list = inputs_dict['energy_list']
-        ccs_list = inputs_dict['ccs_list']
+
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
-
-        for e_name in energy_list:
-            energy_demand_violation = self.energy_model.demand_viol[e_name]
-            if e_name == self.SYNGAS_NAME or e_name == self.BIOMASS_DRY_NAME:
-                energy_demand_max = self.energy_model.demand_max_production[e_name]
-                energy_demand_max[EnergyMix.DEMAND_MAX_PRODUCTION] = energy_demand_max[
-                    EnergyMix.DEMAND_MAX_PRODUCTION] / normalization_value
-                outputs_dict[f'{e_name}.{EnergyMix.DEMAND_MAX_PRODUCTION}'] = energy_demand_max
-
-            energy_demand_violation['demand_violation'] = energy_demand_violation['demand_violation'] / \
-                normalization_value
-
-            # energy demand violation, for each energy (not for streams)
-            outputs_dict[f'{e_name}.{EnergyMix.DEMAND_VIOLATION}'] = energy_demand_violation
 
         if 'production ' + self.LIQUID_FUEL_NAME + ' (TWh)' in self.energy_model.production and 'production ' + self.HYDROGEN_NAME + ' (TWh)' in self.energy_model.production and 'production ' + self.LIQUID_HYDROGEN_NAME + ' (TWh)' in self.energy_model.production:
             production_liquid_fuel = self.energy_model.production[
@@ -391,7 +362,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
         energy_list = inputs_dict['energy_list'] + inputs_dict['ccs_list']
         heat_losses_percentage = inputs_dict['heat_losses_percentage'] / 100.0
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
-        normalization_value = inputs_dict['normalization_value_demand_constraints']
         production_detailed_df = outputs_dict['energy_production_detailed']
         minimum_energy_production = inputs_dict['minimum_energy_production']
         production_threshold = inputs_dict['production_threshold']
@@ -661,9 +631,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
         #---- Demand Violation gradients----#
         #-----------------------------------#
         for energy in energies:
-            self.set_partial_derivative_for_other_types((f'{energy}.demand_violation', 'demand_violation'),
-                                                        (f'{energy}.energy_demand',
-                                                         'demand'), -np.identity(len(years)) / normalization_value)
             if energy in outputs_dict['energy_CO2_emissions'].keys():
                 self.set_partial_derivative_for_other_types(
                     ('energy_CO2_emissions', energy), (f'{energy}.CO2_emissions', energy), np.identity(len(years)))
@@ -681,41 +648,23 @@ class Energy_Mix_Discipline(SoSDiscipline):
                     loss_percent = heat_losses_percentage + loss_percentage
                     dtotal_prod_denergy_prod = self.compute_dtotal_production_denergy_production(
                         production_detailed_df, minimum_energy_production, loss_percent)
-                    self.set_partial_derivative_for_other_types((f'{energy}.demand_violation', 'demand_violation'),
-                                                                (f'{energy_input}.energy_production',
-                                                                 energy), scaling_factor_energy_production * np.identity(len(years)) / normalization_value)
 
                     self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
                                                                  EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
                                                                 (f'{energy_input}.energy_production',
                                                                  energy), scaling_factor_energy_production * np.identity(len(years)) / total_prod_minus_min_prod_constraint_ref * (1.0 - loss_percent))
 
-                    if energy == self.SYNGAS_NAME or energy == self.BIOMASS_DRY_NAME:
-                        self.set_partial_derivative_for_other_types((f'{energy}.{EnergyMix.DEMAND_MAX_PRODUCTION}', 'demand_max_production'),
-                                                                    (f'{energy_input}.energy_production',
-                                                                     energy), - scaling_factor_energy_production * dtotal_prod_denergy_prod / normalization_value)
-
                 if True in list_index_conso:
 
                     dtotal_prod_denergy_cons = - \
                         self.compute_dtotal_production_denergy_production(
                             production_detailed_df, minimum_energy_production, 0.0)
-                    self.set_partial_derivative_for_other_types((f'{energy}.demand_violation', 'demand_violation'),
-                                                                (f'{energy_input}.energy_consumption',
-                                                                 list_columnsenergycons[list_index_conso.index(True)]),
-                                                                -scaling_factor_energy_consumption * np.identity(len(years)) / normalization_value)
 
                     self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
                                                                  EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
                                                                 (f'{energy_input}.energy_consumption',
                                                                  list_columnsenergycons[list_index_conso.index(True)]),
                                                                 -scaling_factor_energy_consumption * np.identity(len(years)) / total_prod_minus_min_prod_constraint_ref)
-                    if energy == self.SYNGAS_NAME or energy == self.BIOMASS_DRY_NAME:
-
-                        self.set_partial_derivative_for_other_types((f'{energy}.{EnergyMix.DEMAND_MAX_PRODUCTION}', 'demand_max_production'),
-                                                                    (f'{energy_input}.energy_consumption',
-                                                                     list_columnsenergycons[list_index_conso.index(True)]),
-                                                                    scaling_factor_energy_consumption * dtotal_prod_denergy_cons / normalization_value)
 
         #--------------------------------------#
         #---- Stream Demand ratio gradients ---#
@@ -937,8 +886,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         chart_filters = []
         chart_list = ['Energy price', 'Energy mean price', 'Energy mix',
-                      'production', 'CO2 emissions', 'Carbon intensity', 'Demand violation',
-                      'Delta price', 'CO2 taxes over the years', 'Solid energy and electricity production constraint',
+                      'production', 'CO2 emissions', 'Carbon intensity', 'CO2 taxes over the years', 'Solid energy and electricity production constraint',
                       'Liquid hydrogen production constraint', 'Stream ratio', 'Energy mix losses']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -1028,11 +976,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-
-        if 'Demand violation' in charts and '$/MWh' in price_unit_list:
-            new_chart = self.get_chart_demand_violation_kwh()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
 
         if 'Solid energy and electricity production constraint' in charts and len(list(set(self.energy_constraint_list).intersection(energy_list))) > 0:
             new_chart = self.get_chart_solid_energy_elec_constraint()
@@ -1377,24 +1320,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 f'Energy productions in {year}', energy_pie_chart, values)
             instanciated_charts.append(pie_chart)
         return instanciated_charts
-
-    def get_chart_demand_violation_kwh(self):
-        chart_name = 'Demand violation chart'
-        energy_list = self.get_sosdisc_inputs('energy_list')
-        demand_violation = pd.DataFrame()
-        new_chart = TwoAxesInstanciatedChart('years', 'Demand violation',
-                                             chart_name=chart_name, stacked_bar=True)
-        for energy in energy_list:
-            if self.stream_class_dict[energy].unit == 'TWh':
-                demand_violation_df = self.get_sosdisc_outputs(
-                    f'{energy}.demand_violation')
-                demand_violation[energy] = demand_violation_df['demand_violation']
-
-                serie = InstanciatedSeries(
-                    demand_violation_df['years'].values.tolist(),
-                    demand_violation[energy].values.tolist(), f'{energy}', 'bar')
-                new_chart.series.append(serie)
-        return new_chart
 
     def get_chart_co2_streams(self):
         '''

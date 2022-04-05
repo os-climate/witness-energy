@@ -13,26 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+
 from sos_trades_core.study_manager.study_manager import StudyManager
 
 from energy_models.sos_processes.energy.MDO_subprocesses.energy_optim_sub_process_mda.usecase import Study as Study_subprocess
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from sos_trades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
-from energy_models.core.energy_mix.energy_mix import EnergyMix
 
-from os.path import dirname
-import numpy as np
 import pandas as pd
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,\
-    INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
 OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
 FUNC_DF = FunctionManagerDisc.FUNC_DF
-DEMAND_VIOLATION = EnergyMix.DEMAND_VIOLATION
 EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
 EXPORT_XVECT = DesignVarDiscipline.EXPORT_XVECT
 

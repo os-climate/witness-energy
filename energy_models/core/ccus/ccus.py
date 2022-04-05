@@ -30,10 +30,8 @@ class CCUS(BaseStream):
     """
     name = 'CCUS'
     PRODUCTION = 'production'
-    DEMAND_VIOLATION = 'demand_violation'
     DELTA_ENERGY_PRICES = 'delta_energy_prices'
     DELTA_CO2_EMISSIONS = 'delta_co2_emissions'
-    DEMAND_MAX_PRODUCTION = 'demand_max_production'
     TOTAL_PRODUCTION = 'Total production'
     RESOURCE_LIST = ['natural_gas_resource',
                      'uranium_resource', 'coal_resource', 'oil_resource']
