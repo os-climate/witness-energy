@@ -160,8 +160,8 @@ class IndependentInvestDiscipline(SoSDiscipline):
             scaling_factor_energy_investment
 
         techno_invest_sum += inputs_dict['forest_investment']['forest_investment'].values
-
-        idt = np.identity(len(years))
+        delta_years = len(years)
+        idt = np.identity(delta_years)
         ddelta_dtech = -idt / energy_invest
         ddelta_dtot = (idt * energy_invest - (energy_invest -
                                               techno_invest_sum) * idt) / energy_invest**2
@@ -182,7 +182,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('invest_objective_sum',), ('invest_mix', techno), dinvest_objective_sum_dtechno_invest)
             self.set_partial_derivative_for_other_types(
-                ('invest_sum_cons',), ('invest_mix', techno), -dinvest_objective_sum_cons_dtechno_invest)
+                ('invest_sum_cons',), ('invest_mix', techno), -dinvest_objective_sum_cons_dtechno_invest / delta_years)
 
 
         self.set_partial_derivative_for_other_types(
@@ -194,7 +194,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
             ('invest_objective_sum',), ('forest_investment', 'forest_investment'), dinvest_objective_sum_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_sum_cons',), ('forest_investment', 'forest_investment'), -dinvest_objective_sum_cons_dtechno_invest)
+            ('invest_sum_cons',), ('forest_investment', 'forest_investment'), -dinvest_objective_sum_cons_dtechno_invest / delta_years)
 
         self.set_partial_derivative_for_other_types(
             ('invest_constraint', 'invest_constraint'), ('energy_investment', 'energy_investment'),  ddelta_dtot * scaling_factor_energy_investment / invest_constraint_ref)
@@ -205,7 +205,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
             ('invest_objective_sum',), ('energy_investment', 'energy_investment'), dinvest_objective_sum_dtotal_invest* scaling_factor_energy_investment)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_sum_cons',), ('energy_investment', 'energy_investment'), -dinvest_objective_sum_cons_dtotal_invest* scaling_factor_energy_investment)
+            ('invest_sum_cons',), ('energy_investment', 'energy_investment'), -dinvest_objective_sum_cons_dtotal_invest* scaling_factor_energy_investment / delta_years)
 
 
     def compute_dinvest_objective_dinvest(self, techno_invest_sum, invest_tot, invest_objective_ref):
