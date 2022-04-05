@@ -70,7 +70,7 @@ class Refinery(LiquidFuelTechno):
         oil_needs = self.get_fuel_needs() / (self.data_energy_dict['calorific_value'] * 1000.0)
         return {
             self.OIL_RESOURCE_NAME: np.identity(
-                len(self.years)) * oil_needs / self.cost_details['efficiency'].values,
+                len(self.years)) * oil_needs,
         }
 
     def compute_consumption_and_production(self):
