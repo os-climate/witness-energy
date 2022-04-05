@@ -103,6 +103,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
                'liquid_hydrogen_percentage': {'type': 'array', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'syngas_prod_ref': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'syngas_prod_constraint_limit': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
+                                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%', 'range': [0., 100.]}, }
 
@@ -136,6 +139,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
         },
 
         EnergyMix.SYNGAS_PROD_OBJECTIVE: {'type': 'array', 'unit': 'TWh',
+                                          'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        EnergyMix.SYNGAS_PROD_CONSTRAINT: {'type': 'array', 'unit': 'TWh',
                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'all_streams_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
@@ -281,6 +286,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         self.energy_model.compute_constraint_solid_fuel_elec()
         self.energy_model.compute_constraint_h2()
         self.energy_model.compute_syngas_prod_objective()
+        self.energy_model.compute_syngas_prod_constraint()
 
         self.energy_model.compute_all_streams_demand_ratio()
 
@@ -322,6 +328,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         EnergyMix.CONSTRAINT_PROD_H2_LIQUID: self.energy_model.constraint_liquid_hydrogen,
                         EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC: self.energy_model.constraint_solid_fuel_elec,
                         EnergyMix.SYNGAS_PROD_OBJECTIVE: self.energy_model.syngas_prod_objective,
+                        EnergyMix.SYNGAS_PROD_CONSTRAINT: self.energy_model.syngas_prod_constraint,
                         'all_streams_demand_ratio': self.energy_model.all_streams_demand_ratio,
                         'ratio_objective': self.energy_model.ratio_objective,
                         'co2_emissions_needed_by_energy_mix': self.energy_model.co2_emissions_needed_by_energy_mix,
@@ -430,6 +437,11 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 if energy == self.SYNGAS_NAME:
                     self.set_partial_derivative_for_other_types(
                         (EnergyMix.SYNGAS_PROD_OBJECTIVE,), (f'{energy}.energy_production', energy),  scaling_factor_energy_production * np.sign(production_detailed_df['production syngas (TWh)'].values) * np.identity(len(years)) / syngas_prod_ref)
+
+                    self.set_partial_derivative_for_other_types(
+                        (EnergyMix.SYNGAS_PROD_CONSTRAINT,), (f'{energy}.energy_production', energy),  - scaling_factor_energy_production * np.identity(len(years)) / syngas_prod_ref)
+
+
                 # constraint liquid hydrogen
 
                 if energy == self.LIQUID_HYDROGEN_NAME:
@@ -500,6 +512,14 @@ class Energy_Mix_Discipline(SoSDiscipline):
                             self.set_partial_derivative_for_other_types(
                                 (EnergyMix.SYNGAS_PROD_OBJECTIVE,), (
                                     f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),  - scaling_factor_energy_production * np.sign(production_detailed_df['production syngas (TWh)'].values) * np.identity(len(years)) / syngas_prod_ref)
+
+
+                            self.set_partial_derivative_for_other_types(
+                                (EnergyMix.SYNGAS_PROD_CONSTRAINT,), (
+                                    f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),   scaling_factor_energy_production * np.identity(len(years)) / syngas_prod_ref)
+
+
+
             else:
                 # CCUS
                 self.set_partial_derivative_for_other_types(

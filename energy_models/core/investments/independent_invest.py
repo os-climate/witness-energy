@@ -74,7 +74,7 @@ class IndependentInvest(BaseInvest):
         delta_sum_cons = (energy_invest_df['energy_investment'].values - techno_invest_sum)
         abs_delta_sum = np.sqrt(compute_func_with_exp_min(delta_sum ** 2, 1e-15))
 
-        abs_delta_sum_cons = (np.sqrt(compute_func_with_exp_min(delta_sum_cons ** 2, 1e-15)) - invest_limit_ref)/ invest_sum_ref
+        abs_delta_sum_cons = (invest_limit_ref - np.sqrt(compute_func_with_exp_min(delta_sum_cons ** 2, 1e-15)) )/ invest_sum_ref
 
         # Get the L1 norm of the delta and apply a scaling to compute the
         # objective

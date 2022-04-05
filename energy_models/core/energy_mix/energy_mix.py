@@ -60,6 +60,7 @@ class EnergyMix(BaseStream):
     CONSTRAINT_PROD_HYDROELECTRIC = 'total_prod_hydroelectric'
     CO2_TAX_OBJECTIVE = 'CO2_tax_objective'
     SYNGAS_PROD_OBJECTIVE = 'syngas_prod_objective'
+    SYNGAS_PROD_CONSTRAINT = 'syngas_prod_constraint'
     RESOURCE_LIST = ['natural_gas_resource',
                      'uranium_resource', 'coal_resource', 'oil_resource']
     RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
@@ -145,6 +146,7 @@ class EnergyMix(BaseStream):
         self.liquid_hydrogen_percentage = inputs_dict['liquid_hydrogen_percentage']
         self.liquid_hydrogen_constraint_ref = inputs_dict['liquid_hydrogen_constraint_ref']
         self.syngas_prod_ref = inputs_dict['syngas_prod_ref']
+        self.syngas_prod_limit = inputs_dict['syngas_prod_constraint_limit']
         self.co2_for_food = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
                                           f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
@@ -501,6 +503,18 @@ class EnergyMix(BaseStream):
                 self.syngas_prod_ref
         else:
             self.syngas_prod_objective = np.zeros(len(self.years))
+
+    def compute_syngas_prod_constraint(self):
+        '''
+        Compute Syngas production objective
+        '''
+        if f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})' in self.production:
+            self.syngas_prod_constraint = (self.syngas_prod_limit - self.production[f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})'].values) / \
+                self.syngas_prod_ref
+        else:
+            self.syngas_prod_constraint = np.zeros(len(self.years))
+
+
 
     def compute_all_streams_demand_ratio(self):
         '''! Computes the demand_ratio dataframe. 

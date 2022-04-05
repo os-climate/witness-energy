@@ -225,6 +225,17 @@ class Study(EnergyStudyManager):
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
 
+        if Syngas.name in self.energy_list:
+            list_var.extend(
+                ['syngas_prod_constraint'])
+            list_parent.extend(['Energy_constraints'])
+            list_ftype.extend([INEQ_CONSTRAINT])
+            list_weight.extend([0.])
+            list_aggr_type.append(
+                AGGR_TYPE_SMAX)
+            list_namespaces.append('ns_functions')
+
+
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
             list_var.extend(
                 ['invest_constraint', 'invest_sum_cons'])
