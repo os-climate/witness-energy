@@ -301,61 +301,6 @@ class TestIndependentInvest(unittest.TestCase):
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
-    def test_05_independent_invest_with_forest_disc_check_jacobian(self):
-        
-        self.name = 'Energy'
-        self.model_name = 'Invest'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': self.name,
-                   'ns_ref': self.name,
-                   'ns_public': self.name,
-                   'ns_energy_study': self.name,
-                   'ns_energy': self.name,
-                   'ns_ccs': f'{self.name}',
-                   'ns_functions': self.name,
-                   'ns_invest': self.name,
-                   }
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.investments.disciplines.independent_invest_disc.IndependentInvestDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        energy_list = ['electricity', 'methane', 'hydrogen.gaseous_hydrogen']
-        inputs_dict = {f'{self.name}.year_start': self.y_s,
-                       f'{self.name}.year_end': self.y_e,
-                       f'{self.name}.energy_list': energy_list,
-                       f'{self.name}.ccs_list': self.ccs_list,
-                       f'{self.name}.electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
-                       f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
-                       f'{self.name}.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
-                       f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
-                       f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
-                       f'{self.name}.energy_investment': self.energy_investment,
-                       f'{self.name}.is_dev': True,
-                       f'{self.name}.forest_investment': self.forest_invest_df}
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        disc = self.ee.root_process.sos_disciplines[0]
-        print(disc._data_out.keys())
-        all_technos_list = [
-            f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in inputs_dict[f'{self.name}.{energy}.technologies_list']]
-
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.energy_investment',
-                                                                          f'{self.name}.{self.model_name}.invest_mix',
-                                                                          f'{self.name}.forest_investment'],
-                                      outputs=[
-            f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective_sum', f'{self.name}.invest_constraint'],
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                               f'jacobian_independent_invest_with_forest_disc.pkl'))
-        self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
 
 
 if '__main__' == __name__:
