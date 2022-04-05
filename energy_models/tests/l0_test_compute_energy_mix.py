@@ -301,6 +301,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        'liquid_hydrogen_percentage': 0.3,
                        'liquid_hydrogen_constraint_ref': 100.0,
                        'syngas_prod_ref': 100.,
+                       'syngas_prod_constraint_limit': 10000.,
                        'ratio_ref': 100.,
                        'is_dev': False,
                        'hydrogen.gaseous_hydrogen.losses_percentage': 1.,
