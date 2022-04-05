@@ -421,7 +421,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 if 'production ' + self.LIQUID_FUEL_NAME + ' (TWh)' in production_detailed_df.columns and 'production ' + self.HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns and 'production ' + self.LIQUID_HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns:
                     if energy == self.HYDROGEN_NAME or energy == self.LIQUID_HYDROGEN_NAME or energy == self.LIQUID_FUEL_NAME:
                         self.set_partial_derivative_for_other_types(('primary_energies_production', 'primary_energies'), (
-                            f'{energy}.energy_production', energy), (np.identity(len(years)) - primary_energy_percentage * dtotal_prod_denergy_prod) * scaling_factor_energy_production)
+                            f'{energy}.energy_production', energy), (np.identity(len(years)) * (1-loss_percentage) - primary_energy_percentage * dtotal_prod_denergy_prod) * scaling_factor_energy_production)
                     else:
                         self.set_partial_derivative_for_other_types(('primary_energies_production', 'primary_energies'), (
                             f'{energy}.energy_production', energy), -scaling_factor_energy_production * primary_energy_percentage * dtotal_prod_denergy_prod)
@@ -429,7 +429,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 # constraint solid_fuel + elec gradient
                 if energy in self.energy_model.energy_constraint_list:
                     self.set_partial_derivative_for_other_types((f'{EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                        f'{energy}.energy_production', energy), (- scaling_factor_energy_production * (1 - solid_fuel_elec_percentage * dtotal_prod_denergy_prod) / solid_fuel_elec_constraint_ref) * np.identity(len(years)))
+                        f'{energy}.energy_production', energy), (- scaling_factor_energy_production * ((1-loss_percentage) - solid_fuel_elec_percentage * dtotal_prod_denergy_prod) / solid_fuel_elec_constraint_ref) * np.identity(len(years)))
                 else:
                     self.set_partial_derivative_for_other_types((f'{EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
                         f'{energy}.energy_production', energy),  scaling_factor_energy_production * solid_fuel_elec_percentage * dtotal_prod_denergy_prod / solid_fuel_elec_constraint_ref * np.identity(len(years)))
@@ -496,10 +496,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
                         if energy in self.energy_model.energy_constraint_list:
                             self.set_partial_derivative_for_other_types((f'{EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                                f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'), (scaling_factor_energy_consumption * (1 - solid_fuel_elec_percentage * dtotal_prod_denergy_prod) / solid_fuel_elec_constraint_ref) * np.identity(len(years)))
+                                f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'), (scaling_factor_energy_consumption * (1 + solid_fuel_elec_percentage * dtotal_prod_denergy_cons) / solid_fuel_elec_constraint_ref) * np.identity(len(years)))
                         else:
                             self.set_partial_derivative_for_other_types((f'{EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                                f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'), - scaling_factor_energy_consumption * solid_fuel_elec_percentage * dtotal_prod_denergy_prod / solid_fuel_elec_constraint_ref * np.identity(len(years)))
+                                f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),  scaling_factor_energy_consumption * solid_fuel_elec_percentage * dtotal_prod_denergy_cons / solid_fuel_elec_constraint_ref * np.identity(len(years)))
 
                         if energy == self.LIQUID_HYDROGEN_NAME:
                             self.set_partial_derivative_for_other_types((f'{EnergyMix.CONSTRAINT_PROD_H2_LIQUID}', 'constraint_liquid_hydrogen'), (
