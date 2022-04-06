@@ -183,7 +183,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
                                      f'{self.name}.{self.model_name}.techno_capital',
-                                     f'{self.name}.{self.model_name}.lost_capital'],)
+                                     f'{self.name}.{self.model_name}.non_use_capital'],)
 
     def test_02_CaKOH_jacobian(self):
 
@@ -236,7 +236,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
                                      f'{self.name}.{self.model_name}.techno_capital',
-                                     f'{self.name}.{self.model_name}.lost_capital'],)
+                                     f'{self.name}.{self.model_name}.non_use_capital'],)
 
     def test_03_Calcium_looping_jacobian(self):
 
@@ -292,7 +292,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
                                      f'{self.name}.{self.model_name}.techno_capital',
-                                     f'{self.name}.{self.model_name}.lost_capital']
+                                     f'{self.name}.{self.model_name}.non_use_capital']
                             )
 
     def test_04_carbon_capture_discipline_jacobian(self):

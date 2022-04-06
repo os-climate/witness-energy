@@ -66,7 +66,7 @@ class TechnoType:
         self.is_stream_demand = False
         self.is_resource_ratio = False
         self.ratio_df = None
-        self.lost_capital = None
+        self.non_use_capital = None
         self.techno_capital = None
         self.applied_ratio = None
 
@@ -133,7 +133,7 @@ class TechnoType:
 
         self.all_streams_demand_ratio = pd.DataFrame({'years': self.years})
 
-        self.lost_capital = pd.DataFrame({'years': self.years})
+        self.non_use_capital = pd.DataFrame({'years': self.years})
         self.techno_capital = pd.DataFrame({'years': self.years})
 
     def configure_parameters(self, inputs_dict):
@@ -302,53 +302,53 @@ class TechnoType:
                                            'min_ratio_name': min_ratio_name,
                                            'applied_ratio': ratio_values})
 
-    def compute_lost_capital(self):
+    def compute_non_use_capital(self):
         '''
         Compute the loss of capital because of the unusability of the technology. 
         When the applied ratio is below 1, the technology does not produce all the energy possible.
-        Investments on this technology is consequently lost. 
-        This method computes the lost of capital 
+        Investments on this technology is consequently non_use. 
+        This method computes the non_use of capital 
 
         Capex is in $/MWh
         Prod in TWh 
         then capex*prod_wo_ratio is in $/MWh*(1e6MWh)= M$
-        The investment is for the lifetime of the technology then each year you loose one over lifetime the initial investment
-        We divide by scaling_factor_invest_level to put lost_capital in G$
+
+        We divide by scaling_factor_invest_level to put non_use_capital in G$
         '''
         self.techno_capital[self.name] = self.cost_details[f'Capex_{self.name}'].values \
             * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values \
-            / self.scaling_factor_invest_level / self.techno_infos_dict['lifetime']
+            / self.scaling_factor_invest_level
 
-        self.lost_capital[self.name] = self.techno_capital[self.name].values * (
+        self.non_use_capital[self.name] = self.techno_capital[self.name].values * (
             1.0 - self.applied_ratio['applied_ratio'].values)
 
-    def compute_dlostcapital_dinvest(self, dcapex_dinvest, dprod_dinvest):
+    def compute_dnon_usecapital_dinvest(self, dcapex_dinvest, dprod_dinvest):
         '''
-        Compute the gradient of lost capital by invest_level
+        Compute the gradient of non_use capital by invest_level
 
-        dlostcapital_dinvest = dcapex_dinvest*prod(1-ratio) + dprod_dinvest*capex(1-ratio) - dratiodinvest*prod*capex
+        dnon_usecapital_dinvest = dcapex_dinvest*prod(1-ratio) + dprod_dinvest*capex(1-ratio) - dratiodinvest*prod*capex
         dratiodinvest = 0.0
         '''
 
         dtechnocapital_dinvest = (dcapex_dinvest * self.scaling_factor_techno_production * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
                                   dprod_dinvest * self.cost_details[f'Capex_{self.name}'].values.reshape((len(self.years), 1))) / self.techno_infos_dict['lifetime']
 
-        dlostcapital_dinvest = dtechnocapital_dinvest * (
+        dnon_usecapital_dinvest = dtechnocapital_dinvest * (
             1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
 
         # we do not divide by / self.scaling_factor_invest_level because invest
-        # and lost_capital are in G$
-        return dlostcapital_dinvest, dtechnocapital_dinvest
+        # and non_use_capital are in G$
+        return dnon_usecapital_dinvest, dtechnocapital_dinvest
 
-    def compute_dlostcapital_dratio(self, dapplied_ratio_dratio):
+    def compute_dnon_usecapital_dratio(self, dapplied_ratio_dratio):
         '''
-        Compute the lost_capital gradient vs all_stream_demand_ratio 
+        Compute the non_use_capital gradient vs all_stream_demand_ratio 
         In input we already have the gradient of applied_ratio on stream_demand_ratio
         '''
         mult_vect = self.cost_details[f'Capex_{self.name}'].values * \
             self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values
-        dlost_capital_dratio = -dapplied_ratio_dratio * mult_vect
-        return dlost_capital_dratio / self.techno_infos_dict['lifetime']
+        dnon_use_capital_dratio = -dapplied_ratio_dratio * mult_vect
+        return dnon_use_capital_dratio / self.techno_infos_dict['lifetime']
 
     def compute_price(self):
         """

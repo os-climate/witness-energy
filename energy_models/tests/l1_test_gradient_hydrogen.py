@@ -336,7 +336,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
                                      f'{self.name}.{self.model_name}.techno_capital',
-                                     f'{self.name}.{self.model_name}.lost_capital',
+                                     f'{self.name}.{self.model_name}.non_use_capital',
                                      ],)
 
     def test_02_plasma_cracking_jacobian(self):

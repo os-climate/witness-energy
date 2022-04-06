@@ -85,7 +85,7 @@ class TechnoDiscipline(SoSDiscipline):
         'CO2_emissions_detailed': {'type': 'dataframe', 'unit': 'kgCO2/kWh'},
         'land_use_required': {'type': 'dataframe', 'unit': 'Gha'},
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
-        'lost_capital': {'type': 'dataframe', 'unit': 'G$'},
+        'non_use_capital': {'type': 'dataframe', 'unit': 'G$'},
         'techno_capital': {'type': 'dataframe', 'unit': 'G$'},
     }
     _maturity = 'Research'
@@ -169,7 +169,7 @@ class TechnoDiscipline(SoSDiscipline):
         self.techno_model.apply_ratios_on_consumption_and_production(
             inputs_dict['is_apply_ratio'])
 
-        self.techno_model.compute_lost_capital()
+        self.techno_model.compute_non_use_capital()
         age_distribution = self.techno_model.get_all_age_distribution()
         mean_age_production = self.techno_model.get_mean_age_over_years()
 
@@ -204,7 +204,7 @@ class TechnoDiscipline(SoSDiscipline):
                         'CO2_emissions_detailed': self.techno_model.carbon_emissions,
                         'land_use_required': self.techno_model.techno_land_use,
                         'applied_ratio': self.techno_model.applied_ratio,
-                        'lost_capital': self.techno_model.lost_capital,
+                        'non_use_capital': self.techno_model.non_use_capital,
                         'techno_capital': self.techno_model.techno_capital,
                         }
         # -- store outputs
@@ -354,12 +354,12 @@ class TechnoDiscipline(SoSDiscipline):
             ('land_use_required', f'{self.techno_model.name} (Gha)'), ('invest_level', 'invest'), derivate_land_use * applied_ratio[:, np.newaxis] * scaling_factor_invest_level)
 
         '''
-        Lost capital gradients vs invest_level and all_stream_demand_ratio
+        non_use capital gradients vs invest_level and all_stream_demand_ratio
         '''
-        dlost_capital_dinvest, dtechnocapital_dinvest = self.techno_model.compute_dlostcapital_dinvest(
+        dnon_use_capital_dinvest, dtechnocapital_dinvest = self.techno_model.compute_dnon_usecapital_dinvest(
             dcapex_dinvest, self.dprod_dinvest)
         self.set_partial_derivative_for_other_types(
-            ('lost_capital', self.techno_model.name), ('invest_level', 'invest'), dlost_capital_dinvest)
+            ('non_use_capital', self.techno_model.name), ('invest_level', 'invest'), dnon_use_capital_dinvest)
 
         self.set_partial_derivative_for_other_types(
             ('techno_capital', self.techno_model.name), ('invest_level', 'invest'), dtechnocapital_dinvest)
@@ -368,11 +368,11 @@ class TechnoDiscipline(SoSDiscipline):
         for ratio_name in ratio_df.columns:
             if 'all_streams_demand_ratio' in inputs_dict.keys():
                 if ratio_name in inputs_dict['all_streams_demand_ratio'].columns and ratio_name not in ['years']:
-                    dlost_capital_dratio = self.techno_model.compute_dlostcapital_dratio(
+                    dnon_use_capital_dratio = self.techno_model.compute_dnon_usecapital_dratio(
                         dapplied_ratio_dratio[ratio_name])
                     self.set_partial_derivative_for_other_types(
-                        ('lost_capital', self.techno_model.name),
-                        ('all_streams_demand_ratio', ratio_name), np.identity(len(years)) * dlost_capital_dratio / 100.0)
+                        ('non_use_capital', self.techno_model.name),
+                        ('all_streams_demand_ratio', ratio_name), np.identity(len(years)) * dnon_use_capital_dratio / 100.0)
 
     def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}):
         """
@@ -426,7 +426,7 @@ class TechnoDiscipline(SoSDiscipline):
         chart_filters = []
         chart_list = ['Detailed prices',
                       'Consumption and production',
-                      'Initial Production', 'Factory Mean Age', 'CO2 emissions', 'Lost Capital']
+                      'Initial Production', 'Factory Mean Age', 'CO2 emissions', 'Non-Use Capital']
         if self.get_sosdisc_inputs('is_apply_ratio'):
             chart_list.extend(['Applied Ratio'])
         chart_filters.append(ChartFilter(
@@ -504,8 +504,8 @@ class TechnoDiscipline(SoSDiscipline):
                 new_chart = self.get_chart_co2_emissions_kg()
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-        if 'Lost Capital' in charts:
-            new_chart = self.get_chart_lost_capital()
+        if 'Non-Use Capital' in charts:
+            new_chart = self.get_chart_non_use_capital()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         return instanciated_charts
@@ -978,12 +978,12 @@ class TechnoDiscipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_lost_capital(self):
-        lost_capital = self.get_sosdisc_outputs(
-            'lost_capital')
+    def get_chart_non_use_capital(self):
+        non_use_capital = self.get_sosdisc_outputs(
+            'non_use_capital')
         techno_capital = self.get_sosdisc_outputs(
             'techno_capital')
-        chart_name = f'Lost capital due to unused {self.techno_name} factories vs total capital'
+        chart_name = f'Non-use capital due to unused {self.techno_name} factories vs total capital'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
                                              chart_name=chart_name)
@@ -995,8 +995,8 @@ class TechnoDiscipline(SoSDiscipline):
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(
-            lost_capital['years'].values.tolist(),
-            lost_capital[self.techno_name].values.tolist(), 'Lost Capital', 'bar')
+            non_use_capital['years'].values.tolist(),
+            non_use_capital[self.techno_name].values.tolist(), 'Non-use Capital', 'bar')
 
         new_chart.series.append(serie)
 

@@ -125,11 +125,11 @@ class CCTechnoDiscipline(TechnoDiscipline):
                      column), ('flue_gas_mean', 'flue_gas_mean'),
                     dprod_column_dfluegas * scaling_factor_invest_level / scaling_factor_techno_production)
 
-        dlost_capital_dflue_gas_mean, dtechnocapital_dflue_gas_mean = self.techno_model.compute_dlostcapital_dfluegas(
+        dnon_use_capital_dflue_gas_mean, dtechnocapital_dflue_gas_mean = self.techno_model.compute_dnon_usecapital_dfluegas(
             dcapex_dfluegas, dprod_dfluegas)
 
         self.set_partial_derivative_for_other_types(
-            ('lost_capital', self.techno_model.name), ('flue_gas_mean', 'flue_gas_mean'), dlost_capital_dflue_gas_mean)
+            ('non_use_capital', self.techno_model.name), ('flue_gas_mean', 'flue_gas_mean'), dnon_use_capital_dflue_gas_mean)
         self.set_partial_derivative_for_other_types(
             ('techno_capital', self.techno_model.name), ('flue_gas_mean', 'flue_gas_mean'), dtechnocapital_dflue_gas_mean)
 

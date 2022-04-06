@@ -337,14 +337,14 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
         # We use the function of the invest for the syngas ratio
         # We assume :# we do not divide by / self.scaling_factor_invest_level because invest
-        # and lost_capital are in G$
+        # and non_use_capital are in G$
         # Here the gradient is vs the syngas ratio then we need to divide by self.scaling_factor_invest_level
         # division by 100 because syngas ratio is in %
-        dlost_capital_dsyngas_ratio, dtechnocapital_dsyngas_ratio = self.techno_model.compute_dlostcapital_dinvest(
+        dnon_use_capital_dsyngas_ratio, dtechnocapital_dsyngas_ratio = self.techno_model.compute_dnon_usecapital_dinvest(
             capex_grad, dprodenergy_dsyngas_ratio)
         scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
         self.set_partial_derivative_for_other_types(
-            ('lost_capital', self.techno_model.name), ('syngas_ratio',), dlost_capital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
+            ('non_use_capital', self.techno_model.name), ('syngas_ratio',), dnon_use_capital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
 
         self.set_partial_derivative_for_other_types(
             ('techno_capital', self.techno_model.name), ('syngas_ratio',), dtechnocapital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
