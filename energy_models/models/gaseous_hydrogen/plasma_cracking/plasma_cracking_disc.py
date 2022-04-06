@@ -256,9 +256,9 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
             scaling_factor_invest_level
 
         dhydro_prod_dinvest = self.dprod_dinvest * \
-            scaling_factor_invest_level / scaling_factor_techno_production
+            scaling_factor_invest_level  # / scaling_factor_techno_production
         dcarbon_prod_dinvest = self.dprod_column_dinvest[f"{ResourceGlossary.Carbon['name']} (Mt)"] * \
-            scaling_factor_invest_level / scaling_factor_techno_production
+            scaling_factor_invest_level  # / scaling_factor_techno_production
 
         if (dhydro_prod_dinvest is not None) & (dcarbon_prod_dinvest is not None):
             dpercentage_resources_dinvest = self.techno_model.grad_percentage_resource_vs_invest(

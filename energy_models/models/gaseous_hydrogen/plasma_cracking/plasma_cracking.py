@@ -158,8 +158,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
         Carbon storage for carbon production higher than carbon demand
         '''
         quantity = pd.DataFrame({'years': self.years,
-                                 'carbon_production': self.production[f'{Carbon.name} ({self.mass_unit})'].values,
-                                 'hydrogen_production': self.production[f'{GaseousHydrogenTechno.energy_name} ({EnergyType.unit})'],
+                                 'carbon_production': self.production[f'{Carbon.name} ({self.mass_unit})'].values * self.scaling_factor_techno_production,
+                                 'hydrogen_production': self.production[f'{GaseousHydrogenTechno.energy_name} ({EnergyType.unit})'] * self.scaling_factor_techno_production,
                                  'carbon_demand': carbon_market_demand['carbon_demand'].values,
                                  'CO2_credits': CO2_credits['CO2_credits'].values,
                                  'hydrogen_price': self.prices[GaseousHydrogenTechno.energy_name],
@@ -213,15 +213,16 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
     def grad_percentage_resource_vs_energy_prices(self, CO2_credits, carbon_market_demand, energy):
         # search production and rename it
-        cols_carbon = [
-            col for col in self.production.columns if 'carbon' in col]
-        cols_hydrogen = [
-            col for col in self.production.columns if GaseousHydrogenTechno.energy_name in col]
-        techno_production = self.production[['years', cols_carbon[0], cols_hydrogen[0]]].rename(columns={
-            cols_carbon[0]: "carbon_production", cols_hydrogen[0]: "hydrogen_production"})
-        hydrogen_production = techno_production['hydrogen_production'].values
+        # cols_carbon = [
+        #     col for col in self.production.columns if 'carbon' in col]
+        # cols_hydrogen = [
+        #     col for col in self.production.columns if GaseousHydrogenTechno.energy_name in col]
+        # techno_production = self.production[['years', cols_carbon[0], cols_hydrogen[0]]].rename(columns={
+        #     cols_carbon[0]: "carbon_production", cols_hydrogen[0]: "hydrogen_production"})
+        # hydrogen_production = techno_production['hydrogen_production'].values
         quantity = self.compute_revenues(
             CO2_credits, carbon_market_demand)
+        hydrogen_production = quantity['hydrogen_production'].values
 
         dhydrogen_price_denergy_prices = self.grad_hydrogen_price_vs_energy_prices(
             energy)
@@ -280,4 +281,5 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
         grad = np.divide((dhydro_prod_dinvest * x - dcarbon_prod_dinvest * y), z,
                          out=np.zeros_like((dhydro_prod_dinvest * x - dcarbon_prod_dinvest * y)), where=z != 0)
-        return grad
+        grad_wratio = (grad.T * list(self.applied_ratio['applied_ratio'])).T
+        return grad_wratio
