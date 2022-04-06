@@ -1056,14 +1056,14 @@ class Energy_Mix_Discipline(SoSDiscipline):
         new_serie = InstanciatedSeries(list(energy_production_detailed['years'].values), list(energy_production_detailed['production hydrogen.liquid_hydrogen (TWh)'].values),
                                        'Liquid hydrogen production', 'lines')
         new_chart.series.append(new_serie)
-        new_serie = InstanciatedSeries(list(energy_production_detailed['years'].values), list(energy_production_detailed['production hydrogen.gaseous_hydrogen (TWh)'].values),
-                                       'Gaseous hydrogen production', 'lines')
+        new_serie = InstanciatedSeries(list(energy_production_detailed['years'].values), list(energy_production_detailed['production hydrogen.gaseous_hydrogen (TWh)'].values + energy_production_detailed['production hydrogen.liquid_hydrogen (TWh)'].values ),
+                                       'Total hydrogen production', 'lines')
         new_chart.series.append(new_serie)
         constraint = liquid_hydrogen_percentage * \
             (energy_production_detailed['production hydrogen.gaseous_hydrogen (TWh)'].values +
              energy_production_detailed['production hydrogen.liquid_hydrogen (TWh)'].values)
         new_serie = InstanciatedSeries(list(energy_production_detailed['years'].values), list(constraint),
-                                       f'{100*liquid_hydrogen_percentage}% of total hydrogen production', 'lines')
+                                       f'percentage of total hydrogen production', 'lines')
         new_chart.series.append(new_serie)
         return new_chart
 
