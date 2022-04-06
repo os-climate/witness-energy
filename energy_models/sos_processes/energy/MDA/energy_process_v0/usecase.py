@@ -235,7 +235,6 @@ class Study(EnergyStudyManager):
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
 
-
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
             list_var.extend(
                 ['invest_constraint', 'invest_sum_cons'])
@@ -687,6 +686,10 @@ class Study(EnergyStudyManager):
             {'years': self.years, 'ccs_percentage': 25.0})
         co2_emissions_from_energy_mix = pd.DataFrame(
             {'years': self.years, 'carbon_capture from energy mix (Mt)': 25.0})
+
+        population_df = pd.DataFrame(
+            {"years": self.years, "population": np.linspace(7886.69358, 9000., len(self.years))})
+
         values_dict = {f'{self.study_name}.energy_investment': invest_df,
                        f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
@@ -708,6 +711,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.concatenate((np.ones(5) * 1e-4, np.ones(len(self.years) - 5) / 4), axis=None),
                        f'{self.study_name}.{energy_mix_name}.resources_CO2_emissions': self.resources_CO2_emissions,
                        f'{self.study_name}.{energy_mix_name}.resources_price': self.resources_prices,
+                       f'{self.study_name}.population_df': population_df,
                        }
 
         values_dict_list, dspace_list, instanciated_studies = self.setup_usecase_sub_study_list(
