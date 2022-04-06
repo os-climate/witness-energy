@@ -38,7 +38,7 @@ class EnergyDemand(object):
         self.year_start = 2020  # year start
         self.year_end = 2100  # year end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.demand_efficiency = 0.0
+        self.long_term_elec_machine_efficiency = 0.985
         self.initial_electricity_demand = 0.0
         self.energy_production_detailed = None
         self.demand_elec_constraint = None
@@ -46,7 +46,6 @@ class EnergyDemand(object):
         self.eff_coeff = 0.4
         self.eff_x0 = 2015
         self.eff_y_min = 0.7
-        self.eff_y_max = 0.985
 
     def configure_parameters(self, inputs_dict):
         '''
@@ -56,7 +55,7 @@ class EnergyDemand(object):
         self.year_end = inputs_dict['year_end']
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.delta_years = self.year_end + 1 - self.year_start
-        self.demand_efficiency = inputs_dict['demand_efficiency']
+        self.long_term_elec_machine_efficiency = inputs_dict['long_term_elec_machine_efficiency']
         self.initial_electricity_demand = inputs_dict['initial_electricity_demand']
         self.electricity_demand_constraint_ref = inputs_dict['electricity_demand_constraint_ref']
         self.demand_elec_constraint = pd.DataFrame(
@@ -117,7 +116,7 @@ class EnergyDemand(object):
     def electrical_machine_efficiency(self, years):
 
         return s_curve(
-            years, coeff=self.eff_coeff, x0=self.eff_x0, y_min=self.eff_y_min, y_max=self.eff_y_max)
+            years, coeff=self.eff_coeff, x0=self.eff_x0, y_min=self.eff_y_min, y_max=self.long_term_elec_machine_efficiency)
 
     def get_elec_demand_constraint(self):
         '''
