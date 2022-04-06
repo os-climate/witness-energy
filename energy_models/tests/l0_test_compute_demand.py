@@ -38,7 +38,9 @@ class DemandTestCase(unittest.TestCase):
         self.years = np.arange(self.year_start, self.year_end + 1)
 
         self.energy_production_detailed = pd.DataFrame({'years': self.years,
-                                                        EnergyDemand.elec_prod_column: 20000.0})
+                                                        EnergyDemand.elec_prod_column: 25000.0})
+        self.population = pd.DataFrame({'years': self.years,
+                                        'population': np.linspace(7794.79, 9000., len(self.years))})
 
     def tearDown(self):
         pass
@@ -51,7 +53,8 @@ class DemandTestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}'}
+                   'ns_energy_mix': f'{self.name}',
+                   'ns_witness': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.demand.energy_demand_disc.EnergyDemandDiscipline'
@@ -66,6 +69,7 @@ class DemandTestCase(unittest.TestCase):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.energy_production_detailed': self.energy_production_detailed,
+                       f'{self.name}.population_df': self.population,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+import numpy as np
 
 from energy_models.core.demand.energy_demand import EnergyDemand
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -50,7 +51,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
                'initial_electricity_demand': {'type': 'float', 'default': 22847.66, 'unit': 'TWh'},
                'demand_efficiency': {'type': 'float', 'default': 0.99, 'unit': '-'},
                'electricity_demand_constraint_ref': {'type': 'float', 'default': 100.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               }
+               'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'}, }
 
     DESC_OUT = {'electricity_demand_constraint': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
                 'electricity_demand': {'type': 'dataframe', 'unit': 'TWh'},
@@ -86,10 +87,15 @@ class EnergyDemandDiscipline(SoSDiscipline):
         self.set_partial_derivative_for_other_types(
             ('electricity_demand_constraint', 'elec_demand_constraint'), ('energy_production_detailed', self.elec_prod_column),  delec_demand_cosntraint_delec_prod)
 
+        delec_demand_cosntraint_dpop = self.demand_model.compute_delec_demand_constraint_dpop()
+        self.set_partial_derivative_for_other_types(
+            ('electricity_demand_constraint', 'elec_demand_constraint'), ('population_df', 'population'),  delec_demand_cosntraint_dpop)
+
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Electricity Demand Constraint']
+        chart_list = ['Electricity Demand Constraint',
+                      'Electrical Machine Efficiency']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -114,6 +120,10 @@ class EnergyDemandDiscipline(SoSDiscipline):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
+        if 'Electrical Machine Efficiency' in charts:
+            new_chart = self.get_chart_elec_machine_efficiency()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
         return instanciated_charts
 
     def get_chart_elec_demand_constraint(self):
@@ -135,6 +145,23 @@ class EnergyDemandDiscipline(SoSDiscipline):
         serie = InstanciatedSeries(
             net_elec_prod['years'].values.tolist(),
             net_elec_prod[self.elec_prod_column].values.tolist(), 'electricity net production', 'lines')
+        new_chart.series.append(serie)
+
+        return new_chart
+
+    def get_chart_elec_machine_efficiency(self):
+        chart_name = 'Electrical Machine Efficiency'
+
+        new_chart = TwoAxesInstanciatedChart('years', 'Electrical efficiency [-]',
+                                             chart_name=chart_name, stacked_bar=True)
+
+        years = np.arange(2010, 2100)
+        elec_efficiency = self.demand_model.electrical_machine_efficiency(
+            years)
+
+        serie = InstanciatedSeries(
+            years.tolist(),
+            elec_efficiency.tolist(), '', 'lines')
         new_chart.series.append(serie)
 
         return new_chart
