@@ -52,6 +52,8 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
 
         self.energy_production_detailed = pd.DataFrame({'years': self.years,
                                                         EnergyDemand.elec_prod_column: np.linspace(20000, 19000, len(self.years))})
+        self.population = pd.DataFrame({'years': self.years,
+                                        'population': np.linspace(7794.79, 9000., len(self.years))})
 
     def tearDown(self):
         pass
@@ -64,11 +66,11 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}'}
+                   'ns_energy_mix': f'{self.name}',
+                   'ns_witness': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.demand.energy_demand_disc.EnergyDemandDiscipline'
-
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -80,6 +82,7 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.energy_production_detailed': self.energy_production_detailed,
+                       f'{self.name}.population_df': self.population,
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -87,7 +90,8 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            inputs=[f'{self.name}.energy_production_detailed'],
+                            inputs=[f'{self.name}.energy_production_detailed',
+                                    f'{self.name}.population_df'],
                             outputs=[f'{self.name}.{self.model_name}.electricity_demand_constraint'
                                      ],)
 
