@@ -36,7 +36,8 @@ TECHNOLOGIES_LIST_COARSE_3 = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarTh
 TECHNOLOGIES_LIST_MIN_TECH = ['WindOnshore', 'SolarPv', 'SolarThermal',
                                      'Nuclear', 'Geothermal', 'Hydropower', 'CoalGen']
 TECHNOLOGIES_LIST_DEV = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
-                         'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'Geothermal', 'CoalGen']
+                         'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine',
+                         'BiogasFired', 'Geothermal', 'CoalGen']
 
 
 class Study(EnergyMixStudyManager):

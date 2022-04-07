@@ -52,7 +52,7 @@ class GasTurbinePriceTestCase(unittest.TestCase):
             {'years': years, 'biogas': np.ones(len(years)) * 5.0})
         # From CO2 prod of methane fossil
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'methane': 0.123 / 15.4})
+            {'years': years, 'methane': 0.123 / 15.4, 'biogas': 0.123 / 15.4})
         #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
 
         self.invest_level_2 = pd.DataFrame(
