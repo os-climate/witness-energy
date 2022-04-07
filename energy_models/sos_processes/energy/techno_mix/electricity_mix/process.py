@@ -54,7 +54,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         mods_dict[f'{energy_mix}.{electricity_name}'] = self.get_stream_disc_path(
             'energy_disciplines', 'Electricity')
         for techno_name in self.techno_list:
-            if 'Gas' in techno_name:
+            if 'gas' in techno_name.lower():
                 sub_dir = 'gas'
             else:
                 sub_dir = None
