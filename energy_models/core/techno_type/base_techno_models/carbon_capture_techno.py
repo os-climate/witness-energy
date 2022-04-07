@@ -206,7 +206,7 @@ class CCTechno(TechnoType):
         '''
 
         dtechnocapital_dfluegas = (dcapex_dfluegas * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
-                                   dprod_dfluegas * self.cost_details[f'Capex_{self.name}'].values.reshape((len(self.years), 1))) / self.techno_infos_dict['lifetime']
+                                   dprod_dfluegas * self.cost_details[f'Capex_{self.name}'].values.reshape((len(self.years), 1)))
 
         dnon_usecapital_dfluegas = dtechnocapital_dfluegas * (
             1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))

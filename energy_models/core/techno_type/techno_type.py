@@ -331,7 +331,7 @@ class TechnoType:
         '''
 
         dtechnocapital_dinvest = (dcapex_dinvest * self.scaling_factor_techno_production * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
-                                  dprod_dinvest * self.cost_details[f'Capex_{self.name}'].values.reshape((len(self.years), 1))) / self.techno_infos_dict['lifetime']
+                                  dprod_dinvest * self.cost_details[f'Capex_{self.name}'].values.reshape((len(self.years), 1)))
 
         dnon_usecapital_dinvest = dtechnocapital_dinvest * (
             1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
@@ -348,7 +348,7 @@ class TechnoType:
         mult_vect = self.cost_details[f'Capex_{self.name}'].values * \
             self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values
         dnon_use_capital_dratio = -dapplied_ratio_dratio * mult_vect
-        return dnon_use_capital_dratio / self.techno_infos_dict['lifetime']
+        return dnon_use_capital_dratio
 
     def compute_price(self):
         """

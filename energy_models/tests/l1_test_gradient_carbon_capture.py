@@ -362,7 +362,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = CarbonCaptureJacobianTestCase()
     cls.setUp()
     cls.test_03_Calcium_looping_jacobian()

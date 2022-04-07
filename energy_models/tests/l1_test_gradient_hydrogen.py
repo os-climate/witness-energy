@@ -804,5 +804,5 @@ if '__main__' == __name__:
     cls = HydrogenJacobianTestCase()
     cls.setUp()
     # unittest.main()
-    cls.test_08_gaseous_hydrogen_discipline_jacobian()
+    cls.test_01_wgs_jacobian()
     print('------')
