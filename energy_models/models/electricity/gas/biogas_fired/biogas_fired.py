@@ -61,6 +61,16 @@ class BiogasFired(ElectricityTechno):
         co2_prod = biogas_co2 / calorific_value * biogas_need
         return co2_prod
 
+    def compute_CO2_emissions_from_input_resources(self):
+        '''
+        Need to take into account  CO2 from methane extraction
+        '''
+
+        self.carbon_emissions[BioGas.name] = self.energy_CO2_emissions[BioGas.name] * \
+            self.techno_infos_dict['biogas_needs']
+
+        return self.carbon_emissions[BioGas.name]
+
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices
