@@ -290,7 +290,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Invest Distribution', 'Delta invest']
+        chart_list = ['Invest Distribution']
         chart_filters.append(ChartFilter(
             'Charts Investments', chart_list, chart_list, 'charts_invest'))
 
@@ -375,35 +375,6 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 scaling_factor_energy_investment = self.get_sosdisc_inputs(
                     'scaling_factor_energy_investment')
 
-                invest_objective = self.get_sosdisc_outputs(
-                    'invest_objective')
-
-                if invest_objective is not None:
-                    chart_name = 'Delta of distributed and allocated energy investments'
-                    new_chart_delta = TwoAxesInstanciatedChart('years', 'Delta investments [G$]',
-                                                               chart_name=chart_name)
-                    #, secondary_ordinate_axis_name='Constraint'
-                    inputs_dict = self.get_sosdisc_inputs()
-
-                    scaling_factor_energy_investment = inputs_dict['scaling_factor_energy_investment']
-                    energy_investment = inputs_dict['energy_investment']
-                    years = np.arange(inputs_dict['year_start'],
-                                      inputs_dict['year_end'] + 1)
-                    techno_invests = inputs_dict['invest_mix'][[
-                        col for col in inputs_dict['invest_mix'] if col != 'years']]
-                    techno_invest_sum = techno_invests.sum(axis=1).values
-                    energy_invest = energy_investment['energy_investment'].values * \
-                        scaling_factor_energy_investment
-                    delta = (energy_invest - techno_invest_sum) / energy_invest
-                    abs_delta = np.sqrt(
-                        compute_func_with_exp_min(delta**2, 1e-15))
-
-                    serie = InstanciatedSeries(
-                        energy_investment['years'].values.tolist(),
-                        abs_delta.tolist(), '',)
-                    new_chart_delta.series.append(serie)
-
-                    instanciated_charts.insert(0, new_chart_delta)
 
                 chart_name = 'Distributed and allocated investments for energy sector '
                 new_chart_constraint = TwoAxesInstanciatedChart('years', 'Investments [G$]',
