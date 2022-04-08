@@ -162,13 +162,13 @@ class EnergyMixTestCase(unittest.TestCase):
                                                                2.54784398e+10, 2.62574611e+10, 2.69814895e+10, 2.76539416e+10,
                                                                2.82736254e+10, 2.88415743e+10, 2.93583576e+10]) / 1.0e9,
                                          'oil_resource (Mt)': np.array([7.43925657e+08, 1.35209717e+09, 1.86660126e+09, 2.48016441e+09,
-                                                                   3.17712645e+09, 3.96302600e+09, 4.81151986e+09, 5.71680869e+09,
-                                                                   6.67898370e+09, 7.71731095e+09, 8.82387839e+09, 9.99165585e+09,
-                                                                   1.12401304e+10, 1.25328754e+10, 1.38574154e+10, 1.52116089e+10,
-                                                                   1.65935696e+10, 1.80016196e+10, 1.94342541e+10, 2.08901139e+10,
-                                                                   2.18480439e+10, 2.27308280e+10, 2.37294403e+10, 2.46389349e+10,
-                                                                   2.54784398e+10, 2.62574611e+10, 2.69814895e+10, 2.76539416e+10,
-                                                                   2.82736254e+10, 2.88415743e+10, 2.93583576e+10]) / 1.0e9})
+                                                                        3.17712645e+09, 3.96302600e+09, 4.81151986e+09, 5.71680869e+09,
+                                                                        6.67898370e+09, 7.71731095e+09, 8.82387839e+09, 9.99165585e+09,
+                                                                        1.12401304e+10, 1.25328754e+10, 1.38574154e+10, 1.52116089e+10,
+                                                                        1.65935696e+10, 1.80016196e+10, 1.94342541e+10, 2.08901139e+10,
+                                                                        2.18480439e+10, 2.27308280e+10, 2.37294403e+10, 2.46389349e+10,
+                                                                        2.54784398e+10, 2.62574611e+10, 2.69814895e+10, 2.76539416e+10,
+                                                                        2.82736254e+10, 2.88415743e+10, 2.93583576e+10]) / 1.0e9})
 
         self.production = pd.DataFrame({'methane': np.array([1.16605879e+11, 2.09714671e+11, 2.88496631e+11, 4.30619647e+11,
                                                              5.98336737e+11, 7.89664048e+11, 9.98944599e+11, 1.22447365e+12,
@@ -232,13 +232,6 @@ class EnergyMixTestCase(unittest.TestCase):
                                                                          0.29355508, 0.2971769, 0.30104297, 0.30440867, 0.30709487,
                                                                          0.31047716, 0.31392652, 0.31739837, 0.32021771, 0.32313758,
                                                                          0.3261545]) * 1000.0})
-        self.energy_demand = {}
-        self.energy_demand['hydrogen.gaseous_hydrogen.energy_demand'] = pd.DataFrame({'years': self.years,
-                                                                                      'demand': np.arange(50, 81)})
-        self.energy_demand['methane.energy_demand'] = pd.DataFrame({'years': self.years,
-                                                                    'demand': np.arange(20, 51)})
-        self.energy_demand['biogas.energy_demand'] = pd.DataFrame({'years': self.years,
-                                                                   'demand': np.arange(10, 41)})
 
         self.land_use_required_mock = pd.DataFrame(
             {'years': self.years, 'random techno (Gha)': 0.0})
@@ -284,7 +277,6 @@ class EnergyMixTestCase(unittest.TestCase):
                        'hydrogen.gaseous_hydrogen.energy_production': self.production_hydro,
                        'hydrogen.gaseous_hydrogen.energy_production_woratio': self.production_hydro,
                        'hydrogen.gaseous_hydrogen.energy_prices': self.prices_hydro,
-                       'hydrogen.gaseous_hydrogen.energy_demand': self.energy_demand['hydrogen.gaseous_hydrogen.energy_demand'],
                        'hydrogen.gaseous_hydrogen.land_use_required': self.land_use_required_mock,
                        'hydrogen.gaseous_hydrogen.data_fuel_dict': GaseousHydrogen.data_energy_dict,
                        'methane.energy_consumption': self.consumption,
@@ -292,7 +284,6 @@ class EnergyMixTestCase(unittest.TestCase):
                        'methane.energy_production': self.production,
                        'methane.energy_production_woratio': self.production,
                        'methane.energy_prices': self.cost_details,
-                       'methane.energy_demand': self.energy_demand['methane.energy_demand'],
                        'methane.land_use_required': self.land_use_required_mock,
                        'methane.data_fuel_dict': Methane.data_energy_dict,
                        'hydrogen.gaseous_hydrogen.CO2_per_use': pd.DataFrame({'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
@@ -310,6 +301,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        'liquid_hydrogen_percentage': 0.3,
                        'liquid_hydrogen_constraint_ref': 100.0,
                        'syngas_prod_ref': 100.,
+                       'syngas_prod_constraint_limit': 10000.,
                        'ratio_ref': 100.,
                        'is_dev': False,
                        'hydrogen.gaseous_hydrogen.losses_percentage': 1.,
@@ -341,7 +333,6 @@ class EnergyMixTestCase(unittest.TestCase):
                    'ns_hydrogen': f'{name}',
                    'ns_methane': f'{name}',
                    'ns_energy_study': f'{name}',
-                   'ns_demand': f'{name}.{model_name}',
                    'ns_energy_mix': f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}.resource',
@@ -371,7 +362,6 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_prices': self.prices_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_per_use': pd.DataFrame({'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_emissions': pd.DataFrame({'years': self.years, 'hydrogen.gaseous_hydrogen': 0.0}),
-                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_demand': self.energy_demand['hydrogen.gaseous_hydrogen.energy_demand'],
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.land_use_required': self.land_use_required_mock,
                        f'{name}.{model_name}.methane.energy_consumption': self.consumption,
                        f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
@@ -380,7 +370,6 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.energy_prices': self.cost_details,
                        f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame({'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.methane.CO2_emissions': pd.DataFrame({'years': self.years, 'methane': 0.0}),
-                       f'{name}.{model_name}.methane.energy_demand': self.energy_demand['methane.energy_demand'],
                        f'{name}.{model_name}.methane.land_use_required': self.land_use_required_mock,
                        f'{name}.CO2_taxes': self.co2_taxes,
                        f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage,
@@ -402,26 +391,6 @@ class EnergyMixTestCase(unittest.TestCase):
 #        for graph in graph_list:
 #            graph.to_plotly().show()
 
-        #-- check demand violation value
-        for e_name in self.energy_list:
-            # ref data
-            demand = self.energy_demand[f'{e_name}.energy_demand']['demand']
-            net_prod_energy = disc.get_sosdisc_outputs('energy_production_detailed')[
-                f'{EnergyMix.PRODUCTION} {e_name} (TWh)']
-            ref_prod = pd.DataFrame({'years': self.years})
-            normalization_value_demand_constraints = disc.get_sosdisc_inputs(
-                'normalization_value_demand_constraints')
-            ref_prod[EnergyMix.DEMAND_VIOLATION] = (
-                net_prod_energy - demand) / normalization_value_demand_constraints
-            # retrieve demand_violation discipline output
-            dviol_name = f'{e_name}.{EnergyMix.DEMAND_VIOLATION}'
-            demand_viol = disc.get_sosdisc_outputs(dviol_name)
-            # compare output with ref
-            for col in demand_viol:
-                if col != 'years':
-                    self.assertListEqual(
-                        list(demand_viol[col].values), list(ref_prod[col].values))
-
     def test_03_energy_mix_discipline_exponential_limit(self):
         """
         Test energy mix discipline
@@ -439,7 +408,6 @@ class EnergyMixTestCase(unittest.TestCase):
                    'ns_hydrogen': f'{name}',
                    'ns_methane': f'{name}',
                    'ns_energy_study': f'{name}',
-                   'ns_demand': f'{name}.{model_name}',
                    'ns_energy_mix': f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}.resource',
@@ -469,7 +437,6 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_prices': self.prices_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_per_use': pd.DataFrame({'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_emissions': pd.DataFrame({'years': self.years, 'hydrogen.gaseous_hydrogen': 0.0}),
-                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_demand': self.energy_demand['hydrogen.gaseous_hydrogen.energy_demand'],
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.land_use_required': self.land_use_required_mock,
                        f'{name}.{model_name}.methane.energy_consumption': self.consumption,
                        f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
@@ -478,7 +445,6 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.energy_prices': self.cost_details,
                        f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame({'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.methane.CO2_emissions': pd.DataFrame({'years': self.years, 'methane': 0.0}),
-                       f'{name}.{model_name}.methane.energy_demand': self.energy_demand['methane.energy_demand'],
                        f'{name}.{model_name}.methane.land_use_required': self.land_use_required_mock,
                        f'{name}.CO2_taxes': self.co2_taxes,
                        f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage
@@ -520,7 +486,6 @@ class EnergyMixTestCase(unittest.TestCase):
                    'ns_hydrogen': f'{name}',
                    'ns_methane': f'{name}',
                    'ns_energy_study': f'{name}',
-                   'ns_demand': f'{name}.{model_name}',
                    'ns_energy_mix': f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}.resource',
@@ -549,7 +514,6 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_prices': self.prices_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_per_use': pd.DataFrame({'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_emissions': pd.DataFrame({'years': self.years, 'hydrogen.gaseous_hydrogen': 0.0}),
-                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_demand': self.energy_demand['hydrogen.gaseous_hydrogen.energy_demand'],
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.land_use_required': self.land_use_required_mock,
                        f'{name}.{model_name}.methane.energy_consumption': self.consumption,
                        f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
@@ -558,7 +522,6 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.energy_prices': self.cost_details,
                        f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame({'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.methane.CO2_emissions': pd.DataFrame({'years': self.years, 'methane': 0.0}),
-                       f'{name}.{model_name}.methane.energy_demand': self.energy_demand['methane.energy_demand'],
                        f'{name}.{model_name}.methane.land_use_required': self.land_use_required_mock,
                        f'{name}.CO2_taxes': self.co2_taxes,
                        f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage

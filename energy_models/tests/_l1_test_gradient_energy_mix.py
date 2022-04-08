@@ -228,13 +228,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                                                0.30355508, 0.3071769, 0.31104297, 0.31440867, 0.31709487,
                                                                0.32047716, 0.32392652, 0.32739837, 0.33021771, 0.33313758,
                                                                0.3361545]) * 1000.0})
-        self.energy_demand = {}
-        self.energy_demand['hydrogen.gaseous_hydrogen.energy_demand'] = pd.DataFrame({'years': self.years,
-                                                                                      'demand': np.arange(50, 81)})
-        self.energy_demand['methane.energy_demand'] = pd.DataFrame({'years': self.years,
-                                                                    'demand': np.arange(20, 51)})
-        self.energy_demand['biogas.energy_demand'] = pd.DataFrame({'years': self.years,
-                                                                   'demand': np.arange(10, 41)})
+
         #---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(0.2, 0.8, len(self.years))))
@@ -306,8 +300,6 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                          f'{name}.{func_manager_name}.total_prod_h2_liquid',
                          f'{name}.{func_manager_name}.syngas_prod_objective',
                          ]
-        outputs_names.extend(
-            [f'{name}.{model_name}.{energy}.demand_violation' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']])
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_obj_constraints_wrt_state_variables.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
@@ -422,8 +414,8 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_full_names = [disc_energy_mix.get_var_full_name(
             inp, disc_energy_mix._data_in) for inp in input_names]
 
-        output_names = ['energy_prices', 'energy_CO2_emissions', 'energy_production_objective', 'methane.demand_violation', 'hydrogen.gaseous_hydrogen.demand_violation',
-                        'biogas.demand_violation', 'electricity.demand_violation', 'solid_fuel.demand_violation', 'liquid_fuel.demand_violation', 'biodiesel.demand_violation', 'syngas.demand_violation', 'biomass_dry.demand_violation']
+        output_names = ['energy_prices',
+                        'energy_CO2_emissions', 'energy_production_objective']
         outputs_full_names = [disc_energy_mix.get_var_full_name(
             out, disc_energy_mix._data_out) for out in output_names]
 
@@ -1180,7 +1172,6 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{name}.epsilon0'] = 1.0
         full_values_dict[f'{name}.tolerance'] = 1.0e-8
         full_values_dict[f'{name}.max_mda_iter'] = 50
-        full_values_dict[f'{name}.is_dev'] = True
         #full_values_dict[f'{name}.sub_mda_class'] = 'MDANewtonRaphson'
         self.ee.load_study_from_input_dict(full_values_dict)
 
@@ -1202,6 +1193,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_with_losses.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
+                                                           f'{name}.{model_name}.energy_production_detailed',
                                                            f'{name}.{model_name}.co2_emissions_needed_by_energy_mix',
                                                            f'{name}.{model_name}.energy_CO2_emissions',
                                                            f'{name}.{model_name}.energy_mean_price',

@@ -106,7 +106,6 @@ class EnergyMDAGetGradientTest(AbstractJacobianUnittest):
                 inputs = [input for input in inputs if self.ee_1.dm.get_data(input, 'coupling')
                           and not input.endswith('resources_price')
                           and not input.endswith('resources_CO2_emissions')
-                          and not input.endswith('energy_demand')
                           and not input.endswith('land_use_required')
                           and not input.endswith('all_streams_demand_ratio')]
                 b = disc.get_infos_gradient(outputs, inputs)

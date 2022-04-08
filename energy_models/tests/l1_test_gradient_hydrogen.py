@@ -261,14 +261,14 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                    'invest': [1.0e-11] + list(np.linspace(0.001, 0.4, len(years) - 1))})
         #---Ratios---
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
+            zip(EnergyMix.energy_list, np.linspace(100, 100, len(years))))
 
         demand_ratio_dict['years'] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.all_streams_demand_ratio['syngas'] = np.linspace(
-            1.0, 0.5, len(years))
+            100, 50, len(years))
         self.all_streams_demand_ratio['electricity'] = np.linspace(
-            0.6, 0.4, len(years))
+            60, 40, len(years))
 
         resource_ratio_dict = dict(
             zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(years))))
@@ -335,6 +335,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.techno_capital',
+                                     f'{self.name}.{self.model_name}.non_use_capital',
                                      ],)
 
     def test_02_plasma_cracking_jacobian(self):
@@ -384,13 +386,15 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
                                     f'{self.name}.CO2_taxes'],
-                            outputs=[f'{self.name}.{self.model_name}.CO2_emissions',
+                            outputs=[f'{self.name}.{self.model_name}.percentage_resource',
+                                     f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
                                      ],)
-        #                    outputs=[f'{self.name}.{self.model_name}.percentage_resource',
-        #                             f'{self.name}.{self.model_name}.techno_prices',
+        # outputs=[f'{self.name}.{self.model_name}.percentage_resource',
+        #          f'{self.name}.{self.model_name}.techno_prices',
         #                             f'{self.name}.{self.model_name}.CO2_emissions',
         #                             f'{self.name}.{self.model_name}.techno_consumption',
         #                             f'{self.name}.{self.model_name}.techno_production'],)
@@ -799,5 +803,6 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = HydrogenJacobianTestCase()
     cls.setUp()
-    cls.test_08_gaseous_hydrogen_discipline_jacobian()
+    # unittest.main()
+    cls.test_01_wgs_jacobian()
     print('------')
