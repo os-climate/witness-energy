@@ -155,7 +155,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
         new_chart = TwoAxesInstanciatedChart('years', 'Electrical efficiency [-]',
                                              chart_name=chart_name, stacked_bar=True)
 
-        years = np.arange(2010, 2100)
+        years = np.arange(2000, 2050)
         elec_efficiency = self.demand_model.electrical_machine_efficiency(
             years)
 
