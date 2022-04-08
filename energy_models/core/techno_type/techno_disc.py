@@ -983,7 +983,7 @@ class TechnoDiscipline(SoSDiscipline):
             'non_use_capital')
         techno_capital = self.get_sosdisc_outputs(
             'techno_capital')
-        chart_name = f'Non-use capital due to unused {self.techno_name} factories vs total capital'
+        chart_name = f'Non-use capital per year due to unused {self.techno_name} factories vs total capital'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
                                              chart_name=chart_name)
