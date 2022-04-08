@@ -29,7 +29,7 @@ class FossilGas(MethaneTechno):
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
         #calorific value in kWh/kg * 1000 to have needs in t/kWh
-        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = np.ones(len(self.years)) / (1000 * Methane.data_energy_dict['calorific_value']) #kg/kWh
+        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = np.ones(len(self.years)) / (1000 * Methane.data_energy_dict['calorific_value']) #t/kWh
         self.cost_details[f'{Electricity.name}'] = list(
             self.prices[f'{Electricity.name}'] * self.cost_details['elec_needs'])
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}'] = list(
@@ -39,7 +39,7 @@ class FossilGas(MethaneTechno):
 
     def grad_price_vs_energy_price(self):
         '''
-        Compute the gradient of global price vs energy prices 
+        Compute the gradient of global price vs energy prices
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
@@ -51,7 +51,7 @@ class FossilGas(MethaneTechno):
         Compute the gradient of global price vs resource prices
         Work also for total CO2_emissions vs resource CO2 emissions
         '''
-        natural_gas_needs = 1 / Methane.data_energy_dict['calorific_value'] #kg/kWh
+        natural_gas_needs = 1 / (1000 * Methane.data_energy_dict['calorific_value']) #t/kWh
         return {self.NATURAL_GAS_RESOURCE_NAME: np.identity(len(self.years)) * natural_gas_needs,
                 }
 
