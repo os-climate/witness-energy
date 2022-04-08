@@ -43,9 +43,9 @@ class EnergyDemand(object):
         self.energy_production_detailed = None
         self.demand_elec_constraint = None
         self.elec_demand = None
-        self.eff_coeff = 0.4
+        self.eff_coeff = 0.2
         self.eff_x0 = 2015
-        self.eff_y_min = 0.7
+        self.eff_y_min = 0.9
 
     def configure_parameters(self, inputs_dict):
         '''
