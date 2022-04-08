@@ -35,7 +35,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fas fa-fan fa-fw',
+        'icon': 'fas fa-burn fa-fw',
         'version': '',
     }
 
