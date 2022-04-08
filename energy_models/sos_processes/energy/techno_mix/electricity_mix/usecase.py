@@ -26,7 +26,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 DEFAULT_TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                              'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'BiogasFired',
                              'Geothermal', 'CoalGen']
-TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal', 'BiogasFired',
+TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                              'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'Geothermal', 'CoalGen']
 TECHNOLOGIES_LIST_COARSE = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                                     'Nuclear', 'Geothermal', 'Hydropower']
