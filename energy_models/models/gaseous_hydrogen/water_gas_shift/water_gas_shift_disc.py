@@ -133,9 +133,9 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
         syngas_ratio = self.techno_model.syngas_ratio
 
+        inputs_dict = self.get_sosdisc_inputs()
         ##############
-        gaseous_hydrogen_energy_dict = self.get_sosdisc_inputs(
-            'data_fuel_dict')
+        gaseous_hydrogen_energy_dict = inputs_dict['data_fuel_dict']
         calorific_value = (syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['calorific_value'] +
                            gaseous_hydrogen_energy_dict['molar_mass'] * gaseous_hydrogen_energy_dict['calorific_value']) / (gaseous_hydrogen_energy_dict['molar_mass'] + syngas_ratio * CO.data_energy_dict['molar_mass'])
 
@@ -268,8 +268,8 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
         dprodenergy_dsyngas_ratio = self.techno_model.compute_dprod_dfluegas(
             capex, self.techno_model.invest_level['invest'].values, self.techno_model.invest_before_ystart['invest'].values, self.techno_model.techno_infos_dict, capex_grad)
-        scaling_factor_techno_production = self.get_sosdisc_inputs(
-            'scaling_factor_techno_production')
+        scaling_factor_techno_production = inputs_dict[
+            'scaling_factor_techno_production']
 
         self.set_partial_derivative_for_other_types(
             ('techno_production', 'hydrogen.gaseous_hydrogen (TWh)'),  ('syngas_ratio',),
@@ -292,8 +292,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
         # electricity
 
-        scaling_factor_techno_consumption = self.get_sosdisc_inputs(
-            'scaling_factor_techno_consumption')
+        scaling_factor_techno_consumption = inputs_dict['scaling_factor_techno_consumption']
 
         delec_consumption_dsyngas_ratio = self.techno_model.compute_delec_needs_dsyngas_ratio(
             dprodenergy_dsyngas_ratio * self.techno_model.applied_ratio['applied_ratio'].values[:, np.newaxis] / scaling_factor_techno_consumption)
@@ -335,6 +334,20 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             ('techno_prices', f'{self.techno_name}'),  ('syngas_ratio',), dprice_dsyngas / 100.0)
         self.set_partial_derivative_for_other_types(
             ('techno_prices', f'{self.techno_name}_wotaxes'),  ('syngas_ratio',), dprice_wotaxes_dsyngas / 100.0)
+
+        # We use the function of the invest for the syngas ratio
+        # We assume :# we do not divide by / self.scaling_factor_invest_level because invest
+        # and non_use_capital are in G$
+        # Here the gradient is vs the syngas ratio then we need to divide by self.scaling_factor_invest_level
+        # division by 100 because syngas ratio is in %
+        dnon_use_capital_dsyngas_ratio, dtechnocapital_dsyngas_ratio = self.techno_model.compute_dnon_usecapital_dinvest(
+            capex_grad, dprodenergy_dsyngas_ratio)
+        scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
+        self.set_partial_derivative_for_other_types(
+            ('non_use_capital', self.techno_model.name), ('syngas_ratio',), dnon_use_capital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_capital', self.techno_model.name), ('syngas_ratio',), dtechnocapital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
 
     def specific_run(self):
 

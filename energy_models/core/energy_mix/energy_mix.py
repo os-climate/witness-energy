@@ -51,13 +51,8 @@ class EnergyMix(BaseStream):
     """
     name = 'EnergyMix'
     PRODUCTION = 'production'
-    DEMAND_VIOLATION = 'demand_violation'
-    DELTA_ENERGY_PRICES = 'delta_energy_prices'
-    DELTA_CO2_EMISSIONS = 'delta_co2_emissions'
-    DEMAND_MAX_PRODUCTION = 'demand_max_production'
     TOTAL_PRODUCTION = 'Total production'
     CO2_TAX_MINUS_CCS_CONSTRAINT_DF = 'CO2_tax_minus_CCS_constraint_df'
-    CO2_TAX_MINUS_CCS_CONSTRAINT = 'CO2_tax_minus_CCS_constraint'
     TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF = 'total_prod_minus_min_prod_constraint_df'
     TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT = 'total_prod_minus_min_prod_constraint'
     CONSTRAINT_PROD_H2_LIQUID = 'total_prod_h2_liquid'
@@ -65,6 +60,7 @@ class EnergyMix(BaseStream):
     CONSTRAINT_PROD_HYDROELECTRIC = 'total_prod_hydroelectric'
     CO2_TAX_OBJECTIVE = 'CO2_tax_objective'
     SYNGAS_PROD_OBJECTIVE = 'syngas_prod_objective'
+    SYNGAS_PROD_CONSTRAINT = 'syngas_prod_constraint'
     RESOURCE_LIST = ['natural_gas_resource',
                      'uranium_resource', 'coal_resource', 'oil_resource']
     RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
@@ -135,7 +131,6 @@ class EnergyMix(BaseStream):
 
         # Specific configure for energy mix
         self.co2_per_use = {}
-        self.energy_demand = {}
         self.CCS_price = pd.DataFrame(
             {'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1)})
         self.CO2_tax_minus_CCS_constraint = pd.DataFrame(
@@ -151,11 +146,11 @@ class EnergyMix(BaseStream):
         self.liquid_hydrogen_percentage = inputs_dict['liquid_hydrogen_percentage']
         self.liquid_hydrogen_constraint_ref = inputs_dict['liquid_hydrogen_constraint_ref']
         self.syngas_prod_ref = inputs_dict['syngas_prod_ref']
+        self.syngas_prod_limit = inputs_dict['syngas_prod_constraint_limit']
         self.co2_for_food = pd.DataFrame({'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
                                           f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
 
-        self.is_dev = inputs_dict['is_dev']
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
 
         if self.subelements_list is not None:
@@ -177,7 +172,6 @@ class EnergyMix(BaseStream):
             'total_prod_minus_min_prod_constraint_ref']
         # Specific configure for energy mix
         self.co2_per_use = {}
-        self.energy_demand = {}
         self.data_fuel_dict = {}
 
         for energy in self.subelements_list:
@@ -193,7 +187,6 @@ class EnergyMix(BaseStream):
             if energy in self.energy_class_dict:
                 self.sub_carbon_emissions[energy] = inputs_dict[f'{energy}.CO2_emissions'][energy]
                 self.co2_per_use[energy] = inputs_dict[f'{energy}.CO2_per_use']
-                self.energy_demand[energy] = inputs_dict[f'{energy}.energy_demand']
                 self.data_fuel_dict[energy] = inputs_dict[f'{energy}.data_fuel_dict']
         if 'syngas' in self.subelements_list:
             self.data_fuel_dict['syngas']['high_calorific_value'] = compute_calorific_value(
@@ -260,8 +253,7 @@ class EnergyMix(BaseStream):
                         logging.warning(
                             f'The columns {wrong_columns} in the energy_consumption out of {idx} cannot be taken into account for an error of unity')
 
-        if self.is_dev:
-            self.substract_losses_by_energy()
+        self.substract_losses_by_energy()
         # Sum on netenergy production
         self.production['Total production'] = self.production[[
             column for column in self.production if column.endswith('(TWh)')]].sum(axis=1)
@@ -270,10 +262,8 @@ class EnergyMix(BaseStream):
         self.production_raw['Total production'] = self.production_raw[[
             column for column in self.production_raw if column.endswith('(TWh)')]].sum(axis=1)
 
-        # substract a percentage of raw production into net production only in
-        # dev mode
-        if self.is_dev:
-            self.substract_energy_heat_losses()
+        # substract a percentage of raw production into net production
+        self.substract_energy_heat_losses()
 
         self.production['Total production (uncut)'] = self.production['Total production'].values
         min_energy = self.minimum_energy_production
@@ -384,33 +374,6 @@ class EnergyMix(BaseStream):
         self.co2_emissions_needed_by_energy_mix = pd.DataFrame(
             {'years': self.production['years'],
              f'{CarbonCapture.name} needed by energy mix (Gt)': self.total_co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'].values / 1e3})
-
-    def compute_energy_demand_violation(self):
-        ''' computes the difference between net energy production and energy demand
-         net_production - energy_demand
-         with net_production = energy_production - energy_consumption
-        '''
-        self.demand_viol = {}
-        self.demand_max_production = {}
-        for energy in self.subelements_list:
-            if energy in self.energy_class_dict:
-                net_prod = self.production[
-                    f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})']
-                demand = self.energy_demand[energy]['demand']
-                base_df = pd.DataFrame({'years': self.years})
-                base_df[self.DEMAND_VIOLATION] = net_prod - demand
-                self.demand_viol[energy] = base_df
-
-                if energy == 'syngas' or energy == 'biomass_dry':
-                    net_prod = self.production[
-                        f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})']
-                    demand = self.energy_demand[energy]['demand']
-                    base_df = pd.DataFrame({'years': self.years})
-                    # we want that net prod - demand < 100
-                    base_df[self.DEMAND_MAX_PRODUCTION] = 100 - \
-                        net_prod + demand
-
-                    self.demand_max_production[energy] = base_df
 
     def compute_mean_price(self, exp_min=True):
         '''
@@ -540,6 +503,18 @@ class EnergyMix(BaseStream):
                 self.syngas_prod_ref
         else:
             self.syngas_prod_objective = np.zeros(len(self.years))
+
+    def compute_syngas_prod_constraint(self):
+        '''
+        Compute Syngas production objective
+        '''
+        if f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})' in self.production:
+            self.syngas_prod_constraint = (self.syngas_prod_limit - self.production[f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})'].values) / \
+                self.syngas_prod_ref
+        else:
+            self.syngas_prod_constraint = np.zeros(len(self.years))
+
+
 
     def compute_all_streams_demand_ratio(self):
         '''! Computes the demand_ratio dataframe. 

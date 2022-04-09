@@ -14,3 +14,4 @@ energy_models.egg-info/
 /MANIFEST.in
 /Makefile
 /README.md
+pytest.ini

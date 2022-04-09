@@ -162,7 +162,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0]
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        coupled_outputs.append(f'{namespace}.{self.techno_name}.lost_capital')
+        coupled_outputs.append(
+            f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=coupled_inputs,
@@ -235,7 +236,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
 
-        coupled_outputs.append(f'{namespace}.{self.techno_name}.lost_capital')
+        coupled_outputs.append(
+            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
         inputs_dict[f'{namespace}.is_stream_demand'] = self.is_stream_demand
@@ -323,7 +325,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(f'{namespace}.{self.techno_name}.lost_capital')
+        coupled_outputs.append(
+            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
         inputs_dict[f'{namespace}.is_stream_demand'] = self.is_stream_demand
@@ -411,7 +414,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(f'{namespace}.{self.techno_name}.lost_capital')
+        coupled_outputs.append(
+            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
         inputs_dict[f'{namespace}.is_stream_demand'] = self.is_stream_demand
@@ -507,7 +511,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(f'{namespace}.{self.techno_name}.lost_capital')
+        coupled_outputs.append(
+            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
         inputs_dict[f'{namespace}.is_stream_demand'] = self.is_stream_demand
@@ -597,7 +602,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(f'{namespace}.{self.techno_name}.lost_capital')
+        coupled_outputs.append(
+            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
         inputs_dict[f'{namespace}.is_stream_demand'] = self.is_stream_demand
@@ -684,7 +690,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             else:
                 if mda_data_output_dict[self.techno_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(f'{namespace}.{self.techno_name}.lost_capital')
+        coupled_outputs.append(
+            f'{namespace}.{self.techno_name}.non_use_capital')
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
         inputs_dict[f'{namespace}.is_stream_demand'] = self.is_stream_demand
