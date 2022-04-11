@@ -265,7 +265,9 @@ class TechnoType:
                 # If a match is found, calculate the
                 # smooth_min(smooth_min(x)=-smooth_max(-x)) between all the
                 # matches for each year
-                ratio_values = - smooth_maximum_vect(-self.ratio_df[elements].values)
+
+                ratio_values = - \
+                    smooth_maximum_vect(-self.ratio_df[elements].values)
 
                 min_ratio_name = self.ratio_df[elements].columns[np.argmin(
                     self.ratio_df[elements].values, axis=1)].values
@@ -759,7 +761,8 @@ class TechnoType:
 
         elif data_tocheck['Capex_init_unit'] == '$/kWh':
             capex_init = data_tocheck['Capex_init']
-
+        elif data_tocheck['Capex_init_unit'] == '$/MWh':
+            capex_init = data_tocheck['Capex_init'] / 1.0e3
         elif data_tocheck['Capex_init_unit'] == 'euro/ha':
 
             density_per_ha = data_tocheck['density_per_ha']
