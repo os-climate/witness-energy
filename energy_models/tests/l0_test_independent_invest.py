@@ -100,7 +100,7 @@ class TestIndependentInvest(unittest.TestCase):
                        'invest_constraint_ref': invest_constraint_ref,
                        'invest_objective_ref': invest_objective_ref,
                        'is_dev': is_dev,
-                       'invest_sum_ref': 10.,
+                       'invest_sum_ref': 2.,
                        'invest_limit_ref': 300.}
         one_invest_model = IndependentInvest()
         invest_constraint, invest_objective, invest_objective_sum, invest_objective_cons = one_invest_model.compute_invest_constraint_and_objective(
