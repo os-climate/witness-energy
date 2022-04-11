@@ -1002,7 +1002,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_energies_net_production_limit()
+            new_chart = self.get_chart_energies_net_raw_production_and_limit()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         if 'Energy mix' in charts:
@@ -1274,34 +1274,43 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_energies_net_production_limit(self):
+    def get_chart_energies_net_raw_production_and_limit(self):
         energy_production_detailed = self.get_sosdisc_outputs(
             'energy_production_detailed')
         minimum_energy_production = self.get_sosdisc_inputs(
             'minimum_energy_production')
-        chart_name = 'Net Energies Total Production and Limit'
-        new_chart = TwoAxesInstanciatedChart('years', 'Net Energy [TWh]',
+        chart_name = 'Energy Total Production and Minimum Net Energy Limit'
+        new_chart = TwoAxesInstanciatedChart('years', 'Energy [TWh]',
                                              chart_name=chart_name)
 
+        energy_prod_raw = self.get_sosdisc_outputs(
+            'energy_production_brut')
+        serie = InstanciatedSeries(
+            energy_prod_raw['years'].values.tolist(),
+            list(
+                energy_prod_raw['Total production'].values.tolist()),
+            'Raw Production', 'lines')
+
+        new_chart.series.append(serie)
         serie = InstanciatedSeries(
             energy_production_detailed['years'].values.tolist(),
             list(
                 energy_production_detailed['Total production'].values.tolist()),
-            'Total Production', 'lines')
+            'Net Production', 'lines')
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(
             energy_production_detailed['years'].values.tolist(),
             list(
                 energy_production_detailed['Total production (uncut)'].values.tolist()),
-            'Total Production (uncut)', 'lines')
+            'Net Production (uncut)', 'lines')
         new_chart.series.append(serie)
 
         serie = InstanciatedSeries(
             energy_production_detailed['years'].values.tolist(),
             list([minimum_energy_production for _ in range(
                 len(energy_production_detailed['years']))]),
-            'min energy', 'lines')
+            'Minimum net energy', 'lines')
         new_chart.series.append(serie)
 
         return new_chart
