@@ -79,6 +79,11 @@ class EnergyMix(BaseStream):
                          Renewable.name: Renewable,
                          Fossil.name: Fossil}
 
+    # For simplified energy mix , raw_to_net factor is used to compute net
+    # production from raw production
+    raw_tonet_dict = {Renewable.name: Renewable.raw_to_net_production,
+                      Fossil.name: Fossil.raw_to_net_production}
+
     only_energy_list = list(energy_class_dict.keys())
 
     stream_class_dict = {CarbonCapture.name: CarbonCapture,
@@ -238,13 +243,14 @@ class EnergyMix(BaseStream):
         above it
         """
         for energy in self.subelements_list:
-            self.production[f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'] = pd.Series(
+            column_name = f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
+            self.production[column_name] = pd.Series(
                 self.sub_production_dict[energy][energy].values)
-            self.production_raw[f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'] = pd.Series(
+            self.production_raw[column_name] = pd.Series(
                 self.sub_production_dict[energy][energy].values)
             for idx, consu in self.sub_consumption_dict.items():
                 if f'{energy} ({self.stream_class_dict[energy].unit})' in consu.columns:
-                    self.production[f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'] -= consu[
+                    self.production[column_name] -= consu[
                         f'{energy} ({self.stream_class_dict[energy].unit})'].values
                 else:
                     wrong_columns = [
@@ -252,6 +258,9 @@ class EnergyMix(BaseStream):
                     if len(wrong_columns) != 0:
                         logging.warning(
                             f'The columns {wrong_columns} in the energy_consumption out of {idx} cannot be taken into account for an error of unity')
+
+            if energy in self.raw_tonet_dict.keys():
+                self.compute_net_prod_of_coarse_energies(energy, column_name)
 
         self.substract_losses_by_energy()
         # Sum on netenergy production
@@ -275,6 +284,15 @@ class EnergyMix(BaseStream):
                     self.production.at[year, 'Total production'], -200.0 * min_energy)
                 self.production.loc[year, 'Total production'] = min_energy / 10. * \
                     (9 + np.exp(production_year / min_energy) * np.exp(-1))
+
+    def compute_net_prod_of_coarse_energies(self, energy, column_name):
+        '''
+        Compute the net production for coarse energies which does not have energy consumption
+        We use a raw/net ratio to compute consumed energy production 
+        consu = raw-net = raw(1-1/ratio)
+        '''
+        self.production[column_name] -= self.production_raw[column_name].values * \
+            (1.0 - self.raw_tonet_dict[energy])
 
     def substract_energy_heat_losses(self):
         '''

@@ -104,7 +104,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'syngas_prod_ref': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'syngas_prod_constraint_limit': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
-                                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
 
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%', 'range': [0., 100.]}, }
@@ -141,7 +141,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         EnergyMix.SYNGAS_PROD_OBJECTIVE: {'type': 'array', 'unit': 'TWh',
                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         EnergyMix.SYNGAS_PROD_CONSTRAINT: {'type': 'array', 'unit': 'TWh',
-                                          'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'all_streams_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
@@ -400,7 +400,12 @@ class Energy_Mix_Discipline(SoSDiscipline):
         for energy in energy_list:
             if energy in energies:
                 loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
+                # To model raw to net percentage for witness coarse energies
+                if energy in self.energy_model.raw_tonet_dict:
+                    loss_percentage += (1.0 -
+                                        self.energy_model.raw_tonet_dict[energy])
                 loss_percent = heat_losses_percentage + loss_percentage
+
                 #---- Production gradients----#
                 dtotal_prod_denergy_prod = self.compute_dtotal_production_denergy_production(
                     production_detailed_df, minimum_energy_production, loss_percent)
@@ -421,7 +426,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 if 'production ' + self.LIQUID_FUEL_NAME + ' (TWh)' in production_detailed_df.columns and 'production ' + self.HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns and 'production ' + self.LIQUID_HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns:
                     if energy == self.HYDROGEN_NAME or energy == self.LIQUID_HYDROGEN_NAME or energy == self.LIQUID_FUEL_NAME:
                         self.set_partial_derivative_for_other_types(('primary_energies_production', 'primary_energies'), (
-                            f'{energy}.energy_production', energy), (np.identity(len(years)) * (1-loss_percentage) - primary_energy_percentage * dtotal_prod_denergy_prod) * scaling_factor_energy_production)
+                            f'{energy}.energy_production', energy), (np.identity(len(years)) * (1 - loss_percentage) - primary_energy_percentage * dtotal_prod_denergy_prod) * scaling_factor_energy_production)
                     else:
                         self.set_partial_derivative_for_other_types(('primary_energies_production', 'primary_energies'), (
                             f'{energy}.energy_production', energy), -scaling_factor_energy_production * primary_energy_percentage * dtotal_prod_denergy_prod)
@@ -429,7 +434,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 # constraint solid_fuel + elec gradient
                 if energy in self.energy_model.energy_constraint_list:
                     self.set_partial_derivative_for_other_types((f'{EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                        f'{energy}.energy_production', energy), (- scaling_factor_energy_production * ((1-loss_percentage) - solid_fuel_elec_percentage * dtotal_prod_denergy_prod) / solid_fuel_elec_constraint_ref) * np.identity(len(years)))
+                        f'{energy}.energy_production', energy), (- scaling_factor_energy_production * ((1 - loss_percentage) - solid_fuel_elec_percentage * dtotal_prod_denergy_prod) / solid_fuel_elec_constraint_ref) * np.identity(len(years)))
                 else:
                     self.set_partial_derivative_for_other_types((f'{EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
                         f'{energy}.energy_production', energy),  scaling_factor_energy_production * solid_fuel_elec_percentage * dtotal_prod_denergy_prod / solid_fuel_elec_constraint_ref * np.identity(len(years)))
@@ -440,7 +445,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
                     self.set_partial_derivative_for_other_types(
                         (EnergyMix.SYNGAS_PROD_CONSTRAINT,), (f'{energy}.energy_production', energy),  - scaling_factor_energy_production * np.identity(len(years)) / syngas_prod_ref)
-
 
                 # constraint liquid hydrogen
 
@@ -513,12 +517,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
                                 (EnergyMix.SYNGAS_PROD_OBJECTIVE,), (
                                     f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),  - scaling_factor_energy_production * np.sign(production_detailed_df['production syngas (TWh)'].values) * np.identity(len(years)) / syngas_prod_ref)
 
-
                             self.set_partial_derivative_for_other_types(
                                 (EnergyMix.SYNGAS_PROD_CONSTRAINT,), (
                                     f'{energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),   scaling_factor_energy_production * np.identity(len(years)) / syngas_prod_ref)
-
-
 
             else:
                 # CCUS
@@ -584,6 +585,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
                                                                    production_energy_net_pos, production_detailed_df)
 
                 loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
+                # To model raw to net percentage for witness coarse energies
+                if energy in self.energy_model.raw_tonet_dict:
+                    loss_percentage += (1.0 -
+                                        self.energy_model.raw_tonet_dict[energy])
                 self.set_partial_derivative_for_other_types(
                     ('energy_mean_price', 'energy_price'), (f'{energy}.energy_production', energy), scaling_factor_energy_production * dmean_price_dprod * (1.0 - loss_percentage))
 
@@ -665,7 +670,17 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
                 if True in list_index_prod:
                     loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
+                    # To model raw to net percentage for witness coarse
+                    # energies
+                    if energy in self.energy_model.raw_tonet_dict:
+                        loss_percentage += (1.0 -
+                                            self.energy_model.raw_tonet_dict[energy])
                     loss_percent = heat_losses_percentage + loss_percentage
+                    # To model raw to net percentage for witness coarse
+                    # energies
+                    if energy in self.energy_model.raw_tonet_dict:
+                        loss_percent += (1.0 -
+                                         self.energy_model.raw_tonet_dict[energy])
                     dtotal_prod_denergy_prod = self.compute_dtotal_production_denergy_production(
                         production_detailed_df, minimum_energy_production, loss_percent)
 
@@ -783,7 +798,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         denergy_mean_prod.loc[index_l] = 0
         return denergy_mean_prod
 
-    def compute_dtotal_production_denergy_production(self, production_detailed_df, min_energy, heat_percent, loss_percent=0.0):
+    def compute_dtotal_production_denergy_production(self, production_detailed_df, min_energy, total_loss_percent):
         '''
         Compute gradient of production['Total production'] by {energy}.energy_prod[{energy}] taking into account 
         the exponential decrease towards the limit applied on the calculation of the total net energy production
@@ -792,7 +807,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
         '''
         years = production_detailed_df['years']
         dtotal_production_denergy_production = np.ones(len(years))
-        total_loss_percent = heat_percent + loss_percent
         dtotal_production_denergy_production *= (
             1.0 - total_loss_percent)
 
@@ -1056,7 +1070,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         new_serie = InstanciatedSeries(list(energy_production_detailed['years'].values), list(energy_production_detailed['production hydrogen.liquid_hydrogen (TWh)'].values),
                                        'Liquid hydrogen production', 'lines')
         new_chart.series.append(new_serie)
-        new_serie = InstanciatedSeries(list(energy_production_detailed['years'].values), list(energy_production_detailed['production hydrogen.gaseous_hydrogen (TWh)'].values + energy_production_detailed['production hydrogen.liquid_hydrogen (TWh)'].values ),
+        new_serie = InstanciatedSeries(list(energy_production_detailed['years'].values), list(energy_production_detailed['production hydrogen.gaseous_hydrogen (TWh)'].values + energy_production_detailed['production hydrogen.liquid_hydrogen (TWh)'].values),
                                        'Total hydrogen production', 'lines')
         new_chart.series.append(new_serie)
         constraint = liquid_hydrogen_percentage * \
