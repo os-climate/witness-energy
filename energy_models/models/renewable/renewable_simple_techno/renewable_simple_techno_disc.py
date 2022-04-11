@@ -61,7 +61,8 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                  'construction_delay': construction_delay, }
 
     techno_info_dict = techno_infos_dict_default
-    initial_production = 25385.78  # TWh
+    # net production = 25385.78 TWh
+    initial_production = 31552.17  # TWh
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 635.0, 638.0]})
 
