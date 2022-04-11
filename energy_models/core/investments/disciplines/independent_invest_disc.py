@@ -50,7 +50,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                        'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
                        'dataframe_edition_locked': False},
         'invest_objective_ref': {'type': 'float', 'default': 1.0, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
-        'invest_sum_ref': {'type': 'float', 'unit': 'G$', 'default': 10., 'user_level': 2, 'visibility': 'Shared',
+        'invest_sum_ref': {'type': 'float', 'unit': 'G$', 'default': 2., 'user_level': 2, 'visibility': 'Shared',
                                  'namespace': 'ns_ref'},
         'invest_constraint_ref': {'type': 'float', 'unit': 'G$', 'default': 80.0, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
         'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
