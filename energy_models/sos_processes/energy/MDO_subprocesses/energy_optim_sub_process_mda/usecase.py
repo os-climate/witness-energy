@@ -145,7 +145,7 @@ class Study(StudyManager):
                              f'{mda_usecase.study_name}.tolerance': 1.0e-8,
                              f'{mda_usecase.study_name}.n_processes': 1,
                              f'{mda_usecase.study_name}.linearization_mode': 'adjoint',
-                             f'{mda_usecase.study_name}.sub_mda_class': 'MDANewtonRaphson'}
+                             f'{mda_usecase.study_name}.sub_mda_class': 'GSNewtonMDA'}
         # design space
 
         dspace = mda_usecase.dspace
