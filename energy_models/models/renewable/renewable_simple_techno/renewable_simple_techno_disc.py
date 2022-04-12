@@ -48,7 +48,8 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
     # from witness full study
     renewable_energy_capital = 12.414  # trillion dollars
 
-    capex_renewable = 12.414e12 / 31552.17e9
+    capex_renewable = renewable_energy_capital * \
+        1.0e12 / (initial_production * 1.0e9)
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.12,
                                  'WACC': 0.058,
