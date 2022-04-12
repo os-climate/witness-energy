@@ -14,31 +14,67 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
+from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from energy_models.core.stream_type.energy_models.methane import Methane
+
+
+def compute_fossil_data(data_name):
+    '''
+    Compute fossil data from a mean of oil, coal and gas data
+    '''
+    prod_solid_fuel = 45000.  # TWh
+    prod_liquid_fuel = 53000.  # TWh
+    prod_methane = 39106.77  # TWh
+    prod_fossil = prod_solid_fuel + prod_liquid_fuel + prod_methane
+    energy_data = (SolidFuel.data_energy_dict[data_name] * prod_solid_fuel +
+                   LiquidFuel.data_energy_dict[data_name] * prod_liquid_fuel +
+                   Methane.data_energy_dict[data_name] * prod_methane) / prod_fossil
+
+    return energy_data
 
 
 class Fossil(EnergyType):
     name = 'fossil'
-    data_energy_dict = {'maturity': 5,
-                        'WACC': 0.1,
-                        'CO2_per_use': 2.32,  # mean of CO2 per use of fossil energies
+    data_energy_dict = {'CO2_per_use': compute_fossil_data('CO2_per_use'),  # mean of CO2 per use of fossil energies
                         'CO2_per_use_unit': 'kg/kg',
-                        'NOx_per_energy': 0.1,
-                        'NOX_per_energy_unit': 'yy',
-
-                        'cost_now': 0.76,
-                        'cost_now_unit': '$/kg',
-                        'density': 821.0,  # at atmospheric pressure and 298K
+                        'density': compute_fossil_data('density'),
                         'density_unit': 'kg/m^3',
-                        'molar_mass': 170.0,
-                        'molar_mass_unit': 'g/mol',
-                        'calorific_value': 11.9,
+                        'calorific_value': compute_fossil_data('calorific_value'),
                         'calorific_value_unit': 'kWh/kg',
-                        'high_calorific_value': 12.83,
+                        'high_calorific_value': compute_fossil_data('high_calorific_value'),
                         'high_calorific_value_unit': 'kWh/kg',
-                        'learning_rate': 0.25,
-                        'produced_energy': 4477.212,
-                        # or energy industry own use (sum of crude oil
-                        # extraction and refinery)
-                        'direct_energy': 210.457,
-                        'total_final_consumption': 3970.182,  # for oil products
                         }
+
+    net_production = 90717.76  # TWh
+    raw_production = 136917.16  # TWh
+    raw_to_net_production = net_production / raw_production
+
+    def compute_co2_per_use(self, data_energy_dict):
+        '''
+        Specific computation for the CO2 per use taking into account the use of fossil in 
+        petrochemical plants (plastic and textile), construction, cement and steel 
+
+
+        We only take into account energy emissions and not industrial emissions in energy mix 
+        --> CO2 per use petrochemical and construction will be used in an industrial co2 emissions model 
+
+        This CO2_per_use is used in CO2 emitted by net energy
+        '''
+        prod_solid_fuel = 45000.  # TWh
+        prod_liquid_fuel = 53000.  # TWh
+        prod_methane = 39106.77  # TWh
+        prod_fossil = prod_solid_fuel + prod_liquid_fuel + prod_methane
+
+        industry_percent = prod_solid_fuel / prod_fossil * (SolidFuel.data_energy_dict['ironsteel_use_part'] +
+                                                            SolidFuel.data_energy_dict['cement_use_part'] +
+                                                            SolidFuel.data_energy_dict['chemicals_use_part']) +\
+            prod_liquid_fuel / prod_fossil * (LiquidFuel.data_energy_dict['petrochemical_use_part'] +
+                                              LiquidFuel.data_energy_dict['construction_use_part'])
+        co2_per_use_kgkg = data_energy_dict['CO2_per_use'] * \
+            (1.0 - industry_percent)
+
+        self.co2_per_use['CO2_per_use'] = co2_per_use_kgkg / \
+            data_energy_dict['high_calorific_value']
+
+        return self.co2_per_use

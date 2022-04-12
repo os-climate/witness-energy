@@ -25,7 +25,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 
 DEFAULT_TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                              'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'BiogasFired',
-                             'Geothermal', 'CoalGen']
+                             'Geothermal', 'CoalGen', 'BiomassFired']
 TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                              'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'Geothermal', 'CoalGen']
 TECHNOLOGIES_LIST_COARSE = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
@@ -37,7 +37,7 @@ TECHNOLOGIES_LIST_MIN_TECH = ['WindOnshore', 'SolarPv', 'SolarThermal',
                                      'Nuclear', 'Geothermal', 'Hydropower', 'CoalGen']
 TECHNOLOGIES_LIST_DEV = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                          'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine',
-                         'BiogasFired', 'Geothermal', 'CoalGen']
+                         'BiogasFired', 'Geothermal', 'CoalGen', 'BiomassFired']
 
 
 class Study(EnergyMixStudyManager):
@@ -125,6 +125,12 @@ class Study(EnergyMixStudyManager):
             invest_electricity_mix_dict['BiogasFired'] = np.array([
                 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
+        if 'BiomassFired' in self.technologies_list:
+            #             invest_electricity_mix_dict['GasTurbine'] = [
+            #                 max(0.01, 0.5 - 0.3 * i) for i in l_ctrl]
+            invest_electricity_mix_dict['BiomassFired'] = np.array([
+                1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+
         if 'CoalGen' in self.technologies_list:
             #             invest_electricity_mix_dict['CoalGen'] = [
             #                 max(0.01, 0.1 - 0.2 * i) for i in l_ctrl]
@@ -192,6 +198,9 @@ class Study(EnergyMixStudyManager):
         if 'BiogasFired' in self.technologies_list:
             invest_electricity_mix_dict['BiogasFired'] = np.ones(len(l_ctrl))
 
+        if 'BiomassFired' in self.technologies_list:
+            invest_electricity_mix_dict['BiomassFired'] = np.ones(len(l_ctrl))
+
         if 'CoalGen' in self.technologies_list:
             invest_electricity_mix_dict['CoalGen'] = [
                 max(0.01, 0.1 - 0.2 * i) for i in l_ctrl]
@@ -223,13 +232,14 @@ class Study(EnergyMixStudyManager):
         self.energy_prices = pd.DataFrame({'years': years, 'electricity': 10.0,
                                            'methane': 60.0,
                                            'biogas': 5.0,
+                                           'biomass_dry': 11.0,
                                            'solid_fuel': 5.7
                                            })
 
         #  IRENA invest data - Future of wind 2019
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4,
-             'biogas': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0})
+             'biogas': 0.123 / 15.4, 'biomass_dry': - 0.64 / 4.86, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0})
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame({'years': years, 'invest': 10.0})
@@ -273,6 +283,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{electricity_name}.CombinedCycleGasTurbine.margin': self.margin,
                        f'{self.study_name}.{electricity_name}.GasTurbine.margin': self.margin,
                        f'{self.study_name}.{electricity_name}.BiogasFired.margin': self.margin,
+                       f'{self.study_name}.{electricity_name}.BiomassFired.margin': self.margin,
                        f'{self.study_name}.{electricity_name}.Geothermal.margin': self.margin,
                        f'{self.study_name}.{electricity_name}.CoalGen.margin': self.margin,
                        f'{self.study_name}.{electricity_name}.RenewableElectricitySimpleTechno.margin': self.margin,

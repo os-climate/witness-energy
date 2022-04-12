@@ -23,4 +23,5 @@ class RenewableSimpleTechno(RenewableTechno):
         """
         Compute primary costs which depends on the technology
         """
-        return 0
+        self.cost_details['resource_price'] = self.techno_infos_dict['resource_price']
+        return self.cost_details['resource_price']
