@@ -78,6 +78,15 @@ class TestIndependentInvest(unittest.TestCase):
         forest_invest = np.linspace(5, 8, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": self.years, "forest_investment": forest_invest})
+        managed_wood_invest = np.linspace(0.5, 2, year_range)
+        self.managed_wood_invest_df = pd.DataFrame(
+            {"years": self.years, "investment": managed_wood_invest})
+        unmanaged_wood_invest = np.linspace(2, 3, year_range)
+        self.unmanaged_wood_invest_df = pd.DataFrame(
+            {"years": self.years, "investment": unmanaged_wood_invest})
+        crop_invest = np.linspace(0.5, 0.25, year_range)
+        self.crop_invest_df = pd.DataFrame(
+            {"years": self.years, "investment": crop_invest})
 
     def test_01_independent_invest_model(self):
         scaling_factor_energy_investment = 100
@@ -222,7 +231,10 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
                        f'{self.name}.energy_investment': self.energy_investment,
                        f'{self.name}.is_dev': True,
-                       f'{self.name}.forest_investment': self.forest_invest_df}
+                       f'{self.name}.forest_investment': self.forest_invest_df,
+                       f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,
+                       f'{self.name}.unmanaged_wood_investment': self.unmanaged_wood_invest_df,
+                       f'{self.name}.crop_investment': self.crop_invest_df}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -245,8 +257,8 @@ class TestIndependentInvest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-#        for graph in graph_list:
-#            graph.to_plotly().show()
+        # for graph in graph_list:
+        #    graph.to_plotly().show()
 
     def test_04_independent_invest_disc_check_jacobian(self):
 
@@ -261,7 +273,6 @@ class TestIndependentInvest(unittest.TestCase):
                    'ns_ccs': f'{self.name}',
                    'ns_functions': self.name,
                    'ns_invest': self.name,
-
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -285,7 +296,11 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
                        f'{self.name}.energy_investment': self.energy_investment,
-                       f'{self.name}.forest_investment': self.forest_invest_df}
+                       f'{self.name}.forest_investment': self.forest_invest_df,
+                       f'{self.name}.is_dev': True,
+                       f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,
+                       f'{self.name}.unmanaged_wood_investment': self.unmanaged_wood_invest_df,
+                       f'{self.name}.crop_investment': self.crop_invest_df}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -294,7 +309,9 @@ class TestIndependentInvest(unittest.TestCase):
             f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in inputs_dict[f'{self.name}.{energy}.technologies_list']]
 
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.energy_investment',
-                                                                          f'{self.name}.{self.model_name}.invest_mix', f'{self.name}.forest_investment'],
+                                                                          f'{self.name}.{self.model_name}.invest_mix', f'{self.name}.forest_investment',
+                                                                          f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment',
+                                                                          f'{self.name}.crop_investment'],
                                       outputs=[
             f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective', f'{self.name}.invest_objective_sum' , f'{self.name}.invest_sum_cons'],
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
