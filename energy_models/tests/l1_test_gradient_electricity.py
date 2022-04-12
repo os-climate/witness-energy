@@ -33,7 +33,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
     """
     Electricity jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -48,7 +48,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
             self.test_09_solar_pv_discipline_analytic_grad,
             self.test_10_nuclear_discipline_analytic_grad,
             self.test_11_biogas_fired_discipline_analytic_grad,
-            self.test_12_electricity_discipline_jacobian,
+            self.test_12_biomass_fired_discipline_analytic_grad,
+            self.test_13_electricity_discipline_jacobian,
         ]
 
     def setUp(self):
@@ -75,16 +76,21 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                                                     0.0928246539459331]) * 1000.0,
                                            'solid_fuel': solid_fuel_price,
                                            'methane': np.ones(len(years)) * 27.07,
-                                           'biogas': np.ones(len(years)) * 5.0
+                                           'biogas': np.ones(len(years)) * 5.0,
+                                           'biomass_dry': np.ones(len(years)) * 11.0,
                                            })
 #         self.energy_prices = pd.DataFrame(
 #             {'methane': np.ones(len(years)) * 27.07})
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'methane': 0.123 / 15.4, 'biogas': 0.123 / 15.4, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0})
+            {'years': years, 'methane': 0.123 / 15.4, 'biogas': 0.123 / 15.4,
+             'solid_fuel': 0.64 / 4.86, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0})
         #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
 
         # --- invest level ---
         self.invest_level_ccgast = pd.DataFrame(
+            {'years': years, 'invest': np.ones(len(years)) * 21.0})
+
+        self.invest_level_biomass_fired = pd.DataFrame(
             {'years': years, 'invest': np.ones(len(years)) * 21.0})
 
         self.invest_level_geothermal = pd.DataFrame({'years': years})
@@ -731,7 +737,56 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_production',
                                      ],)
 
-    def test_12_electricity_discipline_jacobian(self):
+    def test_12_biomass_fired_discipline_analytic_grad(self):
+
+        self.name = 'Test'
+        self.model_name = 'biomass_fired'
+        self.ee = ExecutionEngine(self.name)
+        ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
+                   'ns_energy_study': f'{self.name}',
+                   'ns_electricity': self.name,
+                   'ns_resource': f'{self.name}'}
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'energy_models.models.electricity.biomass_fired.biomass_fired_disc.BiomassFiredDiscipline'
+
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.CO2_taxes': self.co2_taxes_nul,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level_biomass_fired,
+                       f'{self.name}.transport_cost':  self.transport,
+                       f'{self.name}.transport_margin':  pd.concat([self.margin['years'], self.margin['margin'] / 1.1], axis=1, keys=['years', 'margin']),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       }
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+
+        disc_techno = self.ee.root_process.sos_disciplines[0]
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            inputs=[f'{self.name}.{self.model_name}.invest_level',
+                                    f'{self.name}.energy_prices',
+                                    f'{self.name}.energy_CO2_emissions'],
+                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                                     f'{self.name}.{self.model_name}.techno_consumption',
+                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
+                                     f'{self.name}.{self.model_name}.techno_production',
+                                     ],)
+
+    def test_13_electricity_discipline_jacobian(self):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -801,4 +856,4 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = ElectricityJacobianTestCase()
     cls.setUp()
-    cls.test_12_electricity_discipline_jacobian()
+    cls.test_13_electricity_discipline_jacobian()
