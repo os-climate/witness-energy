@@ -42,6 +42,7 @@ class FossilSimpleTechno(FossilTechno):
             self.data_energy_dict['calorific_value']
         co2_from_raw_to_net = self.production[f'{FossilTechno.energy_name} ({self.product_energy_unit})'].values * (
             1.0 - Fossil.raw_to_net_production) * co2_per_use
+
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{FossilTechno.energy_name} ({self.product_energy_unit})'] + \
