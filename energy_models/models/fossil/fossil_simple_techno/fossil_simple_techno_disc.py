@@ -51,12 +51,12 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     prod_liquid_fuel = 53000.  # TWh
     prod_methane = 39106.77  # TWh
     prod_fossil = prod_solid_fuel + prod_liquid_fuel + prod_methane
-    capex_coal = 8.3
-    capex_oil = 42.4
-    capex_methane = 32.2
-    capex = (capex_coal * prod_solid_fuel +
-             capex_oil * prod_liquid_fuel +
-             capex_methane * prod_methane) / prod_fossil
+#     capex_coal = 8.3
+#     capex_oil = 42.4
+#     capex_methane = 32.2
+#     capex = (capex_coal * prod_solid_fuel +
+#              capex_oil * prod_liquid_fuel +
+#              capex_methane * prod_methane) / prod_fossil
     co2_from_prod = (RefineryDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_liquid_fuel +
                      CoalExtractionDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_solid_fuel +
                      FossilGasDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_methane) / prod_fossil
@@ -67,7 +67,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                  'learning_rate': 0.00,
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
-                                 'Capex_init': capex,
+                                 'Capex_init': 100.,
                                  'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1.0,
