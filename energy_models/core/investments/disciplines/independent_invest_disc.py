@@ -59,7 +59,9 @@ class IndependentInvestDiscipline(SoSDiscipline):
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
         'invest_limit_ref': {'type': 'float', 'default': 300.,'unit': 'G$', 'user_level': 2, 'visibility': 'Shared',
                                  'namespace': 'ns_ref'},
-        'forest_investment':{'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},'namespace': 'ns_invest', 'dataframe_edition_locked': False}
+        'forest_investment':{'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},'namespace': 'ns_invest', 'dataframe_edition_locked': False},
+        ### WIP is_dev to remove once its validated on dev processes
+        'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}
     }
 
     energy_name = "one_invest"
@@ -117,7 +119,21 @@ class IndependentInvestDiscipline(SoSDiscipline):
                             for techno in technology_list:
                                 dynamic_outputs[f'{ccs}.{techno}.invest_level'] = {
                                     'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_ccs'}
-
+        if 'is_dev' in self._data_in:
+            is_dev = self.get_sosdisc_inputs('is_dev')
+            if is_dev:
+                dynamic_inputs['managed_wood_investment'] = {
+                        'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
+                        'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                        'namespace': 'ns_invest', 'dataframe_edition_locked': False}
+                dynamic_inputs['unmanaged_wood_investment'] = {
+                        'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
+                        'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                        'namespace': 'ns_invest', 'dataframe_edition_locked': False}
+                dynamic_inputs['crop_investment'] = {
+                        'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
+                        'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                        'namespace': 'ns_invest', 'dataframe_edition_locked': False}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -160,6 +176,12 @@ class IndependentInvestDiscipline(SoSDiscipline):
             scaling_factor_energy_investment
 
         techno_invest_sum += inputs_dict['forest_investment']['forest_investment'].values
+
+        if inputs_dict['is_dev']:
+            techno_invest_sum += inputs_dict['managed_wood_investment']['investment'].values
+            techno_invest_sum += inputs_dict['unmanaged_wood_investment']['investment'].values
+            techno_invest_sum += inputs_dict['crop_investment']['investment'].values
+
         delta_years = len(years)
         idt = np.identity(delta_years)
         ddelta_dtech = -idt / energy_invest
@@ -195,6 +217,19 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         self.set_partial_derivative_for_other_types(
             ('invest_sum_cons',), ('forest_investment', 'forest_investment'), -dinvest_objective_sum_cons_dtechno_invest / delta_years)
+
+        if inputs_dict['is_dev']:
+            for techno in ['managed_wood_investment', 'unmanaged_wood_investment', 'crop_investment']:
+                self.set_partial_derivative_for_other_types(
+                    ('invest_constraint', 'invest_constraint'), (techno, 'investment'),  ddelta_dtech / invest_constraint_ref)
+                self.set_partial_derivative_for_other_types(
+                    ('invest_objective', 'invest_constraint'), (techno, 'investment'),  dinvest_objective_dtechno_invest)
+
+                self.set_partial_derivative_for_other_types(
+                    ('invest_objective_sum',), (techno, 'investment'), dinvest_objective_sum_dtechno_invest)
+
+                self.set_partial_derivative_for_other_types(
+                    ('invest_sum_cons',), (techno, 'investment'), -dinvest_objective_sum_cons_dtechno_invest / delta_years)
 
         self.set_partial_derivative_for_other_types(
             ('invest_constraint', 'invest_constraint'), ('energy_investment', 'energy_investment'),  ddelta_dtot * scaling_factor_energy_investment / invest_constraint_ref)
@@ -303,6 +338,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         instanciated_charts = []
         charts = []
+        is_dev = self.get_sosdisc_inputs('is_dev')
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -359,8 +395,26 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
             new_chart_energy.series.append(serie)
 
-            instanciated_charts.insert(0, new_chart_energy)
+            if is_dev: 
+                chart_name = f'Distribution of agriculture sector investments vs years'
+                agriculture_chart = TwoAxesInstanciatedChart('years', 'Invest [G$]',
+                                                        chart_name=chart_name, stacked_bar=True)
+                                                        
+                for techno in ['managed_wood_investment', 'unmanaged_wood_investment', 'crop_investment']:
+                    invest = self.get_sosdisc_inputs(techno)
+                    serie_agriculture = InstanciatedSeries(
+                        invest['years'].values.tolist(),
+                        invest['investment'].values.tolist(), techno.replace("_investment", ""), 'bar')
+                    agriculture_chart.series.append(serie_agriculture)
+                    serie = InstanciatedSeries(
+                        invest['years'].values.tolist(),
+                        invest['investment'].tolist(), techno.replace("_investment", ""), 'bar')
+                    new_chart_energy.series.append(serie)
+                instanciated_charts.append(agriculture_chart)
+                instanciated_charts.insert(0, new_chart_energy)
 
+
+            instanciated_charts.insert(0, new_chart_energy)
             if 'Delta invest' in charts:
 
                 techno_invests = self.get_sosdisc_inputs(
@@ -370,6 +424,10 @@ class IndependentInvestDiscipline(SoSDiscipline):
                     axis=1)
                 forest_investment = self.get_sosdisc_inputs('forest_investment')
                 techno_invests_sum += forest_investment['forest_investment']
+                if is_dev:
+                    for techno in ['managed_wood_investment', 'unmanaged_wood_investment', 'crop_investment']:
+                        invest = self.get_sosdisc_inputs(techno)
+                        techno_invests_sum += invest['investment']
                 energy_investment = self.get_sosdisc_inputs(
                     'energy_investment')
                 scaling_factor_energy_investment = self.get_sosdisc_inputs(
