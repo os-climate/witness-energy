@@ -54,7 +54,7 @@ class Refinery(LiquidFuelTechno):
             self.resources_prices[self.OIL_RESOURCE_NAME] * self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] / self.cost_details['efficiency'])
 
         # in kWh of hydrogen per kWh of fuel
-        self.cost_details[GaseousHydrogen.name] = list(self.techno_infos_dict['hydrogen_demand'] * self.prices[GaseousHydrogen.name])
+        self.cost_details[GaseousHydrogen.name] = list(self.techno_infos_dict['hydrogen_demand'] * self.prices[GaseousHydrogen.name]) / self.cost_details['efficiency']
 
         return self.cost_details[Electricity.name] + self.cost_details[self.OIL_RESOURCE_NAME] + self.cost_details[GaseousHydrogen.name]
 
@@ -65,7 +65,9 @@ class Refinery(LiquidFuelTechno):
         '''
         elec_needs = self.get_electricity_needs()
 
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs}
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
+                GaseousHydrogen.name: np.identity(len(self.years)) * self.techno_infos_dict['hydrogen_demand'],
+                }
 
     def grad_price_vs_resources_price(self):
         '''
@@ -75,8 +77,6 @@ class Refinery(LiquidFuelTechno):
         return {
             self.OIL_RESOURCE_NAME: np.identity(
                 len(self.years)) * oil_needs,
-            GaseousHydrogen.name: np.identity(
-                len(self.years)) * self.techno_infos_dict['hydrogen_demand'],
         }
 
     def compute_consumption_and_production(self):
@@ -181,7 +181,9 @@ class Refinery(LiquidFuelTechno):
         self.carbon_emissions[self.OIL_RESOURCE_NAME] = self.resources_CO2_emissions[f'{self.OIL_RESOURCE_NAME}'] * \
             self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs']
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[self.OIL_RESOURCE_NAME]
+        return self.carbon_emissions[f'{Electricity.name}'] + \
+               self.carbon_emissions[self.OIL_RESOURCE_NAME] + \
+               self.carbon_emissions[f'{GaseousHydrogen.name}']
 
     def compute_prod_from_invest(self, construction_delay):
         '''
