@@ -676,11 +676,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         loss_percentage += (1.0 -
                                             self.energy_model.raw_tonet_dict[energy])
                     loss_percent = heat_losses_percentage + loss_percentage
-                    # To model raw to net percentage for witness coarse
-                    # energies
-                    if energy in self.energy_model.raw_tonet_dict:
-                        loss_percent += (1.0 -
-                                         self.energy_model.raw_tonet_dict[energy])
+
                     dtotal_prod_denergy_prod = self.compute_dtotal_production_denergy_production(
                         production_detailed_df, minimum_energy_production, loss_percent)
 
