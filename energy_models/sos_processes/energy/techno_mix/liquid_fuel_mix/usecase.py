@@ -73,6 +73,7 @@ class Study(EnergyMixStudyManager):
                                            'electricity': 16.0,
                                            'CO2': 0.0,
                                            'crude oil': 38.0,
+                                           'hydrogen.gaseous_hydrogen': 15.,
                                            'syngas': 50.0})
 
         self.syngas_detailed_prices = pd.DataFrame({'CoalGasification': np.ones(len(years)) * 50.0,
@@ -137,11 +138,12 @@ if '__main__' == __name__:
                    technologies_list=TECHNOLOGIES_LIST)
     uc_cls.load_data()
     uc_cls.run()
-    # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
-    #     for graph in graph_list:
-    #         graph.to_plotly().show()
+    ppf = PostProcessingFactory()
+    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+        if disc.name == 'EnergyMix.fuel.liquid_fuel.Refinery':
+            filters = ppf.get_post_processing_filters_by_discipline(
+                disc)
+            graph_list = ppf.get_post_processing_by_discipline(
+                disc, filters, as_json=False)
+            for graph in graph_list:
+                graph.to_plotly().show()

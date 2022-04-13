@@ -22,8 +22,7 @@ import pandas as pd
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
-from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum, smooth_maximum_vect,\
-    get_dsmooth_dvariable, get_dsmooth_dvariable_vect
+from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect, get_dsmooth_dvariable_vect
 from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
 
 
@@ -266,8 +265,10 @@ class TechnoType:
                 # If a match is found, calculate the
                 # smooth_min(smooth_min(x)=-smooth_max(-x)) between all the
                 # matches for each year
-                ratio_values = - smooth_maximum_vect(
-                    -self.ratio_df[elements].values, alpha=10)
+
+                ratio_values = - \
+                    smooth_maximum_vect(-self.ratio_df[elements].values)
+
                 min_ratio_name = self.ratio_df[elements].columns[np.argmin(
                     self.ratio_df[elements].values, axis=1)].values
 
@@ -760,7 +761,8 @@ class TechnoType:
 
         elif data_tocheck['Capex_init_unit'] == '$/kWh':
             capex_init = data_tocheck['Capex_init']
-
+        elif data_tocheck['Capex_init_unit'] == '$/MWh':
+            capex_init = data_tocheck['Capex_init'] / 1.0e3
         elif data_tocheck['Capex_init_unit'] == 'euro/ha':
 
             density_per_ha = data_tocheck['density_per_ha']
@@ -1116,7 +1118,7 @@ class TechnoType:
         if is_apply_ratio:
             if len(elements) > 0:
                 dsmooth_matrix = get_dsmooth_dvariable_vect(
-                    -self.ratio_df[elements].values, alpha=10)
+                    -self.ratio_df[elements].values)
                 for i, element in enumerate(self.ratio_df[elements].columns):
                     dsmooth_dvariable[element] = dsmooth_matrix.T[i]
 

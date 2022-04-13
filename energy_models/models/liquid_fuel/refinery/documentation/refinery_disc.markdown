@@ -69,6 +69,14 @@ As shown in the study [^7], overall petroleum oil refinery efficiency is around 
 We took 22000 USD per barrel and an OPEX percentage of 0.04, extracted from the following document [^8]:
 ![](Capex_opex_refinery.PNG)
 
+**Hydrogen Consumption:**
+Refineries use hydrogen to lower the sulfur content of diesel fuel. Refinery demand for hydrogen has increased as 
+demand for diesel fuel has risen both domestically and internationally, and as sulfur-content regulations have become 
+more stringent. Oil refining is the largest consumer of hydrogen today (close to 40 Mt in 2020), and will remain so 
+in the short to medium term. Hydrogen used in this sector is normally produced onsite by steam methane reforming, 
+separated from by-product gases from petrochemical processes or sourced externally as merchant hydrogen 
+(typically produced in dedicated plants for hydrogen production using steam methane reforming).[^9]
+
 [^1]: Oil Refinery Wikipedia page, https://en.wikipedia.org/wiki/Oil_refinery
 [^2]: Allocation of Energy Use in Petroleum Refineries to Petroleum Products, Center for Transportation Research, https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.200.6273&rep=rep1&type=pdf
 [^3]: Global prices for oil products, https://www.globalpetrolprices.com/
@@ -78,3 +86,4 @@ We took 22000 USD per barrel and an OPEX percentage of 0.04, extracted from the 
 [^7]: Updated Estimation of Energy Efficiencies of U.S. Petroleum Refineries, Transportation Research
 Argonne National Laboratory, https://publications.anl.gov/anlpubs/2011/01/69026.pdf
 [^8]: CAPEX & OPEX Refinery Cost per Barrel a Day Benchmarks Total Installed Engineering, Procurement & Construction (EPC) 2018 Cost Basis, Compass International, https://www.compassinternational.net/wp-content/uploads/2018/02/TR_Capex.pdf
+[^9]: IEA Hydrogen Report, https://www.iea.org/reports/hydrogen

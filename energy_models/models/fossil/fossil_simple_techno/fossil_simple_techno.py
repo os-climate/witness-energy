@@ -16,6 +16,7 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.fossil_techno import FossilTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_models.fossil import Fossil
 
 
 class FossilSimpleTechno(FossilTechno):
@@ -24,7 +25,8 @@ class FossilSimpleTechno(FossilTechno):
         """
         Compute primary costs which depends on the technology
         """
-        return 0
+        self.cost_details['resource_price'] = self.techno_infos_dict['resource_price']
+        return self.cost_details['resource_price']
 
     def compute_consumption_and_production(self):
         """
@@ -33,6 +35,15 @@ class FossilSimpleTechno(FossilTechno):
         """
         self.compute_primary_energy_production()
 
+        # co2_from_raw_to_net will represent the co2 emitted from the use of
+        # the fossil energy into other fossil energies. For example generation
+        # of fossil electricity from fossil fuels
+        co2_per_use = self.data_energy_dict['CO2_per_use'] / \
+            self.data_energy_dict['calorific_value']
+        co2_from_raw_to_net = self.production[f'{FossilTechno.energy_name} ({self.product_energy_unit})'].values * (
+            1.0 - Fossil.raw_to_net_production) * co2_per_use
+
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
             self.data_energy_dict['calorific_value'] * \
-            self.production[f'{FossilTechno.energy_name} ({self.product_energy_unit})']
+            self.production[f'{FossilTechno.energy_name} ({self.product_energy_unit})'] + \
+            co2_from_raw_to_net
