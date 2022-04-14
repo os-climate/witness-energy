@@ -74,6 +74,19 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency}
 
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
+
+        naturaloil_data = NaturalOil.data_energy_dict
+        efficiency = self.techno_infos_dict['efficiency']
+        oil_needs = self.get_theoretical_natural_oil_needs() / naturaloil_data['calorific_value'] / efficiency
+        return {
+            NaturalOil.name: np.identity(
+                len(self.years)) * oil_needs,
+        }
+
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
