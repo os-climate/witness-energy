@@ -304,3 +304,62 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             ('techno_prices', self.techno_name), ('CO2_taxes', 'CO2_tax'), dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
+
+        '''
+   GRADIENT H2 VS ALL_DEMAND_RATIO
+        '''
+        if 'electricity' in self.dprod_dratio.keys():
+            dhydro_prod_dratio_elec = self.dprod_dratio['electricity'] * \
+                scaling_factor_invest_level
+        else:
+            dhydro_prod_dratio_elec = np.array([[0] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[
+                0]][0])] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[0]][0]))
+        if 'methane' in self.dprod_dratio.keys():
+            dhydro_prod_dratio_meth = self.dprod_dratio['methane'] * \
+                scaling_factor_invest_level
+        else:
+            dhydro_prod_dratio_meth = np.array([[0] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[
+                0]][0])] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[0]][0]))
+
+        if 'electricity' in self.dprod_column_dratio[f"{ResourceGlossary.Carbon['name']} (Mt)"].keys():
+            dcarbon_prod_dratio_elec = self.dprod_column_dratio[f"{ResourceGlossary.Carbon['name']} (Mt)"]['electricity'] * \
+                scaling_factor_invest_level  # / scaling_factor_techno_production
+        else:
+            dcarbon_prod_dratio_elec = np.array([[0] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[
+                0]][0])] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[0]][0]))
+        if 'methane' in self.dprod_column_dratio[f"{ResourceGlossary.Carbon['name']} (Mt)"].keys():
+            dcarbon_prod_dratio_meth = self.dprod_column_dratio[f"{ResourceGlossary.Carbon['name']} (Mt)"]['methane'] * \
+                scaling_factor_invest_level  # / scaling_factor_techno_production
+        else:
+            dcarbon_prod_dratio_meth = np.array([[0] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[
+                0]][0])] * len(self.dprod_dratio[list(self.dprod_dratio.keys())[0]][0]))
+
+        dpercentage_resources_dratio_elec = self.techno_model.grad_percentage_resource_vs_ratio(
+            CO2_credits, carbon_market_demand, dhydro_prod_dratio_elec, dcarbon_prod_dratio_elec)
+        dpercentage_resources_dratio_meth = self.techno_model.grad_percentage_resource_vs_ratio(
+            CO2_credits, carbon_market_demand, dhydro_prod_dratio_meth, dcarbon_prod_dratio_meth)
+
+        self.set_partial_derivative_for_other_types(
+            ('percentage_resource', 'hydrogen.gaseous_hydrogen'), ('all_streams_demand_ratio', 'electricity'), dpercentage_resources_dratio_elec)
+        self.set_partial_derivative_for_other_types(
+            ('percentage_resource', 'hydrogen.gaseous_hydrogen'), ('all_streams_demand_ratio', 'methane'), dpercentage_resources_dratio_meth)
+
+        x = np.array(
+            [[x_i if x_i > 0.0 else 1e-6 for x_i in percentage_resource], ] * len(years)).transpose()
+        y = np.array([techno_prices, ] * len(years)).transpose()
+        y_wotaxes = np.array(
+            [techno_prices_wotaxes, ] * len(years)).transpose()
+        value_elec = dpercentage_resources_dratio_elec * y / x
+        value_wotaxes_elec = dpercentage_resources_dratio_elec * y_wotaxes / x
+        value_meth = dpercentage_resources_dratio_meth * y / x
+        value_wotaxes_meth = dpercentage_resources_dratio_meth * y_wotaxes / x
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_prices', self.techno_name), ('all_streams_demand_ratio', 'electricity'), value_elec / 100)
+        self.set_partial_derivative_for_other_types(
+            ('techno_prices', f'{self.techno_name}_wotaxes'), ('all_streams_demand_ratio', 'electricity'), value_wotaxes_elec / 100)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_prices', self.techno_name), ('all_streams_demand_ratio', 'methane'), value_meth / 100)
+        self.set_partial_derivative_for_other_types(
+            ('techno_prices', f'{self.techno_name}_wotaxes'), ('all_streams_demand_ratio', 'methane'), value_wotaxes_meth / 100)
