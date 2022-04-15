@@ -174,6 +174,9 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
             'scaling_factor_techno_production')
         scaling_factor_techno_consumption = self.get_sosdisc_inputs(
             'scaling_factor_techno_consumption')
+        inputs_dict = self.get_sosdisc_inputs()
+        invest_level = inputs_dict['invest_level']
+        scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
 
         d_prod_dland_for_food = self.techno_model.compute_grad_dprod_dland_for_food()
         d_conso_dland_for_food = self.techno_model.compute_grad_dconso_dland_for_food()
@@ -184,6 +187,21 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
             ('techno_consumption', f'{CO2.name} (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
             ('techno_consumption_woratio', f'{CO2.name} (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
+        self.set_partial_derivative_for_other_types(
+            ('techno_capital', f'{self.techno_name}'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_prod_dland_for_food / scaling_factor_techno_production)
+
+
+        dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
+            invest_level.loc[invest_level['years']
+                             <= self.techno_model.year_end]['invest'].values * scaling_factor_invest_level, self.techno_model.techno_infos_dict, self.techno_model.initial_production)
+
+        dnon_use_capital_dinvest, dtechnocapital_dinvest = self.techno_model.compute_dnon_usecapital_dinvest(
+            dcapex_dinvest, d_prod_dland_for_food / scaling_factor_techno_production)
+        self.set_partial_derivative_for_other_types(
+            ('non_use_capital', self.techno_model.name), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), dnon_use_capital_dinvest)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_capital', self.techno_model.name), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), dtechnocapital_dinvest)
 
     def get_post_processing_list(self, filters=None):
         charts = []
