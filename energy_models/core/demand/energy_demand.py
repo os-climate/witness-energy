@@ -138,8 +138,10 @@ class EnergyDemand(object):
 
         sum_production_wo_elec = np.zeros(self.delta_years)
         for energy_name in self.energy_list_transport:
+
             energ_prod_column = f"production {energy_name} ({EnergyMix.stream_class_dict[energy_name].unit})"
-            sum_production_wo_elec = sum_production_wo_elec + self.energy_production_detailed[energ_prod_column].values
+            if energ_prod_column in self.energy_production_detailed.columns:
+                sum_production_wo_elec = sum_production_wo_elec + self.energy_production_detailed[energ_prod_column].values
 
         self.transport_demand_constraint = (sum_production_wo_elec - self.transport_demand_df['transport_demand'].values) / self.transport_demand_constraint_ref
 
