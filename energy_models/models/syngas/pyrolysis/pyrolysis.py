@@ -66,8 +66,7 @@ class Pyrolysis(SyngasTechno):
             self.techno_infos_dict['bio_oil_yield'] / \
             self.techno_infos_dict['syngas_yield']
 
-        wood_name = ResourceGlossary.Wood['name']
-        self.consumption[f'{wood_name} ({self.mass_unit})'] = self.cost_details['wood_needs'] * \
+        self.consumption[f'wood ({self.mass_unit})'] = self.cost_details['wood_needs'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):
