@@ -210,7 +210,7 @@ class Study(EnergyStudyManager):
                 ['total_prod_solid_fuel_elec'])
             list_parent.extend(['Energy_constraints'])
             list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([-1.])
+            list_weight.extend([0.])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
@@ -220,7 +220,7 @@ class Study(EnergyStudyManager):
                 ['total_prod_h2_liquid'])
             list_parent.extend(['Energy_constraints'])
             list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([-1.])
+            list_weight.extend([0.])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
@@ -246,15 +246,15 @@ class Study(EnergyStudyManager):
             list_namespaces.extend(['ns_functions', 'ns_functions'])
 
         if set(EnergyDemandDiscipline.energy_constraint_list).issubset(self.energy_list):
-            for energy in EnergyDemandDiscipline.energy_constraint_list:
-                list_var.extend(
-                    [f'{energy}_demand_constraint'])
-                list_parent.extend(['demand_constraint'])
-                list_ftype.extend([INEQ_CONSTRAINT])
-                list_weight.extend([0.])
-                list_aggr_type.extend(
-                    [AGGR_TYPE_SUM])
-                list_namespaces.extend(['ns_functions'])
+
+            list_var.extend(
+                ['electricity_demand_constraint','transport_demand_constraint'])
+            list_parent.extend(['demand_constraint', 'demand_constraint'])
+            list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
+            list_weight.extend([0., 0.])
+            list_aggr_type.extend(
+                [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            list_namespaces.extend(['ns_functions', 'ns_functions'])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
