@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import AgricultureMixDiscipline
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
@@ -107,7 +108,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
 
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%', 'range': [0., 100.]}, }
+               'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%', 'range': [0., 100.]}, 
+                ### WIP is_dev to remove once its validated on dev processes
+                'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
 
     DESC_OUT = {
         'All_Demand': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
@@ -172,32 +175,50 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         dynamic_inputs = {}
         dynamic_outputs = {}
-
+        if 'is_dev' in self._data_in:
+            is_dev = self.get_sosdisc_inputs('is_dev')
+                
         if 'energy_list' in self._data_in:
             energy_list = self.get_sosdisc_inputs('energy_list')
             self.update_default_energy_list()
             if energy_list is not None:
                 for energy in energy_list:
-                    dynamic_inputs[f'{energy}.energy_consumption'] = {
-                        'type': 'dataframe', 'unit': 'PWh'}
-                    dynamic_inputs[f'{energy}.energy_consumption_woratio'] = {
-                        'type': 'dataframe', 'unit': 'PWh'}
-                    dynamic_inputs[f'{energy}.energy_production'] = {
-                        'type': 'dataframe', 'unit': 'PWh'}
-                    dynamic_inputs[f'{energy}.energy_prices'] = {
-                        'type': 'dataframe', 'unit': '$/MWh'}
-                    dynamic_inputs[f'{energy}.land_use_required'] = {
-                        'type': 'dataframe', 'unit': '(Gha)'}
-
+                    if energy == BiomassDry.name and is_dev == True:
+                        dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_consumption'] = {
+                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                        dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_consumption_woratio'] = {
+                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                        dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_production'] = {
+                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                        dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_prices'] = {
+                            'type': 'dataframe', 'unit': '$/MWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                        dynamic_inputs[f'{AgricultureMixDiscipline.name}.land_use_required'] = {
+                            'type': 'dataframe', 'unit': '(Gha)', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                    else:
+                        dynamic_inputs[f'{energy}.energy_consumption'] = {
+                            'type': 'dataframe', 'unit': 'PWh'}
+                        dynamic_inputs[f'{energy}.energy_consumption_woratio'] = {
+                            'type': 'dataframe', 'unit': 'PWh'}
+                        dynamic_inputs[f'{energy}.energy_production'] = {
+                            'type': 'dataframe', 'unit': 'PWh'}
+                        dynamic_inputs[f'{energy}.energy_prices'] = {
+                            'type': 'dataframe', 'unit': '$/MWh'}
+                        dynamic_inputs[f'{energy}.land_use_required'] = {
+                            'type': 'dataframe', 'unit': '(Gha)'}
                     if energy in self.energy_class_dict:
                         dynamic_inputs[f'{energy}.data_fuel_dict'] = {
                             'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
                             'namespace': 'ns_energy_mix', 'default':  self.energy_class_dict[energy].data_energy_dict}
-                        dynamic_inputs[f'{energy}.CO2_emissions'] = {
-                            'type': 'dataframe', 'unit': 'kgCO2/kWh'}
-                        dynamic_inputs[f'{energy}.CO2_per_use'] = {
-                            'type': 'dataframe', 'unit': 'kgCO2/kWh'}
-
+                        if energy == BiomassDry.name and is_dev == True:
+                            dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_emissions'] = {
+                                'type': 'dataframe', 'unit': 'kgCO2/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_per_use'] = {
+                                'type': 'dataframe', 'unit': 'kgCO2/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                        else:
+                            dynamic_inputs[f'{energy}.CO2_emissions'] = {
+                                'type': 'dataframe', 'unit': 'kgCO2/kWh'}
+                            dynamic_inputs[f'{energy}.CO2_per_use'] = {
+                                'type': 'dataframe', 'unit': 'kgCO2/kWh'}
                         dynamic_inputs[f'{energy}.losses_percentage'] = {
                             'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy], 'range': [0., 100.]}
 
@@ -270,7 +291,18 @@ class Energy_Mix_Discipline(SoSDiscipline):
         #-- get inputs
         inputs_dict = self.get_sosdisc_inputs()
         #-- configure class with inputs
-        #
+        #-- biomass dry values are coming from agriculture mix discipline, but needs to be used in model with biomass dry name
+        inputs_dict_2 = {}
+        inputs_dict_2.update(inputs_dict)
+        if inputs_dict_2['is_dev']:
+            inputs_dict_2[f'{BiomassDry.name}.energy_consumption'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.energy_consumption')
+            inputs_dict_2[f'{BiomassDry.name}.energy_consumption_woratio'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.energy_consumption_woratio')
+            inputs_dict_2[f'{BiomassDry.name}.energy_production'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.energy_production')
+            inputs_dict_2[f'{BiomassDry.name}.energy_prices'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.energy_prices')
+            inputs_dict_2[f'{BiomassDry.name}.land_use_required'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.land_use_required')
+            inputs_dict_2[f'{BiomassDry.name}.CO2_emissions'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.CO2_emissions')
+            inputs_dict_2[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.CO2_per_use')
+
         self.energy_model.configure_parameters_update(inputs_dict)
 
         #-- compute informations
