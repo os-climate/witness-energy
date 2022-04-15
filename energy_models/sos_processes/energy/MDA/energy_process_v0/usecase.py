@@ -689,7 +689,8 @@ class Study(EnergyStudyManager):
 
         population_df = pd.DataFrame(
             {"years": self.years, "population": np.linspace(7886.69358, 9000., len(self.years))})
-
+        transport_demand=pd.DataFrame({'years': self.years,
+                                'transport_demand': np.linspace(33600., 30000., len(self.years))})
         values_dict = {f'{self.study_name}.energy_investment': invest_df,
                        f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
@@ -712,6 +713,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.resources_CO2_emissions': self.resources_CO2_emissions,
                        f'{self.study_name}.{energy_mix_name}.resources_price': self.resources_prices,
                        f'{self.study_name}.population_df': population_df,
+                       f'{self.study_name}.Energy_demand.transport_demand' : transport_demand,
                        }
 
         values_dict_list, dspace_list, instanciated_studies = self.setup_usecase_sub_study_list(
