@@ -121,5 +121,12 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
 
         carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
 
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
+        grad_dict_resources_co2 = self.techno_model.grad_co2_emissions_vs_resources_co2_emissions()
+
         self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions)
+            grad_dict, carbon_emissions, grad_dict_resources)
+
+        for resource, value in grad_dict_resources_co2.items():
+            self.set_partial_derivative_for_other_types(
+                ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)

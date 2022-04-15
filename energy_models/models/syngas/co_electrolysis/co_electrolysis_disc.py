@@ -96,3 +96,19 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = CoElectrolysis(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
+
+    def compute_sos_jacobian(self):
+        # Grad of price vs energyprice
+
+        SyngasTechnoDiscipline.compute_sos_jacobian(self)
+        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
+        grad_dict_resources_co2 = self.techno_model.grad_co2_emissions_vs_resources_co2_emissions()
+
+        self.set_partial_derivatives_techno(
+            grad_dict, carbon_emissions, grad_dict_resources)
+
+        for resource, value in grad_dict_resources_co2.items():
+            self.set_partial_derivative_for_other_types(
+                ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)

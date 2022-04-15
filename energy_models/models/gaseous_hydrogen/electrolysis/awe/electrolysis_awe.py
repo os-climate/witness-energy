@@ -49,6 +49,15 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         return {Electricity.name: np.identity(len(self.years)) / efficiency.values,
                 }
 
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
+        water_needs = self.get_water_needs()
+        return {
+            Water.name: np.identity(len(self.years)) * water_needs,
+        }
+
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account positive CO2 from methane and elec prod

@@ -51,9 +51,18 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1)
 
         self.energy_production_detailed = pd.DataFrame({'years': self.years,
-                                                        EnergyDemand.elec_prod_column: np.linspace(20000, 19000, len(self.years))})
+                                                        EnergyDemand.elec_prod_column: np.linspace(20000, 19000, len(self.years)),
+                                                        'production hydrogen.liquid_hydrogen (TWh)' : np.linspace(20000, 19000, len(self.years)),
+                                                        'production fuel.liquid_fuel (TWh)': np.linspace(10000, 12000, len(self.years)),
+                                                        'production fuel.biodiesel (TWh)': np.linspace(11000, 12000, len(self.years)),
+                                                        'production methane (TWh)': np.linspace(5000., 6000., len(self.years)),
+                                                        'production biogas (TWh)': np.linspace(1000., 1500., len(self.years)),
+                                                        'production fuel.hydrotreated_oil_fuel (TWh)': np.linspace(2000., 3000., len(self.years)),
+                                                        })
         self.population = pd.DataFrame({'years': self.years,
                                         'population': np.linspace(7794.79, 9000., len(self.years))})
+        self.transport_demand=pd.DataFrame({'years': self.years,
+                                'transport_demand': np.linspace(33600., 30000., len(self.years))})
 
     def tearDown(self):
         pass
@@ -83,6 +92,7 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.energy_production_detailed': self.energy_production_detailed,
                        f'{self.name}.population_df': self.population,
+                       f'{self.name}.{self.model_name}.transport_demand': self.transport_demand
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -92,7 +102,8 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.energy_production_detailed',
                                     f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.{self.model_name}.electricity_demand_constraint'
+                            outputs=[f'{self.name}.{self.model_name}.electricity_demand_constraint',
+                                     f'{self.name}.{self.model_name}.transport_demand_constraint'
                                      ],)
 
 

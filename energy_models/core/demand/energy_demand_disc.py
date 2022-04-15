@@ -52,14 +52,20 @@ class EnergyDemandDiscipline(SoSDiscipline):
                'initial_electricity_demand': {'type': 'float', 'default': 20900., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': ''},
                'electricity_demand_constraint_ref': {'type': 'float', 'default': 100.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'}, }
+               'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+               'transport_demand': {'type': 'dataframe' , 'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
+                                                                            'transport_demand': ('float',  None, True)},
+                                              'dataframe_edition_locked': False, 'unit': 'TWh'},
+               'transport_demand_constraint_ref': {'type': 'float', 'default': 100.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'additional_demand_transport': {'type': 'float', 'default': 10., 'unit': '%'}}
 
     DESC_OUT = {'electricity_demand_constraint': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
                 'electricity_demand': {'type': 'dataframe', 'unit': 'TWh'},
+                'transport_demand_constraint':{'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
                 }
     name = EnergyDemand.name
     # The list of all energy constraints implemented in the discipline
-    energy_constraint_list = [Electricity.name]
+    energy_constraint_list = [Electricity.name] + EnergyDemand.energy_list_transport
     elec_prod_column = EnergyDemand.elec_prod_column
 
     def init_execution(self):
@@ -78,7 +84,8 @@ class EnergyDemandDiscipline(SoSDiscipline):
 
         self.store_sos_outputs_values(
             {'electricity_demand_constraint': self.demand_model.get_elec_demand_constraint(),
-             'electricity_demand': self.demand_model.get_elec_demand()})
+             'electricity_demand': self.demand_model.get_elec_demand(),
+             'transport_demand_constraint': self.demand_model.get_transport_demand_constraint()})
 
     def compute_sos_jacobian(self):
         '''
@@ -91,6 +98,15 @@ class EnergyDemandDiscipline(SoSDiscipline):
         delec_demand_cosntraint_dpop = self.demand_model.compute_delec_demand_constraint_dpop()
         self.set_partial_derivative_for_other_types(
             ('electricity_demand_constraint', 'elec_demand_constraint'), ('population_df', 'population'),  delec_demand_cosntraint_dpop)
+        dtransport_demand_denergy_prod = self.demand_model.compute_dtransport_demand_dprod()
+
+        for energy_name in self.demand_model.energy_list_transport:
+
+            self.set_partial_derivative_for_other_types(
+                ('transport_demand_constraint',),  ('energy_production_detailed', f"production {energy_name} ({EnergyMix.stream_class_dict[energy_name].unit})"),
+                dtransport_demand_denergy_prod)
+
+
 
     def get_chart_filter_list(self):
 
