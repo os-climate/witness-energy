@@ -45,7 +45,7 @@ class Transesterification(BioDieselTechno):
         self.cost_details[f'{SodiumHydroxide.name}_needs'] = self.get_theoretical_sodium_hydroxide_needs(
         )
         # need in kg/kwh biodiesel
-        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_sodium_hydroxide_needs(
+        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs(
         )
         # need in kWh/kwh biodiesel
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs(
@@ -101,7 +101,7 @@ class Transesterification(BioDieselTechno):
         oil_needs = self.get_theoretical_natural_oil_needs()
         methanol_needs = self.get_theoretical_methanol_needs()
         sodium_hydroxide_needs = self.get_theoretical_sodium_hydroxide_needs()
-        water_needs = self.get_theoretical_sodium_hydroxide_needs()
+        water_needs = self.get_theoretical_water_needs()
 
         return {
             NaturalOil.name: np.identity(len(self.years)) * oil_needs / efficiency,
