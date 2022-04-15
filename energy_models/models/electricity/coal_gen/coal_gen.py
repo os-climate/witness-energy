@@ -88,6 +88,13 @@ class CoalGen(ElectricityTechno):
         efficiency = self.configure_efficiency()
         return {SolidFuel.name: np.identity(len(self.years)) * solid_fuel_needs / efficiency[:, np.newaxis]}
 
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
+        water_needs = self.techno_infos_dict['water_demand']
+        return {Water.name: np.identity(len(self.years)) * water_needs}
+
     def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapex_list_dinvest_list):
 
         dprod_dinvest = ElectricityTechno.compute_dprod_dinvest(
