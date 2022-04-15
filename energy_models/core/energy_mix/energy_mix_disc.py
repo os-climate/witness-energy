@@ -289,19 +289,19 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
     def run(self):
         #-- get inputs
-        inputs_dict = self.get_sosdisc_inputs()
+        inputs_dict_orig = self.get_sosdisc_inputs()
         #-- configure class with inputs
         #-- biomass dry values are coming from agriculture mix discipline, but needs to be used in model with biomass dry name
-        inputs_dict_2 = {}
-        inputs_dict_2.update(inputs_dict)
-        if inputs_dict_2['is_dev']:
-            inputs_dict_2[f'{BiomassDry.name}.energy_consumption'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.energy_consumption')
-            inputs_dict_2[f'{BiomassDry.name}.energy_consumption_woratio'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.energy_consumption_woratio')
-            inputs_dict_2[f'{BiomassDry.name}.energy_production'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.energy_production')
-            inputs_dict_2[f'{BiomassDry.name}.energy_prices'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.energy_prices')
-            inputs_dict_2[f'{BiomassDry.name}.land_use_required'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.land_use_required')
-            inputs_dict_2[f'{BiomassDry.name}.CO2_emissions'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.CO2_emissions')
-            inputs_dict_2[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict.pop(f'{AgricultureMixDiscipline.name}.CO2_per_use')
+        inputs_dict = {}
+        inputs_dict.update(inputs_dict_orig)
+        if inputs_dict['is_dev']:
+            inputs_dict[f'{BiomassDry.name}.energy_consumption'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_consumption')
+            inputs_dict[f'{BiomassDry.name}.energy_consumption_woratio'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_consumption_woratio')
+            inputs_dict[f'{BiomassDry.name}.energy_production'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_production')
+            inputs_dict[f'{BiomassDry.name}.energy_prices'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_prices')
+            inputs_dict[f'{BiomassDry.name}.land_use_required'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.land_use_required')
+            inputs_dict[f'{BiomassDry.name}.CO2_emissions'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.CO2_emissions')
+            inputs_dict[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.CO2_per_use')
 
         self.energy_model.configure_parameters_update(inputs_dict)
 
