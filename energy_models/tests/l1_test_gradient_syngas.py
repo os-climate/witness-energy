@@ -34,7 +34,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
     """
     Syngas jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -171,7 +171,10 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.syngas_ratio',
@@ -223,7 +226,10 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.syngas_ratio',
@@ -485,7 +491,10 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.syngas_ratio',
