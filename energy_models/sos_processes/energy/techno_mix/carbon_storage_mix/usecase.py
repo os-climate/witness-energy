@@ -25,11 +25,11 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 
 DEFAULT_TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
                              'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
-                             'PureCarbonSolidStorage', 'Reforestation']
-TECHNOLOGIES_LIST = ['DeepSalineFormation', 'DepletedOilGas', 'GeologicMineralization', 'Reforestation']
+                             'PureCarbonSolidStorage']
+TECHNOLOGIES_LIST = ['DeepSalineFormation', 'DepletedOilGas', 'GeologicMineralization']
 TECHNOLOGIES_LIST_DEV = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
                              'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
-                             'PureCarbonSolidStorage', 'Reforestation']
+                             'PureCarbonSolidStorage']
 
 
 class Study(EnergyMixStudyManager):
@@ -79,9 +79,6 @@ class Study(EnergyMixStudyManager):
             invest_carbon_storage_mix_dict['PureCarbonSolidStorage'] = [
                 5 * (1 + 0.0) ** i for i in l_ctrl]
 
-        if 'Reforestation' in self.technologies_list:
-            invest_carbon_storage_mix_dict['Reforestation'] = [
-                5 * (1 + 0.0) ** i for i in l_ctrl]
         if 'CarbonStorageTechno' in self.technologies_list:
             invest_carbon_storage_mix_dict['CarbonStorageTechno'] = [
                 10 * (1 + 0.03) ** i for i in l_ctrl]

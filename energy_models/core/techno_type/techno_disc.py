@@ -426,15 +426,16 @@ class TechnoDiscipline(SoSDiscipline):
                 ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_price', resource), value *
                 self.techno_model.margin['margin'].values / 100.0)
 
-            # resources carbon emissions
-            sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
-                        self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
-                        self.techno_model.year_end][self.techno_name]) ** 2
-            grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
+            if carbon_emissions is not None:
+                # resources carbon emissions
+                sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
+                            self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
+                            self.techno_model.year_end][self.techno_name]) ** 2
+                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
 
-            self.dprices_demissions[resource] = grad_on_co2_tax
-            self.set_partial_derivative_for_other_types(
-                ('techno_prices', self.techno_name), ('resources_CO2_emissions', resource), self.dprices_demissions[resource])
+                self.dprices_demissions[resource] = grad_on_co2_tax
+                self.set_partial_derivative_for_other_types(
+                    ('techno_prices', self.techno_name), ('resources_CO2_emissions', resource), self.dprices_demissions[resource])
 
     def get_chart_filter_list(self):
 
