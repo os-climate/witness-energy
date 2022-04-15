@@ -37,7 +37,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
     """
     Carbon capture jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -176,7 +176,11 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.energy_CO2_emissions',
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -229,7 +233,11 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.energy_CO2_emissions',
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
