@@ -129,6 +129,7 @@ class PelletsPriceTestCase(unittest.TestCase):
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                       'is_softmax': False,
                        'data_fuel_dict': SolidFuel.data_energy_dict,
                        }
 
