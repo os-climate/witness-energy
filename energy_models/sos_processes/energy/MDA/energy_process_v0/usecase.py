@@ -120,7 +120,7 @@ class Study(EnergyStudyManager):
                             'objectives'])
         list_ftype.extend([OBJECTIVE,  OBJECTIVE])
         if Syngas.name in self.energy_list:
-            list_weight.extend([0.,  1.])
+            list_weight.extend([0.,  0.])
         else:
             list_weight.extend([0., 0.])
         list_aggr_type.extend(
@@ -132,7 +132,7 @@ class Study(EnergyStudyManager):
             list_var.extend(['invest_objective', 'invest_objective_sum'])
             list_parent.extend(['objectives', 'objectives'])
             list_ftype.extend([OBJECTIVE, OBJECTIVE])
-            list_weight.extend([0.0, 1.0])
+            list_weight.extend([0.0, 0.0])
             list_aggr_type.extend([AGGR_TYPE_SUM, AGGR_TYPE_SUM])
             list_ns.extend(['ns_functions', 'ns_functions'])
 
@@ -230,7 +230,7 @@ class Study(EnergyStudyManager):
                 ['syngas_prod_constraint'])
             list_parent.extend(['Energy_constraints'])
             list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([0.])
+            list_weight.extend([-1.0])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
@@ -240,7 +240,7 @@ class Study(EnergyStudyManager):
                 ['invest_constraint', 'invest_sum_cons'])
             list_parent.extend(['', ''])
             list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-            list_weight.extend([0., 0.])
+            list_weight.extend([0., -1.0])
             list_aggr_type.extend(
                 [AGGR_TYPE_SMAX, AGGR_TYPE_SUM])
             list_namespaces.extend(['ns_functions', 'ns_functions'])

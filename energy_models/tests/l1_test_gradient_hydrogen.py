@@ -378,21 +378,25 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        np.set_printoptions(10000)
+        np.set_printoptions(100)
+        # np.set_printoptions(threshold=50)
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-18, derr_approx='complex_step',
-                            inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
-                            outputs=[f'{self.name}.{self.model_name}.percentage_resource',
-                                     f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            inputs=[
+                                f'{self.name}.{self.model_name}.invest_level',
+                                f'{self.name}.energy_prices',
+                                f'{self.name}.energy_CO2_emissions',
+                                f'{self.name}.CO2_taxes',
+                                f'{self.name}.all_streams_demand_ratio'
+        ],
+            outputs=[f'{self.name}.{self.model_name}.percentage_resource',
+                     f'{self.name}.{self.model_name}.techno_prices',
+                     f'{self.name}.{self.model_name}.CO2_emissions',
+                     f'{self.name}.{self.model_name}.techno_consumption',
+                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
+                     f'{self.name}.{self.model_name}.techno_production',
+                     ],)
         # outputs=[f'{self.name}.{self.model_name}.percentage_resource',
         #          f'{self.name}.{self.model_name}.techno_prices',
         #                             f'{self.name}.{self.model_name}.CO2_emissions',

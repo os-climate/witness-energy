@@ -18,6 +18,9 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.fossil_techno_disc import FossilTechnoDiscipline
 from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno import FossilSimpleTechno
+from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
+from energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc import CoalExtractionDiscipline
+from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
 
 
 class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
@@ -44,24 +47,40 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     lifetime = 25
     construction_delay = 3
 
+    prod_solid_fuel = 45000.  # TWh
+    prod_liquid_fuel = 53000.  # TWh
+    prod_methane = 39106.77  # TWh
+    prod_fossil = prod_solid_fuel + prod_liquid_fuel + prod_methane
+#     capex_coal = 8.3
+#     capex_oil = 42.4
+#     capex_methane = 32.2
+#     capex = (capex_coal * prod_solid_fuel +
+#              capex_oil * prod_liquid_fuel +
+#              capex_methane * prod_methane) / prod_fossil
+    co2_from_prod = (RefineryDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_liquid_fuel +
+                     CoalExtractionDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_solid_fuel +
+                     FossilGasDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_methane) / prod_fossil
+
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.024,
                                  'WACC': 0.058,
                                  'learning_rate': 0.00,
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
-                                 'Capex_init': 6000,
-                                 'Capex_init_unit': '$/kW',
-                                 'full_load_hours': 8760.0,  # Full year hours
-                                 'capacity_factor': 0.90,
+                                 'Capex_init': 100.,
+                                 'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1.0,
-                                 'CO2_from_production': 0.5,
+                                 'CO2_from_production': co2_from_prod,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'construction_delay': construction_delay, }
+                                 'construction_delay': construction_delay,
+                                 'resource_price': 75.0,
+                                 'resource_price_unit': '$/MWh'}
 
     techno_info_dict = techno_infos_dict_default
-    initial_production = 90717.76  # TWh
+    # net production = 90717.76   TWh
+    initial_production = 136917.16  # TWh
+
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 1483.79, 1489.95]})
 

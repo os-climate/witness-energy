@@ -16,6 +16,7 @@ limitations under the License.
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.resources_models.oil import CrudeOil
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
@@ -52,7 +53,10 @@ class Refinery(LiquidFuelTechno):
         self.cost_details[self.OIL_RESOURCE_NAME] = list(
             self.resources_prices[self.OIL_RESOURCE_NAME] * self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] / self.cost_details['efficiency'])
 
-        return self.cost_details[Electricity.name] + self.cost_details[self.OIL_RESOURCE_NAME]
+        # in kWh of hydrogen per kWh of fuel
+        self.cost_details[GaseousHydrogen.name] = list(self.techno_infos_dict['hydrogen_demand'] * self.prices[GaseousHydrogen.name]) / self.cost_details['efficiency']
+
+        return self.cost_details[Electricity.name] + self.cost_details[self.OIL_RESOURCE_NAME] + self.cost_details[GaseousHydrogen.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -61,7 +65,9 @@ class Refinery(LiquidFuelTechno):
         '''
         elec_needs = self.get_electricity_needs()
 
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs}
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs,
+                GaseousHydrogen.name: np.identity(len(self.years)) * self.techno_infos_dict['hydrogen_demand'],
+                }
 
     def grad_price_vs_resources_price(self):
         '''
@@ -101,6 +107,9 @@ class Refinery(LiquidFuelTechno):
         self.consumption[f'{self.OIL_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] * \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
             CrudeOil.data_energy_dict['calorific_value']  # in Mt
+
+        self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] *  \
+            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
 
     def compute_price(self):
         """
@@ -166,10 +175,15 @@ class Refinery(LiquidFuelTechno):
         self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
             self.cost_details['elec_needs']
 
+        self.carbon_emissions[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
+            self.techno_infos_dict['hydrogen_demand']
+
         self.carbon_emissions[self.OIL_RESOURCE_NAME] = self.resources_CO2_emissions[f'{self.OIL_RESOURCE_NAME}'] * \
             self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs']
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[self.OIL_RESOURCE_NAME]
+        return self.carbon_emissions[f'{Electricity.name}'] + \
+               self.carbon_emissions[self.OIL_RESOURCE_NAME] + \
+               self.carbon_emissions[f'{GaseousHydrogen.name}']
 
     def compute_prod_from_invest(self, construction_delay):
         '''

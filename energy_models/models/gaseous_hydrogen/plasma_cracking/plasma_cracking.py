@@ -283,3 +283,41 @@ class PlasmaCracking(GaseousHydrogenTechno):
                          out=np.zeros_like((dhydro_prod_dinvest * x - dcarbon_prod_dinvest * y)), where=z != 0)
         grad_wratio = (grad.T * list(self.applied_ratio['applied_ratio'])).T
         return grad_wratio
+
+    def grad_percentage_resource_vs_ratio(self, CO2_credits, carbon_market_demand, dhydro_prod_dratio, dcarbon_prod_dratio):
+
+        quantity = self.compute_revenues(
+            CO2_credits, carbon_market_demand)
+        hydrogen_price = quantity['hydrogen_price']
+
+        # if carbon_production < carbon_demand
+        quantity.loc[(quantity['is_prod_inf_demand'] == True),
+                     'A_value'] = quantity['carbon_sales_revenues']
+
+        # if carbon_production > carbon_demand
+        # carbon_storage
+        quantity.loc[(quantity['is_prod_inf_demand'] == False),
+                     'A_value'] = quantity['carbon_demand_sales_revenues']
+
+        # if carbon_production < carbon_demand
+        quantity.loc[quantity['is_prod_inf_demand'] == True,
+                     'B_value'] = quantity['carbon_price']
+        # if carbon_production > carbon_demand
+        # carbon_storage
+        quantity.loc[(quantity['is_prod_inf_demand'] == False),
+                     'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity['CO2_credits']
+
+        a = hydrogen_price.values * quantity['A_value'].values
+        x = np.array([a, ] * len(self.years)).transpose()
+
+        b = quantity['B_value'].values * \
+            quantity['hydrogen_sales_revenues'].values
+        y = np.array([b, ] * len(self.years)).transpose()
+
+        c = (
+            np.power(quantity['hydrogen_sales_revenues'] + quantity['A_value'], 2)).values
+        z = np.array([c, ] * len(self.years)).transpose()
+
+        grad = np.divide((dhydro_prod_dratio * x - dcarbon_prod_dratio * y), z,
+                         out=np.zeros_like((dhydro_prod_dratio * x - dcarbon_prod_dratio * y)), where=z != 0)
+        return grad

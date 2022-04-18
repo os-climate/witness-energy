@@ -318,6 +318,7 @@ class FischerTropsch(LiquidFuelTechno):
                        'scaling_factor_invest_level': self.scaling_factor_invest_level,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
+                       'is_softmax': self.is_softmax,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'data_fuel_dict': self.syngas_energy_dict
@@ -363,6 +364,7 @@ class FischerTropsch(LiquidFuelTechno):
                        'scaling_factor_invest_level': self.scaling_factor_invest_level,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
+                       'is_softmax': self.is_softmax,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'data_fuel_dict': self.gaseous_hydrogen_energy_dict

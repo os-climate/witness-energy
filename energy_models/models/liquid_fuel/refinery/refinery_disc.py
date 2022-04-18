@@ -81,6 +81,14 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # ratio elec use / kerosene product
                                  'elec_demand': 0.008,
                                  'elec_demand_unit': 'kWh/kWh',
+                                 # IEA Hydrogen
+                                 # https://www.iea.org/reports/hydrogen
+                                 # 2020 total hydrogen demand = 40Mt (calorific value 33.3 kWh/kg)
+                                 # https://www.iea.org/data-and-statistics/data-tables/?country=WORLD&energy=Oil&year=2019
+                                 # 2019 fuel prod = 5672984+11916946+41878252+14072582+2176724+56524612+16475667 TJ
+                                 # ratio for hydrogen demand = (40*33.3) / (148717767/3.6/1000)
+                                 'hydrogen_demand': (40*33.3) / (148717767/3.6/1000),
+                                 'hydrogen_demand_unit': 'kWh/kWh',
                                  # for now constant in time but should increase
                                  # with time 10%/10year according to Fasihi2019
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
