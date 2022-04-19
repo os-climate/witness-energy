@@ -294,7 +294,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
         #-- biomass dry values are coming from agriculture mix discipline, but needs to be used in model with biomass dry name
         inputs_dict = {}
         inputs_dict.update(inputs_dict_orig)
-        if inputs_dict['is_dev']:
+        energy_list = self.get_sosdisc_inputs('energy_list')
+        if inputs_dict['is_dev'] and 'biomass_dry' in energy_list:
             inputs_dict[f'{BiomassDry.name}.energy_consumption'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_consumption')
             inputs_dict[f'{BiomassDry.name}.energy_consumption_woratio'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_consumption_woratio')
             inputs_dict[f'{BiomassDry.name}.energy_production'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_production')
@@ -397,7 +398,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
         #-- biomass dry values are coming from agriculture mix discipline, but needs to be used in model with biomass dry name
         inputs_dict = {}
         inputs_dict.update(inputs_dict_orig)
-        if inputs_dict['is_dev']:
+        energy_list = inputs_dict['energy_list'] + inputs_dict['ccs_list']
+        if inputs_dict['is_dev'] and 'biomass_dry' in energy_list:
             inputs_dict[f'{BiomassDry.name}.energy_consumption'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_consumption')
             inputs_dict[f'{BiomassDry.name}.energy_consumption_woratio'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_consumption_woratio')
             inputs_dict[f'{BiomassDry.name}.energy_production'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_production')
@@ -409,7 +411,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         stream_class_dict = EnergyMix.stream_class_dict
         years = np.arange(inputs_dict['year_start'],
                           inputs_dict['year_end'] + 1)
-        energy_list = inputs_dict['energy_list'] + inputs_dict['ccs_list']
+
         heat_losses_percentage = inputs_dict['heat_losses_percentage'] / 100.0
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
         production_detailed_df = outputs_dict['energy_production_detailed']
