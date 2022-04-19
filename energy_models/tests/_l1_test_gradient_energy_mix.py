@@ -231,9 +231,14 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                                                0.30355508, 0.3071769, 0.31104297, 0.31440867, 0.31709487,
                                                                0.32047716, 0.32392652, 0.32739837, 0.33021771, 0.33313758,
                                                                0.3361545]) * 1000.0})
+        
         self.land_use_required_mock = pd.DataFrame(
             {'years': self.years, 'random techno (Gha)': 0.0})
 
+        self.land_use_required_biomass = pd.DataFrame(
+            {'years': self.years, 'biomass_dry (Gha)': 0.0})
+        self.land_use_required_methane = pd.DataFrame(
+            {'years': self.years, 'mathane (Gha)': 0.0})
         years = np.arange(2020, 2051)
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -1246,12 +1251,12 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                                            f'{name}.{func_manager_name}.energy_production_objective',
                                                            f'{name}.{func_manager_name}.primary_energies_production', ])
 
-    def test_15_energy_mix_with_agriculture_mix(self):
+    def test_15_energy_mix_agriculture_mix(self):
 
         name = 'Test'
         model_name = 'EnergyMix'
         agriculture_mix = 'AgricultureMix'
-        ee = ExecutionEngine(name)
+        self.ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_hydrogen': f'{name}',
                    'ns_methane': f'{name}',
@@ -1286,7 +1291,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                        f'{name}.{agriculture_mix}.energy_prices': self.energy_prices_biomass,
                        f'{name}.{agriculture_mix}.CO2_per_use': self.CO2_per_use_biomass,
                        f'{name}.{agriculture_mix}.CO2_emissions': self.CO2_emissions_biomass,
-                       f'{name}.{agriculture_mix}.land_use_required': self.land_use_required_mock,
+                       f'{name}.{agriculture_mix}.land_use_required': self.land_use_required_biomass,
                        f'{name}.{model_name}.methane.energy_consumption': self.consumption,
                        f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
                        f'{name}.{model_name}.methane.energy_production': self.production,
@@ -1294,7 +1299,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                        f'{name}.{model_name}.methane.energy_prices': self.cost_details,
                        f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame({'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.methane.CO2_emissions': pd.DataFrame({'years': self.years, 'methane': 0.0}),
-                       f'{name}.{model_name}.methane.land_use_required': self.land_use_required_mock,
+                       f'{name}.{model_name}.methane.land_use_required': self.land_use_required_methane,
                        f'{name}.CO2_taxes': self.co2_taxes,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.loss_percentage': 1.0,
                        f'{name}.{model_name}.methane.loss_percentage': 2.0,
@@ -1302,22 +1307,36 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{name}.EnergyMix')[0]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
-                            inputs=[f'{self.name}.{model_name}.invest_level',
-                                    f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
-                            outputs=[f'{self.name}.{model_name}.techno_prices',
-                                     f'{self.name}.{model_name}.CO2_emissions',
-                                     f'{self.name}.{model_name}.techno_consumption',
-                                     f'{self.name}.{model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{model_name}.techno_production',
-                                     f'{self.name}.{model_name}.land_use_required'])
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_agriculture_mix.pkl',
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step',
+                            inputs=[f'{name}.{model_name}.methane.energy_consumption',
+                                    f'{name}.{model_name}.methane.energy_consumption_woratio',
+                                    f'{name}.{model_name}.methane.energy_production',
+                                    f'{name}.{model_name}.methane.energy_prices',
+                                    f'{name}.{model_name}.methane.CO2_per_use',
+                                    f'{name}.{model_name}.methane.CO2_emissions',
+                                    f'{name}.{model_name}.methane.land_use_required',
+                                    f'{name}.AgricultureMix.energy_consumption',
+                                    f'{name}.AgricultureMix.energy_consumption_woratio',
+                                    f'{name}.AgricultureMix.energy_production',
+                                    f'{name}.AgricultureMix.energy_prices',
+                                    f'{name}.AgricultureMix.CO2_per_use',
+                                    f'{name}.AgricultureMix.CO2_emissions',
+                                    f'{name}.AgricultureMix.land_use_required'],
+                            outputs=[f'{name}.{model_name}.energy_production',
+                                     f'{name}.{model_name}.energy_CO2_emissions',
+                                     f'{name}.{model_name}.energy_mean_price',
+                                     f'{name}.{model_name}.land_demand_df',
+                                     f'{name}.{model_name}.energy_prices_after_tax',
+                                     f'{name}.{model_name}.co2_emissions_needed_by_energy_mix'])
 
 if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = EnergyMixJacobianTestCase()
     cls.setUp()
-    cls.test_14_energy_mix_with_losses()
+    cls.test_15_energy_mix_agriculture_mix()
