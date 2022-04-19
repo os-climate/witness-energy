@@ -45,8 +45,11 @@ class ResourceGlossary():
                   'CO2_emissions': - 0.425 * 44.01 / 12.0,
                   'price': 68.12}
     WetBiomass = {'name': 'wet_biomass_resource',
-                  'CO2_emissions': - 0.425 * 44.01 / 12.0,
+                  'CO2_emissions': - 0.9615,
                   'price': 56.0}
+    # - 0.425 * 44.01 / 12.0 (old CO2_emissions value)
+    # Calibration to have zero CO2 emissions in biogas.anaerobic_digestion when biogas use
+
     NaturalOil = {'name': 'natural_oil_resource',
                   'CO2_emissions': -2.95,
                   'price': 1100.0}
