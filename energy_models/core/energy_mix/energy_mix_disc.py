@@ -113,7 +113,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
 
     DESC_OUT = {
-        'All_Demand': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
         'energy_prices': {'type': 'dataframe', 'unit': '$/MWh'},
         'energy_CO2_emissions': {'type': 'dataframe', 'unit': 'kg/kWh'},
         'energy_CO2_emissions_after_use': {'type': 'dataframe', 'unit': 'kg/kWh'},
@@ -147,6 +146,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
                                            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'all_streams_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'resources_demand': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+        'resources_demand_woratio': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
 
     }
@@ -342,8 +343,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
             {'years': self.energy_model.production['years'].values,
              'Total production': self.energy_model.production['Total production'].values / inputs_dict['scaling_factor_energy_production']})
         self.energy_model.compute_constraint_h2()
-        outputs_dict = {'All_Demand': self.energy_model.all_resource_demand,
-                        'energy_prices': self.energy_model.energy_prices,
+        outputs_dict = {'energy_prices': self.energy_model.energy_prices,
                         'co2_emissions_by_energy': self.energy_model.emissions_by_energy,
                         'energy_CO2_emissions': self.energy_model.total_carbon_emissions,
                         'energy_CO2_emissions_after_use': self.energy_model.carbon_emissions_after_use,
@@ -364,6 +364,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         EnergyMix.SYNGAS_PROD_CONSTRAINT: self.energy_model.syngas_prod_constraint,
                         'all_streams_demand_ratio': self.energy_model.all_streams_demand_ratio,
                         'ratio_objective': self.energy_model.ratio_objective,
+                        'resources_demand': self.energy_model.resources_demand,
+                        'resources_demand_woratio': self.energy_model.resources_demand_woratio,
                         'co2_emissions_needed_by_energy_mix': self.energy_model.co2_emissions_needed_by_energy_mix,
                         }
 
@@ -624,8 +626,11 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 ns_energy = AgricultureMixDiscipline.name
             for resource in inputs_dict[f'{energy}.energy_consumption']:
                 if resource in resource_list:
-                    self.set_partial_derivative_for_other_types(('All_Demand', resource), (
+                    self.set_partial_derivative_for_other_types(('resources_demand', resource), (
                         f'{ns_energy}.energy_consumption', resource), scaling_factor_energy_consumption * np.identity(len(years)))
+                    self.set_partial_derivative_for_other_types(('resources_demand_woratio', resource), (
+                        f'{ns_energy}.energy_consumption_woratio', resource), scaling_factor_energy_consumption * np.identity(
+                        len(years)))
         #-----------------------------#
         #---- Mean Price gradients----#
         #-----------------------------#
@@ -756,11 +761,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         loss_percentage += (1.0 -
                                             self.energy_model.raw_tonet_dict[energy])
                     loss_percent = heat_losses_percentage + loss_percentage
-                    # To model raw to net percentage for witness coarse
-                    # energies
-                    if energy in self.energy_model.raw_tonet_dict:
-                        loss_percent += (1.0 -
-                                         self.energy_model.raw_tonet_dict[energy])
+
                     dtotal_prod_denergy_prod = self.compute_dtotal_production_denergy_production(
                         production_detailed_df, minimum_energy_production, loss_percent)
 

@@ -34,7 +34,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
     """
     Methane jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -140,7 +140,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         resource_ratio_dict = dict(
-            zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(years))))
+            zip(EnergyMix.RESOURCE_LIST, np.linspace(0.8, 0.1, len(years))))
         resource_ratio_dict['years'] = years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
@@ -184,7 +184,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
-
+        #AbstractJacobianUnittest.DUMP_JACOBIAN=True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
@@ -192,7 +192,8 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                                     f'{self.name}.energy_CO2_emissions',
                                     f'{self.name}.CO2_taxes',
                                     f'{self.name}.resources_price',
-                                    f'{self.name}.resources_CO2_emissions',],
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -243,7 +244,10 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -293,7 +297,10 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',

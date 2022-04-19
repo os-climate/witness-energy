@@ -1017,7 +1017,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_names = [
             f'{name}.{model_name}.{energy}.energy_consumption' for energy in energy_list]
 
-        energy_mix_output = [f'{name}.{model_name}.All_Demand']
+        energy_mix_output = [f'{name}.{model_name}.resources_demand']
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_demand_df.pkl',
                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,

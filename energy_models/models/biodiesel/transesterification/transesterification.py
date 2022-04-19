@@ -45,7 +45,7 @@ class Transesterification(BioDieselTechno):
         self.cost_details[f'{SodiumHydroxide.name}_needs'] = self.get_theoretical_sodium_hydroxide_needs(
         )
         # need in kg/kwh biodiesel
-        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_sodium_hydroxide_needs(
+        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs(
         )
         # need in kWh/kwh biodiesel
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs(
@@ -92,6 +92,24 @@ class Transesterification(BioDieselTechno):
         )
         efficiency = self.techno_infos_dict['efficiency']
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency}
+
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
+        efficiency = self.techno_infos_dict['efficiency']
+        oil_needs = self.get_theoretical_natural_oil_needs()
+        methanol_needs = self.get_theoretical_methanol_needs()
+        sodium_hydroxide_needs = self.get_theoretical_sodium_hydroxide_needs()
+        water_needs = self.get_theoretical_water_needs()
+
+        return {
+            NaturalOil.name: np.identity(len(self.years)) * oil_needs / efficiency,
+            Methanol.name: np.identity(len(self.years)) * methanol_needs / efficiency,
+            SodiumHydroxide.name: np.identity(len(self.years)) * sodium_hydroxide_needs / efficiency / 2,
+            PotassiumHydroxide.name: np.identity(len(self.years)) * sodium_hydroxide_needs / efficiency / 2,
+            Water.name: np.identity(len(self.years)) * water_needs / efficiency,
+        }
 
     def compute_consumption_and_production(self):
         """
@@ -147,6 +165,21 @@ class Transesterification(BioDieselTechno):
             self.cost_details['efficiency']
 
         return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[SodiumHydroxide.name] + self.carbon_emissions[f'{NaturalOil.name}'] + self.carbon_emissions[Methanol.name]
+
+    def grad_co2_emissions_vs_resources_co2_emissions(self):
+        '''
+        Compute the gradient of global CO2 emissions vs resources CO2 emissions
+        '''
+        efficiency = self.techno_infos_dict['efficiency']
+        oil_needs = self.get_theoretical_natural_oil_needs()
+        methanol_needs = self.get_theoretical_methanol_needs()
+        sodium_hydroxide_needs = self.get_theoretical_sodium_hydroxide_needs()
+
+        return {
+            NaturalOil.name: np.identity(len(self.years)) * oil_needs / efficiency,
+            Methanol.name: np.identity(len(self.years)) * methanol_needs / efficiency,
+            SodiumHydroxide.name: np.identity(len(self.years)) * sodium_hydroxide_needs / efficiency,
+        }
 
     def get_theoretical_methanol_needs(self):
         """

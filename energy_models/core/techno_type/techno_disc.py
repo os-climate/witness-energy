@@ -22,7 +22,7 @@ from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from copy import deepcopy
 from plotly import graph_objects as go
@@ -51,9 +51,10 @@ class TechnoDiscipline(SoSDiscipline):
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'structuring': True},
         'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'structuring': True},
         'invest_level': {'type': 'dataframe', 'unit': 'G$',
-                         'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                  'invest': ('float',  None, True)},
-                         'dataframe_edition_locked': False},
+                         'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                  'invest': ('float', None, True)},
+                         'dataframe_edition_locked': False
+                         },
         'energy_prices': {'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'energy_CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'margin': {'type': 'dataframe', 'unit': '%'},
@@ -66,6 +67,8 @@ class TechnoDiscipline(SoSDiscipline):
         'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'user_level': 2},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'is_softmax': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': False,
+                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'is_apply_ratio': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'is_stream_demand': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'is_apply_resource_ratio': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
@@ -124,7 +127,7 @@ class TechnoDiscipline(SoSDiscipline):
                     resource_ratio_dict['years'] = years
                     all_resource_ratio_usable_demand_default = pd.DataFrame(
                         resource_ratio_dict)
-                    dynamic_inputs[AllResourceModel.RATIO_USABLE_DEMAND] = {'type': 'dataframe', 'unit': '-',
+                    dynamic_inputs[ResourceMixModel.RATIO_USABLE_DEMAND] = {'type': 'dataframe', 'unit': '-',
                                                                             'default': all_resource_ratio_usable_demand_default,
                                                                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                             'namespace': 'ns_resource'}
@@ -257,18 +260,19 @@ class TechnoDiscipline(SoSDiscipline):
         #---Gradient main techno prod vs each ratio
         dapplied_ratio_dratio = self.techno_model.compute_dapplied_ratio_dratios(
             inputs_dict['is_apply_ratio'])
+        self.dprod_dratio = {}
         if 'all_streams_demand_ratio' in inputs_dict.keys():
             for ratio_name in inputs_dict['all_streams_demand_ratio'].columns:
                 if ratio_name not in ['years']:
                     production_woratio = self.techno_model.production_woratio[
                         f'{self.energy_name} ({self.techno_model.product_energy_unit})']
-                    dprod_dratio = self.techno_model.compute_dprod_dratio(
+                    self.dprod_dratio[ratio_name] = self.techno_model.compute_dprod_dratio(
                         production_woratio, ratio_name=ratio_name,
                         dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
                         ('techno_production',
                          f'{self.energy_name} ({self.techno_model.product_energy_unit})'), ('all_streams_demand_ratio', ratio_name),
-                        dprod_dratio / 100.)
+                        self.dprod_dratio[ratio_name] / 100.)
                     dland_use_dratio = self.techno_model.compute_dprod_dratio(
                         self.techno_model.techno_land_use_woratio[
                             f'{self.techno_model.name} (Gha)'], ratio_name=ratio_name,
@@ -278,6 +282,7 @@ class TechnoDiscipline(SoSDiscipline):
 
         # Compute jacobian for other energy production/consumption
         self.dprod_column_dinvest = {}
+        self.dprod_column_dratio = {}
         for column in production:
             dprod_column_dinvest = self.dprod_dinvest.copy()
             if column not in ['years', f'{self.energy_name} ({self.techno_model.product_energy_unit})']:
@@ -299,18 +304,19 @@ class TechnoDiscipline(SoSDiscipline):
                     (dprod_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production)
 
                 #---Gradient other techno prods vs each ratio
+                self.dprod_column_dratio[column] = {}
                 for ratio_name in ratio_df.columns:
                     if 'all_streams_demand_ratio' in inputs_dict.keys():
                         if ratio_name in inputs_dict['all_streams_demand_ratio'].columns and ratio_name not in ['years']:
                             production_woratio = self.techno_model.production_woratio[
                                 column]
-                            dprod_dratio = self.techno_model.compute_dprod_dratio(
+                            self.dprod_column_dratio[column][ratio_name] = self.techno_model.compute_dprod_dratio(
                                 production_woratio, ratio_name=ratio_name,
                                 dapplied_ratio_dratio=dapplied_ratio_dratio)
                             self.set_partial_derivative_for_other_types(
                                 ('techno_production',
                                  column), ('all_streams_demand_ratio', ratio_name),
-                                dprod_dratio / 100.)
+                                self.dprod_column_dratio[column][ratio_name] / 100.)
 
         for column in consumption:
             self.dcons_column_dinvest = self.dprod_dinvest.copy()
@@ -420,6 +426,17 @@ class TechnoDiscipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_price', resource), value *
                 self.techno_model.margin['margin'].values / 100.0)
+
+            if carbon_emissions is not None:
+                # resources carbon emissions
+                sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
+                            self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
+                            self.techno_model.year_end][self.techno_name]) ** 2
+                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
+
+                self.dprices_demissions[resource] = grad_on_co2_tax
+                self.set_partial_derivative_for_other_types(
+                    ('techno_prices', self.techno_name), ('resources_CO2_emissions', resource), self.dprices_demissions[resource])
 
     def get_chart_filter_list(self):
 

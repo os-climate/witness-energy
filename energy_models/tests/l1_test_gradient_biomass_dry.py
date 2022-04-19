@@ -155,13 +155,18 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level', f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions', f'{self.name}.land_surface_for_food_df', f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.energy_CO2_emissions',
+                                f'{self.name}.land_surface_for_food_df',
+                                f'{self.name}.CO2_taxes'
+                                ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     f'{self.name}.{self.model_name}.land_use_required'],)
+                                     f'{self.name}.{self.model_name}.land_use_required',
+                                     f'{self.name}.{self.model_name}.techno_capital',
+                                     f'{self.name}.{self.model_name}.non_use_capital'],)
 
     def test_02_managed_wood_discipline_analytic_grad(self):
 

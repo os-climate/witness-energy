@@ -115,8 +115,12 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
         BiogasTechnoDiscipline.compute_sos_jacobian(self)
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
-
         carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions)
+            grad_dict, carbon_emissions, grad_dict_resources)
+
+        for resource, value in grad_dict_resources.items():
+            self.set_partial_derivative_for_other_types(
+                ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)

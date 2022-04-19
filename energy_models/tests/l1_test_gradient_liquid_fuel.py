@@ -35,7 +35,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     """
     Liquid Fuel jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -65,7 +65,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                                                                     0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
                                                                                     0.1628246539459331]) * 1000.0,
                                            'CO2': 0.0,
-                                           'syngas': 34
+                                           'syngas': 34,
+                                           'hydrogen.gaseous_hydrogen': 15.,
                                            })
 
         self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34,
@@ -79,7 +80,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                      'BiomassGasification': 2.0
                                      }
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.0, 'syngas': 0.0})
+            {'years': years, 'electricity': 0.0, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.})
         # We use the IEA H2 demand to fake the invest level through years
         self.invest_level = pd.DataFrame({'years': years,
                                           'invest': np.array([4435750000.0, 4522000000.0, 4608250000.0,
@@ -264,7 +265,10 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -315,7 +319,10 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -365,7 +372,10 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',

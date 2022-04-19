@@ -570,7 +570,7 @@ class EnergyMixTestCase(unittest.TestCase):
         disc = ee.dm.get_disciplines_with_name(
             f'{name}.{model_name}')[0]
         all_demand = ee.dm.get_value(
-            f'{name}.{model_name}.resource.All_Demand')
+            f'{name}.{model_name}.resource.resources_demand')
         scaling_factor = 1000
         zero_line = np.linspace(0, 0, len(all_demand.index))
         self.assertListEqual(list(self.consumption['oil_resource (Mt)'].values), list(

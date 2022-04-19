@@ -17,6 +17,12 @@ This process allows to extract solid carbon out of methane and if used with biom
 
 ## Gradient computation - Summary
 
+H2_price : techno price \
+X : percentage resource \
+PC_cost : Plasma Cracking cost 
+
+### Formula:
+
 $$H2_{price}= PC_{cost} * Margin * X $$
 
 
@@ -31,6 +37,9 @@ $$H2_{price}= PC_{cost} * Margin * X $$
 
  $$\dfrac {\partial H2_{price}}{\partial energy\_CO2\_emission}= Margin * X * \dfrac {\partial PC_{cost}}{\partial energy\_CO2\_emission} 
     + 0 $$
+
+
+  $$\dfrac {\partial H2_{price}}{\partial all\_stream\_demand\_ratio}= PC_{cost} * Margin * \dfrac {\partial X}{\partial all\_stream\_demand\_ratio} $$
 
 ### X computation:
 $$ X = \dfrac {H2\_revenue}{H2\_revenue 
@@ -89,6 +98,38 @@ $$ \dfrac {\partial X}{\partial invest} =
     H2\_revenue]
 }{[H2\_revenue
     + A]^2}
+$$
+
+with:
+
+if  Carbon\_prod < Carbon\_demand : 
+
+$$ A = Carbon\_sold\_revenue$$
+
+$$ B = Carbon\_price $$
+
+if  Carbon\_prod > Carbon\_demand : 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Carbon\_storage = Carbon\_prod - Carbon\_demand
+
+$${\footnotesize A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_demand * (Carbon\_price
+    - \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]}$$
+
+$$ B = \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol} $$
+\
+
+
+
+### all stream demand ratio computation:
+
+$$ {\footnotesize\dfrac {\partial X}{\partial all\_stream\_demand\_ratio} =
+\dfrac {
+    [ \dfrac {\partial H2\_prod}{\partial all\_stream\_demand\_ratio} * H2\_price * A ]
+    -
+    [\dfrac {\partial Carbon\_prod} {\partial all\_stream\_demand\_ratio} * B *
+    H2\_revenue]
+}{[H2\_revenue
+    + A]^2}}
 $$
 
 with:

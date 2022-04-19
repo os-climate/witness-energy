@@ -28,7 +28,7 @@ from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
     get_static_prices
-from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.kerosene import Kerosene
 from energy_models.core.stream_type.energy_models.gasoline import Gasoline
@@ -66,11 +66,12 @@ class RefineryPriceTestCase(unittest.TestCase):
                                                                                     0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
                                                                                     0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
                                                                                     0.1628246539459331]) * 1000.0,
+                                           'hydrogen.gaseous_hydrogen': 15.0 * np.ones(len(years))
 
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.0})
+            {'years': years, 'electricity': 0.0, 'hydrogen.gaseous_hydrogen': 0.0})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -142,10 +143,11 @@ class RefineryPriceTestCase(unittest.TestCase):
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                       'is_softmax': False,
                        'data_fuel_dict': self.data_fuel,
                        'other_fuel_dict': self.other_fuel,
                        }

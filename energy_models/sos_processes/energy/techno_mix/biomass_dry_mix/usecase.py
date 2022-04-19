@@ -25,7 +25,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS,
 
 DEFAULT_TECHNOLOGIES_LIST = ['ManagedWood', 'UnmanagedWood', 'CropEnergy']
 TECHNOLOGIES_LIST = ['ManagedWood', 'UnmanagedWood', 'CropEnergy']
-TECHNOLOGIES_LIST_DEV = []
+TECHNOLOGIES_LIST_DEV = ['ManagedWood', 'UnmanagedWood', 'CropEnergy']
 
 
 class Study(EnergyMixStudyManager):

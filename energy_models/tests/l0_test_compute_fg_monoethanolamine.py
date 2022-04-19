@@ -16,7 +16,7 @@ limitations under the License.
 import unittest
 import pandas as pd
 import numpy as np
-from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from os.path import join, dirname
 
 import scipy.interpolate as sc
@@ -120,10 +120,11 @@ class FGMonoEthanolAmineTestCase(unittest.TestCase):
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                       'is_softmax': False,
                        'data_fuel_dict': CarbonCapture.data_energy_dict,
                        }
 
@@ -169,10 +170,11 @@ class FGMonoEthanolAmineTestCase(unittest.TestCase):
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                       'is_softmax': False,
                        'data_fuel_dict': CarbonCapture.data_energy_dict,
                        }
 

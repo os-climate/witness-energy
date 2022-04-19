@@ -56,6 +56,15 @@ class AnaerobicDigestion(BioGasTechno):
 
         return {Electricity.name: np.identity(len(self.years)) * elec_needs}
 
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
+        wet_biomass_needs = self.techno_infos_dict['wet_biomass_needs'] / \
+            self.data_energy_dict['density'] / \
+            self.data_energy_dict['calorific_value']
+        return {ResourceGlossary.WetBiomass['name']: np.identity(len(self.years)) * wet_biomass_needs}
+
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment

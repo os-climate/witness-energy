@@ -25,7 +25,7 @@ from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_prices,\
     get_static_CO2_emissions
 
-from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.kerosene import Kerosene
 from energy_models.core.stream_type.energy_models.gasoline import Gasoline
@@ -160,10 +160,11 @@ class FTPriceTestCase(unittest.TestCase):
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                       'is_softmax': False,
                        'data_fuel_dict': self.data_fuel,
                        'syngas.data_fuel_dict': Syngas.data_energy_dict,
                        'hydrogen.gaseous_hydrogen.data_fuel_dict': GaseousHydrogen.data_energy_dict,
@@ -255,7 +256,7 @@ class FTPriceTestCase(unittest.TestCase):
             f'{self.name}.syngas_ratio': np.ones(len(years)),
             f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
             f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
-            f'{self.name}.{AllResourceModel.RATIO_USABLE_DEMAND}': self.ratio_available_resource,
+            f'{self.name}.{ResourceMixModel.RATIO_USABLE_DEMAND}': self.ratio_available_resource,
             f'{self.name}.is_apply_resource_ratio': True}
 
         self.ee.load_study_from_input_dict(inputs_dict)

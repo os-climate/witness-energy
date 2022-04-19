@@ -48,8 +48,7 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
     # from witness full study
     renewable_energy_capital = 12.414  # trillion dollars
 
-    capex_renewable = renewable_energy_capital * \
-        1.0e12 / (initial_production * 1.0e9)
+    capex_renewable = 230.0
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.12,
                                  'WACC': 0.058,
@@ -57,7 +56,7 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
                                  'Capex_init': capex_renewable,
-                                 'Capex_init_unit': '$/kWh',
+                                 'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,

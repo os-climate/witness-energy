@@ -50,7 +50,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                                                          'Geothermal', 'RenewableElectricitySimpleTechno', 'RenewableElectricitySimpleTechnoDiscipline'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_electricity', 'structuring': True},
                'hydropower_production_current': {'type': 'float',
-                                                 'default': 5000.0,
+                                                 'default': 6600.0, # 4400TWh is total production, we use a 50% higher value
                                                  'unit': 'Twh',
                                                  'user_level': 2,
                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
