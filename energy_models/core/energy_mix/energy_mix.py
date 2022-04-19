@@ -165,7 +165,7 @@ class EnergyMix(BaseStream):
 
     def configure_parameters_update(self, inputs_dict):
         '''
-        COnfigure parameters with possible update (variables that does change during the run)
+        Configure parameters with possible update (variables that does change during the run)
         '''
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
