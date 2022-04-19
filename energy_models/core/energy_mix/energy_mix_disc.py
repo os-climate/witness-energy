@@ -1207,14 +1207,17 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
     def get_chart_energy_price_in_dollar_kwh(self):
         energy_prices = self.get_sosdisc_outputs('energy_prices')
-
+        is_dev = self.get_sosdisc_inputs('is_dev')
         chart_name = 'Detailed prices of energy mix with CO2 taxes<br>from production (used for technology prices)'
         energy_list = self.get_sosdisc_inputs('energy_list')
         max_value = 0
         for energy in energy_list:
+            ns_energy = energy
+            if energy == BiomassDry.name and is_dev:
+                ns_energy = AgricultureMixDiscipline.name
             if self.stream_class_dict[energy].unit == 'TWh':
                 techno_price = self.get_sosdisc_inputs(
-                    f'{energy}.energy_prices')
+                    f'{ns_energy}.energy_prices')
                 max_value = max(
                     max(energy_prices[energy].values.tolist()), max_value)
 
@@ -1222,9 +1225,12 @@ class Energy_Mix_Discipline(SoSDiscipline):
             'years', 'Prices [$/MWh]', primary_ordinate_axis_range=[0, max_value], chart_name=chart_name)
 
         for energy in energy_list:
+            ns_energy = energy
+            if energy == BiomassDry.name and is_dev:
+                ns_energy = AgricultureMixDiscipline.name
             if self.stream_class_dict[energy].unit == 'TWh':
                 techno_price = self.get_sosdisc_inputs(
-                    f'{energy}.energy_prices')
+                    f'{ns_energy}.energy_prices')
                 serie = InstanciatedSeries(
                     energy_prices['years'].values.tolist(),
                     techno_price[energy].values.tolist(), energy, 'lines')
@@ -1234,7 +1240,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
     def get_chart_energy_price_in_dollar_kwh_without_production_taxes(self):
         energy_prices = self.get_sosdisc_outputs('energy_prices')
-
+        is_dev = self.get_sosdisc_inputs('is_dev')
         chart_name = 'Detailed prices of energy mix without CO2 taxes from production'
         energy_list = self.get_sosdisc_inputs('energy_list')
         max_value = 0
@@ -1247,9 +1253,12 @@ class Energy_Mix_Discipline(SoSDiscipline):
             'years', 'Prices [$/MWh]', primary_ordinate_axis_range=[0, max_value], chart_name=chart_name)
 
         for energy in energy_list:
+            ns_energy = energy
+            if energy == BiomassDry.name and is_dev:
+                ns_energy = AgricultureMixDiscipline.name
             if self.stream_class_dict[energy].unit == 'TWh':
                 techno_price = self.get_sosdisc_inputs(
-                    f'{energy}.energy_prices')
+                    f'{ns_energy}.energy_prices')
                 serie = InstanciatedSeries(
                     energy_prices['years'].values.tolist(),
                     techno_price[f'{energy}_wotaxes'].values.tolist(), energy, 'lines')
