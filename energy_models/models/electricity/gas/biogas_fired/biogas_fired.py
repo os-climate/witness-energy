@@ -52,13 +52,12 @@ class BiogasFired(ElectricityTechno):
         Get co2 needs in kg co2 /kWh 
         '''
         biogas_data = BioGas.data_energy_dict
-        # kg of C02 per kg of biogas burnt
+        # kg of C02 per kWh of biogas burnt
         biogas_co2 = biogas_data['CO2_per_use']
         # Amount of biogas in kwh for 1 kwh of elec
         biogas_need = self.techno_infos_dict['biogas_needs']
-        calorific_value = biogas_data['calorific_value']  # kWh/kg
 
-        co2_prod = biogas_co2 / calorific_value * biogas_need
+        co2_prod = biogas_co2 * biogas_need
         return co2_prod
 
     def compute_CO2_emissions_from_input_resources(self):
