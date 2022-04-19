@@ -31,7 +31,7 @@ from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shi
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
 from _functools import reduce
 from _operator import mul
-from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
@@ -326,7 +326,7 @@ class FischerTropsch(LiquidFuelTechno):
         if self.is_stream_demand:
             inputs_dict['all_streams_demand_ratio'] = self.all_streams_demand_ratio
         if self.is_apply_resource_ratio:
-            inputs_dict[AllResourceModel.RATIO_USABLE_DEMAND] = self.ratio_available_resource
+            inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND] = self.ratio_available_resource
 
         self.syngas_ratio_techno = RWGS('RWGS')
         self.syngas_ratio_techno.syngas_COH2_ratio = sg_ratio * 100.0
@@ -372,7 +372,7 @@ class FischerTropsch(LiquidFuelTechno):
         if self.is_stream_demand:
             inputs_dict['all_streams_demand_ratio'] = self.all_streams_demand_ratio
         if self.is_apply_resource_ratio:
-            inputs_dict[AllResourceModel.RATIO_USABLE_DEMAND] = self.ratio_available_resource
+            inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND] = self.ratio_available_resource
 
         self.syngas_ratio_techno = WGS('WGS')
         self.syngas_ratio_techno.syngas_COH2_ratio = sg_ratio * 100.0

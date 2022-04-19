@@ -22,7 +22,7 @@ from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from copy import deepcopy
 from plotly import graph_objects as go
@@ -51,9 +51,10 @@ class TechnoDiscipline(SoSDiscipline):
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'structuring': True},
         'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'structuring': True},
         'invest_level': {'type': 'dataframe', 'unit': 'G$',
-                         'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                  'invest': ('float',  None, True)},
-                         'dataframe_edition_locked': False},
+                         'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                  'invest': ('float', None, True)},
+                         'dataframe_edition_locked': False
+                         },
         'energy_prices': {'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'energy_CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'margin': {'type': 'dataframe', 'unit': '%'},
@@ -126,7 +127,7 @@ class TechnoDiscipline(SoSDiscipline):
                     resource_ratio_dict['years'] = years
                     all_resource_ratio_usable_demand_default = pd.DataFrame(
                         resource_ratio_dict)
-                    dynamic_inputs[AllResourceModel.RATIO_USABLE_DEMAND] = {'type': 'dataframe', 'unit': '-',
+                    dynamic_inputs[ResourceMixModel.RATIO_USABLE_DEMAND] = {'type': 'dataframe', 'unit': '-',
                                                                             'default': all_resource_ratio_usable_demand_default,
                                                                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                             'namespace': 'ns_resource'}
