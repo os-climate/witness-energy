@@ -62,6 +62,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
     DESC_OUT = {'electricity_demand_constraint': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
                 'electricity_demand': {'type': 'dataframe', 'unit': 'TWh'},
                 'transport_demand_constraint':{'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                'net_transport_production': {'type': 'array', 'unit': 'TWh'},
                 }
     name = EnergyDemand.name
     # The list of all energy constraints implemented in the discipline
@@ -85,7 +86,8 @@ class EnergyDemandDiscipline(SoSDiscipline):
         self.store_sos_outputs_values(
             {'electricity_demand_constraint': self.demand_model.get_elec_demand_constraint(),
              'electricity_demand': self.demand_model.get_elec_demand(),
-             'transport_demand_constraint': self.demand_model.get_transport_demand_constraint()})
+             'transport_demand_constraint': self.demand_model.get_transport_demand_constraint(),
+             'net_transport_production': self.demand_model.net_transport_production})
 
     def compute_sos_jacobian(self):
         '''
@@ -112,7 +114,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
 
         chart_filters = []
         chart_list = ['Electricity Demand Constraint',
-                      'Electrical Machine Efficiency']
+                      'Electrical Machine Efficiency', 'Transport Demand Constraint']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -141,6 +143,12 @@ class EnergyDemandDiscipline(SoSDiscipline):
             new_chart = self.get_chart_elec_machine_efficiency()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
+
+        if 'Transport Demand Constraint' in charts:
+            new_chart = self.get_chart_transport_demand_constraint()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
         return instanciated_charts
 
     def get_chart_elec_demand_constraint(self):
@@ -162,6 +170,26 @@ class EnergyDemandDiscipline(SoSDiscipline):
         serie = InstanciatedSeries(
             net_elec_prod['years'].values.tolist(),
             net_elec_prod[self.elec_prod_column].values.tolist(), 'electricity net production', 'lines')
+        new_chart.series.append(serie)
+
+        return new_chart
+
+    def get_chart_transport_demand_constraint(self):
+        chart_name = 'Transport Demand Constraint'
+
+        new_chart = TwoAxesInstanciatedChart('years', 'Energy demand [TWh]',
+                                             chart_name=chart_name, stacked_bar=True)
+
+        transport_demand, energy_production_detailed = self.get_sosdisc_inputs(['transport_demand', 'energy_production_detailed'])
+
+        serie = InstanciatedSeries(
+            transport_demand['years'].values.tolist(),
+            transport_demand['transport_demand'].values.tolist(), 'transport demand', 'lines')
+        new_chart.series.append(serie)
+        net_transport_production = self.get_sosdisc_outputs('net_transport_production')
+        serie = InstanciatedSeries(
+            transport_demand['years'].values.tolist(),
+            net_transport_production.tolist(), 'transport energies net production', 'lines')
         new_chart.series.append(serie)
 
         return new_chart

@@ -380,7 +380,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         np.set_printoptions(100)
         # np.set_printoptions(threshold=50)
 

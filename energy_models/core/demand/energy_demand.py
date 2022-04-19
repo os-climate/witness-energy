@@ -143,6 +143,7 @@ class EnergyDemand(object):
             if energ_prod_column in self.energy_production_detailed.columns:
                 sum_production_wo_elec = sum_production_wo_elec + self.energy_production_detailed[energ_prod_column].values
 
+        self.net_transport_production = sum_production_wo_elec
         self.transport_demand_constraint = (sum_production_wo_elec - self.transport_demand_df['transport_demand'].values) / self.transport_demand_constraint_ref
 
     def get_elec_demand_constraint(self):
