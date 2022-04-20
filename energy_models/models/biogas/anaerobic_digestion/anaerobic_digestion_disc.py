@@ -120,7 +120,3 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
-
-        for resource, value in grad_dict_resources.items():
-            self.set_partial_derivative_for_other_types(
-                ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)

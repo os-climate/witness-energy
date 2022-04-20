@@ -103,8 +103,11 @@ class Methanation(MethaneTechno):
         self.carbon_emissions[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
             self.cost_details['hydrogen_needs'] / \
             self.cost_details['efficiency']
+        self.carbon_emissions[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
+                                                           self.cost_details['dioxide_needs'] / \
+                                                           self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{GaseousHydrogen.name}']
+        return self.carbon_emissions[f'{GaseousHydrogen.name}'] + self.carbon_emissions[f'{CO2.name}']
 
     def get_h2o_production(self):
         """

@@ -429,6 +429,9 @@ class TechnoDiscipline(SoSDiscipline):
 
             if carbon_emissions is not None:
                 # resources carbon emissions
+                self.set_partial_derivative_for_other_types(
+                    ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)
+
                 sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
                             self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
                             self.techno_model.year_end][self.techno_name]) ** 2

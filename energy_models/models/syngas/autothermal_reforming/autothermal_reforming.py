@@ -93,8 +93,10 @@ class AuthothermalReforming(SyngasTechno):
             self.cost_details['efficiency']
         self.carbon_emissions[CO2.name] = self.resources_CO2_emissions[CO2.name] * \
             self.cost_details['CO2_needs'] / self.cost_details['efficiency']
+        self.carbon_emissions[Oxygen.name] = self.resources_CO2_emissions[Oxygen.name] * \
+                                          self.cost_details['oxygen_needs'] / self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Methane.name}'] + self.carbon_emissions[CO2.name]
+        return self.carbon_emissions[f'{Methane.name}'] + self.carbon_emissions[CO2.name] + self.carbon_emissions[Oxygen.name]
 
     def grad_co2_emissions_vs_resources_co2_emissions(self):
         '''

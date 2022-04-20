@@ -77,8 +77,10 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
 
         self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
             self.cost_details['elec_needs']
+        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
+                                            self.cost_details['water_needs']
 
-        return self.carbon_emissions[Electricity.name]
+        return self.carbon_emissions[Electricity.name] + self.carbon_emissions[Water.name]
 
     def get_water_needs(self):
         ''' 
