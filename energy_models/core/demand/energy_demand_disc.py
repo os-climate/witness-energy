@@ -51,12 +51,12 @@ class EnergyDemandDiscipline(SoSDiscipline):
                # 'default': 22847.66
                'initial_electricity_demand': {'type': 'float', 'default': 20900., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': ''},
-               'electricity_demand_constraint_ref': {'type': 'float', 'default': 100.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
                'transport_demand': {'type': 'dataframe' , 'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                                             'transport_demand': ('float',  None, True)},
                                               'dataframe_edition_locked': False, 'unit': 'TWh'},
-               'transport_demand_constraint_ref': {'type': 'float', 'default': 100.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'additional_demand_transport': {'type': 'float', 'default': 10., 'unit': '%'}}
 
     DESC_OUT = {'electricity_demand_constraint': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
@@ -146,6 +146,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
 
         if 'Transport Demand Constraint' in charts:
             new_chart = self.get_chart_transport_demand_constraint()
+
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
@@ -180,6 +181,8 @@ class EnergyDemandDiscipline(SoSDiscipline):
         new_chart = TwoAxesInstanciatedChart('years', 'Energy demand [TWh]',
                                              chart_name=chart_name, stacked_bar=True)
 
+        note = {'Transport energies': 'Liquid hydrogen, liquid fuel, biodiesel, methane, biogas, HEFA'}
+        new_chart.annotation_upper_left = note
         transport_demand, energy_production_detailed = self.get_sosdisc_inputs(['transport_demand', 'energy_production_detailed'])
 
         serie = InstanciatedSeries(

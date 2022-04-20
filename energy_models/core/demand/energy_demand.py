@@ -97,7 +97,7 @@ class EnergyDemand(object):
         self.elec_demand['elec_demand (TWh)'] = self.compute_elec_demand_with_efficiency(
         )
         self.demand_elec_constraint['elec_demand_constraint'] = (
-            self.energy_production_detailed[self.elec_prod_column].values - self.elec_demand['elec_demand (TWh)'].values) / self.electricity_demand_constraint_ref / self.delta_years
+            self.energy_production_detailed[self.elec_prod_column].values - self.elec_demand['elec_demand (TWh)'].values) / self.electricity_demand_constraint_ref
 
     def compute_elec_demand_with_efficiency(self):
         '''
@@ -170,7 +170,7 @@ class EnergyDemand(object):
         Compute the gradient of elec_demand_contraint vs electricity net production
         '''
 
-        return np.identity(self.delta_years) / self.electricity_demand_constraint_ref / self.delta_years
+        return np.identity(self.delta_years) / self.electricity_demand_constraint_ref
 
     def compute_dtransport_demand_dprod(self):
         '''
@@ -197,4 +197,4 @@ class EnergyDemand(object):
         grad[:, 0] = -self.population_df['population'].values / pop0**2
         grad[0, 0] = 0.0
 
-        return -grad * (1+self.additional_demand_transport) * self.initial_electricity_demand / self.improved_efficiency_factor.reshape(self.delta_years, 1) / self.electricity_demand_constraint_ref / self.delta_years
+        return -grad * (1+self.additional_demand_transport) * self.initial_electricity_demand / self.improved_efficiency_factor.reshape(self.delta_years, 1) / self.electricity_demand_constraint_ref
