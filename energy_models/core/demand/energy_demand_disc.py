@@ -146,6 +146,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
 
         if 'Transport Demand Constraint' in charts:
             new_chart = self.get_chart_transport_demand_constraint()
+
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
@@ -180,6 +181,8 @@ class EnergyDemandDiscipline(SoSDiscipline):
         new_chart = TwoAxesInstanciatedChart('years', 'Energy demand [TWh]',
                                              chart_name=chart_name, stacked_bar=True)
 
+        note = {'Transport energies': 'Liquid hydrogen, liquid fuel, biodiesel, methane, biogas, HEFA'}
+        new_chart.annotation_upper_left = note
         transport_demand, energy_production_detailed = self.get_sosdisc_inputs(['transport_demand', 'energy_production_detailed'])
 
         serie = InstanciatedSeries(
