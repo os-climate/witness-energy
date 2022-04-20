@@ -51,12 +51,12 @@ class EnergyDemandDiscipline(SoSDiscipline):
                # 'default': 22847.66
                'initial_electricity_demand': {'type': 'float', 'default': 20900., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': ''},
-               'electricity_demand_constraint_ref': {'type': 'float', 'default': 100.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
                'transport_demand': {'type': 'dataframe' , 'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                                             'transport_demand': ('float',  None, True)},
                                               'dataframe_edition_locked': False, 'unit': 'TWh'},
-               'transport_demand_constraint_ref': {'type': 'float', 'default': 100.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'additional_demand_transport': {'type': 'float', 'default': 10., 'unit': '%'}}
 
     DESC_OUT = {'electricity_demand_constraint': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
