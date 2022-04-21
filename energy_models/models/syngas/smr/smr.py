@@ -93,7 +93,12 @@ class SMR(SyngasTechno):
         self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
             self.cost_details['elec_needs']
 
-        return self.carbon_emissions[f'{Methane.name}'] + self.carbon_emissions[f'{Electricity.name}']
+        self.carbon_emissions[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
+            self.cost_details['water_needs'] / \
+            self.cost_details['efficiency']
+
+        return self.carbon_emissions[f'{Methane.name}'] + self.carbon_emissions[f'{Electricity.name}'] + \
+               self.carbon_emissions[f'{Water.name}']
 
     def get_theoretical_CH4_needs(self):
         ''' 
