@@ -19,6 +19,7 @@ from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 
+
 class Nuclear(ElectricityTechno):
 
     URANIUM_RESOURCE_NAME = ResourceGlossary.Uranium['name']
@@ -61,6 +62,18 @@ class Nuclear(ElectricityTechno):
         water_needs = self.get_theoretical_water_needs()
         self.consumption[f'{Water.name} ({self.mass_unit})'] = water_needs * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
+
+    def compute_CO2_emissions_from_input_resources(self):
+        """
+        Need to take into account  CO2 from electricity/hydrogen production
+        """
+
+        self.carbon_emissions[self.URANIUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.URANIUM_RESOURCE_NAME] * \
+            self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs']
+        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
+            self.cost_details['water_needs']
+
+        return self.carbon_emissions[self.URANIUM_RESOURCE_NAME] + self.carbon_emissions[Water.name]
 
     @staticmethod
     def get_theoretical_uranium_fuel_needs():

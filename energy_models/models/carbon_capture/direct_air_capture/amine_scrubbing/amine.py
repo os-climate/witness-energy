@@ -37,10 +37,10 @@ class Amine(CCTechno):
 
         self.cost_details['amine_needs'] = self.compute_amine_need()
 
-        self.cost_details['amine'] = list(
+        self.cost_details[ResourceGlossary.Amine['name']] = list(
             self.resources_prices[ResourceGlossary.Amine['name']] * self.cost_details['amine_needs'] / self.cost_details['efficiency'])
 
-        return self.cost_details[Electricity.name] + self.cost_details['amine']
+        return self.cost_details[Electricity.name] + self.cost_details[ResourceGlossary.Amine['name']]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -50,6 +50,15 @@ class Amine(CCTechno):
         elec_needs = self.get_electricity_needs()
         efficiency = self.configure_efficiency()
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
+                }
+
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
+        amine_needs = self.compute_amine_need()
+        efficiency = self.configure_efficiency()
+        return {ResourceGlossary.Amine['name']: np.identity(len(self.years)) * amine_needs / efficiency,
                 }
 
     def compute_consumption_and_production(self):

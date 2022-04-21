@@ -165,7 +165,7 @@ class EnergyMix(BaseStream):
 
     def configure_parameters_update(self, inputs_dict):
         '''
-        COnfigure parameters with possible update (variables that does change during the run)
+        Configure parameters with possible update (variables that does change during the run)
         '''
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
@@ -203,18 +203,26 @@ class EnergyMix(BaseStream):
             {'years': self.energy_prices['years'].values})
 
         # dataframe resource demand
-        self.all_resource_demand = pd.DataFrame(
+        self.resources_demand = pd.DataFrame(
+            {'years': self.energy_prices['years'].values})
+        self.resources_demand_woratio = pd.DataFrame(
             {'years': self.energy_prices['years'].values})
         for elements in self.resource_list:
             if elements in self.resource_list:
-                self.all_resource_demand[elements] = np.linspace(
-                    0, 0, len(self.all_resource_demand.index)) * 100.
+                self.resources_demand[elements] = np.linspace(
+                    0, 0, len(self.resources_demand.index)) * 100.
+                self.resources_demand_woratio[elements] = np.linspace(
+                    0, 0, len(self.resources_demand.index)) * 100.
         for energy in self.subelements_list:
             for resource in self.resource_list:
                 if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.sub_consumption_dict[energy].columns:
-                    self.all_resource_demand[resource] = self.all_resource_demand[resource] + \
+                    self.resources_demand[resource] = self.resources_demand[resource] + \
                         inputs_dict[f'{energy}.energy_consumption'][f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                         self.scaling_factor_energy_consumption
+                    self.resources_demand_woratio[resource] = self.resources_demand_woratio[resource] + \
+                                                     inputs_dict[f'{energy}.energy_consumption_woratio'][
+                                                         f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
+                                                     self.scaling_factor_energy_consumption
 
         # DataFrame stream demand
         self.all_streams_demand_ratio = pd.DataFrame(

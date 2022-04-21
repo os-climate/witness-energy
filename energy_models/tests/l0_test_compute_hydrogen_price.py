@@ -20,7 +20,7 @@ import scipy.interpolate as sc
 
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 
 
 class HydrogenPriceTestCase(unittest.TestCase):
@@ -332,7 +332,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
                        'PlasmaCracking.land_use_required': self.land_use_required_PlasmaCracking,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource}
+                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource}
 
         h2_model = GaseousHydrogen('hydrogen.gaseous_hydrogen')
         h2_model.configure(inputs_dict)

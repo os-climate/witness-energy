@@ -152,6 +152,7 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
         CCTechnoDiscipline.compute_sos_jacobian(self)
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         self.set_partial_derivatives_techno(
-            grad_dict, None)
+            grad_dict, None, grad_dict_resources)

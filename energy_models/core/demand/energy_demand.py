@@ -19,7 +19,13 @@ import pandas as pd
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from sos_trades_core.tools.base_functions.s_curve import s_curve
-
+from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
+from energy_models.core.stream_type.energy_models.biogas import BioGas
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 
 class EnergyDemand(object):
     '''
@@ -28,7 +34,8 @@ class EnergyDemand(object):
     '''
     name = 'Energy_demand'
     elec_prod_column = f"production electricity ({EnergyMix.stream_class_dict['electricity'].unit})"
-
+    energy_list_transport = [LiquidHydrogen.name,
+                         LiquidFuel.name, BioDiesel.name, Methane.name, BioGas.name , HydrotreatedOilFuel.name]
     def __init__(self, name):
         '''
         Constructor
@@ -43,6 +50,8 @@ class EnergyDemand(object):
         self.energy_production_detailed = None
         self.demand_elec_constraint = None
         self.elec_demand = None
+        self.transport_demand = None
+        self.transport_demand_constraint = None
         self.eff_coeff = 0.2
         self.eff_x0 = 2015
         self.eff_y_min = 0.9
@@ -58,6 +67,9 @@ class EnergyDemand(object):
         self.long_term_elec_machine_efficiency = inputs_dict['long_term_elec_machine_efficiency']
         self.initial_electricity_demand = inputs_dict['initial_electricity_demand']
         self.electricity_demand_constraint_ref = inputs_dict['electricity_demand_constraint_ref']
+        self.transport_demand_constraint_ref = inputs_dict['transport_demand_constraint_ref']
+        self.transport_demand_df = inputs_dict['transport_demand']
+        self.additional_demand_transport = inputs_dict['additional_demand_transport'] / 100.
         self.demand_elec_constraint = pd.DataFrame(
             {'years': self.years})
         self.elec_demand = pd.DataFrame(
@@ -76,6 +88,7 @@ class EnergyDemand(object):
         '''
 
         self.compute_elec_demand_constraint()
+        self.compute_transport_demand_constraint()
 
     def compute_elec_demand_constraint(self):
         '''
@@ -84,7 +97,7 @@ class EnergyDemand(object):
         self.elec_demand['elec_demand (TWh)'] = self.compute_elec_demand_with_efficiency(
         )
         self.demand_elec_constraint['elec_demand_constraint'] = (
-            self.energy_production_detailed[self.elec_prod_column].values - self.elec_demand['elec_demand (TWh)'].values) / self.electricity_demand_constraint_ref / self.delta_years
+            self.energy_production_detailed[self.elec_prod_column].values - self.elec_demand['elec_demand (TWh)'].values) / self.electricity_demand_constraint_ref
 
     def compute_elec_demand_with_efficiency(self):
         '''
@@ -95,7 +108,7 @@ class EnergyDemand(object):
         self.improved_efficiency_factor = self.compute_improved_efficiency_factor()
         pop_factor = self.population_df['population'].values / init_pop
 
-        electricity_demand = self.initial_electricity_demand * \
+        electricity_demand = (1. + self.additional_demand_transport) * self.initial_electricity_demand * \
             pop_factor / self.improved_efficiency_factor
 
         return electricity_demand
@@ -118,6 +131,21 @@ class EnergyDemand(object):
         return s_curve(
             years, coeff=self.eff_coeff, x0=self.eff_x0, y_min=self.eff_y_min, y_max=self.long_term_elec_machine_efficiency)
 
+    def compute_transport_demand_constraint(self):
+        '''
+        Compute transport demand constraint
+        '''
+
+        sum_production_wo_elec = np.zeros(self.delta_years)
+        for energy_name in self.energy_list_transport:
+
+            energ_prod_column = f"production {energy_name} ({EnergyMix.stream_class_dict[energy_name].unit})"
+            if energ_prod_column in self.energy_production_detailed.columns:
+                sum_production_wo_elec = sum_production_wo_elec + self.energy_production_detailed[energ_prod_column].values
+
+        self.net_transport_production = sum_production_wo_elec
+        self.transport_demand_constraint = (sum_production_wo_elec - self.transport_demand_df['transport_demand'].values) / self.transport_demand_constraint_ref
+
     def get_elec_demand_constraint(self):
         '''
         Getter for elec_demand_constraint
@@ -130,12 +158,26 @@ class EnergyDemand(object):
         '''
         return self.elec_demand
 
+    def get_transport_demand_constraint(self):
+        '''
+        Getter for transport_demand_constraint
+        '''
+        return self.transport_demand_constraint
+
+
     def compute_delec_demand_constraint_delec_prod(self):
         '''
         Compute the gradient of elec_demand_contraint vs electricity net production
         '''
 
-        return np.identity(self.delta_years) / self.electricity_demand_constraint_ref / self.delta_years
+        return np.identity(self.delta_years) / self.electricity_demand_constraint_ref
+
+    def compute_dtransport_demand_dprod(self):
+        '''
+        Compute the gradient of transport_demand_contraint vs any energy used for transport net production
+        '''
+        return np.identity(self.delta_years) / self.transport_demand_constraint_ref
+
 
     def compute_delec_demand_constraint_dpop(self):
         '''
@@ -155,4 +197,4 @@ class EnergyDemand(object):
         grad[:, 0] = -self.population_df['population'].values / pop0**2
         grad[0, 0] = 0.0
 
-        return -grad * self.initial_electricity_demand / self.improved_efficiency_factor.reshape(self.delta_years, 1) / self.electricity_demand_constraint_ref / self.delta_years
+        return -grad * (1+self.additional_demand_transport) * self.initial_electricity_demand / self.improved_efficiency_factor.reshape(self.delta_years, 1) / self.electricity_demand_constraint_ref

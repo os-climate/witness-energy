@@ -8,7 +8,7 @@ from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno i
 from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 
 
@@ -49,6 +49,15 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         return {Electricity.name: np.identity(len(self.years)) / efficiency.values,
                 }
 
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
+        water_needs = self.get_water_needs()
+        return {
+            Water.name: np.identity(len(self.years)) * water_needs,
+        }
+
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account positive CO2 from methane and elec prod
@@ -57,8 +66,10 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
 
         self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
             self.cost_details['elec_needs']
+        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
+            self.cost_details['water_needs']
 
-        return self.carbon_emissions[Electricity.name]
+        return self.carbon_emissions[Electricity.name] + self.carbon_emissions[Water.name]
 
     def get_water_needs(self):
         ''' 

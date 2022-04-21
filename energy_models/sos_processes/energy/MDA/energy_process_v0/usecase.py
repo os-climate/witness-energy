@@ -210,7 +210,7 @@ class Study(EnergyStudyManager):
                 ['total_prod_solid_fuel_elec'])
             list_parent.extend(['Energy_constraints'])
             list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([-1.])
+            list_weight.extend([0.])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
@@ -220,7 +220,7 @@ class Study(EnergyStudyManager):
                 ['total_prod_h2_liquid'])
             list_parent.extend(['Energy_constraints'])
             list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([-1.])
+            list_weight.extend([0.])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
@@ -246,15 +246,15 @@ class Study(EnergyStudyManager):
             list_namespaces.extend(['ns_functions', 'ns_functions'])
 
         if set(EnergyDemandDiscipline.energy_constraint_list).issubset(self.energy_list):
-            for energy in EnergyDemandDiscipline.energy_constraint_list:
-                list_var.extend(
-                    [f'{energy}_demand_constraint'])
-                list_parent.extend(['demand_constraint'])
-                list_ftype.extend([INEQ_CONSTRAINT])
-                list_weight.extend([0.])
-                list_aggr_type.extend(
-                    [AGGR_TYPE_SUM])
-                list_namespaces.extend(['ns_functions'])
+
+            list_var.extend(
+                ['electricity_demand_constraint','transport_demand_constraint'])
+            list_parent.extend(['demand_constraint', 'demand_constraint'])
+            list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
+            list_weight.extend([0., 0.])
+            list_aggr_type.extend(
+                [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            list_namespaces.extend(['ns_functions', 'ns_functions'])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -689,7 +689,8 @@ class Study(EnergyStudyManager):
 
         population_df = pd.DataFrame(
             {"years": self.years, "population": np.linspace(7886.69358, 9000., len(self.years))})
-
+        transport_demand=pd.DataFrame({'years': self.years,
+                                'transport_demand': np.linspace(33600., 30000., len(self.years))})
         values_dict = {f'{self.study_name}.energy_investment': invest_df,
                        f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
@@ -712,6 +713,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.resources_CO2_emissions': self.resources_CO2_emissions,
                        f'{self.study_name}.{energy_mix_name}.resources_price': self.resources_prices,
                        f'{self.study_name}.population_df': population_df,
+                       f'{self.study_name}.Energy_demand.transport_demand' : transport_demand,
                        }
 
         values_dict_list, dspace_list, instanciated_studies = self.setup_usecase_sub_study_list(

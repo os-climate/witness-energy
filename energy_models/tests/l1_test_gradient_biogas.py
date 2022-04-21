@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
+from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import pandas as pd
 import numpy as np
 import scipy.interpolate as sc
@@ -30,15 +30,23 @@ from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
-class AnaerobicDigestionPriceTestCase(unittest.TestCase):
+class BiogasJacobianTestCase(AbstractJacobianUnittest):
     """
     Anaerobic Digestion prices test class
     """
+
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    def analytic_grad_entry(self):
+        return [
+            self.test_01_biomass_gas_discipline_analytic_grad,
+        ]
 
     def setUp(self):
         '''
         Initialize third data needed for testing
         '''
+        self.energy_name = 'biogas'
         years = np.arange(2020, 2051)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -105,41 +113,7 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_compute_smr_price_prod_consumption(self):
-
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
-                       'techno_infos_dict': AnaerobicDigestionDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'resources_price': self.resources_prices,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': AnaerobicDigestionDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
-                       'initial_production': AnaerobicDigestionDiscipline.initial_production,
-                       'initial_age_distrib': AnaerobicDigestionDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'is_softmax': False,
-                       'data_fuel_dict': BioGas.data_energy_dict}
-
-        smr_model = AnaerobicDigestion('AnaerobicDigestion')
-        smr_model.configure_parameters(inputs_dict)
-        smr_model.configure_parameters(inputs_dict)
-        smr_model.configure_parameters_update(inputs_dict)
-        price_details = smr_model.compute_price()
-        smr_model.compute_consumption_and_production()
-
-    def test_02_biomass_gas_discipline(self):
+    def test_01_biomass_gas_discipline_analytic_grad(self):
 
         self.name = 'Test'
         self.model_name = 'AnaerobicDigestion'
@@ -165,17 +139,25 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin
+                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051))
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
-        filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
-
+        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
+                            discipline=disc_techno, step=1.0e-18, derr_approx='complex_step',
+                            inputs=[f'{self.name}.{self.model_name}.invest_level',
+                                    f'{self.name}.energy_prices',
+                                    f'{self.name}.energy_CO2_emissions',
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
+                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                                     f'{self.name}.{self.model_name}.techno_consumption',
+                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
+                                     f'{self.name}.{self.model_name}.techno_production',
+                                     ], )

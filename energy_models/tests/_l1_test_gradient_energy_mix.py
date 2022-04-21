@@ -25,6 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
+import scipy.interpolate as sc
 
 class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
     """
@@ -47,7 +48,8 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
             self.test_10_energy_mix_demand_dataframe,
             self.test_11_energy_mix_detailed_co2_emissions,
             self.test_13_energy_mix_co2_per_use_gradients,
-            self.test_14_energy_mix_with_losses]
+            self.test_14_energy_mix_with_losses,
+            self.test_15_energy_mix_with_agriculture_mix]
 
     def setUp(self):
         '''
@@ -57,6 +59,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         self.year_start = 2020
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
+        self.year_range = self.year_end - self.year_start + 1
         self.energy_list = ['hydrogen.gaseous_hydrogen', 'methane']
         self.consumption_hydro = pd.DataFrame({'electricity (TWh)': np.array([5.79262302e+09, 5.96550630e+09, 6.13351314e+09, 6.29771389e+09,
                                                                               6.45887954e+09, 6.61758183e+09, 6.81571547e+09, 7.00833095e+09,
@@ -228,6 +231,49 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                                                0.30355508, 0.3071769, 0.31104297, 0.31440867, 0.31709487,
                                                                0.32047716, 0.32392652, 0.32739837, 0.33021771, 0.33313758,
                                                                0.3361545]) * 1000.0})
+        
+        self.land_use_required_mock = pd.DataFrame(
+            {'years': self.years, 'random techno (Gha)': 0.0})
+
+        self.land_use_required_biomass = pd.DataFrame(
+            {'years': self.years, 'biomass_dry (Gha)': 0.0})
+        self.land_use_required_methane = pd.DataFrame(
+            {'years': self.years, 'mathane (Gha)': 0.0})
+        years = np.arange(2020, 2051)
+        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
+        co2_taxes = [14.86, 17.22, 20.27,
+                     29.01,  34.05,   39.08,  44.69,   50.29]
+        func = sc.interp1d(co2_taxes_year, co2_taxes,
+                           kind='linear', fill_value='extrapolate')
+
+        self.co2_taxes = pd.DataFrame(
+            {'years': years, 'CO2_tax': func(years)})
+        # Biomass dry inputs coming from agriculture mix disc
+        #                                                                
+        energy_consumption_biomass = np.linspace(0, 4, self.year_range)
+        self.energy_consumption_biomass = pd.DataFrame(
+            {'years': self.years, 'CO2_resource (Mt)': energy_consumption_biomass})
+
+        energy_consumption_woratio_biomass = np.linspace(0, 4, self.year_range)
+        self.energy_consumption_woratio_biomass = pd.DataFrame(
+            {'years': self.years, 'CO2_resource (Mt)': energy_consumption_woratio_biomass})
+
+        energy_production_biomass = np.linspace(15, 16, self.year_range)
+        self.energy_production_biomass = pd.DataFrame(
+            {'years': self.years, 'biomass_dry': energy_production_biomass})
+
+        energy_prices_biomass = np.linspace(9, 9, self.year_range)
+        energy_prices_wotaxes_biomass = np.linspace(9, 9, self.year_range)
+        self.energy_prices_biomass = pd.DataFrame(
+            {'years': self.years, 'biomass_dry': energy_prices_biomass, 'biomass_dry_wotaxes': energy_prices_wotaxes_biomass})
+
+        CO2_per_use_biomass = np.linspace(0, 1, self.year_range)
+        self.CO2_per_use_biomass = pd.DataFrame(
+            {'years': self.years, 'CO2_per_use': CO2_per_use_biomass})
+       
+        CO2_emissions_biomass = np.linspace(0, -1, self.year_range)
+        self.CO2_emissions_biomass = pd.DataFrame(
+            {'years': self.years, 'biomass_dry': CO2_emissions_biomass})
 
         #---Ratios---
         demand_ratio_dict = dict(
@@ -971,7 +1017,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_names = [
             f'{name}.{model_name}.{energy}.energy_consumption' for energy in energy_list]
 
-        energy_mix_output = [f'{name}.{model_name}.All_Demand']
+        energy_mix_output = [f'{name}.{model_name}.resources_demand']
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_demand_df.pkl',
                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
@@ -1205,9 +1251,92 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                                            f'{name}.{func_manager_name}.energy_production_objective',
                                                            f'{name}.{func_manager_name}.primary_energies_production', ])
 
+    def test_15_energy_mix_agriculture_mix(self):
+
+        name = 'Test'
+        model_name = 'EnergyMix'
+        agriculture_mix = 'AgricultureMix'
+        self.ee = ExecutionEngine(name)
+        ns_dict = {'ns_public': f'{name}',
+                   'ns_hydrogen': f'{name}',
+                   'ns_methane': f'{name}',
+                   'ns_energy_study': f'{name}',
+                   'ns_energy_mix': f'{name}.{model_name}',
+                   'ns_functions': f'{name}.{model_name}',
+                   'ns_resource': f'{name}.{model_name}.resource',
+                   'ns_ccs': f'{name}.{model_name}',
+                   'ns_ref': f'{name}.{model_name}',
+                   'ns_energy': f'{name}.{model_name}',
+                   'ns_witness': f'{name}'}
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline'
+        builder = self.ee.factory.get_builder_from_module(
+            model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        inputs_dict = {f'{name}.{model_name}.year_start': self.year_start,
+                       f'{name}.{model_name}.year_end': self.year_end,
+                       f'{name}.energy_list': ['methane', 'biomass_dry'],
+                       f'{name}.ccs_list': [],
+                       f'{name}.is_dev': True,
+                       f'{name}.{model_name}.energy_prices': pd.DataFrame({'hydrogen.gaseous_hydrogen': self.prices_hydro['hydrogen.gaseous_hydrogen'], 'methane': self.cost_details['methane']}),
+                       f'{name}.{agriculture_mix}.energy_consumption': self.energy_consumption_biomass,
+                       f'{name}.{agriculture_mix}.energy_consumption_woratio': self.energy_consumption_biomass,
+                       f'{name}.{agriculture_mix}.energy_production': self.energy_production_biomass,
+                       f'{name}.{agriculture_mix}.energy_prices': self.energy_prices_biomass,
+                       f'{name}.{agriculture_mix}.CO2_per_use': self.CO2_per_use_biomass,
+                       f'{name}.{agriculture_mix}.CO2_emissions': self.CO2_emissions_biomass,
+                       f'{name}.{agriculture_mix}.land_use_required': self.land_use_required_biomass,
+                       f'{name}.{model_name}.methane.energy_consumption': self.consumption,
+                       f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
+                       f'{name}.{model_name}.methane.energy_production': self.production,
+                       f'{name}.{model_name}.methane.energy_production_woratio': self.production,
+                       f'{name}.{model_name}.methane.energy_prices': self.cost_details,
+                       f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame({'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.methane.CO2_emissions': pd.DataFrame({'years': self.years, 'methane': 0.0}),
+                       f'{name}.{model_name}.methane.land_use_required': self.land_use_required_methane,
+                       f'{name}.CO2_taxes': self.co2_taxes,
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.loss_percentage': 1.0,
+                       f'{name}.{model_name}.methane.loss_percentage': 2.0,
+                       }
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{name}.EnergyMix')[0]
+
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_agriculture_mix.pkl',
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step',
+                            inputs=[f'{name}.{model_name}.methane.energy_consumption',
+                                    f'{name}.{model_name}.methane.energy_consumption_woratio',
+                                    f'{name}.{model_name}.methane.energy_production',
+                                    f'{name}.{model_name}.methane.energy_prices',
+                                    f'{name}.{model_name}.methane.CO2_per_use',
+                                    f'{name}.{model_name}.methane.CO2_emissions',
+                                    f'{name}.{model_name}.methane.land_use_required',
+                                    f'{name}.AgricultureMix.energy_consumption',
+                                    f'{name}.AgricultureMix.energy_consumption_woratio',
+                                    f'{name}.AgricultureMix.energy_production',
+                                    f'{name}.AgricultureMix.energy_prices',
+                                    f'{name}.AgricultureMix.CO2_per_use',
+                                    f'{name}.AgricultureMix.CO2_emissions',
+                                    f'{name}.AgricultureMix.land_use_required'],
+                            outputs=[f'{name}.{model_name}.energy_production',
+                                     f'{name}.{model_name}.energy_CO2_emissions',
+                                     f'{name}.{model_name}.energy_mean_price',
+                                     f'{name}.{model_name}.land_demand_df',
+                                     f'{name}.{model_name}.energy_prices_after_tax',
+                                     f'{name}.{model_name}.co2_emissions_needed_by_energy_mix'])
 
 if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = EnergyMixJacobianTestCase()
     cls.setUp()
-    cls.test_14_energy_mix_with_losses()
+    cls.test_15_energy_mix_agriculture_mix()

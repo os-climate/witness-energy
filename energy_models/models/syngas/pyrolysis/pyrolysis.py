@@ -41,10 +41,10 @@ class Pyrolysis(SyngasTechno):
         self.cost_details['wood_needs'] = 1 / syngas_kwh
 
         # Cost of wood for 1 kWh of syngas
-        self.cost_details['wood'] = list(
+        self.cost_details[ResourceGlossary.Wood['name']] = list(
             self.resources_prices[ResourceGlossary.Wood['name']] * self.cost_details['wood_needs'])
 
-        return self.cost_details['wood']
+        return self.cost_details[ResourceGlossary.Wood['name']]
 
     def compute_consumption_and_production(self):
         """
@@ -75,13 +75,22 @@ class Pyrolysis(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_emissions['wood'] = self.resources_CO2_emissions[ResourceGlossary.Wood['name']] * \
+        self.carbon_emissions[ResourceGlossary.Wood['name']] = self.resources_CO2_emissions[ResourceGlossary.Wood['name']] * \
             self.cost_details['wood_needs']
 
-        return self.carbon_emissions['wood']
+        return self.carbon_emissions[ResourceGlossary.Wood['name']]
 
     def grad_price_vs_energy_price(self):
         '''
         Overwrite techno_type method
         '''
         return {SyngasTechno.energy_name: 0 * np.identity(len(self.years))}
+
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
+        syngas_kg = 1.0 * self.techno_infos_dict['syngas_yield']
+        syngas_kwh = self.data_energy_dict['calorific_value'] * syngas_kg
+        wood_needs = 1 / syngas_kwh
+        return {ResourceGlossary.Wood['name']: np.identity(len(self.years)) * wood_needs}

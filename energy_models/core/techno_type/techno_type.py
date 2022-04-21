@@ -21,7 +21,7 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect, get_dsmooth_dvariable_vect
 from sos_trades_core.tools.cst_manager.func_manager_common import soft_maximum_vect, get_dsoft_maximum_vect
 from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
@@ -181,7 +181,7 @@ class TechnoType:
         if self.is_stream_demand:
             self.all_streams_demand_ratio = inputs_dict['all_streams_demand_ratio']
         if self.is_apply_resource_ratio:
-            self.ratio_available_resource = inputs_dict[AllResourceModel.RATIO_USABLE_DEMAND]
+            self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -212,7 +212,7 @@ class TechnoType:
         if self.is_stream_demand:
             self.all_streams_demand_ratio = inputs_dict[f'all_streams_demand_ratio']
         if self.is_apply_resource_ratio:
-            self.ratio_available_resource = inputs_dict[AllResourceModel.RATIO_USABLE_DEMAND]
+            self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
 
     def configure_energy_data(self, inputs_dict):
         '''
