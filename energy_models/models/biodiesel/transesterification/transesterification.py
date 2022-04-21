@@ -164,7 +164,13 @@ class Transesterification(BioDieselTechno):
             self.cost_details[f'{Methanol.name}_needs'] / \
             self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[SodiumHydroxide.name] + self.carbon_emissions[f'{NaturalOil.name}'] + self.carbon_emissions[Methanol.name]
+        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
+                                               self.cost_details[f'{Water.name}_needs'] / \
+                                               self.cost_details['efficiency']
+
+        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[SodiumHydroxide.name] + \
+               self.carbon_emissions[f'{NaturalOil.name}'] + self.carbon_emissions[Methanol.name] + \
+               self.carbon_emissions[Water.name]
 
     def grad_co2_emissions_vs_resources_co2_emissions(self):
         '''
@@ -174,11 +180,13 @@ class Transesterification(BioDieselTechno):
         oil_needs = self.get_theoretical_natural_oil_needs()
         methanol_needs = self.get_theoretical_methanol_needs()
         sodium_hydroxide_needs = self.get_theoretical_sodium_hydroxide_needs()
+        water_needs = self.get_theoretical_water_needs()
 
         return {
             NaturalOil.name: np.identity(len(self.years)) * oil_needs / efficiency,
             Methanol.name: np.identity(len(self.years)) * methanol_needs / efficiency,
             SodiumHydroxide.name: np.identity(len(self.years)) * sodium_hydroxide_needs / efficiency,
+            Water.name: np.identity(len(self.years)) * water_needs / efficiency,
         }
 
     def get_theoretical_methanol_needs(self):

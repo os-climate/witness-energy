@@ -20,6 +20,7 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 import numpy as np
 import pandas as pd
@@ -163,7 +164,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
                                  'carbon_demand': carbon_market_demand['carbon_demand'].values,
                                  'CO2_credits': CO2_credits['CO2_credits'].values,
                                  'hydrogen_price': self.prices[GaseousHydrogenTechno.energy_name],
-                                 'carbon_price': self.resources_prices[Carbon.name],
+                                 'carbon_price': ResourceGlossary.Carbon['price'],
                                  'is_prod_inf_demand': False,
                                  'is_storage_inf_storage_max': False
                                  })
