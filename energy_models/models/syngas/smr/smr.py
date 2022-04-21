@@ -37,20 +37,20 @@ class SMR(SyngasTechno):
         self.cost_details['CH4_needs'] = self.get_theoretical_CH4_needs()
 
         # need in kwh to produce 1kwh of syngas
-        self.cost_details['water_needs'] = self.get_theoretical_water_needs()
+        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
 
         # Cost of CO2 for 1 kWH of H2
         self.cost_details[f'{Methane.name}'] = list(self.prices[f'{Methane.name}'] * self.cost_details['CH4_needs']
                                                     / self.cost_details['efficiency'])
 
         # Cost of H20 for 1 kWH of H2
-        self.cost_details['water'] = list(self.resources_prices[f'{Water.name}'] * self.cost_details['water_needs']
+        self.cost_details[f'{Water.name}'] = list(self.resources_prices[f'{Water.name}'] * self.cost_details[f'{Water.name}_needs']
                                           / self.cost_details['efficiency'])
 
         self.cost_details['electricity'] = self.cost_details['elec_needs'] * \
             self.prices['electricity']
 
-        return self.cost_details['water'] + self.cost_details[f'{Methane.name}'] + self.cost_details['electricity']
+        return self.cost_details[f'{Water.name}'] + self.cost_details[f'{Methane.name}'] + self.cost_details['electricity']
 
     def grad_price_vs_energy_price(self):
         '''
@@ -94,7 +94,7 @@ class SMR(SyngasTechno):
             self.cost_details['elec_needs']
 
         self.carbon_emissions[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
-            self.cost_details['water_needs'] / \
+            self.cost_details[f'{Water.name}_needs'] / \
             self.cost_details['efficiency']
 
         return self.carbon_emissions[f'{Methane.name}'] + self.carbon_emissions[f'{Electricity.name}'] + \
@@ -148,6 +148,6 @@ class SMR(SyngasTechno):
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
+        self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
