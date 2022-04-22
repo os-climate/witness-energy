@@ -39,6 +39,7 @@ class EnergyMixTestCase(unittest.TestCase):
         self.year_start = 2020
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
+        self.year_range = self.year_end - self.year_start + 1
         self.energy_list = ['hydrogen.gaseous_hydrogen', 'methane']
         self.consumption_hydro = pd.DataFrame({'electricity (TWh)': np.array([5.79262302e+09, 5.96550630e+09, 6.13351314e+09, 6.29771389e+09,
                                                                               6.45887954e+09, 6.61758183e+09, 6.81571547e+09, 7.00833095e+09,
@@ -232,6 +233,32 @@ class EnergyMixTestCase(unittest.TestCase):
                                                                          0.29355508, 0.2971769, 0.30104297, 0.30440867, 0.30709487,
                                                                          0.31047716, 0.31392652, 0.31739837, 0.32021771, 0.32313758,
                                                                          0.3261545]) * 1000.0})
+        # Biomass dry inputs coming from agriculture mix disc
+        #                                                                
+        energy_consumption_biomass = np.linspace(0, 4, self.year_range)
+        self.energy_consumption_biomass = pd.DataFrame(
+            {'years': self.years, 'CO2_resource (Mt)': energy_consumption_biomass})
+
+        energy_consumption_woratio_biomass = np.linspace(0, 4, self.year_range)
+        self.energy_consumption_woratio_biomass = pd.DataFrame(
+            {'years': self.years, 'CO2_resource (Mt)': energy_consumption_woratio_biomass})
+
+        energy_production_biomass = np.linspace(15, 16, self.year_range)
+        self.energy_production_biomass = pd.DataFrame(
+            {'years': self.years, 'biomass_dry': energy_production_biomass})
+
+        energy_prices_biomass = np.linspace(9, 9, self.year_range)
+        energy_prices_wotaxes_biomass = np.linspace(9, 9, self.year_range)
+        self.energy_prices_biomass = pd.DataFrame(
+            {'years': self.years, 'biomass_dry': energy_prices_biomass, 'biomass_dry_wotaxes': energy_prices_wotaxes_biomass})
+
+        CO2_per_use_biomass = np.linspace(0, 1, self.year_range)
+        self.CO2_per_use_biomass = pd.DataFrame(
+            {'years': self.years, 'CO2_per_use': CO2_per_use_biomass})
+       
+        CO2_emissions_biomass = np.linspace(0, -1, self.year_range)
+        self.CO2_emissions_biomass = pd.DataFrame(
+            {'years': self.years, 'biomass_dry': CO2_emissions_biomass})
 
         self.land_use_required_mock = pd.DataFrame(
             {'years': self.years, 'random techno (Gha)': 0.0})
@@ -328,6 +355,7 @@ class EnergyMixTestCase(unittest.TestCase):
 
         name = 'Test'
         model_name = 'EnergyMix'
+        agriculture_mix = 'AgricultureMix'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_hydrogen': f'{name}',
@@ -338,7 +366,8 @@ class EnergyMixTestCase(unittest.TestCase):
                    'ns_resource': f'{name}.{model_name}.resource',
                    'ns_ccs': f'{name}.{model_name}',
                    'ns_ref': f'{name}.{model_name}',
-                   'ns_energy': f'{name}.{model_name}'}
+                   'ns_energy': f'{name}.{model_name}',
+                   'ns_witness': f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline'
@@ -351,7 +380,7 @@ class EnergyMixTestCase(unittest.TestCase):
 
         inputs_dict = {f'{name}.{model_name}.year_start': self.year_start,
                        f'{name}.{model_name}.year_end': self.year_end,
-                       f'{name}.energy_list': self.energy_list,
+                       f'{name}.energy_list': ['hydrogen.gaseous_hydrogen', 'methane', 'biomass_dry'],
                        f'{name}.ccs_list': [],
                        f'{name}.is_dev': True,
                        f'{name}.{model_name}.energy_prices': pd.DataFrame({'hydrogen.gaseous_hydrogen': self.prices_hydro['hydrogen.gaseous_hydrogen'], 'methane': self.cost_details['methane']}),
@@ -363,6 +392,13 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_per_use': pd.DataFrame({'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_emissions': pd.DataFrame({'years': self.years, 'hydrogen.gaseous_hydrogen': 0.0}),
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.land_use_required': self.land_use_required_mock,
+                       f'{name}.{agriculture_mix}.energy_consumption': self.energy_consumption_biomass,
+                       f'{name}.{agriculture_mix}.energy_consumption_woratio': self.energy_consumption_biomass,
+                       f'{name}.{agriculture_mix}.energy_production': self.energy_production_biomass,
+                       f'{name}.{agriculture_mix}.energy_prices': self.energy_prices_biomass,
+                       f'{name}.{agriculture_mix}.CO2_per_use': self.CO2_per_use_biomass,
+                       f'{name}.{agriculture_mix}.CO2_emissions': self.CO2_emissions_biomass,
+                       f'{name}.{agriculture_mix}.land_use_required': self.land_use_required_mock,
                        f'{name}.{model_name}.methane.energy_consumption': self.consumption,
                        f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
                        f'{name}.{model_name}.methane.energy_production': self.production,
@@ -534,7 +570,7 @@ class EnergyMixTestCase(unittest.TestCase):
         disc = ee.dm.get_disciplines_with_name(
             f'{name}.{model_name}')[0]
         all_demand = ee.dm.get_value(
-            f'{name}.{model_name}.resource.All_Demand')
+            f'{name}.{model_name}.resource.resources_demand')
         scaling_factor = 1000
         zero_line = np.linspace(0, 0, len(all_demand.index))
         self.assertListEqual(list(self.consumption['oil_resource (Mt)'].values), list(

@@ -329,7 +329,10 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
                                     f'{self.name}.syngas_ratio',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -377,7 +380,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         np.set_printoptions(100)
         # np.set_printoptions(threshold=50)
 
@@ -388,7 +391,9 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                 f'{self.name}.energy_prices',
                                 f'{self.name}.energy_CO2_emissions',
                                 f'{self.name}.CO2_taxes',
-                                f'{self.name}.all_streams_demand_ratio'
+                                f'{self.name}.all_streams_demand_ratio',
+                                f'{self.name}.resources_price',
+                                f'{self.name}.resources_CO2_emissions'
         ],
             outputs=[f'{self.name}.{self.model_name}.percentage_resource',
                      f'{self.name}.{self.model_name}.techno_prices',
@@ -452,7 +457,10 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -502,7 +510,10 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -552,7 +563,10 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -731,7 +745,10 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
                                     f'{self.name}.syngas_ratio',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',

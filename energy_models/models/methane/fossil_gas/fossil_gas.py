@@ -20,6 +20,7 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 
+
 class FossilGas(MethaneTechno):
     NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGas['name']
     def compute_other_primary_energy_costs(self):
@@ -83,4 +84,8 @@ class FossilGas(MethaneTechno):
         self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
             self.cost_details['elec_needs']
 
-        return self.carbon_emissions[f'{Electricity.name}']
+        self.carbon_emissions[self.NATURAL_GAS_RESOURCE_NAME] = \
+            self.resources_CO2_emissions[self.NATURAL_GAS_RESOURCE_NAME] * \
+            self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']
+
+        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[self.NATURAL_GAS_RESOURCE_NAME]

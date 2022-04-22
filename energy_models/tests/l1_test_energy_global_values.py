@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_open
-
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import AgricultureMixDiscipline
 
 class TestGlobalEnergyValues(unittest.TestCase):
     """
@@ -41,8 +41,19 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         full_values_dict[f'{self.name}.CO2_taxes'] = pd.DataFrame({'years': np.arange(2020, 2051),
                                                                    'CO2_tax': 20.0}, index=np.arange(2020, 2051))
+        self.agrimixname = 'AgricultureMix'
+        self.ee_agri = ExecutionEngine(self.name)
+        repo = 'climateeconomics.sos_processes.iam.witness'
+        builder_agri = self.ee_agri.factory.get_builder_from_process(
+            repo, 'agriculture_mix_process')
+        self.ee_agri.factory.set_builders_to_coupling_builder(builder_agri)
+        self.ee_agri.configure()
+        usecase_agri = Study_open(execution_engine=self.ee_agri)
+        usecase_agri.study_name = self.name
+        values_dict_agri = usecase.setup_usecase()
+        for dict_v in values_dict_agri:
+            full_values_dict.update(dict_v)
 
-        full_values_dict[f'{self.name}.is_dev'] = True
         self.ee.load_study_from_input_dict(full_values_dict)
 
     def test_01_check_global_production_values(self):

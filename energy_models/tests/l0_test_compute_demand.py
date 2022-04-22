@@ -41,7 +41,8 @@ class DemandTestCase(unittest.TestCase):
                                                         EnergyDemand.elec_prod_column: 25000.0})
         self.population = pd.DataFrame({'years': self.years,
                                         'population': np.linspace(7794.79, 9000., len(self.years))})
-
+        self.transport_demand = pd.DataFrame({'years': self.years,
+                                        'transport_demand': np.linspace(33000., 33000., len(self.years))})
     def tearDown(self):
         pass
 
@@ -70,6 +71,7 @@ class DemandTestCase(unittest.TestCase):
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.energy_production_detailed': self.energy_production_detailed,
                        f'{self.name}.population_df': self.population,
+                       f'{self.name}.Demand.transport_demand': self.transport_demand
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

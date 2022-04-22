@@ -70,6 +70,18 @@ class AuthothermalReforming(SyngasTechno):
 
         }
 
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
+        co2_needs = self.get_theoretical_CO2_needs()
+        oxygen_needs = self.get_theoretical_O2_needs()
+        efficiency = self.configure_efficiency()
+        return {
+            CO2.name: np.identity(len(self.years)) * co2_needs / efficiency[:, np.newaxis],
+            Oxygen.name: np.identity(len(self.years)) * oxygen_needs / efficiency[:, np.newaxis],
+        }
+
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from CO2 and methane
@@ -81,8 +93,21 @@ class AuthothermalReforming(SyngasTechno):
             self.cost_details['efficiency']
         self.carbon_emissions[CO2.name] = self.resources_CO2_emissions[CO2.name] * \
             self.cost_details['CO2_needs'] / self.cost_details['efficiency']
+        self.carbon_emissions[Oxygen.name] = self.resources_CO2_emissions[Oxygen.name] * \
+                                          self.cost_details['oxygen_needs'] / self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Methane.name}'] + self.carbon_emissions[CO2.name]
+        return self.carbon_emissions[f'{Methane.name}'] + self.carbon_emissions[CO2.name] + self.carbon_emissions[Oxygen.name]
+
+    def grad_co2_emissions_vs_resources_co2_emissions(self):
+        '''
+        Compute the gradient of global CO2 emissions vs resources CO2 emissions
+        '''
+        co2_needs = self.get_theoretical_CO2_needs()
+        efficiency = self.configure_efficiency()
+        return {
+            CO2.name: np.identity(len(self.years)) * co2_needs / efficiency[:, np.newaxis],
+        }
+
 
     def get_theoretical_CH4_needs(self):
         """

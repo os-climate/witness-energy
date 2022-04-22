@@ -20,7 +20,7 @@ import pandas as pd
 import re
 import scipy.interpolate as sc
 from os.path import join, dirname
-from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.models.electricity.nuclear.nuclear_disc import NuclearDiscipline
 from energy_models.models.electricity.nuclear.nuclear import Nuclear
 
@@ -113,7 +113,7 @@ class NuclearTestCase(unittest.TestCase):
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
@@ -146,7 +146,7 @@ class NuclearTestCase(unittest.TestCase):
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
@@ -181,7 +181,7 @@ class NuclearTestCase(unittest.TestCase):
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
@@ -228,7 +228,7 @@ class NuclearTestCase(unittest.TestCase):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.resources_price': self.resources_price,
-                       AllResourceModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
                        f'{self.name}.{self.model_name}.margin':  self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)

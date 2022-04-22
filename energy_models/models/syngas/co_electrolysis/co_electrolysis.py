@@ -62,6 +62,18 @@ class CoElectrolysis(SyngasTechno):
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 }
 
+    def grad_price_vs_resources_price(self):
+        '''
+        Compute the gradient of global price vs resources prices
+        '''
+        co2_needs = self.get_theoretical_CO2_needs()
+        water_needs = self.get_theoretical_water_needs()
+        efficiency = self.configure_efficiency()
+        return {
+            CO2.name: np.identity(len(self.years)) * co2_needs / efficiency[:, np.newaxis],
+            Water.name: np.identity(len(self.years)) * water_needs / efficiency[:, np.newaxis],
+        }
+
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from CO2 and positive from elec
@@ -72,10 +84,24 @@ class CoElectrolysis(SyngasTechno):
             self.cost_details['CO2_needs'] / \
             self.cost_details['efficiency']
 
+        self.carbon_emissions[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
+            self.cost_details['water_needs'] / self.cost_details['efficiency']
+
         self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
             self.cost_details['elec_needs']
 
-        return self.carbon_emissions[f'{CO2.name}'] + self.carbon_emissions[f'{Electricity.name}']
+        return self.carbon_emissions[f'{CO2.name}'] + self.carbon_emissions[f'{Water.name}'] + \
+               self.carbon_emissions[f'{Electricity.name}']
+
+    def grad_co2_emissions_vs_resources_co2_emissions(self):
+        '''
+        Compute the gradient of global CO2 emissions vs resources CO2 emissions
+        '''
+        co2_needs = self.get_theoretical_CO2_needs()
+        efficiency = self.configure_efficiency()
+        return {
+            CO2.name: np.identity(len(self.years)) * co2_needs / efficiency[:, np.newaxis],
+        }
 
     def get_theoretical_CO2_needs(self):
         ''' 
