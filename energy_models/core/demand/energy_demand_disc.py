@@ -49,7 +49,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
                                               'dataframe_edition_locked': False,
                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix'},
                # 'default': 22847.66
-               'initial_electricity_demand': {'type': 'float', 'default': 20900., 'unit': 'TWh'},
+               'initial_electricity_demand': {'type': 'float', 'default': 18000., 'unit': 'TWh'}, #old value is 20900TWh
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': ''},
                'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
