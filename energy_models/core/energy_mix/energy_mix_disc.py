@@ -44,6 +44,7 @@ from sos_trades_core.tools.cst_manager.func_manager_common import get_dsmooth_dv
     get_dsmooth_dvariable_vect
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class Energy_Mix_Discipline(SoSDiscipline):
@@ -108,9 +109,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
 
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%', 'range': [0., 100.]}, 
-                ### WIP is_dev to remove once its validated on dev processes
-                'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
+               'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%', 'range': [0., 100.]},
+               # WIP is_dev to remove once its validated on dev processes
+               'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
 
     DESC_OUT = {
         'energy_prices': {'type': 'dataframe', 'unit': '$/MWh'},
@@ -178,7 +179,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         dynamic_outputs = {}
         if 'is_dev' in self._data_in:
             is_dev = self.get_sosdisc_inputs('is_dev')
-                
+
         if 'energy_list' in self._data_in:
             energy_list = self.get_sosdisc_inputs('energy_list')
             self.update_default_energy_list()
@@ -194,7 +195,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_prices'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.land_use_required'] = {
-                            'type': 'dataframe', 'unit': '(Gha)', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'type': 'dataframe', 'unit': 'Gha', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
                     else:
                         dynamic_inputs[f'{energy}.energy_consumption'] = {
                             'type': 'dataframe', 'unit': 'PWh'}
@@ -205,7 +206,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         dynamic_inputs[f'{energy}.energy_prices'] = {
                             'type': 'dataframe', 'unit': '$/MWh'}
                         dynamic_inputs[f'{energy}.land_use_required'] = {
-                            'type': 'dataframe', 'unit': '(Gha)'}
+                            'type': 'dataframe', 'unit': 'Gha'}
                     if energy in self.energy_class_dict:
                         dynamic_inputs[f'{energy}.data_fuel_dict'] = {
                             'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
@@ -240,7 +241,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         dynamic_inputs[f'{ccs_name}.energy_prices'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
                         dynamic_inputs[f'{ccs_name}.land_use_required'] = {
-                            'type': 'dataframe', 'unit': '(Gha)', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
+                            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
 
                         dynamic_inputs[f'{ccs_name}.data_fuel_dict'] = {
                             'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
@@ -297,13 +298,20 @@ class Energy_Mix_Discipline(SoSDiscipline):
         inputs_dict.update(inputs_dict_orig)
         energy_list = self.get_sosdisc_inputs('energy_list')
         if inputs_dict['is_dev'] and 'biomass_dry' in energy_list:
-            inputs_dict[f'{BiomassDry.name}.energy_consumption'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_consumption')
-            inputs_dict[f'{BiomassDry.name}.energy_consumption_woratio'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_consumption_woratio')
-            inputs_dict[f'{BiomassDry.name}.energy_production'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_production')
-            inputs_dict[f'{BiomassDry.name}.energy_prices'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_prices')
-            inputs_dict[f'{BiomassDry.name}.land_use_required'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.land_use_required')
-            inputs_dict[f'{BiomassDry.name}.CO2_emissions'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.CO2_emissions')
-            inputs_dict[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.CO2_per_use')
+            inputs_dict[f'{BiomassDry.name}.energy_consumption'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.energy_consumption')
+            inputs_dict[f'{BiomassDry.name}.energy_consumption_woratio'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.energy_consumption_woratio')
+            inputs_dict[f'{BiomassDry.name}.energy_production'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.energy_production')
+            inputs_dict[f'{BiomassDry.name}.energy_prices'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.energy_prices')
+            inputs_dict[f'{BiomassDry.name}.land_use_required'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.land_use_required')
+            inputs_dict[f'{BiomassDry.name}.CO2_emissions'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.CO2_emissions')
+            inputs_dict[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.CO2_per_use')
 
         self.energy_model.configure_parameters_update(inputs_dict)
 
@@ -402,13 +410,20 @@ class Energy_Mix_Discipline(SoSDiscipline):
         inputs_dict.update(inputs_dict_orig)
         energy_list = inputs_dict['energy_list'] + inputs_dict['ccs_list']
         if inputs_dict['is_dev'] and 'biomass_dry' in energy_list:
-            inputs_dict[f'{BiomassDry.name}.energy_consumption'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_consumption')
-            inputs_dict[f'{BiomassDry.name}.energy_consumption_woratio'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_consumption_woratio')
-            inputs_dict[f'{BiomassDry.name}.energy_production'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_production')
-            inputs_dict[f'{BiomassDry.name}.energy_prices'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.energy_prices')
-            inputs_dict[f'{BiomassDry.name}.land_use_required'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.land_use_required')
-            inputs_dict[f'{BiomassDry.name}.CO2_emissions'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.CO2_emissions')
-            inputs_dict[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict_orig.pop(f'{AgricultureMixDiscipline.name}.CO2_per_use')
+            inputs_dict[f'{BiomassDry.name}.energy_consumption'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.energy_consumption')
+            inputs_dict[f'{BiomassDry.name}.energy_consumption_woratio'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.energy_consumption_woratio')
+            inputs_dict[f'{BiomassDry.name}.energy_production'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.energy_production')
+            inputs_dict[f'{BiomassDry.name}.energy_prices'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.energy_prices')
+            inputs_dict[f'{BiomassDry.name}.land_use_required'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.land_use_required')
+            inputs_dict[f'{BiomassDry.name}.CO2_emissions'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.CO2_emissions')
+            inputs_dict[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.CO2_per_use')
         outputs_dict = self.get_sosdisc_outputs()
         stream_class_dict = EnergyMix.stream_class_dict
         years = np.arange(inputs_dict['year_start'],
@@ -619,16 +634,19 @@ class Energy_Mix_Discipline(SoSDiscipline):
         #-------------------------------#
         #---Resource Demand gradients---#
         #-------------------------------#
+
         resource_list = EnergyMix.RESOURCE_LIST
         for energy in energy_list:
             ns_energy = energy
             if energy == BiomassDry.name and is_dev:
                 ns_energy = AgricultureMixDiscipline.name
             for resource in inputs_dict[f'{energy}.energy_consumption']:
-                if resource in resource_list:
-                    self.set_partial_derivative_for_other_types(('resources_demand', resource), (
+                resource_wo_unit = resource.replace(
+                    f" ({ResourceGlossary.UNITS['consumption']})", '')
+                if resource_wo_unit in resource_list:
+                    self.set_partial_derivative_for_other_types(('resources_demand', resource_wo_unit), (
                         f'{ns_energy}.energy_consumption', resource), scaling_factor_energy_consumption * np.identity(len(years)))
-                    self.set_partial_derivative_for_other_types(('resources_demand_woratio', resource), (
+                    self.set_partial_derivative_for_other_types(('resources_demand_woratio', resource_wo_unit), (
                         f'{ns_energy}.energy_consumption_woratio', resource), scaling_factor_energy_consumption * np.identity(
                         len(years)))
         #-----------------------------#

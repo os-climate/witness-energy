@@ -88,7 +88,7 @@ class SyngasDiscipline(EnergyDiscipline):
                     dynamic_inputs[f'{techno}.syngas_ratio'] = {
                         'type': 'array', 'unit': '%'}
                     dynamic_inputs[f'{techno}.land_use_required'] = {
-                        'type': 'dataframe', 'unit': '(Gha)'}
+                        'type': 'dataframe', 'unit': 'Gha'}
 
         self.add_inputs(dynamic_inputs)
 
