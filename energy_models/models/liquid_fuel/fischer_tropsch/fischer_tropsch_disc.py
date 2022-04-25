@@ -141,6 +141,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
+        grad_dict_resources_co2 = self.techno_model.grad_co2_emission_vs_resources_co2_emissions()
         carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
 
         scaling_factor_techno_consumption = self.get_sosdisc_inputs(
@@ -149,7 +150,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             'scaling_factor_techno_production')
 
         self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions, grad_dict_resources)
+            grad_dict, carbon_emissions, grad_dict_resources, grad_dict_resources_co2)
 
         margin = self.techno_model.margin['margin'].values
 
@@ -196,6 +197,67 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
              f'{self.techno_name}_wotaxes'), ('syngas_ratio',),
             dprice_FT_wotaxes_dsyngas_ratio / 100.0)  # now syngas is in % grad is divided by 100
 
+    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}, grad_dict_resources_co2={}):
+        """
+        Generic method to set partial derivatives of techno_prices / energy_prices, energy_CO2_emissions and dco2_emissions/denergy_co2_emissions
+        """
+        self.dprices_demissions = {}
+        self.grad_total = {}
+        for energy, value in grad_dict.items():
+            self.grad_total[energy] = value * \
+                self.techno_model.margin['margin'].values / 100.0
+            self.set_partial_derivative_for_other_types(
+                ('techno_prices', self.techno_name), ('energy_prices', energy), self.grad_total[energy])
+            self.set_partial_derivative_for_other_types(
+                ('techno_prices', f'{self.techno_name}_wotaxes'), ('energy_prices', energy), self.grad_total[energy])
+            # Means it has no sense to compute carbon emissions as for CC and
+            # CS
+            if carbon_emissions is not None:
+                self.set_partial_derivative_for_other_types(
+                    ('CO2_emissions', self.techno_name), ('energy_CO2_emissions', energy), value)
+
+                # to manage gradient when carbon_emissions is null:
+                # sign_carbon_emissions = 1 if carbon_emissions >=0, -1 if
+                # carbon_emissions < 0
+                sign_carbon_emissions = np.sign(
+                    carbon_emissions.loc[carbon_emissions['years'] <= self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <= self.techno_model.year_end][self.techno_name])**2
+                grad_on_co2_tax = value * \
+                    self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(
+                        0, sign_carbon_emissions).values
+
+                self.dprices_demissions[energy] = grad_on_co2_tax
+                self.set_partial_derivative_for_other_types(
+                    ('techno_prices', self.techno_name), ('energy_CO2_emissions', energy), self.dprices_demissions[energy])
+        if carbon_emissions is not None:
+            dCO2_taxes_factory = (self.techno_model.CO2_taxes['years'] <= self.techno_model.carbon_emissions['years'].max(
+            )) * self.techno_model.carbon_emissions[self.techno_name].clip(0).values
+            dtechno_prices_dCO2_taxes = dCO2_taxes_factory
+
+            self.set_partial_derivative_for_other_types(
+                ('techno_prices', self.techno_name), ('CO2_taxes', 'CO2_tax'), dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
+
+        for resource, value in grad_dict_resources.items():
+            self.set_partial_derivative_for_other_types(
+                ('techno_prices', self.techno_name), ('resources_price', resource), value *
+                self.techno_model.margin['margin'].values / 100.0)
+            self.set_partial_derivative_for_other_types(
+                ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_price', resource), value *
+                self.techno_model.margin['margin'].values / 100.0)
+
+        for resource, value in grad_dict_resources_co2.items():
+            if carbon_emissions is not None:
+                # resources carbon emissions
+                self.set_partial_derivative_for_other_types(
+                    ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)
+
+                sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
+                            self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
+                            self.techno_model.year_end][self.techno_name]) ** 2
+                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
+
+                self.dprices_demissions[resource] = grad_on_co2_tax
+                self.set_partial_derivative_for_other_types(
+                    ('techno_prices', self.techno_name), ('resources_CO2_emissions', resource), self.dprices_demissions[resource])
 
     def set_partial_derivatives_output_wr_input(self, output_name, input_name, grad_dict):
         """
