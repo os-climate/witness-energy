@@ -440,11 +440,15 @@ class WGS(GaseousHydrogenTechno):
 
         efficiency = self.configure_efficiency()
 
-        dco2_syngas_dsynags_ratio = self.compute_dsyngas_needs_dsyngas_ratio(
-        ) * self.energy_CO2_emissions.loc[self.energy_CO2_emissions['years']
-                                          <= self.cost_details['years'].max()][f'{Syngas.name}'].values / efficiency
+        dco2_syngas_dsynags_ratio = self.compute_dsyngas_needs_dsyngas_ratio() \
+                                    * self.energy_CO2_emissions.loc[self.energy_CO2_emissions['years']
+                                    <= self.cost_details['years'].max()][f'{Syngas.name}'].values / efficiency
 
-        return dco2_syngas_dsynags_ratio + dco2_prod_dsyngas_ratio
+        dco2_water_dsynags_ratio = self.compute_dwater_needs_dsyngas_ratio() \
+                                   * self.resources_CO2_emissions.loc[self.resources_CO2_emissions['years']
+                                   <= self.cost_details['years'].max()][f'{Water.name}'].values / efficiency
+
+        return dco2_syngas_dsynags_ratio + dco2_prod_dsyngas_ratio + dco2_water_dsynags_ratio
 
     def dco2_taxes_dsyngas_ratio(self):
 
