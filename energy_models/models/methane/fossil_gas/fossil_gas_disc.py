@@ -49,6 +49,8 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'CO2_from_production': 0.123,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
+                                 'fuel_demand': 1,
+                                 'fuel_demand_unit': 'kWh/kWh',
                                  'elec_demand': 0.00735,
                                  'elec_demand_unit': 'kWh/kWh',
                                  'lifetime_unit': 'years',
