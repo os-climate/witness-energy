@@ -59,7 +59,7 @@ class StreamDiscipline(SoSDiscipline):
         'energy_production': {'type': 'dataframe', 'unit': 'PWh'},
         'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh'},
         'techno_mix': {'type': 'dataframe', 'unit': '%'},
-        'land_use_required': {'type': 'dataframe', 'unit': '(Gha)'},
+        'land_use_required': {'type': 'dataframe', 'unit': 'Gha'},
     }
 
     _maturity = 'Research'
@@ -86,7 +86,7 @@ class StreamDiscipline(SoSDiscipline):
                     dynamic_inputs[f'{techno}.techno_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh'}
                     dynamic_inputs[f'{techno}.land_use_required'] = {
-                        'type': 'dataframe', 'unit': '(Gha)'}
+                        'type': 'dataframe', 'unit': 'Gha'}
 
         self.add_inputs(dynamic_inputs)
 

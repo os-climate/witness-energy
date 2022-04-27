@@ -658,13 +658,13 @@ class Study(EnergyStudyManager):
         self.resources_prices = get_static_prices(self.years)
 
         demand_ratio_dict = dict(
-            zip(self.energy_list, np.ones((len(self.years), len(self.years)))))
+            zip(self.energy_list, np.ones((len(self.years), len(self.years)))*100.))
         demand_ratio_dict['years'] = self.years
 
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         ratio_available_resource_dict = dict(
-            zip(EnergyMix.RESOURCE_LIST, np.ones((len(self.years), len(self.years)))))
+            zip(EnergyMix.RESOURCE_LIST, np.ones((len(self.years), len(self.years)))*100.))
         ratio_available_resource_dict['years'] = self.years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             ratio_available_resource_dict)

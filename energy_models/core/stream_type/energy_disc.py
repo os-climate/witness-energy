@@ -78,7 +78,7 @@ class EnergyDiscipline(StreamDiscipline):
                     dynamic_inputs[f'{techno}.CO2_emissions'] = {
                         'type': 'dataframe', 'unit': 'kgCO2/kWh'}
                     dynamic_inputs[f'{techno}.land_use_required'] = {
-                        'type': 'dataframe', 'unit': '(Gha)'}
+                        'type': 'dataframe', 'unit': 'Gha'}
 
         self.add_inputs(dynamic_inputs)
 
