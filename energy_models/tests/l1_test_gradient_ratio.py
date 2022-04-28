@@ -48,12 +48,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             # self.test_10_energy_mix_discipline_jacobian,
         ]
 
-    def launch_data_pickle_generation(self):
-        '''
-        If the energy_process_v0 usecase changed, launch this function to update the data pickle
-        '''
-        launch_data_pickle_generation()
-
     def setUp(self):
         '''
         Initialize third data needed for testing
@@ -249,7 +243,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0]
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
         coupled_outputs.append(
             f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
@@ -1194,8 +1187,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = RatioJacobianTestCase()
     cls.setUp()
-    cls.launch_data_pickle_generation()
     cls.test_01b_ratio_FossilGas_discipline_jacobian()
