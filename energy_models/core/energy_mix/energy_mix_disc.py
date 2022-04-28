@@ -957,7 +957,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         energy_cons_limited = compute_func_with_exp_min(
             energy_consumption, 1.0e-10)
         ddemand_ratio_denergy_prod = np.identity(len(years)) * 100.0 *\
-            np.where(energy_prod_limited <= energy_cons_limited,
+            np.where((energy_prod_limited <= energy_cons_limited) * (energy_prod_limited/energy_cons_limited>1E-15),
                      scaling_factor_production * denergy_prod_limited / energy_cons_limited,
                      0.0)
 
@@ -968,7 +968,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         energy_cons_limited = compute_func_with_exp_min(
             energy_consumption, 1.0e-10)
         ddemand_ratio_denergy_cons = np.identity(len(years)) * 100.0 *\
-            np.where(energy_prod_limited <= energy_cons_limited,
+            np.where((energy_prod_limited <= energy_cons_limited) * (energy_prod_limited/energy_cons_limited>1E-15),
                      -scaling_factor_production * energy_prod_limited * denergy_cons_limited /
                      energy_cons_limited**2,
                      0.0)
