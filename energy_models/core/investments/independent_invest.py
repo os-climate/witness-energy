@@ -98,7 +98,7 @@ class IndependentInvest(BaseInvest):
         abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
         smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
         invest_objective = smooth_delta / invest_objective_ref
-        abs_delta_sum_cons = compute_delta_constraint(value=techno_invest_sum, goal=energy_invest_df['energy_investment'].values,
-                                                      tolerable_delta=invest_limit_ref, delta_type='abs',
-                                                      reference_value=invest_sum_ref*self.delta_years)
-        return invest_constraint_df, invest_objective, abs_delta_sum, abs_delta_sum_cons
+        abs_delta_sum_cons_dc = compute_delta_constraint(value=techno_invest_sum, goal=energy_invest_df['energy_investment'].values,
+                                                         tolerable_delta=invest_limit_ref, delta_type='abs',
+                                                         reference_value=invest_sum_ref*self.delta_years)
+        return invest_constraint_df, invest_objective, abs_delta_sum, abs_delta_sum_cons, abs_delta_sum_cons_dc
