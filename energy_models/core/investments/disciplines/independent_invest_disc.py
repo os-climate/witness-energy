@@ -74,6 +74,8 @@ class IndependentInvestDiscipline(SoSDiscipline):
                              'namespace': 'ns_functions'},
         'invest_sum_cons': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
                              'namespace': 'ns_functions'},
+        'invest_sum_cons_dc': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'namespace': 'ns_functions'},
 
     }
     _maturity = 'Research'
@@ -143,13 +145,15 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         input_dict = self.get_sosdisc_inputs()
 
-        invest_constraint_df, invest_objective, abs_delta, abs_delta_cons = self.independent_invest_model.compute_invest_constraint_and_objective(
+        invest_constraint_df, invest_objective, abs_delta, abs_delta_cons, abs_delta_cons_dc = self.independent_invest_model.compute_invest_constraint_and_objective(
             input_dict)
 
         output_dict = {'invest_constraint': invest_constraint_df,
                        'invest_objective': invest_objective,
                        'invest_objective_sum': abs_delta,
-                       'invest_sum_cons': abs_delta_cons}
+                       'invest_sum_cons': abs_delta_cons,
+                       'invest_sum_cons_dc': abs_delta_cons_dc,
+                       }
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
             for techno in input_dict[f'{energy}.technologies_list']:
@@ -195,7 +199,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         dinvest_objective_sum_dtechno_invest, dinvest_objective_sum_dtotal_invest = self.compute_dinvest_objective_sum_dinvest(techno_invest_sum,energy_invest,invest_sum_ref)
         dinvest_objective_sum_cons_dtechno_invest, dinvest_objective_sum_cons_dtotal_invest = self.compute_dinvest_objective_sum_cons_dinvest(techno_invest_sum,energy_invest,invest_sum_ref, invest_limit_ref)
-        dinvest_objective_sum_cons_dtechno_invest, dinvest_objective_sum_cons_dtotal_invest = compute_ddelta_constraint(
+        dinvest_objective_sum_cons_dc_dtechno_invest, dinvest_objective_sum_cons_dc_dtotal_invest = compute_ddelta_constraint(
             techno_invest_sum, energy_invest, tolerable_delta=invest_limit_ref, delta_type='abs', reference_value=invest_sum_ref*delta_years)
         for techno in self.independent_invest_model.distribution_list:
             self.set_partial_derivative_for_other_types(
@@ -207,8 +211,9 @@ class IndependentInvestDiscipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('invest_objective_sum',), ('invest_mix', techno), dinvest_objective_sum_dtechno_invest)
             self.set_partial_derivative_for_other_types(
-                ('invest_sum_cons',), ('invest_mix', techno), dinvest_objective_sum_cons_dtechno_invest)
-
+                ('invest_sum_cons',), ('invest_mix', techno), -dinvest_objective_sum_cons_dtechno_invest / delta_years)
+            self.set_partial_derivative_for_other_types(
+                ('invest_sum_cons_dc',), ('invest_mix', techno), dinvest_objective_sum_cons_dc_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
             ('invest_constraint', 'invest_constraint'), ('forest_investment', 'forest_investment'),  ddelta_dtech / invest_constraint_ref)
@@ -219,7 +224,10 @@ class IndependentInvestDiscipline(SoSDiscipline):
             ('invest_objective_sum',), ('forest_investment', 'forest_investment'), dinvest_objective_sum_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_sum_cons',), ('forest_investment', 'forest_investment'), dinvest_objective_sum_cons_dtechno_invest)
+            ('invest_sum_cons',), ('forest_investment', 'forest_investment'),
+            -dinvest_objective_sum_cons_dtechno_invest / delta_years)
+        self.set_partial_derivative_for_other_types(
+            ('invest_sum_cons_dc',), ('forest_investment', 'forest_investment'), dinvest_objective_sum_cons_dc_dtechno_invest)
 
         if inputs_dict['is_dev']:
             for techno in ['managed_wood_investment', 'unmanaged_wood_investment', 'crop_investment']:
@@ -232,7 +240,10 @@ class IndependentInvestDiscipline(SoSDiscipline):
                     ('invest_objective_sum',), (techno, 'investment'), dinvest_objective_sum_dtechno_invest)
 
                 self.set_partial_derivative_for_other_types(
-                    ('invest_sum_cons',), (techno, 'investment'), dinvest_objective_sum_cons_dtechno_invest)
+                    ('invest_sum_cons',), (techno, 'investment'),
+                    -dinvest_objective_sum_cons_dtechno_invest / delta_years)
+                self.set_partial_derivative_for_other_types(
+                    ('invest_sum_cons_dc',), (techno, 'investment'), dinvest_objective_sum_cons_dc_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
             ('invest_constraint', 'invest_constraint'), ('energy_investment', 'energy_investment'),  ddelta_dtot * scaling_factor_energy_investment / invest_constraint_ref)
@@ -243,7 +254,10 @@ class IndependentInvestDiscipline(SoSDiscipline):
             ('invest_objective_sum',), ('energy_investment', 'energy_investment'), dinvest_objective_sum_dtotal_invest * scaling_factor_energy_investment)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_sum_cons',), ('energy_investment', 'energy_investment'), dinvest_objective_sum_cons_dtotal_invest * scaling_factor_energy_investment)
+            ('invest_sum_cons',), ('energy_investment', 'energy_investment'),
+            -dinvest_objective_sum_cons_dtotal_invest * scaling_factor_energy_investment / delta_years)
+        self.set_partial_derivative_for_other_types(
+            ('invest_sum_cons_dc',), ('energy_investment', 'energy_investment'), dinvest_objective_sum_cons_dc_dtotal_invest * scaling_factor_energy_investment)
 
 
     def compute_dinvest_objective_dinvest(self, techno_invest_sum, invest_tot, invest_objective_ref):
