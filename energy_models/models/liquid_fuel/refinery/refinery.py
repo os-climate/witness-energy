@@ -105,8 +105,7 @@ class Refinery(LiquidFuelTechno):
 
         # oil consumption:
         self.consumption[f'{self.OIL_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] * \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
-            CrudeOil.data_energy_dict['calorific_value']  # in Mt
+            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'] # in Mt
 
         self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] *  \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh

@@ -91,7 +91,7 @@ class CCUS_Discipline(SoSDiscipline):
                     dynamic_inputs[f'{ccs_name}.energy_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
                     dynamic_inputs[f'{ccs_name}.land_use_required'] = {
-                        'type': 'dataframe', 'unit': '(Gha)', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
+                        'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
 
         if 'year_start' in self._data_in and 'year_end' in self._data_in:
             year_start = self.get_sosdisc_inputs('year_start')
