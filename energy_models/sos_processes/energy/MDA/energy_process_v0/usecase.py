@@ -237,13 +237,13 @@ class Study(EnergyStudyManager):
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
             list_var.extend(
-                ['invest_constraint', 'invest_sum_cons'])
-            list_parent.extend(['', ''])
-            list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-            list_weight.extend([0., -1.0])
+                ['invest_constraint', 'invest_sum_cons', 'invest_sum_cons_dc'])
+            list_parent.extend(['economic_constraints', 'economic_constraints', 'economic_constraints'])
+            list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT])
+            list_weight.extend([0., -1.0, 0.])
             list_aggr_type.extend(
-                [AGGR_TYPE_SMAX, AGGR_TYPE_SUM])
-            list_namespaces.extend(['ns_functions', 'ns_functions'])
+                [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
+            list_namespaces.extend(['ns_functions', 'ns_functions', 'ns_functions'])
 
         if set(EnergyDemandDiscipline.energy_constraint_list).issubset(self.energy_list):
 
