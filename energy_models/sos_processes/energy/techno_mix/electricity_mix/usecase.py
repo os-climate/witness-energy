@@ -28,13 +28,6 @@ DEFAULT_TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThe
                              'Geothermal', 'CoalGen', 'BiomassFired']
 TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                              'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'Geothermal', 'CoalGen']
-TECHNOLOGIES_LIST_COARSE = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
-                                    'Nuclear', 'Geothermal', 'Hydropower']
-TECHNOLOGIES_LIST_COARSE_0 = ['RenewableElectricitySimpleTechno']
-TECHNOLOGIES_LIST_COARSE_3 = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
-                                      'Nuclear', 'Geothermal', 'Hydropower', 'CoalGen']
-TECHNOLOGIES_LIST_MIN_TECH = ['WindOnshore', 'SolarPv', 'SolarThermal',
-                                     'Nuclear', 'Geothermal', 'Hydropower', 'CoalGen']
 TECHNOLOGIES_LIST_DEV = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                          'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine',
                          'BiogasFired', 'Geothermal', 'CoalGen', 'BiomassFired']
