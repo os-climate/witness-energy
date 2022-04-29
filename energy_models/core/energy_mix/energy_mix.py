@@ -569,7 +569,7 @@ class EnergyMix(BaseStream):
                 energy_consumption, 1.0e-10)
 
             demand_ratio_df[f'{energy}'] = np.minimum(
-                energy_prod_limited / energy_cons_limited, 1.0) * 100.0
+                np.maximum(energy_prod_limited / energy_cons_limited, 1E-15), 1.0) * 100.0
         self.all_streams_demand_ratio = demand_ratio_df
 
         # COmpute ratio_objective

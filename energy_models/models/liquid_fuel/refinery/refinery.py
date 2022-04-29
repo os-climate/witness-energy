@@ -48,8 +48,9 @@ class Refinery(LiquidFuelTechno):
 
         self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details['elec_needs'] / self.cost_details['efficiency'])
-        # calorific value in kWh/kg * 1000 to have needs in t/kWh
-        self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / (self.data_energy_dict['calorific_value'] * 1000.0)
+        # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have needs in [kg/kWh]
+        self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / self.data_energy_dict['calorific_value']
+        # resources price [$/t] since needs are in [kg/kWh] to have cost in [$/t]*[kg/kWh]=[$/MWh]
         self.cost_details[self.OIL_RESOURCE_NAME] = list(
             self.resources_prices[self.OIL_RESOURCE_NAME] * self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] / self.cost_details['efficiency'])
 
@@ -73,7 +74,7 @@ class Refinery(LiquidFuelTechno):
         '''
         Compute the gradient of global price vs resources prices
         '''
-        oil_needs = self.get_fuel_needs() / (self.data_energy_dict['calorific_value'] * 1000.0)
+        oil_needs = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'].values
         return {
             self.OIL_RESOURCE_NAME: np.identity(
                 len(self.years)) * oil_needs,
@@ -103,7 +104,7 @@ class Refinery(LiquidFuelTechno):
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        # oil consumption:
+        # oil consumption: prod [TWh] * needs [kg/kWh] = [Mt]
         self.consumption[f'{self.OIL_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] * \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'] # in Mt
 

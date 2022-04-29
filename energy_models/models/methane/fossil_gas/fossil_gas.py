@@ -29,10 +29,11 @@ class FossilGas(MethaneTechno):
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
-        #calorific value in kWh/kg * 1000 to have needs in t/kWh
-        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = np.ones(len(self.years)) / (1000 * Methane.data_energy_dict['calorific_value']) #t/kWh
+        # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have needs in [kg/kWh]
+        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value'] #kg/kWh
         self.cost_details[f'{Electricity.name}'] = list(
             self.prices[f'{Electricity.name}'] * self.cost_details['elec_needs'])
+        #resources price [$/t] since needs are in [kg/kWh] to have cost in [$/MWh]
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}'] = list(
             self.resources_prices[f'{self.NATURAL_GAS_RESOURCE_NAME}'] * self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'])
         # cost to produce 1Kwh of methane
@@ -52,7 +53,7 @@ class FossilGas(MethaneTechno):
         Compute the gradient of global price vs resource prices
         Work also for total CO2_emissions vs resource CO2 emissions
         '''
-        natural_gas_needs = 1 / (1000 * Methane.data_energy_dict['calorific_value']) #t/kWh
+        natural_gas_needs = self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'].values
         return {self.NATURAL_GAS_RESOURCE_NAME: np.identity(len(self.years)) * natural_gas_needs,
                 }
 
@@ -72,9 +73,9 @@ class FossilGas(MethaneTechno):
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
-        # consumption fossil gas
+        # consumption fossil gas: prod [TWh] * needs [kg/kWh] = [Mt]
         self.consumption[f'{self.NATURAL_GAS_RESOURCE_NAME} ({self.mass_unit})'] = self.production[
-            f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / Methane.data_energy_dict['calorific_value']  # in Mt
+            f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']  # in Mt
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
