@@ -24,7 +24,6 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 
 DEFAULT_TECHNOLOGIES_LIST = ['Refinery', 'FischerTropsch']
 TECHNOLOGIES_LIST = ['Refinery', 'FischerTropsch']
-TECHNOLOGIES_LIST_MIN_TECH = ['Refinery']
 TECHNOLOGIES_LIST_DEV = ['Refinery', 'FischerTropsch']
 
 
