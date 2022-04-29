@@ -90,7 +90,14 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [2.0, 2.0, 2.0]})
 
-    initial_production = 1e-12  # in TWh at year_start
+    # FischerTropsch Wikipedia :
+    # 140000+34000 BPD in Qatar GtL
+    # 12000 BPD in Malaysia GtL
+    # 112000 BPD in China CtL : http://www.synfuelschina.com.cn/en/about/
+    # 165000 + 36000 BPD in South Africa CtL
+    # BPD to TWh per year = 1700/1e9*365
+    initial_production = (140000 + 34000 + 12000 + 112000 + 165000 +
+                          36000) * 1700 / 1e9 * 365  # in TWh at year_start
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [0.95238095, 0.95238095, 0.95238095, 0.95238095, 0.95238095,
@@ -251,9 +258,10 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                     ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)
 
                 sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
-                            self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
-                            self.techno_model.year_end][self.techno_name]) ** 2
-                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
+                                                                     self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
+                                                                                                                                                       self.techno_model.year_end][self.techno_name]) ** 2
+                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <=
+                                                                          self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
 
                 self.dprices_demissions[resource] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(

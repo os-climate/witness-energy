@@ -73,7 +73,13 @@ class SMRDiscipline(SyngasTechnoDiscipline):
     # annual global dedicated hydrogen production of around 70 million tonnes.
     # 70 MT of hydrogen then 70*33.3 TWh of hydrogen we need approximately
     # 1.639 kWh of syngas to produce one of hydrogen (see WGS results)
-    initial_production = 70.0 * 33.3 * 1.639 * 0.75
+
+    # syngas is also used for FT process :
+    # 140000+34000 BPD in Qatar GtL
+    # 12000 BPD in Malaysia GtL
+    # BPD to TWh per year = 1700/1e9*365
+    initial_production = 70.0 * 33.3 * 1.639 * 0.75 + \
+        (140000 + 34000 + 12000) * 1700 / 1e9 * 365
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [3.317804973859207, 6.975128305927281, 4.333201737255864,
                                                          3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
