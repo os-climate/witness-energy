@@ -25,10 +25,9 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 DEFAULT_TECHNOLOGIES_LIST = [
     'WaterGasShift', 'Electrolysis.SOEC', 'Electrolysis.PEM', 'Electrolysis.AWE',  'PlasmaCracking']
 TECHNOLOGIES_LIST = ['WaterGasShift', 'Electrolysis.SOEC',
-                             'Electrolysis.PEM', 'Electrolysis.AWE', ]  # 'PlasmaCracking']
-TECHNOLOGIES_LIST_MIN_TECH = ['WaterGasShift']
+                     'Electrolysis.PEM', 'Electrolysis.AWE', ]  # 'PlasmaCracking']
 TECHNOLOGIES_LIST_DEV = ['WaterGasShift', 'Electrolysis.SOEC', 'Electrolysis.PEM', 'Electrolysis.AWE',
-                         #'PlasmaCracking'
+                         'PlasmaCracking'
                          ]
 
 
