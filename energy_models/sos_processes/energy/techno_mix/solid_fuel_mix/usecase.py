@@ -22,7 +22,6 @@ from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 DEFAULT_TECHNOLOGIES_LIST = ['CoalExtraction', 'Pelletizing']
 TECHNOLOGIES_LIST = ['CoalExtraction', 'Pelletizing']
-TECHNOLOGIES_LIST_MIN_TECH = ['CoalExtraction']
 TECHNOLOGIES_LIST_DEV = ['CoalExtraction', 'Pelletizing']
 
 
