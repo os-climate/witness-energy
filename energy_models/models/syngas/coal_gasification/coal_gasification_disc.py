@@ -77,7 +77,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
     # transformation). It contains application to hydrogen (WGS), oil products
     # (FT) and Direct Reduced Iron in industry
     # We need 1.19 kWH of coal for 1 KWh of syngas then:
-    initial_production = 3333. / 1.19
+    initial_production = (3333. + 264.72) / 1.19
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': np.array([3.317804973859207, 6.975128305927281, 4.333201737255864,
                                                                   3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
