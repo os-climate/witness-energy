@@ -45,7 +45,7 @@ class ElectricityDiscipline(EnergyDiscipline):
 
     DESC_IN = {'technologies_list': {'type': 'string_list',
                                      'possible_values': ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal', 'Hydropower',
-                                                         'CoalGen', 'Nuclear', 'CombinedCycleGasTurbine',
+                                                         'CoalGen', 'OilGen', 'Nuclear', 'CombinedCycleGasTurbine',
                                                          'GasTurbine', 'BiogasFired', 'BiomassFired',
                                                          'Geothermal', 'RenewableElectricitySimpleTechno', 'RenewableElectricitySimpleTechnoDiscipline'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_electricity', 'structuring': True},
