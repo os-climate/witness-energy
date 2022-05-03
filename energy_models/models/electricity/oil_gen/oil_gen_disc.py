@@ -65,7 +65,8 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  # IEA (2020), Levelised Cost of Electricity Calculator,
                                  # IEA and NEA, Paris
                                  # https://www.iea.org/articles/levelised-cost-of-electricity-calculator
-                                 # keep the same as coal generator (see: https://www.duke-energy.com/energy-education/how-energy-works/oil-and-gas-electricity)
+                                 # keep the same as coal generator (see:
+                                 # https://www.duke-energy.com/energy-education/how-energy-works/oil-and-gas-electricity)
                                  'elec_demand': 0.16,
                                  'elec_demand_unit': 'kWh/kWh',
 
@@ -73,7 +74,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019
                                  # 5727280 TJ oil demand --> 1590.91 TWh
                                  # initial prod = 747.171 TWh
-                                 'fuel_demand': 0.4697,  # at 100% efficiency
+                                 'fuel_demand': 1590.91 / 747.171,  # at 100% efficiency
                                  'fuel_demand_unit': 'kWh/kWh',
 
                                  'WACC': 0.075,
@@ -86,7 +87,8 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  'lifetime_unit': 'years',
 
                                  # ESMAP, Study of Equipment Prices in the Power Sector, 2009
-                                 # https://esmap.org/sites/default/files/esmap-files/TR122-09_GBL_Study_of_Equipment_Prices_in_the_Power_Sector.pdf (mean value p46)
+                                 # https://esmap.org/sites/default/files/esmap-files/TR122-09_GBL_Study_of_Equipment_Prices_in_the_Power_Sector.pdf
+                                 # (mean value p46)
                                  'Capex_init': 1380,
                                  'Capex_init_unit': '$/kW',
                                  'full_load_hours': 8760,
@@ -117,7 +119,6 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
     # (linear from 2016, 2017, 2018 data)
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [21.0, 20.0, 19.0, 18.0, 17.0]})
-
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
