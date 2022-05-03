@@ -318,7 +318,7 @@ class TestIndependentInvest(unittest.TestCase):
                                                                                     f'{self.name}.invest_objective_sum' ,
                                                                                     f'{self.name}.invest_sum_cons',
                                                                                     f'{self.name}.invest_sum_cons_dc'],
-            dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
+            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
