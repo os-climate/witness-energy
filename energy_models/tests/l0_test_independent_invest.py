@@ -273,6 +273,8 @@ class TestIndependentInvest(unittest.TestCase):
                    'ns_ccs': f'{self.name}',
                    'ns_functions': self.name,
                    'ns_invest': self.name,
+                   'ns_crop': self.name,
+                   'ns_forest': self.name
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 

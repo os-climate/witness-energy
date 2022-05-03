@@ -130,15 +130,15 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 dynamic_inputs['managed_wood_investment'] = {
                         'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
                         'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
-                        'namespace': 'ns_invest', 'dataframe_edition_locked': False}
+                        'namespace': 'ns_forest', 'dataframe_edition_locked': False}
                 dynamic_inputs['unmanaged_wood_investment'] = {
                         'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
                         'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
-                        'namespace': 'ns_invest', 'dataframe_edition_locked': False}
+                        'namespace': 'ns_forest', 'dataframe_edition_locked': False}
                 dynamic_inputs['crop_investment'] = {
                         'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
                         'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
-                        'namespace': 'ns_invest', 'dataframe_edition_locked': False}
+                        'namespace': 'ns_crop', 'dataframe_edition_locked': False}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
