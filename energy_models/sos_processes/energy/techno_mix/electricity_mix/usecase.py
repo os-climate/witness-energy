@@ -25,12 +25,12 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 
 DEFAULT_TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                              'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'BiogasFired',
-                             'Geothermal', 'CoalGen', 'BiomassFired']
+                             'Geothermal', 'CoalGen', 'OilGen', 'BiomassFired']
 TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                              'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'Geothermal', 'CoalGen']
 TECHNOLOGIES_LIST_DEV = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                          'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine',
-                         'BiogasFired', 'Geothermal', 'CoalGen', 'BiomassFired']
+                         'BiogasFired', 'Geothermal', 'CoalGen', 'OilGen', 'BiomassFired']
 
 
 class Study(EnergyMixStudyManager):
@@ -131,6 +131,13 @@ class Study(EnergyMixStudyManager):
             #                 0.1, 0, 0, 0, 0, 0, 0, 0])
             invest_electricity_mix_dict['CoalGen'] = np.array([
                 0.1, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001])
+        if 'OilGen' in self.technologies_list:
+            #             invest_electricity_mix_dict['CoalGen'] = [
+            #                 max(0.01, 0.1 - 0.2 * i) for i in l_ctrl]
+            #             invest_electricity_mix_dict['CoalGen'] = np.array([
+            #                 0.1, 0, 0, 0, 0, 0, 0, 0])
+            invest_electricity_mix_dict['OilGen'] = np.array([
+                0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001])
 
         if 'RenewableElectricitySimpleTechno' in self.technologies_list:
 
@@ -198,6 +205,10 @@ class Study(EnergyMixStudyManager):
             invest_electricity_mix_dict['CoalGen'] = [
                 max(0.01, 0.1 - 0.2 * i) for i in l_ctrl]
 
+        if 'OilGen' in self.technologies_list:
+            invest_electricity_mix_dict['OilGen'] = [
+                max(0.01, 0.1 - 0.2 * i) for i in l_ctrl]
+
         if 'RenewableElectricitySimpleTechno' in self.technologies_list:
 
             invest_electricity_mix_dict['RenewableElectricitySimpleTechno'] = [
@@ -226,13 +237,16 @@ class Study(EnergyMixStudyManager):
                                            'methane': 60.0,
                                            'biogas': 5.0,
                                            'biomass_dry': 11.0,
-                                           'solid_fuel': 5.7
+                                           'solid_fuel': 5.7,
+                                           'fuel.liquid_fuel': 91,
                                            })
 
         #  IRENA invest data - Future of wind 2019
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4,
-             'biogas': 0.123 / 15.4, 'biomass_dry': - 0.64 / 4.86, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0})
+             'biogas': 0.123 / 15.4, 'biomass_dry': - 0.64 / 4.86, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0,
+             'fuel.liquid_fuel': 0.64 / 4.86,
+             })
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame({'years': years, 'invest': 10.0})
@@ -280,7 +294,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{electricity_name}.Geothermal.margin': self.margin,
                        f'{self.study_name}.{electricity_name}.CoalGen.margin': self.margin,
                        f'{self.study_name}.{electricity_name}.RenewableElectricitySimpleTechno.margin': self.margin,
-
+                       f'{self.study_name}.{electricity_name}.OilGen.margin': self.margin,
                        f'{self.study_name}.{electricity_name}.transport_cost': self.transport,
                        f'{self.study_name}.{electricity_name}.transport_margin': self.margin,
                        f'{self.study_name}.{electricity_name}.invest_techno_mix': investment_mix,
@@ -320,6 +334,6 @@ if '__main__' == __name__:
             disc)
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
-        if disc.sos_name == 'EnergyMix.electricity':
+        if disc.sos_name == 'EnergyMix.electricity.OilGen':
             for graph in graph_list:
                 graph.to_plotly().show()
