@@ -183,7 +183,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
             scaling_factor_energy_investment
 
         techno_invest_sum += inputs_dict['forest_investment']['forest_investment'].values
-        energy_list = inputs_dict['energy_list'].values
+        energy_list = inputs_dict['energy_list']
         if inputs_dict['is_dev'] and BiomassDry.name in energy_list:
             techno_invest_sum += inputs_dict['managed_wood_investment']['investment'].values
             techno_invest_sum += inputs_dict['unmanaged_wood_investment']['investment'].values

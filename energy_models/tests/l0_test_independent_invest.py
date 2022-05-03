@@ -284,13 +284,14 @@ class TestIndependentInvest(unittest.TestCase):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        energy_list = ['electricity', 'methane', 'hydrogen.gaseous_hydrogen']
+        energy_list = ['electricity', 'methane', 'hydrogen.gaseous_hydrogen', 'biomass_dry']
         inputs_dict = {f'{self.name}.year_start': self.y_s,
                        f'{self.name}.year_end': self.y_e,
                        f'{self.name}.energy_list': energy_list,
                        f'{self.name}.ccs_list': self.ccs_list,
                        f'{self.name}.electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
+                       f'{self.name}.biomass_dry.technologies_list': [],
                        f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
                        f'{self.name}.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
@@ -317,7 +318,7 @@ class TestIndependentInvest(unittest.TestCase):
                                                                                     f'{self.name}.invest_objective_sum' ,
                                                                                     f'{self.name}.invest_sum_cons',
                                                                                     f'{self.name}.invest_sum_cons_dc'],
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+            dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
