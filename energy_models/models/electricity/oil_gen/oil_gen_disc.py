@@ -128,8 +128,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                                          3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25,
                                                          ]})
 
-    # ???
-    oil_flue_gas_ratio = np.array([0.13])
+    oil_flue_gas_ratio = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
