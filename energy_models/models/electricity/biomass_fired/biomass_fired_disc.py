@@ -43,11 +43,17 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     lifetime = 25   # Value for CHP units
     construction_delay = 2  # years
 
+    # Initial prod in TWh (2019)
     # IEA Data Tables
     # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019
-    # Gross. elec. prod.: 75742 GWh
-    # Electricity plants consumption: 650891 TJ net -> 650891 / 3.6 GWh
-    biomass_needs = (650891 / 3.6) / 75742  # ratio without dimension
+    # biomass is primary solid biofuels
+    initial_production = 443.085
+
+    # IEA Data Tables
+    # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019
+    # Electricity plants consumption: 3650996 TJ net -> 3650.996 / 3.6 TWh
+    biomass_needs = (3650.996 / 3.6) / \
+        initial_production  # ratio without dimension
 
     # IRENA Power Generation Cost 2019 Report
     # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2020/Jun/IRENA_Power_Generation_Costs_2019.pdf
@@ -57,14 +63,17 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     # https://www.wbdg.org/resources/biomass-electricity-generation
 
     techno_infos_dict_default = {'maturity': 5,
-                                 'Opex_percentage': 0.04,   # IRENA (mean of 2% - 6%)
+                                 # IRENA (mean of 2% - 6%)
+                                 'Opex_percentage': 0.04,
                                  'WACC': 0.075,
                                  'learning_rate': 0,
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
-                                 'Capex_init': 3000,    # IRENA (value from Figure 7.1, page 111)
+                                 # IRENA (value from Figure 7.1, page 111)
+                                 'Capex_init': 3000,
                                  'Capex_init_unit': '$/kW',
-                                 'capacity_factor': 0.80,   # IRENA (value from Figure 7.1, page 111)
+                                 # IRENA (value from Figure 7.1, page 111)
+                                 'capacity_factor': 0.80,
                                  'biomass_needs': biomass_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
@@ -76,13 +85,8 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     # setup = region: all, techno: bioenergy, sub-techno: biomass, flow: installed_capacity
     # (15.414-9.598)/5 = 1.1632 MW per year increase
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [1.1632*3000/1000, 1.1632*3000/1000]})
+        {'past years': np.arange(-construction_delay, 0), 'invest': [1.1632 * 3000 / 1000, 1.1632 * 3000 / 1000]})
     # In G$
-
-    # Initial prod in TWh (2019)
-    # IEA Data Tables
-    # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019
-    initial_production = 75.742
 
     # From IRENA Data
     # https://public.tableau.com/views/IRENARETimeSeries/Charts?:embed=y&:showVizHome=no&publish=yes&:toolbar=no
@@ -90,7 +94,7 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     # (15.414-9.598)/5 = 1.1632 MW per year increase
     # 1.1632 / 15.414 ~= 7.5% added production each year (linear approximation)
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [100-12*7.5, 7.5, 7.5, 7.5, 7.5,
+                                             'distrib': [100 - 12 * 7.5, 7.5, 7.5, 7.5, 7.5,
                                                          7.5, 7.5, 7.5, 7.5, 7.5,
                                                          7.5, 7.5, 7.5, 0.0, 0.0,
                                                          0.0, 0.0, 0.0, 0.0, 0.0,

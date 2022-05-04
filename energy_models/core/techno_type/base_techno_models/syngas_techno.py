@@ -29,9 +29,10 @@ class SyngasTechno(TechnoType):
 
         self.data_energy_dict = inputs_dict['data_fuel_dict']
 
-        molar_mass = compute_molar_mass(self.syngas_COH2_ratio)
-        calorific_value = compute_calorific_value(self.syngas_COH2_ratio)
-        density = compute_density(self.syngas_COH2_ratio)
+        molar_mass = compute_molar_mass(self.syngas_COH2_ratio / 100.)
+        calorific_value = compute_calorific_value(
+            self.syngas_COH2_ratio / 100.)
+        density = compute_density(self.syngas_COH2_ratio / 100.)
 
         self.data_energy_dict['molar_mass'] = molar_mass
         self.data_energy_dict['calorific_value'] = calorific_value

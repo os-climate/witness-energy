@@ -50,7 +50,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                                                          8.631749219311956]})  # to review
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [4.0, 3.0, 2.0]})
+        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 3.0, 2.0]})
     DESC_IN = {'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
@@ -166,9 +166,10 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                     ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)
 
                 sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
-                            self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
-                            self.techno_model.year_end][self.techno_name]) ** 2
-                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
+                                                                     self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
+                                                                                                                                                       self.techno_model.year_end][self.techno_name]) ** 2
+                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <=
+                                                                          self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
 
                 self.dprices_demissions[resource] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(

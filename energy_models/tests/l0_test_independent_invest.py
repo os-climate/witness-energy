@@ -319,7 +319,8 @@ class TestIndependentInvest(unittest.TestCase):
             f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective',
                                                                                     f'{self.name}.invest_objective_sum' ,
                                                                                     f'{self.name}.invest_sum_cons',
-                                                                                    f'{self.name}.invest_sum_cons_dc'],
+                                                                                    f'{self.name}.invest_sum_cons_dc',
+                                                                                    f'{self.name}.invest_sum_eq_cons'],
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
@@ -330,4 +331,4 @@ if '__main__' == __name__:
 
     cls = TestIndependentInvest()
     cls.setUp()
-    cls.test_03_independent_invest_disc_check_jacobian()
+    cls.test_04_independent_invest_disc_check_jacobian()

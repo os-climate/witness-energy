@@ -99,7 +99,8 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  'transport_cost_unit': '$/kg',  # check if pertinent
                                  'techno_evo_eff': 'yes',
                                  'techno_evo_time': 10,
-                                 'efficiency': 0.38,
+                                 # efficiency computed to match IEA datas
+                                 'efficiency': 0.41,
                                  'efficiency_max': 0.48,
                                  'efficiency evolution slope': 0.5,
                                  'construction_delay': construction_delay, }

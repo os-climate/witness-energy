@@ -16,7 +16,7 @@ For the purpose of the model, we suppose first that the Fischer Tropsch model pr
 
 The fischer Tropsch synthesis is the main reaction to produce synthesis fuel from power or any sources of energy. The process of producing synfuels through indirect conversion is often referred to as CtL (Coal-to-Liquids Coal Gasification for syngas production) GtL (Gas-to-Liquids, SMR for syngas production) or PBtL (Power-Biomass-to-Liquids, Biomass gasification for syngas production) depending on the initial feedstock. 
 
-The most known synthesis fuel production is the Power-to_Liquids conversion where synags is produced through renewable electricity via Electrolysis or Co-electrolysis technologies.
+The most known synthesis fuel production is the Power-to_Liquids conversion where syngas is produced through renewable electricity via Electrolysis or Co-electrolysis technologies.
 
 ### Difference of fuel synthesis pathways depending on the syngas supply [^2]  
 ![](Xtl.PNG)
@@ -25,8 +25,11 @@ The most known synthesis fuel production is the Power-to_Liquids conversion wher
 
 On the Figure above, all concepts are influencing the process of syngas upgrading because of the composition of the syngas after production. More technical details are explained in the section Modifying the syngas ratio for the synthesis below.
 
+### Existing and projected Fischer-Tropsch production
 
-The first PtL demo plant at industrial scale is in construction in Norway [^3], capable of producing 10 million litres of fuel a year before scaling up the facility to commercially produce 100 million litres by 2026. The consortium has four main partners: German PtL technology provider Sunfire, Swiss-based CO2 air capture technology specialist Climeworks, Luxembourg-headquartered international engineering company Paul Worth SMS Group and Valinor, a Norwegian family-owned green investment company.
+The commercialisation of X-to-liquids processes emerges in some countries. The world's largest scale implementation of Fischer–Tropsch technology is a series of plants operated by Sasol in South Africa with a production of 201000 BPD (Barrel Per Day) based on Coal Gasification [^6] (CtL). China and its large coal production uses also coal gasification for its FT industries and produces around 112000 BPD [^7].  Qatar, is the second largest FT plant in the world based on SMR (Steam Methane Reforming) with a production of 174000 BPD (GtL). Malaysia has also a Fischer Tropsch Plant based on GtL with 12000 BPD of synthetic fuel. In the United States, India, Finland or Russia some states have invested in Fischer–Tropsch plants but not at commercial scale for now. 
+
+The first PtL (Power to Liquid with Electrolysis) demo plant at industrial scale is in construction in Norway [^3], capable of producing 10 million litres of fuel a year before scaling up the facility to commercially produce 100 million litres by 2026. The consortium has four main partners: German PtL technology provider Sunfire, Swiss-based CO2 air capture technology specialist Climeworks, Luxembourg-headquartered international engineering company Paul Worth SMS Group and Valinor, a Norwegian family-owned green investment company.
 
 ### Sunfire PtL demonstration plant in Dresden, Germany [^4]
 
@@ -102,3 +105,6 @@ All technical and economical datas are extracted from [^5]. The paper details th
 [^4]: [Neste acquires stake in PtX developer Sunfire, online article](https://www.greenaironline.com/news.php?viewStory=2711)
 
 [^5]: [Fasihi, M., Bogdanov, D. and Breyer, C., 2016. Techno-economic assessment of power-to-liquids (PtL) fuels production and global trading based on hybrid PV-wind power plants. Energy Procedia, 99, pp.243-268.](https://www.sciencedirect.com/science/article/pii/S1876610216310761)
+
+[^6]: https://en.wikipedia.org/wiki/Fischer%E2%80%93Tropsch_process#Commercialization
+[^7]: http://www.synfuelschina.com.cn/en/about/

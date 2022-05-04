@@ -86,11 +86,14 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'techno_evo_eff': 'no',
     }
 
-    # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3
-    # (mean value computed from Table 3)
-    initial_production = (48.64 * 1e6) * gallon_to_mc * 780 / \
-        44 / 3.6 * 1e-6   # TWh/year
-
+    # https://www.iea.org/data-and-statistics/charts/global-biofuel-production-in-2019-and-forecast-to-2025
+    # 9 bl of HVO/HEFA in 2020
+    # https://www.ieabioenergy.com/wp-content/uploads/2021/06/IEA-Bioenergy-Task-39-Progress-in-the-commercialisation-of-biojet-fuels-May-2021-1.pdf
+    # most current commercial HEFA production removes oxygen through the
+    # addition of hydrogen : hypothesis only 10% of decarboxylation
+    initial_production = 9e6 * \
+        HydrotreatedOilFuel.data_energy_dict['density'] * \
+        HydrotreatedOilFuel.data_energy_dict['calorific_value'] * 0.1 / 1e9
     # https://www.ieabioenergy.com/wp-content/uploads/2021/06/IEA-Bioenergy-Task-39-Progress-in-the-commercialisation-of-biojet-fuels-May-2021-1.pdf
     # (page 23)
     # Existing: Neste(2014), Total(2015), Eni(2015).
