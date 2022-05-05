@@ -812,7 +812,16 @@ class TechnoType:
         else:
             elec_need = 0.0
 
-        return elec_need
+
+        if 'heat_demand' in self.techno_infos_dict:
+            heat_need = self.check_energy_demand_unit(self.techno_infos_dict['heat_demand_unit'],
+                                                      self.techno_infos_dict['heat_demand'])
+
+        else:
+            heat_need = 0.0
+
+
+        return elec_need + heat_need
 
     def check_energy_demand_unit(self, energy_demand_unit, energy_demand):
         """

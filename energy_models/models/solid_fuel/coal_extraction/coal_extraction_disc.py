@@ -60,7 +60,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  'elec_demand_unit': 'kWh/kWh',
                                  'electricity': 'solar',
                                  'heat_demand': 0.0,
-                                 'heat_demand_unit': 'kWh/kgCO2',
+                                 'heat_demand_unit': 'kWh/kWh',
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.0,  # 0.15,
                                  'lifetime': lifetime,  # should be modified
