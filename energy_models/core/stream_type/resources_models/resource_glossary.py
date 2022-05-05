@@ -27,7 +27,7 @@ class ResourceGlossary():
     ResourceList = ['Uranium', 'Water', 'SeaWater', 'CO2', 'BiomassDry', 'WetBiomass', 'NaturalOil', 'Methanol',
                     'SodiumHydroxide', 'Wood', 'Carbon', 'ManagedWood', 'Oxygen', 'CrudeOil', 'SolidFuel',
                     'Calcium', 'CalciumOxyde', 'Potassium', 'PotassiumHydroxide', 'Amine', 'Dioxygen',
-                    'EthanolAmine', 'MonoEthanolAmine', 'Glycerol', 'NaturalGas', 'Coal', 'Oil']
+                    'EthanolAmine', 'MonoEthanolAmine', 'Glycerol', 'NaturalGas', 'Coal', 'Oil', 'Copper']
 
     Uranium = {'name': 'uranium_resource',
                'CO2_emissions': 0.474 / 277.78,
@@ -114,6 +114,10 @@ class ResourceGlossary():
            'CO2_emissions': 0.02533,
            'price': 44.0}
 
+    Copper = {'name': 'copper_resource',
+              'CO2_emissions': 0.0,
+              'price': 10057.0}
+
     GlossaryDict = {
         'Uranium': Uranium, 'Water': Water, 'SeaWater': SeaWater, 'CO2': CO2, 'BiomassDry': BiomassDry,
         'WetBiomass': WetBiomass, 'NaturalOil': NaturalOil, 'Methanol': Methanol,
@@ -122,5 +126,5 @@ class ResourceGlossary():
         'Calcium': Calcium, 'CalciumOxyde': CalciumOxyde, 'Potassium': Potassium,
         'PotassiumHydroxide': PotassiumHydroxide, 'Amine': Amine, 'EthanolAmine': EthanolAmine,
         'MonoEthanolAmine': MonoEthanolAmine, 'Glycerol': Glycerol, 'NaturalGas': NaturalGas,
-        'Coal': Coal, 'Oil': Oil,
+        'Coal': Coal, 'Oil': Oil, 'Copper' : Copper,
     }
