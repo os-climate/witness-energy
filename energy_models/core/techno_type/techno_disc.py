@@ -27,6 +27,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from copy import deepcopy
 from plotly import graph_objects as go
 from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import InstantiatedPlotlyNativeChart
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class TechnoDiscipline(SoSDiscipline):
@@ -48,8 +49,8 @@ class TechnoDiscipline(SoSDiscipline):
     years_default = np.arange(2020, 2051)
 
     DESC_IN = {
-        'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'structuring': True},
-        'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'structuring': True},
+        'year_start': dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
+        'year_end': dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
         'invest_level': {'type': 'dataframe', 'unit': 'G$',
                          'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                   'invest': ('float', None, True)},
