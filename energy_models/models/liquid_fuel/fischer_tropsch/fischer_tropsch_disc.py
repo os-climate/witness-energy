@@ -106,8 +106,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                                          0., 2.20329743, 5.97672626, 5.34205629, 6.07448349,
                                                          8.28981257, 5.90002444, 3.60348166, 1.6724005, 4.1584419,
                                                          3.15379843, 1.19113417, 1.70548756, 4.65474781]})  # to review
-    ratio_available_cc_default = pd.DataFrame({'years': np.arange(2020, 2050 + 1),
-                                               'ratio': 1.0})
     ft_flue_gas_ratio = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',

@@ -50,7 +50,7 @@ class TechnoDiscipline(SoSDiscipline):
 
     DESC_IN = {
         'year_start': dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
-        'year_end': dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
+        'year_end': dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_END_DESC_IN),
         'invest_level': {'type': 'dataframe', 'unit': 'G$',
                          'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                   'invest': ('float', None, True)},

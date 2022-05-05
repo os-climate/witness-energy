@@ -21,6 +21,7 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 import numpy as np
 
 from sos_trades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class FlueGasDiscipline(SoSDiscipline):
@@ -38,8 +39,8 @@ class FlueGasDiscipline(SoSDiscipline):
         'icon': 'fas fa-cloud fa-fw',
         'version': '',
     }
-    DESC_IN = {'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'technologies_list': {'type': 'string_list', 'possible_values': ['electricity.CoalGen',
                                                                                 'electricity.GasTurbine',
                                                                                 'electricity.CombinedCycleGasTurbine',
