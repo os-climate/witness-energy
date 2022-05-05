@@ -76,7 +76,8 @@ class IndependentInvestDiscipline(SoSDiscipline):
                             'namespace': 'ns_functions'},
         'invest_sum_eq_cons': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                'namespace': 'ns_functions'},
-
+        'invest_sum_cons_dc': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                               'namespace': 'ns_functions'},
     }
     _maturity = 'Research'
 
