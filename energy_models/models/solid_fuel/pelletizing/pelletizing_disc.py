@@ -95,7 +95,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': pelletizing_flue_gas_ratio}}
+               'flue_gas_co2_ratio': {'type': 'array', 'default': pelletizing_flue_gas_ratio, 'unit': ''}}
     # -- add specific techno inputs to this
     DESC_IN.update(SolidFuelTechnoDiscipline.DESC_IN)
 

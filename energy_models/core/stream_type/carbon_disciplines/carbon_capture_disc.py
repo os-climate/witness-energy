@@ -49,10 +49,10 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                      'namespace': 'ns_carbon_capture', 'structuring': True},
                'flue_gas_production': {'type': 'dataframe',
                                        'visibility': StreamDiscipline.SHARED_VISIBILITY,
-                                       'namespace': 'ns_flue_gas'},
+                                       'namespace': 'ns_flue_gas', 'unit': 'Mt'},
                'flue_gas_prod_ratio': {'type': 'dataframe',
                                        'visibility': StreamDiscipline.SHARED_VISIBILITY,
-                                       'namespace': 'ns_flue_gas'},
+                                       'namespace': 'ns_flue_gas', 'unit': ''},
                'data_fuel_dict': {'type': 'dict', 'visibility': StreamDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_carbon_capture', 'default': CarbonCapture.data_energy_dict},
                }

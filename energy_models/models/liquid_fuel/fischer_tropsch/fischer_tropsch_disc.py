@@ -131,7 +131,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                          'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY,
                                          'namespace': 'ns_energy',
                                          'default': Syngas.data_energy_dict},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': ft_flue_gas_ratio}
+               'flue_gas_co2_ratio': {'type': 'array', 'default': ft_flue_gas_ratio, 'unit': ''}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)

@@ -78,7 +78,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
             if energy_list is not None:
                 for energy in energy_list:
                     dynamic_inputs[f'{energy}.CO2_per_use'] = {
-                        'type': 'dataframe', 'unit': 'kgCO2/kWh',
+                        'type': 'dataframe', 'unit': 'kg/kWh',
                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
                         'namespace': 'ns_energy'}
                     dynamic_inputs[f'{energy}.energy_consumption'] = {

@@ -59,13 +59,13 @@ class FlueGasDiscipline(SoSDiscipline):
 
     DESC_OUT = {'flue_gas_mean': {'type': 'dataframe',
                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_flue_gas'},
+                                  'namespace': 'ns_flue_gas', 'unit': ''},
                 'flue_gas_production': {'type': 'dataframe',
                                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                        'namespace': 'ns_flue_gas'},
+                                        'namespace': 'ns_flue_gas', 'unit': 'Mt'},
                 'flue_gas_prod_ratio': {'type': 'dataframe',
                                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                        'namespace': 'ns_flue_gas'}}
+                                        'namespace': 'ns_flue_gas', 'unit': ''}}
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -80,12 +80,12 @@ class FlueGasDiscipline(SoSDiscipline):
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.techno_production'] = {
-                        'type': 'dataframe', 'unit': 'kWh or kg',
+                        'type': 'dataframe', 'unit': 'TWh or Mt',
                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
                         'namespace': 'ns_energy_mix'}
                     dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
                                                                       'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                      'namespace': 'ns_energy_mix'}
+                                                                      'namespace': 'ns_energy_mix', 'unit': ''}
         self.add_inputs(dynamic_inputs)
 
     def run(self):
