@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.ccus.ccus import CCUS
 

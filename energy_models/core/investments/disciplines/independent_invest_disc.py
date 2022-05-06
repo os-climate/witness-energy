@@ -90,23 +90,39 @@ class IndependentInvestDiscipline(SoSDiscipline):
         '''
         dynamic_outputs = {}
         dynamic_inputs = {}
+        if 'is_dev' in self._data_in:
+            is_dev = self.get_sosdisc_inputs('is_dev')
         if 'energy_list' in self._data_in:
             energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
-                    # Add technologies_list to inputs
-                    dynamic_inputs[f'{energy}.technologies_list'] = {
-                        'type': 'string_list', 'structuring': True,
-                                'visibility': 'Shared', 'namespace': 'ns_energy'}
-                    # Add all invest_level outputs
-                    if f'{energy}.technologies_list' in self._data_in:
-                        technology_list = self.get_sosdisc_inputs(
-                            f'{energy}.technologies_list')
-                        if technology_list is not None:
-                            for techno in technology_list:
-                                dynamic_outputs[f'{energy}.{techno}.invest_level'] = {
-                                    'type': 'dataframe', 'unit': 'G$',
+                    if energy == BiomassDry.name and is_dev == True:
+                        dynamic_inputs['managed_wood_investment'] = {
+                                'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
+                                'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                                'namespace': 'ns_forest', 'dataframe_edition_locked': False}
+                        dynamic_inputs['unmanaged_wood_investment'] = {
+                                'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
+                                'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                                'namespace': 'ns_forest', 'dataframe_edition_locked': False}
+                        dynamic_inputs['crop_investment'] = {
+                                'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
+                                'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                                'namespace': 'ns_crop', 'dataframe_edition_locked': False}
+                    else:
+                        # Add technologies_list to inputs
+                        dynamic_inputs[f'{energy}.technologies_list'] = {
+                            'type': 'string_list', 'structuring': True,
                                     'visibility': 'Shared', 'namespace': 'ns_energy'}
+                        # Add all invest_level outputs
+                        if f'{energy}.technologies_list' in self._data_in:
+                            technology_list = self.get_sosdisc_inputs(
+                                f'{energy}.technologies_list')
+                            if technology_list is not None:
+                                for techno in technology_list:
+                                    dynamic_outputs[f'{energy}.{techno}.invest_level'] = {
+                                        'type': 'dataframe', 'unit': 'G$',
+                                        'visibility': 'Shared', 'namespace': 'ns_energy'}
 
         if 'ccs_list' in self._data_in:
             ccs_list = self.get_sosdisc_inputs('ccs_list')
@@ -123,22 +139,6 @@ class IndependentInvestDiscipline(SoSDiscipline):
                             for techno in technology_list:
                                 dynamic_outputs[f'{ccs}.{techno}.invest_level'] = {
                                     'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_ccs'}
-        if 'is_dev' in self._data_in and 'energy_list' in self._data_in:
-            is_dev = self.get_sosdisc_inputs('is_dev')
-            energy_list = self.get_sosdisc_inputs('energy_list')
-            if is_dev and BiomassDry.name in energy_list:
-                dynamic_inputs['managed_wood_investment'] = {
-                    'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
-                    'namespace': 'ns_forest', 'dataframe_edition_locked': False}
-                dynamic_inputs['unmanaged_wood_investment'] = {
-                    'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
-                    'namespace': 'ns_forest', 'dataframe_edition_locked': False}
-                dynamic_inputs['crop_investment'] = {
-                    'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
-                    'namespace': 'ns_crop', 'dataframe_edition_locked': False}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -146,7 +146,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
     def run(self):
 
         input_dict = self.get_sosdisc_inputs()
-
+        is_dev = input_dict['is_dev']
         invest_constraint_df, invest_objective, abs_delta, abs_delta_cons, abs_delta_cons_dc, delta_eq_cons = self.independent_invest_model.compute_invest_constraint_and_objective(
             input_dict)
 
@@ -159,9 +159,12 @@ class IndependentInvestDiscipline(SoSDiscipline):
                        }
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
-            for techno in input_dict[f'{energy}.technologies_list']:
-                output_dict[f'{energy}.{techno}.invest_level'] = pd.DataFrame({'years': input_dict['energy_investment']['years'].values,
-                                                                               'invest': input_dict['invest_mix'][f'{energy}.{techno}'].values})
+            if energy == BiomassDry.name and is_dev == True:
+                pass
+            else:
+                for techno in input_dict[f'{energy}.technologies_list']:
+                    output_dict[f'{energy}.{techno}.invest_level'] = pd.DataFrame({'years': input_dict['energy_investment']['years'].values,
+                                                                                'invest': input_dict['invest_mix'][f'{energy}.{techno}'].values})
 
         self.store_sos_outputs_values(output_dict)
 
