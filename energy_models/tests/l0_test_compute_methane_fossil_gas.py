@@ -86,7 +86,8 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 200.0})
-        self.resources_price = pd.DataFrame(columns=['years', 'CO2', 'water', 'natural_gas_resource'])
+        self.resources_price = pd.DataFrame(
+            columns=['years', 'CO2', 'water', 'natural_gas_resource'])
         self.resources_price['years'] = years
         self.resources_price['CO2'] = np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542,
                                                 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
@@ -156,7 +157,8 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
                        f'{self.name}.CO2_taxes': self.co2_taxes,

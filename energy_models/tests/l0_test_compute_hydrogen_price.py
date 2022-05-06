@@ -383,8 +383,8 @@ class HydrogenPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{self.model_name}.year_start': 2020,
-                       f'{self.name}.{self.model_name}.year_end': 2050,
+        inputs_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2050,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.technologies_list': ['WaterGasShift', 'Electrolysis.PEM', 'PlasmaCracking'],
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption': self.smr_consumption,

@@ -24,7 +24,6 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
-
     # ontology information
     _ontology_data = {
         'label': 'MonoEthanolamine Model',
@@ -120,7 +119,7 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
                'flue_gas_mean': {'type': 'dataframe', 'namespace': 'ns_flue_gas',
-                                 'visibility': CCTechnoDiscipline.SHARED_VISIBILITY},
+                                 'visibility': CCTechnoDiscipline.SHARED_VISIBILITY, 'unit': ''},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},

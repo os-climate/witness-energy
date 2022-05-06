@@ -252,7 +252,7 @@ class Study(EnergyStudyManager):
                 ['electricity_demand_constraint','transport_demand_constraint'])
             list_parent.extend(['demand_constraint', 'demand_constraint'])
             list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-            list_weight.extend([0., 0.])
+            list_weight.extend([-1., -1.])
             list_aggr_type.extend(
                 [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
             list_namespaces.extend(['ns_functions', 'ns_functions'])

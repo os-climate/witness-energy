@@ -116,7 +116,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                'needed_syngas_ratio': {'type': 'float', 'default': 0.0},
                #                'syngas_ratio_technos': {'type': 'dict', 'visibility': HydrogenTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
                #                'energy_detailed_techno_prices': {'type': 'dataframe', 'visibility': HydrogenTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'}
-               'flue_gas_co2_ratio': {'type': 'array', 'default': wgs_flue_gas_ratio}
+               'flue_gas_co2_ratio': {'type': 'array', 'default': wgs_flue_gas_ratio, 'unit': ''}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)

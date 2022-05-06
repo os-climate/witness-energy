@@ -36,7 +36,7 @@ class BaseStream:
         self.name = name
         #-- Inputs attributes set from configure method
         self.year_start = 2020  # year start
-        self.year_end = 2050  # year end
+        self.year_end = 2100  # year end
         self.min_prod = 1e-3
         self.subelements_list = []
         self.total_prices = None  # energy outputs dataframe

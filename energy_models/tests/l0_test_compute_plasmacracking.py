@@ -142,7 +142,8 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
         self.ee.display_treeview_nodes()
         invest_before_year_start = pd.DataFrame({
             'years': -np.arange(1, 2 + 1), 'invest': [1000.0, 1000.0]})
-        inputs_dict = {f'{self.name}.{self.model_name}.margin': self.margin,
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.invest_level':  self.invest,
                        f'{self.name}.transport_cost':  self.transport,
@@ -194,7 +195,8 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
         invest_before_year_start = pd.DataFrame({
             'years': -np.arange(1, 2 + 1), 'invest': [1000.0, 1000.0]})
 
-        inputs_dict = {f'{self.name}.{self.model_name}.margin': self.margin,
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.invest_level':  self.invest_for_grad,
                        f'{self.name}.transport_cost':  self.transport,

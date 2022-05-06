@@ -47,8 +47,8 @@ class EnergyDiscipline(StreamDiscipline):
     # -- Here are the results of concatenation of each techno prices,consumption and production
 
     DESC_OUT = {
-        'CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kWh'},
-        'CO2_per_use': {'type': 'dataframe', 'unit': 'kgCO2/kWh'}}
+        'CO2_emissions': {'type': 'dataframe', 'unit': 'kg/kWh'},
+        'CO2_per_use': {'type': 'dataframe', 'unit': 'kg/kWh'}}
 
     DESC_OUT.update(StreamDiscipline.DESC_OUT)
 
@@ -76,7 +76,7 @@ class EnergyDiscipline(StreamDiscipline):
                     dynamic_inputs[f'{techno}.techno_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh'}
                     dynamic_inputs[f'{techno}.CO2_emissions'] = {
-                        'type': 'dataframe', 'unit': 'kgCO2/kWh'}
+                        'type': 'dataframe', 'unit': 'kg/kWh'}
                     dynamic_inputs[f'{techno}.land_use_required'] = {
                         'type': 'dataframe', 'unit': 'Gha'}
 

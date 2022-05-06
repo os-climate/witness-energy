@@ -95,7 +95,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': fg_flue_gas_ratio}}
+               'flue_gas_co2_ratio': {'type': 'array', 'default': fg_flue_gas_ratio, 'unit': ''}}
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
 

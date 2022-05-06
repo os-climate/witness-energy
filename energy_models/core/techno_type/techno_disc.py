@@ -27,6 +27,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from copy import deepcopy
 from plotly import graph_objects as go
 from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import InstantiatedPlotlyNativeChart
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class TechnoDiscipline(SoSDiscipline):
@@ -48,15 +49,15 @@ class TechnoDiscipline(SoSDiscipline):
     years_default = np.arange(2020, 2051)
 
     DESC_IN = {
-        'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'structuring': True},
-        'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'structuring': True},
+        'year_start': dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
+        'year_end': dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_END_DESC_IN),
         'invest_level': {'type': 'dataframe', 'unit': 'G$',
                          'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                   'invest': ('float', None, True)},
                          'dataframe_edition_locked': False
                          },
         'energy_prices': {'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
-        'energy_CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+        'energy_CO2_emissions': {'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'margin': {'type': 'dataframe', 'unit': '%'},
         'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                       'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
@@ -68,7 +69,7 @@ class TechnoDiscipline(SoSDiscipline):
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'is_softmax': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': False,
-                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'is_apply_ratio': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'is_stream_demand': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'is_apply_resource_ratio': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
@@ -78,14 +79,14 @@ class TechnoDiscipline(SoSDiscipline):
         'techno_detailed_prices': {'type': 'dataframe', 'unit': '$/MWh'},
         'techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
         'techno_detailed_consumption': {'type': 'dataframe', 'unit': 'TWh or Mt'},
-        'techno_consumption': {'type': 'dataframe'},
-        'techno_consumption_woratio': {'type': 'dataframe'},
+        'techno_consumption': {'type': 'dataframe', 'unit': 'TWh or Mt'},
+        'techno_consumption_woratio': {'type': 'dataframe', 'unit': 'TWh or Mt'},
         'techno_detailed_production': {'type': 'dataframe', 'unit': 'TWh or Mt'},
-        'techno_production': {'type': 'dataframe'},
+        'techno_production': {'type': 'dataframe', 'unit': 'TWh or Mt'},
         'age_distrib_production': {'type': 'dataframe', 'unit': 'TWh'},
-        'mean_age_production': {'type': 'dataframe'},
-        'CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kWh'},
-        'CO2_emissions_detailed': {'type': 'dataframe', 'unit': 'kgCO2/kWh'},
+        'mean_age_production': {'type': 'dataframe', 'unit': 'years'},
+        'CO2_emissions': {'type': 'dataframe', 'unit': 'kg/kWh'},
+        'CO2_emissions_detailed': {'type': 'dataframe', 'unit': 'kg/kWh'},
         'land_use_required': {'type': 'dataframe', 'unit': 'Gha'},
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
         'non_use_capital': {'type': 'dataframe', 'unit': 'G$'},
@@ -433,9 +434,10 @@ class TechnoDiscipline(SoSDiscipline):
                     ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)
 
                 sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
-                            self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
-                            self.techno_model.year_end][self.techno_name]) ** 2
-                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
+                                                                     self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
+                                                                                                                                                       self.techno_model.year_end][self.techno_name]) ** 2
+                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <=
+                                                                          self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
 
                 self.dprices_demissions[resource] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(

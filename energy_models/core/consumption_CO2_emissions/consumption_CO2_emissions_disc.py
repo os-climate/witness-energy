@@ -23,6 +23,7 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
     TwoAxesInstanciatedChart
 
 import numpy as np
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
@@ -42,8 +43,8 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
     }
 
     DESC_IN = {
-        'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                         'editable': False, 'structuring': True},
@@ -78,7 +79,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
             if energy_list is not None:
                 for energy in energy_list:
                     dynamic_inputs[f'{energy}.CO2_per_use'] = {
-                        'type': 'dataframe', 'unit': 'kgCO2/kWh',
+                        'type': 'dataframe', 'unit': 'kg/kWh',
                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
                         'namespace': 'ns_energy'}
                     dynamic_inputs[f'{energy}.energy_consumption'] = {

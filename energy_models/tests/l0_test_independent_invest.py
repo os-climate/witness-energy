@@ -112,10 +112,10 @@ class TestIndependentInvest(unittest.TestCase):
                        'invest_sum_ref': 2.,
                        'invest_limit_ref': 300.}
         one_invest_model = IndependentInvest()
-        invest_constraint, invest_objective, invest_objective_sum, invest_objective_cons, invest_objective_cons_dc = one_invest_model.compute_invest_constraint_and_objective(
+        invest_constraint, invest_objective, invest_objective_sum, invest_objective_cons, invest_objective_cons_dc, delta_sum_eq_cons = one_invest_model.compute_invest_constraint_and_objective(
             inputs_dict)
 
-        delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment  -
+        delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment -
                  self.energy_mix[one_invest_model.distribution_list].sum(
             axis=1).values - self.forest_invest_df['forest_investment'].values) / (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment)
         abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
@@ -286,7 +286,8 @@ class TestIndependentInvest(unittest.TestCase):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        energy_list = ['electricity', 'methane', 'hydrogen.gaseous_hydrogen', 'biomass_dry']
+        energy_list = ['electricity', 'methane',
+                       'hydrogen.gaseous_hydrogen', 'biomass_dry']
         inputs_dict = {f'{self.name}.year_start': self.y_s,
                        f'{self.name}.year_end': self.y_e,
                        f'{self.name}.energy_list': energy_list,
@@ -317,7 +318,7 @@ class TestIndependentInvest(unittest.TestCase):
                                                                           f'{self.name}.crop_investment'],
                                       outputs=[
             f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective',
-                                                                                    f'{self.name}.invest_objective_sum' ,
+                                                                                    f'{self.name}.invest_objective_sum',
                                                                                     f'{self.name}.invest_sum_cons',
                                                                                     f'{self.name}.invest_sum_cons_dc',
                                                                                     f'{self.name}.invest_sum_eq_cons'],
@@ -331,4 +332,4 @@ if '__main__' == __name__:
 
     cls = TestIndependentInvest()
     cls.setUp()
-    cls.test_04_independent_invest_disc_check_jacobian()
+    cls.test_01_independent_invest_model()

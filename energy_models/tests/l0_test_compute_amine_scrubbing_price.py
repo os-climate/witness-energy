@@ -37,16 +37,16 @@ class AmineScrubbingTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-
+        self.year_end = 2050
         amine_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                                 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                                 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                                 1.0, 1.0, 1.0, 1.0]) * 1300.0
-        years = np.arange(2020, 2051)
+        years = np.arange(2020, self.year_end + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {'years': np.arange(2020, self.year_end + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -110,7 +110,7 @@ class AmineScrubbingTestCase(unittest.TestCase):
     def test_02_compute_amine_price_prod_consumption(self):
 
         inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+                       'year_end': self.year_end,
                        'techno_infos_dict': AmineScrubbingDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
                        'invest_level': self.invest_level,
@@ -161,7 +161,8 @@ class AmineScrubbingTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
+        inputs_dict = {f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
