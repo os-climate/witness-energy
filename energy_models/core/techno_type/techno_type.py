@@ -212,7 +212,8 @@ class TechnoType:
         self.is_apply_resource_ratio = inputs_dict['is_apply_resource_ratio']
         self.is_softmax = inputs_dict['is_softmax']
         if self.is_stream_demand:
-            self.all_streams_demand_ratio = inputs_dict[f'all_streams_demand_ratio']
+            self.all_streams_demand_ratio = inputs_dict['all_streams_demand_ratio'].loc[inputs_dict['all_streams_demand_ratio']['years']
+                                                                                        <= self.year_end]
         if self.is_apply_resource_ratio:
             self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
         self.soft_max_crashed = False
@@ -278,7 +279,8 @@ class TechnoType:
                             soft_maximum_vect(-self.ratio_df[elements].values)
                     except:
                         ratio_values = - \
-                            smooth_maximum_vect(-self.ratio_df[elements].values)
+                            smooth_maximum_vect(
+                                -self.ratio_df[elements].values)
                         self.soft_max_crashed = True
                 else:
                     ratio_values = - \
@@ -812,14 +814,12 @@ class TechnoType:
         else:
             elec_need = 0.0
 
-
         if 'heat_demand' in self.techno_infos_dict:
             heat_need = self.check_energy_demand_unit(self.techno_infos_dict['heat_demand_unit'],
                                                       self.techno_infos_dict['heat_demand'])
 
         else:
             heat_need = 0.0
-
 
         return elec_need + heat_need
 
@@ -1147,7 +1147,7 @@ class TechnoType:
                             -self.ratio_df[elements].values)
                     else:
                         dsmooth_matrix = get_dsoft_maximum_vect(
-                           -self.ratio_df[elements].values)
+                            -self.ratio_df[elements].values)
                 else:
                     dsmooth_matrix = get_dsmooth_dvariable_vect(
                         -self.ratio_df[elements].values)
