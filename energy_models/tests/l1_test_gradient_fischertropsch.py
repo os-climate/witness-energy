@@ -31,7 +31,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
     """
     Fischer Tropsch jacobian test class
     """
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -140,22 +140,23 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
-        inputs_dict = {
-            f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-            f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-            f'{self.name}.energy_prices': self.energy_prices,
-            f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-            f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-            f'{self.name}.{self.model_name}.margin': self.margin,
-            f'{self.name}.transport_margin': self.margin,
-            f'{self.name}.transport_cost': self.transport,
-            f'{self.name}.CO2_taxes': self.co2_taxes,
-            f'{self.name}.syngas_ratio': np.ones(len(years)) * 80.0,
-            f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-            f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
-            f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
-            f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-        }
+        inputs_dict = {f'{self.name}.year_end': 2050,
+
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.syngas_ratio': np.ones(len(years)) * 80.0,
+                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
+                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -199,22 +200,23 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
-        inputs_dict = {
-            f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-            f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-            f'{self.name}.energy_prices': self.energy_prices,
-            f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-            f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-            f'{self.name}.{self.model_name}.margin': self.margin,
-            f'{self.name}.transport_margin': self.margin,
-            f'{self.name}.transport_cost': self.transport,
-            f'{self.name}.CO2_taxes': self.co2_taxes,
-            f'{self.name}.syngas_ratio': np.ones(len(years)) * 30.0,
-            f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-            f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
-            f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
-            f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-        }
+        inputs_dict = {f'{self.name}.year_end': 2050,
+
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.syngas_ratio': np.ones(len(years)) * 30.0,
+                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
+                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -257,22 +259,23 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
-        inputs_dict = {
-            f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-            f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-            f'{self.name}.energy_prices': self.energy_prices,
-            f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-            f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-            f'{self.name}.{self.model_name}.margin': self.margin,
-            f'{self.name}.transport_margin': self.margin,
-            f'{self.name}.transport_cost': self.transport,
-            f'{self.name}.CO2_taxes': self.co2_taxes,
-            f'{self.name}.syngas_ratio': np.linspace(0, 100, len(years)),
-            f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-            f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
-            f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
-            f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-        }
+        inputs_dict = {f'{self.name}.year_end': 2050,
+
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.syngas_ratio': np.linspace(0, 100, len(years)),
+                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
+                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -316,22 +319,23 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {
-            f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-            f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-            f'{self.name}.energy_prices': self.energy_prices,
-            f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-            f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-            f'{self.name}.{self.model_name}.margin': self.margin,
-            f'{self.name}.transport_margin': self.margin,
-            f'{self.name}.transport_cost': self.transport,
-            f'{self.name}.CO2_taxes': self.co2_taxes,
-            f'{self.name}.syngas_ratio': np.array(list(np.linspace(100, 0, 15)) + list(np.linspace(0, 100, 16))),
-            f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-            f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
-            f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
-            f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-        }
+        inputs_dict = {f'{self.name}.year_end': 2050,
+
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.syngas_ratio': np.array(list(np.linspace(100, 0, 15)) + list(np.linspace(0, 100, 16))),
+                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
+                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -374,21 +378,22 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
-        inputs_dict = {
-            f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(years),
-            f'{self.name}.resources_price': get_static_prices(years),
-            f'{self.name}.energy_prices': self.energy_prices,
-            f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-            f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-            f'{self.name}.{self.model_name}.margin': self.margin,
-            f'{self.name}.transport_margin': self.margin,
-            f'{self.name}.transport_cost': self.transport,
-            f'{self.name}.CO2_taxes': self.co2_taxes,
-            f'{self.name}.syngas_ratio': np.ones(len(years)) * 80.0,
-            f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-            f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
-            f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
-            f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand, }
+        inputs_dict = {f'{self.name}.year_end': 2050,
+
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(years),
+                       f'{self.name}.resources_price': get_static_prices(years),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.syngas_ratio': np.ones(len(years)) * 80.0,
+                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
+                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand, }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -431,22 +436,23 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
-        inputs_dict = {
-            f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-            f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-            f'{self.name}.energy_prices': self.energy_prices,
-            f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-            f'{self.name}.{self.model_name}.invest_level': self.invest_level_negative,
-            f'{self.name}.{self.model_name}.margin': self.margin,
-            f'{self.name}.transport_margin': self.margin,
-            f'{self.name}.transport_cost': self.transport,
-            f'{self.name}.CO2_taxes': self.co2_taxes,
-            f'{self.name}.syngas_ratio': np.linspace(0, 100, len(years)),
-            f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-            f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
-            f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
-            f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
-        }
+        inputs_dict = {f'{self.name}.year_end': 2050,
+
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level_negative,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.syngas_ratio': np.linspace(0, 100, len(years)),
+                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
+                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

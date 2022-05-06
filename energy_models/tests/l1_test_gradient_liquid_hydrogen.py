@@ -180,7 +180,8 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.CO2_taxes,
