@@ -40,7 +40,7 @@ class OilGenPriceTestCase(unittest.TestCase):
         Initialize third data needed for testing
         '''
         liquid_fuel_price = np.array(
-            [91] * 31)
+            [40] * 31)
         years = np.arange(2020, 2051)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']

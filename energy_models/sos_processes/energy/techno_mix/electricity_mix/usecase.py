@@ -238,7 +238,7 @@ class Study(EnergyMixStudyManager):
                                            'biogas': 5.0,
                                            'biomass_dry': 11.0,
                                            'solid_fuel': 5.7,
-                                           'fuel.liquid_fuel': 91,
+                                           'fuel.liquid_fuel': 40,
                                            })
 
         #  IRENA invest data - Future of wind 2019
