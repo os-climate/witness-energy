@@ -16,7 +16,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.energy_study_manager import EnergyStudyManager,\
+from energy_models.core.energy_study_manager import AGRI_TYPE, EnergyStudyManager,\
     DEFAULT_TECHNO_DICT, CCUS_TYPE, ENERGY_TYPE
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -569,17 +569,19 @@ class Study(EnergyStudyManager):
                 instance_sub_study = sub_study(
                     self.year_start, self.year_end, self.time_step, bspline=self.bspline, main_study=False, execution_engine=self.execution_engine,
                     invest_discipline=self.invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
+            elif self.techno_dict[sub_study_name]['type'] == AGRI_TYPE:
+                pass
             else:
                 raise Exception(
-                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE}]")
-
-            instance_sub_study.configure_ds_boundaries(lower_bound_techno=self.lower_bound_techno,
-                                                       upper_bound_techno=self.upper_bound_techno,)
-            instance_sub_study.study_name = self.study_name
-            data_dict = instance_sub_study.setup_usecase()
-            values_dict_list.extend(data_dict)
-            instanced_sub_studies.append(instance_sub_study)
-            dspace_list.append(instance_sub_study.dspace)
+                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE},{AGRI_TYPE}]")
+            if self.techno_dict[sub_study_name]['type'] != AGRI_TYPE:
+                instance_sub_study.configure_ds_boundaries(lower_bound_techno=self.lower_bound_techno,
+                                                        upper_bound_techno=self.upper_bound_techno,)
+                instance_sub_study.study_name = self.study_name
+                data_dict = instance_sub_study.setup_usecase()
+                values_dict_list.extend(data_dict)
+                instanced_sub_studies.append(instance_sub_study)
+                dspace_list.append(instance_sub_study.dspace)
         return values_dict_list, dspace_list,  instanced_sub_studies
 
     def create_technolist_per_energy(self, instanciated_studies):
