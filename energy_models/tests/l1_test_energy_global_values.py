@@ -261,12 +261,15 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.GasTurbine.techno_detailed_production')
         elec_cgt_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.electricity.CombinedCycleGasTurbine.techno_detailed_production')
-
+        h2_prod = self.ee.dm.get_value(
+            f'{self.name}.{self.energymixname}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_detailed_production')
         computed_methane_co2_emissions = co2_emissions_by_energy['methane'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
             elec_gt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
                                                        == 2020].values[0] +\
-            elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
-                                                        == 2020].values[0]
+            elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_cgt_prod['years']
+                                                        == 2020].values[0] +\
+            h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod['years']
+                                                  == 2020].values[0] * 0.75
 
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_methane_co2_emissions,
@@ -284,7 +287,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         computed_coal_co2_emissions = co2_emissions_by_energy['solid_fuel'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
             elec_coal_prod['CO2 from Flue Gas (Mt)'].loc[elec_coal_prod['years']
-                                                         == 2020].values[0]
+                                                         == 2020].values[0] +\
+            h2_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
+                                                  == 2020].values[0] * 0.25
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_coal_co2_emissions,
                              coal_co2_emissions * 1.1)
@@ -296,9 +301,12 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
         Oil CO2 emissions are emissions from oil energy 
         '''
-
+        elec_oil_prod = self.ee.dm.get_value(
+            f'{self.name}.{self.energymixname}.electricity.OilGen.techno_detailed_production')
         computed_oil_co2_emissions = co2_emissions_by_energy['fuel.liquid_fuel'].loc[
-            co2_emissions_by_energy['years'] == 2020].values[0]
+            co2_emissions_by_energy['years'] == 2020].values[0] +\
+            elec_oil_prod['CO2 from Flue Gas (Mt)'].loc[elec_oil_prod['years']
+                                                        == 2020].values[0]
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_oil_co2_emissions,
                              oil_co2_emissions * 1.1)
@@ -1021,5 +1029,5 @@ if '__main__' == __name__:
     t0 = time.time()
     cls = TestGlobalEnergyValues()
     cls.setUp()
-    cls.test_03_check_net_production_values()
+    cls.test_02_check_global_co2_emissions_values()
     print(f'Time : {time.time() - t0} s')
