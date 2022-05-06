@@ -35,7 +35,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     """
     Liquid Fuel jacobian test class
     """
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -187,7 +187,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -213,7 +214,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                     f'{self.name}.energy_CO2_emissions',
                                     f'{self.name}.CO2_taxes',
                                     f'{self.name}.resources_price',
-                                    f'{self.name}.resources_CO2_emissions',],
+                                    f'{self.name}.resources_CO2_emissions', ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -243,7 +244,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
@@ -298,7 +300,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_negative,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
@@ -352,7 +355,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_negative2,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
@@ -431,7 +435,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
 
         coupled_outputs = []
         # remove some outputs that we know are not coupled for this discipline
-        not_coupled_ouputs = ['energy_detailed_techno_prices', 'energy_production_detailed']
+        not_coupled_ouputs = [
+            'energy_detailed_techno_prices', 'energy_production_detailed']
 
         for key in mda_data_output_dict[self.energy_name].keys():
             if mda_data_output_dict[self.energy_name][key]['is_coupling'] and key not in not_coupled_ouputs:
