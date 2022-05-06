@@ -198,17 +198,18 @@ class FTPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
-        inputs_dict = {
-            f'{self.name}.energy_prices': self.energy_prices,
-            f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-            f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-            f'{self.name}.{self.model_name}.margin': self.margin,
-            f'{self.name}.transport_margin': self.margin,
-            f'{self.name}.transport_cost': self.transport,
-            f'{self.name}.CO2_taxes': self.co2_taxes,
-            f'{self.name}.syngas_ratio': np.ones(len(years)),
-            f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-            f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices}
+        inputs_dict = {f'{self.name}.year_end': 2050,
+
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.syngas_ratio': np.ones(len(years)),
+                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
+                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -245,19 +246,20 @@ class FTPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
 
-        inputs_dict = {
-            f'{self.name}.energy_prices': self.energy_prices,
-            f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-            f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-            f'{self.name}.{self.model_name}.margin': self.margin,
-            f'{self.name}.transport_margin': self.margin,
-            f'{self.name}.transport_cost': self.transport,
-            f'{self.name}.CO2_taxes': self.co2_taxes,
-            f'{self.name}.syngas_ratio': np.ones(len(years)),
-            f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-            f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
-            f'{self.name}.{ResourceMixModel.RATIO_USABLE_DEMAND}': self.ratio_available_resource,
-            f'{self.name}.is_apply_resource_ratio': True}
+        inputs_dict = {f'{self.name}.year_end': 2050,
+
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.syngas_ratio': np.ones(len(years)),
+                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
+                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
+                       f'{self.name}.{ResourceMixModel.RATIO_USABLE_DEMAND}': self.ratio_available_resource,
+                       f'{self.name}.is_apply_resource_ratio': True}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -292,7 +294,6 @@ class FTPriceTestCase(unittest.TestCase):
                 for i in range(len(techno_production_with_ratio[column].values)):
                     self.assertAlmostEqual(techno_production_with_ratio[column].values[i],
                                            techno_production_wo_ratio[column].values[i] * ratio2[i] / ratio[i], delta=1.0e-8)
-
 
         techno_consumption_with_ratio = self.ee2.dm.get_value(
             f'{self.name}.{self.model_name}.techno_consumption')

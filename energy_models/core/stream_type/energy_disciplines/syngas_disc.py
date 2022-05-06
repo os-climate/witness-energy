@@ -76,15 +76,15 @@ class SyngasDiscipline(EnergyDiscipline):
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.techno_consumption'] = {
-                        'type': 'dataframe', 'unit': 'kWh or kg'}
+                        'type': 'dataframe', 'unit': 'TWh or Mt'}
                     dynamic_inputs[f'{techno}.techno_consumption_woratio'] = {
-                        'type': 'dataframe', 'unit': 'kWh or kg'}
+                        'type': 'dataframe', 'unit': 'TWh or Mt'}
                     dynamic_inputs[f'{techno}.techno_production'] = {
-                        'type': 'dataframe', 'unit': 'kWh or kg'}
+                        'type': 'dataframe', 'unit': 'TWh or Mt'}
                     dynamic_inputs[f'{techno}.techno_prices'] = {
-                        'type': 'dataframe', 'unit': '$/kWh'}
+                        'type': 'dataframe', 'unit': '$/MWh'}
                     dynamic_inputs[f'{techno}.CO2_emissions'] = {
-                        'type': 'dataframe', 'unit': 'kgCO2/kWh'}
+                        'type': 'dataframe', 'unit': 'kg/kWh'}
                     dynamic_inputs[f'{techno}.syngas_ratio'] = {
                         'type': 'array', 'unit': '%'}
                     dynamic_inputs[f'{techno}.land_use_required'] = {

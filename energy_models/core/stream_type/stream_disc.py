@@ -21,6 +21,7 @@ from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilte
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class StreamDiscipline(SoSDiscipline):
@@ -39,8 +40,8 @@ class StreamDiscipline(SoSDiscipline):
         'version': '',
     }
     DESC_IN = {
-        'year_start': {'type': 'int', 'default': 2020, 'unit': 'year', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'year_end': {'type': 'int', 'default': 2050, 'unit': 'year', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},

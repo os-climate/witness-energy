@@ -20,6 +20,8 @@ import numpy as np
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
 from energy_models.models.syngas.biomass_gasification.biomass_gasification import BiomassGasification
 from energy_models.core.stream_type.energy_models.syngas import compute_calorific_value
+from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from energy_models.core.stream_type.energy_models.methane import Methane
 
 
 class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
@@ -101,10 +103,16 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
 
     syngas_ratio = BiomassGasification.syngas_COH2_ratio
 
-    # From Future of hydrogen : Although there are a number
-    # of biomass gasification demonstration plants in the world, the
-    # technology is not yet fully developed
-    initial_production = 0.0
+    # 24 plants for liquid fuel production with global production of liquid fuel from biomass-derived syngas
+    # 750,000 t/year of liquid fuel
+    # 8 plants for gaseous fuel production (SNG and H2), with global
+    # production of gaseous fuel from biomass-derived syngas 3.2e8 Nm3/year
+    syngas_needs_for_ft = 1.883
+    initial_production = 0.75 * \
+        LiquidFuel.data_energy_dict['calorific_value'] * syngas_needs_for_ft + 3.2e8 * \
+        Methane.data_energy_dict['density'] * \
+        Methane.data_energy_dict['calorific_value'] / 1e9
+
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [3.317804973859207, 6.975128305927281, 4.333201737255864,
                                                          3.2499013031833868, 1.5096723255070685, 1.7575996841282722,

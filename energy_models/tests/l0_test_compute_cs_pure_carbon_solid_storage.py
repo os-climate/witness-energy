@@ -208,7 +208,8 @@ class PureCarbonSSPriceTestCase(unittest.TestCase):
         carbon_to_be_stored = pd.DataFrame(
             {'years': np.arange(2020, 2051), 'carbon_storage': np.array(carbon) / 2})
 
-        inputs_dict = {f'{self.name}.energy_prices': pd.DataFrame({'years': np.arange(2020, 2051)}),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.energy_prices': pd.DataFrame({'years': np.arange(2020, 2051)}),
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_2,
                        f'{self.name}.CO2_taxes': self.co2_taxes,

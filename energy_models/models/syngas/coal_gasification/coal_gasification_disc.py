@@ -71,7 +71,13 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
     # almost all the rest (23%) from coal.
     # 70 MT of hydrogen then 70*33.3 TWh of hydrogen we need approximately
     # 1.639 kWh of syngas to produce one of hydrogen (see WGS results)
-    initial_production = 70.0 * 33.3 * 1.639 * 0.23
+    #initial_production = 70.0 * 33.3 * 1.639 * 0.23
+
+    # IEA says 3333 TWh of coal is transformed into syngas (other
+    # transformation). It contains application to hydrogen (WGS), oil products
+    # (FT) and Direct Reduced Iron in industry
+    # We need 1.19 kWH of coal for 1 KWh of syngas then:
+    initial_production = (3333. + 264.72) / 1.19
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': np.array([3.317804973859207, 6.975128305927281, 4.333201737255864,
                                                                   3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
@@ -90,7 +96,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': coal_gas_flue_gas_ratio}}
+               'flue_gas_co2_ratio': {'type': 'array', 'default': coal_gas_flue_gas_ratio, 'unit': ''}}
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 

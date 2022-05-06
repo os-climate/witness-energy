@@ -163,7 +163,8 @@ class HEFAPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.resources_price': self.resources_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
@@ -239,7 +240,8 @@ class HEFAPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.resources_price': self.resources_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,

@@ -105,4 +105,8 @@ class IndependentInvest(BaseInvest):
         abs_delta_sum_cons_dc = compute_delta_constraint(value=techno_invest_sum, goal=energy_invest_df['energy_investment'].values,
                                                          tolerable_delta=invest_limit_ref, delta_type='abs',
                                                          reference_value=invest_sum_ref*self.delta_years)
-        return invest_constraint_df, invest_objective, abs_delta_sum, abs_delta_sum_cons, abs_delta_sum_cons_dc
+        delta_sum_eq_cons = compute_delta_constraint(value=techno_invest_sum, goal=energy_invest_df['energy_investment'].values,
+                                                     tolerable_delta=invest_limit_ref, delta_type='normal',
+                                                     reference_value=invest_sum_ref*self.delta_years)
+
+        return invest_constraint_df, invest_objective, abs_delta_sum, abs_delta_sum_cons, abs_delta_sum_cons_dc, delta_sum_eq_cons

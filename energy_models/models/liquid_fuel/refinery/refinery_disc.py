@@ -86,8 +86,9 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # 2020 total hydrogen demand = 40Mt (calorific value 33.3 kWh/kg)
                                  # https://www.iea.org/data-and-statistics/data-tables/?country=WORLD&energy=Oil&year=2019
                                  # 2019 fuel prod = 5672984+11916946+41878252+14072582+2176724+56524612+16475667 TJ
-                                 # ratio for hydrogen demand = (40*33.3) / (148717767/3.6/1000)
-                                 'hydrogen_demand': (40*33.3) / (148717767/3.6/1000),
+                                 # ratio for hydrogen demand = (40*33.3) /
+                                 # (148717767/3.6/1000)
+                                 'hydrogen_demand': (40 * 33.3) / (148717767 / 3.6 / 1000),
                                  'hydrogen_demand_unit': 'kWh/kWh',
                                  # for now constant in time but should increase
                                  # with time 10%/10year according to Fasihi2019
@@ -108,8 +109,8 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
     energy_own_use = 2485.89  # TWh
-    # in TWh at year_start from ourworldindata
-    initial_production = 53200.0 - energy_own_use
+    # in TWh at year_start from IEA (raw prod of oil products and not crude oil
+    initial_production = 49472.0 - energy_own_use
 
     # Invest from WEI2020
     invest_before_year_start = pd.DataFrame(
@@ -142,7 +143,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': refinery_flue_gas_ratio}}
+               'flue_gas_co2_ratio': {'type': 'array', 'default': refinery_flue_gas_ratio, 'unit': ''}}
     # -- add specific techno outputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)
 

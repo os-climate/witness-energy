@@ -9,6 +9,8 @@ import pandas as pd
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_open
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import AgricultureMixDiscipline
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
+
 
 class TestGlobalEnergyValues(unittest.TestCase):
     """
@@ -27,10 +29,11 @@ class TestGlobalEnergyValues(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         repo = 'energy_models.sos_processes.energy.MDA'
         builder = self.ee.factory.get_builder_from_process(
-            repo, 'energy_process_v0_mda')
+            repo, 'energy_process_v0_mda', techno_dict=DEFAULT_TECHNO_DICT_DEV)
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
-        usecase = Study_open(execution_engine=self.ee)
+        usecase = Study_open(execution_engine=self.ee,
+                             techno_dict=DEFAULT_TECHNO_DICT_DEV)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -258,12 +261,15 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.GasTurbine.techno_detailed_production')
         elec_cgt_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.electricity.CombinedCycleGasTurbine.techno_detailed_production')
-
+        h2_prod = self.ee.dm.get_value(
+            f'{self.name}.{self.energymixname}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_detailed_production')
         computed_methane_co2_emissions = co2_emissions_by_energy['methane'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
             elec_gt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
                                                        == 2020].values[0] +\
-            elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
-                                                        == 2020].values[0]
+            elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_cgt_prod['years']
+                                                        == 2020].values[0] +\
+            h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod['years']
+                                                  == 2020].values[0] * 0.75
 
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_methane_co2_emissions,
@@ -281,7 +287,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         computed_coal_co2_emissions = co2_emissions_by_energy['solid_fuel'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
             elec_coal_prod['CO2 from Flue Gas (Mt)'].loc[elec_coal_prod['years']
-                                                         == 2020].values[0]
+                                                         == 2020].values[0] +\
+            h2_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
+                                                  == 2020].values[0] * 0.25
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_coal_co2_emissions,
                              coal_co2_emissions * 1.1)
@@ -293,9 +301,12 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
         Oil CO2 emissions are emissions from oil energy 
         '''
-
+        elec_oil_prod = self.ee.dm.get_value(
+            f'{self.name}.{self.energymixname}.electricity.OilGen.techno_detailed_production')
         computed_oil_co2_emissions = co2_emissions_by_energy['fuel.liquid_fuel'].loc[
-            co2_emissions_by_energy['years'] == 2020].values[0]
+            co2_emissions_by_energy['years'] == 2020].values[0] +\
+            elec_oil_prod['CO2 from Flue Gas (Mt)'].loc[elec_oil_prod['years']
+                                                        == 2020].values[0]
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_oil_co2_emissions,
                              oil_co2_emissions * 1.1)
@@ -653,90 +664,91 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
         Biofuels and waste balances
         '''
-        print('----------  Biomass dry balances -------------')
-
-        print('We consider biomass_dry equals to the sum of primary solid biofuels (no municipal/industiral waste) but in the doc they do not consider crop residues')
-        biomass_dry_raw_prod_iea = (
-            48309940) / 3600  # TWh 1414648 + 1142420 +
-        biomass_dry_net_prod_iea = (36537355) / 3600  # TWh + 150882 + 519300
-
-        managed_wood_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.biomass_dry.ManagedWood.techno_production')
-
-        computed_managed_wood_prod = managed_wood_prod['biomass_dry (TWh)'].loc[
-            managed_wood_prod['years'] == 2020].values[0] * 1000.0
-
-        unmanaged_wood_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.biomass_dry.UnmanagedWood.techno_production')
-
-        computed_unmanaged_wood_prod = unmanaged_wood_prod['biomass_dry (TWh)'].loc[
-            unmanaged_wood_prod['years'] == 2020].values[0] * 1000.0
-
-        crop_energy_prod = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.biomass_dry.CropEnergy.techno_production')
-
-        computed_crop_energy_prod = crop_energy_prod['biomass_dry (TWh)'].loc[
-            crop_energy_prod['years'] == 2020].values[0] * 1000.0
-
-        biomass_dry_net_prod = net_energy_production[
-            'production biomass_dry (TWh)'][0] - computed_crop_energy_prod
-
-        biomass_dry_raw_prod = computed_managed_wood_prod + computed_unmanaged_wood_prod
-
-        error_biomassdry_raw_prod = np.abs(
-            biomass_dry_raw_prod_iea - biomass_dry_raw_prod) / biomass_dry_raw_prod_iea * 100.0
-
-        print('Biomass dry raw production error : ', error_biomassdry_raw_prod, ' %',
-              f'IEA :{biomass_dry_raw_prod_iea} TWh vs WITNESS :{biomass_dry_raw_prod} TWh')
-
-        error_biomassdry_net_prod = np.abs(
-            biomass_dry_net_prod_iea - biomass_dry_net_prod) / biomass_dry_net_prod_iea * 100.0
-
-        print('Biomass dry net production error : ', error_biomassdry_net_prod, ' %',
-              f'IEA :{biomass_dry_net_prod_iea} TWh vs WITNESS :{biomass_dry_net_prod} TWh')
-
-        biomass_dry_elec_plants = 3650996 / 3600  # TWh
-        biomass_dry_chp_plants = (2226110 + 324143) / 3600  # TWh
-        biomass_dry_otherrtransf = 5220384 / 3600  # TWh
-
-        print('CHP and heat plants using biomass are not implemented corresponds to ',
-              biomass_dry_chp_plants / biomass_dry_raw_prod_iea * 100.0, ' % of biomass raw production : ', biomass_dry_chp_plants, ' TWh')
-        print('Electricity plants using biomass are not implemented corresponds to ',
-              biomass_dry_elec_plants / biomass_dry_raw_prod_iea * 100.0, ' % of biomass raw production : ', biomass_dry_elec_plants, ' TWh')
-
-        biogas_cons = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.biogas.energy_consumption')
-
-        biomass_by_biogas_cons = biogas_cons['wet_biomass (Mt)'].loc[
-            biogas_cons['years'] == 2020].values[0] * 1000 * 3.6  # 3.6 is calorific value of biomass_dry
-
-        syngas_cons = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.solid_fuel.energy_consumption')
-
-        biomass_by_syngas_cons = syngas_cons['biomass_dry (TWh)'].loc[
-            syngas_cons['years'] == 2020].values[0] * 1000
-
-        solid_fuel_cons = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.solid_fuel.energy_consumption')
-
-        biomass_by_solid_fuel_cons = solid_fuel_cons['biomass_dry (TWh)'].loc[
-            solid_fuel_cons['years'] == 2020].values[0] * 1000
-
-        biomass_dry_otherrtransf_witness = biomass_by_solid_fuel_cons + biomass_by_syngas_cons
-        biomass_dry_otherrtransf_with_ana = biomass_by_biogas_cons + \
-            biomass_dry_otherrtransf_witness
-
-        error_biomassdry_otherrtransf_prod = np.abs(
-            biomass_dry_otherrtransf - biomass_dry_otherrtransf_witness) / biomass_dry_otherrtransf * 100.0
-
-        print('Biomass dry other transformation production error : ', error_biomassdry_otherrtransf_prod, ' %',
-              f'IEA :{biomass_dry_otherrtransf} TWh vs WITNESS :{biomass_dry_otherrtransf_witness} TWh')
-
-        error_biomassdry_otherrtransf_with_ana_prod = np.abs(
-            biomass_dry_otherrtransf - biomass_dry_otherrtransf_with_ana) / biomass_dry_otherrtransf * 100.0
-
-        print('Biomass dry other transformation (adding anaerobic digestion) production error : ', error_biomassdry_otherrtransf_with_ana_prod, ' %',
-              f'IEA :{biomass_dry_otherrtransf} TWh vs WITNESS with anaerobic digestion :{biomass_dry_otherrtransf_with_ana} TWh')
+#         print('----------  Biomass dry balances -------------')
+#
+#         print('We consider biomass_dry equals to the sum of primary solid biofuels (no municipal/industiral waste) but in the doc they do not consider crop residues')
+#         biomass_dry_raw_prod_iea = (
+#             48309940) / 3600  # TWh 1414648 + 1142420 +
+#         biomass_dry_net_prod_iea = (36537355) / 3600  # TWh + 150882 + 519300
+#
+#         managed_wood_prod = self.ee.dm.get_value(
+#             f'{self.name}.{self.energymixname}.biomass_dry.ManagedWood.techno_production')
+#
+#         computed_managed_wood_prod = managed_wood_prod['biomass_dry (TWh)'].loc[
+#             managed_wood_prod['years'] == 2020].values[0] * 1000.0
+#
+#         unmanaged_wood_prod = self.ee.dm.get_value(
+#             f'{self.name}.{self.energymixname}.biomass_dry.UnmanagedWood.techno_production')
+#
+#         computed_unmanaged_wood_prod = unmanaged_wood_prod['biomass_dry (TWh)'].loc[
+#             unmanaged_wood_prod['years'] == 2020].values[0] * 1000.0
+#
+#         crop_energy_prod = self.ee.dm.get_value(
+#             f'{self.name}.{self.energymixname}.biomass_dry.CropEnergy.techno_production')
+#
+#         computed_crop_energy_prod = crop_energy_prod['biomass_dry (TWh)'].loc[
+#             crop_energy_prod['years'] == 2020].values[0] * 1000.0
+#
+#         biomass_dry_net_prod = net_energy_production[
+#             'production biomass_dry (TWh)'][0] - computed_crop_energy_prod
+#
+#         biomass_dry_raw_prod = computed_managed_wood_prod + computed_unmanaged_wood_prod
+#
+#         error_biomassdry_raw_prod = np.abs(
+#             biomass_dry_raw_prod_iea - biomass_dry_raw_prod) / biomass_dry_raw_prod_iea * 100.0
+#
+#         print('Biomass dry raw production error : ', error_biomassdry_raw_prod, ' %',
+#               f'IEA :{biomass_dry_raw_prod_iea} TWh vs WITNESS :{biomass_dry_raw_prod} TWh')
+#
+#         error_biomassdry_net_prod = np.abs(
+#             biomass_dry_net_prod_iea - biomass_dry_net_prod) / biomass_dry_net_prod_iea * 100.0
+#
+#         print('Biomass dry net production error : ', error_biomassdry_net_prod, ' %',
+#               f'IEA :{biomass_dry_net_prod_iea} TWh vs WITNESS :{biomass_dry_net_prod} TWh')
+#
+#         biomass_dry_elec_plants = 3650996 / 3600  # TWh
+#         biomass_dry_chp_plants = (2226110 + 324143) / 3600  # TWh
+#         biomass_dry_otherrtransf = 5220384 / 3600  # TWh
+#
+#         print('CHP and heat plants using biomass are not implemented corresponds to ',
+#               biomass_dry_chp_plants / biomass_dry_raw_prod_iea * 100.0, ' % of biomass raw production : ', biomass_dry_chp_plants, ' TWh')
+#         print('Electricity plants using biomass are not implemented corresponds to ',
+#               biomass_dry_elec_plants / biomass_dry_raw_prod_iea * 100.0, ' % of biomass raw production : ', biomass_dry_elec_plants, ' TWh')
+#
+#         biogas_cons = self.ee.dm.get_value(
+#             f'{self.name}.{self.energymixname}.biogas.energy_consumption')
+#
+#         biomass_by_biogas_cons = biogas_cons['wet_biomass (Mt)'].loc[
+#             biogas_cons['years'] == 2020].values[0] * 1000 * 3.6  # 3.6 is calorific value of biomass_dry
+#
+#         syngas_cons = self.ee.dm.get_value(
+#             f'{self.name}.{self.energymixname}.solid_fuel.energy_consumption')
+#
+#         biomass_by_syngas_cons = syngas_cons['biomass_dry (TWh)'].loc[
+#             syngas_cons['years'] == 2020].values[0] * 1000
+#
+#         solid_fuel_cons = self.ee.dm.get_value(
+#             f'{self.name}.{self.energymixname}.solid_fuel.energy_consumption')
+#
+#         biomass_by_solid_fuel_cons = solid_fuel_cons['biomass_dry (TWh)'].loc[
+#             solid_fuel_cons['years'] == 2020].values[0] * 1000
+#
+#         biomass_dry_otherrtransf_witness = biomass_by_solid_fuel_cons + biomass_by_syngas_cons
+#         biomass_dry_otherrtransf_with_ana = biomass_by_biogas_cons + \
+#             biomass_dry_otherrtransf_witness
+#
+#         error_biomassdry_otherrtransf_prod = np.abs(
+#             biomass_dry_otherrtransf - biomass_dry_otherrtransf_witness) / biomass_dry_otherrtransf * 100.0
+#
+#         print('Biomass dry other transformation production error : ', error_biomassdry_otherrtransf_prod, ' %',
+#               f'IEA :{biomass_dry_otherrtransf} TWh vs WITNESS :{biomass_dry_otherrtransf_witness} TWh')
+#
+#         error_biomassdry_otherrtransf_with_ana_prod = np.abs(
+#             biomass_dry_otherrtransf - biomass_dry_otherrtransf_with_ana) / biomass_dry_otherrtransf * 100.0
+#
+#         print('Biomass dry other transformation (adding anaerobic digestion) production error : ', error_biomassdry_otherrtransf_with_ana_prod, ' %',
+# f'IEA :{biomass_dry_otherrtransf} TWh vs WITNESS with anaerobic
+# digestion :{biomass_dry_otherrtransf_with_ana} TWh')
 
         print('----------  liquid biofuels balances -------------')
 
@@ -1017,5 +1029,5 @@ if '__main__' == __name__:
     t0 = time.time()
     cls = TestGlobalEnergyValues()
     cls.setUp()
-    cls.test_03_check_net_production_values()
+    cls.test_02_check_global_co2_emissions_values()
     print(f'Time : {time.time() - t0} s')

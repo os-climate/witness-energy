@@ -48,6 +48,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
     # https://documents1.worldbank.org/curated/en/640981468780885410/pdf/263500Energy0issues020.pdf
     heat_rate = 9.2  # 8.0-10. 5    Gj/Mwh
     # Convert heat rate into kwh/kwh
+    # Corresponds to 39.1 % of efficiency , 46% is the record
     methane_needs = heat_rate / 3.6
     techno_infos_dict_default = {'maturity': 5,
                                  'Opex_percentage': 0.019,  # World bank
@@ -74,13 +75,13 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
     # Major hypo: 25% of invest in gas go into gas turbine, 75% into CCGT
     share = 0.75
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [41.0 * (1 - share), 51.0 * (1 - share)]})
+        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 51.0 * (1 - share)]})
 # For initial production: MAJOR hypothesis, took IEA WEO 2019 production for 2018
 # In US according to U.S. Energy Information Administration  53% of capa
 # from CCGT and 47 for GT in 2017
-    share_ccgt = 0.55
+    share_ccgt = 0.75
     # Initial prod in TWh
-    initial_production = (1 - share_ccgt) * 6118
+    initial_production = (1 - share_ccgt) * 6346
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [2.83, 1.76, 2.3, 2.58, 2.26, 0.9, 0.82, 3.37, 7.77,
                                                          13.53, 12.39, 4.53, 3.42, 3.17, 2.52, 2.1, 3.3,
@@ -99,7 +100,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': gas_turbine_flue_gas_ratio}
+               'flue_gas_co2_ratio': {'type': 'array', 'default': gas_turbine_flue_gas_ratio, 'unit': ''}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)

@@ -28,6 +28,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_disciplines.liquid_fuel_disc import LiquidFuelDiscipline
 from energy_models.core.stream_type.energy_disciplines.hydrotreated_oil_fuel_disc import HydrotreatedOilFuelDiscipline
 from energy_models.core.stream_type.energy_disciplines.bio_diesel_disc import BioDieselDiscipline
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class FuelDiscipline(SoSDiscipline):
@@ -48,10 +49,11 @@ class FuelDiscipline(SoSDiscipline):
 
     name = 'fuel'
     energy_name = name
-    fuel_list = [LiquidFuelDiscipline.energy_name, HydrotreatedOilFuelDiscipline.energy_name, BioDieselDiscipline.energy_name]
+    fuel_list = [LiquidFuelDiscipline.energy_name,
+                 HydrotreatedOilFuelDiscipline.energy_name, BioDieselDiscipline.energy_name]
 
-    DESC_IN = {'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -82,7 +84,8 @@ class FuelDiscipline(SoSDiscipline):
         if 'energy_list' in self._data_in:
             energy_mix_list = self.get_sosdisc_inputs('energy_list')
             if energy_mix_list is not None:
-                self.energy_list = list(set(FuelDiscipline.fuel_list).intersection(set(energy_mix_list)))
+                self.energy_list = list(
+                    set(FuelDiscipline.fuel_list).intersection(set(energy_mix_list)))
                 for energy in self.energy_list:
                     dynamic_inputs[f'{energy}.energy_prices'] = {'type': 'dataframe',
                                                                  'unit': '$/MWh',
@@ -118,7 +121,8 @@ class FuelDiscipline(SoSDiscipline):
         '''
 
         # init dataframes
-        year_start, year_end = self.get_sosdisc_inputs(['year_start', 'year_end'])
+        year_start, year_end = self.get_sosdisc_inputs(
+            ['year_start', 'year_end'])
         years = np.arange(year_start, year_end + 1)
 
         energy_prices = pd.DataFrame({'years': years})
@@ -132,27 +136,39 @@ class FuelDiscipline(SoSDiscipline):
         # loop over fuel energies
         for energy in self.energy_list:
             energy_price = self.get_sosdisc_inputs(f'{energy}.energy_prices')
-            energy_techno_prices = self.get_sosdisc_inputs(f'{energy}.energy_detailed_techno_prices')
-            energy_cons = self.get_sosdisc_inputs(f'{energy}.energy_consumption')
-            energy_prod = self.get_sosdisc_inputs(f'{energy}.energy_production')
-            energy_techno_prod = self.get_sosdisc_inputs(f'{energy}.energy_production_detailed')
+            energy_techno_prices = self.get_sosdisc_inputs(
+                f'{energy}.energy_detailed_techno_prices')
+            energy_cons = self.get_sosdisc_inputs(
+                f'{energy}.energy_consumption')
+            energy_prod = self.get_sosdisc_inputs(
+                f'{energy}.energy_production')
+            energy_techno_prod = self.get_sosdisc_inputs(
+                f'{energy}.energy_production_detailed')
 
-            energy_prices = pd.concat([energy_prices, energy_price.drop('years', axis=1)], axis=1)
-            energy_detailed_techno_prices = pd.concat([energy_detailed_techno_prices, energy_techno_prices.drop('years', axis=1)], axis=1)
-            energy_production = pd.concat([energy_production, energy_prod.drop('years', axis=1)], axis=1)
-            energy_consumption = pd.concat([energy_consumption, energy_cons.drop('years', axis=1)], axis=1)
-            energy_production_detailed = pd.concat([energy_production_detailed, energy_techno_prod.drop('years', axis=1)], axis=1)
+            energy_prices = pd.concat(
+                [energy_prices, energy_price.drop('years', axis=1)], axis=1)
+            energy_detailed_techno_prices = pd.concat(
+                [energy_detailed_techno_prices, energy_techno_prices.drop('years', axis=1)], axis=1)
+            energy_production = pd.concat(
+                [energy_production, energy_prod.drop('years', axis=1)], axis=1)
+            energy_consumption = pd.concat(
+                [energy_consumption, energy_cons.drop('years', axis=1)], axis=1)
+            energy_production_detailed = pd.concat(
+                [energy_production_detailed, energy_techno_prod.drop('years', axis=1)], axis=1)
 
             # mean price weighted with production for each energy
-            energy_prices['fuel'] += [price * production for price, production in zip(energy_prices[energy], energy_production[energy])]
+            energy_prices['fuel'] += [price * production for price,
+                                      production in zip(energy_prices[energy], energy_production[energy])]
             energy_prices['fuel_production'] += energy_production[energy]
 
         # aggregations
-        energy_prices['fuel'] = energy_prices['fuel']/energy_prices['fuel_production']
+        energy_prices['fuel'] = energy_prices['fuel'] / \
+            energy_prices['fuel_production']
         energy_prices.drop('fuel_production', axis=1)
         energy_production = energy_production.groupby(level=0, axis=1).sum()
         energy_consumption = energy_consumption.groupby(level=0, axis=1).sum()
-        energy_production_detailed = energy_production_detailed.groupby(level=0, axis=1).sum()
+        energy_production_detailed = energy_production_detailed.groupby(
+            level=0, axis=1).sum()
 
         outputs_dict = {'energy_prices': energy_prices,
                         'energy_detailed_techno_prices': energy_detailed_techno_prices,
@@ -167,17 +183,21 @@ class FuelDiscipline(SoSDiscipline):
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Energy price', 'Technology price', 'Consumption and production', 'Technology production']
+        chart_list = ['Energy price', 'Technology price',
+                      'Consumption and production', 'Technology production']
 
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
         price_unit_list = ['$/MWh', '$/t']
-        chart_filters.append(ChartFilter('Price unit', price_unit_list, price_unit_list, 'price_unit'))
+        chart_filters.append(ChartFilter(
+            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
 
-        year_start, year_end = self.get_sosdisc_inputs(['year_start', 'year_end'])
+        year_start, year_end = self.get_sosdisc_inputs(
+            ['year_start', 'year_end'])
         years = list(np.arange(year_start, year_end + 1, 5))
-        chart_filters.append(ChartFilter('Years for techno mix', years, [year_start, year_end], 'years'))
+        chart_filters.append(ChartFilter('Years for techno mix', years, [
+                             year_start, year_end], 'years'))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
@@ -244,7 +264,8 @@ class FuelDiscipline(SoSDiscipline):
         return new_chart
 
     def get_chart_techno_price_in_dollar_mwh(self):
-        techno_prices = self.get_sosdisc_outputs('energy_detailed_techno_prices')
+        techno_prices = self.get_sosdisc_outputs(
+            'energy_detailed_techno_prices')
         chart_name = f'Detailed prices of {self.energy_name} technologies mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'Prices [$/MWh]', chart_name=chart_name)
@@ -274,18 +295,20 @@ class FuelDiscipline(SoSDiscipline):
         # one graph for production and one for consumption for clarity
         chart_name = f'{self.energy_name} Production with input investments'
         prod_chart = TwoAxesInstanciatedChart('years', 'Energy [TWh]',
-                                             chart_name=chart_name, stacked_bar=True)
+                                              chart_name=chart_name, stacked_bar=True)
         chart_name = f'{self.energy_name} Consumption with input investments'
         cons_chart = TwoAxesInstanciatedChart('years', 'Energy [TWh]',
-                                             chart_name=chart_name, stacked_bar=True)
+                                              chart_name=chart_name, stacked_bar=True)
 
         for reactant in energy_consumption.columns:
             if reactant != 'years' and reactant.endswith('(TWh)'):
                 energy_twh = - \
                     energy_consumption[reactant].values * \
                     scaling_factor_energy_consumption
-                display_reactant_name = reactant.split(".")[-1].replace("_", " ")
-                legend_title = f'{display_reactant_name} consumption'.replace("(TWh)", "")
+                display_reactant_name = reactant.split(
+                    ".")[-1].replace("_", " ")
+                legend_title = f'{display_reactant_name} consumption'.replace(
+                    "(TWh)", "")
                 serie = InstanciatedSeries(
                     energy_consumption['years'].values.tolist(),
                     energy_twh.tolist(), legend_title, 'bar')
@@ -297,10 +320,13 @@ class FuelDiscipline(SoSDiscipline):
             # Pie charts are here to see difference of production between
             # technologies
             if products != 'years' and products.endswith('(TWh)') and self.energy_name not in products:
-                energy_twh = energy_production[products].values * scaling_factor_energy_production
+                energy_twh = energy_production[products].values * \
+                    scaling_factor_energy_production
 
-                display_products_name = products.split(".")[-1].replace("_", " ")
-                legend_title = f'{display_products_name} production'.replace("(TWh)", "")
+                display_products_name = products.split(
+                    ".")[-1].replace("_", " ")
+                legend_title = f'{display_products_name} production'.replace(
+                    "(TWh)", "")
                 serie = InstanciatedSeries(energy_production['years'].values.tolist(),
                                            energy_twh.tolist(),
                                            legend_title,
@@ -310,8 +336,10 @@ class FuelDiscipline(SoSDiscipline):
 
         for energy in self.energy_list:
             display_energy_name = energy.split(".")[-1].replace("_", " ")
-            legend_title = f'{display_energy_name} production'.replace("(TWh)", "")
-            energy_prod_twh = energy_production[f'{energy}'].values * scaling_factor_energy_production
+            legend_title = f'{display_energy_name} production'.replace(
+                "(TWh)", "")
+            energy_prod_twh = energy_production[f'{energy}'].values * \
+                scaling_factor_energy_production
             serie = InstanciatedSeries(energy_production['years'].values.tolist(),
                                        energy_prod_twh.tolist(),
                                        legend_title,
@@ -342,8 +370,10 @@ class FuelDiscipline(SoSDiscipline):
             cons_chart = TwoAxesInstanciatedChart('years', 'Mass [Gt]',
                                                   chart_name=cons_chart_name, stacked_bar=True)
         elif kg_values_production == 1 and kg_values_consumption == 0:
-            display_product_found_name = product_found.split(".")[-1].replace("_", " ")
-            legend_title = f'{display_product_found_name} production'.replace("(Mt)", "")
+            display_product_found_name = product_found.split(
+                ".")[-1].replace("_", " ")
+            legend_title = f'{display_product_found_name} production'.replace(
+                "(Mt)", "")
             prod_chart_name = f'{legend_title} of {self.energy_name} with input investments'
             prod_chart = TwoAxesInstanciatedChart('years', 'Mass [Gt]',
                                                   chart_name=prod_chart_name, stacked_bar=True)
@@ -357,9 +387,12 @@ class FuelDiscipline(SoSDiscipline):
 
         for reactant in energy_consumption.columns:
             if reactant != 'years' and reactant.endswith('(Mt)'):
-                display_reactant_name = reactant.split(".")[-1].replace("_", " ")
-                legend_title = f'{display_reactant_name} consumption'.replace("(Mt)", "")
-                mass = -energy_consumption[reactant].values / 1.0e3 * scaling_factor_energy_consumption
+                display_reactant_name = reactant.split(
+                    ".")[-1].replace("_", " ")
+                legend_title = f'{display_reactant_name} consumption'.replace(
+                    "(Mt)", "")
+                mass = -energy_consumption[reactant].values / \
+                    1.0e3 * scaling_factor_energy_consumption
                 serie = InstanciatedSeries(energy_consumption['years'].values.tolist(),
                                            mass.tolist(),
                                            legend_title,
@@ -369,8 +402,10 @@ class FuelDiscipline(SoSDiscipline):
         for product in energy_production.columns:
             if product != 'years' and product.endswith('(Mt)'):
                 display_product_name = product.split(".")[-1].replace("_", " ")
-                legend_title = f'{display_product_name} production'.replace("(Mt)", "")
-                mass = energy_production[product].values / 1.0e3 * scaling_factor_energy_production
+                legend_title = f'{display_product_name} production'.replace(
+                    "(Mt)", "")
+                mass = energy_production[product].values / \
+                    1.0e3 * scaling_factor_energy_production
                 serie = InstanciatedSeries(energy_production['years'].values.tolist(),
                                            mass.tolist(),
                                            legend_title,
@@ -395,7 +430,8 @@ class FuelDiscipline(SoSDiscipline):
         new_chart = TwoAxesInstanciatedChart('years', f'Production (TWh)',
                                              chart_name=chart_name, stacked_bar=True)
 
-        techno_list = [techno for techno in energy_production if techno != 'years']
+        techno_list = [
+            techno for techno in energy_production if techno != 'years']
 
         for techno in techno_list:
             techno_prod = energy_production[techno].values
@@ -415,7 +451,8 @@ class FuelDiscipline(SoSDiscipline):
 
         energy_production = self.get_sosdisc_outputs(
             'energy_production_detailed')
-        techno_list = [techno for techno in energy_production if techno != 'years']
+        techno_list = [
+            techno for techno in energy_production if techno != 'years']
         display_techno_list = []
 
         for techno in techno_list:

@@ -57,13 +57,17 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.energy_name = 'electricity'
+        self.year_start = 2020
+        self.year_end = 2050
 
-        years = np.arange(2020, 2051)
+        self.years = np.arange(self.year_start, self.year_end + 1)
+
+
 
         # --- energy prices ---
         solid_fuel_price = np.array(
-            [5.7] * 31)
-        self.energy_prices = pd.DataFrame({'years': years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+            [5.7] * len(self.years))
+        self.energy_prices = pd.DataFrame({'years': self.years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                                     0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                                                                     0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
                                                                                     0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
@@ -75,46 +79,46 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                                                     0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                                                                     0.0928246539459331]) * 1000.0,
                                            'solid_fuel': solid_fuel_price,
-                                           'fuel.liquid_fuel': np.ones(len(years)) * 91,
-                                           'methane': np.ones(len(years)) * 27.07,
-                                           'biogas': np.ones(len(years)) * 5.0,
-                                           'biomass_dry': np.ones(len(years)) * 11.0,
+                                           'fuel.liquid_fuel': np.ones(len(self.years)) * 91,
+                                           'methane': np.ones(len(self.years)) * 27.07,
+                                           'biogas': np.ones(len(self.years)) * 5.0,
+                                           'biomass_dry': np.ones(len(self.years)) * 11.0,
                                            })
 #         self.energy_prices = pd.DataFrame(
 #             {'methane': np.ones(len(years)) * 27.07})
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'methane': 0.123 / 15.4, 'biogas': 0.123 / 15.4,
+            {'years': self.years, 'methane': 0.123 / 15.4, 'biogas': 0.123 / 15.4,
              'solid_fuel': 0.64 / 4.86, 'fuel.liquid_fuel': 0.64 / 4.86, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0})
         #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
 
         # --- invest level ---
         self.invest_level_ccgast = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 21.0})
+            {'years': self.years, 'invest': np.ones(len(self.years)) * 21.0})
 
         self.invest_level_biomass_fired = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 21.0})
+            {'years': self.years, 'invest': np.ones(len(self.years)) * 21.0})
 
-        self.invest_level_geothermal = pd.DataFrame({'years': years})
+        self.invest_level_geothermal = pd.DataFrame({'years': self.years})
         self.invest_level_geothermal['invest'] = 5.0 * \
             1.10 ** (self.invest_level_geothermal['years'] - 2020)
 
         self.invest_level_solar_pv = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 130.0})
+            {'years': self.years, 'invest': np.ones(len(self.years)) * 130.0})
 
         self.invest_level_solar_thermal = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 15.0})
+            {'years': self.years, 'invest': np.ones(len(self.years)) * 15.0})
 
         self.invest_level_coal = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 50.0})
+            {'years': self.years, 'invest': np.ones(len(self.years)) * 50.0})
 
         self.invest_level_oil = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 10.0})
+            {'years': self.years, 'invest': np.ones(len(self.years)) * 10.0})
 
-        self.invest_level_nuclear = pd.DataFrame({'years': years})
+        self.invest_level_nuclear = pd.DataFrame({'years': self.years})
         self.invest_level_nuclear['invest'] = 33.0 * \
             1.10 ** (self.invest_level_nuclear['years'] - 2020)
 
-        self.invest_level_hydropower = pd.DataFrame({'years': years,
+        self.invest_level_hydropower = pd.DataFrame({'years': self.years,
                                                      'invest': np.array([4435750000.0, 4522000000.0, 4608250000.0,
                                                                          4694500000.0, 4780750000.0, 4867000000.0,
                                                                          4969400000.0, 5071800000.0, 5174200000.0,
@@ -127,7 +131,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                                          5135900000.0, 5121600000.0, 5107300000.0,
                                                                          5093000000.0]) * 1.0e-9})
         self.invest_level_windonshore = pd.DataFrame(
-            {'years': years, 'invest': np.array([22000.00, 22000.00, 22000.00, 22000.00,
+            {'years': self.years, 'invest': np.array([22000.00, 22000.00, 22000.00, 22000.00,
                                                  22000.00, 22000.00, 22000.00, 22000.00,
                                                  22000.00, 22000.00, 31000.00, 31000.00,
                                                  31000.00, 31000.00, 31000.00, 31000.00,
@@ -151,12 +155,12 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {'years': self.years, 'CO2_tax': func(self.years)})
         self.co2_taxes_nul = pd.DataFrame(
-            {'years': years, 'CO2_tax': func_nul(years)})
+            {'years': self.years, 'CO2_tax': func_nul(self.years)})
 
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {'years': self.years, 'margin': np.ones(len(self.years)) * 110.0})
 
         # --- Transport ---
         transport_cost = 11.0
@@ -166,15 +170,15 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * transport_cost})
+            {'years': self.years, 'transport': np.ones(len(self.years)) * transport_cost})
 
         self.transport_nul = pd.DataFrame(
-            {'years': years, 'transport': np.zeros(len(years))})
+            {'years': self.years, 'transport': np.zeros(len(self.years))})
 
         # --- resources ---
         self.resources_price = pd.DataFrame(
             columns=['years', 'water'])
-        self.resources_price['years'] = years
+        self.resources_price['years'] = self.years
         self.resources_price['water'] = Water.data_energy_dict['cost_now']
         self.resources_price['uranium fuel'] = 1390.0e3
 
@@ -185,13 +189,13 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                 == 'electricity.CombinedCycleGasTurbine']
         #---Ratios---
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
-        demand_ratio_dict['years'] = years
+            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
+        demand_ratio_dict['years'] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         resource_ratio_dict = dict(
-            zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(years))))
-        resource_ratio_dict['years'] = years
+            zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(self.years))))
+        resource_ratio_dict['years'] = self.years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
@@ -218,8 +222,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_ccgast,
@@ -269,8 +275,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_geothermal,
@@ -321,8 +329,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_hydropower,
@@ -375,8 +385,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_coal,
@@ -427,8 +439,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_ccgast,
@@ -479,8 +493,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_windonshore,
@@ -530,8 +546,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        # same invest on and off shore
@@ -583,8 +601,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_solar_thermal,
@@ -636,8 +656,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_solar_pv,
@@ -688,8 +710,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_nuclear,
@@ -739,8 +763,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_ccgast,
@@ -791,8 +817,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_biomass_fired,
@@ -843,8 +871,10 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(self.years),
+                       f'{self.name}.resources_price': get_static_prices(self.years),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.co2_taxes_nul,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level_oil,

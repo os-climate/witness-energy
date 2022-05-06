@@ -99,7 +99,8 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{self.model_name}.technologies_list': ['hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen'],
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.{self.model_name}.technologies_list': ['hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen'],
                        f'{self.name}.electricity.CoalGen.techno_production': self.electricity_CoalGen_production,
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_production': self.hydrogen_WaterGasShift_production,
                        f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': [0.2],

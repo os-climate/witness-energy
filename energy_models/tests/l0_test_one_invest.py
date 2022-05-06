@@ -85,7 +85,8 @@ class TestOneInvest(unittest.TestCase):
                        'carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        'invest_mix': self.energy_mix,
                        'energy_investment': self.energy_investment,
-                       'scaling_factor_energy_investment': scaling_factor_energy_investment}
+                       'scaling_factor_energy_investment': scaling_factor_energy_investment,
+                       'is_dev': False}
         one_invest_model = OneInvest()
         all_invest_df = one_invest_model.compute(inputs_dict)
         norm_mix = self.energy_mix[[

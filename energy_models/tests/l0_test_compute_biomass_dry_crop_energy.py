@@ -39,6 +39,7 @@ class CropEnergyPriceTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
+        self.year_end = 2050
         electricity_price = np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                       0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                       0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
@@ -50,11 +51,11 @@ class CropEnergyPriceTestCase(unittest.TestCase):
                                       0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1.5 * 1000.0
-        years = np.arange(2020, 2051)
+        years = np.arange(2020, self.year_end + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {'years': np.arange(2020, self.year_end + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -94,7 +95,7 @@ class CropEnergyPriceTestCase(unittest.TestCase):
     def test_01_compute_crop_residues_price_prod_consumption(self):
 
         inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+                       'year_end': self.year_end,
                        'techno_infos_dict': CropEnergyDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
@@ -151,7 +152,8 @@ class CropEnergyPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
+        inputs_dict = {f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
                        f'{self.name}.invest_level': self.invest_level,

@@ -113,8 +113,8 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         gasturbine_production = pd.DataFrame({'years': self.years,
                                               'electricity (TWh)': [low_prod] * years_low_prod + [100] * (len(self.years) - years_low_prod),
                                               'O2 (Mt)': [0.019217] * len(self.years)})
-        inputs_dict = {f'{self.name}.{self.model_name}.year_start': 2020,
-                       f'{self.name}.{self.model_name}.year_end': 2050,
+        inputs_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2050,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.technologies_list': ['Hydropower', 'GasTurbine'],
                        f'{self.name}.{self.model_name}.Hydropower.techno_consumption': self.hydropower_consumption,

@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from copy import deepcopy
 
 # DESC_IN = Invest + energy source inputs
@@ -89,9 +89,13 @@ class BaseInvest:
 
     def compute_distribution_list(self, input_dict):
         self.distribution_list = []
+        is_dev = input_dict['is_dev']
         for energy in input_dict['energy_list']:
-            for techno in input_dict[f'{energy}.technologies_list']:
-                self.distribution_list.append(f'{energy}.{techno}')
+            if energy == BiomassDry.name and is_dev == True:
+                pass
+            else:
+                for techno in input_dict[f'{energy}.technologies_list']:
+                    self.distribution_list.append(f'{energy}.{techno}')
         for ccs in input_dict['ccs_list']:
             for techno in input_dict[f'{ccs}.technologies_list']:
                 self.distribution_list.append(f'{ccs}.{techno}')

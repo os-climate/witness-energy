@@ -39,11 +39,12 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(2020, 2051)
+        self.year_end = 2050
+        years = np.arange(2020, self.year_end + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {'years': years})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -108,7 +109,7 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
     def test_01_compute_smr_price_prod_consumption(self):
 
         inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+                       'year_end': self.year_end,
                        'techno_infos_dict': AnaerobicDigestionDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
                        'resources_price': self.resources_prices,
@@ -159,7 +160,8 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
+        inputs_dict = {f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
@@ -178,4 +180,3 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filters)
 #         for graph in graph_list:
 #             graph.to_plotly().show()
-

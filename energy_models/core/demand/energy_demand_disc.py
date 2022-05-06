@@ -23,6 +23,7 @@ from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilte
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class EnergyDemandDiscipline(SoSDiscipline):
@@ -41,32 +42,34 @@ class EnergyDemandDiscipline(SoSDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'year_end': {'type': 'int', 'default': 2100, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh',
                                               'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                                        'demand': ('float',  None, True)},
                                               'dataframe_edition_locked': False,
                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix'},
                # 'default': 22847.66
-               'initial_electricity_demand': {'type': 'float', 'default': 18000., 'unit': 'TWh'}, #old value is 20900TWh
+               # old value is 20900TWh
+               'initial_electricity_demand': {'type': 'float', 'default': 18000., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': ''},
                'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-               'transport_demand': {'type': 'dataframe' , 'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                                            'transport_demand': ('float',  None, True)},
-                                              'dataframe_edition_locked': False, 'unit': 'TWh'},
+               'transport_demand': {'type': 'dataframe', 'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
+                                                                                  'transport_demand': ('float',  None, True)},
+                                    'dataframe_edition_locked': False, 'unit': 'TWh'},
                'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'additional_demand_transport': {'type': 'float', 'default': 10., 'unit': '%'}}
 
     DESC_OUT = {'electricity_demand_constraint': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
                 'electricity_demand': {'type': 'dataframe', 'unit': 'TWh'},
-                'transport_demand_constraint':{'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                'transport_demand_constraint': {'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
                 'net_transport_production': {'type': 'array', 'unit': 'TWh'},
                 }
     name = EnergyDemand.name
     # The list of all energy constraints implemented in the discipline
-    energy_constraint_list = [Electricity.name] + EnergyDemand.energy_list_transport
+    energy_constraint_list = [Electricity.name] + \
+        EnergyDemand.energy_list_transport
     elec_prod_column = EnergyDemand.elec_prod_column
 
     def init_execution(self):
@@ -105,10 +108,9 @@ class EnergyDemandDiscipline(SoSDiscipline):
         for energy_name in self.demand_model.energy_list_transport:
 
             self.set_partial_derivative_for_other_types(
-                ('transport_demand_constraint',),  ('energy_production_detailed', f"production {energy_name} ({EnergyMix.stream_class_dict[energy_name].unit})"),
+                ('transport_demand_constraint',),  ('energy_production_detailed',
+                                                    f"production {energy_name} ({EnergyMix.stream_class_dict[energy_name].unit})"),
                 dtransport_demand_denergy_prod)
-
-
 
     def get_chart_filter_list(self):
 
@@ -181,15 +183,18 @@ class EnergyDemandDiscipline(SoSDiscipline):
         new_chart = TwoAxesInstanciatedChart('years', 'Energy demand [TWh]',
                                              chart_name=chart_name, stacked_bar=True)
 
-        note = {'Transport energies': 'Liquid hydrogen, liquid fuel, biodiesel, methane, biogas, HEFA'}
+        note = {
+            'Transport energies': 'Liquid hydrogen, liquid fuel, biodiesel, methane, biogas, HEFA'}
         new_chart.annotation_upper_left = note
-        transport_demand, energy_production_detailed = self.get_sosdisc_inputs(['transport_demand', 'energy_production_detailed'])
+        transport_demand, energy_production_detailed = self.get_sosdisc_inputs(
+            ['transport_demand', 'energy_production_detailed'])
 
         serie = InstanciatedSeries(
             transport_demand['years'].values.tolist(),
             transport_demand['transport_demand'].values.tolist(), 'transport demand', 'lines')
         new_chart.series.append(serie)
-        net_transport_production = self.get_sosdisc_outputs('net_transport_production')
+        net_transport_production = self.get_sosdisc_outputs(
+            'net_transport_production')
         serie = InstanciatedSeries(
             transport_demand['years'].values.tolist(),
             net_transport_production.tolist(), 'transport energies net production', 'lines')

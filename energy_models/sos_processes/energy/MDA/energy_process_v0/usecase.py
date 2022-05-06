@@ -59,6 +59,7 @@ OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
+AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
 FUNC_DF = FunctionManagerDisc.FUNC_DF
 CO2_TAX_MINUS_CCS_CONSTRAINT_DF = EnergyMix.CO2_TAX_MINUS_CCS_CONSTRAINT_DF
 CARBON_TO_BE_STORED_CONSTRAINT = PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT
@@ -237,13 +238,13 @@ class Study(EnergyStudyManager):
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
             list_var.extend(
-                ['invest_constraint', 'invest_sum_cons', 'invest_sum_cons_dc'])
-            list_parent.extend(['invests_constraints', 'invests_constraints', 'invests_constraints'])
-            list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-            list_weight.extend([0., -1.0, 0.])
+                ['invest_constraint', 'invest_sum_cons', 'invest_sum_cons_dc', 'invest_sum_eq_cons'])
+            list_parent.extend(['invests_constraints', 'invests_constraints', 'invests_constraints', 'invests_constraints'])
+            list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT, EQ_CONSTRAINT])
+            list_weight.extend([0., -1.0, 0., 0.])
             list_aggr_type.extend(
-                [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
-            list_namespaces.extend(['ns_functions', 'ns_functions', 'ns_functions'])
+                [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_DELTA])
+            list_namespaces.extend(['ns_functions', 'ns_functions', 'ns_functions', 'ns_functions'])
 
         if set(EnergyDemandDiscipline.energy_constraint_list).issubset(self.energy_list):
 
@@ -251,7 +252,7 @@ class Study(EnergyStudyManager):
                 ['electricity_demand_constraint','transport_demand_constraint'])
             list_parent.extend(['demand_constraint', 'demand_constraint'])
             list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-            list_weight.extend([0., 0.])
+            list_weight.extend([-1., -1.])
             list_aggr_type.extend(
                 [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
             list_namespaces.extend(['ns_functions', 'ns_functions'])
