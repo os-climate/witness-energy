@@ -75,7 +75,6 @@ from sos_trades_core.tools.base_functions.specific_check import specific_check_y
 
 ENERGY_TYPE = 'energy'
 CCUS_TYPE = 'CCUS'
-AGRI_TYPE = 'agriculture'
 DEFAULT_TECHNO_DICT = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_technos},
                        GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': GaseousHydrogen_technos},
                        BioGas.name: {'type': ENERGY_TYPE, 'value': BioGas_technos},
@@ -97,7 +96,7 @@ DEFAULT_TECHNO_DICT_DEV = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_
                            LiquidFuel.name: {'type': ENERGY_TYPE, 'value': LiquidFuel_technos_dev},
                            HydrotreatedOilFuel.name: {'type': ENERGY_TYPE, 'value': HydrotreatedOilFuel_technos_dev},
                            SolidFuel.name: {'type': ENERGY_TYPE, 'value': SolidFuel_technos_dev},
-                           BiomassDry.name: {'type': AGRI_TYPE, 'value': BiomassDry_technos_dev},
+                           BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos_dev},
                            Electricity.name: {'type': ENERGY_TYPE, 'value': Electricity_technos_dev},
                            BioDiesel.name: {'type': ENERGY_TYPE, 'value': BioDiesel_technos_dev},
                            LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos_dev},
@@ -111,7 +110,7 @@ DEFAULT_COARSE_TECHNO_DICT = {'renewable': {'type': ENERGY_TYPE, 'value': ['Rene
 
 
 DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_TECHNO_DICT.items(
-) if value['type'] in ['energy', 'agriculture']]
+) if value['type'] == 'energy']
 DEFAULT_CCS_LIST = [key for key, value in DEFAULT_TECHNO_DICT.items(
 ) if value['type'] == 'CCUS']
 
@@ -129,7 +128,7 @@ class EnergyStudyManager(StudyManager):
         self.main_study = main_study
         self.techno_dict = techno_dict
         self.energy_list = [key for key, value in self.techno_dict.items(
-        ) if value['type'] in ['energy', 'agriculture']]
+        ) if value['type'] == 'energy']
         self.ccs_list = [key for key, value in self.techno_dict.items(
         ) if value['type'] == 'CCUS']
 

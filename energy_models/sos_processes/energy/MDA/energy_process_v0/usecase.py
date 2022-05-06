@@ -569,11 +569,9 @@ class Study(EnergyStudyManager):
                 instance_sub_study = sub_study(
                     self.year_start, self.year_end, self.time_step, bspline=self.bspline, main_study=False, execution_engine=self.execution_engine,
                     invest_discipline=self.invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
-            elif self.techno_dict[sub_study_name]['type'] == 'agriculture':
-                pass
             else:
                 raise Exception(
-                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE},{'agriculture'}]")
+                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE}]")
 
             instance_sub_study.configure_ds_boundaries(lower_bound_techno=self.lower_bound_techno,
                                                        upper_bound_techno=self.upper_bound_techno,)
