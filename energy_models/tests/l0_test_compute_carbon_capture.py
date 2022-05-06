@@ -132,7 +132,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
                        for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
         succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys,
                                              outputs=output_keys,
-                                             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                             dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                                 f'jacobian_carbon_capture_discipline.pkl'))
 
         self.assertTrue(
@@ -220,7 +220,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
                        for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
         succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys,
                                              outputs=output_keys,
-                                             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                             dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                                 f'jacobian_carbon_capture_discipline_limited.pkl'))
 
         self.assertTrue(
