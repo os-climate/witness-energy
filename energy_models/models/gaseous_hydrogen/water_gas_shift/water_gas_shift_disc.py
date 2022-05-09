@@ -99,7 +99,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                                                   5.609159099363739, 6.3782076592711885, 8.704303197679629,
                                                                   6.1950256610618135, 3.7836557445596464, 1.7560205289962763,
                                                                   ]) + 0.82141})
-    wgs_flue_gas_ratio = np.array([0.175])
+    FLUE_GAS_RATIO = np.array([0.175])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
@@ -113,10 +113,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False},
                'syngas_ratio': {'type': 'array', 'unit': '%', 'visibility': GaseousHydrogenTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
-               'needed_syngas_ratio': {'type': 'float', 'default': 0.0},
-               #                'syngas_ratio_technos': {'type': 'dict', 'visibility': HydrogenTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
-               #                'energy_detailed_techno_prices': {'type': 'dataframe', 'visibility': HydrogenTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'}
-               'flue_gas_co2_ratio': {'type': 'array', 'default': wgs_flue_gas_ratio, 'unit': ''}
+               'needed_syngas_ratio': {'type': 'float', 'default': 0.0}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)

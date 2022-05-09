@@ -85,7 +85,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                              'distrib': [2.8, 2.4, 4.3, 2, 1.5, 1.3, 0.9, 1.3, 4.8, 7.1, 14.6, 14.2,
                                                          6.7, 4.9, 2.9, 2, 1.8, 2, 1.8, 2.9, 2.7, 1.5, 2.3, 1.4,
                                                          1.3, 2.1, 3.6, 1.3, 1.6]})
-    gas_turbine_flue_gas_ratio = np.array([0.0350])
+    FLUE_GAS_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
@@ -97,8 +97,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': gas_turbine_flue_gas_ratio, 'unit': ''}
+                                        'dataframe_edition_locked': False}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)

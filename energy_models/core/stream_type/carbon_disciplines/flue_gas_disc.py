@@ -22,6 +22,17 @@ import numpy as np
 
 from sos_trades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
+from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import GasTurbineDiscipline
+from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import CombinedCycleGasTurbineDiscipline
+from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
+from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import FischerTropschDiscipline
+from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
+from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
+from energy_models.models.solid_fuel.pelletizing.pelletizing_disc import PelletizingDiscipline
+from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
+from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
+from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
 
 
 class FlueGasDiscipline(SoSDiscipline):
@@ -39,19 +50,21 @@ class FlueGasDiscipline(SoSDiscipline):
         'icon': 'fas fa-cloud fa-fw',
         'version': '',
     }
+    POSSIBLE_FLUE_GAS_TECHNOS = {'electricity.CoalGen': CoalGenDiscipline.FLUE_GAS_RATIO,
+                                 'electricity.GasTurbine': GasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 'electricity.CombinedCycleGasTurbine': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 'hydrogen.gaseous_hydrogen.WaterGasShift': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
+                                 'liquid_fuel.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
+                                 'liquid_fuel.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
+                                 'methane.FossilGas': FossilGasDiscipline.FLUE_GAS_RATIO,
+                                 'solid_fuel.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
+                                 'syngas.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
+                                 'syngas.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
+                                 'fossil.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO}
+
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               'technologies_list': {'type': 'string_list', 'possible_values': ['electricity.CoalGen',
-                                                                                'electricity.GasTurbine',
-                                                                                'electricity.CombinedCycleGasTurbine',
-                                                                                'hydrogen.gaseous_hydrogen.WaterGasShift',
-                                                                                'liquid_fuel.FischerTropsch',
-                                                                                'liquid_fuel.Refinery',
-                                                                                'methane.FossilGas',
-                                                                                'solid_fuel.Pelletizing',
-                                                                                'syngas.CoalGasification',
-                                                                                'syngas.Pyrolysis',
-                                                                                'fossil.FossilSimpleTechno'],
+               'technologies_list': {'type': 'string_list', 'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas', 'structuring': True},
                'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
                'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2}}
@@ -86,7 +99,8 @@ class FlueGasDiscipline(SoSDiscipline):
                         'namespace': 'ns_energy_mix'}
                     dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
                                                                       'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                      'namespace': 'ns_energy_mix', 'unit': ''}
+                                                                      'namespace': 'ns_energy_mix', 'unit': '',
+                                                                      'default': self.POSSIBLE_FLUE_GAS_TECHNOS[techno]}
         self.add_inputs(dynamic_inputs)
 
     def run(self):
