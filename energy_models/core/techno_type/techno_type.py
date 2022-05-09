@@ -1292,7 +1292,7 @@ class TechnoType:
             self.age_distrib_prod_df[f'distrib_prod ({self.product_energy_unit})']
 
         mean_age_df['mean age'] = self.age_distrib_prod_df.groupby(
-            ['years'], as_index=False).agg({'age_x_prod': 'sum'})['age_x_prod'] / self.production[
+            ['years'], as_index=False).agg({'age_x_prod': 'sum'})['age_x_prod'] / self.production_woratio[
             f'{self.energy_name} ({self.product_energy_unit})']
         mean_age_df.replace([np.inf, -np.inf], np.nan, inplace=True)
         mean_age_df.fillna(0.0, inplace=True)
