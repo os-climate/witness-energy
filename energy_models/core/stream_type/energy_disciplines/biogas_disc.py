@@ -38,7 +38,7 @@ class BiogasDiscipline(EnergyDiscipline):
     DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': BioGas.default_techno_list,
                                      'default': BioGas.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_biogas', 'structuring': True},
-               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'unit': 'defined in dict',
                                   'namespace': 'ns_biogas', 'default': BioGas.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)

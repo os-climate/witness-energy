@@ -109,7 +109,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default,
+                                     'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
@@ -124,11 +125,13 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                'hydrogen.gaseous_hydrogen.data_fuel_dict': {'type': 'dict',
                                                             'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY,
                                                             'namespace': 'ns_energy',
-                                                            'default': GaseousHydrogen.data_energy_dict},
+                                                            'default': GaseousHydrogen.data_energy_dict,
+                                                            'unit': 'defined in dict'},
                'syngas.data_fuel_dict': {'type': 'dict',
                                          'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY,
                                          'namespace': 'ns_energy',
-                                         'default': Syngas.data_energy_dict}
+                                         'default': Syngas.data_energy_dict,
+                                         'unit': 'defined in dict'}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)

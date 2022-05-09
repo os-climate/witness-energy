@@ -40,7 +40,6 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
     DESC_IN = {'technologies_list': {'type': 'string_list',
                                      'possible_values': CarbonCapture.default_techno_list,
-                                     'default': CarbonCapture.default_techno_list,
                                      'visibility': StreamDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_carbon_capture', 'structuring': True},
                'flue_gas_production': {'type': 'dataframe',
@@ -50,7 +49,8 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                        'visibility': StreamDiscipline.SHARED_VISIBILITY,
                                        'namespace': 'ns_flue_gas', 'unit': ''},
                'data_fuel_dict': {'type': 'dict', 'visibility': StreamDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_carbon_capture', 'default': CarbonCapture.data_energy_dict},
+                                  'namespace': 'ns_carbon_capture', 'default': CarbonCapture.data_energy_dict,
+                                  'unit': 'defined in dict'},
                }
 
     DESC_IN.update(StreamDiscipline.DESC_IN)
