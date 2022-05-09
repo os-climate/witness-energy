@@ -584,6 +584,8 @@ class Study(EnergyStudyManager):
                 instanced_sub_studies.append(instance_sub_study)
                 dspace_list.append(instance_sub_study.dspace)
             else :
+                # Add an empty study because biomass_dry is not an energy_mix study,
+                # it is integrated in the witness_wo_energy datacase in the agriculture_mix usecase
                 instanced_sub_studies.append(None)
         return values_dict_list, dspace_list,  instanced_sub_studies
 
@@ -596,6 +598,8 @@ class Study(EnergyStudyManager):
             if study_val is not None:
                 self.dict_technos[energy_name] = study_val.technologies_list
             else:
+                # the study_val == None is for the biomass_dry that is taken into account with the agriculture_mix
+                # so it has no dedicated technology in the energy_mix
                 self.dict_technos[energy_name] = []
 
     def setup_usecase(self):

@@ -216,13 +216,15 @@ class Energy_Mix_Discipline(SoSDiscipline):
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_per_use'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            dynamic_inputs[f'{AgricultureMixDiscipline.name}.losses_percentage'] = {
+                                'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy], 'range': [0., 100.], 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
                         else:
                             dynamic_inputs[f'{energy}.CO2_emissions'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh'}
                             dynamic_inputs[f'{energy}.CO2_per_use'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh'}
-                        dynamic_inputs[f'{energy}.losses_percentage'] = {
-                            'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy], 'range': [0., 100.]}
+                            dynamic_inputs[f'{energy}.losses_percentage'] = {
+                                'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy], 'range': [0., 100.]}
 
                 if 'syngas' in energy_list:
                     dynamic_inputs[f'syngas_ratio'] = {
@@ -466,7 +468,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 ns_energy = AgricultureMixDiscipline.name
 
             if energy in energies:
-                loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
+                loss_percentage = inputs_dict[f'{ns_energy}.losses_percentage'] / 100.0
                 # To model raw to net percentage for witness coarse energies
                 if energy in self.energy_model.raw_tonet_dict:
                     loss_percentage += (1.0 -
@@ -672,7 +674,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 dmean_price_dprod = self.compute_dmean_price_dprod(energy, energies, mix_weight, energy_price_after_tax,
                                                                    production_energy_net_pos, production_detailed_df)
 
-                loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
+                loss_percentage = inputs_dict[f'{ns_energy}.losses_percentage'] / 100.0
                 # To model raw to net percentage for witness coarse energies
                 if energy in self.energy_model.raw_tonet_dict:
                     loss_percentage += (1.0 -
@@ -772,7 +774,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                     j == f'{energy} ({self.stream_class_dict[energy].unit})' for j in list_columnsenergycons]
 
                 if True in list_index_prod:
-                    loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
+                    loss_percentage = inputs_dict[f'{ns_energy}.losses_percentage'] / 100.0
                     # To model raw to net percentage for witness coarse
                     # energies
                     if energy in self.energy_model.raw_tonet_dict:
