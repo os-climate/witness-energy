@@ -130,7 +130,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                                          1.609999999999991, 1.8399999999999906, 1.7299999999999903,
                                                          1.61999999999999]
                                              })
-    refinery_flue_gas_ratio = np.array([0.12])
+    FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
@@ -142,8 +142,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': refinery_flue_gas_ratio, 'unit': ''}}
+                                        'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)
 

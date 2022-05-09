@@ -20,6 +20,7 @@ from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_
 from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum, get_dsmooth_dvariable
 from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from energy_models.core.ccus.ccus import CCUS
 
 
 class IndependentInvestDiscipline(SoSDiscipline):
@@ -54,9 +55,9 @@ class IndependentInvestDiscipline(SoSDiscipline):
         'invest_sum_ref': {'type': 'float', 'unit': 'G$', 'default': 2., 'user_level': 2, 'visibility': 'Shared',
                            'namespace': 'ns_ref'},
         'invest_constraint_ref': {'type': 'float', 'unit': 'G$', 'default': 80.0, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
-        'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list, 'default': EnergyMix.energy_list,
+        'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
-        'ccs_list': {'type': 'string_list', 'possible_values': EnergyMix.ccs_list, 'default': EnergyMix.ccs_list,
+        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
         'invest_limit_ref': {'type': 'float', 'default': 300., 'unit': 'G$', 'user_level': 2, 'visibility': 'Shared',
                              'namespace': 'ns_ref'},
