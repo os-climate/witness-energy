@@ -39,7 +39,7 @@ class BioDieselDiscipline(EnergyDiscipline):
                                      'default': BioDiesel.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_biodiesel', 'structuring': True},
-               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'unit': 'defined in dict',
                                           'namespace': 'ns_biodiesel', 'default':  BioDiesel.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
