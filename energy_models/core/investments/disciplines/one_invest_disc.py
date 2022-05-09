@@ -16,6 +16,7 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
     TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from energy_models.core.ccus.ccus import CCUS
 
 
 class OneInvestDiscipline(SoSDiscipline):
@@ -46,9 +47,9 @@ class OneInvestDiscipline(SoSDiscipline):
         'invest_mix': {'type': 'dataframe',
                        'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
                        'dataframe_edition_locked': False},
-        'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list, 'default': EnergyMix.energy_list,
+        'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
-        'ccs_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list, 'default': EnergyMix.energy_list,
+        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
         # WIP is_dev to remove once its validated on dev processes
         'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}
