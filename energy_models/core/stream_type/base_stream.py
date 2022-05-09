@@ -24,7 +24,7 @@ class BaseStream:
     """
     name = ''
     unit = ''
-
+    default_techno_list = []
     # If the prod_element is negligible do not take into account this element
     # It is negligible if min_prod = 10-3 TWh
     min_prod = 1.0e-3

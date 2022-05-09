@@ -18,6 +18,7 @@ from energy_models.core.stream_type.energy_type import EnergyType
 
 class BiomassDry(EnergyType):
     name = 'biomass_dry'
+    default_techno_list = ['ManagedWood', 'UnmanagedWood', 'CropEnergy']
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # Raffa, D.W., Bogdanski, A. and Tittonell, P., 2015.

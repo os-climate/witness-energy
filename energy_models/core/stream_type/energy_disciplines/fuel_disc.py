@@ -59,7 +59,7 @@ class FuelDiscipline(SoSDiscipline):
                'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
                'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-               'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
+               'energy_list': {'type': 'string_list', 'default': EnergyMix.energy_list, 'possible_values': EnergyMix.energy_list,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
                }
 

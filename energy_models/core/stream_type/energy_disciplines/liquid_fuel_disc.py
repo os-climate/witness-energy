@@ -34,9 +34,8 @@ class LiquidFuelDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['AlcoholToFuel', 'BioFuel',
-                                                                                'EOR', 'Refinery', 'HEFA',
-                                                                                'FischerTropsch'],
+    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': LiquidFuel.default_techno_list,
+                                     'default': LiquidFuel.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_liquid_fuel',
                                      'structuring': True},

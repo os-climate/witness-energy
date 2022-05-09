@@ -46,7 +46,7 @@ class CCUS_Discipline(SoSDiscipline):
     }
 
     DESC_IN = {
-        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
+        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list, 'default': CCUS.ccs_list,
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,

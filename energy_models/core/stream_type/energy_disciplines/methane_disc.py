@@ -33,9 +33,10 @@ class MethaneDiscipline(EnergyDiscipline):
         'icon': 'fas fa-bong fa-fw',
         'version': '',
     }
-      # -- add specific techno inputs to this
+    # -- add specific techno inputs to this
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['Methanation', 'UpgradingBiogas', 'FossilGas'],
+    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': Methane.default_techno_list,
+                                     'default': Methane.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_methane', 'structuring': True
                                      },
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,

@@ -82,8 +82,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
     DESC_IN = {'energy_list': {'type': 'string_list', 'default': EnergyMix.energy_list, 'possible_values': EnergyMix.energy_list,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
-               'ccs_list': {'type': 'string_list', 'possible_values': [CarbonCapture.name, CarbonStorage.name],
-                            'default': [CarbonCapture.name, CarbonStorage.name],
+               'ccs_list': {'type': 'string_list', 'possible_values': EnergyMix.ccs_list,
+                            'default': EnergyMix.ccs_list,
                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
                'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,

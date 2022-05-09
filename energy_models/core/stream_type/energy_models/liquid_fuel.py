@@ -19,7 +19,9 @@ from energy_models.core.stream_type.energy_type import EnergyType
 class LiquidFuel(EnergyType):
     name = 'fuel.liquid_fuel'
     short_name = 'liquid_fuel'
-
+    default_techno_list = ['AlcoholToFuel', 'BioFuel',
+                           'EOR', 'Refinery', 'HEFA',
+                           'FischerTropsch']
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # ICAO, Carbon Calculator, 2017, CO2 per kg combustion = 3.16

@@ -21,7 +21,7 @@ class BioDiesel(EnergyType):
     # fatty acid methyl esters (FAME).
     name = 'fuel.biodiesel'
     short_name = 'biodiesel'
-
+    default_techno_list = ['Transesterification']
     data_energy_dict = {'maturity': 5,
 
                         # Coronado, C.R., de Carvalho Jr, J.A. and Silveira, J.L., 2009.

@@ -19,6 +19,8 @@ from energy_models.core.stream_type.energy_type import EnergyType
 class GaseousHydrogen(EnergyType):
     name = 'hydrogen' + '.' + 'gaseous_hydrogen'
     short_name = 'gaseous_hydrogen'
+    default_techno_list = ['Electrolysis.PEM', 'Electrolysis.AWE',
+                           'Electrolysis.SOEC', 'WaterGasShift', 'PlasmaCracking']
     data_energy_dict = {'maturity': 10,
                         'WACC': 0.1,
                         'NOx_per_energy': 7.0,
