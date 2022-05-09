@@ -106,7 +106,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                                          0., 2.20329743, 5.97672626, 5.34205629, 6.07448349,
                                                          8.28981257, 5.90002444, 3.60348166, 1.6724005, 4.1584419,
                                                          3.15379843, 1.19113417, 1.70548756, 4.65474781]})  # to review
-    ft_flue_gas_ratio = np.array([0.12])
+    FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
@@ -128,8 +128,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                'syngas.data_fuel_dict': {'type': 'dict',
                                          'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY,
                                          'namespace': 'ns_energy',
-                                         'default': Syngas.data_energy_dict},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': ft_flue_gas_ratio, 'unit': ''}
+                                         'default': Syngas.data_energy_dict}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)

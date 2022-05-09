@@ -86,7 +86,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                                                   5.609159099363739, 6.3782076592711885, 8.704303197679629,
                                                                   6.1950256610618135, 3.7836557445596464, 1.7560205289962763,
                                                                   ]) + 0.82141})
-    coal_gas_flue_gas_ratio = np.array([0.13])
+    FLUE_GAS_RATIO = np.array([0.13])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
@@ -95,8 +95,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': coal_gas_flue_gas_ratio, 'unit': ''}}
+                                        'dataframe_edition_locked': False}}
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 

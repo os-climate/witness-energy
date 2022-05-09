@@ -85,7 +85,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
 
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 31.2, 31.2]})
-    fg_flue_gas_ratio = np.array([0.085])
+    FLUE_GAS_RATIO = np.array([0.085])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
@@ -94,8 +94,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': fg_flue_gas_ratio, 'unit': ''}}
+                                        'dataframe_edition_locked': False}}
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
 

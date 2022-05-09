@@ -80,10 +80,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
     loss_percentage_default_dict['fuel.liquid_fuel'] = 90.15 / \
         RefineryDiscipline.initial_production * 100.0
 
-    DESC_IN = {'energy_list': {'type': 'string_list', 'default': EnergyMix.energy_list, 'possible_values': EnergyMix.energy_list,
+    DESC_IN = {'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
                'ccs_list': {'type': 'string_list', 'possible_values': EnergyMix.ccs_list,
-                            'default': EnergyMix.ccs_list,
                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
                'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
