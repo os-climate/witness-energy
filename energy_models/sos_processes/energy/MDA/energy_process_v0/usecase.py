@@ -490,25 +490,26 @@ class Study(EnergyStudyManager):
         norm_ccs_mix = ccs_mix.drop(
             'years', axis=1).sum(axis=1)
         for study in instanciated_studies:
-            invest_techno = study.get_investments()
-            if 'years' in invest_techno.columns:
-                norm_techno_mix = invest_techno.drop(
-                    'years', axis=1).sum(axis=1)
-            else:
-                norm_techno_mix = invest_techno.sum(axis=1)
-            energy = study.energy_name
-            if energy in energy_mix.columns:
-                mix_energy = energy_mix[energy].values / norm_energy_mix * \
-                    (100.0 - ccs_percentage_array) / 100.0
-            elif energy in ccs_mix.columns:
-                mix_energy = ccs_mix[energy].values / norm_ccs_mix * \
-                    ccs_percentage_array / 100.0
-            else:
-                raise Exception(f'{energy} not in investment_mixes')
-            for techno in invest_techno.columns:
-                if techno != 'years':
-                    invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values * \
-                        mix_energy / norm_techno_mix
+            if study is not None:
+                invest_techno = study.get_investments()
+                if 'years' in invest_techno.columns:
+                    norm_techno_mix = invest_techno.drop(
+                        'years', axis=1).sum(axis=1)
+                else:
+                    norm_techno_mix = invest_techno.sum(axis=1)
+                energy = study.energy_name
+                if energy in energy_mix.columns:
+                    mix_energy = energy_mix[energy].values / norm_energy_mix * \
+                        (100.0 - ccs_percentage_array) / 100.0
+                elif energy in ccs_mix.columns:
+                    mix_energy = ccs_mix[energy].values / norm_ccs_mix * \
+                        ccs_percentage_array / 100.0
+                else:
+                    raise Exception(f'{energy} not in investment_mixes')
+                for techno in invest_techno.columns:
+                    if techno != 'years':
+                        invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values * \
+                            mix_energy / norm_techno_mix
 
         return invest_mix_df
 
@@ -582,6 +583,8 @@ class Study(EnergyStudyManager):
                 values_dict_list.extend(data_dict)
                 instanced_sub_studies.append(instance_sub_study)
                 dspace_list.append(instance_sub_study.dspace)
+            else :
+                instanced_sub_studies.append(None)
         return values_dict_list, dspace_list,  instanced_sub_studies
 
     def create_technolist_per_energy(self, instanciated_studies):
@@ -590,7 +593,10 @@ class Study(EnergyStudyManager):
             zip(self.energy_list + self.ccs_list, instanciated_studies))
 
         for energy_name, study_val in dict_studies.items():
-            self.dict_technos[energy_name] = study_val.technologies_list
+            if study_val is not None:
+                self.dict_technos[energy_name] = study_val.technologies_list
+            else:
+                self.dict_technos[energy_name] = []
 
     def setup_usecase(self):
 
