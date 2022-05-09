@@ -35,8 +35,8 @@ class GaseousHydrogenDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {'technologies_list': {'type': 'string_list',
-                                     'possible_values': ['Electrolysis.PEM', 'Electrolysis.AWE',
-                                                         'Electrolysis.SOEC', 'WaterGasShift', 'PlasmaCracking'],
+                                     'possible_values': GaseousHydrogen.default_techno_list,
+                                     'default': GaseousHydrogen.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_hydrogen',
                                      'structuring': True},

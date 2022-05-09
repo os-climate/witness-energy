@@ -34,7 +34,8 @@ class SolidFuelDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['CoalExtraction', 'Pelletizing'],
+    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': SolidFuel.default_techno_list,
+                                     'default': SolidFuel.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_solid_fuel',
                                      'structuring': True},

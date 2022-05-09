@@ -28,7 +28,7 @@ class SolidFuel(EnergyType):
     '''
     name = 'solid_fuel'
     ironsteel_use_part = 627 * 11.63 / (44000 - 24000)
-
+    default_techno_list = ['CoalExtraction', 'Pelletizing']
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # Engineering ToolBox, (2009).

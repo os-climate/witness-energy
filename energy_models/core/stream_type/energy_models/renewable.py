@@ -18,7 +18,7 @@ from energy_models.core.stream_type.energy_type import EnergyType
 
 class Renewable(EnergyType):
     name = 'renewable'
-
+    default_techno_list = ['RenewableSimpleTechno']
     net_production = 25385.78  # TWh
     raw_production = 31552.17  # TWh
     raw_to_net_production = net_production / raw_production

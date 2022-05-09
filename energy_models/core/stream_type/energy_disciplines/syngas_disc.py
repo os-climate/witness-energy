@@ -40,15 +40,16 @@ class SyngasDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': [
-        'Pyrolysis', 'SMR', 'AutothermalReforming', 'CoElectrolysis', 'BiomassGasification', 'CoalGasification'],
-        'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas', 'structuring': True},
+    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': Syngas.default_techno_list,
+                                     'default': Syngas.default_techno_list,
+                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                     'namespace': 'ns_syngas', 'structuring': True},
 
-        'data_fuel_dict': {'type': 'dict',
-                           'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                           'namespace': 'ns_syngas',
-                           'default': Syngas.data_energy_dict},
-    }
+               'data_fuel_dict': {'type': 'dict',
+                                  'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                  'namespace': 'ns_syngas',
+                                  'default': Syngas.data_energy_dict},
+               }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
     energy_name = Syngas.name

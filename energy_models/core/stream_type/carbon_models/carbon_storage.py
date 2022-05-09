@@ -20,7 +20,11 @@ from energy_models.core.stream_type.base_stream import BaseStream
 class CarbonStorage(BaseStream):
     name = 'carbon_storage'
     unit = 'Mt'
-
+    default_techno_list = ['BiomassBuryingFossilization', 'DeepOceanInjection',
+                           'DeepSalineFormation', 'DepletedOilGas',
+                           'EnhancedOilRecovery', 'GeologicMineralization',
+                           'PureCarbonSolidStorage', 'Reforestation',
+                           'CarbonStorageTechno']
     # Data dict from CO2 dioxyde
     data_energy_dict = {'maturity': 5,
                         'density': 1.98,
