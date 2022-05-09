@@ -20,6 +20,7 @@ from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_
 from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum, get_dsmooth_dvariable
 from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from energy_models.core.ccus.ccus import CCUS
 
 
 class IndependentInvestDiscipline(SoSDiscipline):
@@ -56,7 +57,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
         'invest_constraint_ref': {'type': 'float', 'unit': 'G$', 'default': 80.0, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
         'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
-        'ccs_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
+        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
         'invest_limit_ref': {'type': 'float', 'default': 300., 'unit': 'G$', 'user_level': 2, 'visibility': 'Shared',
                              'namespace': 'ns_ref'},
@@ -98,22 +99,24 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 for energy in energy_list:
                     if energy == BiomassDry.name and is_dev == True:
                         dynamic_inputs['managed_wood_investment'] = {
-                                'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
-                                'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
-                                'namespace': 'ns_forest', 'dataframe_edition_locked': False}
+                            'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
+                            'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                            'namespace': 'ns_forest', 'dataframe_edition_locked': False}
                         dynamic_inputs['unmanaged_wood_investment'] = {
-                                'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
-                                'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
-                                'namespace': 'ns_forest', 'dataframe_edition_locked': False}
+                            'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
+                            'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                            'namespace': 'ns_forest', 'dataframe_edition_locked': False}
                         dynamic_inputs['crop_investment'] = {
-                                'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 
-                                'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
-                                'namespace': 'ns_crop', 'dataframe_edition_locked': False}
+                            'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
+                            'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                            'namespace': 'ns_crop', 'dataframe_edition_locked': False}
                     else:
                         # Add technologies_list to inputs
                         dynamic_inputs[f'{energy}.technologies_list'] = {
                             'type': 'string_list', 'structuring': True,
-                                    'visibility': 'Shared', 'namespace': 'ns_energy'}
+                                    'visibility': 'Shared', 'namespace': 'ns_energy',
+                                    'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
+                                    'default': EnergyMix.stream_class_dict[energy].default_techno_list}
                         # Add all invest_level outputs
                         if f'{energy}.technologies_list' in self._data_in:
                             technology_list = self.get_sosdisc_inputs(
@@ -130,7 +133,9 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 for ccs in ccs_list:
                     # Add technologies_list to inputs
                     dynamic_inputs[f'{ccs}.technologies_list'] = {
-                        'type': 'string_list', 'structuring': True, 'visibility': 'Shared', 'namespace': 'ns_ccs'}
+                        'type': 'string_list', 'structuring': True, 'visibility': 'Shared', 'namespace': 'ns_ccs',
+                        'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
+                        'default': EnergyMix.stream_class_dict[ccs].default_techno_list}
                     # Add all invest_level outputs
                     if f'{ccs}.technologies_list' in self._data_in:
                         technology_list = self.get_sosdisc_inputs(
@@ -164,7 +169,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
             else:
                 for techno in input_dict[f'{energy}.technologies_list']:
                     output_dict[f'{energy}.{techno}.invest_level'] = pd.DataFrame({'years': input_dict['energy_investment']['years'].values,
-                                                                                'invest': input_dict['invest_mix'][f'{energy}.{techno}'].values})
+                                                                                   'invest': input_dict['invest_mix'][f'{energy}.{techno}'].values})
 
         self.store_sos_outputs_values(output_dict)
 

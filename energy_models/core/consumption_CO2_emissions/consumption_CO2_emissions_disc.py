@@ -47,7 +47,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
+        'energy_list': {'type': 'string_list',  'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                         'editable': False, 'structuring': True},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -86,14 +86,14 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                 for energy in energy_list:
                     if energy == BiomassDry.name and is_dev == True:
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_per_use'] = {
-                            'type': 'dataframe', 'unit': 'kgCO2/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_consumption'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_production'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
                     else:
                         dynamic_inputs[f'{energy}.CO2_per_use'] = {
-                            'type': 'dataframe', 'unit': 'kgCO2/kWh',
+                            'type': 'dataframe', 'unit': 'kg/kWh',
                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
                             'namespace': 'ns_energy'}
                         dynamic_inputs[f'{energy}.energy_consumption'] = {

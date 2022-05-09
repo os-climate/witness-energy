@@ -33,9 +33,10 @@ class BiogasDiscipline(EnergyDiscipline):
         'icon': 'fas fa-burn fa-fw',
         'version': '',
     }
-      # -- add specific techno inputs to this
+    # -- add specific techno inputs to this
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['AnaerobicDigestion'],
+    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': BioGas.default_techno_list,
+                                     'default': BioGas.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_biogas', 'structuring': True},
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_biogas', 'default': BioGas.data_energy_dict},

@@ -24,7 +24,12 @@ class CarbonCapture(BaseStream):
     name = 'carbon_capture'
     flue_gas_name = 'CO2 from Flue Gas'
     unit = 'Mt'
-
+    default_techno_list = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
+                           'direct_air_capture.DirectAirCaptureTechno',
+                           'flue_gas_capture.CalciumLooping', 'flue_gas_capture.ChilledAmmoniaProcess',
+                           'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine',
+                           'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption',
+                           'flue_gas_capture.FlueGasTechno']
     # Data dict from CO2 dioxyde
     data_energy_dict = {'maturity': 5,
                         'density': 1.98,

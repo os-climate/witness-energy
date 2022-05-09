@@ -35,7 +35,8 @@ class HydrotreatedOilFuelDiscipline(EnergyDiscipline):
     }
     # -- add specific techno inputs to this
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['HefaDecarboxylation', 'HefaDeoxygenation'],
+    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': HydrotreatedOilFuel.default_techno_list,
+                                     'default': HydrotreatedOilFuel.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_hydrotreated_oil_fuel',
                                      'structuring': True},

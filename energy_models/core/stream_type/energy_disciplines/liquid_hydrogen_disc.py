@@ -34,7 +34,8 @@ class LiquidHydrogenDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['HydrogenLiquefaction'],
+    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': LiquidHydrogen.default_techno_list,
+                                     'default': LiquidHydrogen.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_liquid_hydrogen',
                                      'structuring': True},

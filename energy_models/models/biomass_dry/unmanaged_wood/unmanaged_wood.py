@@ -193,7 +193,7 @@ class UnmanagedWood(BiomassDryTechno):
         self.age_distrib_prod_df['age_x_prod'] = self.age_distrib_prod_df['age'] * \
             self.age_distrib_prod_df[f'distrib_prod ({self.product_energy_unit})']
 
-        production = self.production[f'{self.energy_name} ({self.product_energy_unit})']
+        production = self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})']
 
         # compute production for non energy at year start with percentages
         residue_year_start_production = production[0] * self.techno_infos_dict['residue_density_percentage'] * \

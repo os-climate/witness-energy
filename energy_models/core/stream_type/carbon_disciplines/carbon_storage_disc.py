@@ -39,11 +39,8 @@ class CarbonStorageDiscipline(StreamDiscipline):
     }
 
     DESC_IN = {'technologies_list': {'type': 'string_list',
-                                     'possible_values': ['BiomassBuryingFossilization', 'DeepOceanInjection',
-                                                         'DeepSalineFormation', 'DepletedOilGas',
-                                                         'EnhancedOilRecovery', 'GeologicMineralization',
-                                                         'PureCarbonSolidStorage', 'Reforestation',
-                                                         'CarbonStorageTechno'],
+                                     'possible_values': CarbonStorage.default_techno_list,
+                                     'default': CarbonStorage.default_techno_list,
                                      'visibility': StreamDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_carbon_storage', 'structuring': True},
                'data_fuel_dict': {'type': 'dict', 'visibility': StreamDiscipline.SHARED_VISIBILITY,

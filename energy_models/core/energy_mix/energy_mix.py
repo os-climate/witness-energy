@@ -88,6 +88,7 @@ class EnergyMix(BaseStream):
 
     stream_class_dict = {CarbonCapture.name: CarbonCapture,
                          CarbonStorage.name: CarbonStorage, }
+    ccs_list = list(stream_class_dict.keys())
     stream_class_dict.update(energy_class_dict)
 
     energy_list = list(stream_class_dict.keys())
@@ -220,9 +221,9 @@ class EnergyMix(BaseStream):
                         inputs_dict[f'{energy}.energy_consumption'][f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                         self.scaling_factor_energy_consumption
                     self.resources_demand_woratio[resource] = self.resources_demand_woratio[resource] + \
-                                                     inputs_dict[f'{energy}.energy_consumption_woratio'][
-                                                         f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
-                                                     self.scaling_factor_energy_consumption
+                        inputs_dict[f'{energy}.energy_consumption_woratio'][
+                        f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
+                        self.scaling_factor_energy_consumption
 
         # DataFrame stream demand
         self.all_streams_demand_ratio = pd.DataFrame(
@@ -539,8 +540,6 @@ class EnergyMix(BaseStream):
                 self.syngas_prod_ref
         else:
             self.syngas_prod_constraint = np.zeros(len(self.years))
-
-
 
     def compute_all_streams_demand_ratio(self):
         '''! Computes the demand_ratio dataframe. 

@@ -35,8 +35,10 @@ class BioDieselDiscipline(EnergyDiscipline):
     }
     # -- add specific techno inputs to this
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['Transesterification'],
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_biodiesel', 'structuring': True},
+    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': BioDiesel.default_techno_list,
+                                     'default': BioDiesel.default_techno_list,
+                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                     'namespace': 'ns_biodiesel', 'structuring': True},
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                           'namespace': 'ns_biodiesel', 'default':  BioDiesel.data_energy_dict},
                }

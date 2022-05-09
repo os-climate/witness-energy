@@ -37,7 +37,8 @@ class BiomassDryDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {'technologies_list': {'type': 'string_list',
-                                     'possible_values': ['ManagedWood', 'UnmanagedWood', 'CropEnergy'],
+                                     'possible_values': BiomassDry.default_techno_list,
+                                     'default': BiomassDry.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_biomass_dry',
                                      'structuring': True},
