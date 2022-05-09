@@ -20,6 +20,10 @@ import pandas as pd
 class Electricity(EnergyType):
     name = 'electricity'
     hydropower_name = 'Hydropower'
+    default_techno_list = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal', 'Hydropower',
+                           'CoalGen', 'OilGen', 'Nuclear', 'CombinedCycleGasTurbine',
+                           'GasTurbine', 'BiogasFired', 'BiomassFired',
+                           'Geothermal', 'RenewableElectricitySimpleTechno', 'RenewableElectricitySimpleTechnoDiscipline']
 
     def configure_parameters(self, inputs_dict):
         '''

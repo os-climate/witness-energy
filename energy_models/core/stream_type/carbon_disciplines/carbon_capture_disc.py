@@ -39,12 +39,8 @@ class CarbonCaptureDiscipline(StreamDiscipline):
     }
 
     DESC_IN = {'technologies_list': {'type': 'string_list',
-                                     'possible_values': ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
-                                                         'direct_air_capture.DirectAirCaptureTechno',
-                                                         'flue_gas_capture.CalciumLooping', 'flue_gas_capture.ChilledAmmoniaProcess',
-                                                         'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine',
-                                                         'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption',
-                                                         'flue_gas_capture.FlueGasTechno'],
+                                     'possible_values': CarbonCapture.default_techno_list,
+                                     'default': CarbonCapture.default_techno_list,
                                      'visibility': StreamDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_carbon_capture', 'structuring': True},
                'flue_gas_production': {'type': 'dataframe',

@@ -23,6 +23,8 @@ import logging
 
 class Syngas(EnergyType):
     name = 'syngas'
+    default_techno_list = ['Pyrolysis', 'SMR', 'AutothermalReforming',
+                           'CoElectrolysis', 'BiomassGasification', 'CoalGasification']
     data_energy_dict = {
         'maturity': 10,
         'WACC': 0.1,

@@ -34,7 +34,8 @@ class FossilDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {'technologies_list': {'type': 'string_list',
-                                     'possible_values': ['FossilSimpleTechno', ],
+                                     'possible_values': Fossil.default_techno_list,
+                                     'default': Fossil.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_fossil',
                                      'structuring': True},

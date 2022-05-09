@@ -45,14 +45,14 @@ class TestIndependentInvest(unittest.TestCase):
         year_range = self.y_e - self.y_s + 1
         dict2 = {}
         dict2['years'] = self.years
-        dict2['electricity.SolarPV'] = np.ones(len(self.years)) * 10.0
+        dict2['electricity.SolarPv'] = np.ones(len(self.years)) * 10.0
         dict2['electricity.WindOnshore'] = np.ones(len(self.years)) * 20.0
         dict2['electricity.CoalGen'] = np.ones(len(self.years)) * 30.0
         dict2['methane.FossilGas'] = np.ones(len(self.years)) * 40.0
         dict2['methane.UpgradingBiogas'] = np.ones(len(self.years)) * 50.0
-        dict2['hydrogen.gaseous_hydrogen.SMR'] = np.ones(
+        dict2['hydrogen.gaseous_hydrogen.WaterGasShift'] = np.ones(
             len(self.years)) * 60.0
-        dict2['hydrogen.gaseous_hydrogen.CoalGasification'] = np.ones(
+        dict2['hydrogen.gaseous_hydrogen.Electrolysis.AWE'] = np.ones(
             len(self.years)) * 70.0
         dict2['carbon_capture.direct_air_capture.AmineScrubbing'] = np.ones(
             len(self.years)) * 80.0
@@ -97,9 +97,9 @@ class TestIndependentInvest(unittest.TestCase):
                        'year_end': self.y_e,
                        'energy_list': self.energy_list,
                        'ccs_list': self.ccs_list,
-                       'electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       'electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        'methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       'hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       'hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        'carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        'carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        'invest_mix': self.energy_mix,
@@ -160,9 +160,9 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.year_end': self.y_e,
                        f'{self.name}.energy_list': self.energy_list,
                        f'{self.name}.ccs_list': self.ccs_list,
-                       f'{self.name}.electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
@@ -223,9 +223,9 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.year_end': self.y_e,
                        f'{self.name}.energy_list': self.energy_list,
                        f'{self.name}.ccs_list': self.ccs_list,
-                       f'{self.name}.electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
@@ -292,10 +292,10 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.year_end': self.y_e,
                        f'{self.name}.energy_list': energy_list,
                        f'{self.name}.ccs_list': self.ccs_list,
-                       f'{self.name}.electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.biomass_dry.technologies_list': [],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        f'{self.name}.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
