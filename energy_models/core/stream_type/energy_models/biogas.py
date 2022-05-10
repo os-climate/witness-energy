@@ -19,6 +19,7 @@ from energy_models.core.stream_type.energy_type import EnergyType
 class BioGas(EnergyType):
     # Bio gas is bioCH4 + CO2
     name = 'biogas'
+    default_techno_list = ['AnaerobicDigestion']
     data_energy_dict = {'maturity': 5,
                         'CH4_per_energy': 0.6,
                         'CH4_per_energy_unit': 'kg/kg',

@@ -70,6 +70,7 @@ class TechnoType:
         self.non_use_capital = None
         self.techno_capital = None
         self.applied_ratio = None
+        self.soft_max_crashed = False
 
     def check_outputs_dict(self, biblio_data):
         '''
@@ -182,6 +183,7 @@ class TechnoType:
             self.all_streams_demand_ratio = inputs_dict['all_streams_demand_ratio']
         if self.is_apply_resource_ratio:
             self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
+        self.soft_max_crashed = False
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -210,9 +212,11 @@ class TechnoType:
         self.is_apply_resource_ratio = inputs_dict['is_apply_resource_ratio']
         self.is_softmax = inputs_dict['is_softmax']
         if self.is_stream_demand:
-            self.all_streams_demand_ratio = inputs_dict[f'all_streams_demand_ratio']
+            self.all_streams_demand_ratio = inputs_dict['all_streams_demand_ratio'].loc[inputs_dict['all_streams_demand_ratio']['years']
+                                                                                        <= self.year_end]
         if self.is_apply_resource_ratio:
             self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
+        self.soft_max_crashed = False
 
     def configure_energy_data(self, inputs_dict):
         '''
@@ -270,8 +274,14 @@ class TechnoType:
                 # smooth_min(smooth_min(x)=-smooth_max(-x)) between all the
                 # matches for each year
                 if self.is_softmax:
-                    ratio_values = - \
-                        soft_maximum_vect(-self.ratio_df[elements].values)
+                    try:
+                        ratio_values = - \
+                            soft_maximum_vect(-self.ratio_df[elements].values)
+                    except:
+                        ratio_values = - \
+                            smooth_maximum_vect(
+                                -self.ratio_df[elements].values)
+                        self.soft_max_crashed = True
                 else:
                     ratio_values = - \
                         smooth_maximum_vect(-self.ratio_df[elements].values)
@@ -804,7 +814,14 @@ class TechnoType:
         else:
             elec_need = 0.0
 
-        return elec_need
+        if 'heat_demand' in self.techno_infos_dict:
+            heat_need = self.check_energy_demand_unit(self.techno_infos_dict['heat_demand_unit'],
+                                                      self.techno_infos_dict['heat_demand'])
+
+        else:
+            heat_need = 0.0
+
+        return elec_need + heat_need
 
     def check_energy_demand_unit(self, energy_demand_unit, energy_demand):
         """
@@ -1125,8 +1142,12 @@ class TechnoType:
         if is_apply_ratio:
             if len(elements) > 0:
                 if self.is_softmax:
-                    dsmooth_matrix = get_dsoft_maximum_vect(
-                        -self.ratio_df[elements].values)
+                    if self.soft_max_crashed:
+                        dsmooth_matrix = get_dsmooth_dvariable_vect(
+                            -self.ratio_df[elements].values)
+                    else:
+                        dsmooth_matrix = get_dsoft_maximum_vect(
+                            -self.ratio_df[elements].values)
                 else:
                     dsmooth_matrix = get_dsmooth_dvariable_vect(
                         -self.ratio_df[elements].values)
@@ -1271,7 +1292,7 @@ class TechnoType:
             self.age_distrib_prod_df[f'distrib_prod ({self.product_energy_unit})']
 
         mean_age_df['mean age'] = self.age_distrib_prod_df.groupby(
-            ['years'], as_index=False).agg({'age_x_prod': 'sum'})['age_x_prod'] / self.production[
+            ['years'], as_index=False).agg({'age_x_prod': 'sum'})['age_x_prod'] / self.production_woratio[
             f'{self.energy_name} ({self.product_energy_unit})']
         mean_age_df.replace([np.inf, -np.inf], np.nan, inplace=True)
         mean_age_df.fillna(0.0, inplace=True)

@@ -23,18 +23,16 @@ from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 def get_static_CO2_emissions(years):
 
-    resources_CO2_emissions = pd.DataFrame()
+    resources_CO2_emissions_dict = {'years': years}
 
-    resources_CO2_emissions['years'] = years
-    for resource in ResourceGlossary.GlossaryDict.keys():
-        resources_CO2_emissions[ResourceGlossary.GlossaryDict[resource]
-                                ['name']] = ResourceGlossary.GlossaryDict[resource]['CO2_emissions']
-
-    return resources_CO2_emissions
+    resources_CO2_emissions_dict.update({ResourceGlossary.GlossaryDict[resource]['name']:
+                                         ResourceGlossary.GlossaryDict[resource]['CO2_emissions'] for resource in ResourceGlossary.GlossaryDict.keys()})
+    return pd.DataFrame(resources_CO2_emissions_dict)
 
 
 def get_static_prices(years):
@@ -47,14 +45,13 @@ def get_static_prices(years):
     func = sc.interp1d(year_co2, price_co2,
                        kind='linear', fill_value='extrapolate')
 
-    resources_prices_default = pd.DataFrame({'years': years,
-                                             ResourceGlossary.GlossaryDict['CO2']['name']: func(years), })
+    resources_prices_default_dict = {'years': years,
+                                     ResourceGlossary.GlossaryDict['CO2']['name']: func(years)}
 
-    for resource in ResourceGlossary.GlossaryDict.keys():
-        resources_prices_default[ResourceGlossary.GlossaryDict[resource]
-                                 ['name']] = ResourceGlossary.GlossaryDict[resource]['price']
+    resources_prices_default_dict.update(
+        {ResourceGlossary.GlossaryDict[resource]['name']: ResourceGlossary.GlossaryDict[resource]['price'] for resource in ResourceGlossary.GlossaryDict.keys()})
 
-    return resources_prices_default
+    return pd.DataFrame(resources_prices_default_dict)
 
 
 class ResourcesDisc(SoSDiscipline):
@@ -77,8 +74,8 @@ class ResourcesDisc(SoSDiscipline):
 
     years = np.arange(year_start_default, year_end_default + 1)
 
-    DESC_IN = {'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'structuring': True},
-               'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'structuring': True},
+    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'resources_price': {'type': 'dataframe', 'unit': '[$/t]',
                                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
                                    'dataframe_edition_locked': False,

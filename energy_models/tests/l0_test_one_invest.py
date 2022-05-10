@@ -42,13 +42,14 @@ class TestOneInvest(unittest.TestCase):
         self.years = np.arange(self.y_s, self.y_e + 1)
         dict2 = {}
         dict2['years'] = self.years
-        dict2['electricity.SolarPV'] = np.ones(len(self.years)) * 0.1
+        dict2['electricity.SolarPv'] = np.ones(len(self.years)) * 0.1
         dict2['electricity.WindOnshore'] = np.ones(len(self.years)) * 0.2
         dict2['electricity.CoalGen'] = np.ones(len(self.years)) * 0.3
         dict2['methane.FossilGas'] = np.ones(len(self.years)) * 0.4
         dict2['methane.UpgradingBiogas'] = np.ones(len(self.years)) * 0.5
-        dict2['hydrogen.gaseous_hydrogen.SMR'] = np.ones(len(self.years)) * 0.6
-        dict2['hydrogen.gaseous_hydrogen.CoalGasification'] = np.ones(
+        dict2['hydrogen.gaseous_hydrogen.WaterGasShift'] = np.ones(
+            len(self.years)) * 0.6
+        dict2['hydrogen.gaseous_hydrogen.Electrolysis.AWE'] = np.ones(
             len(self.years)) * 0.7
         dict2['carbon_capture.direct_air_capture.AmineScrubbing'] = np.ones(
             len(self.years)) * 0.8
@@ -78,14 +79,15 @@ class TestOneInvest(unittest.TestCase):
                        'year_end': self.y_e,
                        'energy_list': self.energy_list,
                        'ccs_list': self.ccs_list,
-                       'electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       'electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        'methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       'hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       'hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        'carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        'carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        'invest_mix': self.energy_mix,
                        'energy_investment': self.energy_investment,
-                       'scaling_factor_energy_investment': scaling_factor_energy_investment}
+                       'scaling_factor_energy_investment': scaling_factor_energy_investment,
+                       'is_dev': False}
         one_invest_model = OneInvest()
         all_invest_df = one_invest_model.compute(inputs_dict)
         norm_mix = self.energy_mix[[
@@ -127,9 +129,9 @@ class TestOneInvest(unittest.TestCase):
                        f'{self.name}.year_end': self.y_e,
                        f'{self.name}.energy_list': self.energy_list,
                        f'{self.name}.ccs_list': self.ccs_list,
-                       f'{self.name}.electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
@@ -172,9 +174,9 @@ class TestOneInvest(unittest.TestCase):
                        f'{self.name}.year_end': self.y_e,
                        f'{self.name}.energy_list': energy_list,
                        f'{self.name}.ccs_list': self.ccs_list,
-                       f'{self.name}.electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        f'{self.name}.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
@@ -191,7 +193,7 @@ class TestOneInvest(unittest.TestCase):
                                                                           f'{self.name}.{self.model_name}.invest_mix'],
                                       outputs=[
             f'{self.name}.{techno}.invest_level' for techno in all_technos_list],
-            dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
+            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_all_invest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")

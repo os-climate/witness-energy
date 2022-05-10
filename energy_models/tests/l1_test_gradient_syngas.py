@@ -148,7 +148,8 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -203,7 +204,8 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -258,7 +260,8 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -310,7 +313,8 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -364,7 +368,8 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -416,7 +421,8 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -468,7 +474,8 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -580,8 +587,8 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{self.model_name}.year_start': 2020,
-                       f'{self.name}.{self.model_name}.year_end': 2050,
+        inputs_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2050,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.technologies_list': ['Pyrolysis', 'SMR', 'AutothermalReforming', 'BiomassGasification', 'CoalGasification', 'CoElectrolysis'],
                        f'{self.name}.{self.model_name}.Pyrolysis.techno_consumption': self.pyrolysis_consumption,
@@ -724,4 +731,4 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = SyngasJacobianTestCase()
     cls.setUp()
-    cls.test_09_generic_syngas_discipline_jacobian()
+    cls.test_01_atr_discipline_jacobian()

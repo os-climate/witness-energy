@@ -134,7 +134,8 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -156,9 +157,9 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level', f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
-                                f'{self.name}.land_surface_for_food_df',
-                                f'{self.name}.CO2_taxes'
-                                ],
+                                    f'{self.name}.land_surface_for_food_df',
+                                    f'{self.name}.CO2_taxes'
+                                    ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
@@ -188,7 +189,8 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -237,7 +239,8 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         np.set_printoptions(threshold=np.inf)
 
-        inputs_dict = {f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,

@@ -58,19 +58,24 @@ class CarbonCaptureTestCase(unittest.TestCase):
 
     def test_01_carbon_capture_discipline(self):
 
-        self.name = 'Test.EnergyMix'
-        self.model_name = 'carbon_capture'
+        self.name = 'Test'
+        ns_study = self.name
+        carbon_capture_name = 'carbon_capture'
+        energy_mix = 'EnergyMix'
+        flue_gas_name = 'flue_gas_capture'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_energy_mix': f'{self.name}',
-                   'ns_flue_gas': f'{self.name}.{self.model_name}.flue_gas_capture',
-                   'ns_carbon_capture': f'{self.name}.{self.model_name}',
-                   'ns_public': f'{self.name}',
-                   'ns_resource': self.name}
+        ns_dict = {'ns_carbon_capture': f'{ns_study}.{energy_mix}.{carbon_capture_name}',
+                   'ns_energy': f'{ns_study}.{energy_mix}',
+                   'ns_energy_study': f'{ns_study}',
+                   'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
+                   'ns_public': f'{ns_study}',
+                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   'ns_resource': f'{ns_study}.{energy_mix}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.stream_type.carbon_disciplines.carbon_capture_disc.CarbonCaptureDiscipline'
         builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+            f'{energy_mix}.{carbon_capture_name}', mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
@@ -83,7 +88,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
+            f'{self.name}.{energy_mix}.{carbon_capture_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
 #         for graph in graph_list:
@@ -91,18 +96,24 @@ class CarbonCaptureTestCase(unittest.TestCase):
 
     def test_02_carbon_capture_analytic_grad(self):
 
-        self.name = 'Test.EnergyMix'
-        self.model_name = 'carbon_capture'
+        self.name = 'Test'
+        ns_study = self.name
+        carbon_capture_name = 'carbon_capture'
+        energy_mix = 'EnergyMix'
+        flue_gas_name = 'flue_gas_capture'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_energy_mix': f'{self.name}',
-                   'ns_flue_gas': f'{self.name}.{self.model_name}.flue_gas_capture',
-                   'ns_carbon_capture': f'{self.name}.{self.model_name}',
-                   'ns_public': f'{self.name}'}
+        ns_dict = {'ns_carbon_capture': f'{ns_study}.{energy_mix}.{carbon_capture_name}',
+                   'ns_energy': f'{ns_study}.{energy_mix}',
+                   'ns_energy_study': f'{ns_study}',
+                   'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
+                   'ns_public': f'{ns_study}',
+                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   'ns_resource': f'{ns_study}.{energy_mix}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.stream_type.carbon_disciplines.carbon_capture_disc.CarbonCaptureDiscipline'
         builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+            f'{energy_mix}.{carbon_capture_name}', mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
@@ -121,7 +132,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
                        for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
         succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys,
                                              outputs=output_keys,
-                                             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                             dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                                 f'jacobian_carbon_capture_discipline.pkl'))
 
         self.assertTrue(
@@ -129,18 +140,24 @@ class CarbonCaptureTestCase(unittest.TestCase):
 
     def test_03_carbon_capture_discipline_limited(self):
 
-        self.name = 'Test.EnergyMix'
-        self.model_name = 'carbon_capture'
+        self.name = 'Test'
+        ns_study = self.name
+        carbon_capture_name = 'carbon_capture'
+        energy_mix = 'EnergyMix'
+        flue_gas_name = 'flue_gas_capture'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_energy_mix': f'{self.name}',
-                   'ns_flue_gas': f'{self.name}.{self.model_name}.flue_gas_capture',
-                   'ns_carbon_capture': f'{self.name}.{self.model_name}',
-                   'ns_public': f'{self.name}'}
+        ns_dict = {'ns_carbon_capture': f'{ns_study}.{energy_mix}.{carbon_capture_name}',
+                   'ns_energy': f'{ns_study}.{energy_mix}',
+                   'ns_energy_study': f'{ns_study}',
+                   'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
+                   'ns_public': f'{ns_study}',
+                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   'ns_resource': f'{ns_study}.{energy_mix}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.stream_type.carbon_disciplines.carbon_capture_disc.CarbonCaptureDiscipline'
         builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+            f'{energy_mix}.{carbon_capture_name}', mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
@@ -156,7 +173,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
+            f'{self.name}.{energy_mix}.{carbon_capture_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
 #         for graph in graph_list:
@@ -164,18 +181,24 @@ class CarbonCaptureTestCase(unittest.TestCase):
 
     def test_04_carbon_capture_analytic_grad_limited(self):
 
-        self.name = 'Test.EnergyMix'
-        self.model_name = 'carbon_capture'
+        self.name = 'Test'
+        ns_study = self.name
+        carbon_capture_name = 'carbon_capture'
+        energy_mix = 'EnergyMix'
+        flue_gas_name = 'flue_gas_capture'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_energy_mix': f'{self.name}',
-                   'ns_flue_gas': f'{self.name}.{self.model_name}.flue_gas_capture',
-                   'ns_carbon_capture': f'{self.name}.{self.model_name}',
-                   'ns_public': f'{self.name}'}
+        ns_dict = {'ns_carbon_capture': f'{ns_study}.{energy_mix}.{carbon_capture_name}',
+                   'ns_energy': f'{ns_study}.{energy_mix}',
+                   'ns_energy_study': f'{ns_study}',
+                   'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
+                   'ns_public': f'{ns_study}',
+                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   'ns_resource': f'{ns_study}.{energy_mix}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.stream_type.carbon_disciplines.carbon_capture_disc.CarbonCaptureDiscipline'
         builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+            f'{energy_mix}.{carbon_capture_name}', mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
@@ -197,7 +220,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
                        for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
         succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys,
                                              outputs=output_keys,
-                                             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                             dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                                 f'jacobian_carbon_capture_discipline_limited.pkl'))
 
         self.assertTrue(
@@ -207,4 +230,4 @@ class CarbonCaptureTestCase(unittest.TestCase):
 if '__main__' == __name__:
     cls = CarbonCaptureTestCase()
     cls.setUp()
-    cls.test_04_carbon_capture_analytic_grad_limited()
+    cls.test_01_carbon_capture_discipline()

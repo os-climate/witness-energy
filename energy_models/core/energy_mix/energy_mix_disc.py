@@ -45,6 +45,7 @@ from sos_trades_core.tools.cst_manager.func_manager_common import get_dsmooth_dv
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class Energy_Mix_Discipline(SoSDiscipline):
@@ -79,13 +80,12 @@ class Energy_Mix_Discipline(SoSDiscipline):
     loss_percentage_default_dict['fuel.liquid_fuel'] = 90.15 / \
         RefineryDiscipline.initial_production * 100.0
 
-    DESC_IN = {'energy_list': {'type': 'string_list', 'default': EnergyMix.energy_list, 'possible_values': EnergyMix.energy_list,
+    DESC_IN = {'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
-               'ccs_list': {'type': 'string_list', 'possible_values': [CarbonCapture.name, CarbonStorage.name],
-                            'default': [CarbonCapture.name, CarbonStorage.name],
+               'ccs_list': {'type': 'string_list', 'possible_values': EnergyMix.ccs_list,
                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
-               'year_start': {'type': 'int', 'default': 2020, 'unit': 'year', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'year_end': {'type': 'int', 'default': 2050, 'unit': 'year', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+               'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
                'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'normalization_value_demand_constraints': {'type': 'float', 'default': 1000.0, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
@@ -125,9 +125,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
         'energy_mix': {'type': 'dataframe', 'unit': '%'},
         'energy_prices_after_tax': {'type': 'dataframe', 'unit': '$/MWh'},
         'energy_production_objective': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
-        'primary_energies_production': {'type': 'dataframe', 'unit': 'Twh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'primary_energies_production': {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'land_demand_df': {'type': 'dataframe', 'unit': 'Gha'},
-        'energy_mean_price': {'type': 'dataframe', 'unit': '$/Mwh'},
+        'energy_mean_price': {'type': 'dataframe', 'unit': '$/MWh'},
         'production_energy_net_positive': {'type': 'dataframe', 'unit': 'TWh'},
         EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: {
             'type': 'dataframe', 'unit': 'TWh',
@@ -147,8 +147,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
                                            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'all_streams_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
-        'resources_demand': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
-        'resources_demand_woratio': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+        'resources_demand': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource', 'unit': 'Mt'},
+        'resources_demand_woratio': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource', 'unit': 'Mt'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
 
     }
@@ -213,20 +213,20 @@ class Energy_Mix_Discipline(SoSDiscipline):
                             'namespace': 'ns_energy_mix', 'default':  self.energy_class_dict[energy].data_energy_dict}
                         if energy == BiomassDry.name and is_dev == True:
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_emissions'] = {
-                                'type': 'dataframe', 'unit': 'kgCO2/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                                'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_per_use'] = {
-                                'type': 'dataframe', 'unit': 'kgCO2/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                                'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
                         else:
                             dynamic_inputs[f'{energy}.CO2_emissions'] = {
-                                'type': 'dataframe', 'unit': 'kgCO2/kWh'}
+                                'type': 'dataframe', 'unit': 'kg/kWh'}
                             dynamic_inputs[f'{energy}.CO2_per_use'] = {
-                                'type': 'dataframe', 'unit': 'kgCO2/kWh'}
+                                'type': 'dataframe', 'unit': 'kg/kWh'}
                         dynamic_inputs[f'{energy}.losses_percentage'] = {
                             'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy], 'range': [0., 100.]}
 
                 if 'syngas' in energy_list:
                     dynamic_inputs[f'syngas_ratio'] = {
-                        'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'}
+                        'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas', 'unit': '%'}
 
             if 'ccs_list' in self._data_in:
                 ccs_list = self.get_sosdisc_inputs('ccs_list')
@@ -957,7 +957,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         energy_cons_limited = compute_func_with_exp_min(
             energy_consumption, 1.0e-10)
         ddemand_ratio_denergy_prod = np.identity(len(years)) * 100.0 *\
-            np.where((energy_prod_limited <= energy_cons_limited) * (energy_prod_limited/energy_cons_limited>1E-15),
+            np.where((energy_prod_limited <= energy_cons_limited) * (energy_prod_limited / energy_cons_limited > 1E-15),
                      scaling_factor_production * denergy_prod_limited / energy_cons_limited,
                      0.0)
 
@@ -968,7 +968,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         energy_cons_limited = compute_func_with_exp_min(
             energy_consumption, 1.0e-10)
         ddemand_ratio_denergy_cons = np.identity(len(years)) * 100.0 *\
-            np.where((energy_prod_limited <= energy_cons_limited) * (energy_prod_limited/energy_cons_limited>1E-15),
+            np.where((energy_prod_limited <= energy_cons_limited) * (energy_prod_limited / energy_cons_limited > 1E-15),
                      -scaling_factor_production * energy_prod_limited * denergy_cons_limited /
                      energy_cons_limited**2,
                      0.0)

@@ -45,14 +45,14 @@ class TestIndependentInvest(unittest.TestCase):
         year_range = self.y_e - self.y_s + 1
         dict2 = {}
         dict2['years'] = self.years
-        dict2['electricity.SolarPV'] = np.ones(len(self.years)) * 10.0
+        dict2['electricity.SolarPv'] = np.ones(len(self.years)) * 10.0
         dict2['electricity.WindOnshore'] = np.ones(len(self.years)) * 20.0
         dict2['electricity.CoalGen'] = np.ones(len(self.years)) * 30.0
         dict2['methane.FossilGas'] = np.ones(len(self.years)) * 40.0
         dict2['methane.UpgradingBiogas'] = np.ones(len(self.years)) * 50.0
-        dict2['hydrogen.gaseous_hydrogen.SMR'] = np.ones(
+        dict2['hydrogen.gaseous_hydrogen.WaterGasShift'] = np.ones(
             len(self.years)) * 60.0
-        dict2['hydrogen.gaseous_hydrogen.CoalGasification'] = np.ones(
+        dict2['hydrogen.gaseous_hydrogen.Electrolysis.AWE'] = np.ones(
             len(self.years)) * 70.0
         dict2['carbon_capture.direct_air_capture.AmineScrubbing'] = np.ones(
             len(self.years)) * 80.0
@@ -97,9 +97,9 @@ class TestIndependentInvest(unittest.TestCase):
                        'year_end': self.y_e,
                        'energy_list': self.energy_list,
                        'ccs_list': self.ccs_list,
-                       'electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       'electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        'methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       'hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       'hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        'carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        'carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        'invest_mix': self.energy_mix,
@@ -112,10 +112,10 @@ class TestIndependentInvest(unittest.TestCase):
                        'invest_sum_ref': 2.,
                        'invest_limit_ref': 300.}
         one_invest_model = IndependentInvest()
-        invest_constraint, invest_objective, invest_objective_sum, invest_objective_cons, invest_objective_cons_dc = one_invest_model.compute_invest_constraint_and_objective(
+        invest_constraint, invest_objective, invest_objective_sum, invest_objective_cons, invest_objective_cons_dc, delta_sum_eq_cons = one_invest_model.compute_invest_constraint_and_objective(
             inputs_dict)
 
-        delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment  -
+        delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment -
                  self.energy_mix[one_invest_model.distribution_list].sum(
             axis=1).values - self.forest_invest_df['forest_investment'].values) / (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment)
         abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
@@ -160,9 +160,9 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.year_end': self.y_e,
                        f'{self.name}.energy_list': self.energy_list,
                        f'{self.name}.ccs_list': self.ccs_list,
-                       f'{self.name}.electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
@@ -223,9 +223,9 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.year_end': self.y_e,
                        f'{self.name}.energy_list': self.energy_list,
                        f'{self.name}.ccs_list': self.ccs_list,
-                       f'{self.name}.electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
@@ -273,6 +273,8 @@ class TestIndependentInvest(unittest.TestCase):
                    'ns_ccs': f'{self.name}',
                    'ns_functions': self.name,
                    'ns_invest': self.name,
+                   'ns_crop': self.name,
+                   'ns_forest': self.name
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -284,15 +286,16 @@ class TestIndependentInvest(unittest.TestCase):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        energy_list = ['electricity', 'methane', 'hydrogen.gaseous_hydrogen', 'biomass_dry']
+        energy_list = ['electricity', 'methane',
+                       'hydrogen.gaseous_hydrogen', 'biomass_dry']
         inputs_dict = {f'{self.name}.year_start': self.y_s,
                        f'{self.name}.year_end': self.y_e,
                        f'{self.name}.energy_list': energy_list,
                        f'{self.name}.ccs_list': self.ccs_list,
-                       f'{self.name}.electricity.technologies_list': ['SolarPV', 'WindOnshore', 'CoalGen'],
+                       f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.biomass_dry.technologies_list': [],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['SMR', 'CoalGasification'],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        f'{self.name}.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
@@ -315,9 +318,10 @@ class TestIndependentInvest(unittest.TestCase):
                                                                           f'{self.name}.crop_investment'],
                                       outputs=[
             f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective',
-                                                                                    f'{self.name}.invest_objective_sum' ,
+                                                                                    f'{self.name}.invest_objective_sum',
                                                                                     f'{self.name}.invest_sum_cons',
-                                                                                    f'{self.name}.invest_sum_cons_dc'],
+                                                                                    f'{self.name}.invest_sum_cons_dc',
+                                                                                    f'{self.name}.invest_sum_eq_cons'],
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
@@ -328,4 +332,4 @@ if '__main__' == __name__:
 
     cls = TestIndependentInvest()
     cls.setUp()
-    cls.test_03_independent_invest_disc_check_jacobian()
+    cls.test_01_independent_invest_model()

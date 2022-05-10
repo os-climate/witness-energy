@@ -40,7 +40,7 @@ class OilGenPriceTestCase(unittest.TestCase):
         Initialize third data needed for testing
         '''
         liquid_fuel_price = np.array(
-            [91] * 31)
+            [40] * 31)
         years = np.arange(2020, 2051)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -77,7 +77,7 @@ class OilGenPriceTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {'years': years, 'CO2_tax': 0.0})
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
 
@@ -209,7 +209,8 @@ class OilGenPriceTestCase(unittest.TestCase):
             traceback.print_exc()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
                        f'{self.name}.CO2_taxes': self.co2_taxes,

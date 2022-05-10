@@ -26,6 +26,7 @@ from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonSt
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from energy_models.core.ccus.ccus import CCUS
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class CCUS_Discipline(SoSDiscipline):
@@ -45,10 +46,10 @@ class CCUS_Discipline(SoSDiscipline):
     }
 
     DESC_IN = {
-        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
+        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list, 'default': CCUS.ccs_list,
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
-        'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},

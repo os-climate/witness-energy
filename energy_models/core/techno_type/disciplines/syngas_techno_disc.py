@@ -56,7 +56,7 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
     energy_name = Syngas.name
 
     # -- add specific techno outputs to this
-    DESC_OUT = {'syngas_ratio': {'type': 'array'}}
+    DESC_OUT = {'syngas_ratio': {'type': 'array', 'unit': '%'}}
 
     DESC_OUT.update(TechnoDiscipline.DESC_OUT)
 

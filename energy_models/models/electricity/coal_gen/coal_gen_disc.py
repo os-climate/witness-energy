@@ -99,7 +99,8 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  'transport_cost_unit': '$/kg',  # check if pertinent
                                  'techno_evo_eff': 'yes',
                                  'techno_evo_time': 10,
-                                 'efficiency': 0.38,
+                                 # efficiency computed to match IEA datas
+                                 'efficiency': 0.41,
                                  'efficiency_max': 0.48,
                                  'efficiency evolution slope': 0.5,
                                  'construction_delay': construction_delay, }
@@ -118,7 +119,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                                          3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25, 3.25,
 
                                                          ]})
-    coal_flue_gas_ratio = np.array([0.13])
+    FLUE_GAS_RATIO = np.array([0.13])
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -129,8 +130,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': coal_flue_gas_ratio}}
+                                        'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 

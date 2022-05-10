@@ -234,7 +234,7 @@ class EnergyMixTestCase(unittest.TestCase):
                                                                          0.31047716, 0.31392652, 0.31739837, 0.32021771, 0.32313758,
                                                                          0.3261545]) * 1000.0})
         # Biomass dry inputs coming from agriculture mix disc
-        #                                                                
+        #
         energy_consumption_biomass = np.linspace(0, 4, self.year_range)
         self.energy_consumption_biomass = pd.DataFrame(
             {'years': self.years, 'CO2_resource (Mt)': energy_consumption_biomass})
@@ -255,7 +255,7 @@ class EnergyMixTestCase(unittest.TestCase):
         CO2_per_use_biomass = np.linspace(0, 1, self.year_range)
         self.CO2_per_use_biomass = pd.DataFrame(
             {'years': self.years, 'CO2_per_use': CO2_per_use_biomass})
-       
+
         CO2_emissions_biomass = np.linspace(0, -1, self.year_range)
         self.CO2_emissions_biomass = pd.DataFrame(
             {'years': self.years, 'biomass_dry': CO2_emissions_biomass})
@@ -378,8 +378,8 @@ class EnergyMixTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.{model_name}.year_start': self.year_start,
-                       f'{name}.{model_name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.year_start': self.year_start,
+                       f'{name}.year_end': self.year_end,
                        f'{name}.energy_list': ['hydrogen.gaseous_hydrogen', 'methane', 'biomass_dry'],
                        f'{name}.ccs_list': [],
                        f'{name}.is_dev': True,
@@ -461,8 +461,8 @@ class EnergyMixTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.{model_name}.year_start': self.year_start,
-                       f'{name}.{model_name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.year_start': self.year_start,
+                       f'{name}.year_end': self.year_end,
                        f'{name}.energy_list': self.energy_list,
                        f'{name}.ccs_list': [],
                        f'{name}.{model_name}.energy_prices': pd.DataFrame({'hydrogen.gaseous_hydrogen': self.prices_hydro['hydrogen.gaseous_hydrogen'], 'methane': self.cost_details['methane']}),
@@ -538,8 +538,8 @@ class EnergyMixTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.{model_name}.year_start': self.year_start,
-                       f'{name}.{model_name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.year_start': self.year_start,
+                       f'{name}.year_end': self.year_end,
                        f'{name}.energy_list': self.energy_list,
                        f'{name}.ccs_list': [],
                        f'{name}.{model_name}.energy_prices': pd.DataFrame({'hydrogen.gaseous_hydrogen': self.prices_hydro['hydrogen.gaseous_hydrogen'], 'methane': self.cost_details['methane']}),

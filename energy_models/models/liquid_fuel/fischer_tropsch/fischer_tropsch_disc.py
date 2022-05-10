@@ -90,7 +90,14 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [2.0, 2.0, 2.0]})
 
-    initial_production = 1e-12  # in TWh at year_start
+    # FischerTropsch Wikipedia :
+    # 140000+34000 BPD in Qatar GtL
+    # 12000 BPD in Malaysia GtL
+    # 112000 BPD in China CtL : http://www.synfuelschina.com.cn/en/about/
+    # 165000 + 36000 BPD in South Africa CtL
+    # BPD to TWh per year = 1700/1e9*365
+    initial_production = (140000 + 34000 + 12000 + 112000 + 165000 +
+                          36000) * 1700 / 1e9 * 365  # in TWh at year_start
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [0.95238095, 0.95238095, 0.95238095, 0.95238095, 0.95238095,
@@ -99,9 +106,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                                          0., 2.20329743, 5.97672626, 5.34205629, 6.07448349,
                                                          8.28981257, 5.90002444, 3.60348166, 1.6724005, 4.1584419,
                                                          3.15379843, 1.19113417, 1.70548756, 4.65474781]})  # to review
-    ratio_available_cc_default = pd.DataFrame({'years': np.arange(2020, 2050 + 1),
-                                               'ratio': 1.0})
-    ft_flue_gas_ratio = np.array([0.12])
+    FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
@@ -123,8 +128,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                'syngas.data_fuel_dict': {'type': 'dict',
                                          'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY,
                                          'namespace': 'ns_energy',
-                                         'default': Syngas.data_energy_dict},
-               'flue_gas_co2_ratio': {'type': 'array', 'default': ft_flue_gas_ratio}
+                                         'default': Syngas.data_energy_dict}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)
@@ -251,9 +255,10 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                     ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)
 
                 sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
-                            self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
-                            self.techno_model.year_end][self.techno_name]) ** 2
-                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
+                                                                     self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
+                                                                                                                                                       self.techno_model.year_end][self.techno_name]) ** 2
+                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <=
+                                                                          self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
 
                 self.dprices_demissions[resource] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(

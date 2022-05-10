@@ -22,6 +22,21 @@ $$ Biomass(CH_aO_bN_cS_d) + O_2 + H_2O --> CO + CO_2 + H_2 + other species$$
 
 (other species => $N_2$, $H_2S$ less than 0.3 Mole Frac(%))
 
+## World production 
+
+Altalto, a partnership project by British Airways, Shell and Velocys, aims for the development of first commercial production of biojet at a capacity of 60 million liters/year.
+BioTfueL project34, driven by a group of companies from France (Axens, CEA, IFP Energies Nouvelles,
+Avril, ThyssenKrupp Industrial Solutions, Total), aims for the production of 60 t/y FT liquids. 
+The UPM Lappeenranta Biorefinery, producing wood-based renewable diesel from forestry residues, has started commercial production in January 2015 with 130000 t/y.
+
+To resume, there are 24 plants for liquid fuel production with global production of liquid fuel from biomass-derived syngas (750,000 t/year); 8 plants for gaseous fuel
+production (SNG and H2), with global production of gaseous fuel from biomass-derived syngas of $3.2\times 10^8 Nm^3/year$; 7 plants for chemical production (various), with global production of chemical
+from biomass-derived syngas of 9000 t/year.[^7]
+
+
+In the beginning of 2021, Fulcrum bioenergy and Essar Oil UK announced Fulcrum NorthPoint project which aims for annual SAF production of 100 million liters at Essar Oil site in Stanlow (UK) with planned production start-up date in 2025.
+
+## Datas 
 Economic datas is taken from Rosenfeld et al. [^1], technical datas from Wang et al. [^2], Albara et al. [^3], Sara et al. [^4], Mustafa et. al [^5].
 
 
@@ -35,3 +50,7 @@ Economic datas is taken from Rosenfeld et al. [^1], technical datas from Wang et
 [^4]: Sara, H.R., Enrico, B., Mauro, V. and Vincenzo, N., 2016. Techno-economic analysis of hydrogen production using biomass gasification-a small scale power plant study. Energy Procedia, 101, pp.806-813.
 
 [^5]: Mustafa, A., Calay, R.K. and Mustafa, M.Y., 2017. A techno-economic study of a biomass gasification plant for the production of transport biofuel for small communities. Energy Procedia, 112, pp.529-536.
+
+[^6] https://www.etipbioenergy.eu/images/ETIP_B_Factsheet_BtL_2021.pdf
+
+[^7]: Molino, A., Larocca, V., Chianese, S. and Musmarra, D., 2018. Biofuels production by biomass gasification: A review. Energies, 11(4), p.811.

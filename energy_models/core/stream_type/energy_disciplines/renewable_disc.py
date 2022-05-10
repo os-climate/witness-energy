@@ -34,7 +34,8 @@ class RenewableDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {'technologies_list': {'type': 'string_list',
-                                     'possible_values': ['RenewableSimpleTechno', ],
+                                     'possible_values': Renewable.default_techno_list,
+                                     'default': Renewable.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_renewable',
                                      'structuring': True},

@@ -44,13 +44,11 @@ class ElectricityDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {'technologies_list': {'type': 'string_list',
-                                     'possible_values': ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal', 'Hydropower',
-                                                         'CoalGen', 'OilGen', 'Nuclear', 'CombinedCycleGasTurbine',
-                                                         'GasTurbine', 'BiogasFired', 'BiomassFired',
-                                                         'Geothermal', 'RenewableElectricitySimpleTechno', 'RenewableElectricitySimpleTechnoDiscipline'],
+                                     'possible_values': Electricity.default_techno_list,
+                                     'default': Electricity.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_electricity', 'structuring': True},
                'hydropower_production_current': {'type': 'float',
-                                                 'default': 6600.0, # 4400TWh is total production, we use a 50% higher value
+                                                 'default': 6600.0,  # 4400TWh is total production, we use a 50% higher value
                                                  'unit': 'Twh',
                                                  'user_level': 2,
                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
