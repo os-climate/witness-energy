@@ -16,7 +16,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.energy_study_manager import EnergyStudyManager,\
+from energy_models.core.energy_study_manager import AGRI_TYPE, EnergyStudyManager,\
     DEFAULT_TECHNO_DICT, CCUS_TYPE, ENERGY_TYPE
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -490,25 +490,26 @@ class Study(EnergyStudyManager):
         norm_ccs_mix = ccs_mix.drop(
             'years', axis=1).sum(axis=1)
         for study in instanciated_studies:
-            invest_techno = study.get_investments()
-            if 'years' in invest_techno.columns:
-                norm_techno_mix = invest_techno.drop(
-                    'years', axis=1).sum(axis=1)
-            else:
-                norm_techno_mix = invest_techno.sum(axis=1)
-            energy = study.energy_name
-            if energy in energy_mix.columns:
-                mix_energy = energy_mix[energy].values / norm_energy_mix * \
-                    (100.0 - ccs_percentage_array) / 100.0
-            elif energy in ccs_mix.columns:
-                mix_energy = ccs_mix[energy].values / norm_ccs_mix * \
-                    ccs_percentage_array / 100.0
-            else:
-                raise Exception(f'{energy} not in investment_mixes')
-            for techno in invest_techno.columns:
-                if techno != 'years':
-                    invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values * \
-                        mix_energy / norm_techno_mix
+            if study is not None:
+                invest_techno = study.get_investments()
+                if 'years' in invest_techno.columns:
+                    norm_techno_mix = invest_techno.drop(
+                        'years', axis=1).sum(axis=1)
+                else:
+                    norm_techno_mix = invest_techno.sum(axis=1)
+                energy = study.energy_name
+                if energy in energy_mix.columns:
+                    mix_energy = energy_mix[energy].values / norm_energy_mix * \
+                        (100.0 - ccs_percentage_array) / 100.0
+                elif energy in ccs_mix.columns:
+                    mix_energy = ccs_mix[energy].values / norm_ccs_mix * \
+                        ccs_percentage_array / 100.0
+                else:
+                    raise Exception(f'{energy} not in investment_mixes')
+                for techno in invest_techno.columns:
+                    if techno != 'years':
+                        invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values * \
+                            mix_energy / norm_techno_mix
 
         return invest_mix_df
 
@@ -569,17 +570,23 @@ class Study(EnergyStudyManager):
                 instance_sub_study = sub_study(
                     self.year_start, self.year_end, self.time_step, bspline=self.bspline, main_study=False, execution_engine=self.execution_engine,
                     invest_discipline=self.invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
+            elif self.techno_dict[sub_study_name]['type'] == AGRI_TYPE:
+                pass
             else:
                 raise Exception(
-                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE}]")
-
-            instance_sub_study.configure_ds_boundaries(lower_bound_techno=self.lower_bound_techno,
-                                                       upper_bound_techno=self.upper_bound_techno,)
-            instance_sub_study.study_name = self.study_name
-            data_dict = instance_sub_study.setup_usecase()
-            values_dict_list.extend(data_dict)
-            instanced_sub_studies.append(instance_sub_study)
-            dspace_list.append(instance_sub_study.dspace)
+                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE},{AGRI_TYPE}]")
+            if self.techno_dict[sub_study_name]['type'] != AGRI_TYPE:
+                instance_sub_study.configure_ds_boundaries(lower_bound_techno=self.lower_bound_techno,
+                                                        upper_bound_techno=self.upper_bound_techno,)
+                instance_sub_study.study_name = self.study_name
+                data_dict = instance_sub_study.setup_usecase()
+                values_dict_list.extend(data_dict)
+                instanced_sub_studies.append(instance_sub_study)
+                dspace_list.append(instance_sub_study.dspace)
+            else :
+                # Add an empty study because biomass_dry is not an energy_mix study,
+                # it is integrated in the witness_wo_energy datacase in the agriculture_mix usecase
+                instanced_sub_studies.append(None)
         return values_dict_list, dspace_list,  instanced_sub_studies
 
     def create_technolist_per_energy(self, instanciated_studies):
@@ -588,7 +595,12 @@ class Study(EnergyStudyManager):
             zip(self.energy_list + self.ccs_list, instanciated_studies))
 
         for energy_name, study_val in dict_studies.items():
-            self.dict_technos[energy_name] = study_val.technologies_list
+            if study_val is not None:
+                self.dict_technos[energy_name] = study_val.technologies_list
+            else:
+                # the study_val == None is for the biomass_dry that is taken into account with the agriculture_mix
+                # so it has no dedicated technology in the energy_mix
+                self.dict_technos[energy_name] = []
 
     def setup_usecase(self):
 
