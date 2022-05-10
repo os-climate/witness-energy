@@ -48,7 +48,8 @@ class SyngasDiscipline(EnergyDiscipline):
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_syngas',
-                                  'default': Syngas.data_energy_dict},
+                                  'default': Syngas.data_energy_dict,
+                                  'unit': 'defined in dict'},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 

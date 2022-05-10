@@ -46,7 +46,8 @@ class GaseousHydrogenTechnoDiscipline(TechnoDiscipline):
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_hydrogen',
-                                  'default': GaseousHydrogen.data_energy_dict},
+                                  'default': GaseousHydrogen.data_energy_dict,
+                                  'unit': 'defined in dict'},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 
