@@ -134,8 +134,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                     # Add technologies_list to inputs
                     dynamic_inputs[f'{ccs}.technologies_list'] = {
                         'type': 'string_list', 'structuring': True, 'visibility': 'Shared', 'namespace': 'ns_ccs',
-                        'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
-                        'default': EnergyMix.stream_class_dict[ccs].default_techno_list}
+                        'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list}
                     # Add all invest_level outputs
                     if f'{ccs}.technologies_list' in self._data_in:
                         technology_list = self.get_sosdisc_inputs(

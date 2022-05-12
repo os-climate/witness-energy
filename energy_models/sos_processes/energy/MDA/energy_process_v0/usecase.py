@@ -30,6 +30,7 @@ from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
+from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
@@ -402,6 +403,8 @@ class Study(EnergyStudyManager):
             100, 77.5, len(years))
         invest_energy_mix_dict[HydrotreatedOilFuel.name] = [
             3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        invest_energy_mix_dict[Ethanol.name] = [
+            0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
         if self.bspline:
             invest_energy_mix_dict['years'] = self.years
