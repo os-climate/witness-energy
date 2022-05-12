@@ -28,6 +28,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_disciplines.liquid_fuel_disc import LiquidFuelDiscipline
 from energy_models.core.stream_type.energy_disciplines.hydrotreated_oil_fuel_disc import HydrotreatedOilFuelDiscipline
 from energy_models.core.stream_type.energy_disciplines.bio_diesel_disc import BioDieselDiscipline
+from energy_models.core.stream_type.energy_disciplines.ethanol_disc import EthanolDiscipline
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
@@ -50,7 +51,10 @@ class FuelDiscipline(SoSDiscipline):
     name = 'fuel'
     energy_name = name
     fuel_list = [LiquidFuelDiscipline.energy_name,
-                 HydrotreatedOilFuelDiscipline.energy_name, BioDieselDiscipline.energy_name]
+                 HydrotreatedOilFuelDiscipline.energy_name,
+                 BioDieselDiscipline.energy_name,
+                 EthanolDiscipline.energy_name,
+                 ]
 
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
@@ -69,10 +73,6 @@ class FuelDiscipline(SoSDiscipline):
                 'energy_production': {'type': 'dataframe', 'unit': 'PWh'},
                 'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh'},
                 }
-
-    # def init_execution(self):
-    #     energy_mix_list = self.get_sosdisc_inputs('energy_list')
-    #     self.energy_list = list(set(FuelDiscipline.fuel_list).intersection(set(energy_mix_list)))
 
     def setup_sos_disciplines(self):
         '''

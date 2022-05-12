@@ -27,6 +27,7 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
+from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -74,6 +75,7 @@ class EnergyMix(BaseStream):
                          Methane.name: Methane,
                          BioGas.name: BioGas,
                          BioDiesel.name: BioDiesel,
+                         Ethanol.name: Ethanol,
                          SolidFuel.name: SolidFuel,
                          Syngas.name: Syngas,
                          BiomassDry.name: BiomassDry,
