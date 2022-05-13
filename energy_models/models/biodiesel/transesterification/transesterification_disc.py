@@ -102,7 +102,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                                              'construction_delay': self.construction_delay
                                              }
 
-                # IEA (2021), Renewables 2021, IEA, Paris https://www.iea.org/reports/renewables-2021
+                # Source for initial production: IEA 2022, Renewables 2021, https://www.iea.org/reports/renewables-2021, License: CC BY 4.0.
                 # 43 billion liters from IEA in 2020
                 initial_production = 37 * biodiesel_density / 1000 * biodiesel_calorific_value
 

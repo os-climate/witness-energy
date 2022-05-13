@@ -358,6 +358,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
     def test_03_check_net_production_values(self):
         '''
         Test order of magnitude of net energy production with values from Energy Balances IEA 2019
+        Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019, License: CC BY 4.0.
 
         '''
         self.ee.execute()

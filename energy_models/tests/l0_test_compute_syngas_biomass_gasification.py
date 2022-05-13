@@ -65,8 +65,6 @@ class SyngasBiomassGasificationTestCase(unittest.TestCase):
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'electricity': 0.0, 'biomass_dry': - 0.425 * 44.01 / 12.0})
 
-        # We use the IEA H2 demand to fake the invest level through years and
-        # divide by 10 compared to SMR
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': np.linspace(1.0, 100000, len(years))})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]

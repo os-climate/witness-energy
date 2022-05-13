@@ -42,6 +42,8 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
     techno_name = 'SolarPv'
     lifetime = 25  # IRENA, EOLES model
     construction_delay = 1
+    # Source for Opex percentage, Capex init, capacity factor:
+    # IEA 2022, World Energy Outlook 2019, https://www.iea.org/reports/world-energy-outlook-2019, License: CC BY 4.0.
     techno_infos_dict_default = {'maturity': 0,
                                  'product': 'electricity',
                                  'Opex_percentage': 0.021,  # Mean of IEA 2019, EOLES data and others

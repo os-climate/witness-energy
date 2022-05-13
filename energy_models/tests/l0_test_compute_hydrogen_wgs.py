@@ -65,8 +65,7 @@ class WGSPriceTestCase(unittest.TestCase):
 
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'electricity': 0.2, 'syngas': 0.2})
-        # We use the IEA H2 demand to fake the invest level through years and
-        # divide by 10 compared to SMR
+
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': np.ones(len(years)) * 0.1715})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]

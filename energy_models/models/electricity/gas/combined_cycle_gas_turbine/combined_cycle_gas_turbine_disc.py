@@ -77,6 +77,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 51.0 * share]})
 # For initial production: MAJOR hypothesis, took IEA WEO 2019 production for 2018
+    # Source for initial production: IEA 2022, World Energy Outlook, https://www.iea.org/reports/world-energy-outlook-2018, License: CC BY 4.0.
 # In US according to EIA 53% of capa from CCGT and 47 for GT in 2017
     share_ccgt = 0.75
     # Initial prod in TWh

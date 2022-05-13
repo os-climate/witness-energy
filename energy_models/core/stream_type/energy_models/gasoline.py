@@ -29,8 +29,9 @@ class Gasoline(EnergyType):
                         'CO2_per_use_unit': 'kg/kg',
                         'NOx_per_energy': 0.1,
                         'NOX_per_energy_unit': 'yy',
-                        # IEA (2021), Energy Prices: Overview, IEA, Paris
+                        # Source for [cost of Gasoline]: IEA 2022, Energy Prices: Overview,
                         # https://www.iea.org/reports/energy-prices-overview
+                        # License: CC BY 4.0.
                         'cost_now': 0.85,
                         'cost_now_unit': '$/kg',
                         'density': 750,  # at atmospheric pressure and 298K

@@ -47,7 +47,6 @@ class HydropowerTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        # We use the IEA H2 demand to fake the invest level through years
         self.invest_level = pd.DataFrame({'years': years,
                                           'invest': np.array([4435750000.0, 4522000000.0, 4608250000.0,
                                                               4694500000.0, 4780750000.0, 4867000000.0,

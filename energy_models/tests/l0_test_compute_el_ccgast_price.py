@@ -54,8 +54,6 @@ class CCGasTPriceTestCase(unittest.TestCase):
             {'years': years, 'methane': np.ones(len(years)) * 27.07})
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'methane': 0.123 / 15.4})
-        #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
-
         self.invest_level_2 = pd.DataFrame(
             {'years': years, 'invest': np.ones(len(years)) * 21.0})
 

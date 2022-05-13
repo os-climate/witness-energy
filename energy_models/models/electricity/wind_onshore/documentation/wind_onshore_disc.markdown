@@ -25,7 +25,7 @@ IEA Onshore power generation prediction
 [^1]: https://en.wikipedia.org/wiki/Wind_power
 [^2]: American Institute of Physics, Growth of wind energy points to future challenges, promise, https://techxplore.com/news/2019-08-growth-energy-future.html
 [^3]: Capacity factor. NRC.gov, https://www.nrc.gov/reading-rm/basic-ref/glossary/capacity-factor-net.html
-[^4]: IEA (2019), Wind, https://www.iea.org/fuels-and-technologies/wind
+[^4]: IEA 2022, Wind, https://www.iea.org/fuels-and-technologies/wind, License: CC BY 4.0.
 [^5]: IRENA (2020), Future of wind 2019, International Renewable Energy Agency, Abu Dhabi. https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2019/Oct/IRENA_Future_of_wind_2019.pdf
 [^6]: Global Wind Energy Council (GWEC), Global wind report 2019, https://gwec.net/global-wind-report-2019/
 [^7]: National Renewable Energy Laboratory USA (NREL), Annual Technology Baseline 2020, https://atb.nrel.gov/electricity/2020/data.php
