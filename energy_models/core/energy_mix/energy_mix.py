@@ -165,11 +165,8 @@ class EnergyMix(BaseStream):
 
         if self.subelements_list is not None:
             for energy in self.subelements_list:
-                energy_name = energy
-                if energy == BiomassDry.name:
-                    energy_name = AgricultureMixDiscipline.name
-                if f'{energy_name}.losses_percentage' in inputs_dict:
-                    self.losses_percentage_dict[energy] = inputs_dict[f'{energy_name}.losses_percentage']
+                if f'{energy}.losses_percentage' in inputs_dict:
+                    self.losses_percentage_dict[energy] = inputs_dict[f'{energy}.losses_percentage']
 
     def configure_parameters_update(self, inputs_dict):
         '''
