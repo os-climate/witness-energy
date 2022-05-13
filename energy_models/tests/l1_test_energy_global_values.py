@@ -71,7 +71,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         full_values_dict[f'{self.name}.CO2_taxes'] = pd.DataFrame({'years': np.arange(2020, 2051),
                                                                    'CO2_tax': 20.0}, index=np.arange(2020, 2051))
 
-        usecase_agri = agri_study_open(execution_engine=self.ee)
+        usecase_agri = agri_study_open(execution_engine=self.ee, year_start=2020, year_end=2050, time_step=1)
         usecase_agri.study_name = self.name
         usecase_agri.additional_ns = '.InvestmentDistribution'
         values_dict_agri = usecase_agri.setup_usecase()
