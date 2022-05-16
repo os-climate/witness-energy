@@ -18,6 +18,7 @@ from energy_models.core.stream_type.energy_type import EnergyType
 
 class Methane(EnergyType):
     name = 'methane'
+    emission_name = 'CH4'
     default_techno_list = ['Methanation', 'UpgradingBiogas', 'FossilGas']
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,

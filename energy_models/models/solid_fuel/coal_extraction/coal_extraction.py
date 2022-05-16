@@ -22,9 +22,12 @@ from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 import numpy as np
+from energy_models.core.stream_type.energy_models.methane import Methane
+
 
 class CoalExtraction(SolidFuelTechno):
     COAL_RESOURCE_NAME = ResourceGlossary.Coal['name']
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs which depends on the technology 
@@ -39,10 +42,13 @@ class CoalExtraction(SolidFuelTechno):
         # self.cost_details[LiquidFuel.name] = list(self.prices[LiquidFuel.name] * self.cost_details['fuel_needs']
         #                                         / self.cost_details['efficiency'])
         # calorific value in kWh/kg * 1000 to have needs in t/kWh
-        self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'] = np.ones(len(self.years)) / (SolidFuel.data_energy_dict['calorific_value'] * 1000.0) #kg/kWh
-        self.cost_details[f'{self.COAL_RESOURCE_NAME}'] = list(self.resources_prices[f'{self.COAL_RESOURCE_NAME}'] * self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'])
+        self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'] = np.ones(len(
+            self.years)) / (SolidFuel.data_energy_dict['calorific_value'] * 1000.0)  # kg/kWh
+        self.cost_details[f'{self.COAL_RESOURCE_NAME}'] = list(
+            self.resources_prices[f'{self.COAL_RESOURCE_NAME}'] * self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'])
 
-        return self.cost_details[Electricity.name] + self.cost_details[self.COAL_RESOURCE_NAME]# + self.cost_details[LiquidFuel.name]
+        # + self.cost_details[LiquidFuel.name]
+        return self.cost_details[Electricity.name] + self.cost_details[self.COAL_RESOURCE_NAME]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -53,7 +59,8 @@ class CoalExtraction(SolidFuelTechno):
         fuel_needs = self.get_fuel_needs()
         efficiency = self.techno_infos_dict['efficiency']
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-                #LiquidFuel.name: np.identity(len(self.years)) * fuel_needs / efficiency,
+                # LiquidFuel.name: np.identity(len(self.years)) * fuel_needs /
+                # efficiency,
                 }
 
     def grad_price_vs_resources_price(self):
@@ -61,7 +68,7 @@ class CoalExtraction(SolidFuelTechno):
         Compute the gradient of global price vs resources prices
         '''
         coal_needs = self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs'].values
-        return {self.COAL_RESOURCE_NAME: np.identity(len(self.years)) * coal_needs,}
+        return {self.COAL_RESOURCE_NAME: np.identity(len(self.years)) * coal_needs, }
 
     def compute_consumption_and_production(self):
         """
@@ -75,6 +82,7 @@ class CoalExtraction(SolidFuelTechno):
             self.data_energy_dict['high_calorific_value'] * \
             self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']
 
+        self.compute_ch4_emissions()
         # Consumption
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
             self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
@@ -106,3 +114,30 @@ class CoalExtraction(SolidFuelTechno):
         #         self.cost_details['fuel_needs']
         return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[self.COAL_RESOURCE_NAME]
         #+ self.carbon_emissions[LiquidFuel.name]
+
+    def compute_ch4_emissions(self):
+        '''
+        Method to compute CH4 emissions from coal mines
+        The proposed V0 only depends on production. The V1 could depend on mining depth (deeper and deeper along the years)
+        Equation is taken from the GAINS model
+        https://gem.wiki/Estimating_methane_emissions_from_coal_mines#Model_for_Calculating_Coal_Mine_Methane_.28MC2M.29,
+        Nazar Kholod &al Global methane emissions from coal mining to continue growing even with declining coal production,
+         Journal of Cleaner Production, Volume 256, February 2020.
+        '''
+        emission_factor_coeff = self.techno_infos_dict['emission_factor_coefficient']
+
+        # compute gas content with surface and underground_gas_content in m3/t
+        underground_mining_gas_content = self.techno_infos_dict['underground_mining_gas_content']
+        surface_mining_gas_content = self.techno_infos_dict['surface_mining_gas_content']
+        gas_content = self.techno_infos_dict['underground_mining_percentage'] / \
+            100.0 * underground_mining_gas_content + \
+            (1. - self.techno_infos_dict['underground_mining_percentage'] /
+             100.0) * surface_mining_gas_content
+
+        # gascontent must be passed in Mt/Twh
+        self.emission_factor_mt_twh = gas_content * emission_factor_coeff * Methane.data_energy_dict['density'] / \
+            self.data_energy_dict['calorific_value']
+        # need to multiply by 1e9 to be in m3 by density to be in kg and by 1e-9 to be in Mt
+        # and add ch4 from abandoned mines
+        self.production[f'{Methane.emission_name} ({self.mass_unit})'] = self.emission_factor_mt_twh * self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'].values + \
+            self.techno_infos_dict['ch4_from_abandoned_mines']

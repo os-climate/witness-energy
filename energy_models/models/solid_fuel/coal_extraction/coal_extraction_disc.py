@@ -20,12 +20,12 @@ import numpy as np
 
 from energy_models.models.solid_fuel.coal_extraction.coal_extraction import CoalExtraction
 from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import SolidFuelTechnoDiscipline
+from energy_models.core.stream_type.energy_models.methane import Methane
 
 
 class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
-
 
     # ontology information
     _ontology_data = {
@@ -43,6 +43,14 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
     techno_name = 'CoalExtraction'
     lifetime = 35
     construction_delay = 3
+
+    # Most coal seams are too deep underground for opencast mining and require
+    # underground mining, a method that currently accounts for about 60
+    # percent of world coal production. Wikipedia source :
+    # https://en.wikipedia.org/wiki/Coal_mining
+    # https://globalenergymonitor.org/wp-content/uploads/2021/03/Coal-Mine-Methane-On-the-Brink.pdf
+    # Gas content mean for surface mining is 2.25m3/t
+    # Gas content mean for underground mining is 11.5m3/t
     techno_infos_dict_default = {'maturity': 0,
                                  'product': '',
                                  'Opex_percentage': 0.20,
@@ -52,6 +60,13 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  # 259-294). Butterworth-Heinemann.
                                  'CO2_from_production': 0.64,
                                  'CO2_from_production_unit': 'kg/kg',
+                                 'underground_mining_gas_content': 11.5,
+                                 'surface_mining_gas_content': 2.25,
+                                 'gas_content_unit': 'm3/t',
+                                 'underground_mining_percentage': 60.,
+                                 'emission_factor_coefficient': 1.6,
+                                 'ch4_from_abandoned_mines': 15.,
+                                 'ch4_from_abandoned_mines_unit': 'Mt',
                                  'fuel_demand': 0.0040,
                                  'fuel_demand_unit': 'kWh/kWh',
                                  # CF : Crude oil refinery on bibliography folder
@@ -123,3 +138,19 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = CoalExtraction(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
+
+    def compute_sos_jacobian(self):
+        SolidFuelTechnoDiscipline.compute_sos_jacobian(self)
+
+        # the generic gradient for production column is not working because of
+        # abandoned mines not proportional to production
+
+        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+        applied_ratio = self.get_sosdisc_outputs(
+            'applied_ratio')['applied_ratio'].values
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_production',
+             f'{Methane.emission_name} ({self.techno_model.mass_unit})'), ('invest_level', 'invest'),
+            (self.dprod_dinvest.T * self.techno_model.emission_factor_mt_twh * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production)
