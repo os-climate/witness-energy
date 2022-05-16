@@ -23,17 +23,21 @@ import numpy as np
 
 class FossilGas(MethaneTechno):
     NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGas['name']
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kg of CH4
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have needs in [kg/kWh]
-        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value'] #kg/kWh
+        # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
+        # needs in [kg/kWh]
+        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs(
+        ) / Methane.data_energy_dict['calorific_value']  # kg/kWh
         self.cost_details[f'{Electricity.name}'] = list(
             self.prices[f'{Electricity.name}'] * self.cost_details['elec_needs'])
-        #resources price [$/t] since needs are in [kg/kWh] to have cost in [$/MWh]
+        # resources price [$/t] since needs are in [kg/kWh] to have cost in
+        # [$/MWh]
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}'] = list(
             self.resources_prices[f'{self.NATURAL_GAS_RESOURCE_NAME}'] * self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'])
         # cost to produce 1Kwh of methane
@@ -73,6 +77,8 @@ class FossilGas(MethaneTechno):
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
+        self.compute_ch4_emissions()
+
         # consumption fossil gas: prod [TWh] * needs [kg/kWh] = [Mt]
         self.consumption[f'{self.NATURAL_GAS_RESOURCE_NAME} ({self.mass_unit})'] = self.production[
             f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']  # in Mt
@@ -90,3 +96,17 @@ class FossilGas(MethaneTechno):
             self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']
 
         return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[self.NATURAL_GAS_RESOURCE_NAME]
+
+    def compute_ch4_emissions(self):
+        '''
+        Method to compute CH4 emissions from gas production
+        The proposed V0 only depends on production.
+        Equation and emission factor are taken from the GAINS model
+        https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+
+        emission_factor is in Mt/TWh
+        '''
+        emission_factor = self.techno_infos_dict['emission_factor']
+
+        self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
+            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'].values

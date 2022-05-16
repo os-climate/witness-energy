@@ -16,6 +16,10 @@ There are two types of natural gas power plants: **Simple cycle gas plants** and
 The data used for this model is extracted from World Bank[^2], the International Energy Agency[^3], the Energy Information Administration[^4], Lazard[^5] and Fraunhofer[^6].  
 In its document[^2], the World Bank gather data from several sources to compute the Levelized Cost of Energy and compare the different results. 
 
+### GHG emissions 
+
+The GAINS model predicts methane fugitive emissions from crude oil extraction. Emission factors from gas production are adapted from IPCC guidelines and a mean value has been taken for the leakage at industrial and power plants of 0.1025 kt/PJ [^4]. 
+
 ### Hypotheses
 For global investment and production we only have data for gas electricity without the detail for each technology. For the production, the Energy Information Agency[^3] explains that in 2017, 53% of the gas electricity was produced by Combined Cycle Gas Plant and the left 47% by gas turbine. This information was used for our assumption that 55% of global production comes from CCGT and 45% from GT.  
 Regarding investment, the only information we found is also from the Energy Information Agency[^3]. It states that the majority of the investment goes into CCGT plant. Our hypothesis is that 75% of investment of the 2 past years in gas plant was for CCGT plant and 25% for GT plant. 

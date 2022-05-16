@@ -11,10 +11,16 @@ There are two types of natural gas power plants: **Simple cycle gas plants** and
 
 ## Combined Cycle Gas Plant
 "Combined cycle plants are more efficient because it makes use of the hot exhaust gases that would otherwise be dispelled from the system. These exhaust gases are used to boil water into steam which can then spin another turbine and generate more electricity. The thermal efficiency of the combined cycle can get up to 60%. Moreover, these plants produce one third of the waste heat of a plant with a 33% efficiency (like a typical nuclear power plant or an older coal power plant). The cost of a combined cycle plants is generally higher since they cost more to build and run."[^1]
- 
+
+
+
 ## Data     
 The data used for this model is extracted from World Bank[^2], the International Energy Agency[^3], the Energy Information Administration[^4], Lazard[^5] and Fraunhofer[^6].  
 In its document[^2], the World Bank gather data from several sources to compute the Levelized Cost of Energy and compare the different results. 
+
+### GHG emissions 
+
+The GAINS model predicts methane fugitive emissions from gas energy. Emission factors from gas production are adapted from IPCC guidelines and a mean value has been taken for the leakage at industrial and power plants of 0.1025 kt/PJ [^4]. 
 
 ### Hypotheses
 For global investment and production we only have data for gas electricity without the detail for each technology. For the production, the Energy Information Agency[^3] explains that in 2017, 53% of the gas electricity was produced by Combined Cycle Gas Plant and the left 47% by gas turbine. This information was used for our assumption that 55% of global production comes from CCGT and 45% from GT.  
@@ -24,11 +30,14 @@ Regarding investment, the only information we found is also from the Energy Info
 
 
 Global electricity generation by source and scenario (TWh)[^3]
+
 ![Global electricity generation by source and scenario (TWh)[^3]](electricitybysourceIEA.PNG)  
 Global power generation capacity by source and scenario[^3]
 ![](byscenarioprodelecIEA.PNG)  
+
 Global annual average power sector investment, historical and
 by scenario, 2019-2040[^3]
+
 ![](investIEA.PNG)
 
 [^1]: [Energy Education. Natural gas power plant.](https://energyeducation.ca/encyclopedia/Natural_gas_power_plant)

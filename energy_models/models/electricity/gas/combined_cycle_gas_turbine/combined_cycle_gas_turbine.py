@@ -46,6 +46,8 @@ class CCGasT(ElectricityTechno):
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict['methane_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
+        self.compute_ch4_emissions()
+
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 
         Get co2 needs in kg co2 /kWh 
@@ -59,3 +61,17 @@ class CCGasT(ElectricityTechno):
 
         co2_prod = methane_co2 / calorific_value * methane_need
         return co2_prod
+
+    def compute_ch4_emissions(self):
+        '''
+        Method to compute CH4 emissions from methane consumption
+        The proposed V0 only depends on consumption.
+        Equation and emission factor are taken from the GAINS model
+        https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+
+        emission_factor is in Mt/TWh
+        '''
+        emission_factor = self.techno_infos_dict['emission_factor']
+
+        self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
+            self.consumption[f'{Methane.name} ({self.product_energy_unit})']

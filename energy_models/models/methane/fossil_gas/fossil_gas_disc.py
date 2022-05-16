@@ -48,6 +48,10 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'Opex_percentage': 0.34,
                                  'CO2_from_production': 0.123,
                                  'CO2_from_production_unit': 'kg/kg',
+                                 # 0.142 kt/PJ (mean) in
+                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+                                 'emission_factor': 0.142e-3 / 0.277,
+                                 'emission_factor_unit': 'Mt/TWh',
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'fuel_demand': 1,
                                  'fuel_demand_unit': 'kWh/kWh',
