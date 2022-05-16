@@ -62,22 +62,20 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
         self.years = np.arange(self.year_start, self.year_end + 1)
 
-
-
         # --- energy prices ---
         solid_fuel_price = np.array(
             [5.7] * len(self.years))
         self.energy_prices = pd.DataFrame({'years': self.years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
-                                                                                    0.089236536471781, 0.08899046935409588, 0.08874840310033885,
-                                                                                    0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
-                                                                                    0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
-                                                                                    0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
-                                                                                    0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
-                                                                                    0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
-                                                                                    0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
-                                                                                    0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
-                                                                                    0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
-                                                                                    0.0928246539459331]) * 1000.0,
+                                                                                         0.089236536471781, 0.08899046935409588, 0.08874840310033885,
+                                                                                         0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
+                                                                                         0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
+                                                                                         0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
+                                                                                         0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
+                                                                                         0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
+                                                                                         0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
+                                                                                         0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
+                                                                                         0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
+                                                                                         0.0928246539459331]) * 1000.0,
                                            'solid_fuel': solid_fuel_price,
                                            'fuel.liquid_fuel': np.ones(len(self.years)) * 91,
                                            'methane': np.ones(len(self.years)) * 27.07,
@@ -131,13 +129,13 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                                          5093000000.0]) * 1.0e-9})
         self.invest_level_windonshore = pd.DataFrame(
             {'years': self.years, 'invest': np.array([22000.00, 22000.00, 22000.00, 22000.00,
-                                                 22000.00, 22000.00, 22000.00, 22000.00,
-                                                 22000.00, 22000.00, 31000.00, 31000.00,
-                                                 31000.00, 31000.00, 31000.00, 31000.00,
-                                                 31000.00, 31000.00, 31000.00, 31000.00,
-                                                 31000.00, 31000.00, 31000.00, 31000.00,
-                                                 31000.00, 31000.00, 31000.00, 31000.00,
-                                                 31000.00, 31000.00, 31000.00]) * 1e-3})
+                                                      22000.00, 22000.00, 22000.00, 22000.00,
+                                                      22000.00, 22000.00, 31000.00, 31000.00,
+                                                      31000.00, 31000.00, 31000.00, 31000.00,
+                                                      31000.00, 31000.00, 31000.00, 31000.00,
+                                                      31000.00, 31000.00, 31000.00, 31000.00,
+                                                      31000.00, 31000.00, 31000.00, 31000.00,
+                                                      31000.00, 31000.00, 31000.00]) * 1e-3})
 
         # --- CO2 taxes ---
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
@@ -727,7 +725,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        #AbstractJacobianUnittest.DUMP_JACOBIAN=True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN=True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
@@ -974,4 +972,6 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = ElectricityJacobianTestCase()
     cls.setUp()
-    cls.test_14_electricity_discipline_jacobian()
+    cls.test_01_combined_cycle_gas_turbine_discipline_analytic_grad()
+    cls.test_05_gas_turbine_discipline_analytic_grad()
+    cls.test_04_coal_gen_discipline_analytic_grad()

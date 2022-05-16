@@ -77,7 +77,7 @@ class FossilGas(MethaneTechno):
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
-        self.compute_ch4_emissions()
+        self.compute_ghg_emissions(Methane.emission_name)
 
         # consumption fossil gas: prod [TWh] * needs [kg/kWh] = [Mt]
         self.consumption[f'{self.NATURAL_GAS_RESOURCE_NAME} ({self.mass_unit})'] = self.production[

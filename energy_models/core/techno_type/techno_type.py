@@ -25,7 +25,6 @@ from climateeconomics.core.core_resources.resource_mix.resource_mix import Resou
 from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect, get_dsmooth_dvariable_vect
 from sos_trades_core.tools.cst_manager.func_manager_common import soft_maximum_vect, get_dsoft_maximum_vect
 from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
-from energy_models.core.stream_type.energy_models.methane import Methane
 
 
 class TechnoType:
@@ -1302,16 +1301,19 @@ class TechnoType:
 
         self.techno_land_use[f'{self.name} (Gha)'] = 0.0
 
-    def compute_ch4_emissions(self):
+    def compute_ghg_emissions(self, GHG_type):
         '''
-        Method to compute CH4 emissions for any techno type
+        Method to compute GHG emissions for any techno type and any GHG type
         The proposed V0 only depends on production.
         Equation is taken from the GAINS model
         https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
 
         emission_factor is in Mt/TWh
         '''
-        emission_factor = self.techno_infos_dict['CH4_emission_factor']
+        if f'{GHG_type}_emission_factor' not in self.techno_infos_dict:
+            raise Exception(
+                f'The variable {GHG_type}_emission_factor should be in the techno dict to compute {GHG_type} emissions for {self.name}')
+        emission_factor = self.techno_infos_dict[f'{GHG_type}_emission_factor']
 
-        self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
+        self.production[f'{GHG_type} ({self.mass_unit})'] = emission_factor * \
             self.production[f'{self.energy_name} ({self.product_energy_unit})'].values

@@ -18,6 +18,7 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 
 import numpy as np
+from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 
 class GasElec(ElectricityTechno):
@@ -47,7 +48,9 @@ class GasElec(ElectricityTechno):
         # Consumption
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict['kwh_methane/kwh'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
         self.compute_ch4_emissions()
+        self.compute_ghg_emissions(N2O.name)
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 
@@ -91,7 +94,8 @@ class GasElec(ElectricityTechno):
 
         emission_factor is in Mt/TWh
         '''
-        emission_factor = self.techno_infos_dict['CH4_emission_factor']
+        ghg_type = Methane.emission_name
+        emission_factor = self.techno_infos_dict[f'{ghg_type}_emission_factor']
 
-        self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
+        self.production[f'{ghg_type} ({self.mass_unit})'] = emission_factor * \
             self.consumption[f'{Methane.name} ({self.product_energy_unit})']

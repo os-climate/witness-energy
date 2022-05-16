@@ -62,7 +62,10 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  # https://www.rte-france.com/en/eco2mix/co2-emissions
                                  'CO2_from_production': 0.777,
                                  'CO2_from_production_unit': 'kg/kWh',
-
+                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+                                 # 0.008 kt/PJ
+                                 'N2O_emission_factor': 0.008e-3 / 0.277,
+                                 'N2O_emission_factor_unit': 'Mt/TWh',
                                  # IEA 2022, Levelised Cost of Electricity Calculator,
                                  # IEA and NEA, Paris
                                  # https://www.iea.org/articles/levelised-cost-of-electricity-calculator
