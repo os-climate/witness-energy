@@ -81,10 +81,13 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # ratio elec use / kerosene product
                                  'elec_demand': 0.008,
                                  'elec_demand_unit': 'kWh/kWh',
-                                 # IEA Hydrogen
-                                 # https://www.iea.org/reports/hydrogen
+                                 # IEA 2022, Hydrogen,
+                                 # https://www.iea.org/reports/hydrogen,
+                                 # License: CC BY 4.0.
                                  # 2020 total hydrogen demand = 40Mt (calorific value 33.3 kWh/kg)
+                                 # Source: IEA 2022, Data and Statistics,
                                  # https://www.iea.org/data-and-statistics/data-tables/?country=WORLD&energy=Oil&year=2019
+                                 # License: CC BY 4.0.
                                  # 2019 fuel prod = 5672984+11916946+41878252+14072582+2176724+56524612+16475667 TJ
                                  # ratio for hydrogen demand = (40*33.3) /
                                  # (148717767/3.6/1000)

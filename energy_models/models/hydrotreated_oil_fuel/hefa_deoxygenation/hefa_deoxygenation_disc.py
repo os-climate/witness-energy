@@ -94,8 +94,9 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'WACC': 0.0878,
         'techno_evo_eff': 'no',
     }
-
-    # https://www.iea.org/data-and-statistics/charts/global-biofuel-production-in-2019-and-forecast-to-2025
+    # Source: IEA 2022, Data and Statistics,
+    # https://www.iea.org/data-and-statistics/charts/global-biofuel-production-in-2019-and-forecast-to-2025,
+    # License: CC BY 4.0.
     # 9 bl of HVO/HEFA in 2020
     # https://www.ieabioenergy.com/wp-content/uploads/2021/06/IEA-Bioenergy-Task-39-Progress-in-the-commercialisation-of-biojet-fuels-May-2021-1.pdf
     # most current commercial HEFA production removes oxygen through the

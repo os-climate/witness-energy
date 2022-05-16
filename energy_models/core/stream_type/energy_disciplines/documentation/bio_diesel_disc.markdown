@@ -25,5 +25,5 @@ Price for FAME (Fatty Acid Methyl Ester) and SME (Soy Methyl Ester) is highly ve
  (Image credit:  NESTE, taken from [^3])
 
 [^1]: Biodiesel, Wikipedia, https://en.wikipedia.org/wiki/Biodiesel
-[^2]: Global Biofuel production , IEA, https://www.iea.org/data-and-statistics/charts/global-biofuel-production-in-2019-and-forecast-to-2025
+[^2]: IEA 2022; Global Biofuel production, https://www.iea.org/data-and-statistics/charts/global-biofuel-production-in-2019-and-forecast-to-2025, License: CC BY 4.0.
 [^3]: Biodiesel price, neste.com, https://www.neste.com/investors/market-data/biodiesel-prices-sme-fame

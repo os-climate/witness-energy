@@ -307,6 +307,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 f'{AgricultureMixDiscipline.name}.CO2_emissions')
             inputs_dict[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict_orig.pop(
                 f'{AgricultureMixDiscipline.name}.CO2_per_use')
+            inputs_dict[f'{BiomassDry.name}.losses_percentage'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.losses_percentage')
 
         self.energy_model.configure_parameters_update(inputs_dict)
 

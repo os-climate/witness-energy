@@ -43,8 +43,9 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
     lifetime = 20   # Value for CHP units
     construction_delay = 2  # years
 
-    # IEA Data Tables
+    # IEA 2022, Data Tables,
     # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019
+    # License: CC BY 4.0.
     # Gross. elec. prod.: 88751 GWh
     # Electricity plants consumption: 448717 TJ net -> 448717 / 3.6 GWh
     biogas_needs = (448717 / 3.6) / 88751  # ratio without dimension
@@ -68,20 +69,23 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
                                  'construction_delay': construction_delay,
                                  'full_load_hours': 8760}
 
-    # From IEA Data
+    # Source: IEA 2022, Data and Statistics,
     # https://www.iea.org/data-and-statistics/charts/biogas-installed-power-generation-capacity-2010-2018
+    # License: CC BY 4.0.
     # (17.7-9.4)/8 = 1.0375 GW per year increase
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [1.0375*2141/1000, 1.0375*2141/1000]})
     # In G$
 
-    # Initial prod in TWh (2019)
-    # IEA Data Tables
+    # Source for Initial prod in TWh (2019):
+    # IEA 2022, Data Tables,
     # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019
+    # License: CC BY 4.0.
     initial_production = 88.751
 
-    # From IEA Data
+    # Source: IEA 2022, Data and Statistics
     # https://www.iea.org/data-and-statistics/charts/biogas-installed-power-generation-capacity-2010-2018
+    # License: CC BY 4.0.
     # (17.7-9.4)/8 = 1.0375 GW per year increase
     # 1.0375 / 17.7 ~= 5.8% added production each year (linear approximation)
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),

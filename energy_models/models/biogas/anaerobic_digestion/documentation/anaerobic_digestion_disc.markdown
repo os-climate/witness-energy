@@ -27,6 +27,6 @@ The age distribution of biogas plants from anaerobic digestion has been computed
 [^1]: Rajendran, K. and Murthy, G.S., 2019. Techno-economic and life cycle assessments of anaerobic digestion–A review. Biocatalysis and Agricultural Biotechnology, 20, p.101207.
 [^2]: Biogas Cost Reductions to Boost Sustainable Transport, https://irena.org/newsroom/articles/2017/Mar/Biogas-Cost-Reductions-to-Boost-Sustainable-Transport
 [^3]:Carlini, M., Mosconi, E.M., Castellucci, S., Villarini, M. and Colantoni, A., 2017. An economical evaluation of anaerobic digestion plants fed with organic agro-industrial waste. Energies, 10(8), p.1165.
-[^4]: http://task37.ieabioenergy.com/plant-list.html
-[^5]: IEA (2020), Outlook for biogas and biomethane: Prospects for organic growth, IEA, Paris https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
+[^4]: IEA 2022, http://task37.ieabioenergy.com/plant-list.html, License: CC BY 4.0.
+[^5]: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth, https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth, License: CC BY 4.0.
 [^6]: https://www.planete-energies.com/en/medias/close/how-does-anaerobic-digester-work

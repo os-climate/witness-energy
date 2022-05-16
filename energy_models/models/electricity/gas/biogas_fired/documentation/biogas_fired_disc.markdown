@@ -26,9 +26,9 @@ generation capacity, 2010-2018[^3] and partly from an IRENA Report[^4].
 
 [^1][Wikipedia](https://en.wikipedia.org/wiki/Biogas#Biogas_generated_heat/electricity)
 
-[^2][IEA Data & Statistics](https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019)
+[^2][IEA 2022, Data & Statistics](https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019), License: CC BY 4.0.
 
-[^3][IEA Biogas installed power generation capacity, 2010-2018](https://www.iea.org/data-and-statistics/charts/biogas-installed-power-generation-capacity-2010-2018)
+[^3][IEA2022, Biogas installed power generation capacity, 2010-2018](https://www.iea.org/data-and-statistics/charts/biogas-installed-power-generation-capacity-2010-2018), License: CC BY 4.0.
 
 [^4][IRENA Power Generation Costs, 2019, (p110-119)](https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2020/Jun/IRENA_Power_Generation_Costs_2019.pdf)
 

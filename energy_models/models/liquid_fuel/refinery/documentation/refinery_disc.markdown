@@ -86,4 +86,4 @@ separated from by-product gases from petrochemical processes or sourced external
 [^7]: Updated Estimation of Energy Efficiencies of U.S. Petroleum Refineries, Transportation Research
 Argonne National Laboratory, https://publications.anl.gov/anlpubs/2011/01/69026.pdf
 [^8]: CAPEX & OPEX Refinery Cost per Barrel a Day Benchmarks Total Installed Engineering, Procurement & Construction (EPC) 2018 Cost Basis, Compass International, https://www.compassinternational.net/wp-content/uploads/2018/02/TR_Capex.pdf
-[^9]: IEA Hydrogen Report, https://www.iea.org/reports/hydrogen
+[^9]: IEA 2022, Hydrogen Report, https://www.iea.org/reports/hydrogen, License: CC BY 4.0.

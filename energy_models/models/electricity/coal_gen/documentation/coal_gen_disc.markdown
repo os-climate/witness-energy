@@ -33,8 +33,8 @@ Of the 2 080 GW existing coal fleet, 62% is 20 years old (YO) or less, 16% over 
 
 [^3]: [ENERGY EDUCATION, Coal consumption](https://energyeducation.ca/encyclopedia/Coal_fired_power_plant)
 
-[^4]: [IEA (2020), Levelised Cost of Electricity Calculator,  IEA and NEA, Paris](https://www.iea.org/articles/levelised-cost-of-electricity-calculator)
+[^4]: IEA 2022, [IEA (2020), Levelised Cost of Electricity Calculator,  IEA and NEA, Paris](https://www.iea.org/articles/levelised-cost-of-electricity-calculator), License: CC BY 4.0.
 
 [^5]: [Update of financial data for coal fired CHP plants in the technology catalog, Energinet.dk](https://ens.dk/sites/ens.dk/files/Analyser/update_of_financial_data_for_coal_fired_chp_plants_may17_july17.pdf)
 
-[^6]: [Coal-Fired report, IEA 2020](https://www.iea.org/reports/coal-fired-power)
+[^6]: IEA 2022, [Coal-Fired report, IEA 2020](https://www.iea.org/reports/coal-fired-power), License: CC BY 4.0.

@@ -65,8 +65,6 @@ class CoalGenPriceTestCase(unittest.TestCase):
 
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0})
-        #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
-
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': np.ones(len(years)) * 50.0})
 

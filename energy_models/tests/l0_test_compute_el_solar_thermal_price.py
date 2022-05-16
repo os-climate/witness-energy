@@ -49,8 +49,6 @@ class SolarThermalPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
-
         self.invest_level_2 = pd.DataFrame(
             {'years': years, 'invest': np.ones(len(years)) * 15.0})
 

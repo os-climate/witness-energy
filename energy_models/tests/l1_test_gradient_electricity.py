@@ -89,7 +89,6 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': self.years, 'methane': 0.123 / 15.4, 'biogas': 0.123 / 15.4,
              'solid_fuel': 0.64 / 4.86, 'fuel.liquid_fuel': 0.64 / 4.86, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0})
-        #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
 
         # --- invest level ---
         self.invest_level_ccgast = pd.DataFrame(
