@@ -20,7 +20,9 @@ In its document[^2], the World Bank gather data from several sources to compute 
 
 ### GHG emissions 
 
-The GAINS model predicts methane fugitive emissions from gas energy. Emission factors from gas production are adapted from IPCC guidelines and a mean value has been taken for the leakage at industrial and power plants of 0.1025 kt/PJ [^4]. 
+The GAINS model predicts methane fugitive emissions from gas energy. Emission factors from gas production are adapted from IPCC guidelines and a mean value has been taken for the leakage at industrial and power plants of 0.1025 kt/PJ [^8].
+
+The GAINS model also predicts N2O fugitive emissions from gas energy. The emission factor is equal to 0.0001 kt/PJ. [^7]
 
 ### Hypotheses
 For global investment and production we only have data for gas electricity without the detail for each technology. For the production, the Energy Information Agency[^3] explains that in 2017, 53% of the gas electricity was produced by Combined Cycle Gas Plant and the left 47% by gas turbine. This information was used for our assumption that 55% of global production comes from CCGT and 45% from GT.  
@@ -51,3 +53,6 @@ by scenario, 2019-2040[^3]
 [^5]: [Lazard. (2020). Levelized cost of energy analysis.](https://www.lazard.com/media/451419/lazards-levelized-cost-of-energy-version-140.pdf)
 
 [^6]: [Kost, C., Mayer, J.N., Thomsen, J., Hartmann, N., Senkpiel, C., Philipps, S., Nold, S., Lude, S., Saad, N. and Schlegl, T. (2013). Levelized cost of electricity renewable energy technologies. Fraunhofer Institute for Solar Energy Systems ISE, 144.](https://www.ise.fraunhofer.de/content/dam/ise/en/documents/publications/studies/EN2018_Fraunhofer-ISE_LCOE_Renewable_Energy_Technologies.pdf)
+
+[^7]: Winiwarter, W., 2005. The GAINS model for greenhouse gases-version 1.0: nitrous oxide (N2O).https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+[^8]: Höglund-Isaksson, L. and Mechler, R., 2005. The GAINS Model for Greenhouse gases–Version 1.0: Methane (CH4), IIASA Interim Report IR-05-054. International Institute for Applied Systems Analysis, Laxenburg. https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
