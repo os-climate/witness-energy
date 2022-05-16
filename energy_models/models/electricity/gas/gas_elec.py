@@ -91,7 +91,7 @@ class GasElec(ElectricityTechno):
 
         emission_factor is in Mt/TWh
         '''
-        emission_factor = self.techno_infos_dict['emission_factor']
+        emission_factor = self.techno_infos_dict['CH4_emission_factor']
 
         self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
             self.consumption[f'{Methane.name} ({self.product_energy_unit})']

@@ -96,17 +96,3 @@ class FossilGas(MethaneTechno):
             self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']
 
         return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[self.NATURAL_GAS_RESOURCE_NAME]
-
-    def compute_ch4_emissions(self):
-        '''
-        Method to compute CH4 emissions from gas production
-        The proposed V0 only depends on production.
-        Equation and emission factor are taken from the GAINS model
-        https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
-
-        emission_factor is in Mt/TWh
-        '''
-        emission_factor = self.techno_infos_dict['emission_factor']
-
-        self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'].values

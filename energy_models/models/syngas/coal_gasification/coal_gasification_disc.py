@@ -48,6 +48,10 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  # License: CC BY 4.0.
                                  'CO2_from_production': 1.94,  # ETSAP IEA indicates 50kT CO2 /PJ syngas
                                  'CO2_from_production_unit': 'kg/kg',
+                                 # IPCC report Chap4 2019  https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/2_Volume2/19R_V2_4_Ch04_Fugitive_Emissions.pdf
+                                 # 6.1 kg/TJ
+                                 'CH4_emission_factor': 6.1e-9 / 0.277e-3,
+                                 'CH4_emission_factor_unit': 'Mt/TWh',
                                  'elec_demand': 0,
                                  'elec_demand_unit': 'kWh/kWh',
                                  'fuel_demand': 1.19,

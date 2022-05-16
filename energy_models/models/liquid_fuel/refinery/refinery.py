@@ -125,9 +125,9 @@ class Refinery(LiquidFuelTechno):
         CH4 emissions can be separated in three categories : flaring,venting and unintended leakage
         emission_factor is in Mt/TWh
         '''
-        emission_factor = self.techno_infos_dict['flaring_emission_factor'] + \
-            self.techno_infos_dict['venting_emission_factor'] + \
-            self.techno_infos_dict['unintended_leakage_emission_factor']
+        emission_factor = self.techno_infos_dict['CH4_flaring_emission_factor'] + \
+            self.techno_infos_dict['CH4_venting_emission_factor'] + \
+            self.techno_infos_dict['CH4_unintended_leakage_emission_factor']
 
         self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values

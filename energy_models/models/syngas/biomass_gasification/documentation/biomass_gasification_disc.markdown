@@ -39,6 +39,9 @@ In the beginning of 2021, Fulcrum bioenergy and Essar Oil UK announced Fulcrum N
 ## Datas 
 Economic datas is taken from Rosenfeld et al. [^1], technical datas from Wang et al. [^2], Albara et al. [^3], Sara et al. [^4], Mustafa et. al [^5].
 
+### GHG emissions 
+
+The Chapter 4 of the IPCC report predicts methane fugitive emissions from biomass gasification.  Emission factor is provided based on the carbon contents of biomass used in a selection of plants and the composition of its syngas and has a value of 18.3 kgCH4/TJ [^8]. 
 
 
 [^1]: Rosenfeld, D. C., Bohm, H., Lindorfer, J. , Lehner, M.  (2020). Scenario analysis of implementing a power-to-gas and biomass gasification system in an integrated steel plant: A techno-economic and environmental study. Renewable Energy, 147(2020), 1511-1524.
@@ -51,6 +54,7 @@ Economic datas is taken from Rosenfeld et al. [^1], technical datas from Wang et
 
 [^5]: Mustafa, A., Calay, R.K. and Mustafa, M.Y., 2017. A techno-economic study of a biomass gasification plant for the production of transport biofuel for small communities. Energy Procedia, 112, pp.529-536.
 
-[^6] https://www.etipbioenergy.eu/images/ETIP_B_Factsheet_BtL_2021.pdf
+[^6]: https://www.etipbioenergy.eu/images/ETIP_B_Factsheet_BtL_2021.pdf
 
 [^7]: Molino, A., Larocca, V., Chianese, S. and Musmarra, D., 2018. Biofuels production by biomass gasification: A review. Energies, 11(4), p.811.
+[^8]: IPCC report Chapter 4 Fugitive Emissions : https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/2_Volume2/19R_V2_4_Ch04_Fugitive_Emissions.pdf

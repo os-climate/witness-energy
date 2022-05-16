@@ -76,6 +76,8 @@ class BiomassGasification(SyngasTechno):
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
+        self.compute_ch4_emissions()
+
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
         Need to take into account negative CO2 from biomass and positive from elec
