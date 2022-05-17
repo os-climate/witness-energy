@@ -15,6 +15,12 @@ from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
 class TestGlobalEnergyValues(unittest.TestCase):
     """
     This test class has the objective to test order of magnitude of some key values in energy models in 2020
+    All the data are taken either from ourworldindata:
+        Hannah Ritchie, Max Roser and Pablo Rosado (2020) - "Energy". Published online at OurWorldInData.org.
+        Retrieved from: 'https://ourworldindata.org/energy' [Online Resource]
+    Or from IEA:
+        Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019,
+        License: CC BY 4.0.
     """
 
     def setUp(self):
@@ -371,6 +377,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.energy_production_brut_detailed')
         '''
         Theory in 2019 from Energy Balances IEA 2019  expressed in TWh 
+        Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019, License: CC BY 4.0.
         '''
 
         '''

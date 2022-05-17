@@ -242,7 +242,7 @@ class Study(EnergyStudyManager):
                 ['invest_constraint', 'invest_sum_cons', 'invest_sum_cons_dc', 'invest_sum_eq_cons'])
             list_parent.extend(['invests_constraints', 'invests_constraints', 'invests_constraints', 'invests_constraints'])
             list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT, EQ_CONSTRAINT])
-            list_weight.extend([0., -1.0, 0., 0.])
+            list_weight.extend([0., 0., 0., -1.0])
             list_aggr_type.extend(
                 [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_DELTA])
             list_namespaces.extend(['ns_functions', 'ns_functions', 'ns_functions', 'ns_functions'])
@@ -315,7 +315,9 @@ class Study(EnergyStudyManager):
 
     def get_investments_mix(self):
 
-        # Invest from ref: WEI2020_DataUpdate_Oct2020
+        # Source for invest: IEA 2022; World Energy Investment,
+        # https://www.iea.org/reports/world-energy-investment-2020,
+        # License: CC BY 4.0.
         # Take variation from 2015 to 2019 (2020 is a covid year)
         # And assume a variation per year with this
         # invest of ref are 1295-electricity_networks- crude oil (only liquid_fuel
@@ -365,7 +367,9 @@ class Study(EnergyStudyManager):
         put a X0 tested on optim subprocess that satisfy all constraints
         """
 
-        # Invest from ref: WEI2020_DataUpdate_Oct2020
+        # Source for invest: IEA 2022; World Energy Investment,
+        # https://www.iea.org/reports/world-energy-investment-2020,
+        # License: CC BY 4.0.
         # Take variation from 2015 to 2019 (2020 is a covid year)
         # And assume a variation per year with this
         # invest of ref are 1295-electricity_networks- crude oil (only liquid_fuel
@@ -420,7 +424,9 @@ class Study(EnergyStudyManager):
 
     def get_investments_ccs_mix(self):
 
-        # Invest from ref: WEI2020_DataUpdate_Oct2020
+        # Source for invest: IEA 2022; World Energy Investment,
+        # https://www.iea.org/reports/world-energy-investment-2020,
+        # License: CC BY 4.0.
         # Take variation from 2015 to 2019 (2020 is a covid year)
         # And assume a variation per year with this
         # invest of ref are 1295-electricity_networks- crude oil (only liquid_fuel
@@ -449,7 +455,9 @@ class Study(EnergyStudyManager):
 
     def get_investments_ccs_mix_custom(self):
 
-        # Invest from ref: WEI2020_DataUpdate_Oct2020
+        # Source for invest: IEA 2022; World Energy Investment,
+        # https://www.iea.org/reports/world-energy-investment-2020,
+        # License: CC BY 4.0.
         # Take variation from 2015 to 2019 (2020 is a covid year)
         # And assume a variation per year with this
         # invest of ref are 1295-electricity_networks- crude oil (only liquid_fuel

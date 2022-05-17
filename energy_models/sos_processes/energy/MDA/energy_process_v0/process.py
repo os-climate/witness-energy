@@ -67,8 +67,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
         # Add demand, energymix and resources discipline
-        mods_dict = {f'Resources': 'energy_models.core.stream_type.resources_data_disc.ResourcesDisc',
-                     energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
+        mods_dict = {energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
                      ccus_name: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
                      'consumptionco2': 'energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions_disc.ConsumptionCO2EmissionsDiscipline'
                      }
@@ -76,9 +75,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         builder_other_list = self.create_builder_list(
             mods_dict, ns_dict=ns_dict)
         builder_list.extend(builder_other_list)
-        # chain_builders_resource = self.ee.factory.get_builder_from_process(
-        #     'climateeconomics.sos_processes.iam.witness', 'resources_process')
-        # builder_list.extend(chain_builders_resource)
+        chain_builders_resource = self.ee.factory.get_builder_from_process(
+             'climateeconomics.sos_processes.iam.witness', 'resources_process')
+        builder_list.extend(chain_builders_resource)
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             ns_dict = {'ns_public': f'{ns_study}',
