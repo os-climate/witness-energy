@@ -75,7 +75,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         builder_other_list = self.create_builder_list(
             mods_dict, ns_dict=ns_dict)
-        # builder_list.extend(builder_other_list)
+        builder_list.extend(builder_other_list)
         # chain_builders_resource = self.ee.factory.get_builder_from_process(
         #      'climateeconomics.sos_processes.iam.witness', 'resources_process')
         # builder_list.extend(chain_builders_resource)
