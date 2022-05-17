@@ -112,10 +112,15 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
     energy_own_use = 2485.89  # TWh
+    # Source for initial production: IEA 2022; Oil Information: Overview,
+    # https://www.iea.org/reports/oil-information-overview,
+    # License: CC BY 4.0.
     # in TWh at year_start from IEA (raw prod of oil products and not crude oil
     initial_production = 49472.0 - energy_own_use
 
-    # Invest from WEI2020
+    # Source for invest: IEA 2022; World Energy Investment,
+    # https://www.iea.org/reports/world-energy-investment-2020,
+    # License: CC BY 4.0.
     invest_before_year_start = pd.DataFrame(
 
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 477, 470]})
