@@ -23,8 +23,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 
 DEFAULT_TECHNOLOGIES_LIST = ['BiomassGasification', 'SMR',
                              'CoalGasification', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis']
-TECHNOLOGIES_LIST = ['BiomassGasification', 'SMR', 'CoalGasification', 'Pyrolysis', 'AutothermalReforming',
-                         'CoElectrolysis']
+TECHNOLOGIES_LIST = ['BiomassGasification', 'SMR', 'CoalGasification']
 TECHNOLOGIES_LIST_DEV = ['BiomassGasification', 'SMR', 'CoalGasification', 'Pyrolysis', 'AutothermalReforming',
                          'CoElectrolysis']
 
