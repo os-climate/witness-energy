@@ -31,7 +31,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
     """
     Ratio jacobian test class
     """
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -861,7 +861,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0]
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_cc{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -1099,7 +1099,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs.extend(['Test_Ratio.EnergyMix.all_streams_demand_ratio'
                                 ])
 
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         # coupled_inputs = [
         #     'Test_Ratio.EnergyMix.liquid_fuel.energy_consumption_woratio',
