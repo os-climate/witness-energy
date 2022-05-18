@@ -982,7 +982,12 @@ class Energy_Mix_Discipline(SoSDiscipline):
                          energy_cons_limited,
                          0.0)
         else:
-            denergy_prod_limited = np.identity(len(years)) * 100.0
+            denergy_prod_limited = np.identity(len(years)) * 100.0 * \
+                                   np.where((energy_prod_limited <= energy_cons_limited) * (
+                                               energy_prod_limited / energy_cons_limited > 1E-15),
+                                            denergy_prod_limited * scaling_factor_production /
+                                            energy_cons_limited,
+                                            0.0)
 
         return denergy_prod_limited, ddemand_ratio_denergy_cons
 
