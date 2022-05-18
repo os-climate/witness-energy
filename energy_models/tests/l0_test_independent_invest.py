@@ -38,6 +38,8 @@ class TestIndependentInvest(unittest.TestCase):
         self.y_step = 1
         self.energy_list = [
             'electricity', 'hydrogen.gaseous_hydrogen', 'methane']
+        self.energy_list_bis = [
+            'electricity', 'hydrogen.gaseous_hydrogen', 'methane', 'biomass_dry']
 
         self.ccs_list = [
             'carbon_capture', 'carbon_storage']
@@ -170,7 +172,8 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
                        f'{self.name}.energy_investment': self.energy_investment,
-                       f'{self.name}.{self.model_name}.forest_investment': self.forest_invest_df}
+                       f'{self.name}.{self.model_name}.forest_investment': self.forest_invest_df,
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -209,6 +212,8 @@ class TestIndependentInvest(unittest.TestCase):
                    'ns_energy': self.name,
                    'ns_functions': self.name,
                    'ns_invest': self.name,
+                   'ns_forest': f'{self.name}.Forest',
+                   'ns_crop': f'{self.name}.Crop'
                    }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -224,7 +229,7 @@ class TestIndependentInvest(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.year_start': self.y_s,
                        f'{self.name}.year_end': self.y_e,
-                       f'{self.name}.energy_list': self.energy_list,
+                       f'{self.name}.energy_list': self.energy_list_bis,
                        f'{self.name}.ccs_list': self.ccs_list,
                        f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
@@ -235,9 +240,9 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.energy_investment': self.energy_investment,
                        f'{self.name}.is_dev': True,
                        f'{self.name}.forest_investment': self.forest_invest_df,
-                       f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,
-                       f'{self.name}.unmanaged_wood_investment': self.unmanaged_wood_invest_df,
-                       f'{self.name}.crop_investment': self.crop_invest_df}
+                       f'{self.name}.Forest.managed_wood_investment': self.managed_wood_invest_df,
+                       f'{self.name}.Forest.deforestation_investment': self.deforestation_invest_df,
+                       f'{self.name}.Crop.crop_investment': self.crop_invest_df}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -260,8 +265,8 @@ class TestIndependentInvest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        #    graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
 
     def test_04_independent_invest_disc_check_jacobian(self):
 
