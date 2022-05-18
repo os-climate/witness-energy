@@ -98,9 +98,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
                'total_prod_minus_min_prod_constraint_ref': {'type': 'float', 'default': 1e4, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
                'production_threshold': {'type': 'float', 'default': 1e-3},
-               'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'solid_fuel_elec_percentage': {'type': 'float', 'default': 0.75, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+               'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+               'solid_fuel_elec_percentage': {'type': 'float', 'default': 0.75, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'solid_fuel_elec_constraint_ref': {'type': 'float', 'default': 10000., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'liquid_hydrogen_percentage': {'type': 'array', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
@@ -108,7 +108,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                'syngas_prod_constraint_limit': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
 
-               'ratio_ref': {'type': 'float', 'default': 500., 'unit': '', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'ratio_ref': {'type': 'float', 'default': 500., 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%', 'range': [0., 100.]},
                # WIP is_dev to remove once its validated on dev processes
                'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
@@ -208,21 +208,20 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         dynamic_inputs[f'{energy}.land_use_required'] = {
                             'type': 'dataframe', 'unit': 'Gha'}
                     if energy in self.energy_class_dict:
-                        dynamic_inputs[f'{energy}.data_fuel_dict'] = {
-                            'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                            'namespace': 'ns_energy_mix', 'default':  self.energy_class_dict[energy].data_energy_dict}
                         if energy == BiomassDry.name and is_dev == True:
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_emissions'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_per_use'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            dynamic_inputs[f'{AgricultureMixDiscipline.name}.losses_percentage'] = {
+                                'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy], 'range': [0., 100.], 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
                         else:
                             dynamic_inputs[f'{energy}.CO2_emissions'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh'}
                             dynamic_inputs[f'{energy}.CO2_per_use'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh'}
-                        dynamic_inputs[f'{energy}.losses_percentage'] = {
-                            'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy], 'range': [0., 100.]}
+                            dynamic_inputs[f'{energy}.losses_percentage'] = {
+                                'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy], 'range': [0., 100.]}
 
                 if 'syngas' in energy_list:
                     dynamic_inputs[f'syngas_ratio'] = {
@@ -242,10 +241,6 @@ class Energy_Mix_Discipline(SoSDiscipline):
                             'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
                         dynamic_inputs[f'{ccs_name}.land_use_required'] = {
                             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
-
-                        dynamic_inputs[f'{ccs_name}.data_fuel_dict'] = {
-                            'type': 'dict', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                            'namespace': f'ns_ccs', 'default': self.stream_class_dict[ccs_name].data_energy_dict}
 
         self.update_default_with_years()
 
@@ -312,6 +307,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 f'{AgricultureMixDiscipline.name}.CO2_emissions')
             inputs_dict[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict_orig.pop(
                 f'{AgricultureMixDiscipline.name}.CO2_per_use')
+            inputs_dict[f'{BiomassDry.name}.losses_percentage'] = inputs_dict_orig.pop(
+                f'{AgricultureMixDiscipline.name}.losses_percentage')
 
         self.energy_model.configure_parameters_update(inputs_dict)
 
@@ -466,7 +463,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 ns_energy = AgricultureMixDiscipline.name
 
             if energy in energies:
-                loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
+                loss_percentage = inputs_dict[f'{ns_energy}.losses_percentage'] / 100.0
                 # To model raw to net percentage for witness coarse energies
                 if energy in self.energy_model.raw_tonet_dict:
                     loss_percentage += (1.0 -
@@ -672,7 +669,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                 dmean_price_dprod = self.compute_dmean_price_dprod(energy, energies, mix_weight, energy_price_after_tax,
                                                                    production_energy_net_pos, production_detailed_df)
 
-                loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
+                loss_percentage = inputs_dict[f'{ns_energy}.losses_percentage'] / 100.0
                 # To model raw to net percentage for witness coarse energies
                 if energy in self.energy_model.raw_tonet_dict:
                     loss_percentage += (1.0 -
@@ -772,7 +769,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
                     j == f'{energy} ({self.stream_class_dict[energy].unit})' for j in list_columnsenergycons]
 
                 if True in list_index_prod:
-                    loss_percentage = inputs_dict[f'{energy}.losses_percentage'] / 100.0
+                    loss_percentage = inputs_dict[f'{ns_energy}.losses_percentage'] / 100.0
                     # To model raw to net percentage for witness coarse
                     # energies
                     if energy in self.energy_model.raw_tonet_dict:

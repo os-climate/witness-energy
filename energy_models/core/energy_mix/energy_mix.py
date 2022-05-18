@@ -20,11 +20,14 @@ import re
 import numpy as np
 import pandas as pd
 
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
+    AgricultureMixDiscipline
 from energy_models.core.stream_type.base_stream import BaseStream
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
+from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -72,6 +75,7 @@ class EnergyMix(BaseStream):
                          Methane.name: Methane,
                          BioGas.name: BioGas,
                          BioDiesel.name: BioDiesel,
+                         Ethanol.name: Ethanol,
                          SolidFuel.name: SolidFuel,
                          Syngas.name: Syngas,
                          BiomassDry.name: BiomassDry,
@@ -178,7 +182,6 @@ class EnergyMix(BaseStream):
             'total_prod_minus_min_prod_constraint_ref']
         # Specific configure for energy mix
         self.co2_per_use = {}
-        self.data_fuel_dict = {}
 
         for energy in self.subelements_list:
             self.sub_prices[energy] = inputs_dict[f'{energy}.energy_prices'][energy]
@@ -193,10 +196,6 @@ class EnergyMix(BaseStream):
             if energy in self.energy_class_dict:
                 self.sub_carbon_emissions[energy] = inputs_dict[f'{energy}.CO2_emissions'][energy]
                 self.co2_per_use[energy] = inputs_dict[f'{energy}.CO2_per_use']
-                self.data_fuel_dict[energy] = inputs_dict[f'{energy}.data_fuel_dict']
-        if 'syngas' in self.subelements_list:
-            self.data_fuel_dict['syngas']['high_calorific_value'] = compute_calorific_value(
-                inputs_dict['syngas_ratio'] / 100.0)
 
         self.co2_emissions = self.sub_carbon_emissions.copy(deep=True)
         self.energy_prices = self.sub_prices.copy(deep=True)

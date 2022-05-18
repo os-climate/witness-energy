@@ -52,9 +52,9 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  # Organisation for Economic Co-Operation and Development.
                                  # U.S. Energy Information Association
                                  # Levelized Costs of New Generation Resources in the Annual Energy Outlook 2021
-                                 # IEA (2014), World Energy Outlook 2014, IEA,
-                                 # Paris
+                                 # IEA 2022, World Energy Outlook 2014,
                                  # https://www.iea.org/reports/world-energy-outlook-2014
+                                 # License: CC BY 4.0.
                                  'Opex_percentage': 0.0339,  # Mean of IEA World Energy Outlook 2014
                                  # Bruckner, T., Bashmakov, I.A., Mulugetta, Y., Chum, H., De la Vega Navarro, A., Edmonds,
                                  # J., Faaij, A., Fungtammasan, B., Garg, A., Hertwich, E. and Honnery, D., 2014.
@@ -64,14 +64,14 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  # https://www.world-nuclear.org/information-library/energy-and-the-environment/carbon-dioxide-emissions-from-electricity.aspx
                                  'CO2_from_production': 0.82,
                                  'CO2_from_production_unit': 'kg/kWh',
-                                 # IEA (2020), Levelised Cost of Electricity Calculator,
-                                 #IEA and NEA, Paris
+                                 # IEA 2022, Levelised Cost of Electricity Calculator,
                                  # https://www.iea.org/articles/levelised-cost-of-electricity-calculator
+                                 # License: CC BY 4.0.
                                  'elec_demand': 0.16,
                                  'elec_demand_unit': 'kWh/kWh',
-                                 # IEA (2015), Projected Costs of Generating Electricity 2015,
-                                 #IEA, Paris
+                                 # IEA 2022, Projected Costs of Generating Electricity 2015,
                                  # https://www.iea.org/reports/projected-costs-of-generating-electricity-2015
+                                 # License: CC BY 4.0.
                                  'fuel_demand': 0.836,  # at 100% efficiency
                                  'fuel_demand_unit': 'kWh/kWh',
                                  # Renewable Power Generation Costs in 2020
@@ -85,8 +85,9 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  'learning_rate': 0.083,
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
-                                 # IEA (2014), World Energy Outlook 2014, IEA, Paris
+                                 # IEA 2022, World Energy Outlook 2014,
                                  # https://www.iea.org/reports/world-energy-outlook-2014
+                                 # License: CC BY 4.0.
                                  'Capex_init': 1900,
                                  'Capex_init_unit': '$/kW',
                                  'full_load_hours': 8760,
@@ -106,8 +107,11 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  'construction_delay': construction_delay, }
 
     techno_info_dict = techno_infos_dict_default
-    initial_production = 9914.45  # in TWh at year_start source IEA 2019
-    # Invest before year start in $ source IEA 2019
+    #Source for initial production and initial invest:
+    # IEA 2022, Coal 2019, https://www.iea.org/reports/coal-2019,
+    # License: CC BY 4.0.
+    initial_production = 9914.45  # in TWh at year_start
+    # Invest before year start in $
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 87.0, 76.5, 90.0, 67.5]})
 

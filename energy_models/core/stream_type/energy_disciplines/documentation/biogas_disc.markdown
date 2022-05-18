@@ -27,6 +27,6 @@ Significant datas for biogas [^2]:
   * Molecular Weight : 27.228 g/mol
   * Density, 1.1862 kg/m^3
 
-[^1]: IEA (2020), Outlook for biogas and biomethane: Prospects for organic growth, IEA, Paris https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
+[^1]: IEA 2022; Outlook for biogas and biomethane: Prospects for organic growth, https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth, License: CC BY 4.0.
 [^2]: Paolini, V., Petracchini, F., Segreto, M., Tomassetti, L., Naja, N. and Cecinato, A., 2018. Environmental impact of biogas: A short review of current knowledge. Journal of Environmental Science and Health, Part A, 53(10), pp.899-906.
 [^3]: Biodiesel price, neste.com, https://www.neste.com/investors/market-data/biodiesel-prices-sme-fame

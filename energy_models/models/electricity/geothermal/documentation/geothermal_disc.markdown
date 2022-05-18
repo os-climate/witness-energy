@@ -19,7 +19,7 @@ Typical uncertainty and expenditure profiles for a geothermal project[^1]
 ![](geothermal_uncertainty.PNG) 
 
 ## Some insight on Geothermal electricity evolution
-IEA Geothermal electricity power generation prediction[^4]
+IEA Geothermal electricity power generation prediction[^7]
 ![](geothermal_forecast.PNG) 
 
 [^1]: [IRENA Geothermal power (2017)](https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf)
@@ -29,4 +29,4 @@ IEA Geothermal electricity power generation prediction[^4]
 [^4]: [Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation Technologies.](https://openknowledge.worldbank.org/bitstream/handle/10986/34018/Demystifying-the-Costs-of-Electricity-Generation-Technologies.pdf?sequence=4)
 [^5]: [Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020. 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). National Renewable Energy Lab.(NREL), Golden, CO (United States).]
 [^6]: [National Renewable Energy Laboratory USA (NREL), Annual Technology Baseline 2020](https://atb.nrel.gov/electricity/2020/data.php)
-
+[^7]: [IEA 2022, Tracking Geothermal 2020, License: CC BY 4.0.](https://www.iea.org/reports/tracking-geothermal-2020)

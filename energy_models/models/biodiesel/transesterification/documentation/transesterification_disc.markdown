@@ -73,9 +73,9 @@ Second Edition, AOCS, 2010[^1]
 
 Data regarding prices of vegetable oil and reference biodiesel price are coming from [Neste website](https://www.neste.com/investors/market-data/palm-and-rapeseed-oil-prices)
 
-Global investments on biodiesel is extracted from the World Energy Investment 2020 from IEA
+Source for Global investments on biodiesel: IEA 2022,[World Energy Investment 2020](https://www.iea.org/reports/world-energy-investment-2020), License: CC BY 4.0.
 
-Transesterification process input and outputs quantities are coming from [IEA Advanced Motor Fuels Implementing Agreement, Final Report - Analysis of Biodiesel Options, Annex XXXIV: Biomass-Derived Diesel Fuels, p54](https://www.iea-amf.org/app/webroot/files/file/Annex%20Reports/AMF_Annex_34-1.pdf)
+Source for Transesterification process input and outputs: IEA 2022, [IEA Advanced Motor Fuels Implementing Agreement, Final Report - Analysis of Biodiesel Options, Annex XXXIV: Biomass-Derived Diesel Fuels, p54](https://www.iea-amf.org/app/webroot/files/file/Annex%20Reports/AMF_Annex_34-1.pdf), License: CC BY 4.0.
 
 Fuel properties (calorific values, density) are coming from [Engineering Toolbox](https://www.engineeringtoolbox.com/fuels-higher-calorific-values-d_169.html)
 

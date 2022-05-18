@@ -21,9 +21,9 @@ Data are extracted from IEA data tables[^3] and balances[^4]. CO2 emissions info
 
 [^2]: [Duke Energy](https://www.duke-energy.com/energy-education/how-energy-works/oil-and-gas-electricity)
 
-[^3]: [IEA Electricity Tables, 2019](https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Electricity&year=2019)
+[^3]: [IEA 2022, Electricity Tables, 2019](https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Electricity&year=2019), License: CC BY 4.0.
 
-[^4]: [IEA Balance, 2019](https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019)
+[^4]: [IEA 2022, Balance, 2019](https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019), License: CC BY 4.0.
 
 [^5]: [RTE France Data](https://www.rte-france.com/en/eco2mix/co2-emissions)
 

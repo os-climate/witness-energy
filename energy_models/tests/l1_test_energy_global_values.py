@@ -8,13 +8,19 @@ import numpy as np
 import pandas as pd
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_open
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import AgricultureMixDiscipline
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as agri_study_open
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
 
 
 class TestGlobalEnergyValues(unittest.TestCase):
     """
     This test class has the objective to test order of magnitude of some key values in energy models in 2020
+    All the data are taken either from ourworldindata:
+        Hannah Ritchie, Max Roser and Pablo Rosado (2020) - "Energy". Published online at OurWorldInData.org.
+        Retrieved from: 'https://ourworldindata.org/energy' [Online Resource]
+    Or from IEA:
+        Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019,
+        License: CC BY 4.0.
     """
 
     def setUp(self):
@@ -22,15 +28,39 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.dirs_to_del = []
+        chain_builders = []
         self.namespace = 'MyCase'
         self.study_name = f'{self.namespace}'
         self.name = 'Test'
         self.energymixname = 'EnergyMix'
+        self.agrimixname = 'AgricultureMix'
+        ns_crop = 'Crop'
+        ns_forest = 'Forest'
+
         self.ee = ExecutionEngine(self.name)
+        repo_agri = 'climateeconomics.sos_processes.iam.witness'
+        builder_agri = self.ee.factory.get_builder_from_process(
+            repo_agri, 'agriculture_mix_process')
+        chain_builders.extend(builder_agri)
+
         repo = 'energy_models.sos_processes.energy.MDA'
         builder = self.ee.factory.get_builder_from_process(
             repo, 'energy_process_v0_mda', techno_dict=DEFAULT_TECHNO_DICT_DEV)
-        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        for i, disc in enumerate(builder):
+            if disc.sos_name == 'Resources':
+                i_disc_to_pop = i
+        builder.pop(i_disc_to_pop)
+        chain_builders.extend(builder)
+
+        ns_dict = {'ns_crop': f'{self.name}.{self.agrimixname}.{ns_crop}',
+                   'ns_forest': f'{self.name}.{self.agrimixname}.{ns_forest}',
+                   'ns_agriculture': f'{self.name}.{self.agrimixname}',
+                   }
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        self.ee.factory.set_builders_to_coupling_builder(chain_builders)
         self.ee.configure()
         usecase = Study_open(execution_engine=self.ee,
                              techno_dict=DEFAULT_TECHNO_DICT_DEV)
@@ -42,18 +72,15 @@ class TestGlobalEnergyValues(unittest.TestCase):
         for dict_v in values_dict:
             full_values_dict.update(dict_v)
 
+        full_values_dict[f'{self.name}.is_dev'] = True
+
         full_values_dict[f'{self.name}.CO2_taxes'] = pd.DataFrame({'years': np.arange(2020, 2051),
                                                                    'CO2_tax': 20.0}, index=np.arange(2020, 2051))
-        self.agrimixname = 'AgricultureMix'
-        self.ee_agri = ExecutionEngine(self.name)
-        repo = 'climateeconomics.sos_processes.iam.witness'
-        builder_agri = self.ee_agri.factory.get_builder_from_process(
-            repo, 'agriculture_mix_process')
-        self.ee_agri.factory.set_builders_to_coupling_builder(builder_agri)
-        self.ee_agri.configure()
-        usecase_agri = Study_open(execution_engine=self.ee_agri)
+
+        usecase_agri = agri_study_open(execution_engine=self.ee, year_start=2020, year_end=2050, time_step=1)
         usecase_agri.study_name = self.name
-        values_dict_agri = usecase.setup_usecase()
+        usecase_agri.additional_ns = '.InvestmentDistribution'
+        values_dict_agri = usecase_agri.setup_usecase()
         for dict_v in values_dict_agri:
             full_values_dict.update(dict_v)
 
@@ -337,6 +364,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
     def test_03_check_net_production_values(self):
         '''
         Test order of magnitude of net energy production with values from Energy Balances IEA 2019
+        Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019, License: CC BY 4.0.
 
         '''
         self.ee.execute()
@@ -349,6 +377,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.energy_production_brut_detailed')
         '''
         Theory in 2019 from Energy Balances IEA 2019  expressed in TWh 
+        Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019, License: CC BY 4.0.
         '''
 
         '''

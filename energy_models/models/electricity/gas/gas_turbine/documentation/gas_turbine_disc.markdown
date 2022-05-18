@@ -35,7 +35,7 @@ by scenario, 2019-2040[^3]
 
 [^2]: [Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation Technologies.](https://openknowledge.worldbank.org/handle/10986/34018)
 
-[^3]: [International Energy Agency. (2019). World Energy Outlook 2019, IEA, Paris.](https://www.iea.org/reports/world-energy-outlook-2019)
+[^3]: IEA 2022, [International Energy Agency. (2019). World Energy Outlook 2019, IEA, Paris.](https://www.iea.org/reports/world-energy-outlook-2019), License: CC BY 4.0.
 
 [^4]: [Energy Information Agency. (2017).](Natural gas generators make up the largest share of overall U.S. generation capacity.](https://www.eia.gov/todayinenergy/detail.php?id=30872)
 

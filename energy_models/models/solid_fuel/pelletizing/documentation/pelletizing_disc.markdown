@@ -51,4 +51,4 @@ The data used for this model are extracted from the IEA bioenergy file from 2019
 [^4]: Globenewswire (2020). Outlook on the Wood Pellet Global Market to 2025. Available at : https://www.globenewswire.com/news-release/2020/11/24/2132562/0/en/Outlook-on-the-Wood-Pellet-Global-Market-to-2025-Europe-is-the-Largest-Consumer-as-Well-as-Producer-of-Wood-Pellets.html
 
 [^5]:IEA bioenergy (2019). Margin potential for a long-term sustainable wood pellet supply chain - Annexes Available at :
-https://www.ieabioenergy.com/wp-content/uploads/2019/06/Fritsche-et-al-2019-IEA-Bio-T40-Margin-Pellet-Study-Annexes.pdf
+https://www.ieabioenergy.com/wp-content/uploads/2019/06/Fritsche-et-al-2019-IEA-Bio-T40-Margin-Pellet-Study-Annexes.pdf, License: CC BY 4.0.

@@ -42,7 +42,8 @@ class LiquidHydrogenDiscipline(EnergyDiscipline):
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_liquid_hydrogen',
-                                  'default': LiquidHydrogen.data_energy_dict},
+                                  'default': LiquidHydrogen.data_energy_dict,
+                                  'unit': 'defined in dict'},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 

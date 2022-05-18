@@ -81,10 +81,13 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # ratio elec use / kerosene product
                                  'elec_demand': 0.008,
                                  'elec_demand_unit': 'kWh/kWh',
-                                 # IEA Hydrogen
-                                 # https://www.iea.org/reports/hydrogen
+                                 # IEA 2022, Hydrogen,
+                                 # https://www.iea.org/reports/hydrogen,
+                                 # License: CC BY 4.0.
                                  # 2020 total hydrogen demand = 40Mt (calorific value 33.3 kWh/kg)
+                                 # Source: IEA 2022, Data and Statistics,
                                  # https://www.iea.org/data-and-statistics/data-tables/?country=WORLD&energy=Oil&year=2019
+                                 # License: CC BY 4.0.
                                  # 2019 fuel prod = 5672984+11916946+41878252+14072582+2176724+56524612+16475667 TJ
                                  # ratio for hydrogen demand = (40*33.3) /
                                  # (148717767/3.6/1000)
@@ -109,10 +112,15 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
     energy_own_use = 2485.89  # TWh
+    # Source for initial production: IEA 2022; Oil Information: Overview,
+    # https://www.iea.org/reports/oil-information-overview,
+    # License: CC BY 4.0.
     # in TWh at year_start from IEA (raw prod of oil products and not crude oil
     initial_production = 49472.0 - energy_own_use
 
-    # Invest from WEI2020
+    # Source for invest: IEA 2022; World Energy Investment,
+    # https://www.iea.org/reports/world-energy-investment-2020,
+    # License: CC BY 4.0.
     invest_before_year_start = pd.DataFrame(
 
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 477, 470]})

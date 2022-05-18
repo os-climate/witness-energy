@@ -18,7 +18,7 @@ from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.resources_models.oil import CrudeOil
-from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min, compute_dfunc_with_exp_min
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 import pandas as pd
@@ -227,13 +227,12 @@ class Refinery(LiquidFuelTechno):
             (nb_years, nb_years), dtype=arr_type)
         dprod_list_dcapex_list = np.zeros(
             (nb_years, nb_years), dtype=arr_type)
-
         # We fill this jacobian column by column because it is the same element
         # in the entire column
         for i in range(nb_years):
 
-            dpprod_dpinvest = 1.0 / \
-                (capex_list[i] + self.oil_extraction_capex)
+            dpprod_dpinvest = compute_dfunc_with_exp_min(np.array([invest_list[i]]), self.min_value_invest)[0][0] / \
+                              (capex_list[i]+ self.oil_extraction_capex)
             len_non_zeros = min(max(0, nb_years -
                                     techno_dict['construction_delay'] - i),
                                 techno_dict['lifetime'])
@@ -246,15 +245,54 @@ class Refinery(LiquidFuelTechno):
             # jacobian by construction _delay)
             # Each column is then composed of [0,0,0... (dp/dx,dp/dx)*lifetime,
             # 0,0,0]
-
+            is_invest_negative = max(
+                np.sign(invest_list[i] + np.finfo(float).eps), 0.0)
             dprod_list_dinvest_list[:, i] = np.hstack((np.zeros(first_len_zeros),
                                                        np.ones(
-                len_non_zeros) * dpprod_dpinvest,
+                len_non_zeros) * dpprod_dpinvest * is_invest_negative,
                 np.zeros(last_len_zeros)))
+
+        dprod_list_dcapex_list = self.compute_dprod_dcapex(
+            capex_list, invest_list, techno_dict, invest_before_year_start)
+
+        dinvest_exp_min = compute_dfunc_with_exp_min(
+            invest_list, self.min_value_invest)
+
+        dcapex_list_dinvest_list_withexp = dcapex_list_dinvest_list * dinvest_exp_min
+        dprod_dinvest = np.zeros(
+            (nb_years, nb_years), dtype=arr_type)
+        #dprod_dinvest= dpprod_dpinvest + dprod_dcapex*dcapex_dinvest
+        for line in range(nb_years):
+            for column in range(nb_years):
+                dprod_dinvest[line, column] = dprod_list_dinvest_list[line, column] + \
+                    np.matmul(
+                        dprod_list_dcapex_list[line, :], dcapex_list_dinvest_list_withexp[:, column])
+
+        self.dprod_dinvest = dprod_dinvest
+
+        return dprod_dinvest
+
+    def compute_dprod_dcapex(self, capex_list, invest_list, techno_dict, invest_before_year_start):
+        '''
+        Overwrite the dprod_dcapex derivative to take the added oil extraction capex into account
+        '''
+        nb_years = len(capex_list)
+        dprod_list_dcapex_list = np.zeros(
+            (nb_years, nb_years))
+        if 'complex128' in [capex_list.dtype, invest_list.dtype, invest_before_year_start.dtype]:
+            dprod_list_dcapex_list = np.zeros(
+                (nb_years, nb_years), dtype='complex128')
+        for i in range(nb_years):
+
+            len_non_zeros = min(max(0, nb_years -
+                                    techno_dict['construction_delay'] - i),
+                                techno_dict['lifetime'])
+            first_len_zeros = min(
+                i + techno_dict['construction_delay'], nb_years)
+            last_len_zeros = max(0, nb_years -
+                                 len_non_zeros - first_len_zeros)
             # Same for capex
-            dpprod_dpcapex = - \
-                invest_list[i] / (capex_list[i] +
-                                  self.oil_extraction_capex)**2
+            dpprod_dpcapex = - invest_list[i] / (capex_list[i] + self.oil_extraction_capex)**2
 
             dprod_list_dcapex_list[:, i] = np.hstack((np.zeros(first_len_zeros),
                                                       np.ones(
@@ -262,9 +300,8 @@ class Refinery(LiquidFuelTechno):
                 np.zeros(last_len_zeros)))
         # but the capex[0] is used for invest before
         # year_start then we need to add it to the first column
-        dpprod_dpcapex0_list = [- invest / (capex_list[0] +
-                                            self.oil_extraction_capex) ** 2
-                                for invest in invest_before_year_start]
+        dpprod_dpcapex0_list = [- invest / (capex_list[0] + self.oil_extraction_capex)
+                                ** 2 for invest in invest_before_year_start]
 
         for index, dpprod_dpcapex0 in enumerate(dpprod_dpcapex0_list):
             len_non_zeros = min(
@@ -274,20 +311,6 @@ class Refinery(LiquidFuelTechno):
                 len_non_zeros) * dpprod_dpcapex0,
                 np.zeros(nb_years - index - len_non_zeros)))
 
-        if 'complex128' in [dprod_list_dinvest_list.dtype, dcapex_list_dinvest_list.dtype, dprod_list_dcapex_list.dtype]:
-            arr_type = 'complex128'
-        else:
-            arr_type = 'float64'
+        self.dprod_list_dcapex_list = dprod_list_dcapex_list
 
-        #dprod_dfluegas = dpprod_dpfluegas + dprod_dcapex * dcapexdfluegas
-        dprod_dinvest = np.zeros(
-            (nb_years, nb_years), dtype=arr_type)
-
-        for line in range(nb_years):
-            for column in range(nb_years):
-
-                dprod_dinvest[line, column] = dprod_list_dinvest_list[line, column] + \
-                    np.matmul(
-                        dprod_list_dcapex_list[line, :], dcapex_list_dinvest_list[:, column])
-
-        return dprod_dinvest
+        return dprod_list_dcapex_list

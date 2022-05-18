@@ -46,7 +46,8 @@ class RenewableTechnoDiscipline(TechnoDiscipline):
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_renewable',
-                                  'default': Renewable.data_energy_dict},
+                                  'default': Renewable.data_energy_dict,
+                                  'unit': 'defined in dict'},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 

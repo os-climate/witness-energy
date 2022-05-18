@@ -24,9 +24,9 @@ The power by hectare value has been computed on the base of 357 MWh/acre[^6], gi
 
 [^1]: Solar Photovoltaic Technology Basics. NREL.gov, www.nrel.gov/research/re-photovoltaics.html 
 [^2]: Capacity factor. NRC.gov, https://www.nrc.gov/reading-rm/basic-ref/glossary/capacity-factor-net.html
-[^3]: IEA (2019), World Energy Outlook 2019, IEA, Paris https://www.iea.org/reports/world-energy-outlook-2019
+[^3]: IEA 2022, World Energy Outlook 2019, IEA, Paris https://www.iea.org/reports/world-energy-outlook-2019, License: CC BY 4.0.
 [^4]: IRENA (2020), Renewable Power Generation Costs in 2019,
 International Renewable Energy Agency, Abu Dhabi. https://www.irena.org/publications/2020/Jun/Renewable-Power-Costs-in-2019
 [^5]: Scientific report (2021), https://www.nature.com/articles/s41598-021-82042-5
 [^6]: greenCoast, 2019, Solar Farm Land Requirements: How Much Land Do You Need?, https://greencoast.org/solar-farm-land-requirements/
-[^7]: IEA, Solar PV power generation in the Sustainable Development Scenario, 2000-2030, IEA, Paris https://www.iea.org/data-and-statistics/charts/solar-pv-power-generation-in-the-sustainable-development-scenario-2000-2030
+[^7]: IEA 2022, Solar PV power generation in the Sustainable Development Scenario, 2000-2030, IEA, Paris https://www.iea.org/data-and-statistics/charts/solar-pv-power-generation-in-the-sustainable-development-scenario-2000-2030, License: CC BY 4.0.

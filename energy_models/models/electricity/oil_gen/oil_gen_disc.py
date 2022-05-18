@@ -52,9 +52,10 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  # Organisation for Economic Co-Operation and Development.
                                  # U.S. Energy Information Association
                                  # Levelized Costs of New Generation Resources in the Annual Energy Outlook 2021
-                                 # IEA (2014), World Energy Outlook 2014, IEA,
+                                 # IEA 2022, World Energy Outlook 2014, IEA,
                                  # Paris
-                                 # https://www.iea.org/reports/world-energy-outlook-2014
+                                 # https://www.iea.org/reports/world-energy-outlook-2014,
+                                 # License: CC BY 4.0.
                                  'Opex_percentage': 0.0339,  # Mean of IEA World Energy Outlook 2014
 
                                  # RTE France
@@ -62,16 +63,18 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production': 0.777,
                                  'CO2_from_production_unit': 'kg/kWh',
 
-                                 # IEA (2020), Levelised Cost of Electricity Calculator,
+                                 # IEA 2022, Levelised Cost of Electricity Calculator,
                                  # IEA and NEA, Paris
                                  # https://www.iea.org/articles/levelised-cost-of-electricity-calculator
+                                 # License: CC BY 4.0.
                                  # keep the same as coal generator (see:
                                  # https://www.duke-energy.com/energy-education/how-energy-works/oil-and-gas-electricity)
                                  'elec_demand': 0.16,
                                  'elec_demand_unit': 'kWh/kWh',
 
-                                 # IEA
+                                 # Source: IEA 2022
                                  # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019
+                                 # License: CC BY 4.0.
                                  # 5727280 TJ oil demand --> 1590.91 TWh
                                  # initial prod = 747.171 TWh
                                  'fuel_demand': 1590.91 / 747.171,  # at 100% efficiency
@@ -110,12 +113,15 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
 
-    # In TWh at year_start source IEA 2019
-    # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Electricity&year=2019
+    # In TWh at year_start source: IEA 2022, Data Tables,
+    # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Electricity&year=2019,
+    # License: CC BY 4.0.
     initial_production = 747.171
 
-    # Invest before year start in $ source IEA 2019
+    # Source for Invest before year start in $:
+    # IEA 2022, World Energy Investment 2019,
     # https://www.iea.org/reports/world-energy-investment-2019/power-sector
+    # License: CC BY 4.0.
     # (linear from 2016, 2017, 2018 data)
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [21.0, 20.0, 19.0, 18.0, 17.0]})

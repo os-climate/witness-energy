@@ -67,8 +67,6 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
 
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'electricity': 0.0})
-        # We use the IEA H2 demand to fake the invest level through years and
-        # divide by 10 compared to SMR
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': np.array([4435750000.0, 4522000000.0, 4608250000.0,
                                                  4694500000.0, 4780750000.0, 4867000000.0,

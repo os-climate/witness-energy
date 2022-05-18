@@ -70,7 +70,6 @@ class TechnoType:
         self.non_use_capital = None
         self.techno_capital = None
         self.applied_ratio = None
-        self.soft_max_crashed = False
 
     def check_outputs_dict(self, biblio_data):
         '''
@@ -183,7 +182,6 @@ class TechnoType:
             self.all_streams_demand_ratio = inputs_dict['all_streams_demand_ratio']
         if self.is_apply_resource_ratio:
             self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
-        self.soft_max_crashed = False
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -216,7 +214,6 @@ class TechnoType:
                                                                                         <= self.year_end]
         if self.is_apply_resource_ratio:
             self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
-        self.soft_max_crashed = False
 
     def configure_energy_data(self, inputs_dict):
         '''
@@ -274,14 +271,8 @@ class TechnoType:
                 # smooth_min(smooth_min(x)=-smooth_max(-x)) between all the
                 # matches for each year
                 if self.is_softmax:
-                    try:
-                        ratio_values = - \
-                            soft_maximum_vect(-self.ratio_df[elements].values)
-                    except:
-                        ratio_values = - \
-                            smooth_maximum_vect(
-                                -self.ratio_df[elements].values)
-                        self.soft_max_crashed = True
+                    ratio_values = - \
+                        soft_maximum_vect(-self.ratio_df[elements].values)
                 else:
                     ratio_values = - \
                         smooth_maximum_vect(-self.ratio_df[elements].values)
@@ -1142,12 +1133,8 @@ class TechnoType:
         if is_apply_ratio:
             if len(elements) > 0:
                 if self.is_softmax:
-                    if self.soft_max_crashed:
-                        dsmooth_matrix = get_dsmooth_dvariable_vect(
-                            -self.ratio_df[elements].values)
-                    else:
-                        dsmooth_matrix = get_dsoft_maximum_vect(
-                            -self.ratio_df[elements].values)
+                    dsmooth_matrix = get_dsoft_maximum_vect(
+                        -self.ratio_df[elements].values)
                 else:
                     dsmooth_matrix = get_dsmooth_dvariable_vect(
                         -self.ratio_df[elements].values)

@@ -194,8 +194,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'electricity': 0.02, 'syngas': 0.2, 'methane': -0.1})
-        # We use the IEA H2 demand to fake the invest level through years and
-        # divide by 10 compared to SMR
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': np.ones(len(years)) * 0.1715})
 

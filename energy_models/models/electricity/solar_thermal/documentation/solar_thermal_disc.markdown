@@ -37,7 +37,7 @@ The power by hectare value has been computed on the base of 357 MWh/acre[^6] for
 [^2]: Greenpeace International, SolarPACES and ESTELA (European Solar Thermal Electricity Association) (2016), Solar Thermal Electricity Global Outlook 2016 – Full Report, http://www.solarpaces.org/new-web-nasertic/images/pdfs/GP-ESTELA-SolarPACES_Solar-Thermal-Electricity-Global-Outlook-2016_Executive-Summary.pdf
 [^3]: NREL (National Renewable Energy Laboratory), Concentrating Solar Power Projects, https://solarpaces.nrel.gov/
 [^1]: JRC (Joint Research Center) (2019), Solar Thermal Electricity: Technology development report https://publications.jrc.ec.europa.eu/repository/bitstream/JRC118040/jrc118040_1.pdf
-[^1b]: [IEA (2014), Technology Roadmap - Solar Thermal Electricity 2014, IEA, Paris](https://www.iea.org/reports/technology-roadmap-solar-thermal-electricity-2014)
+[^1b]: [IEA 2022, Technology Roadmap - Solar Thermal Electricity 2014, IEA, Paris](https://www.iea.org/reports/technology-roadmap-solar-thermal-electricity-2014), License: CC BY 4.0.
 [^4]: IRENA (2020), Renewable Power Generation Costs in 2019,
 International Renewable Energy Agency, Abu Dhabi. https://www.irena.org/publications/2020/Jun/Renewable-Power-Costs-in-2019
 [^5]: Scientific report (2021), https://www.nature.com/articles/s41598-021-82042-5
