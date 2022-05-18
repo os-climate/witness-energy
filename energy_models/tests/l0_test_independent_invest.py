@@ -84,6 +84,9 @@ class TestIndependentInvest(unittest.TestCase):
         unmanaged_wood_invest = np.linspace(2, 3, year_range)
         self.unmanaged_wood_invest_df = pd.DataFrame(
             {"years": self.years, "investment": unmanaged_wood_invest})
+        deforestation_invest = np.linspace(1.0, 0.1, year_range)
+        self.deforestation_invest_df = pd.DataFrame(
+            {"years": self.years, "investment": deforestation_invest})
         crop_invest = np.linspace(0.5, 0.25, year_range)
         self.crop_invest_df = pd.DataFrame(
             {"years": self.years, "investment": crop_invest})
@@ -303,7 +306,7 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.forest_investment': self.forest_invest_df,
                        f'{self.name}.is_dev': True,
                        f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,
-                       f'{self.name}.unmanaged_wood_investment': self.unmanaged_wood_invest_df,
+                       f'{self.name}.deforestation_investment': self.deforestation_invest_df,
                        f'{self.name}.crop_investment': self.crop_invest_df}
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -314,7 +317,7 @@ class TestIndependentInvest(unittest.TestCase):
 
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.energy_investment',
                                                                           f'{self.name}.{self.model_name}.invest_mix', f'{self.name}.forest_investment',
-                                                                          f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment',
+                                                                          f'{self.name}.managed_wood_investment', f'{self.name}.deforestation_investment',
                                                                           f'{self.name}.crop_investment'],
                                       outputs=[
             f'{self.name}.{techno}.invest_level' for techno in all_technos_list] + [f'{self.name}.invest_objective',
