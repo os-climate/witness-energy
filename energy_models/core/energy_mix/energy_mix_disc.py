@@ -801,6 +801,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         #---- Stream Demand ratio gradients ---#
         #--------------------------------------#
         all_streams_demand_ratio = outputs_dict['all_streams_demand_ratio']
+        energy_production_brut_detailed = outputs_dict['energy_production_brut_detailed']
         ratio_ref = inputs_dict['ratio_ref']
         # Loop on streams
         dobjective_dratio = self.compute_dratio_objective(
@@ -811,7 +812,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
             if energy == BiomassDry.name and is_dev:
                 ns_energy = AgricultureMixDiscipline.name
             ddemand_ratio_denergy_prod, ddemand_ratio_denergy_cons = self.compute_ddemand_ratio_denergy_production(
-                energy, sub_production_dict, sub_consumption_woratio_dict, stream_class_dict, scaling_factor_energy_production, years)
+                energy, sub_production_dict, sub_consumption_woratio_dict, stream_class_dict, scaling_factor_energy_production, years, energy_production_brut_detailed)
             self.set_partial_derivative_for_other_types(
                 ('all_streams_demand_ratio', f'{energy}'), (f'{ns_energy}.energy_production', energy),  ddemand_ratio_denergy_prod)
             dobjective_dratio_energy = np.array([dobjective_dratio[ienergy + iyear * len(
@@ -925,7 +926,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         return np.identity(len(years)) * dtotal_production_denergy_production
 
     def compute_ddemand_ratio_denergy_production(self, energy, sub_production_dict, sub_consumption_dict, stream_class_dict,
-                                                 scaling_factor_production, years):
+                                                 scaling_factor_production, years, energy_production_brut_detailed):
         '''! Compute the gradient of the demand ratio vs energy production function :
                  -the ratio is capped to one if energy_prod>energy_cons, hence the special condition.
                  -the function is designed to be used even if no energy_input is specified (to get ddemand_ratio_denergy_prod gradient alone)
@@ -939,6 +940,12 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         # Calculate energy production and consumption
         energy_production = sub_production_dict[f'{energy}'][f'{energy}'].values
+        if energy in EnergyMix.raw_tonet_dict.keys():
+            column_name = f'{EnergyMix.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
+
+            prod_raw_to_substract = energy_production_brut_detailed[column_name].values * \
+                (1.0 - EnergyMix.raw_tonet_dict[energy])
+            energy_production -= prod_raw_to_substract
         energy_consumption = np.zeros(len(years))
         for consu in sub_consumption_dict.values():
             if f'{energy} ({self.stream_class_dict[energy].unit})' in consu.columns:
@@ -953,11 +960,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
             energy_production, 1.0e-10)
         energy_cons_limited = compute_func_with_exp_min(
             energy_consumption, 1.0e-10)
-        ddemand_ratio_denergy_prod = np.identity(len(years)) * 100.0 *\
-            np.where((energy_prod_limited <= energy_cons_limited) * (energy_prod_limited / energy_cons_limited > 1E-15),
-                     scaling_factor_production * denergy_prod_limited / energy_cons_limited,
-                     0.0)
 
+        ddemand_ratio_denergy_prod = np.identity(len(years)) * 100.0
         # If prod < cons, set the identity element for the given year to
         # the corresponding value
         denergy_cons_limited = compute_dfunc_with_exp_min(
@@ -970,7 +974,17 @@ class Energy_Mix_Discipline(SoSDiscipline):
                      energy_cons_limited**2,
                      0.0)
 
-        return ddemand_ratio_denergy_prod, ddemand_ratio_denergy_cons
+        if energy in EnergyMix.raw_tonet_dict.keys():
+
+            denergy_prod_limited = np.identity(len(years)) * 100.0 *\
+                np.where((energy_prod_limited <= energy_cons_limited) * (energy_prod_limited / energy_cons_limited > 1E-15),
+                         denergy_prod_limited * scaling_factor_production * EnergyMix.raw_tonet_dict[energy]  /
+                         energy_cons_limited,
+                         0.0)
+        else:
+            denergy_prod_limited = np.identity(len(years)) * 100.0
+
+        return denergy_prod_limited, ddemand_ratio_denergy_cons
 
     def compute_dmean_price_dprod(self, energy, energies, mix_weight, energy_price_after_tax,
                                   production_energy_net_pos, production_detailed_df, cons=False):
