@@ -22,14 +22,12 @@ from energy_models.core.investments.independent_invest import IndependentInvest
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class TestIndependentInvest(unittest.TestCase):
     """
     OneInvest test class
     """
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         '''
