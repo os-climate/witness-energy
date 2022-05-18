@@ -268,8 +268,8 @@ class EnergyMix(BaseStream):
                             f'The columns {wrong_columns} in the energy_consumption out of {idx} cannot be taken into account for an error of unity')
 
             if energy in self.raw_tonet_dict.keys():
-                self.compute_net_prod_of_coarse_energies(energy, column_name)
-
+                prod_raw_to_substract = self.compute_net_prod_of_coarse_energies(energy, column_name)
+                self.production[column_name] -= prod_raw_to_substract
         self.substract_losses_by_energy()
         # Sum on netenergy production
         self.production['Total production'] = self.production[[
@@ -299,7 +299,7 @@ class EnergyMix(BaseStream):
         We use a raw/net ratio to compute consumed energy production 
         consu = raw-net = raw(1-1/ratio)
         '''
-        self.production[column_name] -= self.production_raw[column_name].values * \
+        return self.production_raw[column_name].values * \
             (1.0 - self.raw_tonet_dict[energy])
 
     def substract_energy_heat_losses(self):
@@ -561,6 +561,12 @@ class EnergyMix(BaseStream):
                 if f'{energy} ({self.stream_class_dict[energy].unit})' in consu.columns:
                     energy_consumption = np.sum([energy_consumption, consu[
                         f'{energy} ({self.stream_class_dict[energy].unit})'].values], axis=0)
+            # if energy is in raw_tonet_dict, add the consumption due to raw_to_net ratio to energy_consumption
+            if energy in self.raw_tonet_dict.keys():
+                column_name = f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
+                prod_raw_to_substract = self.compute_net_prod_of_coarse_energies(energy, column_name)
+                energy_production -= prod_raw_to_substract
+
             energy_prod_limited = compute_func_with_exp_min(
                 energy_production, 1.0e-10)
             energy_cons_limited = compute_func_with_exp_min(

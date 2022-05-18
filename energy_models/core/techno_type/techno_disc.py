@@ -863,7 +863,7 @@ class TechnoDiscipline(SoSDiscipline):
             'techno_detailed_production')
         chart_name = f'{self.energy_name} World Production via {self.techno_name}<br>with 2020 factories distribution'
 
-        new_chart = TwoAxesInstanciatedChart('years', f'{self.energy_name} production (TWh)',
+        new_chart = TwoAxesInstanciatedChart('years', f'{self.energy_name} production [TWh]',
                                              chart_name=chart_name.capitalize())
 
         serie = InstanciatedSeries(
@@ -890,7 +890,7 @@ class TechnoDiscipline(SoSDiscipline):
         chart_name = f'{self.techno_name} factories age in term of TWh of {self.energy_name} production'
 
         if 'years' in age_distrib_production.columns:
-            new_chart = TwoAxesInstanciatedChart('age', f'{self.energy_name} production (TWh)',
+            new_chart = TwoAxesInstanciatedChart('age', f'{self.energy_name} production [TWh]',
                                                  chart_name=chart_name.capitalize())
             years = age_distrib_production['years'].values
             filtered_years = list(
