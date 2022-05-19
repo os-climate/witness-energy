@@ -126,7 +126,8 @@ class Study(EnergyMixStudyManager):
                                            'electricity': 10.0,
                                            'amine': 1300.0,
                                            'potassium':  50.0,
-                                           'calcium': 85.0
+                                           'calcium': 85.0,
+                                           'methane': 10.
                                            })
 
         # the value for invest_level is just set as an order of magnitude
