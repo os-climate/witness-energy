@@ -57,7 +57,7 @@ class CCUS(BaseStream):
         self.scaling_factor_energy_production = None
         self.scaling_factor_energy_consumption = None
         self.co2_emissions_needed_by_energy_mix = None
-        self.co2_emissions_from_energy_mix = None
+        self.carbon_capture_from_energy_mix = None
 
     def configure(self, inputs_dict):
         '''
@@ -115,7 +115,7 @@ class CCUS(BaseStream):
                         self.scaling_factor_energy_consumption
 
         self.co2_emissions_needed_by_energy_mix = inputs_dict['co2_emissions_needed_by_energy_mix']
-        self.co2_emissions_from_energy_mix = inputs_dict['CO2_emissions_by_use_sources']
+        self.carbon_capture_from_energy_mix = inputs_dict['carbon_capture_from_energy_mix']
         #self.co2_emissions = inputs_dict['co2_emissions']
 
     def compute_CO2_emissions(self):
@@ -163,7 +163,7 @@ class CCUS(BaseStream):
         '''
 
         self.total_co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'] = self.total_co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'] + \
-            self.co2_emissions_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'] * 1e3 - \
+            self.carbon_capture_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'] * 1e3 - \
             self.co2_emissions_needed_by_energy_mix[f'{CarbonCapture.name} needed by energy mix (Gt)'] * 1e3 -\
             self.co2_for_food[f'{CO2.name} for food (Mt)']
 
@@ -380,7 +380,7 @@ class CCUS(BaseStream):
             dtot_CO2_emissions, key_dep_tuple_list, new_key)
 
         cc_to_be_stored = co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'].values + \
-            self.co2_emissions_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'].values * 1e3 - \
+            self.carbon_capture_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'].values * 1e3 - \
             self.co2_emissions_needed_by_energy_mix[f'{CarbonCapture.name} needed by energy mix (Gt)'].values * 1e3 -\
             self.co2_for_food[f'{CO2.name} for food (Mt)'].values
         # if the carbon to be stored is lower than zero that means that we need
@@ -390,7 +390,7 @@ class CCUS(BaseStream):
             cc_needed = self.co2_emissions_needed_by_energy_mix[
                 f'{CarbonCapture.name} needed by energy mix (Gt)'].values * 1e3
             cc_provided = co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'].values + \
-                self.co2_emissions_from_energy_mix[
+                self.carbon_capture_from_energy_mix[
                     f'{CarbonCapture.name} from energy mix (Gt)'].values * 1e3
             dtot_CO2_emissions_old = dtot_CO2_emissions.copy()
             dratio_dkey = {}

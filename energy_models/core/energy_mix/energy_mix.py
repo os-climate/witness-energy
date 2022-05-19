@@ -401,6 +401,28 @@ class EnergyMix(BaseStream):
             {'years': self.production['years'],
              f'{CarbonCapture.name} needed by energy mix (Gt)': self.total_co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'].values / 1e3})
 
+        ''' CARBON CAPTURE from energy mix
+        Total carbon capture from energy mix if the technology offers carbon_capture
+         Ex : upgrading biogas technology is the same as Amine Scrubbing but
+         on a different gas (biogas for upgrading biogas and flue gas for
+         Amien scrubbing)
+        '''
+        energy_producing_carbon_capture = self.co2_production[[
+            col for col in self.co2_production if col.endswith(f'{CarbonCapture.name} (Mt)')]]
+        energy_producing_carbon_capture_list = [key.replace(
+            f' {CarbonCapture.name} (Mt)', '') for key in energy_producing_carbon_capture]
+        if len(energy_producing_carbon_capture_list) != 0:
+            self.total_co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'] = energy_producing_carbon_capture.sum(
+                axis=1).values
+        else:
+            self.total_co2_emissions[
+                f'{CarbonCapture.name} from energy mix (Mt)'] = 0.0
+
+        # Put in Gt CO2 from energy mix nedded for ccus discipline
+        self.carbon_capture_from_energy_mix = pd.DataFrame(
+            {'years': self.production['years'],
+             f'{CarbonCapture.name} from energy mix (Gt)': self.total_co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'].values / 1e3})
+
     def compute_mean_price(self, exp_min=True):
         '''
         Compute energy mean price and price of each energy after carbon tax
@@ -590,7 +612,7 @@ class EnergyMix(BaseStream):
         self.ratio_objective = np.asarray(
             [smooth_max / self.ratio_norm_value])
 
-    def compute_grad_CO2_emissions(self, net_production, co2_emissions, alpha):
+    def compute_grad_CO2_emissions(self):
         '''
         Compute CO2 total emissions
         '''
@@ -677,7 +699,7 @@ class EnergyMix(BaseStream):
         if len(energy_producing_carbon_capture_list) != 0:
             for energy1 in energy_producing_carbon_capture_list:
                 dtot_CO2_emissions[
-                    f'{CarbonCapture.name} from energy mix (Mt) vs {energy1}#{CarbonCapture.name} (Mt)#prod'] = np.ones(len_years)
+                    f'{CarbonCapture.name} from energy mix (Gt) vs {energy1}#{CarbonCapture.name} (Mt)#prod'] = np.ones(len_years)
 #             self.total_co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'] = energy_producing_carbon_capture.sum(
 #                 axis=1).values
 #         else:

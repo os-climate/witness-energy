@@ -22,11 +22,12 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 from os.path import join, dirname
 import pickle
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import AgricultureMixDiscipline
 
 
-class CCUSDiscTestCase(unittest.TestCase):
+class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
     """
-    CO2EmissionsDisc  test class
+    GHGEnergyEmissionsDisc  test class
     """
 
     def setUp(self):
@@ -44,54 +45,42 @@ class CCUSDiscTestCase(unittest.TestCase):
         pkl_file.close()
 
         self.CO2_per_use = {}
-        self.energy_prices = {}
-        self.energy_consumption_woratio = {}
-        self.energy_production, self.energy_consumption, self.land_use_required = {}, {}, {}
+        self.CH4_per_use = {}
+        self.N2O_per_use = {}
+        self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
+            self.CH4_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CH4_per_use']['value']
+            self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
             self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
             self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
-        for energy in ['carbon_capture', 'carbon_storage']:
-            self.land_use_required[f'{energy}'] = streams_outputs_dict[f'{energy}']['land_use_required']['value']
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
-            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
-            self.energy_prices[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_prices']['value']
-            self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[
-                f'{energy}']['energy_consumption_woratio']['value']
-
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
         self.energy_production_detailed = streams_outputs_dict['energy_production_detailed']
-        years = streams_outputs_dict[f'{energy}']['energy_consumption']['value']['years']
-        self.CO2_taxes = pd.DataFrame(data={'years': years, 'CO2_tax': 150.})
-        self.co2_emissions = pd.DataFrame(
-            data={'years': years, 'carbon_capture needed by energy mix (Mt)': 0.005})
-        self.co2_emissions = pd.DataFrame(
-            data={'years': years, 'carbon_capture needed by energy mix (Mt)': 0.005})
-        self.co2_emissions_needed_by_energy_mix = pd.DataFrame(
-            data={'years': years, 'carbon_capture needed by energy mix (Gt)': 0.005})
-        self.carbon_capture_from_energy_mix = pd.DataFrame(
-            data={'years': years, 'carbon_capture from energy mix (Gt)': 1e-15})
+
+        self.co2_emissions_ccus_Gt = pd.DataFrame({'years': self.years,
+                                                   'carbon_storage Limited by capture (Gt)': np.linspace(1, 6, len(self.years))
+                                                   })
+        self.co2_emissions_needed_by_energy_mix = pd.DataFrame({'years': self.years,
+                                                                'carbon_capture needed by energy mix (Gt)': np.linspace(0.001, 0.3, len(self.years))
+                                                                })
 
     def tearDown(self):
         pass
 
-    def test_01_CCUS_discipline(self):
+    def test_01_ghgenergy_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'ConsumptionCO2Emissions'
+        self.model_name = 'GHGEnergyEmissions'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_ccs': self.name,
                    'ns_energy_study': self.name,
-                   'ns_ref': self.name,
-                   'ns_functions': self.name,
-                   'ns_carbon_capture': self.name,
-                   'ns_carbon_storage': self.name}
+                   'ns_witness': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.core.ccus.ccus_disc.CCUS_Discipline'
+        mod_path = 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -107,23 +96,24 @@ class CCUSDiscTestCase(unittest.TestCase):
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
             f'{self.name}.energy_production_detailed': self.energy_production_detailed,
+            f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
+            f'{self.name}.co2_emissions_needed_by_energy_mix': self.co2_emissions_needed_by_energy_mix,
         }
+
         for energy in self.energy_list:
-            inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
-            inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
+            if energy == 'biomass_dry':
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CO2_per_use'] = self.CO2_per_use[energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CH4_per_use'] = self.CH4_per_use[energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.N2O_per_use'] = self.N2O_per_use[energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.energy_production'] = self.energy_production[energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.energy_consumption'] = self.energy_consumption[energy]
+            else:
 
-        for energy in ['carbon_capture', 'carbon_storage']:
-            inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
-            inputs_dict[f'{self.name}.{energy}.energy_prices'] = self.energy_prices[energy]
-            inputs_dict[f'{self.name}.{energy}.land_use_required'] = self.land_use_required[energy]
-            inputs_dict[f'{self.name}.{energy}.energy_consumption_woratio'] = self.energy_consumption_woratio[energy]
-            inputs_dict[f'{self.name}.{energy}.co2_emissions'] = self.co2_emissions
-        inputs_dict[f'{self.name}.CO2_taxes'] = self.CO2_taxes
-        inputs_dict[f'{self.name}.carbon_capture_from_energy_mix'] = self.carbon_capture_from_energy_mix
-        inputs_dict[f'{self.name}.co2_emissions_needed_by_energy_mix'] = self.co2_emissions_needed_by_energy_mix
-
+                inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
+                inputs_dict[f'{self.name}.{energy}.CH4_per_use'] = self.CH4_per_use[energy]
+                inputs_dict[f'{self.name}.{energy}.N2O_per_use'] = self.N2O_per_use[energy]
+                inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
+                inputs_dict[f'{self.name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -132,11 +122,11 @@ class CCUSDiscTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-#        for graph in graph_list:
-#            graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
 
 
 if '__main__' == __name__:
-    cls = CCUSDiscTestCase()
+    cls = GHGEnergyEmissionsDiscTestCase()
     cls.setUp()
-    cls.test_01_CCUS_discipline()
+    cls.test_01_ghgenergy_discipline()

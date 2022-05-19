@@ -56,7 +56,7 @@ class CCUS_Discipline(SoSDiscipline):
         'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
-        'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
+        'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
     }
 
     DESC_OUT = {
@@ -246,7 +246,7 @@ class CCUS_Discipline(SoSDiscipline):
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} from energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('CO2_emissions_by_use_sources', f'{CarbonCapture.name} from energy mix (Gt)'), np.identity(len(years)) * value)
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('carbon_capture_from_energy_mix', f'{CarbonCapture.name} from energy mix (Gt)'), np.identity(len(years)) * value)
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} needed by energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
@@ -286,7 +286,7 @@ class CCUS_Discipline(SoSDiscipline):
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} from energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('CO2_emissions_by_use_sources', f'{CarbonCapture.name} from energy mix (Gt)'), value * 1e3)
+                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('carbon_capture_from_energy_mix', f'{CarbonCapture.name} from energy mix (Gt)'), value * 1e3)
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} needed by energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
@@ -397,8 +397,8 @@ class CCUS_Discipline(SoSDiscipline):
         chart_name = 'CO2 emissions captured, used and to store'
         co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
         co2_for_food = self.get_sosdisc_inputs('co2_for_food')
-        CO2_emissions_by_use_sources = self.get_sosdisc_inputs(
-            'CO2_emissions_by_use_sources')
+        carbon_capture_from_energy_mix = self.get_sosdisc_inputs(
+            'carbon_capture_from_energy_mix')
         co2_emissions_needed_by_energy_mix = self.get_sosdisc_inputs(
             'co2_emissions_needed_by_energy_mix')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
@@ -413,7 +413,7 @@ class CCUS_Discipline(SoSDiscipline):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (CO2_emissions_by_use_sources[f'{CarbonCapture.name} from energy mix (Gt)'].values).tolist(), f'CO2 captured from energy mix')
+            (carbon_capture_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'].values).tolist(), f'CO2 captured from energy mix')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
