@@ -107,13 +107,12 @@ class SyngasDiscipline(EnergyDiscipline):
         CO2_emissions = self.energy_model.compute_carbon_emissions()
 
         data_energy_dict = self.compute_data_energy_dict()
-        co2_per_use = self.energy_model.compute_co2_per_use(
-            data_energy_dict)
+        ghg_per_use_dict = self.energy_model.compute_ghg_emissions_per_use()
 
         outputs_dict = {'CO2_emissions': CO2_emissions,
                         'syngas_ratio': syngas_ratio,
-                        'syngas_ratio_technos': self.energy_model.syngas_ratio,
-                        'CO2_per_use': co2_per_use}
+                        'syngas_ratio_technos': self.energy_model.syngas_ratio}
+        outputs_dict.update(ghg_per_use_dict)
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 

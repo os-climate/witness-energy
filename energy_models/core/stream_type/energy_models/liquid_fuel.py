@@ -30,8 +30,12 @@ class LiquidFuel(EnergyType):
                         # https://www.bilans-ges.ademe.fr/documentation/UPLOAD_DOC_EN/index.htm?new_liquides.htm
                         'CO2_per_use': 3.15,
                         'CO2_per_use_unit': 'kg/kg',
-                        'NOx_per_energy': 0.1,
-                        'NOX_per_energy_unit': 'yy',
+                        # https://www.ipcc-nggip.iges.or.jp/public/gp/bgp/2_4_Water-borne_Navigation.pdf
+                        # 0.006 kt/PJ and only the burned part is taken
+                        # (industry part below is deleted)
+                        'N2O_per_use': 0.006e-3 / 0.277 * (1.0 - 0.14 - 0.08),
+                        'N2O_per_use_unit': 'Mt/TWh',
+
                         # ref : U.S. Energy Information Administration EIA
                         # https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=EMA_EPPK_PWG_NUS_DPG&f=M
                         # price = 2.1 $.gallon-1 * (1/3.09) gallon.kg-1

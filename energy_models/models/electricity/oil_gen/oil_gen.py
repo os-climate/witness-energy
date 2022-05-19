@@ -69,7 +69,7 @@ class OilGen(ElectricityTechno):
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
-        self.compute_ghg_emissions(N2O.name)
+        self.compute_ghg_emissions(N2O.name, related_to=LiquidFuel.name)
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

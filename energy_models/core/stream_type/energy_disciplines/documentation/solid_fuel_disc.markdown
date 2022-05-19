@@ -11,6 +11,7 @@ Significant datas for liquid fuel [^2]:
   * Molecular Weight : 170.0 g/mol
   * Density: 1300 kg/m^3
   * CO2 after use : 2.42 kgCO2/kg 
+  * N2O after use : 0.0014 kt/PJ [^4]  
   * Calorific value : 4.86 kWh/kg[^3]
 
 
@@ -24,3 +25,4 @@ The solid fuel section deals with the coal extraction part, for the burning part
 [^1]: Solid Fuel Wikipedia page, https://en.wikipedia.org/wiki/Solid_fuel
 [^2]: Engineering Toolbox, https://www.engineeringtoolbox.com
 [^3]: Lee, J.S., 2015. Calorific value of wood pellets (Doctoral dissertation, University of British Columbia).
+[^4]: Winiwarter, W., 2005. The GAINS model for greenhouse gases-version 1.0: nitrous oxide (N2O).https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf

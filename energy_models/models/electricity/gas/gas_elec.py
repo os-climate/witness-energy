@@ -49,8 +49,9 @@ class GasElec(ElectricityTechno):
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict['kwh_methane/kwh'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
-        self.compute_ch4_emissions()
-        self.compute_ghg_emissions(N2O.name)
+        self.compute_ghg_emissions(
+            Methane.emission_name, related_to=Methane.name)
+        self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 

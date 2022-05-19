@@ -28,8 +28,15 @@ class Methane(EnergyType):
                         #[Accessed 17 12 2021].
                         'CO2_per_use': 2.75,
                         'CO2_per_use_unit': 'kg/kg',
-                        'NOx_per_energy': 0.1,
-                        'NOX_per_energy_unit': 'yy',
+                        # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+                        # CH4 leakage at consumption : 0.08 kt/PJ
+                        # CH4 leakage at transport,distribution : 0.195 kt/PJ
+                        'CH4_per_use': (0.08 + 0.195) * 1.e-3 / 0.277,
+                        'CH4_per_use_unit': 'Mt/TWh',
+                        # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+                        # 0.0001 kt/PJ
+                        'N2O_per_use': 0.0001e-3 / 0.277,
+                        'N2O_per_use_unit': 'Mt/TWh',
                         'density': 0.657,
                         'density_unit': 'kg/m^3',
                         'molar_mass': 16.04,

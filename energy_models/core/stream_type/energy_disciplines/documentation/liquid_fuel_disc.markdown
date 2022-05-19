@@ -8,6 +8,7 @@ Significant datas for liquid fuel [^2]:
   * Molecular Weight : 170.0 g/mol
   * Density: 821 kg/m^3
   * CO2 after use : 3.15 kgCO2/kg [^3]
+  * N2O after use : 0.006 kt/PJ [^4]
   * Calorific value : 11.9 kWh/kg
 
 We consider several methods for production:
@@ -18,3 +19,4 @@ We consider several methods for production:
 [^1]: Liquid Fuel, Wikipedia, https://en.wikipedia.org/wiki/Liquid_fuel
 [^2]: Engineering Toolbox, https://www.engineeringtoolbox.com
 [^3]: https://www.icao.int/environmental-protection/CarbonOffset/Documents/Methodology%20ICAO%20Carbon%20Calculator_v10-2017.pdf
+[^4]: https://www.ipcc-nggip.iges.or.jp/public/gp/bgp/2_4_Water-borne_Navigation.pdf

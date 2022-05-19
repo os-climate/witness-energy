@@ -136,7 +136,7 @@ class CoalExtraction(SolidFuelTechno):
 
         # gascontent must be passed in Mt/Twh
         self.emission_factor_mt_twh = gas_content * emission_factor_coeff * Methane.data_energy_dict['density'] / \
-            self.data_energy_dict['calorific_value']
+            self.data_energy_dict['calorific_value'] * 1e-3
         # need to multiply by 1e9 to be in m3 by density to be in kg and by 1e-9 to be in Mt
         # and add ch4 from abandoned mines
         self.production[f'{Methane.emission_name} ({self.mass_unit})'] = self.emission_factor_mt_twh * self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'].values + \
