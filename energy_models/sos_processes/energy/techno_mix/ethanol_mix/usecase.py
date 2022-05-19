@@ -26,7 +26,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
     INVEST_DISCIPLINE_OPTIONS
 
 DEFAULT_TECHNOLOGIES_LIST = ['BiomassFermentation']
-TECHNOLOGIES_LIST = ['BiomassFermentation']
+TECHNOLOGIES_LIST = []
 TECHNOLOGIES_LIST_DEV = ['BiomassFermentation']
 
 
