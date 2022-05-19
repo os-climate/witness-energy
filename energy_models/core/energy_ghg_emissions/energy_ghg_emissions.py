@@ -280,6 +280,23 @@ class EnergyGHGEmissions(BaseStream):
             self.gwp_emissions[f'{ghg}_20'] = self.ghg_total_emissions[f'Total {ghg} emissions'] * self.gwp_20[ghg]
             self.gwp_emissions[f'{ghg}_100'] = self.ghg_total_emissions[f'Total {ghg} emissions'] * self.gwp_100[ghg]
 
+    def compute_grad_total_co2_emissions(self, net_production):
+
+        dtot_CO2_emissions = {}
+        for energy in self.energy_list:
+            net_prod = net_production[
+                f'production {energy} (TWh)'].values
+
+        # Specific case when net prod is equal to zero
+        # if we increase the prod of an energy the net prod will react
+        # however if we decrease the cons it does nothing
+            net_prod_sign = net_prod.copy()
+            net_prod_sign[net_prod_sign == 0] = 1
+            for ghg in self.GHG_TYPE_LIST:
+                dtot_CO2_emissions[f'Total {ghg} emissions vs prod{energy}'] = self.ghg_per_use_dict[ghg][energy].values * \
+                    np.maximum(0, np.sign(net_prod_sign))
+        return dtot_CO2_emissions
+
     def compute_grad_CO2_emissions_sources(self, net_production):
         '''
         Compute CO2 total emissions
@@ -317,8 +334,9 @@ class EnergyGHGEmissions(BaseStream):
             # however if we decrease the cons it does nothing
             net_prod_sign = net_prod.copy()
             net_prod_sign[net_prod_sign == 0] = 1
-            dtot_CO2_emissions[f'Total CO2 by use (Gt) vs {energy}#prod'] = self.co2_per_use[energy].values * \
-                np.maximum(0, np.sign(net_prod_sign))
+            for ghg in self.GHG_TYPE_LIST:
+                dtot_CO2_emissions[f'Total {ghg} by use (Gt) vs {energy}#prod'] = self.ghg_per_use_dict[ghg][energy].values * \
+                    np.maximum(0, np.sign(net_prod_sign))
 
         ''' CARBON CAPTURE from energy mix
         Total carbon capture from energy mix if the technology offers carbon_capture
