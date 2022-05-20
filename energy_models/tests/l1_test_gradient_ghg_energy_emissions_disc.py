@@ -183,7 +183,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                                f'{self.name}.{AgricultureMixDiscipline.name}.energy_consumption'])
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_prodcons.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -208,6 +208,27 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_emission_energy_mix.pkl',
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            inputs=coupled_inputs,
+                            outputs=coupled_outputs,)
+
+    def test_04_GHGENergy_energy_production_detailed_jacobian(self):
+        '''
+        Test the gradients of the Consumption CO2 emissions discipline
+        for inputs energy production and consumption
+        '''
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.model_name}')[0]
+
+        coupled_inputs = [
+            f'{self.name}.energy_production_detailed']
+
+        coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
+
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_energy_production_detailed.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)

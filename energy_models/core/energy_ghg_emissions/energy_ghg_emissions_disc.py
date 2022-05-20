@@ -189,12 +189,19 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                             ('CO2_emissions_sources', co2_emission_column), (
                                 f'{ns_energy}.energy_production', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
+                        self.set_partial_derivative_for_other_types(
+                            ('GHG_total_energy_emissions', 'Total CO2 emissions'), (
+                                f'{ns_energy}.energy_production', last_part_key),
+                            np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sources', co2_emission_column), (
                                 f'{ns_energy}.energy_consumption', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
-
+                        self.set_partial_derivative_for_other_types(
+                            ('GHG_total_energy_emissions', 'Total CO2 emissions'), (
+                                f'{ns_energy}.energy_consumption', last_part_key),
+                            np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
         dtot_co2_emissions = self.model.compute_grad_total_co2_emissions(
             energy_production_detailed)
         for energy in energy_list:
@@ -206,17 +213,30 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                         ('GHG_total_energy_emissions',
                          f'Total {ghg} emissions'), (f'{AgricultureMixDiscipline.name}.{ghg}_per_use', f'{ghg}_per_use'),
                         np.identity(len(years)) * max_prod_grad / 1e3)
-                    value = dtot_co2_emissions[f'Total {ghg} emissions vs prod{energy}']
-                    self.set_partial_derivative_for_other_types(
-                        ('GHG_total_energy_emissions',
-                         f'Total {ghg} emissions'), (f'{AgricultureMixDiscipline.name}.energy_production', energy),
-                        np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
+
             else:
                 for ghg in self.model.GHG_TYPE_LIST:
                     self.set_partial_derivative_for_other_types(
                         ('GHG_total_energy_emissions',
                          f'Total {ghg} emissions'), (f'{energy}.{ghg}_per_use', f'{ghg}_per_use'),
                         np.identity(len(years)) * max_prod_grad / 1e3)
+            for ghg in self.model.GHG_TYPE_LIST:
+                value = dtot_co2_emissions[f'Total {ghg} emissions vs prod{energy}']
+                self.set_partial_derivative_for_other_types(
+                    ('GHG_total_energy_emissions',
+                     f'Total {ghg} emissions'), (f'energy_production_detailed', f'production {energy} (TWh)'),
+                    np.identity(len(years)) * value / 1e3)
+            ns_energy = energy
+            if energy == 'biomass_dry':
+                ns_energy = AgricultureMixDiscipline.name
+            for col in self.model.sub_production_dict[energy].keys():
+                for ghg in self.model.GHG_TYPE_LIST:
+                    if col == f'{ghg} {self.model.ghg_input_unit}':
+                        self.set_partial_derivative_for_other_types(
+                            ('GHG_total_energy_emissions',
+                             f'Total {ghg} emissions'), (
+                                f'{ns_energy}.energy_production', col),
+                            np.identity(len(years)))
         #------------------------------------#
         #-- CO2 emissions sinks gradients--#
         #------------------------------------#
@@ -258,12 +278,21 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                             ('CO2_emissions_sinks', co2_emission_column), (
                                 f'{ns_energy}.energy_production', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
+                        self.set_partial_derivative_for_other_types(
+                            ('GHG_total_energy_emissions',
+                             f'Total CO2 emissions'), (
+                                f'{ns_energy}.energy_production', last_part_key),
+                            -np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sinks', co2_emission_column), (
                                 f'{ns_energy}.energy_consumption', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
-
+                        self.set_partial_derivative_for_other_types(
+                            ('GHG_total_energy_emissions',
+                             f'Total CO2 emissions'), (
+                                f'{ns_energy}.energy_consumption', last_part_key),
+                            -np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
         self.set_partial_derivative_for_other_types(
             ('GHG_total_energy_emissions',
              'Total CO2 emissions'), ('co2_emissions_ccus_Gt', 'carbon_storage Limited by capture (Gt)'), -np.identity(len(years)))

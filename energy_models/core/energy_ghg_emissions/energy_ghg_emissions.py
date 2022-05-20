@@ -351,7 +351,7 @@ class EnergyGHGEmissions(BaseStream):
         if len(energy_producing_carbon_capture_list) != 0:
             for energy1 in energy_producing_carbon_capture_list:
                 dtot_CO2_emissions[
-                    f'{CarbonCapture.name} from energy mix (Gt) vs {energy1}#{CarbonCapture.name} {self.ghg_input_unit}#prod'] = np.ones(len_years)
+                    f'{CarbonCapture.name} from energy mix (Mt) vs {energy1}#{CarbonCapture.name} {self.ghg_input_unit}#prod'] = np.ones(len_years)
 #             self.total_co2_emissions[f'{CarbonCapture.name} from energy mix {self.ghg_input_unit}'] = energy_producing_carbon_capture.sum(
 #                 axis=1).values
 #         else:
@@ -369,7 +369,7 @@ class EnergyGHGEmissions(BaseStream):
         if len(energy_producing_co2_list) != 0:
             for energy1 in energy_producing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} from energy mix (Gt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#prod'] = np.ones(len_years)
+                    f'{CO2.name} from energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#prod'] = np.ones(len_years)
 
 #             self.total_co2_emissions[f'{CO2.name} from energy mix {self.ghg_input_unit}'] = energy_producing_co2.sum(
 #                 axis=1).values
@@ -388,7 +388,7 @@ class EnergyGHGEmissions(BaseStream):
         if len(energy_removing_co2_list) != 0:
             for energy1 in energy_removing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} removed by energy mix (Gt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(len_years)
+                    f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(len_years)
 #             self.total_co2_emissions[f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
 #                 axis=1).values
 #         else:
@@ -407,7 +407,7 @@ class EnergyGHGEmissions(BaseStream):
             if col.endswith(f'{CarbonCapture.flue_gas_name} {self.ghg_input_unit}'):
                 energy1 = col.replace(
                     f' {CarbonCapture.flue_gas_name} {self.ghg_input_unit}', '')
-                dtot_CO2_emissions[f'Total {CarbonCapture.flue_gas_name} (Gt) vs {energy1}#{CarbonCapture.flue_gas_name} {self.ghg_input_unit}#prod'] = np.ones(
+                dtot_CO2_emissions[f'Total {CarbonCapture.flue_gas_name} (Mt) vs {energy1}#{CarbonCapture.flue_gas_name} {self.ghg_input_unit}#prod'] = np.ones(
                     len_years)
 
         return dtot_CO2_emissions
@@ -453,7 +453,7 @@ class EnergyGHGEmissions(BaseStream):
         if len(energy_removing_co2_list) != 0:
             for energy1 in energy_removing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} removed by energy mix (Gt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(len_years)
+                    f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(len_years)
 #             self.total_co2_emissions[f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
 #                 axis=1).values
 #         else:
