@@ -26,7 +26,9 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 DEFAULT_TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
                              'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
                              'PureCarbonSolidStorage']
-TECHNOLOGIES_LIST = ['DeepSalineFormation', 'DepletedOilGas', 'GeologicMineralization']
+TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
+                     'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
+                     'PureCarbonSolidStorage']
 TECHNOLOGIES_LIST_DEV = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
                          'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
                          'PureCarbonSolidStorage']

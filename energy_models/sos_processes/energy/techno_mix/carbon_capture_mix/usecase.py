@@ -28,8 +28,10 @@ DEFAULT_TECHNOLOGIES_LIST = ['direct_air_capture.AmineScrubbing', 'direct_air_ca
                              'flue_gas_capture.CalciumLooping','flue_gas_capture.ChilledAmmoniaProcess',
                              'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine',
                              'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption']
-TECHNOLOGIES_LIST = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing', 'flue_gas_capture.CalciumLooping',
-                     'flue_gas_capture.MonoEthanolAmine']
+TECHNOLOGIES_LIST = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
+                     'flue_gas_capture.CalciumLooping','flue_gas_capture.ChilledAmmoniaProcess',
+                     'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine',
+                     'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption']
 TECHNOLOGIES_LIST_COARSE = ['direct_air_capture.CalciumPotassiumScrubbing', 'flue_gas_capture.CalciumLooping']
 
 TECHNOLOGIES_FLUE_GAS_LIST_COARSE = ['electricity.GasTurbine']
