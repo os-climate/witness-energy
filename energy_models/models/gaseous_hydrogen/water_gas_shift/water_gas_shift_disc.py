@@ -102,7 +102,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
     FLUE_GAS_RATIO = np.array([0.175])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
@@ -113,7 +113,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False},
                'syngas_ratio': {'type': 'array', 'unit': '%', 'visibility': GaseousHydrogenTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
-               'needed_syngas_ratio': {'type': 'float', 'default': 0.0}
+               'needed_syngas_ratio': {'type': 'float', 'default': 0.0, 'unit': '%'}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)

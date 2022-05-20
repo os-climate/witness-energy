@@ -25,7 +25,6 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
-
     # ontology information
     _ontology_data = {
         'label': 'Hydropower Model',
@@ -77,7 +76,7 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
                                              'distrib': [0.05, 0.94, 2.06, 2.78, 2.33, 3.28, 4.00, 3.82, 3.95, 3.46, 3.28, 2.30, 2.47, 1.75, 1.61, 1.75, 1.71, 1.40, 1.13, 1.40, 1.40, 1.13, 1.31, 1.58, 2.16, 2.30, 1.76, 1.53, 2.16, 2.70, 2.97, 2.57, 3.38, 3.20, 2.34, 2.16, 2.12, 1.58, 1.49, 1.26, 1.67, 1.04, 0.72, 1.62, 1.08, 1.53, 0.86, 1.17, 2.16, 1.58]})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),

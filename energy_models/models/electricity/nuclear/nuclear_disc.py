@@ -98,7 +98,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
     })
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
@@ -199,13 +199,17 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         overloads the price chart from techno_disc to display decommissioning costs
         """
 
-        new_chart = ElectricityTechnoDiscipline.get_chart_detailed_price_in_dollar_kwh(self)
+        new_chart = ElectricityTechnoDiscipline.get_chart_detailed_price_in_dollar_kwh(
+            self)
 
         # decommissioning price part
         techno_infos_dict = self.get_sosdisc_inputs('techno_infos_dict')
-        techno_detailed_prices = self.get_sosdisc_outputs('techno_detailed_prices')
-        ratio = techno_infos_dict['decommissioning_cost']/techno_infos_dict['Capex_init']
-        decommissioning_price = ratio * techno_detailed_prices[f'{self.techno_name}_factory'].values
+        techno_detailed_prices = self.get_sosdisc_outputs(
+            'techno_detailed_prices')
+        ratio = techno_infos_dict['decommissioning_cost'] / \
+            techno_infos_dict['Capex_init']
+        decommissioning_price = ratio * \
+            techno_detailed_prices[f'{self.techno_name}_factory'].values
 
         serie = InstanciatedSeries(
             techno_detailed_prices['years'].values.tolist(),
