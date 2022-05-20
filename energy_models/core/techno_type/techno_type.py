@@ -1300,3 +1300,27 @@ class TechnoType:
         '''
 
         self.techno_land_use[f'{self.name} (Gha)'] = 0.0
+
+    def compute_ghg_emissions(self, GHG_type, related_to='prod'):
+        '''
+        Method to compute GHG emissions for any techno type and any GHG type
+        The proposed V0 only depends on production.
+        Equation is taken from the GAINS model
+        https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+
+        emission_factor is in Mt/TWh
+
+        If related_to = 'prod' that means that we use main production to compute GHG emissions
+        if related_to = other that means that we use the other column in consumption to compute_ghg_emissions
+        '''
+        if f'{GHG_type}_emission_factor' not in self.techno_infos_dict:
+            raise Exception(
+                f'The variable {GHG_type}_emission_factor should be in the techno dict to compute {GHG_type} emissions for {self.name}')
+        emission_factor = self.techno_infos_dict[f'{GHG_type}_emission_factor']
+
+        if related_to == 'prod':
+            self.production[f'{GHG_type} ({self.mass_unit})'] = emission_factor * \
+                self.production[f'{self.energy_name} ({self.product_energy_unit})'].values
+        else:
+            self.production[f'{GHG_type} ({self.mass_unit})'] = emission_factor * \
+                self.consumption[f'{related_to} ({self.product_energy_unit})'].values

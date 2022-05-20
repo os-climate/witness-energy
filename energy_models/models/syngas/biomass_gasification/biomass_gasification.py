@@ -19,6 +19,7 @@ from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.resources_models.water import Water
 
 import numpy as np
+from energy_models.core.stream_type.energy_models.methane import Methane
 
 
 class BiomassGasification(SyngasTechno):
@@ -75,6 +76,8 @@ class BiomassGasification(SyngasTechno):
         self.consumption[f'{Water.name} ({self.mass_unit})'] = self.techno_infos_dict['kgH20_perkgSyngas'] / \
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kg
+
+        self.compute_ghg_emissions(Methane.emission_name)
 
     def compute_CO2_emissions_from_input_resources(self):
         ''' 

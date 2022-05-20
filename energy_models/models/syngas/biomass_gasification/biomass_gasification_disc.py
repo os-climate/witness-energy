@@ -54,6 +54,10 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  'Opex_percentage': 0.015,  # Rosenfeld2020
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
+                                 # https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/2_Volume2/19R_V2_4_Ch04_Fugitive_Emissions.pdf
+                                 # 18.3 kg/TJ
+                                 'CH4_emission_factor': 18.3e-9 / 0.277e-3,
+                                 'CH4_emission_factor_unit': 'Mt/TWh',
                                  # Wang2019 : 9.932 MW of electricity to
                                  # product 88.841 of syngas
                                  'elec_demand': 9.932 / 88.841,

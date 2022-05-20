@@ -66,7 +66,17 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # However it is really depending on type of extraction
                                  # see
                                  # https://theicct.org/sites/default/files/ICCT_crudeoil_Eur_Dec2010_sum.pdf
+
                                  'CO2_from_production_unit': 'kg/kg',
+                                 # IEA Methane Tracker 2021 , (https://www.iea.org/articles/methane-tracker-data-explorer), License: CC BY 4.0.
+                                 # Emission factor are computed with raw
+                                 # production from WITNESS and emissions from
+                                 # IEA Methane tracker
+                                 # Are approximately same than GAINS 2017 model
+                                 'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,
+                                 'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
+                                 'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
+                                 'CH4_emission_factor_unit': 'Mt/TWh',
                                  # https://www.e-education.psu.edu/eme801/node/470
                                  # 1 kg of crude oil is 11.3 kWh
                                  # 0.137 * 11.9 kero

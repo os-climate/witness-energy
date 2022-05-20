@@ -23,6 +23,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 
 import pandas as pd
 import numpy as np
+from energy_models.core.stream_type.energy_models.methane import Methane
 
 
 class Refinery(LiquidFuelTechno):
@@ -48,14 +49,18 @@ class Refinery(LiquidFuelTechno):
 
         self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details['elec_needs'] / self.cost_details['efficiency'])
-        # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have needs in [kg/kWh]
-        self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / self.data_energy_dict['calorific_value']
-        # resources price [$/t] since needs are in [kg/kWh] to have cost in [$/t]*[kg/kWh]=[$/MWh]
+        # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
+        # needs in [kg/kWh]
+        self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] = self.get_fuel_needs(
+        ) / self.data_energy_dict['calorific_value']
+        # resources price [$/t] since needs are in [kg/kWh] to have cost in
+        # [$/t]*[kg/kWh]=[$/MWh]
         self.cost_details[self.OIL_RESOURCE_NAME] = list(
             self.resources_prices[self.OIL_RESOURCE_NAME] * self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] / self.cost_details['efficiency'])
 
         # in kWh of hydrogen per kWh of fuel
-        self.cost_details[GaseousHydrogen.name] = list(self.techno_infos_dict['hydrogen_demand'] * self.prices[GaseousHydrogen.name]) / self.cost_details['efficiency']
+        self.cost_details[GaseousHydrogen.name] = list(
+            self.techno_infos_dict['hydrogen_demand'] * self.prices[GaseousHydrogen.name]) / self.cost_details['efficiency']
 
         return self.cost_details[Electricity.name] + self.cost_details[self.OIL_RESOURCE_NAME] + self.cost_details[GaseousHydrogen.name]
 
@@ -99,17 +104,33 @@ class Refinery(LiquidFuelTechno):
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']
-
+        self.compute_ch4_emissions()
         # Consumption
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # oil consumption: prod [TWh] * needs [kg/kWh] = [Mt]
         self.consumption[f'{self.OIL_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] * \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'] # in Mt
+            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
         self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] *  \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
+
+    def compute_ch4_emissions(self):
+        '''
+        Method to compute CH4 emissions from gas production
+        The proposed V0 only depends on production.
+        Equation is taken from the GAINS model for crude oil
+        https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+        CH4 emissions can be separated in three categories : flaring,venting and unintended leakage
+        emission_factor is in Mt/TWh
+        '''
+        emission_factor = self.techno_infos_dict['CH4_flaring_emission_factor'] + \
+            self.techno_infos_dict['CH4_venting_emission_factor'] + \
+            self.techno_infos_dict['CH4_unintended_leakage_emission_factor']
+
+        self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
+            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
 
     def compute_price(self):
         """
@@ -182,8 +203,8 @@ class Refinery(LiquidFuelTechno):
             self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs']
 
         return self.carbon_emissions[f'{Electricity.name}'] + \
-               self.carbon_emissions[self.OIL_RESOURCE_NAME] + \
-               self.carbon_emissions[f'{GaseousHydrogen.name}']
+            self.carbon_emissions[self.OIL_RESOURCE_NAME] + \
+            self.carbon_emissions[f'{GaseousHydrogen.name}']
 
     def compute_prod_from_invest(self, construction_delay):
         '''
@@ -232,7 +253,7 @@ class Refinery(LiquidFuelTechno):
         for i in range(nb_years):
 
             dpprod_dpinvest = compute_dfunc_with_exp_min(np.array([invest_list[i]]), self.min_value_invest)[0][0] / \
-                              (capex_list[i]+ self.oil_extraction_capex)
+                (capex_list[i] + self.oil_extraction_capex)
             len_non_zeros = min(max(0, nb_years -
                                     techno_dict['construction_delay'] - i),
                                 techno_dict['lifetime'])
@@ -292,7 +313,8 @@ class Refinery(LiquidFuelTechno):
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
             # Same for capex
-            dpprod_dpcapex = - invest_list[i] / (capex_list[i] + self.oil_extraction_capex)**2
+            dpprod_dpcapex = - \
+                invest_list[i] / (capex_list[i] + self.oil_extraction_capex)**2
 
             dprod_list_dcapex_list[:, i] = np.hstack((np.zeros(first_len_zeros),
                                                       np.ones(
