@@ -56,7 +56,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            'fossil', 'renewable', 'hydrotreated_oil_fuel', 'carbon_capture', 'carbon_storage']]
+            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage']]
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)
@@ -183,7 +183,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                                f'{self.name}.{AgricultureMixDiscipline.name}.energy_consumption'])
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_prodcons.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
