@@ -27,7 +27,6 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
 
-
     # ontology information
     _ontology_data = {
         'label': 'energy_models.models.electricity.renewable_electricity_simple_techno.renewable_electricity_simple_techno_disc',
@@ -91,7 +90,7 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
                                              })
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'data_fuel_dict': {'type': 'dict', 'default': data_fuel_dict_default},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,

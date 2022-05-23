@@ -93,7 +93,8 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
     # production in 2019: 29330 million gallons
     # in TWh
-    initial_production = 29330 * 1e6 * (gallon_to_m3 * ethanol_density * ethanol_calorific_value) * 1e-9
+    initial_production = 29330 * 1e6 * \
+        (gallon_to_m3 * ethanol_density * ethanol_calorific_value) * 1e-9
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
@@ -103,14 +104,14 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
                ]
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': 100/sum(distrib)*np.array(distrib)})  # to review
+                                             'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
 
     # Renewable Fuels Association [online]
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': 1.95*liter_per_gallon * np.array([0, 29.330-28.630])})
+        {'past years': np.arange(-construction_delay, 0), 'invest': 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
 
-    DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default},
+    DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
@@ -125,5 +126,3 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = BiomassFermentation(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
-
-

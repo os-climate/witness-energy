@@ -107,6 +107,7 @@ class SyngasDiscipline(EnergyDiscipline):
         CO2_emissions = self.energy_model.compute_carbon_emissions()
 
         data_energy_dict = self.compute_data_energy_dict()
+        self.energy_model.data_energy_dict_input.update(data_energy_dict)
         ghg_per_use_dict = self.energy_model.compute_ghg_emissions_per_use()
 
         outputs_dict = {'CO2_emissions': CO2_emissions,

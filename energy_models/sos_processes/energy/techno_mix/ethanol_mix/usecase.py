@@ -32,9 +32,9 @@ TECHNOLOGIES_LIST_DEV = ['BiomassFermentation']
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST, bspline=True,  main_study=True, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_DEFAULT):
+                 invest_discipline=INVEST_DISCIPLINE_DEFAULT, run_usecase=False):
         super().__init__(__file__, technologies_list=technologies_list,
-                         main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
+                         main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline, run_usecase=run_usecase)
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)

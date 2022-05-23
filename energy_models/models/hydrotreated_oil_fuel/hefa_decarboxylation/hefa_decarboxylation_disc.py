@@ -109,7 +109,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         {'past years': np.arange(-construction_delay, 0), 'invest': [347.5 / 1000 * i for i in [0.0, 0.0, 3.0]]})  # in G$
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
