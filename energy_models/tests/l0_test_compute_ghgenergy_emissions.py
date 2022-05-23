@@ -38,7 +38,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            'fossil', 'renewable', 'fuel.hydrotreated_oil_fuel', 'carbon_capture', 'carbon_storage']]
+            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage']]
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)
