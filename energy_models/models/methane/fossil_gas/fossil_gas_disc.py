@@ -48,6 +48,10 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'Opex_percentage': 0.34,
                                  'CO2_from_production': 0.123,
                                  'CO2_from_production_unit': 'kg/kg',
+                                 # 0.142 kt/PJ (mean) in
+                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+                                 'CH4_emission_factor': 0.142e-3 / 0.277,
+                                 'CH4_emission_factor_unit': 'Mt/TWh',
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'fuel_demand': 1,
                                  'fuel_demand_unit': 'kWh/kWh',
@@ -88,7 +92,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
     FLUE_GAS_RATIO = np.array([0.085])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,

@@ -40,8 +40,10 @@ class SolidFuel(EnergyType):
                         #[Accessed 17 12 2021].
                         'CO2_per_use': 2.42,
                         'CO2_per_use_unit': 'kg/kg',
-                        'CH4_per_energy': 0.01,  # WOE_2019
-                        'CH4_per_energy_unit': 'kg/kg',
+                        # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+                        # 0.0014 kt/PJ
+                        'N2O_per_use': 0.0014e-3 / 0.277,
+                        'N2O_per_use_unit': 'Mt/TWh',
                         'density': 1300.0,  # at atmospheric pressure and 298K
                         'density_unit': 'kg/m^3',
                         # Lee, Jun Sian. 2015.

@@ -107,7 +107,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                 initial_production = 37 * biodiesel_density / 1000 * biodiesel_calorific_value
 
                 dynamic_inputs['techno_infos_dict'] = {
-                    'type': 'dict', 'default': techno_infos_dict_default}
+                    'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'}
                 dynamic_inputs['initial_production'] = {
                     'type': 'float', 'unit': 'TWh', 'default': initial_production}
         self.add_inputs(dynamic_inputs)

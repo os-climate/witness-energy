@@ -27,6 +27,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 import scipy.interpolate as sc
 
+
 class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
     """
     Energy mix jacobian test class
@@ -231,7 +232,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                                                0.30355508, 0.3071769, 0.31104297, 0.31440867, 0.31709487,
                                                                0.32047716, 0.32392652, 0.32739837, 0.33021771, 0.33313758,
                                                                0.3361545]) * 1000.0})
-        
+
         self.land_use_required_mock = pd.DataFrame(
             {'years': self.years, 'random techno (Gha)': 0.0})
 
@@ -249,7 +250,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         self.co2_taxes = pd.DataFrame(
             {'years': years, 'CO2_tax': func(years)})
         # Biomass dry inputs coming from agriculture mix disc
-        #                                                                
+        #
         energy_consumption_biomass = np.linspace(0, 4, self.year_range)
         self.energy_consumption_biomass = pd.DataFrame(
             {'years': self.years, 'CO2_resource (Mt)': energy_consumption_biomass})
@@ -270,7 +271,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         CO2_per_use_biomass = np.linspace(0, 1, self.year_range)
         self.CO2_per_use_biomass = pd.DataFrame(
             {'years': self.years, 'CO2_per_use': CO2_per_use_biomass})
-       
+
         CO2_emissions_biomass = np.linspace(0, -1, self.year_range)
         self.CO2_emissions_biomass = pd.DataFrame(
             {'years': self.years, 'biomass_dry': CO2_emissions_biomass})
@@ -567,9 +568,10 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         inputs_names.extend(
             [f'{name}.{model_name}.syngas.syngas_ratio'])
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_co2_emissions_gt.pkl',
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_co2_emissions.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
-                            inputs=inputs_names, outputs=[f'{name}.{model_name}.co2_emissions_needed_by_energy_mix'], parallel=self.parallel)
+                            inputs=inputs_names, outputs=[f'{name}.{model_name}.co2_emissions_needed_by_energy_mix',
+                                                          f'{name}.{model_name}.carbon_capture_from_energy_mix'])
 
     def test_05_energy_mix_test_mean_price_grad(self):
 
@@ -1335,8 +1337,9 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                                      f'{name}.{model_name}.energy_prices_after_tax',
                                      f'{name}.{model_name}.co2_emissions_needed_by_energy_mix'])
 
+
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = EnergyMixJacobianTestCase()
     cls.setUp()
-    cls.test_15_energy_mix_agriculture_mix()
+    cls.test_04_energy_mix_discipline_co2_emissions_gt()

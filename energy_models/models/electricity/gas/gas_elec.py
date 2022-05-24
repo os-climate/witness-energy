@@ -18,6 +18,7 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 
 import numpy as np
+from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 
 class GasElec(ElectricityTechno):
@@ -47,6 +48,10 @@ class GasElec(ElectricityTechno):
         # Consumption
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict['kwh_methane/kwh'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        self.compute_ghg_emissions(
+            Methane.emission_name, related_to=Methane.name)
+        self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 
@@ -80,3 +85,18 @@ class GasElec(ElectricityTechno):
         methane_needs = self.techno_infos_dict['kwh_methane/kwh']
         # efficiency = 1 for both CC and gas turbine
         return {Methane.name: np.identity(len(self.years)) * methane_needs}
+
+    def compute_ch4_emissions(self):
+        '''
+        Method to compute CH4 emissions from methane consumption
+        The proposed V0 only depends on consumption.
+        Equation and emission factor are taken from the GAINS model
+        https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+
+        emission_factor is in Mt/TWh
+        '''
+        ghg_type = Methane.emission_name
+        emission_factor = self.techno_infos_dict[f'{ghg_type}_emission_factor']
+
+        self.production[f'{ghg_type} ({self.mass_unit})'] = emission_factor * \
+            self.consumption[f'{Methane.name} ({self.product_energy_unit})']

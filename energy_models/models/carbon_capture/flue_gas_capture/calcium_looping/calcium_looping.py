@@ -16,6 +16,7 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.methane import Methane
 
 import numpy as np
 
@@ -44,7 +45,12 @@ class CalciumLooping(CCTechno):
         self.cost_details[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect)
 
-        return self.cost_details[Electricity.name]
+        self.cost_details['heat_needs'] = self.get_heat_needs()
+
+        self.cost_details[Methane.name] = list(self.prices[Methane.name] * self.cost_details['heat_needs']
+                                                   / self.cost_details['efficiency'])
+
+        return self.cost_details[Electricity.name] + self.cost_details[Methane.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -52,9 +58,11 @@ class CalciumLooping(CCTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
-        efficency = self.configure_efficiency()
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficency * self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect)}
+        heat_needs = self.get_heat_needs()
+        efficiency = self.configure_efficiency()
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency * self.compute_electricity_variation_from_fg_ratio(
+            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect),
+                Methane.name: np.identity(len(self.years)) * heat_needs / efficiency}
 
     def compute_consumption_and_production(self):
         """
@@ -65,6 +73,8 @@ class CalciumLooping(CCTechno):
         # Consumption
         self.consumption[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
             self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
+            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)

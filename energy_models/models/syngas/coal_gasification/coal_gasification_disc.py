@@ -48,6 +48,10 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  # License: CC BY 4.0.
                                  'CO2_from_production': 1.94,  # ETSAP IEA indicates 50kT CO2 /PJ syngas
                                  'CO2_from_production_unit': 'kg/kg',
+                                 # IPCC report Chap4 2019  https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/2_Volume2/19R_V2_4_Ch04_Fugitive_Emissions.pdf
+                                 # 6.1 kg/TJ
+                                 'CH4_emission_factor': 6.1e-9 / 0.277e-3,
+                                 'CH4_emission_factor_unit': 'Mt/TWh',
                                  'elec_demand': 0,
                                  'elec_demand_unit': 'kWh/kWh',
                                  'fuel_demand': 1.19,
@@ -91,7 +95,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
     FLUE_GAS_RATIO = np.array([0.13])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,

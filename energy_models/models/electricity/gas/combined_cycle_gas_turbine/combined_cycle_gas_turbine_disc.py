@@ -60,6 +60,14 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'learning_rate': 0,  # fraunhofer
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': 'years',
+                                 # 0.1025 kt/PJ (mean) at gas power plants in
+                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+                                 'CH4_emission_factor': 0.1025e-3 / 0.277,
+                                 'CH4_emission_factor_unit': 'Mt/TWh',
+                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+                                 # 0.0001 kt/PJ
+                                 'N2O_emission_factor': 0.0001e-3 / 0.277,
+                                 'N2O_emission_factor_unit': 'Mt/TWh',
                                  # Source: U.S. Energy Information Administration, 2020
                                  # Capital Cost and Performance Characteristic Estimates for Utility Scale Electric Power Generating Technologies,
                                  # https://www.eia.gov/analysis/studies/powerplants/capitalcost/pdf/capital_cost_AEO2020.pdf
@@ -89,7 +97,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
     FLUE_GAS_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),

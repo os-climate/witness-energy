@@ -42,8 +42,7 @@ class Pelletizing(SolidFuelTechno):
 
         # Cost of biomass for 1 kWh of pellet
         self.cost_details[BiomassDry.name] = list(
-            self.prices[BiomassDry.name] * self.cost_details['biomass_dry_needs'] /
-            self.data_energy_dict['calorific_value'])
+            self.prices[BiomassDry.name] * self.cost_details['biomass_dry_needs'])
 
         return self.cost_details[Electricity.name] + self.cost_details[BiomassDry.name]
 
@@ -57,7 +56,7 @@ class Pelletizing(SolidFuelTechno):
             (1 + self.data_energy_dict['pellets_moisture']
              )
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
-                BiomassDry.name: np.identity(len(self.years)) * biomass_dry_needs / self.data_energy_dict['calorific_value']}
+                BiomassDry.name: np.identity(len(self.years)) * biomass_dry_needs}
 
     def compute_consumption_and_production(self):
         """
@@ -86,7 +85,6 @@ class Pelletizing(SolidFuelTechno):
         self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
             self.cost_details['elec_needs']
         self.carbon_emissions[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-            self.cost_details['biomass_dry_needs'] / \
-            self.data_energy_dict['calorific_value']
+            self.cost_details['biomass_dry_needs']
 
         return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[BiomassDry.name]

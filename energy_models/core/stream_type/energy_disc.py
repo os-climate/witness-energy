@@ -48,7 +48,9 @@ class EnergyDiscipline(StreamDiscipline):
 
     DESC_OUT = {
         'CO2_emissions': {'type': 'dataframe', 'unit': 'kg/kWh'},
-        'CO2_per_use': {'type': 'dataframe', 'unit': 'kg/kWh'}}
+        'CO2_per_use': {'type': 'dataframe', 'unit': 'kg/kWh'},
+        'CH4_per_use': {'type': 'dataframe', 'unit': 'kg/kWh'},
+        'N2O_per_use': {'type': 'dataframe', 'unit': 'kg/kWh'}}
 
     DESC_OUT.update(StreamDiscipline.DESC_OUT)
 
@@ -115,11 +117,11 @@ class EnergyDiscipline(StreamDiscipline):
 
         CO2_emissions = self.energy_model.compute_carbon_emissions()
 
-        co2_per_use = self.energy_model.compute_co2_per_use(
-            self.get_sosdisc_inputs('data_fuel_dict'))
+        ghg_per_use = self.energy_model.compute_ghg_emissions_per_use()
 
-        outputs_dict = {'CO2_emissions': CO2_emissions,
-                        'CO2_per_use': co2_per_use}
+        outputs_dict = {'CO2_emissions': CO2_emissions}
+
+        outputs_dict.update(ghg_per_use)
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 

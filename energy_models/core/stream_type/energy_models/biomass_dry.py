@@ -30,6 +30,11 @@ class BiomassDry(EnergyType):
                         # 0.425g of C in 1 kg of biomass meaning in term of CO2
                         'CO2_per_use': 0.425 * 44.01 / 12.0,
                         'CO2_per_use_unit': 'kg/kg',
+                        # Bray & al : Global emissions of NH3, NOx, and N2O from biomass burning and the impact of climate change
+                        # https://www.tandfonline.com/doi/epub/10.1080/10962247.2020.1842822?needAccess=true
+                        # 0.3 g/kg
+                        'N2O_per_use': 0.3e-3,
+                        'N2O_per_use_unit': 'kg/kg',
                         # Whittaker, C., Macalpine, W., Yates, N.E. et al.
                         # Dry Matter Losses and Methane Emissions During Wood
                         # Chip Storage: the Impact on Full Life Cycle

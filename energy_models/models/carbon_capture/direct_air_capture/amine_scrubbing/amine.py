@@ -17,6 +17,8 @@ limitations under the License.
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.methane import Methane
+
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 import numpy as np
@@ -40,7 +42,12 @@ class Amine(CCTechno):
         self.cost_details[ResourceGlossary.Amine['name']] = list(
             self.resources_prices[ResourceGlossary.Amine['name']] * self.cost_details['amine_needs'] / self.cost_details['efficiency'])
 
-        return self.cost_details[Electricity.name] + self.cost_details[ResourceGlossary.Amine['name']]
+        self.cost_details['heat_needs'] = self.get_heat_needs()
+
+        self.cost_details[Methane.name] = list(self.prices[Methane.name] * self.cost_details['heat_needs']
+                                                   / self.cost_details['efficiency'])
+
+        return self.cost_details[Electricity.name] + self.cost_details[ResourceGlossary.Amine['name']] + self.cost_details[Methane.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -48,8 +55,10 @@ class Amine(CCTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
+        heat_needs = self.get_heat_needs()
         efficiency = self.configure_efficiency()
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
+                Methane.name: np.identity(len(self.years)) * heat_needs / efficiency
                 }
 
     def grad_price_vs_resources_price(self):
@@ -70,6 +79,9 @@ class Amine(CCTechno):
         # Consumption
 
         self.consumption[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
+            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+
+        self.consumption[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
             self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         self.consumption[f'amine ({self.mass_unit})'] = self.cost_details['amine_needs'] * \

@@ -15,7 +15,13 @@ transportation and handling than solid coal, and easier on-site storage than nat
 
 Data are extracted from IEA data tables[^3] and balances[^4]. CO2 emissions information from RTE French data[^5].
 
-##Sources 
+### GHG emissions 
+
+
+The GAINS model also predicts N2O fugitive emissions from oil energy. The emission factor is equal to 0.008 kt/PJ for oil combustion via electricity plants. [^7]
+
+
+## Sources 
 
 [^1]: [Fossil Fuel Power on Wikipedia](https://en.wikipedia.org/wiki/Fossil_fuel_power_station#Oil)
 
@@ -28,4 +34,5 @@ Data are extracted from IEA data tables[^3] and balances[^4]. CO2 emissions info
 [^5]: [RTE France Data](https://www.rte-france.com/en/eco2mix/co2-emissions)
 
 
+[^7]: Winiwarter, W., 2005. The GAINS model for greenhouse gases-version 1.0: nitrous oxide (N2O).https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
 

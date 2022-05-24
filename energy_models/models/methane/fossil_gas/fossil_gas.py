@@ -23,17 +23,21 @@ import numpy as np
 
 class FossilGas(MethaneTechno):
     NATURAL_GAS_RESOURCE_NAME = ResourceGlossary.NaturalGas['name']
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kg of CH4
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
-        # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have needs in [kg/kWh]
-        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs() / Methane.data_energy_dict['calorific_value'] #kg/kWh
+        # needs in [kWh/kWh] divided by calorific value in [kWh/kg] to have
+        # needs in [kg/kWh]
+        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs(
+        ) / Methane.data_energy_dict['calorific_value']  # kg/kWh
         self.cost_details[f'{Electricity.name}'] = list(
             self.prices[f'{Electricity.name}'] * self.cost_details['elec_needs'])
-        #resources price [$/t] since needs are in [kg/kWh] to have cost in [$/MWh]
+        # resources price [$/t] since needs are in [kg/kWh] to have cost in
+        # [$/MWh]
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}'] = list(
             self.resources_prices[f'{self.NATURAL_GAS_RESOURCE_NAME}'] * self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'])
         # cost to produce 1Kwh of methane
@@ -72,6 +76,8 @@ class FossilGas(MethaneTechno):
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+
+        self.compute_ghg_emissions(Methane.emission_name)
 
         # consumption fossil gas: prod [TWh] * needs [kg/kWh] = [Mt]
         self.consumption[f'{self.NATURAL_GAS_RESOURCE_NAME} ({self.mass_unit})'] = self.production[
