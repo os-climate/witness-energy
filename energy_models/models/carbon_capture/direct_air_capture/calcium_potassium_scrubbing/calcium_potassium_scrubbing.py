@@ -54,6 +54,19 @@ class CalciumPotassium(CCTechno):
 
         return self.cost_details[Electricity.name] + self.cost_details['potassium'] + self.cost_details['calcium'] + self.cost_details[Methane.name]
 
+
+    def compute_CO2_emissions_from_input_resources(self):
+        '''
+        Need to take into account  CO2 from coal extraction and electricity production
+        '''
+
+        self.carbon_emissions[Methane.name] = self.energy_CO2_emissions[Methane.name] * self.cost_details['heat_needs']
+
+        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs']
+
+        return self.carbon_emissions[Methane.name] + self.carbon_emissions[Electricity.name]
+
+
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices 

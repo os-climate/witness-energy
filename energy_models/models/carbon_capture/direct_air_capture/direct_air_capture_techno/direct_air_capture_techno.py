@@ -16,32 +16,14 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 from energy_models.core.stream_type.energy_models.renewable import Renewable
+from energy_models.core.stream_type.energy_models.fossil import Fossil
 
 import numpy as np
 
 
 class DirectAirCaptureTechno(CCTechno):
 
-    def get_electricity_needs(self):
-        """
-        Overloads techno type method to use electricity in coarse technologies for heat
-        Get the electricity needs for 1 kwh of the energy producted by the technology
-        """
-        if self.techno_infos_dict['elec_demand'] != 0.0:
-            elec_need = self.check_energy_demand_unit(self.techno_infos_dict['elec_demand_unit'],
-                                                      self.techno_infos_dict['elec_demand'])
 
-        else:
-            elec_need = 0.0
-
-        if 'heat_demand' in self.techno_infos_dict:
-            heat_need = self.check_energy_demand_unit(self.techno_infos_dict['heat_demand_unit'],
-                                                      self.techno_infos_dict['heat_demand'])
-
-        else:
-            heat_need = 0.0
-
-        return elec_need + heat_need
 
     def compute_other_primary_energy_costs(self):
         """
@@ -53,8 +35,21 @@ class DirectAirCaptureTechno(CCTechno):
 
         self.cost_details[Renewable.name] = list(self.prices[Renewable.name] * self.cost_details['elec_needs']
                                                  / self.cost_details['efficiency'])
+        self.cost_details['heat_needs'] = self.get_heat_needs()
+        self.cost_details[Fossil.name] = list(self.prices[Fossil.name] * self.cost_details['heat_needs']
+                                                 / self.cost_details['efficiency'])
+        return self.cost_details[Renewable.name] + self.cost_details[Fossil.name]
 
-        return self.cost_details[Renewable.name]
+    def compute_CO2_emissions_from_input_resources(self):
+        '''
+        Need to take into account  CO2 from coal extraction and electricity production
+        '''
+
+        self.carbon_emissions[Fossil.name] = self.energy_CO2_emissions[Fossil.name] * self.cost_details['heat_needs']
+
+        self.carbon_emissions[Renewable.name] = self.energy_CO2_emissions[Renewable.name] * self.cost_details['elec_needs']
+
+        return self.carbon_emissions[Fossil.name] + self.carbon_emissions[Renewable.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -62,8 +57,10 @@ class DirectAirCaptureTechno(CCTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
+        heat_needs = self.get_heat_needs()
         efficiency = self.configure_efficiency()
         return {Renewable.name: np.identity(len(self.years)) * elec_needs / efficiency,
+                Fossil.name: np.identity(len(self.years)) * heat_needs / efficiency,
                 }
 
     def compute_consumption_and_production(self):
@@ -75,4 +72,7 @@ class DirectAirCaptureTechno(CCTechno):
         # Consumption
 
         self.consumption[f'{Renewable.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
+            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+
+        self.consumption[f'{Fossil.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
             self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
