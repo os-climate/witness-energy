@@ -22,7 +22,10 @@ class SolidFuel(EnergyType):
         major use is fired power electric generation
         coal brut production = 44000TWh
         coal used for elec and syngas around 24000TWh
-        # https://www.iea.org/reports/iron-and-steel-technology-roadmap says 627Mtoe of coal for steel 
+        Source: IEA 2022, Iron and Steel technology roadmap,
+        https://www.iea.org/reports/iron-and-steel-technology-roadmap,
+        License: CC BY 4.0.
+        says 627Mtoe of coal for steel
         coal_needed = 627*11.63 = 7292 TWh
         iron_use_part = 7292/20000 = 0.364
     '''
@@ -37,8 +40,10 @@ class SolidFuel(EnergyType):
                         #[Accessed 17 12 2021].
                         'CO2_per_use': 2.42,
                         'CO2_per_use_unit': 'kg/kg',
-                        'CH4_per_energy': 0.01,  # WOE_2019
-                        'CH4_per_energy_unit': 'kg/kg',
+                        # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+                        # 0.0014 kt/PJ
+                        'N2O_per_use': 0.0014e-3 / 0.277,
+                        'N2O_per_use_unit': 'Mt/TWh',
                         'density': 1300.0,  # at atmospheric pressure and 298K
                         'density_unit': 'kg/m^3',
                         # Lee, Jun Sian. 2015.
@@ -76,7 +81,9 @@ class SolidFuel(EnergyType):
         --> CO2 per use for iron and steel and cement will be used in an industrial co2 emissions model 
         '''
 
-        # https://www.iea.org/reports/iron-and-steel-technology-roadmap
+        # Source: IEA 2022, Iron and Steel technology roadmap,
+        # https://www.iea.org/reports/iron-and-steel-technology-roadmap,
+        # License: CC BY 4.0.
 #         kgcoal_per_kgsteel = 1 / 1.7
 #         kgcoal_per_kgcement = 0.25
 #

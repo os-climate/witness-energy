@@ -36,10 +36,10 @@ Global Trends in hydropower Energy Investment (small plant less than 10 MW) [^9]
 [^1]: [Hydropower Technology Basics. NREL.gov](https://www.nrel.gov/research/re-hydropower.html)
 [^2]: [Capacity factor. NRC.gov](https://www.nrc.gov/reading-rm/basic-ref/glossary/capacity-factor-net.html)
 [^3]: [Types of Hydropower Plants](https://www.energy.gov/eere/water/types-hydropower-plants)
-[^4]: [IEA (2019), World Energy Outlook 2019, IEA, Paris](https://www.iea.org/reports/world-energy-outlook-2019)
+[^4]: [IEA 2022, World Energy Outlook 2019, IEA, Paris](https://www.iea.org/reports/world-energy-outlook-2019), License: CC BY 4.0.
 [^5]: [IRENA (2021), Renewable Power Generation Costs in 2020, International Renewable Energy Agency.](https://www.irena.org/publications/2021/Jun/Renewable-Power-Costs-in-2020)
 [^6]: [Global power plant database 2018](https://github.com/wri/global-power-plant-database)
-[^7]: [IEA, Hydropower generation in the Sustainable Development Scenario, 2000-2030, IEA, Paris](https://www.iea.org/data-and-statistics/charts/hydropower-generation-in-the-sustainable-development-scenario-2000-2030)
+[^7]: [IEA 2022, Hydropower generation in the Sustainable Development Scenario, 2000-2030, IEA, Paris](https://www.iea.org/data-and-statistics/charts/hydropower-generation-in-the-sustainable-development-scenario-2000-2030), License: CC BY 4.0.
 [^8]: [Power generation cost 2019](https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2020/Jun/IRENA_Power_Generation_Costs_2019.pdf)
 [^9]: [Global Trends in renewable Energy Investment](https://www.irena.org/Statistics/View-Data-by-Topic/Finance-and-Investment/Investment-Trends)
 

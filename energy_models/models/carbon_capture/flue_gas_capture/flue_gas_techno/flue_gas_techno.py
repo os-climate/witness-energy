@@ -23,6 +23,27 @@ import numpy as np
 
 class FlueGasTechno(CCTechno):
 
+    def get_electricity_needs(self):
+        """
+        Overloads techno type method to use electricity in coarse technologies for heat
+        Get the electricity needs for 1 kwh of the energy producted by the technology
+        """
+        if self.techno_infos_dict['elec_demand'] != 0.0:
+            elec_need = self.check_energy_demand_unit(self.techno_infos_dict['elec_demand_unit'],
+                                                      self.techno_infos_dict['elec_demand'])
+
+        else:
+            elec_need = 0.0
+
+        if 'heat_demand' in self.techno_infos_dict:
+            heat_need = self.check_energy_demand_unit(self.techno_infos_dict['heat_demand_unit'],
+                                                      self.techno_infos_dict['heat_demand'])
+
+        else:
+            heat_need = 0.0
+
+        return elec_need + heat_need
+
     def configure_parameters_update(self, inputs_dict):
 
         CCTechno.configure_parameters_update(self, inputs_dict)
@@ -54,8 +75,10 @@ class FlueGasTechno(CCTechno):
         '''
         elec_needs = self.get_electricity_needs()
         efficency = self.configure_efficiency()
+
         return {Renewable.name: np.identity(len(self.years)) * elec_needs / efficency * self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect)}
+            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect),
+                }
 
     def compute_consumption_and_production(self):
         """

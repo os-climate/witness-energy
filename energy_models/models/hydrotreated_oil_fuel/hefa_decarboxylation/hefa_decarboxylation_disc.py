@@ -86,7 +86,9 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'techno_evo_eff': 'no',
     }
 
-    # https://www.iea.org/data-and-statistics/charts/global-biofuel-production-in-2019-and-forecast-to-2025
+    # Source: IEA 2022, Data and Statistics,
+    # https://www.iea.org/data-and-statistics/charts/global-biofuel-production-in-2019-and-forecast-to-2025,
+    # License: CC BY 4.0.
     # 9 bl of HVO/HEFA in 2020
     # https://www.ieabioenergy.com/wp-content/uploads/2021/06/IEA-Bioenergy-Task-39-Progress-in-the-commercialisation-of-biojet-fuels-May-2021-1.pdf
     # most current commercial HEFA production removes oxygen through the
@@ -107,7 +109,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         {'past years': np.arange(-construction_delay, 0), 'invest': [347.5 / 1000 * i for i in [0.0, 0.0, 3.0]]})  # in G$
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,

@@ -311,6 +311,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
         inputs_dict = {'year_start': year_start,
                        'year_end': year_end,
                        'CO2_taxes': self.co2_taxes,
+                       'data_fuel_dict': GaseousHydrogen.data_energy_dict,
                        'technologies_list': ['WaterGasShift', 'Electrolysis.PEM'],
                        'WaterGasShift.techno_consumption': self.smr_consumption,
                        'WaterGasShift.techno_consumption_woratio': self.smr_consumption,

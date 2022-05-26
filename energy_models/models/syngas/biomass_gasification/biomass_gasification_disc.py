@@ -54,6 +54,10 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  'Opex_percentage': 0.015,  # Rosenfeld2020
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
+                                 # https://www.ipcc-nggip.iges.or.jp/public/2019rf/pdf/2_Volume2/19R_V2_4_Ch04_Fugitive_Emissions.pdf
+                                 # 18.3 kg/TJ
+                                 'CH4_emission_factor': 18.3e-9 / 0.277e-3,
+                                 'CH4_emission_factor_unit': 'Mt/TWh',
                                  # Wang2019 : 9.932 MW of electricity to
                                  # product 88.841 of syngas
                                  'elec_demand': 9.932 / 88.841,
@@ -124,7 +128,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                                          1.7907619419001841, 4.88748519534807]})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,

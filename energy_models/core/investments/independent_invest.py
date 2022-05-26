@@ -48,7 +48,6 @@ class IndependentInvest(BaseInvest):
             self.year_end + 1)
         self.delta_years = len(self.years_range)
 
-
     def compute_invest_constraint_and_objective(self, inputs_dict):
         '''
         The constraint is satisfied if sum of techno_invests < available_invest.
@@ -70,7 +69,7 @@ class IndependentInvest(BaseInvest):
         invest_limit_ref = inputs_dict['invest_limit_ref']
         self.compute_distribution_list(inputs_dict)
 
-        techno_invests = inputs_dict['invest_mix'][self.distribution_list]       
+        techno_invests = inputs_dict['invest_mix'][self.distribution_list]
         techno_invest_sum = techno_invests.sum(axis=1).values
 
         techno_invest_sum += inputs_dict['forest_investment']['forest_investment'].values
@@ -78,7 +77,7 @@ class IndependentInvest(BaseInvest):
         energy_list = inputs_dict['energy_list']
 
         if inputs_dict['is_dev'] and BiomassDry.name in energy_list:
-            for techno in ['managed_wood_investment', 'unmanaged_wood_investment', 'crop_investment']:
+            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                 techno_invest_sum += inputs_dict[techno]['investment'].values
 
         # Calculate relative diff
@@ -90,12 +89,16 @@ class IndependentInvest(BaseInvest):
         invest_constraint_df = pd.DataFrame({'years': energy_investment['years'].values,
                                              'invest_constraint': invest_constraint})
 
-        delta_sum = (energy_invest_df['energy_investment'].values - techno_invest_sum) / invest_sum_ref
+        delta_sum = (
+            energy_invest_df['energy_investment'].values - techno_invest_sum) / invest_sum_ref
 
-        delta_sum_cons = (energy_invest_df['energy_investment'].values - techno_invest_sum)
-        abs_delta_sum = np.sqrt(compute_func_with_exp_min(delta_sum ** 2, 1e-15))
+        delta_sum_cons = (
+            energy_invest_df['energy_investment'].values - techno_invest_sum)
+        abs_delta_sum = np.sqrt(
+            compute_func_with_exp_min(delta_sum ** 2, 1e-15))
 
-        abs_delta_sum_cons = (invest_limit_ref - np.sqrt(compute_func_with_exp_min(delta_sum_cons ** 2, 1e-15)) )/ invest_sum_ref / self.delta_years
+        abs_delta_sum_cons = (invest_limit_ref - np.sqrt(compute_func_with_exp_min(
+            delta_sum_cons ** 2, 1e-15))) / invest_sum_ref / self.delta_years
 
         # Get the L1 norm of the delta and apply a scaling to compute the
         # objective
@@ -104,9 +107,9 @@ class IndependentInvest(BaseInvest):
         invest_objective = smooth_delta / invest_objective_ref
         abs_delta_sum_cons_dc = compute_delta_constraint(value=techno_invest_sum, goal=energy_invest_df['energy_investment'].values,
                                                          tolerable_delta=invest_limit_ref, delta_type='abs',
-                                                         reference_value=invest_sum_ref*self.delta_years)
+                                                         reference_value=invest_sum_ref * self.delta_years)
         delta_sum_eq_cons = compute_delta_constraint(value=techno_invest_sum, goal=energy_invest_df['energy_investment'].values,
                                                      tolerable_delta=invest_limit_ref, delta_type='normal',
-                                                     reference_value=invest_sum_ref*self.delta_years)
+                                                     reference_value=invest_sum_ref * self.delta_years)
 
         return invest_constraint_df, invest_objective, abs_delta_sum, abs_delta_sum_cons, abs_delta_sum_cons_dc, delta_sum_eq_cons

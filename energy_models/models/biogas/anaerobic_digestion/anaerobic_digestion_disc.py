@@ -57,8 +57,9 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                  # Overview of Anaerobic Digestion and Power and Gas to Grid Plant CAPEX and OPEX Costs.
                                  # Int J Bioprocess Biotech 02: 109.
                                  # DOI:10.20911/IJBBT-109.100009
-                                 # IEA (2020), Outlook for biogas and biomethane: Prospects for organic growth, IEA, Paris
-                                 # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
+                                 # Source for CAPEX init: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,
+                                 # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth,
+                                 # License: CC BY 4.0.
                                  # Capex 6.9 $/Mbtu from IEA medium digester
                                  # (Mbtu/kWh = 1/293)
                                  'Capex_init': 6.9 / 293.,
@@ -76,8 +77,9 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                  'construction_delay': construction_delay
                                  }
 
-    # IEA (2020), Outlook for biogas and biomethane: Prospects for organic growth, IEA, Paris
+    # Source for initial production: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,
     # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
+    # License: CC BY 4.0.
     # in 17.7 GW with 8760 hours in a year  at year_start
     # 35 Mtoe in 2020 by IEA  Mtoe to TWh:
     initial_production = 35.0 * 11.63
@@ -88,11 +90,13 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                              'distrib': [10.12312, 10.12312, 10.12312, 7.113543, 7.113543, 12.9959, 7.387141, 7.387141, 3.556772,
                                                          5.471956, 4.514364, 4.651163, 2.599179, 2.599179, 1.094391,  0.820793,  0.820793, 0.820793, 0.683994528
                                                          ]})  # to review
-    # Investments are from the IEA
+    # Source for initial production: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,
+    # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
+    # License: CC BY 4.0.
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.015, 0.017, 0.009]})
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,

@@ -66,7 +66,17 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # However it is really depending on type of extraction
                                  # see
                                  # https://theicct.org/sites/default/files/ICCT_crudeoil_Eur_Dec2010_sum.pdf
+
                                  'CO2_from_production_unit': 'kg/kg',
+                                 # IEA Methane Tracker 2021 , (https://www.iea.org/articles/methane-tracker-data-explorer), License: CC BY 4.0.
+                                 # Emission factor are computed with raw
+                                 # production from WITNESS and emissions from
+                                 # IEA Methane tracker
+                                 # Are approximately same than GAINS 2017 model
+                                 'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,
+                                 'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
+                                 'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
+                                 'CH4_emission_factor_unit': 'Mt/TWh',
                                  # https://www.e-education.psu.edu/eme801/node/470
                                  # 1 kg of crude oil is 11.3 kWh
                                  # 0.137 * 11.9 kero
@@ -81,10 +91,13 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  # ratio elec use / kerosene product
                                  'elec_demand': 0.008,
                                  'elec_demand_unit': 'kWh/kWh',
-                                 # IEA Hydrogen
-                                 # https://www.iea.org/reports/hydrogen
+                                 # IEA 2022, Hydrogen,
+                                 # https://www.iea.org/reports/hydrogen,
+                                 # License: CC BY 4.0.
                                  # 2020 total hydrogen demand = 40Mt (calorific value 33.3 kWh/kg)
+                                 # Source: IEA 2022, Data and Statistics,
                                  # https://www.iea.org/data-and-statistics/data-tables/?country=WORLD&energy=Oil&year=2019
+                                 # License: CC BY 4.0.
                                  # 2019 fuel prod = 5672984+11916946+41878252+14072582+2176724+56524612+16475667 TJ
                                  # ratio for hydrogen demand = (40*33.3) /
                                  # (148717767/3.6/1000)
@@ -109,10 +122,15 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
     energy_own_use = 2485.89  # TWh
+    # Source for initial production: IEA 2022; Oil Information: Overview,
+    # https://www.iea.org/reports/oil-information-overview,
+    # License: CC BY 4.0.
     # in TWh at year_start from IEA (raw prod of oil products and not crude oil
     initial_production = 49472.0 - energy_own_use
 
-    # Invest from WEI2020
+    # Source for invest: IEA 2022; World Energy Investment,
+    # https://www.iea.org/reports/world-energy-investment-2020,
+    # License: CC BY 4.0.
     invest_before_year_start = pd.DataFrame(
 
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 477, 470]})
@@ -133,7 +151,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     FLUE_GAS_RATIO = np.array([0.12])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),

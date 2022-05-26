@@ -48,7 +48,8 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_syngas',
-                                  'default': Syngas.data_energy_dict},
+                                  'default': Syngas.data_energy_dict,
+                                  'unit': 'defined in dict'},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
     syngas_ratio = None

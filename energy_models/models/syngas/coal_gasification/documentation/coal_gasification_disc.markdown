@@ -17,14 +17,19 @@ The two main applications of coal gasification are to produce energy (hydrogen w
 
  $$ 2FeO + (CO + H_2) \rightarrow 2Fe + CO_2 + H_2O $$
 
- IEA website reports a coal consumption of 3333 TWh for other transormation (includes Hydrogen and DRI) and 264.72 TWh for liquefaction plants. 
+ IEA website reports a coal consumption of 3333 TWh for other transformation [^3] (includes Hydrogen and DRI) and 264.72 TWh for liquefaction plants. 
 
 ## Datas
 
 Technical and economic datas were taken from Wang et Al. [^1] and ETSAP [^2]
 
+### GHG emissions 
+
+The Chapter 4 of the IPCC report predicts methane fugitive emissions from biomass gasification.  Emission factor is provided based on the volume of CH4 emissions released during the production and treatment of syngas and has a value of 6.1 kgCH4/TJ [^4]. 
 
  
 [^1]: Wang, Y., Li, G., Liu, Z. , Cui, P., Zhu, Z.  (2019). Techno-economic analysis of biomass-to-hydrogen process in comparison with coal-to-hydrogen process. Energy, 185(2019), 1063-1075.
 
 [^2]: IEA ETSAP - Technology Brief P05 – May 2010 - www.etsap.org
+
+[^3]: [IEA 2022, Data Tables](https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019), License: CC BY 4.0.

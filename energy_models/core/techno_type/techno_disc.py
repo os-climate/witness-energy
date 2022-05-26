@@ -65,9 +65,9 @@ class TechnoDiscipline(SoSDiscipline):
                       'dataframe_edition_locked': False},
         'resources_price': {'type': 'dataframe', 'unit': '$/t', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
         'resources_CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kg', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
-        'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'user_level': 2},
-        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
+        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'is_softmax': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': False,
                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'is_apply_ratio': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -280,6 +280,24 @@ class TechnoDiscipline(SoSDiscipline):
                         dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
                         ('land_use_required', f'{self.techno_model.name} (Gha)'), ('all_streams_demand_ratio', ratio_name),  dland_use_dratio / 100.)
+        if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
+            for ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns:
+                if ratio_name not in ['years']:
+                    production_woratio = self.techno_model.production_woratio[
+                        f'{self.energy_name} ({self.techno_model.product_energy_unit})']
+                    self.dprod_dratio[ratio_name] = self.techno_model.compute_dprod_dratio(
+                        production_woratio, ratio_name=ratio_name,
+                        dapplied_ratio_dratio=dapplied_ratio_dratio)
+                    self.set_partial_derivative_for_other_types(
+                        ('techno_production',
+                         f'{self.energy_name} ({self.techno_model.product_energy_unit})'), ('all_resource_ratio_usable_demand', ratio_name),
+                        self.dprod_dratio[ratio_name] / 100.)
+                    dland_use_dratio = self.techno_model.compute_dprod_dratio(
+                        self.techno_model.techno_land_use_woratio[
+                            f'{self.techno_model.name} (Gha)'], ratio_name=ratio_name,
+                        dapplied_ratio_dratio=dapplied_ratio_dratio)
+                    self.set_partial_derivative_for_other_types(
+                        ('land_use_required', f'{self.techno_model.name} (Gha)'), ('all_resource_ratio_usable_demand', ratio_name),  dland_use_dratio / 100.)
 
         # Compute jacobian for other energy production/consumption
         self.dprod_column_dinvest = {}
@@ -318,6 +336,17 @@ class TechnoDiscipline(SoSDiscipline):
                                 ('techno_production',
                                  column), ('all_streams_demand_ratio', ratio_name),
                                 self.dprod_column_dratio[column][ratio_name] / 100.)
+                    if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
+                        if ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns and ratio_name not in ['years']:
+                            production_woratio = self.techno_model.production_woratio[
+                                column]
+                            self.dprod_column_dratio[column][ratio_name] = self.techno_model.compute_dprod_dratio(
+                                production_woratio, ratio_name=ratio_name,
+                                dapplied_ratio_dratio=dapplied_ratio_dratio)
+                            self.set_partial_derivative_for_other_types(
+                                ('techno_production',
+                                 column), ('all_resource_ratio_usable_demand', ratio_name),
+                                self.dprod_column_dratio[column][ratio_name] / 100.)
 
         for column in consumption:
             self.dcons_column_dinvest = self.dprod_dinvest.copy()
@@ -353,6 +382,17 @@ class TechnoDiscipline(SoSDiscipline):
                                 ('techno_consumption',
                                  column), ('all_streams_demand_ratio', ratio_name),
                                 dprod_dratio / 100.)
+                    if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
+                        if ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns and ratio_name not in ['years']:
+                            consumption_woratio = self.techno_model.consumption_woratio[
+                                column]
+                            dprod_dratio = self.techno_model.compute_dprod_dratio(
+                                consumption_woratio, ratio_name=ratio_name,
+                                dapplied_ratio_dratio=dapplied_ratio_dratio)
+                            self.set_partial_derivative_for_other_types(
+                                ('techno_consumption',
+                                 column), ('all_resource_ratio_usable_demand', ratio_name),
+                                dprod_dratio / 100.)
 
         dland_use_dinvest = self.techno_model.compute_dlanduse_dinvest()
         derivate_land_use = dland_use_dinvest.copy()
@@ -380,6 +420,13 @@ class TechnoDiscipline(SoSDiscipline):
                     self.set_partial_derivative_for_other_types(
                         ('non_use_capital', self.techno_model.name),
                         ('all_streams_demand_ratio', ratio_name), np.identity(len(years)) * dnon_use_capital_dratio / 100.0)
+            if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
+                if ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns and ratio_name not in ['years']:
+                    dnon_use_capital_dratio = self.techno_model.compute_dnon_usecapital_dratio(
+                        dapplied_ratio_dratio[ratio_name])
+                    self.set_partial_derivative_for_other_types(
+                        ('non_use_capital', self.techno_model.name),
+                        ('all_resource_ratio_usable_demand', ratio_name), np.identity(len(years)) * dnon_use_capital_dratio / 100.0)
 
     def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}):
         """
@@ -816,7 +863,7 @@ class TechnoDiscipline(SoSDiscipline):
             'techno_detailed_production')
         chart_name = f'{self.energy_name} World Production via {self.techno_name}<br>with 2020 factories distribution'
 
-        new_chart = TwoAxesInstanciatedChart('years', f'{self.energy_name} production (TWh)',
+        new_chart = TwoAxesInstanciatedChart('years', f'{self.energy_name} production [TWh]',
                                              chart_name=chart_name.capitalize())
 
         serie = InstanciatedSeries(
@@ -843,7 +890,7 @@ class TechnoDiscipline(SoSDiscipline):
         chart_name = f'{self.techno_name} factories age in term of TWh of {self.energy_name} production'
 
         if 'years' in age_distrib_production.columns:
-            new_chart = TwoAxesInstanciatedChart('age', f'{self.energy_name} production (TWh)',
+            new_chart = TwoAxesInstanciatedChart('age', f'{self.energy_name} production [TWh]',
                                                  chart_name=chart_name.capitalize())
             years = age_distrib_production['years'].values
             filtered_years = list(

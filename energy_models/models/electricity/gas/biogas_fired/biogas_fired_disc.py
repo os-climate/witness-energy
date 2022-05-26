@@ -43,8 +43,9 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
     lifetime = 20   # Value for CHP units
     construction_delay = 2  # years
 
-    # IEA Data Tables
+    # IEA 2022, Data Tables,
     # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019
+    # License: CC BY 4.0.
     # Gross. elec. prod.: 88751 GWh
     # Electricity plants consumption: 448717 TJ net -> 448717 / 3.6 GWh
     biogas_needs = (448717 / 3.6) / 88751  # ratio without dimension
@@ -54,44 +55,50 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
     # pages 110 to 119
 
     techno_infos_dict_default = {'maturity': 5,
-                                 'Opex_percentage': 0.04,   # IRENA (mean of 2% - 6%)
+                                 # IRENA (mean of 2% - 6%)
+                                 'Opex_percentage': 0.04,
                                  'WACC': 0.075,
                                  'learning_rate': 0,
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
-                                 'Capex_init': 2141,    # IRENA (value from Figure 7.1, page 111)
+                                 # IRENA (value from Figure 7.1, page 111)
+                                 'Capex_init': 2141,
                                  'Capex_init_unit': '$/kW',
-                                 'capacity_factor': 0.70,   # IRENA (value from Figure 7.1, page 111)
+                                 # IRENA (value from Figure 7.1, page 111)
+                                 'capacity_factor': 0.70,
                                  'biogas_needs': biogas_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
                                  'construction_delay': construction_delay,
                                  'full_load_hours': 8760}
 
-    # From IEA Data
+    # Source: IEA 2022, Data and Statistics,
     # https://www.iea.org/data-and-statistics/charts/biogas-installed-power-generation-capacity-2010-2018
+    # License: CC BY 4.0.
     # (17.7-9.4)/8 = 1.0375 GW per year increase
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [1.0375*2141/1000, 1.0375*2141/1000]})
+        {'past years': np.arange(-construction_delay, 0), 'invest': [1.0375 * 2141 / 1000, 1.0375 * 2141 / 1000]})
     # In G$
 
-    # Initial prod in TWh (2019)
-    # IEA Data Tables
+    # Source for Initial prod in TWh (2019):
+    # IEA 2022, Data Tables,
     # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019
+    # License: CC BY 4.0.
     initial_production = 88.751
 
-    # From IEA Data
+    # Source: IEA 2022, Data and Statistics
     # https://www.iea.org/data-and-statistics/charts/biogas-installed-power-generation-capacity-2010-2018
+    # License: CC BY 4.0.
     # (17.7-9.4)/8 = 1.0375 GW per year increase
     # 1.0375 / 17.7 ~= 5.8% added production each year (linear approximation)
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [100-17*5.8, 5.8, 5.8, 5.8, 5.8,
+                                             'distrib': [100 - 17 * 5.8, 5.8, 5.8, 5.8, 5.8,
                                                          5.8, 5.8, 5.8, 5.8, 5.8,
                                                          5.8, 5.8, 5.8, 5.8, 5.8,
                                                          5.8, 5.8, 5.8, 0.0]})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),

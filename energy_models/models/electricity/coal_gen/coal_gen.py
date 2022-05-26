@@ -20,6 +20,7 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
+from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 
 class CoalGen(ElectricityTechno):
@@ -67,6 +68,8 @@ class CoalGen(ElectricityTechno):
             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        self.compute_ghg_emissions(N2O.name, related_to=SolidFuel.name)
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

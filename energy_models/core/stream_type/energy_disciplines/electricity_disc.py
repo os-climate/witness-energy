@@ -61,7 +61,8 @@ class ElectricityDiscipline(EnergyDiscipline):
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_electricity',
-                                  'default': Electricity.data_energy_dict},
+                                  'default': Electricity.data_energy_dict,
+                                  'unit': 'defined in dict'},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 

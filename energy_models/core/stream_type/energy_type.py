@@ -13,8 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pandas as pd
 
 from energy_models.core.stream_type.base_stream import BaseStream
+
+from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 
 
 class EnergyType(BaseStream):
@@ -30,6 +33,7 @@ class EnergyType(BaseStream):
         BaseStream.__init__(self, name)
 
         self.carbon_tax = None
+        self.data_energy_dict_input = None
 
     def configure(self, inputs_dict):
         self.configure_parameters(inputs_dict)
@@ -49,7 +53,7 @@ class EnergyType(BaseStream):
         '''
         self.carbon_tax = inputs_dict['CO2_taxes']
         BaseStream.configure_parameters_update(self, inputs_dict)
-
+        self.data_energy_dict_input = inputs_dict['data_fuel_dict']
         for element in self.subelements_list:
             self.sub_carbon_emissions[element] = inputs_dict[f'{element}.CO2_emissions'][element]
 
@@ -65,13 +69,17 @@ class EnergyType(BaseStream):
 
         return self.total_carbon_emissions
 
-    def compute_co2_per_use(self, data_energy_dict):
-        self.co2_per_use['CO2_per_use'] = 0.0
-        if 'CO2_per_use' in self.data_energy_dict:
-            if data_energy_dict['CO2_per_use_unit'] == 'kg/kg':
-                self.co2_per_use['CO2_per_use'] = data_energy_dict['CO2_per_use'] / \
-                    data_energy_dict['high_calorific_value']
-            elif data_energy_dict['CO2_per_use_unit'] == 'kg/kWh':
-                self.co2_per_use['CO2_per_use'] = data_energy_dict['CO2_per_use']
+    def compute_ghg_emissions_per_use(self):
+        ghg_dict = {}
+        for ghg_type in GHGEmissions.GHG_TYPE_LIST:
+            ghg_dict[f'{ghg_type}_per_use'] = pd.DataFrame(
+                {'years': self.years})
+            ghg_dict[f'{ghg_type}_per_use'][f'{ghg_type}_per_use'] = 0.0
+            if f'{ghg_type}_per_use' in self.data_energy_dict:
+                if self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'kg/kg':
+                    ghg_dict[f'{ghg_type}_per_use'][f'{ghg_type}_per_use'] = self.data_energy_dict_input[f'{ghg_type}_per_use'] / \
+                        self.data_energy_dict_input['high_calorific_value']
+                elif self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'kg/kWh' or self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'Mt/TWh':
+                    ghg_dict[f'{ghg_type}_per_use'][f'{ghg_type}_per_use'] = self.data_energy_dict_input[f'{ghg_type}_per_use']
 
-        return self.co2_per_use
+        return ghg_dict

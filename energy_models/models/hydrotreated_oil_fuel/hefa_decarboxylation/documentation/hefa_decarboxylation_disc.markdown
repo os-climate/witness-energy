@@ -35,7 +35,7 @@ Technico-economic information (Capex, Opex, Production levels, past investments,
 - [Noah, Matthew. A Techno-Economic and Environmental Assessment of Hydroprocessed Renewable Distillate Fuels. (2011)](https://dspace.mit.edu/bitstream/handle/1721.1/65508/746766700-MIT.pdf?sequence=2&isAllowed=y)
 - [Diederichs, G.W. Techno-Economic Assessment of Processes that Produce Jet Fuel from Plant-Derived Sources. (2015)](https://core.ac.uk/download/pdf/37440495.pdf)
 - [IEA Bioenergy. Progress in Commercialization of Biojet
-/Sustainable Aviation Fuels (SAF) (2021)](https://www.ieabioenergy.com/wp-content/uploads/2021/06/IEA-Bioenergy-Task-39-Progress-in-the-commercialisation-of-biojet-fuels-May-2021-1.pdf)
+/Sustainable Aviation Fuels (SAF) (2021)](https://www.ieabioenergy.com/wp-content/uploads/2021/06/IEA-Bioenergy-Task-39-Progress-in-the-commercialisation-of-biojet-fuels-May-2021-1.pdf), License: CC BY 4.0.
 - [ETIP Bioenergy. HVO/HEFA](https://www.etipbioenergy.eu/value-chains/products-end-use/products/hvo-hefa)
 - [De Jong, S., Antonissen, K., Hoefnagels, R. et al. Life-cycle analysis of greenhouse gas emissions from renewable jet fuel production. Biotechnol Biofuels 10, 64 (2017).](https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0739-7)
 

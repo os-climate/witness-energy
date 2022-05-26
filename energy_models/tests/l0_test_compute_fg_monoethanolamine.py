@@ -55,7 +55,7 @@ class FGMonoEthanolAmineTestCase(unittest.TestCase):
             {'years': years, 'flue_gas_mean': 0.2})
 
         self.energy_prices = pd.DataFrame(
-            {'years': years, 'electricity': np.ones(len(np.arange(2020, 2051))) * 80.0})
+            {'years': years, 'electricity': np.ones(len(np.arange(2020, 2051))) * 80.0, 'methane': np.ones(len(np.arange(2020, 2051))) * 80.0})
 
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': np.array([22000.00, 22000.00, 22000.00, 22000.00,

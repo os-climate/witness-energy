@@ -37,7 +37,7 @@ class CCUSDiscTestCase(unittest.TestCase):
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            'fossil', 'renewable', 'fuel.hydrotreated_oil_fuel', 'carbon_capture', 'carbon_storage']]
+            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage']]
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)
@@ -70,8 +70,8 @@ class CCUSDiscTestCase(unittest.TestCase):
             data={'years': years, 'carbon_capture needed by energy mix (Mt)': 0.005})
         self.co2_emissions_needed_by_energy_mix = pd.DataFrame(
             data={'years': years, 'carbon_capture needed by energy mix (Gt)': 0.005})
-        self.CO2_emissions_by_use_sources = pd.DataFrame(data={'years': years, 'CO2_resource from energy mix (Gt)': 1.2, 'carbon_capture from energy mix (Gt)': 1e-15,
-                                                               'Total CO2 by use (Gt)': 6.5, 'Total CO2 from Flue Gas (Gt)': 1e-3})
+        self.carbon_capture_from_energy_mix = pd.DataFrame(
+            data={'years': years, 'carbon_capture from energy mix (Gt)': 1e-15})
 
     def tearDown(self):
         pass
@@ -121,7 +121,7 @@ class CCUSDiscTestCase(unittest.TestCase):
             inputs_dict[f'{self.name}.{energy}.energy_consumption_woratio'] = self.energy_consumption_woratio[energy]
             inputs_dict[f'{self.name}.{energy}.co2_emissions'] = self.co2_emissions
         inputs_dict[f'{self.name}.CO2_taxes'] = self.CO2_taxes
-        inputs_dict[f'{self.name}.CO2_emissions_by_use_sources'] = self.CO2_emissions_by_use_sources
+        inputs_dict[f'{self.name}.carbon_capture_from_energy_mix'] = self.carbon_capture_from_energy_mix
         inputs_dict[f'{self.name}.co2_emissions_needed_by_energy_mix'] = self.co2_emissions_needed_by_energy_mix
 
         self.ee.load_study_from_input_dict(inputs_dict)

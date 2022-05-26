@@ -51,7 +51,8 @@ class LiquidFuelTechnoDiscipline(TechnoDiscipline):
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_liquid_fuel',
-                                  'default': LiquidFuel.data_energy_dict
+                                  'default': LiquidFuel.data_energy_dict,
+                                  'unit': 'defined in dict'
                                   },
                'other_fuel_dict': {'type': 'dict',
                                    'visibility': TechnoDiscipline.SHARED_VISIBILITY,
@@ -61,7 +62,8 @@ class LiquidFuelTechnoDiscipline(TechnoDiscipline):
                                                LiquefiedPetroleumGas.name: LiquefiedPetroleumGas.data_energy_dict,
                                                HeatingOil.name: HeatingOil.data_energy_dict,
                                                UltraLowSulfurDiesel.name: UltraLowSulfurDiesel.data_energy_dict,
-                                               }
+                                               },
+                                   'unit': 'defined in dict'
                                    },
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
@@ -74,4 +76,3 @@ class LiquidFuelTechnoDiscipline(TechnoDiscipline):
     lpg_name = LiquefiedPetroleumGas.name
     heating_oil_name = HeatingOil.name
     ulsd_name = UltraLowSulfurDiesel.name
-

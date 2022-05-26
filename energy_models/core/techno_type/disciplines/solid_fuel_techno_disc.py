@@ -46,7 +46,8 @@ class SolidFuelTechnoDiscipline(TechnoDiscipline):
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_solid_fuel',
-                                  'default': SolidFuel.data_energy_dict}
+                                  'default': SolidFuel.data_energy_dict,
+                                  'unit': 'defined in dict'}
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 

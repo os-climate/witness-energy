@@ -25,6 +25,7 @@ from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
+from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
@@ -61,6 +62,9 @@ from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase impor
 from energy_models.sos_processes.energy.techno_mix.biodiesel_mix.usecase import TECHNOLOGIES_LIST as BioDiesel_technos
 from energy_models.sos_processes.energy.techno_mix.biodiesel_mix.usecase import TECHNOLOGIES_LIST_DEV as BioDiesel_technos_dev
 
+from energy_models.sos_processes.energy.techno_mix.ethanol_mix.usecase import TECHNOLOGIES_LIST as Ethanol_technos
+from energy_models.sos_processes.energy.techno_mix.ethanol_mix.usecase import TECHNOLOGIES_LIST_DEV as Ethanol_technos_dev
+
 from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase import TECHNOLOGIES_LIST as LiquidHydrogen_technos
 from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase import TECHNOLOGIES_LIST_DEV as LiquidHydrogen_technos_dev
 
@@ -75,6 +79,7 @@ from sos_trades_core.tools.base_functions.specific_check import specific_check_y
 
 ENERGY_TYPE = 'energy'
 CCUS_TYPE = 'CCUS'
+AGRI_TYPE = 'agriculture'
 DEFAULT_TECHNO_DICT = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_technos},
                        GaseousHydrogen.name: {'type': ENERGY_TYPE, 'value': GaseousHydrogen_technos},
                        BioGas.name: {'type': ENERGY_TYPE, 'value': BioGas_technos},
@@ -96,9 +101,10 @@ DEFAULT_TECHNO_DICT_DEV = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_
                            LiquidFuel.name: {'type': ENERGY_TYPE, 'value': LiquidFuel_technos_dev},
                            HydrotreatedOilFuel.name: {'type': ENERGY_TYPE, 'value': HydrotreatedOilFuel_technos_dev},
                            SolidFuel.name: {'type': ENERGY_TYPE, 'value': SolidFuel_technos_dev},
-                           BiomassDry.name: {'type': ENERGY_TYPE, 'value': BiomassDry_technos_dev},
+                           BiomassDry.name: {'type': AGRI_TYPE, 'value': BiomassDry_technos_dev},
                            Electricity.name: {'type': ENERGY_TYPE, 'value': Electricity_technos_dev},
                            BioDiesel.name: {'type': ENERGY_TYPE, 'value': BioDiesel_technos_dev},
+                           Ethanol.name: {'type': ENERGY_TYPE, 'value': Ethanol_technos_dev},
                            LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos_dev},
                            CarbonCapture.name: {'type': CCUS_TYPE, 'value': CarbonCapture_technos_dev},
                            CarbonStorage.name: {'type': CCUS_TYPE, 'value': CarbonStorage_technos_dev}}
@@ -110,7 +116,7 @@ DEFAULT_COARSE_TECHNO_DICT = {'renewable': {'type': ENERGY_TYPE, 'value': ['Rene
 
 
 DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_TECHNO_DICT.items(
-) if value['type'] == 'energy']
+) if value['type'] in ['energy', 'agriculture']]
 DEFAULT_CCS_LIST = [key for key, value in DEFAULT_TECHNO_DICT.items(
 ) if value['type'] == 'CCUS']
 
@@ -128,7 +134,7 @@ class EnergyStudyManager(StudyManager):
         self.main_study = main_study
         self.techno_dict = techno_dict
         self.energy_list = [key for key, value in self.techno_dict.items(
-        ) if value['type'] == 'energy']
+        ) if value['type'] in ['energy', 'agriculture']]
         self.ccs_list = [key for key, value in self.techno_dict.items(
         ) if value['type'] == 'CCUS']
 

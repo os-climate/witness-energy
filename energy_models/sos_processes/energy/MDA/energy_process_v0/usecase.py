@@ -16,7 +16,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from energy_models.core.energy_study_manager import EnergyStudyManager,\
+from energy_models.core.energy_study_manager import AGRI_TYPE, EnergyStudyManager,\
     DEFAULT_TECHNO_DICT, CCUS_TYPE, ENERGY_TYPE
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -30,6 +30,7 @@ from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
+from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
@@ -241,7 +242,7 @@ class Study(EnergyStudyManager):
                 ['invest_constraint', 'invest_sum_cons', 'invest_sum_cons_dc', 'invest_sum_eq_cons'])
             list_parent.extend(['invests_constraints', 'invests_constraints', 'invests_constraints', 'invests_constraints'])
             list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT, EQ_CONSTRAINT])
-            list_weight.extend([0., -1.0, 0., 0.])
+            list_weight.extend([0., 0., 0., -1.0])
             list_aggr_type.extend(
                 [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_DELTA])
             list_namespaces.extend(['ns_functions', 'ns_functions', 'ns_functions', 'ns_functions'])
@@ -314,7 +315,9 @@ class Study(EnergyStudyManager):
 
     def get_investments_mix(self):
 
-        # Invest from ref: WEI2020_DataUpdate_Oct2020
+        # Source for invest: IEA 2022; World Energy Investment,
+        # https://www.iea.org/reports/world-energy-investment-2020,
+        # License: CC BY 4.0.
         # Take variation from 2015 to 2019 (2020 is a covid year)
         # And assume a variation per year with this
         # invest of ref are 1295-electricity_networks- crude oil (only liquid_fuel
@@ -364,7 +367,9 @@ class Study(EnergyStudyManager):
         put a X0 tested on optim subprocess that satisfy all constraints
         """
 
-        # Invest from ref: WEI2020_DataUpdate_Oct2020
+        # Source for invest: IEA 2022; World Energy Investment,
+        # https://www.iea.org/reports/world-energy-investment-2020,
+        # License: CC BY 4.0.
         # Take variation from 2015 to 2019 (2020 is a covid year)
         # And assume a variation per year with this
         # invest of ref are 1295-electricity_networks- crude oil (only liquid_fuel
@@ -402,6 +407,8 @@ class Study(EnergyStudyManager):
             100, 77.5, len(years))
         invest_energy_mix_dict[HydrotreatedOilFuel.name] = [
             3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        invest_energy_mix_dict[Ethanol.name] = [
+            0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
         if self.bspline:
             invest_energy_mix_dict['years'] = self.years
@@ -417,7 +424,9 @@ class Study(EnergyStudyManager):
 
     def get_investments_ccs_mix(self):
 
-        # Invest from ref: WEI2020_DataUpdate_Oct2020
+        # Source for invest: IEA 2022; World Energy Investment,
+        # https://www.iea.org/reports/world-energy-investment-2020,
+        # License: CC BY 4.0.
         # Take variation from 2015 to 2019 (2020 is a covid year)
         # And assume a variation per year with this
         # invest of ref are 1295-electricity_networks- crude oil (only liquid_fuel
@@ -446,7 +455,9 @@ class Study(EnergyStudyManager):
 
     def get_investments_ccs_mix_custom(self):
 
-        # Invest from ref: WEI2020_DataUpdate_Oct2020
+        # Source for invest: IEA 2022; World Energy Investment,
+        # https://www.iea.org/reports/world-energy-investment-2020,
+        # License: CC BY 4.0.
         # Take variation from 2015 to 2019 (2020 is a covid year)
         # And assume a variation per year with this
         # invest of ref are 1295-electricity_networks- crude oil (only liquid_fuel
@@ -490,25 +501,26 @@ class Study(EnergyStudyManager):
         norm_ccs_mix = ccs_mix.drop(
             'years', axis=1).sum(axis=1)
         for study in instanciated_studies:
-            invest_techno = study.get_investments()
-            if 'years' in invest_techno.columns:
-                norm_techno_mix = invest_techno.drop(
-                    'years', axis=1).sum(axis=1)
-            else:
-                norm_techno_mix = invest_techno.sum(axis=1)
-            energy = study.energy_name
-            if energy in energy_mix.columns:
-                mix_energy = energy_mix[energy].values / norm_energy_mix * \
-                    (100.0 - ccs_percentage_array) / 100.0
-            elif energy in ccs_mix.columns:
-                mix_energy = ccs_mix[energy].values / norm_ccs_mix * \
-                    ccs_percentage_array / 100.0
-            else:
-                raise Exception(f'{energy} not in investment_mixes')
-            for techno in invest_techno.columns:
-                if techno != 'years':
-                    invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values * \
-                        mix_energy / norm_techno_mix
+            if study is not None:
+                invest_techno = study.get_investments()
+                if 'years' in invest_techno.columns:
+                    norm_techno_mix = invest_techno.drop(
+                        'years', axis=1).sum(axis=1)
+                else:
+                    norm_techno_mix = invest_techno.sum(axis=1)
+                energy = study.energy_name
+                if energy in energy_mix.columns:
+                    mix_energy = energy_mix[energy].values / norm_energy_mix * \
+                        (100.0 - ccs_percentage_array) / 100.0
+                elif energy in ccs_mix.columns:
+                    mix_energy = ccs_mix[energy].values / norm_ccs_mix * \
+                        ccs_percentage_array / 100.0
+                else:
+                    raise Exception(f'{energy} not in investment_mixes')
+                for techno in invest_techno.columns:
+                    if techno != 'years':
+                        invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values * \
+                            mix_energy / norm_techno_mix
 
         return invest_mix_df
 
@@ -569,17 +581,23 @@ class Study(EnergyStudyManager):
                 instance_sub_study = sub_study(
                     self.year_start, self.year_end, self.time_step, bspline=self.bspline, main_study=False, execution_engine=self.execution_engine,
                     invest_discipline=self.invest_discipline, technologies_list=self.techno_dict[sub_study_name]['value'])
+            elif self.techno_dict[sub_study_name]['type'] == AGRI_TYPE:
+                pass
             else:
                 raise Exception(
-                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE}]")
-
-            instance_sub_study.configure_ds_boundaries(lower_bound_techno=self.lower_bound_techno,
-                                                       upper_bound_techno=self.upper_bound_techno,)
-            instance_sub_study.study_name = self.study_name
-            data_dict = instance_sub_study.setup_usecase()
-            values_dict_list.extend(data_dict)
-            instanced_sub_studies.append(instance_sub_study)
-            dspace_list.append(instance_sub_study.dspace)
+                    f"The type of {sub_study_name} : {self.techno_dict[sub_study_name]['type']} is not in [{ENERGY_TYPE},{CCUS_TYPE},{AGRI_TYPE}]")
+            if self.techno_dict[sub_study_name]['type'] != AGRI_TYPE:
+                instance_sub_study.configure_ds_boundaries(lower_bound_techno=self.lower_bound_techno,
+                                                        upper_bound_techno=self.upper_bound_techno,)
+                instance_sub_study.study_name = self.study_name
+                data_dict = instance_sub_study.setup_usecase()
+                values_dict_list.extend(data_dict)
+                instanced_sub_studies.append(instance_sub_study)
+                dspace_list.append(instance_sub_study.dspace)
+            else :
+                # Add an empty study because biomass_dry is not an energy_mix study,
+                # it is integrated in the witness_wo_energy datacase in the agriculture_mix usecase
+                instanced_sub_studies.append(None)
         return values_dict_list, dspace_list,  instanced_sub_studies
 
     def create_technolist_per_energy(self, instanciated_studies):
@@ -588,7 +606,12 @@ class Study(EnergyStudyManager):
             zip(self.energy_list + self.ccs_list, instanciated_studies))
 
         for energy_name, study_val in dict_studies.items():
-            self.dict_technos[energy_name] = study_val.technologies_list
+            if study_val is not None:
+                self.dict_technos[energy_name] = study_val.technologies_list
+            else:
+                # the study_val == None is for the biomass_dry that is taken into account with the agriculture_mix
+                # so it has no dedicated technology in the energy_mix
+                self.dict_technos[energy_name] = []
 
     def setup_usecase(self):
 

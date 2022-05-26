@@ -34,7 +34,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
     """
     Syngas jacobian test class
     """
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -596,42 +596,42 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.Pyrolysis.techno_production': self.pyrolysis_production,
                        f'{self.name}.{self.model_name}.Pyrolysis.techno_prices': self.pyrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.Pyrolysis.CO2_emissions': self.pyrolysis_carbon_emissions,
-                       f'{self.name}.{self.model_name}.Pyrolysis.syngas_ratio': [111.111111],
+                       f'{self.name}.{self.model_name}.Pyrolysis.syngas_ratio': np.array([111.111111]),
                        f'{self.name}.{self.model_name}.Pyrolysis.land_use_required': self.land_use_required_Pyrolysis,
                        f'{self.name}.{self.model_name}.SMR.techno_consumption': self.smr_consumption,
                        f'{self.name}.{self.model_name}.SMR.techno_consumption_woratio': self.smr_consumption,
                        f'{self.name}.{self.model_name}.SMR.techno_production': self.smr_production,
                        f'{self.name}.{self.model_name}.SMR.techno_prices': self.smr_techno_prices,
                        f'{self.name}.{self.model_name}.SMR.CO2_emissions': self.smr_carbon_emissions,
-                       f'{self.name}.{self.model_name}.SMR.syngas_ratio': [33.333333],
+                       f'{self.name}.{self.model_name}.SMR.syngas_ratio': np.array([33.333333]),
                        f'{self.name}.{self.model_name}.SMR.land_use_required': self.land_use_required_SMR,
                        f'{self.name}.{self.model_name}.AutothermalReforming.techno_consumption': self.AutothermalReforming_consumption,
                        f'{self.name}.{self.model_name}.AutothermalReforming.techno_consumption_woratio': self.AutothermalReforming_consumption,
                        f'{self.name}.{self.model_name}.AutothermalReforming.techno_production': self.AutothermalReforming_production,
                        f'{self.name}.{self.model_name}.AutothermalReforming.techno_prices': self.AutothermalReforming_techno_prices,
                        f'{self.name}.{self.model_name}.AutothermalReforming.CO2_emissions': self.AutothermalReforming_carbon_emissions,
-                       f'{self.name}.{self.model_name}.AutothermalReforming.syngas_ratio': [100.],
+                       f'{self.name}.{self.model_name}.AutothermalReforming.syngas_ratio': np.array([100.]),
                        f'{self.name}.{self.model_name}.AutothermalReforming.land_use_required': self.land_use_required_AutothermalReforming,
                        f'{self.name}.{self.model_name}.BiomassGasification.techno_consumption': self.BiomassGasification_consumption,
                        f'{self.name}.{self.model_name}.BiomassGasification.techno_consumption_woratio': self.BiomassGasification_consumption,
                        f'{self.name}.{self.model_name}.BiomassGasification.techno_production': self.BiomassGasification_production,
                        f'{self.name}.{self.model_name}.BiomassGasification.techno_prices': self.BiomassGasification_techno_prices,
                        f'{self.name}.{self.model_name}.BiomassGasification.CO2_emissions': self.BiomassGasification_carbon_emissions,
-                       f'{self.name}.{self.model_name}.BiomassGasification.syngas_ratio': [83.870968],
+                       f'{self.name}.{self.model_name}.BiomassGasification.syngas_ratio': np.array([83.870968]),
                        f'{self.name}.{self.model_name}.BiomassGasification.land_use_required': self.land_use_required_BiomassGasification,
                        f'{self.name}.{self.model_name}.CoalGasification.techno_consumption': self.CoalGasification_consumption,
                        f'{self.name}.{self.model_name}.CoalGasification.techno_consumption_woratio': self.CoalGasification_consumption,
                        f'{self.name}.{self.model_name}.CoalGasification.techno_production': self.CoalGasification_production,
                        f'{self.name}.{self.model_name}.CoalGasification.techno_prices': self.CoalGasification_techno_prices,
                        f'{self.name}.{self.model_name}.CoalGasification.CO2_emissions': self.CoalGasification_carbon_emissions,
-                       f'{self.name}.{self.model_name}.CoalGasification.syngas_ratio': [213.636364],
+                       f'{self.name}.{self.model_name}.CoalGasification.syngas_ratio': np.array([213.636364]),
                        f'{self.name}.{self.model_name}.CoalGasification.land_use_required': self.land_use_required_CoalGasification,
                        f'{self.name}.{self.model_name}.CoElectrolysis.techno_consumption': self.CoElectrolysis_consumption,
                        f'{self.name}.{self.model_name}.CoElectrolysis.techno_consumption_woratio': self.CoElectrolysis_consumption,
                        f'{self.name}.{self.model_name}.CoElectrolysis.techno_production': self.CoElectrolysis_production,
                        f'{self.name}.{self.model_name}.CoElectrolysis.techno_prices': self.CoElectrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.CoElectrolysis.CO2_emissions': self.CoElectrolysis_carbon_emissions,
-                       f'{self.name}.{self.model_name}.CoElectrolysis.syngas_ratio': [100.],
+                       f'{self.name}.{self.model_name}.CoElectrolysis.syngas_ratio': np.array([100.]),
                        f'{self.name}.{self.model_name}.CoElectrolysis.land_use_required': self.land_use_required_CoElectrolysis,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
@@ -643,7 +643,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0]
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_specific_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.Pyrolysis.techno_production', f'{self.name}.{self.model_name}.Pyrolysis.syngas_ratio',
                                     f'{self.name}.{self.model_name}.SMR.techno_production', f'{self.name}.{self.model_name}.SMR.syngas_ratio',
                                     f'{self.name}.{self.model_name}.AutothermalReforming.techno_production', f'{self.name}.{self.model_name}.AutothermalReforming.syngas_ratio',

@@ -51,7 +51,6 @@ class WindOnshoreTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': np.array([22.0, 22.0, 22.0, 22.0,
                                                  22.0, 22.0, 22.0, 22.0,

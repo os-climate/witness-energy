@@ -60,6 +60,14 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'learning_rate': 0,  # fraunhofer
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': 'years',
+                                 # 0.1025 kt/PJ (mean) at gas power plants in
+                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+                                 'CH4_emission_factor': 0.1025e-3 / 0.277,
+                                 'CH4_emission_factor_unit': 'Mt/TWh',
+                                 # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+                                 # 0.0001 kt/PJ
+                                 'N2O_emission_factor': 0.0001e-3 / 0.277,
+                                 'N2O_emission_factor_unit': 'Mt/TWh',
                                  # Source: U.S. Energy Information Administration, 2020
                                  # Capital Cost and Performance Characteristic Estimates for Utility Scale Electric Power Generating Technologies,
                                  # https://www.eia.gov/analysis/studies/powerplants/capitalcost/pdf/capital_cost_AEO2020.pdf
@@ -77,6 +85,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 51.0 * (1 - share)]})
 # For initial production: MAJOR hypothesis, took IEA WEO 2019 production for 2018
+# Source for initial production: IEA 2022, World Energy Outlook, https://www.iea.org/reports/world-energy-outlook-2018, License: CC BY 4.0.
 # In US according to U.S. Energy Information Administration  53% of capa
 # from CCGT and 47 for GT in 2017
     share_ccgt = 0.75
@@ -90,7 +99,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
     FLUE_GAS_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),

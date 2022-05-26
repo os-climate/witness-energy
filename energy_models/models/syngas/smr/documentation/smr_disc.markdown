@@ -17,7 +17,7 @@ Syngas from natural gas is also used in liquefaction plants in the Gas to Liquid
 
 Economic and technical datas is taken from Keipi & al [^2], Diglio & al [^3].
 
-[^1]: IEA (2019), The Future of Hydrogen, IEA, Paris https://www.iea.org/reports/the-future-of-hydrogen
+[^1]: IEA 2022, The Future of Hydrogen, https://www.iea.org/reports/the-future-of-hydrogen, License: CC BY 4.0.
 [^2]: Tiina Keipi, Henrik Tolvanen, Jukka Konttinen,Economic analysis of hydrogen production by methane thermal decomposition: Comparison to competing technologies,Energy Conversion and Management,Volume 159,2018,Pages 264-273,ISSN 0196-8904
 [^3]: Diglio, G., Hanak, D.P., Bareschino, P., Mancusi, E., Pepe, F., Montagnaro, F. and Manovic, V., 2017. Techno-economic analysis of sorption-enhanced steam methane reforming in a fixed bed reactor network integrated with fuel cell. Journal of Power Sources, 364, pp.41-51.
 [^4]: https://en.wikipedia.org/wiki/Fischer%E2%80%93Tropsch_process#Commercialization

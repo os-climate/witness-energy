@@ -12,6 +12,9 @@ Significant datas for methane [^2]:
   * Critical Pressure 4600 kPa
   * Density, Liquid at -161 °C, 422.62 kg/m^3
   * Density, Gas at 15 °C, 1 atm, 0.6709 kg/m^3
+  * CH4 leakage at consumption : 0.08 kt/PJ [^6]
+  * CH4 leakage at transport,distribution : 0.195 kt/PJ [^6]  
+  * N2O after use : 0.0001 kt/PJ [^5]
 
 Methane is mostly used as a fuel, it produce carbon dioxide and water vapor when burned with oxygen:
 
@@ -43,3 +46,5 @@ The average price of methane around the world is 0.80 U.S. Dollar per liter. How
 [^2]: Engineering Toolbox, https://www.engineeringtoolbox.com
 [^3]: By The Global Carbon Project - http://www.globalcarbonatlas.org/en/CH4-emissions / https://essd.copernicus.org/articles/12/1561/2020/, CC BY 4.0, https://commons.wikimedia.org/w/index.php?curid=93292720
 [^4]: Methane prices, 28 Jun 2021, GlobalPetrolPrices.com, https://www.globalpetrolprices.com/methane_prices/
+[^5]: Winiwarter, W., 2005. The GAINS model for greenhouse gases-version 1.0: nitrous oxide (N2O).https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+[^6]: Hoglund-Isaksson, L. and Mechler, R., 2005. The GAINS Model for Greenhouse gases-Version 1.0: Methane (CH4), IIASA Interim Report IR-05-054. International Institute for Applied Systems Analysis, Laxenburg. https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf

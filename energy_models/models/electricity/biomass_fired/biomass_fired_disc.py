@@ -43,14 +43,16 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     lifetime = 25   # Value for CHP units
     construction_delay = 2  # years
 
-    # Initial prod in TWh (2019)
-    # IEA Data Tables
-    # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019
+    # Source for Initial prod in TWh (2019):
+    # IEA 2022, Data Tables
+    # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019,
+    # License: CC BY 4.0.
     # biomass is primary solid biofuels
     initial_production = 443.085
 
-    # IEA Data Tables
+    # IEA 2022, Data Tables,
     # https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Renewables%20%26%20waste&year=2019
+    # License: CC BY 4.0.
     # Electricity plants consumption: 3650996 TJ net -> 3650.996 / 3.6 TWh
     biomass_needs = (3650.996 / 3.6) / \
         initial_production  # ratio without dimension
@@ -101,7 +103,7 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
                                                          0.0, 0.0, 0.0, 0.0]})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),

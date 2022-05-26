@@ -96,7 +96,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
 
 # DESC_IN.update(
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe',

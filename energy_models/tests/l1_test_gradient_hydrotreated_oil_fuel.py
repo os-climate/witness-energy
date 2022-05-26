@@ -69,7 +69,6 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
                            4169400000.0, 4071800000.0, 4174200000.0,
                            3894500000.0, 3780750000.0, 3567000000.0,
                            ]) * 0.8e-9
-        # We use the IEA Kero demand to fake the invest level through years
 
         self.invest_level = pd.DataFrame({'years': years,
                                           'invest': invest

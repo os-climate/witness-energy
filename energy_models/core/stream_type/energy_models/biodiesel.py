@@ -30,8 +30,8 @@ class BioDiesel(EnergyType):
                         # https://getec.unifei.edu.br/wp/wp-content/uploads/2016/10/15.pdf
                         # Engineering ToolBox, (2009). Combustion of Fuels - Carbon Dioxide Emission. [online]
                         # Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
-                        # [Accessed 20 12 2021].
-                        'CO2_per_use': 3.15,
+                        # [Accessed 09 05 2022].
+                        'CO2_per_use': 2.85,
                         'CO2_per_use_unit': 'kg/kg',
 
                         'density': 880,

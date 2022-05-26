@@ -81,7 +81,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                      }
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'electricity': 0.0, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.})
-        # We use the IEA H2 demand to fake the invest level through years
+
         self.invest_level = pd.DataFrame({'years': years,
                                           'invest': np.array([4435750000.0, 4522000000.0, 4608250000.0,
                                                               4694500000.0, 4780750000.0, 4867000000.0,
@@ -131,7 +131,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                            4169400000.0, 4071800000.0, 4174200000.0,
                            3894500000.0, 3780750000.0, 3567000000.0,
                            ]) * 0.8e-9
-        # We use the IEA Kero demand to fake the invest level through years
+
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': invest})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]

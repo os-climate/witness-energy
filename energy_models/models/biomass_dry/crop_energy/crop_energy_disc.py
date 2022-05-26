@@ -121,7 +121,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                           'Agriculture total (Gha)': np.ones(81) * 4.8})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
@@ -189,7 +189,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
             ('techno_consumption_woratio', f'{CO2.name} (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
             ('techno_capital', f'{self.techno_name}'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_prod_dland_for_food / scaling_factor_techno_production)
-
 
         dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
             invest_level.loc[invest_level['years']

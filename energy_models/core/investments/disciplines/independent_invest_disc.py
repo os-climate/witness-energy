@@ -102,7 +102,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
                             'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
                             'namespace': 'ns_forest', 'dataframe_edition_locked': False}
-                        dynamic_inputs['unmanaged_wood_investment'] = {
+                        dynamic_inputs['deforestation_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
                             'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
                             'namespace': 'ns_forest', 'dataframe_edition_locked': False}
@@ -134,8 +134,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                     # Add technologies_list to inputs
                     dynamic_inputs[f'{ccs}.technologies_list'] = {
                         'type': 'string_list', 'structuring': True, 'visibility': 'Shared', 'namespace': 'ns_ccs',
-                        'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
-                        'default': EnergyMix.stream_class_dict[ccs].default_techno_list}
+                        'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list}
                     # Add all invest_level outputs
                     if f'{ccs}.technologies_list' in self._data_in:
                         technology_list = self.get_sosdisc_inputs(
@@ -195,7 +194,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
         energy_list = inputs_dict['energy_list']
         if inputs_dict['is_dev'] and BiomassDry.name in energy_list:
             techno_invest_sum += inputs_dict['managed_wood_investment']['investment'].values
-            techno_invest_sum += inputs_dict['unmanaged_wood_investment']['investment'].values
+            techno_invest_sum += inputs_dict['deforestation_investment']['investment'].values
             techno_invest_sum += inputs_dict['crop_investment']['investment'].values
 
         delta_years = len(years)
@@ -251,7 +250,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
             ('invest_sum_eq_cons',), ('forest_investment', 'forest_investment'), dinvest_eq_cons_dtechno_invest)
 
         if inputs_dict['is_dev'] and BiomassDry.name in energy_list:
-            for techno in ['managed_wood_investment', 'unmanaged_wood_investment', 'crop_investment']:
+            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                 self.set_partial_derivative_for_other_types(
                     ('invest_constraint', 'invest_constraint'), (techno, 'investment'),  ddelta_dtech / invest_constraint_ref)
                 self.set_partial_derivative_for_other_types(
@@ -438,7 +437,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 agriculture_chart = TwoAxesInstanciatedChart('years', 'Invest [G$]',
                                                              chart_name=chart_name, stacked_bar=True)
 
-                for techno in ['managed_wood_investment', 'unmanaged_wood_investment', 'crop_investment']:
+                for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                     invest = self.get_sosdisc_inputs(techno)
                     serie_agriculture = InstanciatedSeries(
                         invest['years'].values.tolist(),
@@ -463,7 +462,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                     'forest_investment')
                 techno_invests_sum += forest_investment['forest_investment']
                 if is_dev and BiomassDry.name in energy_list:
-                    for techno in ['managed_wood_investment', 'unmanaged_wood_investment', 'crop_investment']:
+                    for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                         invest = self.get_sosdisc_inputs(techno)
                         techno_invests_sum += invest['investment']
                 energy_investment = self.get_sosdisc_inputs(
