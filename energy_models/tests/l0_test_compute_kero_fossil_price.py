@@ -146,7 +146,7 @@ class RefineryPriceTestCase(unittest.TestCase):
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'is_softmax': False,
+                       'smooth_type': 'smooth_max',
                        'data_fuel_dict': self.data_fuel,
                        'other_fuel_dict': self.other_fuel,
                        }

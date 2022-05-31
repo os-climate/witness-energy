@@ -24,6 +24,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect, get_dsmooth_dvariable_vect
 from sos_trades_core.tools.cst_manager.func_manager_common import soft_maximum_vect, get_dsoft_maximum_vect
+from sos_trades_core.tools.cst_manager.func_manager_common import cons_smooth_maximum_vect, get_dcons_smooth_dvariable_vect
 from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
 
 
@@ -65,7 +66,7 @@ class TechnoType:
         self.all_streams_demand_ratio = None
         self.is_stream_demand = False
         self.is_resource_ratio = False
-        self.is_softmax = False
+        self.smooth_type = None
         self.ratio_df = None
         self.non_use_capital = None
         self.techno_capital = None
@@ -177,7 +178,7 @@ class TechnoType:
         self.scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
         self.is_stream_demand = inputs_dict['is_stream_demand']
         self.is_apply_resource_ratio = inputs_dict['is_apply_resource_ratio']
-        self.is_softmax = inputs_dict['is_softmax']
+        self.smooth_type = inputs_dict['smooth_type']
         if self.is_stream_demand:
             self.all_streams_demand_ratio = inputs_dict['all_streams_demand_ratio']
         if self.is_apply_resource_ratio:
@@ -208,7 +209,7 @@ class TechnoType:
         self.ratio_df = pd.DataFrame({'years': self.years})
         self.is_stream_demand = inputs_dict['is_stream_demand']
         self.is_apply_resource_ratio = inputs_dict['is_apply_resource_ratio']
-        self.is_softmax = inputs_dict['is_softmax']
+        self.smooth_type = inputs_dict['smooth_type']
         if self.is_stream_demand:
             self.all_streams_demand_ratio = inputs_dict['all_streams_demand_ratio'].loc[inputs_dict['all_streams_demand_ratio']['years']
                                                                                         <= self.year_end]
@@ -270,12 +271,17 @@ class TechnoType:
                 # If a match is found, calculate the
                 # smooth_min(smooth_min(x)=-smooth_max(-x)) between all the
                 # matches for each year
-                if self.is_softmax:
-                    ratio_values = - \
-                        soft_maximum_vect(-self.ratio_df[elements].values)
-                else:
+                if self.smooth_type == 'smooth_max':
                     ratio_values = - \
                         smooth_maximum_vect(-self.ratio_df[elements].values)
+                elif self.smooth_type == 'soft_max':
+                    ratio_values = - \
+                        soft_maximum_vect(-self.ratio_df[elements].values)
+                elif self.smooth_type == 'cons_smooth_max':
+                    ratio_values = - \
+                        cons_smooth_maximum_vect(-self.ratio_df[elements].values)
+                else:
+                    raise Exception('Unknown smooth_type')
 
                 min_ratio_name = self.ratio_df[elements].columns[np.argmin(
                     self.ratio_df[elements].values, axis=1)].values
@@ -1139,12 +1145,17 @@ class TechnoType:
                         elements += [element, ]
         if is_apply_ratio:
             if len(elements) > 0:
-                if self.is_softmax:
-                    dsmooth_matrix = get_dsoft_maximum_vect(
-                        -self.ratio_df[elements].values)
-                else:
+                if self.smooth_type == 'smooth_max':
                     dsmooth_matrix = get_dsmooth_dvariable_vect(
                         -self.ratio_df[elements].values)
+                elif self.smooth_type == 'soft_max':
+                    dsmooth_matrix = get_dsoft_maximum_vect(
+                        -self.ratio_df[elements].values)
+                elif self.smooth_type == 'cons_smooth_max':
+                    dsmooth_matrix = get_dcons_smooth_dvariable_vect(
+                        -self.ratio_df[elements].values)
+                else:
+                    raise Exception('Unknown smooth_type')
                 for i, element in enumerate(self.ratio_df[elements].columns):
                     dsmooth_dvariable[element] = dsmooth_matrix.T[i]
 
