@@ -56,6 +56,7 @@ class OilGen(ElectricityTechno):
         """
 
         self.compute_primary_energy_production()
+        #self.compute_power_production()
         elec_needs = self.get_electricity_needs()
 
         # Consumption

@@ -16,8 +16,11 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
 from energy_models.models.electricity.wind_onshore.wind_onshore import WindOnshore
+from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
+    InstanciatedSeries
 
 
 class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
@@ -98,3 +101,61 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = WindOnshore(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
+    
+    def get_charts_consumption_and_production(self):
+        instanciated_charts = []
+        # Charts for consumption and prod
+        techno_consumption = self.get_sosdisc_outputs(
+            'techno_detailed_consumption')
+        techno_production = self.get_sosdisc_outputs(
+            'techno_detailed_production')
+        chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'
+
+        new_chart = TwoAxesInstanciatedChart('years', 'Energy [TWh]',
+                                             chart_name=chart_name.capitalize(), stacked_bar=True)
+
+        for reactant in techno_consumption.columns:
+            if reactant != 'years' and reactant.endswith('(TWh)'):
+                energy_twh = -techno_consumption[reactant].values
+                legend_title = f'{reactant} consumption'.replace(
+                    "(TWh)", "")
+                serie = InstanciatedSeries(
+                    techno_consumption['years'].values.tolist(),
+                    energy_twh.tolist(), legend_title, 'bar')
+
+                new_chart.series.append(serie)
+
+        for products in techno_production.columns:
+            if products != 'years' and products.endswith('(TWh)'):
+                energy_twh = techno_production[products].values
+                legend_title = f'{products} production'.replace(
+                    "(TWh)", "")
+                serie = InstanciatedSeries(
+                    techno_production['years'].values.tolist(),
+                    energy_twh.tolist(), legend_title, 'bar')
+
+                new_chart.series.append(serie)
+        instanciated_charts.append(new_chart)
+
+        new_chart_copper = None
+        for product in techno_consumption.columns:
+
+            if product != 'years' and product.endswith(f'(Mt)'):
+                if ResourceGlossary.Copper['name'] in product :
+                    chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
+                    new_chart_copper = TwoAxesInstanciatedChart(
+                        'years', 'Mass [t]', chart_name=chart_name, stacked_bar=True)
+
+        for reactant in techno_consumption.columns:
+            if ResourceGlossary.Copper['name'] in reactant:
+                legend_title = f'{reactant} consumption'.replace(
+                    ' (Mt)', "")
+                mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
+                serie = InstanciatedSeries(
+                    techno_consumption['years'].values.tolist(),
+                    mass.tolist(), legend_title, 'bar')
+                new_chart_copper.series.append(serie)
+
+        instanciated_charts.append(new_chart_copper)
+
+        return instanciated_charts

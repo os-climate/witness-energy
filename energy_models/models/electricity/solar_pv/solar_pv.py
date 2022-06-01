@@ -15,9 +15,12 @@ limitations under the License.
 '''
 
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class SolarPv(ElectricityTechno):
+
+    COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
 
     def compute_other_primary_energy_costs(self):
         """
@@ -34,3 +37,25 @@ class SolarPv(ElectricityTechno):
         self.techno_land_use[f'{self.name} (Gha)'] = \
             self.production[f'{self.energy_name} ({self.product_energy_unit})'] / \
             density_per_ha
+    
+    
+    def compute_consumption_and_power_production(self):
+        """
+        Compute the resource consumption and the power installed (W) of the technology for a given investment
+        """
+        self.compute_primary_power_production()
+
+        # FOR ALL_RESOURCES DISCIPLINE
+
+        copper_needs = self.get_theoretical_copper_needs()
+        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+
+    @staticmethod
+    def get_theoretical_copper_needs():
+        """
+        According to the IEA, Solar PV panels need 2822 kg of copper for each MW implemented
+        Computing the need in Mt/MW
+        """
+        copper_need = 2822 / 1000 / 1000 / 1000
+
+        return copper_need

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
@@ -157,6 +158,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
 
         new_chart_water = None
         new_chart_uranium = None
+        new_chart_copper = None
         for product in techno_consumption.columns:
 
             if product != 'years' and product.endswith(f'(Mt)'):
@@ -164,6 +166,10 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                     chart_name = f'Mass consumption of water for the Nuclear technology with input investments'
                     new_chart_water = TwoAxesInstanciatedChart(
                         'years', 'Mass [Gt]', chart_name=chart_name, stacked_bar=True)
+                elif ResourceGlossary.Copper['name'] in product :
+                    chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
+                    new_chart_copper = TwoAxesInstanciatedChart(
+                        'years', 'Mass [t]', chart_name=chart_name, stacked_bar=True)
                 else:
                     chart_name = f'Mass consumption of uranium for the Nuclear technology with input investments'
                     new_chart_uranium = TwoAxesInstanciatedChart(
@@ -179,6 +185,14 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                     techno_consumption['years'].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_water.series.append(serie)
+            elif ResourceGlossary.Copper['name'] in reactant:
+                legend_title = f'{reactant} consumption'.replace(
+                    ' (Mt)', "")
+                mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
+                serie = InstanciatedSeries(
+                    techno_consumption['years'].values.tolist(),
+                    mass.tolist(), legend_title, 'bar')
+                new_chart_copper.series.append(serie)
             elif 'years' not in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     f' (Mt)', "")
@@ -191,6 +205,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
 
         instanciated_charts.append(new_chart_water)
         instanciated_charts.append(new_chart_uranium)
+        instanciated_charts.append(new_chart_copper)
 
         return instanciated_charts
 

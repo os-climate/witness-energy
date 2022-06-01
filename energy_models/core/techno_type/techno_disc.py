@@ -91,6 +91,7 @@ class TechnoDiscipline(SoSDiscipline):
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
         'non_use_capital': {'type': 'dataframe', 'unit': 'G$'},
         'techno_capital': {'type': 'dataframe', 'unit': 'G$'},
+        'power_production' : {'type': 'dataframe', 'unit': 'MW'}
     }
     _maturity = 'Research'
 
@@ -164,6 +165,7 @@ class TechnoDiscipline(SoSDiscipline):
         cost_details = self.techno_model.compute_price()
 
         self.techno_model.compute_consumption_and_production()
+        self.techno_model.compute_consumption_and_power_production()
 
         # Create a datafarame containing all the ratios
         self.techno_model.select_ratios()
@@ -210,6 +212,7 @@ class TechnoDiscipline(SoSDiscipline):
                         'applied_ratio': self.techno_model.applied_ratio,
                         'non_use_capital': self.techno_model.non_use_capital,
                         'techno_capital': self.techno_model.techno_capital,
+                        'power_production': self.techno_model.power_production,
                         }
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
@@ -495,7 +498,7 @@ class TechnoDiscipline(SoSDiscipline):
         chart_filters = []
         chart_list = ['Detailed prices',
                       'Consumption and production',
-                      'Initial Production', 'Factory Mean Age', 'CO2 emissions', 'Non-Use Capital']
+                      'Initial Production', 'Factory Mean Age', 'CO2 emissions', 'Non-Use Capital', 'Power production']
         if self.get_sosdisc_inputs('is_apply_ratio'):
             chart_list.extend(['Applied Ratio'])
         chart_filters.append(ChartFilter(
@@ -575,6 +578,10 @@ class TechnoDiscipline(SoSDiscipline):
                     instanciated_charts.append(new_chart)
         if 'Non-Use Capital' in charts:
             new_chart = self.get_chart_non_use_capital()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+        if 'Power production' in charts:
+            new_chart = self.get_chart_power_production()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         return instanciated_charts
@@ -1067,6 +1074,39 @@ class TechnoDiscipline(SoSDiscipline):
             non_use_capital['years'].values.tolist(),
             non_use_capital[self.techno_name].values.tolist(), 'Non-use Capital', 'bar')
 
+        new_chart.series.append(serie)
+
+        return new_chart
+    
+    def get_chart_power_production(self):
+        power_production = self.get_sosdisc_outputs(
+            'power_production')
+        chart_name = f'Power installed of {self.techno_name} factories'
+
+        new_chart =  TwoAxesInstanciatedChart('years', 'Power [MW]',
+                                             chart_name=chart_name)
+        
+        if not 'full_load_hours' in self.techno_model.techno_infos_dict :
+
+            note = {f'The full_load_hours data is not set for {self.techno_name}' : 'default = 8760.0 hours, full year hours  '}
+            new_chart.annotation_upper_left = note
+    
+        serie = InstanciatedSeries(
+            power_production['years'].values.tolist(),
+            power_production['total_installed_power'].values.tolist(), 'Total installed power', 'lines')
+        
+        new_chart.series.append(serie)
+
+        serie = InstanciatedSeries(
+            power_production['years'].values.tolist(),
+            power_production['new_power_production'].values.tolist(), f'Newly implemented {self.techno_name} factories power ', 'lines')
+        
+        new_chart.series.append(serie)
+
+        serie = InstanciatedSeries(
+            power_production['years'].values.tolist(),
+            power_production['removed_power_production'].values.tolist(), f'Newly dismantled {self.techno_name} factories power ', 'lines')
+        
         new_chart.series.append(serie)
 
         return new_chart

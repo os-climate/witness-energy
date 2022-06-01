@@ -37,19 +37,19 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
     def analytic_grad_entry(self):
         return [
-            self.test_01_combined_cycle_gas_turbine_discipline_analytic_grad,
-            self.test_02_geothermal_discipline_analytic_grad,
-            self.test_03_hydropower_discipline_analytic_grad,
-            self.test_04_coal_gen_discipline_analytic_grad,
-            self.test_05_gas_turbine_discipline_analytic_grad,
-            self.test_06_wind_on_shore_discipline_analytic_grad,
-            self.test_07_wind_off_shore_discipline_analytic_grad,
-            self.test_08_solar_thermal_discipline_analytic_grad,
-            self.test_09_solar_pv_discipline_analytic_grad,
+            # self.test_01_combined_cycle_gas_turbine_discipline_analytic_grad,
+            # self.test_02_geothermal_discipline_analytic_grad,
+            # self.test_03_hydropower_discipline_analytic_grad,
+            # self.test_04_coal_gen_discipline_analytic_grad,
+            # self.test_05_gas_turbine_discipline_analytic_grad,
+            # self.test_06_wind_on_shore_discipline_analytic_grad,
+            # self.test_07_wind_off_shore_discipline_analytic_grad,
+            # self.test_08_solar_thermal_discipline_analytic_grad,
+            # self.test_09_solar_pv_discipline_analytic_grad,
             self.test_10_nuclear_discipline_analytic_grad,
-            self.test_11_biogas_fired_discipline_analytic_grad,
-            self.test_12_biomass_fired_discipline_analytic_grad,
-            self.test_14_electricity_discipline_jacobian,
+            # self.test_11_biogas_fired_discipline_analytic_grad,
+            # self.test_12_biomass_fired_discipline_analytic_grad,
+            # self.test_14_electricity_discipline_jacobian,
         ]
 
     def setUp(self):
@@ -729,15 +729,16 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.resources_price',
-                                    f'{self.name}.resources_CO2_emissions'],
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
+                                    #f'{self.name}.energy_prices',
+                                    #f'{self.name}.energy_CO2_emissions',
+                                    #f'{self.name}.resources_price',
+                                    #f'{self.name}.resources_CO2_emissions'
+                                    ],
+                            outputs=[#f'{self.name}.{self.model_name}.techno_prices',
+                                     #f'{self.name}.{self.model_name}.CO2_emissions',
+                                     #f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
+                                     #f'{self.name}.{self.model_name}.techno_production',
                                      ],)
 
     def test_11_biogas_fired_discipline_analytic_grad(self):
@@ -972,6 +973,7 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = ElectricityJacobianTestCase()
     cls.setUp()
-    cls.test_01_combined_cycle_gas_turbine_discipline_analytic_grad()
-    cls.test_05_gas_turbine_discipline_analytic_grad()
-    cls.test_04_coal_gen_discipline_analytic_grad()
+    # cls.test_01_combined_cycle_gas_turbine_discipline_analytic_grad()
+    # cls.test_05_gas_turbine_discipline_analytic_grad()
+    # cls.test_04_coal_gen_discipline_analytic_grad()
+    cls.test_10_nuclear_discipline_analytic_grad()

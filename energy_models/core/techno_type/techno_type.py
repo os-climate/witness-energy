@@ -138,6 +138,8 @@ class TechnoType:
         self.non_use_capital = pd.DataFrame({'years': self.years})
         self.techno_capital = pd.DataFrame({'years': self.years})
 
+        self.power_production = pd.DataFrame({'years': self.years})
+
     def configure_parameters(self, inputs_dict):
         '''
         Configure with inputs_dict from the discipline
@@ -229,6 +231,16 @@ class TechnoType:
         Maybe add efficiency in consumption computation ?
         """
         self.compute_primary_energy_production()
+
+        #self.compute_power_production()
+
+    def compute_consumption_and_power_production(self):
+        """
+        Compute the power installed (W) of the technology for a given investment
+        """
+        self.compute_primary_power_production()
+        
+
 
     def select_ratios(self):
         """! Select the ratios to be added to ratio_df and convert it from % to normal
@@ -1001,6 +1013,41 @@ class TechnoType:
 
         self.compute_land_use()
 
+    def compute_primary_power_production(self):
+
+        if 'construction_delay' in self.techno_infos_dict:
+            construction_delay = self.techno_infos_dict['construction_delay']
+        else:
+            print(
+                f'The construction_delay data is not set for {self.name} : default = 3 years  ')
+            construction_delay = 3
+        
+        if 'full_load_hours' in self.techno_infos_dict:
+            full_load_hours = self.techno_infos_dict['full_load_hours']
+        else:
+            # print(
+            #     f'The full_load_hours data is not set for {self.name} : default = 8760.0 hours, full year hours  ')
+            full_load_hours = 8760.0
+        
+
+        production_from_invest = self.compute_prod_from_invest(
+            construction_delay=construction_delay)
+        
+        #Conversion from TWh to MW
+        self.power_production['new_power_production'] = production_from_invest.loc[production_from_invest['years'] == self.years, 'prod_from_invest'].values / full_load_hours * 1000
+        self.power_production['total_installed_power'] = self.production[f'{self.energy_name} ({self.product_energy_unit})'] / full_load_hours * 1000
+        self.power_production['removed_power_production'] = np.zeros(len(self.years))
+
+        power_production_dict = self.power_production.to_dict()
+
+        for year in  self.years[1:]:
+            power_production_dict['removed_power_production'][year- power_production_dict['years'][0] ] = \
+                power_production_dict['total_installed_power'][year - 1 - power_production_dict['years'][0] ]\
+                    - power_production_dict['total_installed_power'][year - power_production_dict['years'][0] ]\
+                        + power_production_dict['new_power_production'][year - power_production_dict['years'][0] ]
+        self.power_production = pd.DataFrame.from_dict(power_production_dict) 
+
+
     def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapex_list_dinvest_list):
         '''
         Compute the partial derivative of prod vs invest  and the partial derivative of prod vs capex
@@ -1264,11 +1311,11 @@ class TechnoType:
         Compute the energy production of a techno from investment in TWh
         Add a delay for factory construction
         '''
-
+        
         prod_before_ystart = pd.DataFrame({'years': np.arange(self.year_start - construction_delay, self.year_start),
                                            'invest': self.invest_before_ystart['invest'].values[::1],
                                            f'Capex_{self.name}': self.cost_details.loc[self.cost_details['years'] == self.year_start, f'Capex_{self.name}'].values[0]})
-
+    
         production_from_invest = pd.concat(
             [self.cost_details[['years', 'invest', f'Capex_{self.name}']], prod_before_ystart], ignore_index=True)
         production_from_invest.sort_values(by=['years'], inplace=True)
