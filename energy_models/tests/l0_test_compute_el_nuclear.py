@@ -49,8 +49,7 @@ class NuclearTestCase(unittest.TestCase):
         self.resources_price[ResourceGlossary.Uranium['name']] = 1390.0e3
 
         self.invest_level = pd.DataFrame({'years': years})
-        self.invest_level['invest'] = 33.0 * \
-            1.10 ** (self.invest_level['years'] - 2020)
+        self.invest_level['invest'] = 10.
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
