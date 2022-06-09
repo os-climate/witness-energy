@@ -10,8 +10,5 @@ build/
 dist/
 energy_models.egg-info/
 /CH_energy_price.png
-/LICENSE
-/MANIFEST.in
 /Makefile
-/README.md
 pytest.ini
