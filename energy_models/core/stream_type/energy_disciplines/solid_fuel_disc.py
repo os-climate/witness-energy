@@ -19,7 +19,6 @@ from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 
 
 class SolidFuelDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Solid Fuel Energy Model',
@@ -34,7 +33,8 @@ class SolidFuelDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': SolidFuel.default_techno_list,
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                     'possible_values': SolidFuel.default_techno_list,
                                      'default': SolidFuel.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_solid_fuel',

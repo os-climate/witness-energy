@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.energy_ghg_emissions.energy_ghg_emissions import EnergyGHGEmissions
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import AgricultureMixDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
+    AgricultureMixDiscipline
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -26,11 +27,11 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 import numpy as np
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import GHGemissionsDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
+    GHGemissionsDiscipline
 
 
 class EnergyGHGEmissionsDiscipline(SoSDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy GHG emissions Model',
@@ -48,22 +49,36 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'energy_list': {'type': 'string_list',  'possible_values': EnergyMix.energy_list,
+        'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                        'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                         'editable': False, 'structuring': True},
-        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'GHG_global_warming_potential20':  {'type': 'dict', 'unit': 'kgCO2eq/kg', 'default': GHGemissionsDiscipline.GWP_20_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 3},
-        'GHG_global_warming_potential100':  {'type': 'dict', 'unit': 'kgCO2eq/kg', 'default': GHGemissionsDiscipline.GWP_100_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 3},
-        'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
-        'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
-        'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'}, }
+        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
+                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
+                                              'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'GHG_global_warming_potential20': {'type': 'dict', 'unit': 'kgCO2eq/kg',
+                                           'default': GHGemissionsDiscipline.GWP_20_default,
+                                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                           'namespace': 'ns_witness', 'user_level': 3},
+        'GHG_global_warming_potential100': {'type': 'dict', 'unit': 'kgCO2eq/kg',
+                                            'default': GHGemissionsDiscipline.GWP_100_default,
+                                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                            'namespace': 'ns_witness', 'user_level': 3},
+        'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh',
+                                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+        'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt',
+                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
+        'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
+                                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                               'namespace': 'ns_energy'}, }
 
     DESC_OUT = {
         'CO2_emissions_sources': {'type': 'dataframe', 'unit': 'Gt'},
-        'CO2_emissions_sinks':  {'type': 'dataframe', 'unit': 'Gt'},
-        'GHG_total_energy_emissions':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'GHG_emissions_per_energy':  {'type': 'dict', 'unit': 'Gt'},
+        'CO2_emissions_sinks': {'type': 'dataframe', 'unit': 'Gt'},
+        'GHG_total_energy_emissions': {'type': 'dataframe', 'unit': 'Gt',
+                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'GHG_emissions_per_energy': {'type': 'dict', 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'},
     }
 
@@ -88,11 +103,14 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                     if energy == BiomassDry.name:
                         for ghg in GHGEmissions.GHG_TYPE_LIST:
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.{ghg}_per_use'] = {
-                                'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                                'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness',
+                                'visibility': SoSDiscipline.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_consumption'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
+                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_production'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
+                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
                     else:
                         for ghg in GHGEmissions.GHG_TYPE_LIST:
                             dynamic_inputs[f'{energy}.{ghg}_per_use'] = {
@@ -112,7 +130,7 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
         self.add_outputs(dynamic_outputs)
 
     def run(self):
-        #-- get inputs
+        # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
 
         self.model.configure_parameters_update(inputs_dict)
@@ -141,9 +159,9 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
         energy_production_detailed = self.get_sosdisc_inputs(
             'energy_production_detailed')
 
-        #------------------------------------#
-        #-- CO2 emissions sources gradients--#
-        #------------------------------------#
+        # ------------------------------------#
+        # -- CO2 emissions sources gradients--#
+        # ------------------------------------#
         dtot_co2_emissions_sources = self.model.compute_grad_CO2_emissions_sources(
             energy_production_detailed)
 
@@ -176,11 +194,11 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                                 ('CO2_emissions_sources', co2_emission_column), (
                                     f'{energy_df}.energy_consumption', f'{energy} (TWh)'),
                                 np.identity(len(years)) * scaling_factor_energy_consumption * value / 1e3)
-#                 elif last_part_key == 'co2_per_use':
-#                     self.set_partial_derivative_for_other_types(
-#                         ('CO2_emissions_sources',
-#                          co2_emission_column), (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
-#                         np.identity(len(years)) * value / 1e3)
+                #                 elif last_part_key == 'co2_per_use':
+                #                     self.set_partial_derivative_for_other_types(
+                #                         ('CO2_emissions_sources',
+                #                          co2_emission_column), (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
+                #                         np.identity(len(years)) * value / 1e3)
 
                 else:
                     very_last_part_key = energy_prod_info.split('#')[2]
@@ -211,7 +229,8 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                 for ghg in self.model.GHG_TYPE_LIST:
                     self.set_partial_derivative_for_other_types(
                         ('GHG_total_energy_emissions',
-                         f'Total {ghg} emissions'), (f'{AgricultureMixDiscipline.name}.{ghg}_per_use', f'{ghg}_per_use'),
+                         f'Total {ghg} emissions'),
+                        (f'{AgricultureMixDiscipline.name}.{ghg}_per_use', f'{ghg}_per_use'),
                         np.identity(len(years)) * max_prod_grad / 1e3)
 
             else:
@@ -237,9 +256,9 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                              f'Total {ghg} emissions'), (
                                 f'{ns_energy}.energy_production', col),
                             np.identity(len(years)))
-        #------------------------------------#
-        #-- CO2 emissions sinks gradients--#
-        #------------------------------------#
+        # ------------------------------------#
+        # -- CO2 emissions sinks gradients--#
+        # ------------------------------------#
         dtot_co2_emissions_sinks = self.model.compute_grad_CO2_emissions_sinks(
             energy_production_detailed)
 
@@ -295,10 +314,12 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                             -np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
         self.set_partial_derivative_for_other_types(
             ('GHG_total_energy_emissions',
-             'Total CO2 emissions'), ('co2_emissions_ccus_Gt', 'carbon_storage Limited by capture (Gt)'), -np.identity(len(years)))
+             'Total CO2 emissions'), ('co2_emissions_ccus_Gt', 'carbon_storage Limited by capture (Gt)'),
+            -np.identity(len(years)))
         self.set_partial_derivative_for_other_types(
             ('GHG_total_energy_emissions',
-             'Total CO2 emissions'), ('co2_emissions_needed_by_energy_mix', 'carbon_capture needed by energy mix (Gt)'), -np.identity(len(years)))
+             'Total CO2 emissions'), ('co2_emissions_needed_by_energy_mix', 'carbon_capture needed by energy mix (Gt)'),
+            -np.identity(len(years)))
 
     def get_chart_filter_list(self):
 
@@ -361,7 +382,8 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions [Gt]', chart_name=chart_name)
 
-        new_serie = InstanciatedSeries(list(GHG_total_energy_emissions['years'].values), list(GHG_total_energy_emissions['Total CO2 emissions'].values),
+        new_serie = InstanciatedSeries(list(GHG_total_energy_emissions['years'].values),
+                                       list(GHG_total_energy_emissions['Total CO2 emissions'].values),
                                        'lines')
 
         new_chart.series.append(new_serie)
@@ -377,7 +399,8 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
             'years', 'GWP [GtCO2]', chart_name=chart_name, stacked_bar=True)
 
         for ghg in EnergyGHGEmissions.GHG_TYPE_LIST:
-            new_serie = InstanciatedSeries(list(GWP_emissions['years'].values), list(GWP_emissions[f'{ghg}_{gwp_year}'].values),
+            new_serie = InstanciatedSeries(list(GWP_emissions['years'].values),
+                                           list(GWP_emissions[f'{ghg}_{gwp_year}'].values),
                                            ghg, 'bar')
 
             new_chart.series.append(new_serie)
@@ -396,7 +419,8 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
             ghg_energy = GHG_emissions_per_energy[ghg][[
                 col for col in GHG_emissions_per_energy[ghg] if energy in col]].sum(axis=1).values
             if not (ghg_energy == 0).all():
-                new_serie = InstanciatedSeries(list(GHG_emissions_per_energy[ghg]['years'].values), list(ghg_energy), energy,
+                new_serie = InstanciatedSeries(list(GHG_emissions_per_energy[ghg]['years'].values), list(ghg_energy),
+                                               energy,
                                                'bar')
 
                 new_chart.series.append(new_serie)
@@ -413,7 +437,8 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
 
         for col in CO2_emissions_sources:
             if col != 'years':
-                new_serie = InstanciatedSeries(list(CO2_emissions_sources['years'].values), list(CO2_emissions_sources[col].values),
+                new_serie = InstanciatedSeries(list(CO2_emissions_sources['years'].values),
+                                               list(CO2_emissions_sources[col].values),
                                                col, 'lines')
 
                 new_chart.series.append(new_serie)
@@ -430,7 +455,8 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
 
         for col in CO2_emissions_sinks:
             if col != 'years':
-                new_serie = InstanciatedSeries(list(CO2_emissions_sinks['years'].values), list(CO2_emissions_sinks[col].values),
+                new_serie = InstanciatedSeries(list(CO2_emissions_sinks['years'].values),
+                                               list(CO2_emissions_sinks[col].values),
                                                col, 'lines')
 
                 new_chart.series.append(new_serie)
