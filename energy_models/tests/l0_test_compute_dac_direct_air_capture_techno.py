@@ -26,6 +26,7 @@ from energy_models.core.stream_type.resources_data_disc import get_static_CO2_em
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from os.path import join, dirname
 
 
 class DirectAirCaptureTechnoTestCase(unittest.TestCase):
@@ -59,7 +60,7 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'renewable': 0.0})
+            {'years': years, 'renewable': 0.0, 'methane':0.2})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -177,3 +178,6 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filters)
         # for graph in graph_list:
         # graph.to_plotly().show()
+
+
+

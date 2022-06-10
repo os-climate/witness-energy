@@ -21,6 +21,7 @@ from energy_models.core.stream_type.resources_models.calcium_oxide import Calciu
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 
 import numpy as np
 
@@ -36,21 +37,21 @@ class CalciumPotassium(CCTechno):
         self.cost_details['elec_needs'] = self.get_electricity_needs()
 
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
-                                                   / self.techno_infos_dict['energy_efficiency'])
+                                                   )
 
-        self.cost_details['potassium_needs'] = self.compute_potassium_need()
+        self.cost_details['potassium_needs'] = self.compute_potassium_need() / self.techno_infos_dict['energy_efficiency']
 
         self.cost_details['potassium'] = list(self.resources_prices[ResourceGlossary.Potassium['name']] * self.cost_details['potassium_needs']
-                                              / self.techno_infos_dict['energy_efficiency'])
+                                              )
 
-        self.cost_details['calcium_needs'] = self.compute_calcium_need()
+        self.cost_details['calcium_needs'] = self.compute_calcium_need() / self.techno_infos_dict['energy_efficiency']
 
         self.cost_details['calcium'] = list(self.resources_prices[ResourceGlossary.Calcium['name']] * self.cost_details['calcium_needs']
-                                            / self.techno_infos_dict['energy_efficiency'])
+                                            )
         self.cost_details['heat_needs'] = self.get_heat_needs()
 
         self.cost_details[Methane.name] = list(self.prices[Methane.name] * self.cost_details['heat_needs']
-                                                   / self.techno_infos_dict['energy_efficiency'])
+                                                   )
 
         return self.cost_details[Electricity.name] + self.cost_details['potassium'] + self.cost_details['calcium'] + self.cost_details[Methane.name]
 
@@ -64,7 +65,15 @@ class CalciumPotassium(CCTechno):
 
         self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs']
 
-        return self.carbon_emissions[Methane.name] + self.carbon_emissions[Electricity.name]
+        self.carbon_emissions[ResourceGlossary.Potassium['name']] = self.resources_CO2_emissions[ResourceGlossary.Potassium['name']] * \
+                                                            self.cost_details['potassium_needs']
+
+        self.carbon_emissions[ResourceGlossary.Calcium['name']] = self.resources_CO2_emissions[ResourceGlossary.Calcium['name']] * \
+                                                            self.cost_details['calcium_needs']
+
+
+
+        return self.carbon_emissions[Methane.name] + self.carbon_emissions[Electricity.name] + self.carbon_emissions[ResourceGlossary.Potassium['name']] + self.carbon_emissions[ResourceGlossary.Calcium['name']]
 
 
     def grad_price_vs_energy_price(self):
@@ -75,8 +84,8 @@ class CalciumPotassium(CCTechno):
         elec_needs = self.get_electricity_needs()
         heat_needs = self.get_heat_needs()
 
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs / self.techno_infos_dict['energy_efficiency'],
-                Methane.name: np.identity(len(self.years)) * heat_needs / self.techno_infos_dict['energy_efficiency']
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs ,
+                Methane.name: np.identity(len(self.years)) * heat_needs
                 }
 
     def grad_price_vs_resources_price(self):
@@ -101,19 +110,23 @@ class CalciumPotassium(CCTechno):
         # Consumption
 
         self.consumption[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})'] # in kWH
 
         self.consumption[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
             self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'CaO ({self.mass_unit})'] = self.cost_details['calcium_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']  # in kWH
+        self.consumption[f'calcium ({self.mass_unit})'] = self.cost_details['calcium_needs'] * \
+            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']   # in kWH
 
-        self.consumption[f'KOH ({self.mass_unit})'] = self.cost_details['potassium_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']  # in kWH
+        self.consumption[f'potassium ({self.mass_unit})'] = self.cost_details['potassium_needs'] * \
+            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
+        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
+                                                                               self.production[
+                                                                                   f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                               Methane.data_energy_dict['CO2_per_use'] / \
+                                                                               Methane.data_energy_dict[
+                                                                                   'calorific_value']
     def compute_potassium_need(self):
         """
         'reaction': 'CO2 + 2KOH --> H2O + K2CO3'

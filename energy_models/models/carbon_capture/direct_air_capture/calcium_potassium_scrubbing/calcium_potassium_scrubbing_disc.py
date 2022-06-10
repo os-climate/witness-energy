@@ -108,6 +108,8 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
                                                          0.0, 0.0]
                                              })
 
+    # use the same flue gas ratio as gas turbine one
+    FLUE_GAS_RATIO = np.array([0.0350])
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},

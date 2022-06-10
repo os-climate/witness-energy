@@ -17,6 +17,9 @@ limitations under the License.
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.fossil import Fossil
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 
 import numpy as np
 
@@ -34,10 +37,10 @@ class DirectAirCaptureTechno(CCTechno):
         self.cost_details['elec_needs'] = self.get_electricity_needs()
 
         self.cost_details[Renewable.name] = list(self.prices[Renewable.name] * self.cost_details['elec_needs']
-                                                 / self.cost_details['efficiency'])
+                                                 )
         self.cost_details['heat_needs'] = self.get_heat_needs()
         self.cost_details[Fossil.name] = list(self.prices[Fossil.name] * self.cost_details['heat_needs']
-                                                 / self.cost_details['efficiency'])
+                                                 )
         return self.cost_details[Renewable.name] + self.cost_details[Fossil.name]
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -49,7 +52,7 @@ class DirectAirCaptureTechno(CCTechno):
 
         self.carbon_emissions[Renewable.name] = self.energy_CO2_emissions[Renewable.name] * self.cost_details['elec_needs']
 
-        return self.carbon_emissions[Fossil.name] + self.carbon_emissions[Renewable.name]
+        return self.carbon_emissions[Fossil.name] + self.carbon_emissions[Renewable.name] - 1.0
 
     def grad_price_vs_energy_price(self):
         '''
@@ -58,9 +61,8 @@ class DirectAirCaptureTechno(CCTechno):
         '''
         elec_needs = self.get_electricity_needs()
         heat_needs = self.get_heat_needs()
-        efficiency = self.configure_efficiency()
-        return {Renewable.name: np.identity(len(self.years)) * elec_needs / efficiency,
-                Fossil.name: np.identity(len(self.years)) * heat_needs / efficiency,
+        return {Renewable.name: np.identity(len(self.years)) * elec_needs ,
+                Fossil.name: np.identity(len(self.years)) * heat_needs ,
                 }
 
     def compute_consumption_and_production(self):
@@ -76,3 +78,14 @@ class DirectAirCaptureTechno(CCTechno):
 
         self.consumption[f'{Fossil.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
             self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+
+        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
+                                                                               self.production[
+                                                                                   f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                               Fossil.data_energy_dict['CO2_per_use'] / \
+                                                                               Fossil.data_energy_dict[
+                                                                                   'calorific_value']
+
+
+
+
