@@ -61,7 +61,7 @@ class FTPriceTestCase(unittest.TestCase):
         years = np.arange(2020, 2051)
 
         self.resource_list = [
-            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
+            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource', 'copper_resource']
         self.ratio_available_resource = pd.DataFrame(
             {'years': np.arange(2020, 2050 + 1)})
         for types in self.resource_list:

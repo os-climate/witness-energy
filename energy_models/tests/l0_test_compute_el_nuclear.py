@@ -49,8 +49,7 @@ class NuclearTestCase(unittest.TestCase):
         self.resources_price[ResourceGlossary.Uranium['name']] = 1390.0e3
 
         self.invest_level = pd.DataFrame({'years': years})
-        self.invest_level['invest'] = 33.0 * \
-            1.10 ** (self.invest_level['years'] - 2020)
+        self.invest_level['invest'] = 10.
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -76,7 +75,7 @@ class NuclearTestCase(unittest.TestCase):
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         self.resource_list = [
-            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
+            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource', 'copper_resource']
         self.ratio_available_resource = pd.DataFrame(
             {'years': np.arange(2020, 2050 + 1)})
         for types in self.resource_list:

@@ -45,11 +45,9 @@ class PiperazineProcess(CCTechno):
         self.cost_details[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect)
 
-        self.cost_details['heat_needs'] = self.get_heat_needs()
-        self.cost_details[Methane.name] = list(self.prices[Methane.name] * self.cost_details['heat_needs']
-                                                   / self.cost_details['efficiency'])
 
-        return self.cost_details[Electricity.name] + self.cost_details[Methane.name]
+
+        return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -60,8 +58,7 @@ class PiperazineProcess(CCTechno):
         heat_needs = self.get_heat_needs()
 
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / self.techno_infos_dict['efficiency'] * self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect),
-                Methane.name: np.identity(len(self.years)) * heat_needs / self.techno_infos_dict['efficiency']}
+            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect)}
 
     def compute_consumption_and_production(self):
         """
@@ -72,8 +69,7 @@ class PiperazineProcess(CCTechno):
         # Consumption
         self.consumption[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
             self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']
-        self.consumption[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+
 
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)

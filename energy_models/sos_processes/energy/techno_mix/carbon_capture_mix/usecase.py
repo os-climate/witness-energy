@@ -37,7 +37,8 @@ TECHNOLOGIES_LIST_COARSE = ['direct_air_capture.CalciumPotassiumScrubbing', 'flu
 TECHNOLOGIES_FLUE_GAS_LIST_COARSE = ['electricity.GasTurbine']
 DEFAULT_FLUE_GAS_LIST = ['electricity.CoalGen', 'electricity.GasTurbine', 'electricity.CombinedCycleGasTurbine',
                          'hydrogen.gaseous_hydrogen.WaterGasShift', 'liquid_fuel.FischerTropsch', 'liquid_fuel.Refinery', 'methane.FossilGas',
-                         'solid_fuel.Pelletizing', 'syngas.CoalGasification', 'fossil.FossilSimpleTechno']
+                         'solid_fuel.Pelletizing', 'syngas.CoalGasification', 'fossil.FossilSimpleTechno', 'carbon_capture.direct_air_capture.AmineScrubbing',
+                         'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing']
 TECHNOLOGIES_LIST_DEV = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
                              'flue_gas_capture.CalciumLooping','flue_gas_capture.ChilledAmmoniaProcess',
                              'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine',
@@ -152,7 +153,7 @@ class Study(EnergyMixStudyManager):
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 7.0})
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'amine': 0.0, 'potassium': 0.0, 'electricity': 0.0, 'calcium': 0.0})
+            {'years': years, 'amine': 0.0, 'potassium': 0.0, 'electricity': 0.0, 'calcium': 0.0, 'methane':0.2})
 
         coal_gen_prod = pd.DataFrame({'years': years,
                                       f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
@@ -165,6 +166,10 @@ class Study(EnergyMixStudyManager):
         ft_prod = pd.DataFrame({'years': years,
                                 f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
         refinery_prod = pd.DataFrame({'years': years,
+                                      f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+        CAKOH_production = pd.DataFrame({'years': years,
+                                      f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+        aminescrubbing_production = pd.DataFrame({'years': years,
                                       f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
         fossil_gas_prod = pd.DataFrame({'years': years,
                                         f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
@@ -184,6 +189,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{ccs_name}.transport_cost': self.transport,
                        f'{self.study_name}.{ccs_name}.transport_margin': self.margin,
                        f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
+                       f'{self.study_name}.ccs_list' : ['carbon_capture', 'carbon_storage']
 
 
                        }
@@ -209,7 +215,8 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{energy_mix_name}.syngas.CoalGasification.flue_gas_co2_ratio': np.array([0.13]),
                     f'{self.study_name}.{energy_mix_name}.syngas.Pyrolysis.flue_gas_co2_ratio': np.array([0.13]),
                     f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.flue_gas_co2_ratio': np.array([0.12]),
-
+                    f'{self.study_name}.carbon_capture.direct_air_capture.CalciumPotassiumScrubbing.flue_gas_co2_ratio': np.array([0.035]),
+                    f'{self.study_name}.carbon_capture.direct_air_capture.AmineScrubbing.flue_gas_co2_ratio': np.array([0.035]),
                     f'{self.study_name}.{energy_mix_name}.electricity.CoalGen.techno_production': coal_gen_prod,
                     f'{self.study_name}.{energy_mix_name}.electricity.GasTurbine.techno_production': gas_turbine_prod,
                     f'{self.study_name}.{energy_mix_name}.electricity.CombinedCycleGasTurbine.techno_production': cc_gas_turbine_prod,
@@ -220,7 +227,9 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{energy_mix_name}.solid_fuel.Pelletizing.techno_production': pelletizing_prod,
                     f'{self.study_name}.{energy_mix_name}.syngas.CoalGasification.techno_production': coal_gas_prod,
                     f'{self.study_name}.{energy_mix_name}.syngas.Pyrolysis.techno_production': pyrolysis_prod,
-                    f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.techno_production': refinery_prod, })
+                    f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.techno_production': refinery_prod,
+                    f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.CalciumPotassiumScrubbing.techno_production': CAKOH_production,
+                    f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.techno_production': aminescrubbing_production,})
 
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
