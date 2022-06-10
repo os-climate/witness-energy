@@ -75,7 +75,7 @@ class NuclearTestCase(unittest.TestCase):
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         self.resource_list = [
-            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
+            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource', 'copper_resource']
         self.ratio_available_resource = pd.DataFrame(
             {'years': np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
