@@ -49,7 +49,9 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_flue_gas': f'{self.name}.{self.model_name}',
                    'ns_energy_mix': f'{self.name}',
-                   'ns_public': f'{self.name}'}
+                   'ns_public': f'{self.name}',
+                   'ns_ccs': f'{self.name}',
+                   'ns_energy_study': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.stream_type.carbon_disciplines.flue_gas_disc.FlueGasDiscipline'
@@ -65,6 +67,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
                        f'{self.name}.electricity.CoalGen.techno_production': self.electricity_CoalGen_production,
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_production': self.hydrogen_WaterGasShift_production,
                        f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': [0.2],
+                       f'{self.name}.ccs_list': [],
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': [0.4],
                        f'{self.name}.{self.model_name}.scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        f'{self.name}.{self.model_name}.scaling_factor_techno_production': self.scaling_factor_techno_production, }
@@ -87,7 +90,9 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_flue_gas': f'{self.name}.{self.model_name}',
                    'ns_energy_mix': f'{self.name}',
-                   'ns_public': f'{self.name}'}
+                   'ns_public': f'{self.name}',
+                   'ns_ccs': f'{self.name}',
+                   'ns_energy_study': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.stream_type.carbon_disciplines.flue_gas_disc.FlueGasDiscipline'
@@ -104,6 +109,8 @@ class FlueGasRatioTestCase(unittest.TestCase):
                        f'{self.name}.electricity.CoalGen.techno_production': self.electricity_CoalGen_production,
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_production': self.hydrogen_WaterGasShift_production,
                        f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': [0.2],
+                       f'{self.name}.ccs_list': [],
+
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': [0.4],
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production, }
