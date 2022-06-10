@@ -56,6 +56,7 @@ class ConsumptionCO2Emissions(BaseStream):
         Configure parameters (variables that does not change during the run)
         '''
         self.energy_list = inputs_dict['energy_list']
+        self.ccs_list = inputs_dict['ccs_list']
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -68,6 +69,7 @@ class ConsumptionCO2Emissions(BaseStream):
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
         self.energy_list = inputs_dict['energy_list']
+        self.ccs_list = inputs_dict['ccs_list']
 
         self.co2_per_use = pd.DataFrame(
             {'years': self.years})
@@ -75,11 +77,17 @@ class ConsumptionCO2Emissions(BaseStream):
         self.sub_consumption_dict = {}
 
         for energy in self.energy_list:
+
             self.co2_per_use[energy] = inputs_dict[f'{energy}.CO2_per_use']['CO2_per_use']
             self.sub_production_dict[energy] = inputs_dict[f'{energy}.energy_production'] * \
                 self.scaling_factor_energy_production
             self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.energy_consumption'] * \
                 self.scaling_factor_energy_consumption
+
+        for energy in self.ccs_list:
+            self.sub_production_dict[energy] = inputs_dict[f'{energy}.energy_production'] * \
+                                               self.scaling_factor_energy_production
+
         self.energy_production_detailed = inputs_dict['energy_production_detailed']
 
     def compute_CO2_emissions(self):
@@ -94,7 +102,7 @@ class ConsumptionCO2Emissions(BaseStream):
 
         # Aggregate CO2 production and consumption columns from sub_production
         # and sub_consumption df
-        for energy in self.energy_list:
+        for energy in self.energy_list  :
             # gather all production columns with a CO2 name in it
             for col, production in self.sub_production_dict[energy].items():
                 if col in self.CO2_list:
@@ -108,6 +116,10 @@ class ConsumptionCO2Emissions(BaseStream):
             self.CO2_production[f'{energy} CO2 by use (Mt)'] = self.co2_per_use[energy] * np.maximum(
                 0.0, self.energy_production_detailed[f'production {energy} (TWh)'].values)
 
+        for energy in self.ccs_list:
+            for col, production in self.sub_production_dict[energy].items():
+                if col in self.CO2_list:
+                    self.CO2_production[f'{energy} {col}'] = production.values
         ''' CO2 from energy mix    
          CO2 expelled by energy mix technologies during the process 
          i.e. for machinery or tractors 
@@ -226,6 +238,12 @@ class ConsumptionCO2Emissions(BaseStream):
             net_prod_sign[net_prod_sign == 0] = 1
             dtot_CO2_emissions[f'Total CO2 by use (Gt) vs {energy}#prod'] = self.co2_per_use[energy].values * \
                 np.maximum(0, np.sign(net_prod_sign))
+
+        for energy in self.ccs_list:
+            for col, production in self.sub_production_dict[energy].items():
+                if col in self.CO2_list:
+                    co2_production[f'{energy} {col}'] = production.values
+
 
         ''' CARBON CAPTURE from energy mix
         Total carbon capture from energy mix if the technology offers carbon_capture

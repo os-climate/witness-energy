@@ -33,6 +33,11 @@ from energy_models.models.solid_fuel.pelletizing.pelletizing_disc import Pelleti
 from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
 from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
 from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import AmineScrubbingDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import CalciumPotassiumScrubbingDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import DirectAirCaptureTechnoDiscipline
+
+from energy_models.core.ccus.ccus import CCUS
 
 
 class FlueGasDiscipline(SoSDiscipline):
@@ -60,14 +65,25 @@ class FlueGasDiscipline(SoSDiscipline):
                                  'solid_fuel.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
                                  'syngas.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
                                  'syngas.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
-                                 'fossil.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO}
+                                 'fossil.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
+                                 'carbon_capture.direct_air_capture.AmineScrubbing': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
+                                 'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing' :CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
+                                 'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
+
+                                 #'electricity.GasTurbine': GasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 }
 
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'technologies_list': {'type': 'string_list', 'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas', 'structuring': True},
                'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2}}
+               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+               'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
+                            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                            'editable': False,
+                            'structuring': True},
+               }
 
     energy_name = FlueGas.name
 
@@ -89,18 +105,30 @@ class FlueGasDiscipline(SoSDiscipline):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'technologies_list' in self._data_in:
+        if 'technologies_list' in self._data_in and 'ccs_list' in self._data_in:
             techno_list = self.get_sosdisc_inputs('technologies_list')
-            if techno_list is not None:
+            ccs_list = self.get_sosdisc_inputs('ccs_list')
+
+            print(techno_list, ccs_list)
+            if techno_list is not None and ccs_list is not None:
                 for techno in techno_list:
+                    # check if techno not in ccs_list, namespace is ns_energy_mix
+                    if techno.split('.')[0] not in ccs_list:
+                        ns_variable = 'ns_energy_mix'
+
+                    # techno in ccs_list, use different namespace
+                    else:
+                        ns_variable = 'ns_ccs'
+
                     dynamic_inputs[f'{techno}.techno_production'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                        'namespace': 'ns_energy_mix'}
+                        'namespace': ns_variable}
                     dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
                                                                       'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                      'namespace': 'ns_energy_mix', 'unit': '',
+                                                                      'namespace': ns_variable, 'unit': '',
                                                                       'default': self.POSSIBLE_FLUE_GAS_TECHNOS[techno]}
+
         self.add_inputs(dynamic_inputs)
 
     def run(self):

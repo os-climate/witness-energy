@@ -969,7 +969,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = ElectricityJacobianTestCase()
     cls.setUp()
     cls.test_01_combined_cycle_gas_turbine_discipline_analytic_grad()

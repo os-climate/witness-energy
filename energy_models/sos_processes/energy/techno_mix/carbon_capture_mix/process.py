@@ -45,6 +45,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         carbon_capture_name = CarbonCapture.name
         ns_dict = {'ns_carbon_capture': f'{ns_study}.{self.prefix_name}.{carbon_capture_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
+                   'ns_ccs': f'{ns_study}.CCUS',
                    'ns_energy_study': f'{ns_study}',
                    'ns_flue_gas': f'{ns_study}.{self.prefix_name}.{carbon_capture_name}.{flue_gas_name}',
                    'ns_public': f'{ns_study}',
