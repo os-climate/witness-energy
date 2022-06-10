@@ -208,7 +208,7 @@ class WindOffshoreTestCase(unittest.TestCase):
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'is_softmax': False,
+                       'smooth_type': 'smooth_max',
                        'data_fuel_dict': Electricity.data_energy_dict,
                        }
 
@@ -269,7 +269,7 @@ class WindOffshoreTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
 if __name__ == "__main__":
     unittest.main()

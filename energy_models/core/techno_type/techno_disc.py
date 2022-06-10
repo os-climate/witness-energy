@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 import pandas as pd
 
@@ -227,6 +228,7 @@ class TechnoDiscipline(SoSDiscipline):
         scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
         production = outputs_dict['techno_production']
         consumption = outputs_dict['techno_consumption']
+        power_production = outputs_dict['power_production']
         ratio_df = self.techno_model.ratio_df
         dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
             invest_level.loc[invest_level['years']
@@ -253,6 +255,10 @@ class TechnoDiscipline(SoSDiscipline):
             capex, invest_level['invest'].values * scaling_factor_invest_level,
             self.techno_model.invest_before_ystart['invest'].values,
             self.techno_model.techno_infos_dict, dcapex_dinvest)
+
+        self.dpower_dinvest = self.techno_model.compute_dpower_dinvest(
+            capex, invest_level['invest'].values * scaling_factor_invest_level,
+            self.techno_model.techno_infos_dict,  dcapex_dinvest, inputs_dict['scaling_factor_techno_consumption'])
 
         applied_ratio = outputs_dict['applied_ratio']['applied_ratio'].values
         dprod_name_dinvest = (
@@ -352,11 +358,20 @@ class TechnoDiscipline(SoSDiscipline):
                                 self.dprod_column_dratio[column][ratio_name] / 100.)
 
         for column in consumption:
-            self.dcons_column_dinvest = self.dprod_dinvest.copy()
+            
             if column not in ['years']:
-                var_cons = (consumption[column] /
+                
+                if column == 'copper_resource (Mt)': 
+                    var_cons = (consumption[column] /
+                            power_production['new_power_production']).fillna(
+                    0)
+                    self.dcons_column_dinvest = self.dpower_dinvest.copy() 
+                else : 
+                    var_cons = (consumption[column] /
                             production[f'{self.energy_name} ({self.techno_model.product_energy_unit})']).fillna(
                     0)
+                    self.dcons_column_dinvest = self.dprod_dinvest.copy()
+               
                 for line in range(len(years)):
                     # Problem when invest is zero at the first year and prod
                     # consequently zero (but gradient is not null)
@@ -365,9 +380,18 @@ class TechnoDiscipline(SoSDiscipline):
                         var_cons[line] = var_cons[line + 1]
                     self.dcons_column_dinvest[line, :] = self.dprod_dinvest[line,
                                                                             :] * var_cons[line]
-                self.set_partial_derivative_for_other_types(
-                    ('techno_consumption', column), ('invest_level', 'invest'),
-                    (self.dcons_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production)
+                    if column == 'copper_resource (Mt)' : 
+                        self.dcons_column_dinvest[line, :] = self.dpower_dinvest[line,
+                                                                            :] * var_cons[line]
+                if column in [f'{resource} (Mt)' for resource in self.techno_model.construction_resource_list] :
+                    applied_ratio_construction = 1
+                    self.set_partial_derivative_for_other_types(
+                        ('techno_consumption', column), ('invest_level', 'invest'),
+                        (self.dcons_column_dinvest.T * applied_ratio_construction).T * scaling_factor_invest_level / scaling_factor_techno_production)
+                else : 
+                    self.set_partial_derivative_for_other_types(
+                        ('techno_consumption', column), ('invest_level', 'invest'),
+                        (self.dcons_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production)
                 self.set_partial_derivative_for_other_types(
                     ('techno_consumption_woratio',
                      column), ('invest_level', 'invest'),
@@ -791,7 +815,7 @@ class TechnoDiscipline(SoSDiscipline):
 
         kg_values_production = 0
         product_found = None
-        for product in techno_consumption.columns:
+        for product in techno_production.columns:
             if product != 'years' and product.endswith('(Mt)'):
                 kg_values_production += 1
                 product_found = product

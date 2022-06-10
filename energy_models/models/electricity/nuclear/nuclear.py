@@ -72,13 +72,13 @@ class Nuclear(ElectricityTechno):
 
     def compute_consumption_and_power_production(self):
         """
-        Compute the resource consumption and the power installed (W) of the technology for a given investment
+        Compute the resource consumption and the power installed (MW) of the technology for a given investment
         """
         self.compute_primary_power_production()
 
         # FOR ALL_RESOURCES DISCIPLINE
 
-        copper_needs = self.get_theoretical_copper_needs()
+        copper_needs = self.get_theoretical_copper_needs(self)
         self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
         
 
@@ -121,12 +121,12 @@ class Nuclear(ElectricityTechno):
         return water_needs
     
     @staticmethod
-    def get_theoretical_copper_needs():
+    def get_theoretical_copper_needs(self):
         """
         According to the IEA, Nuclear power stations need 1473 kg of copper for each MW implemented
         Computing the need in Mt/MW
         """
-        copper_need = 1473 / 1000 / 1000 / 1000
+        copper_need = self.techno_infos_dict['copper_needs'] #/ 1000 / 1000 / 1000
 
         return copper_need
 

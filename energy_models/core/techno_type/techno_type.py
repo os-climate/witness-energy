@@ -71,6 +71,7 @@ class TechnoType:
         self.non_use_capital = None
         self.techno_capital = None
         self.applied_ratio = None
+        self.construction_resource_list = ['copper_resource']
 
     def check_outputs_dict(self, biblio_data):
         '''
@@ -314,10 +315,15 @@ class TechnoType:
                     ratio_values
         self.consumption_woratio = pd.DataFrame({'years': self.years})
         for col in self.consumption.columns:
-            if col not in ['years']:
+            if col not in ['years', 'copper_resource (Mt)']:
                 self.consumption_woratio[col] = self.consumption[col].values
                 self.consumption[col] = self.consumption[col].values * \
                     ratio_values
+            elif col in [f'{resource} (Mt)' for resource in self.construction_resource_list] :
+                ratio_construction_values = 1
+                self.consumption_woratio[col] = self.consumption[col].values
+                self.consumption[col] = self.consumption[col].values * \
+                    ratio_construction_values
         self.techno_land_use_woratio = pd.DataFrame({'years': self.years})
         for col in self.techno_land_use.columns:
             if col not in ['years']:
@@ -1151,6 +1157,27 @@ class TechnoType:
         self.dprod_list_dcapex_list = dprod_list_dcapex_list
 
         return dprod_list_dcapex_list
+
+    def compute_dpower_dinvest(self, capex_list, invest_list, techno_dict, dcapex_dinvest, scaling_factor_techno_consumption) :
+        nb_years = len(capex_list)
+        dpower_list_dinvest_list = np.zeros(
+            (nb_years, nb_years))
+        delay = techno_dict['construction_delay']
+        # power = cste * invest / capex ie dpower_d_invest = cste * (Id/capex - invest * dcapex_dinvest / capex**2)
+        for i in range(delay, nb_years) :
+            if capex_list[i - delay] != 0 :
+                if 'full_load_hours' not in self.techno_infos_dict :
+                    full_load_hours = 8760
+                else :
+                    full_load_hours = self.techno_infos_dict['full_load_hours']
+                # cste * Id / capex
+                dpower_list_dinvest_list[i, i - delay] += 1000 / full_load_hours / capex_list[i - delay] * scaling_factor_techno_consumption 
+                # cste * invest * dcapex_dinvest / capex ** 2
+                dpower_list_dinvest_list[i,:] -=  1000 / full_load_hours * invest_list[i - delay] *\
+                     dcapex_dinvest[i - delay,:] / capex_list[i - delay]**2 * scaling_factor_techno_consumption
+        self.dpower_list_dinvest_list = dpower_list_dinvest_list
+
+        return dpower_list_dinvest_list
 
     def compute_dprod_dratio(self, prod, ratio_name, dapplied_ratio_dratio):
         '''! Select the most constraining ratio and apply it to production and consumption.

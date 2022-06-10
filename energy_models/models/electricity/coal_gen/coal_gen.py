@@ -82,16 +82,16 @@ class CoalGen(ElectricityTechno):
 
         # FOR ALL_RESOURCES DISCIPLINE
 
-        copper_needs = self.get_theoretical_copper_needs()
+        copper_needs = self.get_theoretical_copper_needs(self)
         self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
     
     @staticmethod
-    def get_theoretical_copper_needs():
+    def get_theoretical_copper_needs(self):
         """
         According to the IEA, Coal powered stations need 1150 kg of copper for each MW implemented
         Computing the need in Mt/MW
         """
-        copper_need = 1150 / 1000 / 1000 / 1000
+        copper_need = self.techno_infos_dict['copper_needs'] #/ 1000 / 1000 / 1000
 
         return copper_need
 

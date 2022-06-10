@@ -81,7 +81,9 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
                                  'construction_delay': construction_delay,
-                                 'full_load_hours': 8760}
+                                 'full_load_hours': 8760,
+                                 'copper_needs': 1100, #IEA Role of critical minerals in clean energy transitions 2022
+                                 }
 
     # Major hypo: 25% of invest in gas go into gas turbine, 75% into CCGT
     share = 0.75
@@ -122,39 +124,10 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
         self.techno_model.configure_parameters(inputs_dict)
     
     def get_charts_consumption_and_production(self):
-        instanciated_charts = []
-        # Charts for consumption and prod
+        "Adds the chart specific for resources needed for construction"
+        instanciated_chart = super().get_charts_consumption_and_production()
         techno_consumption = self.get_sosdisc_outputs(
             'techno_detailed_consumption')
-        techno_production = self.get_sosdisc_outputs(
-            'techno_detailed_production')
-        chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'
-
-        new_chart = TwoAxesInstanciatedChart('years', 'Energy [TWh]',
-                                             chart_name=chart_name.capitalize(), stacked_bar=True)
-
-        for reactant in techno_consumption.columns:
-            if reactant != 'years' and reactant.endswith('(TWh)'):
-                energy_twh = -techno_consumption[reactant].values
-                legend_title = f'{reactant} consumption'.replace(
-                    "(TWh)", "")
-                serie = InstanciatedSeries(
-                    techno_consumption['years'].values.tolist(),
-                    energy_twh.tolist(), legend_title, 'bar')
-
-                new_chart.series.append(serie)
-
-        for products in techno_production.columns:
-            if products != 'years' and products.endswith('(TWh)'):
-                energy_twh = techno_production[products].values
-                legend_title = f'{products} production'.replace(
-                    "(TWh)", "")
-                serie = InstanciatedSeries(
-                    techno_production['years'].values.tolist(),
-                    energy_twh.tolist(), legend_title, 'bar')
-
-                new_chart.series.append(serie)
-        instanciated_charts.append(new_chart)
 
         new_chart_copper = None
         for product in techno_consumption.columns:
@@ -174,7 +147,6 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                     techno_consumption['years'].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
-
-        instanciated_charts.append(new_chart_copper)
-
-        return instanciated_charts
+        instanciated_chart.append(new_chart_copper)
+        
+        return instanciated_chart

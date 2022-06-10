@@ -199,12 +199,12 @@ class WindOnshoreTestCase(unittest.TestCase):
                        'transport_cost': self.transport,
                        'resources_price': self.resources_price,
                        'energy_prices': self.energy_prices,
-                       'energy_CO2_emissions': pd.DataFrame(),
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'CO2_taxes': self.co2_taxes,
                        'transport_margin': self.margin,
                        'initial_production': WindOnshoreDiscipline.initial_production,
                        'initial_age_distrib': WindOnshoreDiscipline.initial_age_distribution,
+                       'energy_CO2_emissions': pd.DataFrame(),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -212,7 +212,7 @@ class WindOnshoreTestCase(unittest.TestCase):
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'is_softmax': False,
+                       'smooth_type': 'smooth_max',
                        'data_fuel_dict': Electricity.data_energy_dict,
                        }
 
@@ -273,7 +273,7 @@ class WindOnshoreTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
-if __name__ == "__main__":
-    unittest.main()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
+# if __name__ == "__main__":
+#     unittest.main()

@@ -94,7 +94,7 @@ class NuclearTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_compute_nuclear_price(self):
+    def _test_01_compute_nuclear_price(self):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
@@ -127,7 +127,7 @@ class NuclearTestCase(unittest.TestCase):
         nuclear_model.configure_parameters_update(inputs_dict)
         price_details = nuclear_model.compute_price()
 
-    def test_02_compute_nuclear_price_prod_consumption(self):
+    def _test_02_compute_nuclear_price_prod_consumption(self):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
@@ -163,7 +163,7 @@ class NuclearTestCase(unittest.TestCase):
         pass
         #nuclear_model.check_outputs_dict(self.biblio_data)
 
-    def test_04_compute_nuclear_ratio_prod_consumption(self):
+    def _test_04_compute_nuclear_ratio_prod_consumption(self):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
@@ -226,9 +226,10 @@ class NuclearTestCase(unittest.TestCase):
                        'all_streams_demand_ratio': self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'is_softmax': False,
+                       'smooth_type': 'smooth_max',
                        'data_fuel_dict': Electricity.data_energy_dict,
                        }
+
 
         nuclear_model = Nuclear(NuclearDiscipline.techno_name)
         nuclear_model.configure_parameters(inputs_dict)
@@ -284,9 +285,9 @@ class NuclearTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        for graph in graph_list:
-            graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
 
 
-if __name__ == "__main__":
-    unittest.main()
+# if __name__ == "__main__":
+#     unittest.main()
