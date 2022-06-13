@@ -19,7 +19,6 @@ from energy_models.core.stream_type.energy_models.biogas import BioGas
 
 
 class BiogasDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Biogas Energy Model',
@@ -35,10 +34,13 @@ class BiogasDiscipline(EnergyDiscipline):
     }
     # -- add specific techno inputs to this
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': BioGas.default_techno_list,
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                     'possible_values': BioGas.default_techno_list,
                                      'default': BioGas.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_biogas', 'structuring': True},
-               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'unit': 'defined in dict',
+                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_biogas',
+                                     'structuring': True},
+               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                  'unit': 'defined in dict',
                                   'namespace': 'ns_biogas', 'default': BioGas.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)

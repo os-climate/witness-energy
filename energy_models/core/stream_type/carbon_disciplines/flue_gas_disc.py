@@ -24,7 +24,8 @@ from sos_trades_core.tools.post_processing.tables.instanciated_table import Inst
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
 from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import GasTurbineDiscipline
-from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import CombinedCycleGasTurbineDiscipline
+from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import \
+    CombinedCycleGasTurbineDiscipline
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
 from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import FischerTropschDiscipline
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
@@ -41,7 +42,6 @@ from energy_models.core.ccus.ccus import CCUS
 
 
 class FlueGasDiscipline(SoSDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Flue Gas Model',
@@ -75,11 +75,13 @@ class FlueGasDiscipline(SoSDiscipline):
 
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               'technologies_list': {'type': 'string_list', 'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
-                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas', 'structuring': True},
-               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+               'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                     'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
+                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
+                                     'structuring': True},
+                'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
                'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-               'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
+               'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                             'editable': False,
                             'structuring': True},
@@ -170,7 +172,8 @@ class FlueGasDiscipline(SoSDiscipline):
                 f'{techno}.flue_gas_co2_ratio')[0]
 
             grad_prod = (
-                total_prod - self.energy_model.production[f'{self.energy_model.name} {techno} (Mt)'].values) / total_prod**2
+                                total_prod - self.energy_model.production[
+                            f'{self.energy_model.name} {techno} (Mt)'].values) / total_prod ** 2
 
             self.set_partial_derivative_for_other_types(
                 ('flue_gas_prod_ratio', techno),
@@ -184,16 +187,19 @@ class FlueGasDiscipline(SoSDiscipline):
                     flue_gas_co2_ratio_other = self.get_sosdisc_inputs(
                         f'{techno_other}.flue_gas_co2_ratio')[0]
 
-                    grad_flue_gas_prod_ratio = -self.energy_model.production[f'{self.energy_model.name} {techno} (Mt)'].values / \
-                        total_prod ** 2
+                    grad_flue_gas_prod_ratio = -self.energy_model.production[
+                        f'{self.energy_model.name} {techno} (Mt)'].values / \
+                                               total_prod ** 2
                     self.set_partial_derivative_for_other_types(
                         ('flue_gas_prod_ratio', techno),
                         (f'{techno_other}.techno_production',
                          f'{self.energy_model.name} (Mt)'),
-                        inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix) * grad_flue_gas_prod_ratio)
+                        inputs_dict['scaling_factor_techno_production'] * np.identity(
+                            len_matrix) * grad_flue_gas_prod_ratio)
 
-                    grad_fluegas_prod -=  \
-                        flue_gas_co2_ratio_other * self.energy_model.production[f'{self.energy_model.name} {techno_other} (Mt)'].values / \
+                    grad_fluegas_prod -= \
+                        flue_gas_co2_ratio_other * self.energy_model.production[
+                            f'{self.energy_model.name} {techno_other} (Mt)'].values / \
                         total_prod ** 2
 
             self.set_partial_derivative_for_other_types(

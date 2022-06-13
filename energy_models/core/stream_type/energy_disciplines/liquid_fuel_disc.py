@@ -34,7 +34,7 @@ class LiquidFuelDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': LiquidFuel.default_techno_list,
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': LiquidFuel.default_techno_list,
                                      'default': LiquidFuel.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_liquid_fuel',

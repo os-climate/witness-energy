@@ -23,7 +23,6 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 
 class CarbonStorageDiscipline(StreamDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Carbon Storage Model',
@@ -38,7 +37,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list',
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': CarbonStorage.default_techno_list,
                                      'visibility': StreamDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_carbon_storage', 'structuring': True},
@@ -159,8 +158,8 @@ class CarbonStorageDiscipline(StreamDiscipline):
         for reactant in energy_consumption.columns:
             if reactant != 'years' and reactant.endswith('(Mt)'):
                 energy_twh = - \
-                    energy_consumption[reactant].values * \
-                    scaling_factor_energy_consumption
+                                 energy_consumption[reactant].values * \
+                             scaling_factor_energy_consumption
                 legend_title = f'{reactant}'.replace(
                     "(Mt)", "")
                 serie = InstanciatedSeries(
@@ -175,7 +174,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
             # technologies
             if products != 'years' and products.endswith('(Mt)') and self.energy_name not in products:
                 energy_twh = energy_production[products].values * \
-                    scaling_factor_energy_production
+                             scaling_factor_energy_production
                 legend_title = f'{products}'.replace(
                     "(Mt)", "")
                 serie = InstanciatedSeries(

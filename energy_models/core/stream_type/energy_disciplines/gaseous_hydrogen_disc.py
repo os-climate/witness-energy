@@ -19,7 +19,6 @@ from energy_models.core.stream_type.energy_models.gaseous_hydrogen import Gaseou
 
 
 class GaseousHydrogenDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Hydrogen Energy Model',
@@ -34,7 +33,7 @@ class GaseousHydrogenDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list',
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': GaseousHydrogen.default_techno_list,
                                      'default': GaseousHydrogen.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,

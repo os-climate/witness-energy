@@ -21,7 +21,6 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 
 class BiomassDryDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Dry Biomass Model',
@@ -36,13 +35,14 @@ class BiomassDryDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list',
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': BiomassDry.default_techno_list,
                                      'default': BiomassDry.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_biomass_dry',
                                      'structuring': True},
-               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'unit': 'defined in dict',
+               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                  'unit': 'defined in dict',
                                   'namespace': 'ns_biomass_dry', 'default': BiomassDry.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
@@ -78,7 +78,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
                 f'{technology}.techno_production')
             year_list = techno_emissions['years'].values.tolist()
             emission_list = techno_emissions[technology].values * \
-                techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
+                            techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
             serie = InstanciatedSeries(
                 year_list, emission_list.tolist(), technology, 'bar')
             new_chart.series.append(serie)
@@ -86,7 +86,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
             # emissions
             if technology == 'UnmanagedWood':
                 co2_per_use = co2_per_use['CO2_per_use'].values * \
-                    techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
+                              techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
         serie = InstanciatedSeries(
             year_list, co2_per_use.tolist(), 'CO2 from use of brut production', 'bar')
         new_chart.series.append(serie)

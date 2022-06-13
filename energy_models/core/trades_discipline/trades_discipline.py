@@ -26,7 +26,6 @@ class TradesDiscipline(SoSDiscipline):
     """
     """
 
-
     # ontology information
     _ontology_data = {
         'label': 'Core Energy Trades Model',
@@ -42,10 +41,15 @@ class TradesDiscipline(SoSDiscipline):
     }
     _maturity = 'Research'
 
-    DESC_IN = {'scenario_list': {SoSDiscipline.TYPE: 'string_list', SoSDiscipline.VISIBILITY:
-                                 SoSDiscipline.SHARED_VISIBILITY, SoSDiscipline.NAMESPACE: 'ns_scatter_scenario', 'structuring': True},
-               'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
+    DESC_IN = {'scenario_list': {SoSDiscipline.TYPE: 'list', SoSDiscipline.SUBTYPE: {'list': 'string'},
+                                 SoSDiscipline.VISIBILITY:
+                                     SoSDiscipline.SHARED_VISIBILITY, SoSDiscipline.NAMESPACE: 'ns_scatter_scenario',
+                                 'structuring': True},
+               'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]',
+                            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+               'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2,
+                                                    'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                    'namespace': 'ns_public'}}
     DESC_OUT = {}
 
     def setup_sos_disciplines(self):
@@ -125,7 +129,8 @@ class TradesDiscipline(SoSDiscipline):
                         value[value['years'] == year_end]['Total CO2 emissions'].values)[0] * 1.0e6
                 elif input.endswith('energy_production'):
                     energy_production[input.split('.')[0]] = list(
-                        value[value['years'] == year_end]['Total production'].values)[0] * 1.0e6 * scaling_factor_energy_production
+                        value[value['years'] == year_end]['Total production'].values)[
+                                                                 0] * 1.0e6 * scaling_factor_energy_production
 
             min_energy = min(list(energy_production.values()))
             max_energy = max(list(energy_production.values()))

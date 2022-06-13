@@ -23,7 +23,6 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 
 class CarbonCaptureDiscipline(StreamDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Carbon Capture Model',
@@ -38,7 +37,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list',
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': CarbonCapture.default_techno_list,
                                      'visibility': StreamDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_carbon_capture', 'structuring': True},
@@ -110,16 +109,30 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             len_matrix) for column in list_columns_consumption if column != 'years'}
         if self.energy_model.flue_gas_percentage is not None:
             dfluegas = self.energy_model.compute_dflue_gas_with_exp_min(np.divide(
-                inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values, carbon_captured_type['flue gas'].values, out=np.zeros_like(inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values), where=carbon_captured_type['flue gas'].values != 0.0))
-            dfg_ratio = np.divide(- inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values * scaling_factor_energy_production,  (carbon_captured_type['flue gas'].values)
-                                  ** 2, out=np.zeros_like(-inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values), where=carbon_captured_type['flue gas'].values != 0.0)
+                inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values,
+                carbon_captured_type['flue gas'].values,
+                out=np.zeros_like(inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values),
+                where=carbon_captured_type['flue gas'].values != 0.0))
+            dfg_ratio = np.divide(- inputs_dict['flue_gas_production'][
+                CarbonCapture.flue_gas_name].values * scaling_factor_energy_production,
+                                  (carbon_captured_type['flue gas'].values)
+                                  ** 2, out=np.zeros_like(
+                    -inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values),
+                                  where=carbon_captured_type['flue gas'].values != 0.0)
             grad_price_vs_fg_prod = np.zeros(len_matrix)
             grad_price_wotaxes_vs_fg_prod = np.zeros(len_matrix)
         if self.energy_model.flue_gas_percentage_woratio is not None:
             dfluegas_woratio = self.energy_model.compute_dflue_gas_with_exp_min(np.divide(
-                inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values, carbon_captured_type_woratio['flue gas'].values, out=np.zeros_like(inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values), where=carbon_captured_type_woratio['flue gas'].values != 0.0))
-            dfg_ratio_woratio = np.divide(- inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values * scaling_factor_energy_production,  (carbon_captured_type_woratio['flue gas'].values)
-                                          ** 2, out=np.zeros_like(-inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values), where=carbon_captured_type_woratio['flue gas'].values != 0.0)
+                inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values,
+                carbon_captured_type_woratio['flue gas'].values,
+                out=np.zeros_like(inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values),
+                where=carbon_captured_type_woratio['flue gas'].values != 0.0))
+            dfg_ratio_woratio = np.divide(- inputs_dict['flue_gas_production'][
+                CarbonCapture.flue_gas_name].values * scaling_factor_energy_production,
+                                          (carbon_captured_type_woratio['flue gas'].values)
+                                          ** 2, out=np.zeros_like(
+                    -inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values),
+                                          where=carbon_captured_type_woratio['flue gas'].values != 0.0)
 
             grad_price_vs_fg_prod = np.zeros(len_matrix)
             grad_price_wotaxes_vs_fg_prod = np.zeros(len_matrix)
@@ -128,17 +141,21 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             if techno.startswith('direct_air_capture'):
                 self.set_partial_derivative_for_other_types(
                     ('carbon_captured_type',
-                     'DAC'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'), np.identity(len_matrix) * scaling_factor_energy_production)
+                     'DAC'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                    np.identity(len_matrix) * scaling_factor_energy_production)
                 self.set_partial_derivative_for_other_types(
                     ('carbon_captured_type_woratio',
-                     'DAC'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'), np.identity(len_matrix) * scaling_factor_energy_production)
+                     'DAC'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                    np.identity(len_matrix) * scaling_factor_energy_production)
             elif techno.startswith('flue_gas_capture'):
                 self.set_partial_derivative_for_other_types(
                     ('carbon_captured_type',
-                     'flue gas'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'), np.identity(len_matrix) * scaling_factor_energy_production)
+                     'flue gas'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                    np.identity(len_matrix) * scaling_factor_energy_production)
                 self.set_partial_derivative_for_other_types(
                     ('carbon_captured_type_woratio',
-                     'flue gas'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'), np.identity(len_matrix) * scaling_factor_energy_production)
+                     'flue gas'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                    np.identity(len_matrix) * scaling_factor_energy_production)
 
                 if self.energy_model.flue_gas_percentage is not None:
                     # if the prod of carbon capture is higher than flue gas production then
@@ -149,14 +166,17 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                     flue_gas_perc_grad_limited = np.where(
                         self.energy_model.flue_gas_percentage < 0.9991, 1.0, 0.0)
                     grad_fluegas_limited = self.energy_model.flue_gas_percentage * scaling_factor_energy_production + \
-                        carbon_captured_type['flue gas'].values * \
-                        dfluegas * dfg_ratio
+                                           carbon_captured_type['flue gas'].values * \
+                                           dfluegas * dfg_ratio
                     self.set_partial_derivative_for_other_types(
                         ('carbon_captured_type',
-                         'flue gas limited'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'), np.identity(len_matrix) * grad_fluegas_limited)
+                         'flue gas limited'),
+                        (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                        np.identity(len_matrix) * grad_fluegas_limited)
 
                     self.set_partial_derivative_for_other_types(
-                        ('land_use_required', f'{techno} (Gha)'), (f'{techno}.land_use_required', f'{techno} (Gha)'), np.identity(
+                        ('land_use_required', f'{techno} (Gha)'), (f'{techno}.land_use_required', f'{techno} (Gha)'),
+                        np.identity(
                             len_matrix) * flue_gas_perc_grad_not_limited
                         + np.identity(len_matrix) * flue_gas_perc_grad_limited * self.energy_model.flue_gas_percentage)
                     list_columnstechnoprod = list(
@@ -183,7 +203,8 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                         self.set_partial_derivative_for_other_types(
                                             ('energy_production', column_name), (
                                                 f'{techno}.techno_production', col_technoprod),
-                                            inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix) / scaling_factor_energy_production * dfluegas)
+                                            inputs_dict['scaling_factor_techno_production'] * np.identity(
+                                                len_matrix) / scaling_factor_energy_production * dfluegas)
 
                     for column_name in list_columns_consumption:
 
@@ -194,21 +215,32 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                     self.set_partial_derivative_for_other_types(
                                         ('energy_consumption', column_name), (
                                             f'{techno}.techno_consumption', col_technoprod),
-                                        inputs_dict['scaling_factor_techno_consumption'] * np.identity(len_matrix) / inputs_dict['scaling_factor_energy_consumption'] * self.energy_model.flue_gas_percentage)
+                                        inputs_dict['scaling_factor_techno_consumption'] * np.identity(len_matrix) /
+                                        inputs_dict[
+                                            'scaling_factor_energy_consumption'] * self.energy_model.flue_gas_percentage)
 
                                     grad_cons_vs_prod[
-                                        column_name] -= inputs_dict[f'{techno}.techno_consumption'][column_name].values / inputs_dict['scaling_factor_techno_consumption']
+                                        column_name] -= inputs_dict[f'{techno}.techno_consumption'][
+                                                            column_name].values / inputs_dict[
+                                                            'scaling_factor_techno_consumption']
                     # Gradient vs flue gas production
                     for column_name in list_columnstechnocons:
                         if column_name != 'years':
-                            grad_vs_flue_gas_prod[column_name] += np.divide(inputs_dict[f'{techno}.techno_consumption'][column_name].values, self.energy_model.carbon_captured_type['flue gas'].values * flue_gas_perc_grad_limited, out=np.zeros_like(
-                                inputs_dict[f'{techno}.techno_consumption'][column_name].values), where=self.energy_model.carbon_captured_type['flue gas'].values * flue_gas_perc_grad_limited != 0)
+                            grad_vs_flue_gas_prod[column_name] += np.divide(
+                                inputs_dict[f'{techno}.techno_consumption'][column_name].values,
+                                self.energy_model.carbon_captured_type['flue gas'].values * flue_gas_perc_grad_limited,
+                                out=np.zeros_like(
+                                    inputs_dict[f'{techno}.techno_consumption'][column_name].values),
+                                where=self.energy_model.carbon_captured_type[
+                                          'flue gas'].values * flue_gas_perc_grad_limited != 0)
                 else:
                     self.set_partial_derivative_for_other_types(
                         ('carbon_captured_type',
-                         'flue gas limited'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'), np.identity(len_matrix) * scaling_factor_energy_production)
+                         'flue gas limited'),
+                        (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                        np.identity(len_matrix) * scaling_factor_energy_production)
 
-            #---_woratio case (had to separate the two conditions)
+                # ---_woratio case (had to separate the two conditions)
                 if self.energy_model.flue_gas_percentage_woratio is not None:
                     # if the prod of carbon capture is higher than flue gas production then
                     # total production of carbon capture is not influenced by
@@ -216,11 +248,13 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                     flue_gas_perc_woratio_grad_limited = np.where(
                         self.energy_model.flue_gas_percentage_woratio < 0.9991, 1.0, 0.0)
                     grad_fluegas_limited_woratio = self.energy_model.flue_gas_percentage_woratio * scaling_factor_energy_production + \
-                        carbon_captured_type_woratio['flue gas'].values * \
-                        dfluegas_woratio * dfg_ratio_woratio
+                                                   carbon_captured_type_woratio['flue gas'].values * \
+                                                   dfluegas_woratio * dfg_ratio_woratio
                     self.set_partial_derivative_for_other_types(
                         ('carbon_captured_type_woratio',
-                         'flue gas limited'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'), np.identity(len_matrix) * grad_fluegas_limited_woratio)
+                         'flue gas limited'),
+                        (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                        np.identity(len_matrix) * grad_fluegas_limited_woratio)
 
                     list_columnstechnoprod = list(
                         inputs_dict[f'{techno}.techno_production'].columns)
@@ -237,59 +271,75 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                     self.set_partial_derivative_for_other_types(
                                         ('energy_consumption_woratio', column_name), (
                                             f'{techno}.techno_consumption_woratio', col_technoprod),
-                                        inputs_dict['scaling_factor_techno_consumption'] * np.identity(len_matrix) / inputs_dict['scaling_factor_energy_consumption'] * self.energy_model.flue_gas_percentage_woratio)
+                                        inputs_dict['scaling_factor_techno_consumption'] * np.identity(len_matrix) /
+                                        inputs_dict[
+                                            'scaling_factor_energy_consumption'] * self.energy_model.flue_gas_percentage_woratio)
                                     grad_cons_vs_prod_woratio[
-                                        column_name] -= inputs_dict[f'{techno}.techno_consumption_woratio'][column_name].values / inputs_dict['scaling_factor_techno_consumption']
+                                        column_name] -= inputs_dict[f'{techno}.techno_consumption_woratio'][
+                                                            column_name].values / inputs_dict[
+                                                            'scaling_factor_techno_consumption']
                     # Gradient vs flue gas production
                     for column_name in list_columnstechnocons:
                         if column_name != 'years':
-                            grad_vs_flue_gas_prod_woratio[column_name] += np.divide(inputs_dict[f'{techno}.techno_consumption_woratio'][column_name].values, self.energy_model.carbon_captured_type_woratio['flue gas'].values * flue_gas_perc_woratio_grad_limited, out=np.zeros_like(
-                                inputs_dict[f'{techno}.techno_consumption_woratio'][column_name].values), where=self.energy_model.carbon_captured_type_woratio['flue gas'].values * flue_gas_perc_woratio_grad_limited != 0)
+                            grad_vs_flue_gas_prod_woratio[column_name] += np.divide(
+                                inputs_dict[f'{techno}.techno_consumption_woratio'][column_name].values,
+                                self.energy_model.carbon_captured_type_woratio[
+                                    'flue gas'].values * flue_gas_perc_woratio_grad_limited, out=np.zeros_like(
+                                    inputs_dict[f'{techno}.techno_consumption_woratio'][column_name].values),
+                                where=self.energy_model.carbon_captured_type_woratio[
+                                          'flue gas'].values * flue_gas_perc_woratio_grad_limited != 0)
                 else:
                     self.set_partial_derivative_for_other_types(
                         ('carbon_captured_type_woratio',
-                         'flue gas limited'), (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'), np.identity(len_matrix) * inputs_dict['scaling_factor_techno_production'])
+                         'flue gas limited'),
+                        (f'{techno}.techno_production', f'{CarbonCapture.name} ({CarbonCapture.unit})'),
+                        np.identity(len_matrix) * inputs_dict['scaling_factor_techno_production'])
 
             if self.energy_model.flue_gas_percentage is not None:
                 mix_weight_techno = mix_weight[techno].values / 100.0
 
                 grad_techno_mix_vs_fg_prod = self.grad_techno_mix_vs_prod_dict[
                     f'fg_prod {techno}']
-    #                     grad_techno_mix_vs_prod = (
-    #                         outputs_dict['energy_production'][self.energy_name].values -
-    #                         inputs_dict[f'{techno}.techno_production'][column_name].values
-    #                     ) / outputs_dict['energy_production'][self.energy_name].values**2
+                #                     grad_techno_mix_vs_prod = (
+                #                         outputs_dict['energy_production'][self.energy_name].values -
+                #                         inputs_dict[f'{techno}.techno_production'][column_name].values
+                #                     ) / outputs_dict['energy_production'][self.energy_name].values**2
 
                 # The mix_weight_techno is zero means that the techno is negligible else we do nothing
                 # np.sign gives 0 if zero and 1 if value so it suits well
                 # with our needs
                 grad_techno_mix_vs_fg_prod = grad_techno_mix_vs_fg_prod * \
-                    np.sign(mix_weight_techno)
+                                             np.sign(mix_weight_techno)
 
                 self.set_partial_derivative_for_other_types(
-                    ('techno_mix', techno), ('flue_gas_production', CarbonCapture.flue_gas_name), np.identity(len_matrix) * 100.0 * grad_techno_mix_vs_fg_prod)
+                    ('techno_mix', techno), ('flue_gas_production', CarbonCapture.flue_gas_name),
+                    np.identity(len_matrix) * 100.0 * grad_techno_mix_vs_fg_prod)
 
                 grad_price_vs_fg_prod += inputs_dict[f'{techno}.techno_prices'][techno].values * \
-                    grad_techno_mix_vs_fg_prod
+                                         grad_techno_mix_vs_fg_prod
                 grad_price_wotaxes_vs_fg_prod += inputs_dict[f'{techno}.techno_prices'][f'{techno}_wotaxes'].values * \
-                    grad_techno_mix_vs_fg_prod
+                                                 grad_techno_mix_vs_fg_prod
 
         if self.energy_model.flue_gas_percentage is not None:
 
             self.set_partial_derivative_for_other_types(
-                ('energy_prices', self.energy_name), ('flue_gas_production', CarbonCapture.flue_gas_name), np.identity(len_matrix) * grad_price_vs_fg_prod)
+                ('energy_prices', self.energy_name), ('flue_gas_production', CarbonCapture.flue_gas_name),
+                np.identity(len_matrix) * grad_price_vs_fg_prod)
 
             self.set_partial_derivative_for_other_types(
-                ('energy_prices', f'{self.energy_name}_wotaxes'), ('flue_gas_production', CarbonCapture.flue_gas_name),  np.identity(len_matrix) * grad_price_wotaxes_vs_fg_prod)
+                ('energy_prices', f'{self.energy_name}_wotaxes'), ('flue_gas_production', CarbonCapture.flue_gas_name),
+                np.identity(len_matrix) * grad_price_wotaxes_vs_fg_prod)
 
             self.set_partial_derivative_for_other_types(
                 ('carbon_captured_type',
-                 'flue gas limited'), (f'flue_gas_production', CarbonCapture.flue_gas_name), np.identity(len_matrix) * dfluegas)
+                 'flue gas limited'), (f'flue_gas_production', CarbonCapture.flue_gas_name),
+                np.identity(len_matrix) * dfluegas)
 
             # added
             self.set_partial_derivative_for_other_types(
                 ('carbon_captured_type_woratio',
-                 'flue gas limited'), (f'flue_gas_production', CarbonCapture.flue_gas_name), np.identity(len_matrix) * dfluegas_woratio)
+                 'flue gas limited'), (f'flue_gas_production', CarbonCapture.flue_gas_name),
+                np.identity(len_matrix) * dfluegas_woratio)
 
             for column_name in list_columns_consumption:
                 if column_name != 'years':
@@ -301,8 +351,10 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                         if techno_cons.startswith('flue_gas_capture'):
                             self.set_partial_derivative_for_other_types(
                                 ('energy_consumption', column_name), (
-                                    f'{techno_cons}.techno_production', techno_prod_name_with_unit), -np.identity(len_matrix) *
-                                inputs_dict['scaling_factor_energy_consumption'] * grad_cons_vs_prod[column_name] * dfg_ratio * dfluegas)
+                                    f'{techno_cons}.techno_production', techno_prod_name_with_unit),
+                                -np.identity(len_matrix) *
+                                inputs_dict['scaling_factor_energy_consumption'] * grad_cons_vs_prod[
+                                    column_name] * dfg_ratio * dfluegas)
 
         if self.energy_model.flue_gas_percentage_woratio is not None:
             for column_name in list_columns_consumption:
@@ -315,8 +367,10 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                         if techno_cons.startswith('flue_gas_capture'):
                             self.set_partial_derivative_for_other_types(
                                 ('energy_consumption_woratio', column_name), (
-                                    f'{techno_cons}.techno_production', techno_prod_name_with_unit), -np.identity(len_matrix) *
-                                inputs_dict['scaling_factor_energy_consumption'] * grad_cons_vs_prod_woratio[column_name] * dfg_ratio_woratio * dfluegas_woratio)
+                                    f'{techno_cons}.techno_production', techno_prod_name_with_unit),
+                                -np.identity(len_matrix) *
+                                inputs_dict['scaling_factor_energy_consumption'] * grad_cons_vs_prod_woratio[
+                                    column_name] * dfg_ratio_woratio * dfluegas_woratio)
 
     def get_chart_filter_list(self):
 
@@ -356,7 +410,8 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                 if chart_filter.filter_key == 'years':
                     years_list = chart_filter.selected_values
 
-        if 'Energy price' in charts and '$/t' in price_unit_list and 'calorific_value' in self.get_sosdisc_inputs('data_fuel_dict'):
+        if 'Energy price' in charts and '$/t' in price_unit_list and 'calorific_value' in self.get_sosdisc_inputs(
+                'data_fuel_dict'):
             new_chart = self.get_chart_energy_price_in_dollar_kg()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
@@ -424,7 +479,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         new_chart = TwoAxesInstanciatedChart(
             'years', 'Prices [$/t]', chart_name=chart_name)
         total_price = energy_prices[self.energy_name].values * \
-            self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
+                      self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
         serie = InstanciatedSeries(
             energy_prices['years'].values.tolist(),
             total_price.tolist(), f'{display_energy_name} mix price', 'lines')
@@ -440,7 +495,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             display_technology_name = cut_technology_name[len(
                 cut_technology_name) - 1].replace("_", " ")
             techno_price_kg = techno_price[technology].values * \
-                self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
+                              self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
             serie = InstanciatedSeries(
                 energy_prices['years'].values.tolist(),
                 techno_price_kg.tolist(), f'{display_technology_name} price', 'lines')
@@ -464,8 +519,8 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             if reactant != 'years' and reactant.endswith('(Mt)'):
                 if reactant.startswith('CO2'):
                     energy_twh = - \
-                        energy_consumption[reactant].values * \
-                        scaling_factor_energy_consumption
+                                     energy_consumption[reactant].values * \
+                                 scaling_factor_energy_consumption
                     legend_title = f'{reactant} consumption'.replace(
                         "(Mt)", "")
                     serie = InstanciatedSeries(
@@ -496,8 +551,8 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                     pass
                 else:
                     energy_twh = - \
-                        energy_consumption[reactant].values * \
-                        scaling_factor_energy_consumption
+                                     energy_consumption[reactant].values * \
+                                 scaling_factor_energy_consumption
                     legend_title = f'{reactant} consumption'.replace(
                         "(Mt)", "")
                     serie = InstanciatedSeries(
@@ -532,8 +587,8 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
             if reactant != 'years' and reactant.endswith('(TWh)'):
                 energy_twh = - \
-                    energy_consumption[reactant].values * \
-                    scaling_factor_energy_consumption
+                                 energy_consumption[reactant].values * \
+                             scaling_factor_energy_consumption
                 legend_title = f'{reactant} consumption'.replace(
                     "(TWh)", "")
                 serie = InstanciatedSeries(
@@ -549,7 +604,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
             if products != 'years' and products.endswith('(kWh)') and self.energy_name not in products:
                 energy_twh = energy_production[products].values * \
-                    scaling_factor_energy_production
+                             scaling_factor_energy_production
                 legend_title = f'{products} production'.replace(
                     "(TWh)", "")
                 serie = InstanciatedSeries(
@@ -591,7 +646,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                 f'{technology}.CO2_emissions')
             year_list = techno_emissions['years'].values.tolist()
             emission_list = techno_emissions[technology].values + \
-                co2_per_use['CO2_per_use']
+                            co2_per_use['CO2_per_use']
             serie = InstanciatedSeries(
                 year_list, emission_list.tolist(), technology, 'lines')
             new_chart.series.append(serie)

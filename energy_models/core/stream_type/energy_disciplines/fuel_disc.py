@@ -33,7 +33,6 @@ from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoD
 
 
 class FuelDiscipline(SoSDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Fuel Energy Model',
@@ -59,12 +58,22 @@ class FuelDiscipline(SoSDiscipline):
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
-               'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-               'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
-                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
+               'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
+                                                    'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                    'namespace': 'ns_public'},
+               'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
+                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                     'namespace': 'ns_public'},
+               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-',
+                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                     'namespace': 'ns_public', 'user_level': 2},
+               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-',
+                                                    'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                    'namespace': 'ns_public', 'user_level': 2},
+               'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                               'possible_values': EnergyMix.energy_list,
+                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                               'editable': False, 'structuring': True},
                }
 
     DESC_OUT = {'energy_prices': {'type': 'dataframe', 'unit': '$/MWh'},
@@ -158,12 +167,13 @@ class FuelDiscipline(SoSDiscipline):
 
             # mean price weighted with production for each energy
             energy_prices['fuel'] += [price * production for price,
-                                      production in zip(energy_prices[energy], energy_production[energy])]
+                                                             production in
+                                      zip(energy_prices[energy], energy_production[energy])]
             energy_prices['fuel_production'] += energy_production[energy]
 
         # aggregations
         energy_prices['fuel'] = energy_prices['fuel'] / \
-            energy_prices['fuel_production']
+                                energy_prices['fuel_production']
         energy_prices.drop('fuel_production', axis=1)
         energy_production = energy_production.groupby(level=0, axis=1).sum()
         energy_consumption = energy_consumption.groupby(level=0, axis=1).sum()
@@ -197,7 +207,7 @@ class FuelDiscipline(SoSDiscipline):
             ['year_start', 'year_end'])
         years = list(np.arange(year_start, year_end + 1, 5))
         chart_filters.append(ChartFilter('Years for techno mix', years, [
-                             year_start, year_end], 'years'))
+            year_start, year_end], 'years'))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
@@ -303,8 +313,8 @@ class FuelDiscipline(SoSDiscipline):
         for reactant in energy_consumption.columns:
             if reactant != 'years' and reactant.endswith('(TWh)'):
                 energy_twh = - \
-                    energy_consumption[reactant].values * \
-                    scaling_factor_energy_consumption
+                                 energy_consumption[reactant].values * \
+                             scaling_factor_energy_consumption
                 display_reactant_name = reactant.split(
                     ".")[-1].replace("_", " ")
                 legend_title = f'{display_reactant_name} consumption'.replace(
@@ -321,7 +331,7 @@ class FuelDiscipline(SoSDiscipline):
             # technologies
             if products != 'years' and products.endswith('(TWh)') and self.energy_name not in products:
                 energy_twh = energy_production[products].values * \
-                    scaling_factor_energy_production
+                             scaling_factor_energy_production
 
                 display_products_name = products.split(
                     ".")[-1].replace("_", " ")
@@ -339,7 +349,7 @@ class FuelDiscipline(SoSDiscipline):
             legend_title = f'{display_energy_name} production'.replace(
                 "(TWh)", "")
             energy_prod_twh = energy_production[f'{energy}'].values * \
-                scaling_factor_energy_production
+                              scaling_factor_energy_production
             serie = InstanciatedSeries(energy_production['years'].values.tolist(),
                                        energy_prod_twh.tolist(),
                                        legend_title,
@@ -392,7 +402,7 @@ class FuelDiscipline(SoSDiscipline):
                 legend_title = f'{display_reactant_name} consumption'.replace(
                     "(Mt)", "")
                 mass = -energy_consumption[reactant].values / \
-                    1.0e3 * scaling_factor_energy_consumption
+                       1.0e3 * scaling_factor_energy_consumption
                 serie = InstanciatedSeries(energy_consumption['years'].values.tolist(),
                                            mass.tolist(),
                                            legend_title,
@@ -405,7 +415,7 @@ class FuelDiscipline(SoSDiscipline):
                 legend_title = f'{display_product_name} production'.replace(
                     "(Mt)", "")
                 mass = energy_production[product].values / \
-                    1.0e3 * scaling_factor_energy_production
+                       1.0e3 * scaling_factor_energy_production
                 serie = InstanciatedSeries(energy_production['years'].values.tolist(),
                                            mass.tolist(),
                                            legend_title,

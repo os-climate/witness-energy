@@ -19,7 +19,6 @@ from energy_models.core.stream_type.energy_models.wet_biomass import WetBiomass
 
 
 class BiomassWetDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Wet Biomass Model',
@@ -34,7 +33,8 @@ class BiomassWetDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['WetCropResidues', 'AnimalManure'],
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                     'possible_values': ['WetCropResidues', 'AnimalManure'],
                                      'namespace': 'ns_wet_biomass',
                                      'structuring': True},
                'data_fuel_dict': {'type': 'dict',
@@ -55,19 +55,18 @@ class BiomassWetDiscipline(EnergyDiscipline):
         self.energy_model.configure_parameters(inputs_dict)
 
     def run(self):
-
         EnergyDiscipline.run(self)
 
-        #-- get inputs
+        # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
-        #-- instantiate specific class
+        # -- instantiate specific class
 
-        #-- compute informations
+        # -- compute informations
         cost_details, production, consumption, techno_mix = self.energy_model.compute()
 
         outputs_dict = {'energy_prices': cost_details,
                         'energy_consumption': consumption / inputs_dict['scaling_factor_energy_consumption'],
                         'energy_production': production / inputs_dict['scaling_factor_energy_production'],
                         'techno_mix': techno_mix}
-        #-- store outputs
+        # -- store outputs
         self.store_sos_outputs_values(outputs_dict)

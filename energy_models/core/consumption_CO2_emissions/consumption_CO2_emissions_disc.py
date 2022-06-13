@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions import ConsumptionCO2Emissions
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import AgricultureMixDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
+    AgricultureMixDiscipline
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -30,7 +31,6 @@ from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoD
 
 
 class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'CO2 emissions consumption Model',
@@ -48,10 +48,11 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'energy_list': {'type': 'string_list',  'possible_values': EnergyMix.energy_list,
+        'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                        'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                         'editable': False, 'structuring': True},
-        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
+        'ccs_list': {'type': 'list','subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -90,11 +91,14 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                 for energy in energy_list:
                     if energy == BiomassDry.name and is_dev == True:
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_per_use'] = {
-                            'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness',
+                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_consumption'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
+                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_production'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness', 'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
+                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
                     else:
                         dynamic_inputs[f'{energy}.CO2_per_use'] = {
                             'type': 'dataframe', 'unit': 'kg/kWh',
@@ -122,10 +126,10 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
         self.add_outputs(dynamic_outputs)
 
     def run(self):
-        #-- get inputs
+        # -- get inputs
         inputs_dict_orig = self.get_sosdisc_inputs()
-        #-- configure class with inputs
-        #-- biomass dry values are coming from agriculture mix discipline, but needs to be used in model with biomass dry name
+        # -- configure class with inputs
+        # -- biomass dry values are coming from agriculture mix discipline, but needs to be used in model with biomass dry name
         inputs_dict = {}
         inputs_dict.update(inputs_dict_orig)
         energy_list = self.get_sosdisc_inputs('energy_list')
@@ -159,9 +163,9 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
         energy_production_detailed = self.get_sosdisc_inputs(
             'energy_production_detailed')
         is_dev = inputs_dict['is_dev']
-        #------------------------------------#
-        #-- CO2 emissions sources gradients--#
-        #------------------------------------#
+        # ------------------------------------#
+        # -- CO2 emissions sources gradients--#
+        # ------------------------------------#
         dtot_co2_emissions_sources = self.model.compute_grad_CO2_emissions_sources(
             energy_production_detailed)
 
@@ -320,7 +324,8 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
 
         for col in CO2_emissions_by_use_sources:
             if col != 'years':
-                new_serie = InstanciatedSeries(list(CO2_emissions_by_use_sources['years'].values), list(CO2_emissions_by_use_sources[col].values),
+                new_serie = InstanciatedSeries(list(CO2_emissions_by_use_sources['years'].values),
+                                               list(CO2_emissions_by_use_sources[col].values),
                                                col, 'lines')
 
                 new_chart.series.append(new_serie)
@@ -337,7 +342,8 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
 
         for col in CO2_emissions_by_use_sinks:
             if col != 'years':
-                new_serie = InstanciatedSeries(list(CO2_emissions_by_use_sinks['years'].values), list(CO2_emissions_by_use_sinks[col].values),
+                new_serie = InstanciatedSeries(list(CO2_emissions_by_use_sinks['years'].values),
+                                               list(CO2_emissions_by_use_sinks[col].values),
                                                col, 'lines')
 
                 new_chart.series.append(new_serie)

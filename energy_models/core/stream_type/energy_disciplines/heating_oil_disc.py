@@ -19,7 +19,6 @@ from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
 
 
 class HeatingOilDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Heating Oil Energy Model',
@@ -34,15 +33,16 @@ class HeatingOilDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['Refinery'],
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_liquid_fuel',
-                                     'structuring': True},
-               'data_fuel_dict': {'type': 'dict',
-                                  'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_liquid_fuel',
-                                  'default': HeatingOil.data_energy_dict},
-               }
+    DESC_IN = {
+        'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': ['Refinery'],
+                              'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                              'namespace': 'ns_liquid_fuel',
+                              'structuring': True},
+        'data_fuel_dict': {'type': 'dict',
+                           'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                           'namespace': 'ns_liquid_fuel',
+                           'default': HeatingOil.data_energy_dict},
+        }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
     energy_name = HeatingOil.name

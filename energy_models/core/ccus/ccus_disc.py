@@ -30,7 +30,6 @@ from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoD
 
 
 class CCUS_Discipline(SoSDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Carbon Capture and Storage Model',
@@ -46,25 +45,37 @@ class CCUS_Discipline(SoSDiscipline):
     }
 
     DESC_IN = {
-        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
+        'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
+                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
+                     'structuring': True},
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
-        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
-        'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+        'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
+                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
+        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
+                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
+                                              'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2,
+                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2,
+                                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
+                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+        'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
+                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
     }
 
     DESC_OUT = {
         'co2_emissions_ccus': {'type': 'dataframe', 'unit': 'Mt'},
-        'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
+        'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                  'namespace': 'ns_ccs'},
 
-        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
-        EnergyMix.CARBON_STORAGE_CONSTRAINT: {'type': 'array', 'unit': '',  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                      'namespace': 'ns_energy_study'},
+        EnergyMix.CARBON_STORAGE_CONSTRAINT: {'type': 'array', 'unit': '',
+                                              'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                              'namespace': 'ns_functions'},
 
     }
 
@@ -84,24 +95,29 @@ class CCUS_Discipline(SoSDiscipline):
             if ccs_list is not None:
                 for ccs_name in ccs_list:
                     dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
-                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
+                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'namespace': 'ns_ccs'}
                     dynamic_inputs[f'{ccs_name}.energy_consumption_woratio'] = {
-                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
+                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'namespace': 'ns_ccs'}
                     dynamic_inputs[f'{ccs_name}.energy_production'] = {
-                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
+                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'namespace': 'ns_ccs'}
                     dynamic_inputs[f'{ccs_name}.energy_prices'] = {
-                        'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
+                        'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'namespace': 'ns_ccs'}
                     dynamic_inputs[f'{ccs_name}.land_use_required'] = {
-                        'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
+                        'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'namespace': 'ns_ccs'}
 
         if 'year_start' in self._data_in and 'year_end' in self._data_in:
             year_start = self.get_sosdisc_inputs('year_start')
             year_end = self.get_sosdisc_inputs('year_end')
 
             if year_start is not None and year_end is not None:
-
                 dynamic_inputs['co2_for_food'] = {
-                    'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame(columns=[f'{CO2.name} for food (Mt)']),  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'}
+                    'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame(columns=[f'{CO2.name} for food (Mt)']),
+                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -131,9 +147,9 @@ class CCUS_Discipline(SoSDiscipline):
         return possible_short_ccs_list
 
     def run(self):
-        #-- get inputs
+        # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
-        #-- configure class with inputs
+        # -- configure class with inputs
         #
         self.ccus_model.configure_parameters_update(inputs_dict)
 
@@ -148,7 +164,7 @@ class CCUS_Discipline(SoSDiscipline):
             EnergyMix.CARBON_STORAGE_CONSTRAINT: self.ccus_model.carbon_storage_constraint,
         }
 
-        #-- store outputs
+        # -- store outputs
 
         self.store_sos_outputs_values(outputs_dict)
 
@@ -165,23 +181,24 @@ class CCUS_Discipline(SoSDiscipline):
         sub_production_dict, sub_consumption_dict = {}, {}
         for ccs in ccs_list:
             sub_production_dict[ccs] = inputs_dict[f'{ccs}.energy_production'] * \
-                scaling_factor_energy_production
+                                       scaling_factor_energy_production
             sub_consumption_dict[ccs] = inputs_dict[f'{ccs}.energy_consumption'] * \
-                scaling_factor_energy_consumption
+                                        scaling_factor_energy_consumption
 
-        #-------------------------------#
-        #---Resource Demand gradients---#
-        #-------------------------------#
+        # -------------------------------#
+        # ---Resource Demand gradients---#
+        # -------------------------------#
         resource_list = EnergyMix.RESOURCE_LIST
         for ccs in ccs_list:
             for resource in inputs_dict[f'{ccs}.energy_consumption']:
                 if resource in resource_list:
                     self.set_partial_derivative_for_other_types(('All_Demand', resource), (
-                        f'{ccs}.energy_consumption', resource), scaling_factor_energy_consumption * np.identity(len(years)))
+                        f'{ccs}.energy_consumption', resource), scaling_factor_energy_consumption * np.identity(
+                        len(years)))
 
-        #--------------------------------#
-        #-- New CO2 emissions gradients--#
-        #--------------------------------#
+        # --------------------------------#
+        # -- New CO2 emissions gradients--#
+        # --------------------------------#
 
         alpha = inputs_dict['alpha']
         co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
@@ -199,27 +216,34 @@ class CCUS_Discipline(SoSDiscipline):
 
                 if last_part_key == 'prod':
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus', co2_emission_column), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production * value)
+                        ('co2_emissions_ccus', co2_emission_column), (f'{energy}.energy_production', energy),
+                        np.identity(len(years)) * scaling_factor_energy_production * value)
                 elif last_part_key == 'cons':
                     for energy_df in ccs_list:
                         list_columnsenergycons = list(
                             inputs_dict[f'{energy_df}.energy_consumption'].columns)
                         if f'{energy} (TWh)' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
-                                ('co2_emissions_ccus', co2_emission_column), (f'{energy_df}.energy_consumption', f'{energy} (TWh)'), np.identity(len(years)) * scaling_factor_energy_consumption * value)
+                                ('co2_emissions_ccus', co2_emission_column),
+                                (f'{energy_df}.energy_consumption', f'{energy} (TWh)'),
+                                np.identity(len(years)) * scaling_factor_energy_consumption * value)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus', co2_emission_column), (f'{energy}.CO2_per_use', 'CO2_per_use'), np.identity(len(years)) * value)
+                        ('co2_emissions_ccus', co2_emission_column), (f'{energy}.CO2_per_use', 'CO2_per_use'),
+                        np.identity(len(years)) * value)
 
                 else:
                     very_last_part_key = energy_prod_info.split('#')[2]
 
                     if very_last_part_key == 'prod':
                         self.set_partial_derivative_for_other_types(
-                            ('co2_emissions_ccus', co2_emission_column), (f'{energy}.energy_production', last_part_key), np.identity(len(years)) * scaling_factor_energy_production * value)
+                            ('co2_emissions_ccus', co2_emission_column), (f'{energy}.energy_production', last_part_key),
+                            np.identity(len(years)) * scaling_factor_energy_production * value)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
-                            ('co2_emissions_ccus', co2_emission_column), (f'{energy}.energy_consumption', last_part_key), np.identity(len(years)) * scaling_factor_energy_production * value)
+                            ('co2_emissions_ccus', co2_emission_column),
+                            (f'{energy}.energy_consumption', last_part_key),
+                            np.identity(len(years)) * scaling_factor_energy_production * value)
 
             '''
                 CO2 emissions Gt
@@ -229,38 +253,51 @@ class CCUS_Discipline(SoSDiscipline):
                     '(Mt)', '(Gt)')
                 if last_part_key == 'prod':
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.energy_production', energy), np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.energy_production', energy),
+                        np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
                 elif last_part_key == 'cons':
                     for energy_df in ccs_list:
                         list_columnsenergycons = list(
                             inputs_dict[f'{energy_df}.energy_consumption'].columns)
                         if f'{energy} (TWh)' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
-                                ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy_df}.energy_consumption', f'{energy} (TWh)'), np.identity(len(years)) * scaling_factor_energy_consumption * value / 1.0e3)
+                                ('co2_emissions_ccus_Gt', co2_emission_column_upd),
+                                (f'{energy_df}.energy_consumption', f'{energy} (TWh)'),
+                                np.identity(len(years)) * scaling_factor_energy_consumption * value / 1.0e3)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.CO2_per_use', 'CO2_per_use'), np.identity(len(years)) * value / 1.0e3)
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.CO2_per_use', 'CO2_per_use'),
+                        np.identity(len(years)) * value / 1.0e3)
                 elif energy_prod_info.startswith(f'{CO2.name} for food (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('co2_for_food', f'{CO2.name} for food (Mt)'), np.identity(len(years)) * value / 1.0e3)
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd),
+                        ('co2_for_food', f'{CO2.name} for food (Mt)'), np.identity(len(years)) * value / 1.0e3)
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} from energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('carbon_capture_from_energy_mix', f'{CarbonCapture.name} from energy mix (Gt)'), np.identity(len(years)) * value)
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd),
+                        ('carbon_capture_from_energy_mix', f'{CarbonCapture.name} from energy mix (Gt)'),
+                        np.identity(len(years)) * value)
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} needed by energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), ('co2_emissions_needed_by_energy_mix', f'{CarbonCapture.name} needed by energy mix (Gt)'), np.identity(len(years)) * value)
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd),
+                        ('co2_emissions_needed_by_energy_mix', f'{CarbonCapture.name} needed by energy mix (Gt)'),
+                        np.identity(len(years)) * value)
 
                 else:
                     very_last_part_key = energy_prod_info.split('#')[2]
                     if very_last_part_key == 'prod':
 
                         self.set_partial_derivative_for_other_types(
-                            ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.energy_production', last_part_key), np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
+                            ('co2_emissions_ccus_Gt', co2_emission_column_upd),
+                            (f'{energy}.energy_production', last_part_key),
+                            np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
-                            ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.energy_consumption', last_part_key), np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
+                            ('co2_emissions_ccus_Gt', co2_emission_column_upd),
+                            (f'{energy}.energy_consumption', last_part_key),
+                            np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
 
                 '''
                     Carbon storage constraint
@@ -269,44 +306,54 @@ class CCUS_Discipline(SoSDiscipline):
 
                 if last_part_key == 'prod' and energy in ccs_list:
                     self.set_partial_derivative_for_other_types(
-                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.energy_production', energy),  scaling_factor_energy_production * value)
+                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.energy_production', energy),
+                        scaling_factor_energy_production * value)
                 elif last_part_key == 'cons' and energy in ccs_list:
                     for energy_df in ccs_list:
                         list_columnsenergycons = list(
                             inputs_dict[f'{energy_df}.energy_consumption'].columns)
                         if f'{energy} (TWh)' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
-                                (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy_df}.energy_consumption', f'{energy} (TWh)'), scaling_factor_energy_consumption * value)
+                                (EnergyMix.CARBON_STORAGE_CONSTRAINT,),
+                                (f'{energy_df}.energy_consumption', f'{energy} (TWh)'),
+                                scaling_factor_energy_consumption * value)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
-                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.CO2_per_use', 'CO2_per_use'),  value)
+                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.CO2_per_use', 'CO2_per_use'), value)
                 elif energy_prod_info.startswith(f'{CO2.name} for food (Mt)'):
                     self.set_partial_derivative_for_other_types(
                         (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('co2_for_food', f'{CO2.name} for food (Mt)'), value)
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} from energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('carbon_capture_from_energy_mix', f'{CarbonCapture.name} from energy mix (Gt)'), value * 1e3)
+                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,),
+                        ('carbon_capture_from_energy_mix', f'{CarbonCapture.name} from energy mix (Gt)'), value * 1e3)
 
                 elif energy_prod_info.startswith(f'{CarbonCapture.name} needed by energy mix (Mt)'):
                     self.set_partial_derivative_for_other_types(
-                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), ('co2_emissions_needed_by_energy_mix', f'{CarbonCapture.name} needed by energy mix (Gt)'), value * 1e3)
+                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,),
+                        ('co2_emissions_needed_by_energy_mix', f'{CarbonCapture.name} needed by energy mix (Gt)'),
+                        value * 1e3)
 
                 else:
                     very_last_part_key = energy_prod_info.split('#')[2]
                     if very_last_part_key == 'prod':
                         self.set_partial_derivative_for_other_types(
-                            (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.energy_production', last_part_key),  scaling_factor_energy_production * value)
+                            (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.energy_production', last_part_key),
+                            scaling_factor_energy_production * value)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
-                            (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.energy_consumption', last_part_key),  scaling_factor_energy_production * value)
+                            (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.energy_consumption', last_part_key),
+                            scaling_factor_energy_production * value)
 
         if CarbonCapture.name in ccs_list:
             self.set_partial_derivative_for_other_types(
-                ('CCS_price', 'ccs_price_per_tCO2'), (f'{CarbonCapture.name}.energy_prices', CarbonCapture.name), np.identity(len(years)))
+                ('CCS_price', 'ccs_price_per_tCO2'), (f'{CarbonCapture.name}.energy_prices', CarbonCapture.name),
+                np.identity(len(years)))
         if CarbonStorage.name in ccs_list:
             self.set_partial_derivative_for_other_types(
-                ('CCS_price', 'ccs_price_per_tCO2'), (f'{CarbonStorage.name}.energy_prices', CarbonStorage.name), np.identity(len(years)))
+                ('CCS_price', 'ccs_price_per_tCO2'), (f'{CarbonStorage.name}.energy_prices', CarbonStorage.name),
+                np.identity(len(years)))
 
     def get_chart_filter_list(self):
 
@@ -408,17 +455,20 @@ class CCUS_Discipline(SoSDiscipline):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'].values / 1.0e3).tolist(), 'CO2 captured from CC technos')
+            (co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'].values / 1.0e3).tolist(),
+            'CO2 captured from CC technos')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (carbon_capture_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'].values).tolist(), f'CO2 captured from energy mix')
+            (carbon_capture_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'].values).tolist(),
+            f'CO2 captured from energy mix')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (-co2_emissions_needed_by_energy_mix[f'{CarbonCapture.name} needed by energy mix (Gt)'].values).tolist(), f'{CarbonCapture.name} used by energy mix')
+            (-co2_emissions_needed_by_energy_mix[f'{CarbonCapture.name} needed by energy mix (Gt)'].values).tolist(),
+            f'{CarbonCapture.name} used by energy mix')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
@@ -455,7 +505,8 @@ class CCUS_Discipline(SoSDiscipline):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1.0e3).tolist(), f'CO2 storage limited by CO2 to store')
+            (co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1.0e3).tolist(),
+            f'CO2 storage limited by CO2 to store')
         new_chart.add_series(serie)
 
         return new_chart
@@ -478,16 +529,19 @@ class CCUS_Discipline(SoSDiscipline):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'Total {CarbonCapture.flue_gas_name} (Mt)'].values / 1.0e3).tolist(), 'Flue gas from plants')
+            (co2_emissions[f'Total {CarbonCapture.flue_gas_name} (Mt)'].values / 1.0e3).tolist(),
+            'Flue gas from plants')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
-            x_serie_1, (co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'].values / 1.0e3).tolist(), 'Carbon capture from energy mix (FT or Sabatier)')
+            x_serie_1, (co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'].values / 1.0e3).tolist(),
+            'Carbon capture from energy mix (FT or Sabatier)')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CO2.name} from energy mix (Mt)'].values / 1.0e3).tolist(), 'CO2 from energy mix (machinery fuels)')
+            (co2_emissions[f'{CO2.name} from energy mix (Mt)'].values / 1.0e3).tolist(),
+            'CO2 from energy mix (machinery fuels)')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
@@ -515,7 +569,8 @@ class CCUS_Discipline(SoSDiscipline):
         visible_line = True
 
         new_series = InstanciatedSeries(
-            years, list(co2_emissions[f'{CarbonStorage.name} Limited by capture (Gt)'].cumsum().values), 'cumulative sum of carbon capture (Gt)', 'lines', visible_line)
+            years, list(co2_emissions[f'{CarbonStorage.name} Limited by capture (Gt)'].cumsum().values),
+            'cumulative sum of carbon capture (Gt)', 'lines', visible_line)
 
         new_chart.series.append(new_series)
 

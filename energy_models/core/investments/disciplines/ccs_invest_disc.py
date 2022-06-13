@@ -18,7 +18,6 @@ from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonSt
 
 
 class InvestCCSDiscipline(SoSDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy CCS Investment Model',
@@ -39,15 +38,17 @@ class InvestCCSDiscipline(SoSDiscipline):
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
 
         'ccs_investment': {'type': 'dataframe', 'unit': 'G$',
-                           'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                    'energy_investment': ('float',  None, True)},
+                           'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                    'energy_investment': ('float', None, True)},
                            'dataframe_edition_locked': False},
         'invest_ccs_mix': {'type': 'dataframe',
-                           'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                           'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
                            'dataframe_edition_locked': False},
-        'ccs_list': {'type': 'string_list', 'possible_values': [CarbonCapture.name, CarbonStorage.name],
+        'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                     'possible_values': [CarbonCapture.name, CarbonStorage.name],
                      'default': [CarbonCapture.name, CarbonStorage.name],
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True}
+                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
+                     'structuring': True}
     }
 
     energy_name = "invest_energy"
@@ -106,25 +107,28 @@ class InvestCCSDiscipline(SoSDiscipline):
             inputs_dict['invest_ccs_mix'], inputs_dict['ccs_list'])
         for energy in inputs_dict['ccs_list']:
             grad_energy = inputs_dict['invest_ccs_mix'][energy].values / \
-                norm_mix.values
+                          norm_mix.values
             self.set_partial_derivative_for_other_types(
-                (f'{energy}.invest_level', 'invest'), ('ccs_investment', 'energy_investment'),  np.identity(len(years)) * grad_energy)
+                (f'{energy}.invest_level', 'invest'), ('ccs_investment', 'energy_investment'),
+                np.identity(len(years)) * grad_energy)
 
             invest_copy = inputs_dict['ccs_investment'].copy(deep=True)
             invest_copy.reset_index(inplace=True)
             invest_copy['ccs_investment'] = inputs_dict['ccs_investment']['energy_investment']
 
             grad_energy_mix = invest_copy['ccs_investment'].values * (
-                norm_mix.values - inputs_dict['invest_ccs_mix'][energy].values) / norm_mix.values**2
+                    norm_mix.values - inputs_dict['invest_ccs_mix'][energy].values) / norm_mix.values ** 2
             self.set_partial_derivative_for_other_types(
-                (f'{energy}.invest_level', 'invest'), ('invest_ccs_mix', energy),  np.identity(len(years)) * grad_energy_mix)
+                (f'{energy}.invest_level', 'invest'), ('invest_ccs_mix', energy),
+                np.identity(len(years)) * grad_energy_mix)
             for energy_other in inputs_dict['ccs_list']:
                 if energy != energy_other:
                     grad_energy_mix_other = -invest_copy['ccs_investment'].values * \
-                        inputs_dict['invest_ccs_mix'][energy].values / \
-                        norm_mix.values**2
+                                            inputs_dict['invest_ccs_mix'][energy].values / \
+                                            norm_mix.values ** 2
                     self.set_partial_derivative_for_other_types(
-                        (f'{energy}.invest_level', 'invest'), ('invest_ccs_mix', energy_other),  np.identity(len(years)) * grad_energy_mix_other)
+                        (f'{energy}.invest_level', 'invest'), ('invest_ccs_mix', energy_other),
+                        np.identity(len(years)) * grad_energy_mix_other)
 
     def get_chart_filter_list(self):
 
