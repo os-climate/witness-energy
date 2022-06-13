@@ -33,23 +33,23 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
     """
     Electricity jacobian test class
     """
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
-            # self.test_01_combined_cycle_gas_turbine_discipline_analytic_grad,
-            # self.test_02_geothermal_discipline_analytic_grad,
-            # self.test_03_hydropower_discipline_analytic_grad,
-            # self.test_04_coal_gen_discipline_analytic_grad,
-            # self.test_05_gas_turbine_discipline_analytic_grad,
-            # self.test_06_wind_on_shore_discipline_analytic_grad,
-            # self.test_07_wind_off_shore_discipline_analytic_grad,
-            # self.test_08_solar_thermal_discipline_analytic_grad,
-            # self.test_09_solar_pv_discipline_analytic_grad,
+            self.test_01_combined_cycle_gas_turbine_discipline_analytic_grad,
+            self.test_02_geothermal_discipline_analytic_grad,
+            self.test_03_hydropower_discipline_analytic_grad,
+            self.test_04_coal_gen_discipline_analytic_grad,
+            self.test_05_gas_turbine_discipline_analytic_grad,
+            self.test_06_wind_on_shore_discipline_analytic_grad,
+            self.test_07_wind_off_shore_discipline_analytic_grad,
+            self.test_08_solar_thermal_discipline_analytic_grad,
+            self.test_09_solar_pv_discipline_analytic_grad,
             self.test_10_nuclear_discipline_analytic_grad,
-            # self.test_11_biogas_fired_discipline_analytic_grad,
-            # self.test_12_biomass_fired_discipline_analytic_grad,
-            # self.test_14_electricity_discipline_jacobian,
+            self.test_11_biogas_fired_discipline_analytic_grad,
+            self.test_12_biomass_fired_discipline_analytic_grad,
+            self.test_14_electricity_discipline_jacobian,
         ]
 
     def setUp(self):
@@ -186,12 +186,12 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                 == 'electricity.CombinedCycleGasTurbine']
         #---Ratios---
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
+            zip(EnergyMix.energy_list, np.linspace(50.0, 50.0, len(self.years))))
         demand_ratio_dict['years'] = self.years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         resource_ratio_dict = dict(
-            zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(self.years))))
+            zip(EnergyMix.RESOURCE_LIST, np.linspace(50.0, 50.0, len(self.years))))
         resource_ratio_dict['years'] = self.years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
@@ -240,16 +240,16 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    #f'{self.name}.energy_prices',
-                                    #f'{self.name}.energy_CO2_emissions',
-                                    #f'{self.name}.resources_price',
-                                    #f'{self.name}.resources_CO2_emissions',
+                                    f'{self.name}.energy_prices',
+                                    f'{self.name}.energy_CO2_emissions',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
                                     ],
-                            outputs=[#f'{self.name}.{self.model_name}.techno_prices',
-                                     #f'{self.name}.{self.model_name}.CO2_emissions',
+                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     #f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.techno_production',
                                      ],)
 
     def test_02_geothermal_discipline_analytic_grad(self):
@@ -294,16 +294,16 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    #f'{self.name}.energy_prices',
-                                    #f'{self.name}.energy_CO2_emissions',
-                                    #f'{self.name}.resources_price',
-                                    #f'{self.name}.resources_CO2_emissions',
+                                    f'{self.name}.energy_prices',
+                                    f'{self.name}.energy_CO2_emissions',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
                                     ],
-                            outputs=[#f'{self.name}.{self.model_name}.techno_prices',
-                                     #f'{self.name}.{self.model_name}.CO2_emissions',
+                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     #f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.techno_production',
                                      ],)
 
     def test_03_hydropower_discipline_analytic_grad(self):
@@ -404,16 +404,16 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    #f'{self.name}.energy_prices',
-                                    #f'{self.name}.energy_CO2_emissions',
-                                    #f'{self.name}.resources_price',
-                                    #f'{self.name}.resources_CO2_emissions',
+                                    f'{self.name}.energy_prices',
+                                    f'{self.name}.energy_CO2_emissions',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
                                     ],
-                            outputs=[#f'{self.name}.{self.model_name}.techno_prices',
-                                     #f'{self.name}.{self.model_name}.CO2_emissions',
+                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     #f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.techno_production',
                                      ],)
 
     def test_05_gas_turbine_discipline_analytic_grad(self):
@@ -447,26 +447,26 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.transport_margin':  pd.concat([self.margin['years'], self.margin['margin'] / 1.1], axis=1, keys=['years', 'margin']),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio[['years','methane']],
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
-
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    #f'{self.name}.energy_prices',
-                                    #f'{self.name}.energy_CO2_emissions',
-                                    #f'{self.name}.resources_CO2_emissions',
+                                    f'{self.name}.energy_prices',
+                                    f'{self.name}.energy_CO2_emissions',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    f'{self.name}.all_streams_demand_ratio',
                                     ],
-                            outputs=[#f'{self.name}.{self.model_name}.techno_prices',
-                                     #f'{self.name}.{self.model_name}.CO2_emissions',
+                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     #f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.techno_production',
                                      ],)
 
     def test_06_wind_on_shore_discipline_analytic_grad(self):
@@ -978,7 +978,7 @@ if '__main__' == __name__:
     # # cls.test_02_geothermal_discipline_analytic_grad()
     # # cls.test_03_hydropower_discipline_analytic_grad()
     # # cls.test_04_coal_gen_discipline_analytic_grad()
-    # # cls.test_05_gas_turbine_discipline_analytic_grad()    
+    cls.test_05_gas_turbine_discipline_analytic_grad()
     # # cls.test_06_wind_on_shore_discipline_analytic_grad()
     # # cls.test_07_wind_off_shore_discipline_analytic_grad()
     # # cls.test_08_solar_thermal_discipline_analytic_grad()
@@ -987,4 +987,4 @@ if '__main__' == __name__:
     # # cls.test_11_biogas_fired_discipline_analytic_grad()
     # # cls.test_12_biomass_fired_discipline_analytic_grad()
     # # cls.test_13_oil_gen_discipline_analytic_grad()
-    cls.test_14_electricity_discipline_jacobian()
+    #cls.test_14_electricity_discipline_jacobian()

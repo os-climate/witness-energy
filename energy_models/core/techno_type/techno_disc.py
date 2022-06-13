@@ -400,26 +400,34 @@ class TechnoDiscipline(SoSDiscipline):
                 for ratio_name in ratio_df.columns:
                     if 'all_streams_demand_ratio' in inputs_dict.keys():
                         if ratio_name in inputs_dict['all_streams_demand_ratio'].columns and ratio_name not in ['years']:
-                            consumption_woratio = self.techno_model.consumption_woratio[
-                                column]
-                            dprod_dratio = self.techno_model.compute_dprod_dratio(
-                                consumption_woratio, ratio_name=ratio_name,
-                                dapplied_ratio_dratio=dapplied_ratio_dratio)
-                            self.set_partial_derivative_for_other_types(
-                                ('techno_consumption',
-                                 column), ('all_streams_demand_ratio', ratio_name),
-                                dprod_dratio / 100.)
+                            if column in [f'{resource} (Mt)' for resource in
+                                          self.techno_model.construction_resource_list]:
+                                pass
+                            else:
+                                consumption_woratio = self.techno_model.consumption_woratio[
+                                    column]
+                                dprod_dratio = self.techno_model.compute_dprod_dratio(
+                                    consumption_woratio, ratio_name=ratio_name,
+                                    dapplied_ratio_dratio=dapplied_ratio_dratio)
+                                self.set_partial_derivative_for_other_types(
+                                    ('techno_consumption',
+                                     column), ('all_streams_demand_ratio', ratio_name),
+                                    dprod_dratio / 100.)
                     if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
                         if ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns and ratio_name not in ['years']:
-                            consumption_woratio = self.techno_model.consumption_woratio[
-                                column]
-                            dprod_dratio = self.techno_model.compute_dprod_dratio(
-                                consumption_woratio, ratio_name=ratio_name,
-                                dapplied_ratio_dratio=dapplied_ratio_dratio)
-                            self.set_partial_derivative_for_other_types(
-                                ('techno_consumption',
-                                 column), ('all_resource_ratio_usable_demand', ratio_name),
-                                dprod_dratio / 100.)
+                            if column in [f'{resource} (Mt)' for resource in
+                                          self.techno_model.construction_resource_list]:
+                                pass
+                            else:
+                                consumption_woratio = self.techno_model.consumption_woratio[
+                                    column]
+                                dprod_dratio = self.techno_model.compute_dprod_dratio(
+                                    consumption_woratio, ratio_name=ratio_name,
+                                    dapplied_ratio_dratio=dapplied_ratio_dratio)
+                                self.set_partial_derivative_for_other_types(
+                                    ('techno_consumption',
+                                     column), ('all_resource_ratio_usable_demand', ratio_name),
+                                    dprod_dratio / 100.)
 
         dland_use_dinvest = self.techno_model.compute_dlanduse_dinvest()
         derivate_land_use = dland_use_dinvest.copy()
