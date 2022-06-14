@@ -111,7 +111,6 @@ class FlueGasDiscipline(SoSDiscipline):
             techno_list = self.get_sosdisc_inputs('technologies_list')
             ccs_list = self.get_sosdisc_inputs('ccs_list')
 
-            print(techno_list, ccs_list)
             if techno_list is not None and ccs_list is not None:
                 for techno in techno_list:
                     # check if techno not in ccs_list, namespace is ns_energy_mix
