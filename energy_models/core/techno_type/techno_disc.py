@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 import pandas as pd
 
@@ -91,6 +92,7 @@ class TechnoDiscipline(SoSDiscipline):
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
         'non_use_capital': {'type': 'dataframe', 'unit': 'G$'},
         'techno_capital': {'type': 'dataframe', 'unit': 'G$'},
+        'power_production' : {'type': 'dataframe', 'unit': 'MW'}
     }
     _maturity = 'Research'
 
@@ -164,6 +166,7 @@ class TechnoDiscipline(SoSDiscipline):
         cost_details = self.techno_model.compute_price()
 
         self.techno_model.compute_consumption_and_production()
+        self.techno_model.compute_consumption_and_power_production()
 
         # Create a datafarame containing all the ratios
         self.techno_model.select_ratios()
@@ -210,6 +213,7 @@ class TechnoDiscipline(SoSDiscipline):
                         'applied_ratio': self.techno_model.applied_ratio,
                         'non_use_capital': self.techno_model.non_use_capital,
                         'techno_capital': self.techno_model.techno_capital,
+                        'power_production': self.techno_model.power_production,
                         }
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
@@ -224,6 +228,7 @@ class TechnoDiscipline(SoSDiscipline):
         scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
         production = outputs_dict['techno_production']
         consumption = outputs_dict['techno_consumption']
+        power_production = outputs_dict['power_production']
         ratio_df = self.techno_model.ratio_df
         dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
             invest_level.loc[invest_level['years']
@@ -250,6 +255,10 @@ class TechnoDiscipline(SoSDiscipline):
             capex, invest_level['invest'].values * scaling_factor_invest_level,
             self.techno_model.invest_before_ystart['invest'].values,
             self.techno_model.techno_infos_dict, dcapex_dinvest)
+
+        self.dpower_dinvest = self.techno_model.compute_dpower_dinvest(
+            capex, invest_level['invest'].values * scaling_factor_invest_level,
+            self.techno_model.techno_infos_dict,  dcapex_dinvest, inputs_dict['scaling_factor_techno_consumption'])
 
         applied_ratio = outputs_dict['applied_ratio']['applied_ratio'].values
         dprod_name_dinvest = (
@@ -349,11 +358,20 @@ class TechnoDiscipline(SoSDiscipline):
                                 self.dprod_column_dratio[column][ratio_name] / 100.)
 
         for column in consumption:
-            self.dcons_column_dinvest = self.dprod_dinvest.copy()
+            
             if column not in ['years']:
-                var_cons = (consumption[column] /
+                
+                if column == 'copper_resource (Mt)': 
+                    var_cons = (consumption[column] /
+                            power_production['new_power_production']).fillna(
+                    0)
+                    self.dcons_column_dinvest = self.dpower_dinvest.copy() 
+                else : 
+                    var_cons = (consumption[column] /
                             production[f'{self.energy_name} ({self.techno_model.product_energy_unit})']).fillna(
                     0)
+                    self.dcons_column_dinvest = self.dprod_dinvest.copy()
+               
                 for line in range(len(years)):
                     # Problem when invest is zero at the first year and prod
                     # consequently zero (but gradient is not null)
@@ -362,9 +380,18 @@ class TechnoDiscipline(SoSDiscipline):
                         var_cons[line] = var_cons[line + 1]
                     self.dcons_column_dinvest[line, :] = self.dprod_dinvest[line,
                                                                             :] * var_cons[line]
-                self.set_partial_derivative_for_other_types(
-                    ('techno_consumption', column), ('invest_level', 'invest'),
-                    (self.dcons_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production)
+                    if column == 'copper_resource (Mt)' : 
+                        self.dcons_column_dinvest[line, :] = self.dpower_dinvest[line,
+                                                                            :] * var_cons[line]
+                if column in [f'{resource} (Mt)' for resource in self.techno_model.construction_resource_list] :
+                    applied_ratio_construction = 1
+                    self.set_partial_derivative_for_other_types(
+                        ('techno_consumption', column), ('invest_level', 'invest'),
+                        (self.dcons_column_dinvest.T * applied_ratio_construction).T * scaling_factor_invest_level / scaling_factor_techno_production)
+                else : 
+                    self.set_partial_derivative_for_other_types(
+                        ('techno_consumption', column), ('invest_level', 'invest'),
+                        (self.dcons_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production)
                 self.set_partial_derivative_for_other_types(
                     ('techno_consumption_woratio',
                      column), ('invest_level', 'invest'),
@@ -373,26 +400,34 @@ class TechnoDiscipline(SoSDiscipline):
                 for ratio_name in ratio_df.columns:
                     if 'all_streams_demand_ratio' in inputs_dict.keys():
                         if ratio_name in inputs_dict['all_streams_demand_ratio'].columns and ratio_name not in ['years']:
-                            consumption_woratio = self.techno_model.consumption_woratio[
-                                column]
-                            dprod_dratio = self.techno_model.compute_dprod_dratio(
-                                consumption_woratio, ratio_name=ratio_name,
-                                dapplied_ratio_dratio=dapplied_ratio_dratio)
-                            self.set_partial_derivative_for_other_types(
-                                ('techno_consumption',
-                                 column), ('all_streams_demand_ratio', ratio_name),
-                                dprod_dratio / 100.)
+                            if column in [f'{resource} (Mt)' for resource in
+                                          self.techno_model.construction_resource_list]:
+                                pass
+                            else:
+                                consumption_woratio = self.techno_model.consumption_woratio[
+                                    column]
+                                dprod_dratio = self.techno_model.compute_dprod_dratio(
+                                    consumption_woratio, ratio_name=ratio_name,
+                                    dapplied_ratio_dratio=dapplied_ratio_dratio)
+                                self.set_partial_derivative_for_other_types(
+                                    ('techno_consumption',
+                                     column), ('all_streams_demand_ratio', ratio_name),
+                                    dprod_dratio / 100.)
                     if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
                         if ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns and ratio_name not in ['years']:
-                            consumption_woratio = self.techno_model.consumption_woratio[
-                                column]
-                            dprod_dratio = self.techno_model.compute_dprod_dratio(
-                                consumption_woratio, ratio_name=ratio_name,
-                                dapplied_ratio_dratio=dapplied_ratio_dratio)
-                            self.set_partial_derivative_for_other_types(
-                                ('techno_consumption',
-                                 column), ('all_resource_ratio_usable_demand', ratio_name),
-                                dprod_dratio / 100.)
+                            if column in [f'{resource} (Mt)' for resource in
+                                          self.techno_model.construction_resource_list]:
+                                pass
+                            else:
+                                consumption_woratio = self.techno_model.consumption_woratio[
+                                    column]
+                                dprod_dratio = self.techno_model.compute_dprod_dratio(
+                                    consumption_woratio, ratio_name=ratio_name,
+                                    dapplied_ratio_dratio=dapplied_ratio_dratio)
+                                self.set_partial_derivative_for_other_types(
+                                    ('techno_consumption',
+                                     column), ('all_resource_ratio_usable_demand', ratio_name),
+                                    dprod_dratio / 100.)
 
         dland_use_dinvest = self.techno_model.compute_dlanduse_dinvest()
         derivate_land_use = dland_use_dinvest.copy()
@@ -495,7 +530,7 @@ class TechnoDiscipline(SoSDiscipline):
         chart_filters = []
         chart_list = ['Detailed prices',
                       'Consumption and production',
-                      'Initial Production', 'Factory Mean Age', 'CO2 emissions', 'Non-Use Capital']
+                      'Initial Production', 'Factory Mean Age', 'CO2 emissions', 'Non-Use Capital', 'Power production']
         if self.get_sosdisc_inputs('is_apply_ratio'):
             chart_list.extend(['Applied Ratio'])
         chart_filters.append(ChartFilter(
@@ -575,6 +610,10 @@ class TechnoDiscipline(SoSDiscipline):
                     instanciated_charts.append(new_chart)
         if 'Non-Use Capital' in charts:
             new_chart = self.get_chart_non_use_capital()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+        if 'Power production' in charts:
+            new_chart = self.get_chart_power_production()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         return instanciated_charts
@@ -784,7 +823,7 @@ class TechnoDiscipline(SoSDiscipline):
 
         kg_values_production = 0
         product_found = None
-        for product in techno_consumption.columns:
+        for product in techno_production.columns:
             if product != 'years' and product.endswith('(Mt)'):
                 kg_values_production += 1
                 product_found = product
@@ -1067,6 +1106,39 @@ class TechnoDiscipline(SoSDiscipline):
             non_use_capital['years'].values.tolist(),
             non_use_capital[self.techno_name].values.tolist(), 'Non-use Capital', 'bar')
 
+        new_chart.series.append(serie)
+
+        return new_chart
+    
+    def get_chart_power_production(self):
+        power_production = self.get_sosdisc_outputs(
+            'power_production')
+        chart_name = f'Power installed of {self.techno_name} factories'
+
+        new_chart =  TwoAxesInstanciatedChart('years', 'Power [MW]',
+                                             chart_name=chart_name)
+        
+        if not 'full_load_hours' in self.techno_model.techno_infos_dict :
+
+            note = {f'The full_load_hours data is not set for {self.techno_name}' : 'default = 8760.0 hours, full year hours  '}
+            new_chart.annotation_upper_left = note
+    
+        serie = InstanciatedSeries(
+            power_production['years'].values.tolist(),
+            power_production['total_installed_power'].values.tolist(), 'Total installed power', 'lines')
+        
+        new_chart.series.append(serie)
+
+        serie = InstanciatedSeries(
+            power_production['years'].values.tolist(),
+            power_production['new_power_production'].values.tolist(), f'Newly implemented {self.techno_name} factories power ', 'lines')
+        
+        new_chart.series.append(serie)
+
+        serie = InstanciatedSeries(
+            power_production['years'].values.tolist(),
+            power_production['removed_power_production'].values.tolist(), f'Newly dismantled {self.techno_name} factories power ', 'lines')
+        
         new_chart.series.append(serie)
 
         return new_chart

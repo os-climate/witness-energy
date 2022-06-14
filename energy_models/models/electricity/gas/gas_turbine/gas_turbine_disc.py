@@ -21,6 +21,9 @@ import numpy as np
 
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
 from energy_models.models.electricity.gas.gas_elec import GasElec
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
+    InstanciatedSeries
 
 
 class GasTurbineDiscipline(ElectricityTechnoDiscipline):
@@ -78,7 +81,9 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
                                  'construction_delay': construction_delay,
-                                 'full_load_hours': 8760}
+                                 'full_load_hours': 8760,
+                                 'copper_needs': 1100, #IEA Executive summary - Role of critical minerals in clean energy transitions 2022
+                                 }
 
     # Major hypo: 25% of invest in gas go into gas turbine, 75% into CCGT
     share = 0.75
@@ -117,3 +122,31 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = GasElec(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
+    
+    def get_charts_consumption_and_production(self):
+        "Adds the chart specific for resources needed for construction"
+        instanciated_chart = super().get_charts_consumption_and_production()
+        techno_consumption = self.get_sosdisc_outputs(
+            'techno_detailed_consumption')
+
+        new_chart_copper = None
+        for product in techno_consumption.columns:
+
+            if product != 'years' and product.endswith(f'(Mt)'):
+                if ResourceGlossary.Copper['name'] in product :
+                    chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
+                    new_chart_copper = TwoAxesInstanciatedChart(
+                        'years', 'Mass [t]', chart_name=chart_name, stacked_bar=True)
+
+        for reactant in techno_consumption.columns:
+            if ResourceGlossary.Copper['name'] in reactant:
+                legend_title = f'{reactant} consumption'.replace(
+                    ' (Mt)', "")
+                mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
+                serie = InstanciatedSeries(
+                    techno_consumption['years'].values.tolist(),
+                    mass.tolist(), legend_title, 'bar')
+                new_chart_copper.series.append(serie)
+        instanciated_chart.append(new_chart_copper)
+        
+        return instanciated_chart

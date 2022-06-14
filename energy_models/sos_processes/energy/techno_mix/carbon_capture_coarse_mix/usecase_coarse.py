@@ -100,7 +100,7 @@ class Study(EnergyMixStudyManager):
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'amine': 0.0, 'potassium': 0.0, 'electricity': 0.0, 'calcium': 0.0})
 
-        flue_gas_list = ['fossil.FossilSimpleTechno']
+        flue_gas_list = ['fossil.FossilSimpleTechno', 'carbon_capture.direct_air_capture.DirectAirCaptureTechno' ]
         fossil_simple_techno_prod = pd.DataFrame({'years': years,
                                                   f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
 
@@ -108,7 +108,7 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
 
-                       f'{self.study_name}.{ccs_name}.{flue_gas_name}.technologies_list': flue_gas_list,
+                       #f'{self.study_name}.{ccs_name}.{flue_gas_name}.technologies_list': flue_gas_list,
                        f'{self.study_name}.{ccs_name}.technologies_list': self.technologies_list,
                        f'{self.study_name}.{ccs_name}.flue_gas_capture.flue_gas_mean': self.flue_gas_mean,
                        f'{self.study_name}.{ccs_name}.direct_air_capture.DirectAirCaptureTechno.margin': self.margin,

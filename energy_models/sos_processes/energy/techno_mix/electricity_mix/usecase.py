@@ -335,6 +335,6 @@ if '__main__' == __name__:
             disc)
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
-        if disc.sos_name == 'EnergyMix.electricity.OilGen':
+        if disc.sos_name == 'EnergyMix.electricity.OilGen': #Nuclear  OilGen
             for graph in graph_list:
                 graph.to_plotly().show()
