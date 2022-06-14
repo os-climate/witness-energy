@@ -38,7 +38,7 @@ TECHNOLOGIES_FLUE_GAS_LIST_COARSE = ['electricity.GasTurbine']
 DEFAULT_FLUE_GAS_LIST = ['electricity.CoalGen', 'electricity.GasTurbine', 'electricity.CombinedCycleGasTurbine',
                          'hydrogen.gaseous_hydrogen.WaterGasShift', 'liquid_fuel.FischerTropsch', 'liquid_fuel.Refinery', 'methane.FossilGas',
                          'solid_fuel.Pelletizing', 'syngas.CoalGasification', 'fossil.FossilSimpleTechno', 'carbon_capture.direct_air_capture.AmineScrubbing',
-                         'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing']
+                         'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing', 'carbon_capture.direct_air_capture.DirectAirCaptureTechno']
 TECHNOLOGIES_LIST_DEV = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
                              'flue_gas_capture.CalciumLooping','flue_gas_capture.ChilledAmmoniaProcess',
                              'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine',
