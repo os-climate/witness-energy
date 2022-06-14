@@ -43,6 +43,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)
         pkl_file.close()
+        self.ccs_list = ['carbon_capture', 'carbon_storage']
 
         self.CO2_per_use = {}
         self.CH4_per_use = {}
@@ -54,6 +55,10 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
             self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
             self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
             self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
+
+        for i, energy in enumerate(self.ccs_list):
+            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
+
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
         self.energy_production_detailed = streams_outputs_dict['energy_production_detailed']
@@ -98,6 +103,8 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
             f'{self.name}.energy_production_detailed': self.energy_production_detailed,
             f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
             f'{self.name}.co2_emissions_needed_by_energy_mix': self.co2_emissions_needed_by_energy_mix,
+            f'{self.name}.ccs_list': self.ccs_list
+
         }
 
         for energy in self.energy_list:
@@ -114,6 +121,11 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
                 inputs_dict[f'{self.name}.{energy}.N2O_per_use'] = self.N2O_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
                 inputs_dict[f'{self.name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
+
+        for energy in self.ccs_list:
+            inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[
+                energy]
+
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
