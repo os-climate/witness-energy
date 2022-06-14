@@ -58,6 +58,7 @@ class CCUS(BaseStream):
         self.scaling_factor_energy_consumption = None
         self.co2_emissions_needed_by_energy_mix = None
         self.carbon_capture_from_energy_mix = None
+        self.total_carbon_storage_by_invest = None
 
     def configure(self, inputs_dict):
         '''
@@ -79,6 +80,7 @@ class CCUS(BaseStream):
             {'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1)})
         self.carbonstorage_limit = inputs_dict['carbonstorage_limit']
         self.carbonstorage_constraint_ref = inputs_dict['carbonstorage_constraint_ref']
+        self.total_carbon_storage_by_invest = np.zeros(len(self.production['years']))
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -142,6 +144,7 @@ class CCUS(BaseStream):
 
             self.total_co2_emissions[f'{CarbonStorage.name} (Mt)'] = self.sub_production_dict[
                 CarbonStorage.name][CarbonStorage.name].values
+            self.total_carbon_storage_by_invest = self.sub_production_dict[CarbonStorage.name][CarbonStorage.name].values * self.sub_consumption_woratio_dict[CarbonStorage.name][f'{CarbonCapture.name} ({CarbonCapture.unit})'].values / self.sub_consumption_dict[CarbonStorage.name][f'{CarbonCapture.name} ({CarbonCapture.unit})'].values
         else:
             self.total_co2_emissions[f'{CarbonStorage.name} (Mt)'] = 0.0
 
