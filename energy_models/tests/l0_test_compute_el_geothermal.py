@@ -169,6 +169,52 @@ class GeothermalTestCase(unittest.TestCase):
         price_details = geothermal_model.compute_price()
         geothermal_model.compute_consumption_and_production()
         geothermal_model.check_outputs_dict(self.biblio_data)
+    
+    def test_04_compute_geothermal_power(self):
+
+        inputs_dict = {'year_start': 2020,
+                       'year_end': 2050,
+                       'techno_infos_dict': GeothermalDiscipline.techno_infos_dict_default,
+                       'invest_level': self.invest_level,
+                       'invest_before_ystart': GeothermalDiscipline.invest_before_year_start,
+                       'margin':  self.margin,
+                       'transport_cost': self.transport,
+                       'resources_price': self.resources_price,
+                       'energy_prices': self.energy_prices,
+                       'CO2_taxes': self.co2_taxes,
+                       'transport_margin': self.margin,
+                       'initial_production': GeothermalDiscipline.initial_production,
+                       'initial_age_distrib': GeothermalDiscipline.initial_age_distribution,
+                       'energy_CO2_emissions': pd.DataFrame(),
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'scaling_factor_invest_level': 1e3,
+                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
+                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
+                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       'is_stream_demand': self.is_stream_demand,
+                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                       'smooth_type': 'smooth_max',
+                       'data_fuel_dict': Electricity.data_energy_dict,
+                       }
+
+        geothermal_model = Geothermal('Geothermal')
+        geothermal_model.configure_parameters(inputs_dict)
+        geothermal_model.configure_parameters_update(inputs_dict)
+        price_details = geothermal_model.compute_price()
+        geothermal_model.compute_consumption_and_production()
+        geothermal_model.compute_consumption_and_power_production()
+
+        print(geothermal_model.power_production)
+
+        print(geothermal_model.power_production * geothermal_model.techno_infos_dict['full_load_hours'] / 1000)
+
+        print(geothermal_model.production[f'electricity ({geothermal_model.product_energy_unit})'])
+
+        self.assertLessEqual(list(geothermal_model.production[f'electricity ({geothermal_model.product_energy_unit})'].values),
+                            list(geothermal_model.power_production['total_installed_power'] * geothermal_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001) )
+        self.assertGreaterEqual(list(geothermal_model.production[f'electricity ({geothermal_model.product_energy_unit})'].values),
+                            list(geothermal_model.power_production['total_installed_power'] * geothermal_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999) )
 
     def test_03_geothermal_discipline(self):
 
@@ -208,5 +254,7 @@ class GeothermalTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
+# if __name__ == "__main__":
+#     unittest.main()
