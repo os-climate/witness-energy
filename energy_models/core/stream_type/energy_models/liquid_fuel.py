@@ -76,7 +76,7 @@ class LiquidFuel(EnergyType):
                         'petrochemical_use_part': 0.14,
                         'construction_use_part': 0.08}
 
-    def compute_co2_per_use(self, data_energy_dict):
+    def compute_ghg_per_use(self, ghg_type):
         '''
         Specific computation for the CO2 per use taking into account the use of oil in petrochemical plants (plastic and textile) and construction
 
@@ -95,11 +95,14 @@ class LiquidFuel(EnergyType):
 #         co2_per_use_steel = kgco2_per_kgsteel / kgcoal_per_kgsteel
 #         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
 
-        co2_per_use_kgkg = data_energy_dict['CO2_per_use'] * \
-            (1.0 - data_energy_dict['petrochemical_use_part'] -
-             data_energy_dict['construction_use_part'])
+        if ghg_type == 'CO2':
+            co2_per_use_kgkg = self.data_energy_dict_input['CO2_per_use'] * \
+                (1.0 - self.data_energy_dict_input['petrochemical_use_part'] -
+                 self.data_energy_dict_input['construction_use_part'])
 
-        self.co2_per_use['CO2_per_use'] = co2_per_use_kgkg / \
-            data_energy_dict['high_calorific_value']
+            ghg_per_use = co2_per_use_kgkg / \
+                self.data_energy_dict_input['high_calorific_value']
+        else:
+            ghg_per_use = EnergyType.compute_ghg_per_use(self, ghg_type)
 
-        return self.co2_per_use
+        return ghg_per_use

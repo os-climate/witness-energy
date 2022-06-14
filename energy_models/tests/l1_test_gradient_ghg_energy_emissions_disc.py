@@ -57,6 +57,8 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
             'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage']]
+        self.ccs_list = ['carbon_capture', 'carbon_storage']
+
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)
@@ -72,6 +74,10 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
             self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
             self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
+
+        for i, ccs_name in enumerate(self.ccs_list):
+            self.energy_production[f'{ccs_name}'] = streams_outputs_dict[f'{ccs_name}']['energy_production']['value']
+
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
         self.energy_production_detailed = streams_outputs_dict['energy_production_detailed']
@@ -110,7 +116,9 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
             f'{self.name}.energy_production_detailed': self.energy_production_detailed,
             f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
-            f'{self.name}.co2_emissions_needed_by_energy_mix': self.co2_emissions_needed_by_energy_mix, }
+            f'{self.name}.co2_emissions_needed_by_energy_mix': self.co2_emissions_needed_by_energy_mix,
+            f'{self.name}.ccs_list': self.ccs_list
+        }
         for energy in self.energy_list:
             if energy == 'biomass_dry':
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CO2_per_use'] = self.CO2_per_use[energy]
@@ -125,6 +133,10 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{energy}.N2O_per_use'] = self.N2O_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
                 inputs_dict[f'{self.name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
+
+        for energy in self.ccs_list:
+            inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
+
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -173,9 +185,11 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0]
 
         energy_list_wobiomass_dry = [
-            energy for energy in self.energy_list if energy != 'biomass_dry']
+            energy for energy in self.energy_list  if energy != 'biomass_dry']
         coupled_inputs = [
             f'{self.name}.{energy}.energy_production' for energy in energy_list_wobiomass_dry]
+        coupled_inputs.extend([
+            f'{self.name}.{energy}.energy_production' for energy in self.ccs_list])
         coupled_inputs.extend(
             [f'{self.name}.{energy}.energy_consumption' for energy in energy_list_wobiomass_dry])
 

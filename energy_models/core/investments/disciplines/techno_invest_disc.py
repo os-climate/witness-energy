@@ -15,7 +15,6 @@ from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart imp
 
 
 class InvestTechnoDiscipline(SoSDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technologies Investment Model',
@@ -35,13 +34,13 @@ class InvestTechnoDiscipline(SoSDiscipline):
         'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]',
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'invest_level': {'type': 'dataframe', 'unit': 'G$',
-                         'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                  'invest': ('float',  None, True)},
+                         'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                  'invest': ('float', None, True)},
                          'dataframe_edition_locked': False},
         'invest_techno_mix': {'type': 'dataframe',
-                              'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
                               'dataframe_edition_locked': False},
-        'technologies_list': {'type': 'string_list', 'structuring': True}
+        'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True}
     }
 
     energy_name = "invest_techno"
@@ -94,20 +93,22 @@ class InvestTechnoDiscipline(SoSDiscipline):
             inputs_dict['invest_techno_mix'], inputs_dict['technologies_list'])
         for techno in inputs_dict['technologies_list']:
             grad_techno = inputs_dict['invest_techno_mix'][techno].values / \
-                norm_mix.values
+                          norm_mix.values
             self.set_partial_derivative_for_other_types(
-                (f'{techno}.invest_level', 'invest'), ('invest_level', 'invest'),  np.identity(len(years)) * grad_techno)
+                (f'{techno}.invest_level', 'invest'), ('invest_level', 'invest'), np.identity(len(years)) * grad_techno)
             grad_techno_mix = inputs_dict['invest_level']['invest'].values * (
-                norm_mix.values - inputs_dict['invest_techno_mix'][techno].values) / norm_mix.values**2
+                    norm_mix.values - inputs_dict['invest_techno_mix'][techno].values) / norm_mix.values ** 2
             self.set_partial_derivative_for_other_types(
-                (f'{techno}.invest_level', 'invest'), ('invest_techno_mix', techno),  np.identity(len(years)) * grad_techno_mix)
+                (f'{techno}.invest_level', 'invest'), ('invest_techno_mix', techno),
+                np.identity(len(years)) * grad_techno_mix)
             for techno_other in inputs_dict['technologies_list']:
                 if techno != techno_other:
                     grad_techno_mix_other = -inputs_dict['invest_level']['invest'].values * \
-                        inputs_dict['invest_techno_mix'][techno].values / \
-                        norm_mix.values**2
+                                            inputs_dict['invest_techno_mix'][techno].values / \
+                                            norm_mix.values ** 2
                     self.set_partial_derivative_for_other_types(
-                        (f'{techno}.invest_level', 'invest'), ('invest_techno_mix', techno_other),  np.identity(len(years)) * grad_techno_mix_other)
+                        (f'{techno}.invest_level', 'invest'), ('invest_techno_mix', techno_other),
+                        np.identity(len(years)) * grad_techno_mix_other)
 
     def get_chart_filter_list(self):
 

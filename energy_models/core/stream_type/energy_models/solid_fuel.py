@@ -67,7 +67,7 @@ class SolidFuel(EnergyType):
                         'cement_use_part': ironsteel_use_part / 4,
                         'chemicals_use_part': ironsteel_use_part / 4}
 
-    def compute_co2_per_use(self, data_energy_dict):
+    def compute_ghg_per_use(self, ghg_type):
         '''
         Specific computation for the CO2 per use taking into account the use of coal for cement and steel 
 
@@ -92,12 +92,15 @@ class SolidFuel(EnergyType):
 #
 #         co2_per_use_steel = kgco2_per_kgsteel / kgcoal_per_kgsteel
 #         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
+        if ghg_type == 'CO2':
+            co2_per_use_kgkg = self.data_energy_dict_input['CO2_per_use'] * \
+                (1.0 - self.data_energy_dict_input['ironsteel_use_part'] -
+                 self.data_energy_dict_input['cement_use_part'] - self.data_energy_dict_input['chemicals_use_part'])
 
-        co2_per_use_kgkg = data_energy_dict['CO2_per_use'] * \
-            (1.0 - data_energy_dict['ironsteel_use_part'] -
-             data_energy_dict['cement_use_part'] - data_energy_dict['chemicals_use_part'])
+            ghg_per_use = co2_per_use_kgkg / \
+                self.data_energy_dict_input['high_calorific_value']
 
-        self.co2_per_use['CO2_per_use'] = co2_per_use_kgkg / \
-            data_energy_dict['high_calorific_value']
+        else:
+            ghg_per_use = EnergyType.compute_ghg_per_use(self, ghg_type)
 
-        return self.co2_per_use
+        return ghg_per_use

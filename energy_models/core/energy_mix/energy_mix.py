@@ -64,10 +64,8 @@ class EnergyMix(BaseStream):
     CO2_TAX_OBJECTIVE = 'CO2_tax_objective'
     SYNGAS_PROD_OBJECTIVE = 'syngas_prod_objective'
     SYNGAS_PROD_CONSTRAINT = 'syngas_prod_constraint'
-    RESOURCE_LIST = ['natural_gas_resource',
-                     'uranium_resource', 'coal_resource', 'oil_resource', 
-                     'copper_resource'
-                     ]
+    RESOURCE_LIST = ['natural_gas_resource', 'uranium_resource',
+                     'coal_resource', 'oil_resource', 'copper_resource']
     RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
     CARBON_STORAGE_CONSTRAINT = 'carbon_storage_constraint'
     energy_class_dict = {GaseousHydrogen.name: GaseousHydrogen,
