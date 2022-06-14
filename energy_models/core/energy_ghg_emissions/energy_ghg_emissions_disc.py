@@ -23,6 +23,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+from energy_models.core.ccus.ccus import CCUS
 
 import numpy as np
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
@@ -71,7 +72,11 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                                   'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                               'namespace': 'ns_energy'}, }
+                                               'namespace': 'ns_energy'},
+        'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
+                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
+                     'structuring': True},
+        }
 
     DESC_OUT = {
         'CO2_emissions_sources': {'type': 'dataframe', 'unit': 'Gt'},
@@ -125,6 +130,14 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
                             'namespace': 'ns_energy'}
+            if 'ccs_list' in self._data_in:
+                ccs_list = self.get_sosdisc_inputs('ccs_list')
+                if ccs_list is not None:
+                    for ccs in ccs_list:
+                        dynamic_inputs[f'{ccs}.energy_production'] = {
+                            'type': 'dataframe', 'unit': 'PWh',
+                            'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'namespace': 'ns_ccs'}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -152,6 +165,8 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
         years = np.arange(inputs_dict['year_start'],
                           inputs_dict['year_end'] + 1)
         energy_list = inputs_dict['energy_list']
+        ccs_list = inputs_dict['ccs_list']
+
         scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
         CO2_emissions_sources = outputs_dict['CO2_emissions_sources']
@@ -220,8 +235,24 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                             ('GHG_total_energy_emissions', 'Total CO2 emissions'), (
                                 f'{ns_energy}.energy_consumption', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
+
+            elif co2_emission_column in CO2_emissions_sources.columns and energy in ccs_list:
+                ns_energy = energy
+                if last_part_key not in ['co2_per_use', 'cons', 'prod']:
+                    very_last_part_key = energy_prod_info.split('#')[2]
+                    if very_last_part_key == 'prod':
+                        self.set_partial_derivative_for_other_types(
+                            ('CO2_emissions_sources', co2_emission_column), (
+                                f'{ns_energy}.energy_production', last_part_key),
+                            np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
+                        self.set_partial_derivative_for_other_types(
+                            ('GHG_total_energy_emissions', 'Total CO2 emissions'), (
+                                f'{ns_energy}.energy_production', last_part_key),
+                            np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
+
         dtot_co2_emissions = self.model.compute_grad_total_co2_emissions(
             energy_production_detailed)
+
         for energy in energy_list:
             max_prod_grad = dtot_co2_emissions_sources[
                 f'Total CO2 by use (Gt) vs {energy}#co2_per_use']
@@ -256,6 +287,7 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                              f'Total {ghg} emissions'), (
                                 f'{ns_energy}.energy_production', col),
                             np.identity(len(years)))
+
         # ------------------------------------#
         # -- CO2 emissions sinks gradients--#
         # ------------------------------------#
