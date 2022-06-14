@@ -36,6 +36,8 @@ class FlueGasRatioTestCase(unittest.TestCase):
 
         self.hydrogen_WaterGasShift_production = pd.DataFrame({'years': years,
                                                                'CO2 from Flue Gas (Mt)': 20000.0})
+        self.dac_production = pd.DataFrame({'years': years,
+                                                               'CO2 from Flue Gas (Mt)': 5000.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
 
@@ -67,7 +69,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
                        f'{self.name}.electricity.CoalGen.techno_production': self.electricity_CoalGen_production,
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_production': self.hydrogen_WaterGasShift_production,
                        f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': [0.2],
-                       f'{self.name}.ccs_list': [],
+                       f'{self.name}.ccs_list': ['carbon_capture'],
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': [0.4],
                        f'{self.name}.{self.model_name}.scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        f'{self.name}.{self.model_name}.scaling_factor_techno_production': self.scaling_factor_techno_production, }
@@ -105,11 +107,14 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.{self.model_name}.technologies_list': ['hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen'],
+                       f'{self.name}.{self.model_name}.technologies_list': ['hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen', 'carbon_capture.direct_air_capture.DirectAirCaptureTechno'],
                        f'{self.name}.electricity.CoalGen.techno_production': self.electricity_CoalGen_production,
+                       f'{self.name}.carbon_capture.direct_air_capture.DirectAirCaptureTechno.techno_production': self.electricity_CoalGen_production,
+
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_production': self.hydrogen_WaterGasShift_production,
                        f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': [0.2],
-                       f'{self.name}.ccs_list': [],
+                       f'{self.name}.carbon_capture.flue_gas_co2_ratio' : [0.2],
+                       f'{self.name}.ccs_list': ['carbon_capture'],
 
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': [0.4],
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
@@ -125,7 +130,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}.flue_gas_mean',
             f'{self.name}.{self.model_name}.flue_gas_production',
             f'{self.name}.{self.model_name}.flue_gas_prod_ratio'],
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+            dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_fluegas_discipline.pkl'))
 
         self.assertTrue(
