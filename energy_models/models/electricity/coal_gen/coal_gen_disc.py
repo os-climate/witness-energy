@@ -112,7 +112,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency_max': 0.48,
                                  'efficiency evolution slope': 0.5,
                                  'construction_delay': construction_delay,
-                                 'copper_needs': 1150, #IEA Role of critical minerals in clean energy transitions 2022
+                                 'copper_needs': 1150, #IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                   }
 
     techno_info_dict = techno_infos_dict_default

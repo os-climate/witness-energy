@@ -71,7 +71,7 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'construction_delay': construction_delay,
-                                 'copper_needs': 1100, #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
+                                # 'copper_needs': 1100, #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                   }
 
     techno_info_dict = techno_infos_dict_default

@@ -61,7 +61,7 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'construction_delay': construction_delay,
-                                 'copper_needs': 8000, #IEA Role of critical minerals in clean energy transitions 2022
+                                 'copper_needs': 8000, #IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
     techno_info_dict = techno_infos_dict_default

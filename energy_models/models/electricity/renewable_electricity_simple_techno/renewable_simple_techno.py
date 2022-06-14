@@ -28,24 +28,24 @@ class RenewableElectricitySimpleTechno(ElectricityTechno):
         """
         return 0
     
-    def compute_consumption_and_power_production(self):
-        """
-        Compute the resource consumption and the power installed (MW) of the technology for a given investment
-        """
-        self.compute_primary_power_production()
+    # def compute_consumption_and_power_production(self):
+    #     """
+    #     Compute the resource consumption and the power installed (MW) of the technology for a given investment
+    #     """
+    #     self.compute_primary_power_production()
 
-        # FOR ALL_RESOURCES DISCIPLINE
+    #     # FOR ALL_RESOURCES DISCIPLINE
 
-        copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+    #     copper_needs = self.get_theoretical_copper_needs(self)
+    #     self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
 
-    @staticmethod
-    def get_theoretical_copper_needs(self):
-        """
-        No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station
-        It needs 1100 kg / MW
-        Computing the need in Mt/MW
-        """
-        copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
+    # @staticmethod
+    # def get_theoretical_copper_needs(self):
+    #     """
+    #     No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station
+    #     It needs 1100 kg / MW
+    #     Computing the need in Mt/MW
+    #     """
+    #     copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
 
-        return copper_need
+    #     return copper_need
