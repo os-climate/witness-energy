@@ -498,7 +498,7 @@ class CCUS_Discipline(SoSDiscipline):
         x_serie_1 = co2_emissions['years'].values.tolist()
         serie = InstanciatedSeries(
             x_serie_1,
-            (carbon_storage_by_invest / 1.0e3).tolist(), f'CO2 to store')
+            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3 ).tolist(), f'CO2 to store')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
