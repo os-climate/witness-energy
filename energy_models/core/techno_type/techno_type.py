@@ -1162,6 +1162,7 @@ class TechnoType:
         nb_years = len(capex_list)
         dpower_list_dinvest_list = np.zeros(
             (nb_years, nb_years))
+
         delay = techno_dict['construction_delay']
         # power = cste * invest / capex ie dpower_d_invest = cste * (Id/capex - invest * dcapex_dinvest / capex**2)
         for i in range(delay, nb_years) :
@@ -1175,9 +1176,9 @@ class TechnoType:
                 # cste * invest * dcapex_dinvest / capex ** 2
                 dpower_list_dinvest_list[i,:] -=  1000 / full_load_hours * invest_list[i - delay] *\
                      dcapex_dinvest[i - delay,:] / capex_list[i - delay]**2 * scaling_factor_techno_consumption
-        self.dpower_list_dinvest_list = dpower_list_dinvest_list
+        self.dpower_list_dinvest_list = np.multiply(dpower_list_dinvest_list, compute_dfunc_with_exp_min(np.array(invest_list), self.min_value_invest).T)
 
-        return dpower_list_dinvest_list
+        return self.dpower_list_dinvest_list
 
     def compute_dprod_dratio(self, prod, ratio_name, dapplied_ratio_dratio):
         '''! Select the most constraining ratio and apply it to production and consumption.
