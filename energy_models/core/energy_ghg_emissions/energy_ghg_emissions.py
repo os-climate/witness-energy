@@ -61,6 +61,7 @@ class EnergyGHGEmissions(BaseStream):
         '''
 
         self.energy_list = inputs_dict['energy_list']
+        self.ccs_list = inputs_dict['ccs_list']
 
         self.ghg_per_use_dict = {ghg: pd.DataFrame(
             {'years': self.years}) for ghg in self.GHG_TYPE_LIST}
@@ -87,6 +88,11 @@ class EnergyGHGEmissions(BaseStream):
                     self.scaling_factor_energy_production
                 self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.energy_consumption'] * \
                     self.scaling_factor_energy_consumption
+
+        for energy in self.ccs_list:
+            self.sub_production_dict[energy] = inputs_dict[f'{energy}.energy_production'] * \
+                                               self.scaling_factor_energy_production
+
         self.energy_production_detailed = inputs_dict['energy_production_detailed']
 
         self.co2_emissions_needed_by_energy_mix = inputs_dict['co2_emissions_needed_by_energy_mix']
@@ -118,6 +124,9 @@ class EnergyGHGEmissions(BaseStream):
             self.aggregate_all_ghg_emissions_in_energy(energy)
 
             self.compute_ghg_emissions_by_use(energy)
+
+        for ccs_name in self.ccs_list:
+            self.aggregate_all_ghg_emissions_in_energy(ccs_name)
 
         self.sum_ghg_emissions_by_use()
 
@@ -213,19 +222,21 @@ class EnergyGHGEmissions(BaseStream):
 
     def aggregate_all_ghg_emissions_in_energy(self, energy):
 
-        # gather all production columns with a CO2 name in it
-        for col, production in self.sub_production_dict[energy].items():
-            if col in self.CO2_list:
-                self.ghg_production_dict['CO2'][f'{energy} {col}'] = production.values
-            else:
-                for ghg in self.GHG_TYPE_LIST:
-                    if col == f'{ghg} {self.ghg_input_unit}':
-                        self.ghg_production_dict[ghg][f'{energy} {col}'] = production.values
+        if energy in self.sub_production_dict:
+            # gather all production columns with a CO2 name in it
+            for col, production in self.sub_production_dict[energy].items():
+                if col in self.CO2_list:
+                    self.ghg_production_dict['CO2'][f'{energy} {col}'] = production.values
+                else:
+                    for ghg in self.GHG_TYPE_LIST:
+                        if col == f'{ghg} {self.ghg_input_unit}':
+                            self.ghg_production_dict[ghg][f'{energy} {col}'] = production.values
         # gather all consumption columns with a CO2 name in it
         # other green house gases are not consumed in energy mix for now
-        for col, consumption in self.sub_consumption_dict[energy].items():
-            if col in self.CO2_list:
-                self.CO2_consumption[f'{energy} {col}'] = consumption.values
+        if energy in self.sub_consumption_dict:
+            for col, consumption in self.sub_consumption_dict[energy].items():
+                if col in self.CO2_list:
+                    self.CO2_consumption[f'{energy} {col}'] = consumption.values
 # , co2_emissions):
 
     def compute_ghg_emissions_by_use(self, energy):
@@ -338,6 +349,10 @@ class EnergyGHGEmissions(BaseStream):
                 dtot_CO2_emissions[f'Total {ghg} by use (Gt) vs {energy}#prod'] = self.ghg_per_use_dict[ghg][energy].values * \
                     np.maximum(0, np.sign(net_prod_sign))
 
+        for energy in self.ccs_list:
+            for col, production in self.sub_production_dict[energy].items():
+                if col in self.CO2_list:
+                    co2_production[f'{energy} {col}'] = production.values
         ''' CARBON CAPTURE from energy mix
         Total carbon capture from energy mix if the technology offers carbon_capture
          Ex : upgrading biogas technology is the same as Amine Scrubbing but

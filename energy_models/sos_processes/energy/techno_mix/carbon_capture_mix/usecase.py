@@ -38,7 +38,7 @@ TECHNOLOGIES_FLUE_GAS_LIST_COARSE = ['electricity.GasTurbine']
 DEFAULT_FLUE_GAS_LIST = ['electricity.CoalGen', 'electricity.GasTurbine', 'electricity.CombinedCycleGasTurbine',
                          'hydrogen.gaseous_hydrogen.WaterGasShift', 'liquid_fuel.FischerTropsch', 'liquid_fuel.Refinery', 'methane.FossilGas',
                          'solid_fuel.Pelletizing', 'syngas.CoalGasification', 'fossil.FossilSimpleTechno', 'carbon_capture.direct_air_capture.AmineScrubbing',
-                         'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing']
+                         'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing', 'carbon_capture.direct_air_capture.DirectAirCaptureTechno']
 TECHNOLOGIES_LIST_DEV = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
                              'flue_gas_capture.CalciumLooping','flue_gas_capture.ChilledAmmoniaProcess',
                              'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine',
@@ -179,6 +179,10 @@ class Study(EnergyMixStudyManager):
                                       f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
         pyrolysis_prod = pd.DataFrame({'years': years,
                                        f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+        pyrolysis_prod = pd.DataFrame({'years': years,
+                                       f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
+        directaircapturetechno_prod = pd.DataFrame({'years': years,
+                                       f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
 
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.year_start': self.year_start,
@@ -229,7 +233,8 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{energy_mix_name}.syngas.Pyrolysis.techno_production': pyrolysis_prod,
                     f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.techno_production': refinery_prod,
                     f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.CalciumPotassiumScrubbing.techno_production': CAKOH_production,
-                    f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.techno_production': aminescrubbing_production,})
+                    f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.techno_production': aminescrubbing_production,
+                    f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.techno_production': directaircapturetechno_prod,})
 
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(

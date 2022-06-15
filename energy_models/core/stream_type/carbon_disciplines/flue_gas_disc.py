@@ -68,9 +68,7 @@ class FlueGasDiscipline(SoSDiscipline):
                                  'fossil.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
                                  'carbon_capture.direct_air_capture.AmineScrubbing': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
                                  'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing' :CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
-
-                                 #'electricity.GasTurbine': GasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 'carbon_capture.direct_air_capture.DirectAirCaptureTechno': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
                                  }
 
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -111,7 +109,6 @@ class FlueGasDiscipline(SoSDiscipline):
             techno_list = self.get_sosdisc_inputs('technologies_list')
             ccs_list = self.get_sosdisc_inputs('ccs_list')
 
-            print(techno_list, ccs_list)
             if techno_list is not None and ccs_list is not None:
                 for techno in techno_list:
                     # check if techno not in ccs_list, namespace is ns_energy_mix
@@ -141,6 +138,7 @@ class FlueGasDiscipline(SoSDiscipline):
         # -- compute informations
         flue_gas_mean = self.energy_model.compute()
 
+
         outputs_dict = {
             'flue_gas_mean': flue_gas_mean,
             'flue_gas_production': self.energy_model.get_total_flue_gas_production(),
@@ -154,13 +152,13 @@ class FlueGasDiscipline(SoSDiscipline):
         '''
         inputs_dict = self.get_sosdisc_inputs()
         technologies_list = inputs_dict['technologies_list']
+        ccs_list = inputs_dict['ccs_list']
         mix_weights = self.get_sosdisc_outputs('flue_gas_prod_ratio')
 
         total_prod = self.get_sosdisc_outputs('flue_gas_production')[
             self.energy_model.name].values
         len_matrix = len(total_prod)
-
-        for techno in technologies_list:
+        for techno in technologies_list :
 
             self.set_partial_derivative_for_other_types(
                 ('flue_gas_mean',
@@ -182,7 +180,7 @@ class FlueGasDiscipline(SoSDiscipline):
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix) * grad_prod)
 
             grad_fluegas_prod = flue_gas_co2_ratio * grad_prod
-            for techno_other in technologies_list:
+            for techno_other in technologies_list :
                 if techno != techno_other:
                     flue_gas_co2_ratio_other = self.get_sosdisc_inputs(
                         f'{techno_other}.flue_gas_co2_ratio')[0]

@@ -1342,4 +1342,5 @@ if '__main__' == __name__:
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = EnergyMixJacobianTestCase()
     cls.setUp()
-    cls.test_04_energy_mix_discipline_co2_emissions_gt()
+    #cls.test_04_energy_mix_discipline_co2_emissions_gt()
+    cls.test_10_energy_mix_demand_dataframe()

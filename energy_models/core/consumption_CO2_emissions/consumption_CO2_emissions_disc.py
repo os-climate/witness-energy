@@ -52,7 +52,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                         'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                         'editable': False, 'structuring': True},
-        'ccs_list': {'type': 'list','subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
+        'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -113,14 +113,14 @@ class ConsumptionCO2EmissionsDiscipline(SoSDiscipline):
                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
                             'namespace': 'ns_energy'}
 
-            if 'ccs_list' in self._data_in:
-                ccs_list = self.get_sosdisc_inputs('ccs_list')
-                if ccs_list is not None:
-                    for ccs in ccs_list:
-                        dynamic_inputs[f'{ccs}.energy_production'] = {
-                            'type': 'dataframe', 'unit': 'PWh',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs'}
+        if 'ccs_list' in self._data_in:
+            ccs_list = self.get_sosdisc_inputs('ccs_list')
+            if ccs_list is not None:
+                for ccs in ccs_list:
+                    dynamic_inputs[f'{ccs}.energy_production'] = {
+                        'type': 'dataframe', 'unit': 'PWh',
+                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'namespace': 'ns_ccs'}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)

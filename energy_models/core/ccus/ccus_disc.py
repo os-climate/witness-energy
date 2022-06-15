@@ -68,6 +68,7 @@ class CCUS_Discipline(SoSDiscipline):
 
     DESC_OUT = {
         'co2_emissions_ccus': {'type': 'dataframe', 'unit': 'Mt'},
+        'carbon_storage_by_invest': {'type': 'array', 'unit': 'Mt'},
         'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_ccs'},
 
@@ -159,6 +160,7 @@ class CCUS_Discipline(SoSDiscipline):
         self.ccus_model.compute_carbon_storage_constraint()
         outputs_dict = {
             'co2_emissions_ccus': self.ccus_model.total_co2_emissions,
+            'carbon_storage_by_invest': self.ccus_model.total_carbon_storage_by_invest,
             'co2_emissions_ccus_Gt': self.ccus_model.total_co2_emissions_Gt,
             'CCS_price': self.ccus_model.CCS_price,
             EnergyMix.CARBON_STORAGE_CONSTRAINT: self.ccus_model.carbon_storage_constraint,
@@ -489,13 +491,14 @@ class CCUS_Discipline(SoSDiscipline):
         '''
         chart_name = 'CO2 emissions storage limited by CO2 to store'
         co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
+        carbon_storage_by_invest = self.get_sosdisc_outputs('carbon_storage_by_invest')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
         x_serie_1 = co2_emissions['years'].values.tolist()
         serie = InstanciatedSeries(
             x_serie_1,
-            (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 to store')
+            (carbon_storage_by_invest / 1.0e3).tolist(), f'CO2 to store')
         new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
