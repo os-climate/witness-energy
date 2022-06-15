@@ -57,7 +57,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
     DESC_OUT = {'syngas_ratio': {'type': 'array', 'unit': '%',
                                  'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
-                'syngas_ratio_technos': {'type': 'dict', 'unit': '%',
+                'syngas_ratio_technos': {'type': 'dict', 'unit': '%', 'subtype_descriptor':{'dict':'float'},
                                          'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
                 }
 
