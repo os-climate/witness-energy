@@ -57,11 +57,11 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                                              'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'GHG_global_warming_potential20': {'type': 'dict', 'unit': 'kgCO2eq/kg',
+        'GHG_global_warming_potential20': {'type': 'dict','subtype_descriptor':{'dict':'float'}, 'unit': 'kgCO2eq/kg',
                                            'default': GHGemissionsDiscipline.GWP_20_default,
                                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                            'namespace': 'ns_witness', 'user_level': 3},
-        'GHG_global_warming_potential100': {'type': 'dict', 'unit': 'kgCO2eq/kg',
+        'GHG_global_warming_potential100': {'type': 'dict','subtype_descriptor':{'dict':'float'}, 'unit': 'kgCO2eq/kg',
                                             'default': GHGemissionsDiscipline.GWP_100_default,
                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_witness', 'user_level': 3},
@@ -78,7 +78,7 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
         'CO2_emissions_sinks': {'type': 'dataframe', 'unit': 'Gt'},
         'GHG_total_energy_emissions': {'type': 'dataframe', 'unit': 'Gt',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'GHG_emissions_per_energy': {'type': 'dict', 'unit': 'Gt'},
+        'GHG_emissions_per_energy': {'type': 'dict','subtype_descriptor':{'dict':'dataframe'}, 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'},
     }
 
