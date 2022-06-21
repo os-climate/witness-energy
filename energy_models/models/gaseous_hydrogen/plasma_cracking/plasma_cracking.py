@@ -164,7 +164,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
                                  'carbon_demand': carbon_market_demand['carbon_demand'].values,
                                  'CO2_credits': CO2_credits['CO2_credits'].values,
                                  'hydrogen_price': self.prices[GaseousHydrogenTechno.energy_name],
-                                 'carbon_price': ResourceGlossary.Carbon['price'],
+                                 # 'carbon_price': ResourceGlossary.Carbon['price'],
+                                 'carbon_price': self.resources_prices[Carbon.name],
                                  'is_prod_inf_demand': False,
                                  'is_storage_inf_storage_max': False
                                  })
@@ -321,4 +322,39 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
         grad = np.divide((dhydro_prod_dratio * x - dcarbon_prod_dratio * y), z,
                          out=np.zeros_like((dhydro_prod_dratio * x - dcarbon_prod_dratio * y)), where=z != 0)
+        return grad
+
+    def grad_percentage_resource_vs_resources_price(self, CO2_credits, carbon_market_demand, dcarbon_price_dresources_price):
+
+        quantity = self.compute_revenues(
+            CO2_credits, carbon_market_demand)
+        # hydrogen_price = quantity['hydrogen_price']
+
+        # if carbon_production < carbon_demand
+        quantity.loc[quantity['is_prod_inf_demand'] == True,
+                     'A_value'] = quantity['carbon_sales_revenues']
+        # if carbon_production > carbon_demand
+        # carbon_storage
+        quantity.loc[(quantity['is_prod_inf_demand'] == False),
+                     'A_value'] = quantity['carbon_demand_sales_revenues']
+
+        # if carbon_production < carbon_demand
+        quantity.loc[(quantity['is_prod_inf_demand'] == True),
+                     'B'] = quantity['carbon_sales']
+
+        # if carbon_production > carbon_demand
+        # carbon_storage
+        quantity.loc[(quantity['is_prod_inf_demand'] == False),
+                     'B'] = quantity['carbon_demand']
+
+        a = quantity['hydrogen_sales_revenues'].values * \
+            quantity['B'].values
+        x = np.array([a, ] * len(self.years)).transpose()
+
+        c = (
+            np.power(quantity['hydrogen_sales_revenues'] + quantity['A_value'], 2)).values
+        z = np.array([c, ] * len(self.years)).transpose()
+
+        grad = np.divide(- dcarbon_price_dresources_price * x, z,
+                         out=np.zeros_like((dcarbon_price_dresources_price * x)), where=z != 0)
         return grad
