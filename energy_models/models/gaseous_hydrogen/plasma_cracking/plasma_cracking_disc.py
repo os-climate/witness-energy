@@ -363,3 +363,22 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
             ('techno_prices', self.techno_name), ('all_streams_demand_ratio', 'methane'), value_meth / 100)
         self.set_partial_derivative_for_other_types(
             ('techno_prices', f'{self.techno_name}_wotaxes'), ('all_streams_demand_ratio', 'methane'), value_wotaxes_meth / 100)
+
+        '''
+   GRADIENT H2 VS RESOURCES_PRICES
+        '''
+        dcarbon_price_dresources_price = np.identity(
+            len(self.techno_model.years))
+        dpercentage_resources_dresources_price = self.techno_model.grad_percentage_resource_vs_resources_price(
+            CO2_credits, carbon_market_demand, dcarbon_price_dresources_price)
+        self.set_partial_derivative_for_other_types(
+            ('percentage_resource', 'hydrogen.gaseous_hydrogen'), ('resources_price', 'carbon_resource'), dpercentage_resources_dresources_price * 100)
+        x = np.array(
+            [[x_i if x_i > 0.0 else 1e-6 for x_i in percentage_resource], ] * len(years)).transpose()
+        y = np.array([techno_prices, ] * len(years)).transpose()
+        y_wotaxes = np.array(
+            [techno_prices_wotaxes, ] * len(years)).transpose()
+        self.set_partial_derivative_for_other_types(
+            ('techno_prices', self.techno_name), ('resources_price', 'carbon_resource'), dpercentage_resources_dresources_price * y / x)
+        self.set_partial_derivative_for_other_types(
+            ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_price', 'carbon_resource'), dpercentage_resources_dresources_price * y_wotaxes / x)
