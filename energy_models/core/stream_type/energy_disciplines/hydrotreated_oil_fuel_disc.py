@@ -39,7 +39,7 @@ class HydrotreatedOilFuelDiscipline(EnergyDiscipline):
                                      'default': HydrotreatedOilFuel.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_hydrotreated_oil_fuel',
-                                     'structuring': True},
+                                     'structuring': True, 'unit': '-'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_hydrotreated_oil_fuel',

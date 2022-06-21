@@ -43,7 +43,8 @@ class SyngasDiscipline(EnergyDiscipline):
                                      'possible_values': Syngas.default_techno_list,
                                      'default': Syngas.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_syngas', 'structuring': True},
+                                     'namespace': 'ns_syngas', 'structuring': True,
+                                     'unit': '-'},
 
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
@@ -57,7 +58,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
     DESC_OUT = {'syngas_ratio': {'type': 'array', 'unit': '%',
                                  'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
-                'syngas_ratio_technos': {'type': 'dict', 'unit': '%', 'subtype_descriptor':{'dict':'float'},
+                'syngas_ratio_technos': {'type': 'dict', 'unit': '%', 'subtype_descriptor': {'dict': 'float'},
                                          'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
                 }
 
@@ -188,8 +189,8 @@ class SyngasDiscipline(EnergyDiscipline):
                 'data_fuel_dict')['CO2_per_use']
             if co2_per_use != 0:
                 grad_carbon_tax_vs_prod = -grad_syngas_prod * fprimesgx * \
-                                          outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
-                                          co2_per_use / 100.0
+                    outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
+                    co2_per_use / 100.0
             else:
                 grad_carbon_tax_vs_prod = [0] * len(grad_syngas_prod)
 
@@ -200,8 +201,8 @@ class SyngasDiscipline(EnergyDiscipline):
 
             if co2_per_use != 0:
                 grad_carbon_tax_vs_syngas_ratio = -mix_weight_techno * fprimesgx * \
-                                                  outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
-                                                  co2_per_use / 100.0
+                    outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
+                    co2_per_use / 100.0
             else:
                 grad_carbon_tax_vs_syngas_ratio = [0] * len(mix_weight_techno)
             self.set_partial_derivative_for_other_types(

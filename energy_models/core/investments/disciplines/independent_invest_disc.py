@@ -48,10 +48,10 @@ class IndependentInvestDiscipline(SoSDiscipline):
                               'visibility': 'Shared', 'namespace': 'ns_witness'},
         'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
                                              'namespace': 'ns_public'},
-        'invest_mix': {'type': 'dataframe',
+        'invest_mix': {'type': 'dataframe', 'unit': 'G$',
                        'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
                        'dataframe_edition_locked': False},
-        'invest_objective_ref': {'type': 'float', 'default': 1.0, 'user_level': 2, 'visibility': 'Shared',
+        'invest_objective_ref': {'type': 'float', 'unit': 'G$', 'default': 1.0, 'user_level': 2, 'visibility': 'Shared',
                                  'namespace': 'ns_ref'},
         'invest_sum_ref': {'type': 'float', 'unit': 'G$', 'default': 2., 'user_level': 2, 'visibility': 'Shared',
                            'namespace': 'ns_ref'},
@@ -200,7 +200,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
         invest_limit_ref = inputs_dict['invest_limit_ref']
         techno_invest_sum = techno_invests.sum(axis=1).values
         energy_invest = energy_investment['energy_investment'].values * \
-                        scaling_factor_energy_investment
+            scaling_factor_energy_investment
 
         techno_invest_sum += inputs_dict['forest_investment']['forest_investment'].values
         energy_list = inputs_dict['energy_list']
@@ -249,10 +249,12 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 ('invest_sum_eq_cons',), ('invest_mix', techno), dinvest_eq_cons_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_constraint', 'invest_constraint'), ('forest_investment', 'forest_investment'),
+            ('invest_constraint', 'invest_constraint'), ('forest_investment',
+                                                         'forest_investment'),
             ddelta_dtech / invest_constraint_ref)
         self.set_partial_derivative_for_other_types(
-            ('invest_objective', 'invest_constraint'), ('forest_investment', 'forest_investment'),
+            ('invest_objective', 'invest_constraint'), ('forest_investment',
+                                                        'forest_investment'),
             dinvest_objective_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
@@ -287,10 +289,12 @@ class IndependentInvestDiscipline(SoSDiscipline):
                     ('invest_sum_eq_cons',), (techno, 'investment'), dinvest_eq_cons_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_constraint', 'invest_constraint'), ('energy_investment', 'energy_investment'),
+            ('invest_constraint', 'invest_constraint'), ('energy_investment',
+                                                         'energy_investment'),
             ddelta_dtot * scaling_factor_energy_investment / invest_constraint_ref)
         self.set_partial_derivative_for_other_types(
-            ('invest_objective', 'invest_objective'), ('energy_investment', 'energy_investment'),
+            ('invest_objective', 'invest_objective'), ('energy_investment',
+                                                       'energy_investment'),
             dinvest_objective_dtotal_invest * scaling_factor_energy_investment)
 
         self.set_partial_derivative_for_other_types(
@@ -502,7 +506,8 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 # , secondary_ordinate_axis_name='Constraint'
                 serie = InstanciatedSeries(
                     energy_investment['years'].values.tolist(),
-                    (energy_investment['energy_investment'].values * scaling_factor_energy_investment).tolist(),
+                    (energy_investment['energy_investment'].values *
+                     scaling_factor_energy_investment).tolist(),
                     'Total allocated energy investments', )
                 new_chart_constraint.series.append(serie)
 

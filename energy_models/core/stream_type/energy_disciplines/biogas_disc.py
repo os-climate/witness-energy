@@ -38,7 +38,7 @@ class BiogasDiscipline(EnergyDiscipline):
                                      'possible_values': BioGas.default_techno_list,
                                      'default': BioGas.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_biogas',
-                                     'structuring': True},
+                                     'structuring': True, 'unit': '-'},
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'unit': 'defined in dict',
                                   'namespace': 'ns_biogas', 'default': BioGas.data_energy_dict},

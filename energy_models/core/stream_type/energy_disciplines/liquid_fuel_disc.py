@@ -38,7 +38,7 @@ class LiquidFuelDiscipline(EnergyDiscipline):
                                      'default': LiquidFuel.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_liquid_fuel',
-                                     'structuring': True},
+                                     'structuring': True, 'unit': '-'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_liquid_fuel',

@@ -38,7 +38,7 @@ class MethaneDiscipline(EnergyDiscipline):
                                      'possible_values': Methane.default_techno_list,
                                      'default': Methane.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_methane',
-                                     'structuring': True
+                                     'structuring': True, 'unit': '-'
                                      },
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'unit': 'defined in dict',
