@@ -67,7 +67,7 @@ class FlueGasDiscipline(SoSDiscipline):
                                  'syngas.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
                                  'fossil.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
                                  'carbon_capture.direct_air_capture.AmineScrubbing': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing' :CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
+                                 'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
                                  'carbon_capture.direct_air_capture.DirectAirCaptureTechno': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
                                  }
 
@@ -76,26 +76,27 @@ class FlueGasDiscipline(SoSDiscipline):
                'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
-                                     'structuring': True},
-                'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+                                     'structuring': True, 'unit': '-'},
+               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
                'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
                'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                             'editable': False,
-                            'structuring': True},
+                            'structuring': True,
+                            'unit': '-'},
                }
 
     energy_name = FlueGas.name
 
     DESC_OUT = {'flue_gas_mean': {'type': 'dataframe',
                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_flue_gas', 'unit': ''},
+                                  'namespace': 'ns_flue_gas', 'unit': '%'},
                 'flue_gas_production': {'type': 'dataframe',
                                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                         'namespace': 'ns_flue_gas', 'unit': 'Mt'},
                 'flue_gas_prod_ratio': {'type': 'dataframe',
                                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                        'namespace': 'ns_flue_gas', 'unit': ''}}
+                                        'namespace': 'ns_flue_gas', 'unit': '%'}}
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -111,7 +112,8 @@ class FlueGasDiscipline(SoSDiscipline):
 
             if techno_list is not None and ccs_list is not None:
                 for techno in techno_list:
-                    # check if techno not in ccs_list, namespace is ns_energy_mix
+                    # check if techno not in ccs_list, namespace is
+                    # ns_energy_mix
                     if techno.split('.')[0] not in ccs_list:
                         ns_variable = 'ns_energy_mix'
 
@@ -138,7 +140,6 @@ class FlueGasDiscipline(SoSDiscipline):
         # -- compute informations
         flue_gas_mean = self.energy_model.compute()
 
-
         outputs_dict = {
             'flue_gas_mean': flue_gas_mean,
             'flue_gas_production': self.energy_model.get_total_flue_gas_production(),
@@ -158,7 +159,7 @@ class FlueGasDiscipline(SoSDiscipline):
         total_prod = self.get_sosdisc_outputs('flue_gas_production')[
             self.energy_model.name].values
         len_matrix = len(total_prod)
-        for techno in technologies_list :
+        for techno in technologies_list:
 
             self.set_partial_derivative_for_other_types(
                 ('flue_gas_mean',
@@ -170,8 +171,8 @@ class FlueGasDiscipline(SoSDiscipline):
                 f'{techno}.flue_gas_co2_ratio')[0]
 
             grad_prod = (
-                                total_prod - self.energy_model.production[
-                            f'{self.energy_model.name} {techno} (Mt)'].values) / total_prod ** 2
+                total_prod - self.energy_model.production[
+                    f'{self.energy_model.name} {techno} (Mt)'].values) / total_prod ** 2
 
             self.set_partial_derivative_for_other_types(
                 ('flue_gas_prod_ratio', techno),
@@ -180,14 +181,14 @@ class FlueGasDiscipline(SoSDiscipline):
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix) * grad_prod)
 
             grad_fluegas_prod = flue_gas_co2_ratio * grad_prod
-            for techno_other in technologies_list :
+            for techno_other in technologies_list:
                 if techno != techno_other:
                     flue_gas_co2_ratio_other = self.get_sosdisc_inputs(
                         f'{techno_other}.flue_gas_co2_ratio')[0]
 
                     grad_flue_gas_prod_ratio = -self.energy_model.production[
                         f'{self.energy_model.name} {techno} (Mt)'].values / \
-                                               total_prod ** 2
+                        total_prod ** 2
                     self.set_partial_derivative_for_other_types(
                         ('flue_gas_prod_ratio', techno),
                         (f'{techno_other}.techno_production',

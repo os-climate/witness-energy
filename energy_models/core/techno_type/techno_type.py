@@ -209,6 +209,7 @@ class TechnoType:
         self.resources_CO2_emissions = inputs_dict['resources_CO2_emissions']
         self.energy_CO2_emissions = inputs_dict['energy_CO2_emissions']
         self.production = pd.DataFrame({'years': self.years})
+        self.power_production = pd.DataFrame({'years': self.years})
         self.ratio_df = pd.DataFrame({'years': self.years})
         self.is_stream_demand = inputs_dict['is_stream_demand']
         self.is_apply_resource_ratio = inputs_dict['is_apply_resource_ratio']
@@ -1046,7 +1047,7 @@ class TechnoType:
 
         power_production_dict = self.power_production.to_dict()
 
-        for year in  self.years[1:]:
+        for year in self.years[1:]:
             power_production_dict['removed_power_production'][year- power_production_dict['years'][0] ] = \
                 power_production_dict['total_installed_power'][year - 1 - power_production_dict['years'][0] ]\
                     - power_production_dict['total_installed_power'][year - power_production_dict['years'][0] ]\

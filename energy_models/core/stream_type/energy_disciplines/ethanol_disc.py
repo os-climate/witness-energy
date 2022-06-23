@@ -38,9 +38,10 @@ class EthanolDiscipline(EnergyDiscipline):
                                      'possible_values': Ethanol.default_techno_list,
                                      'default': Ethanol.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_ethanol', 'structuring': True},
+                                     'namespace': 'ns_ethanol', 'structuring': True, 'unit': '-'},
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_ethanol', 'default': Ethanol.data_energy_dict},
+                                  'namespace': 'ns_ethanol', 'default': Ethanol.data_energy_dict,
+                                  'unit': 'define in dict'},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
     energy_name = Ethanol.name

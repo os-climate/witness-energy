@@ -47,16 +47,18 @@ class ElectricityDiscipline(EnergyDiscipline):
                                      'possible_values': Electricity.default_techno_list,
                                      'default': Electricity.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_electricity',
-                                     'structuring': True},
+                                     'structuring': True, 'unit': '-'},
                'hydropower_production_current': {'type': 'float',
                                                  'default': 6600.0,
-                                                 # 4400TWh is total production, we use a 50% higher value
+                                                 # 4400TWh is total production,
+                                                 # we use a 50% higher value
                                                  'unit': 'Twh',
                                                  'user_level': 2,
                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                  'namespace': 'ns_ref'},
                'hydropower_constraint_ref': {'type': 'float',
                                              'default': 1000.,
+                                             'unit': 'Twh',
                                              'user_level': 2,
                                              'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                              'namespace': 'ns_ref'},
@@ -80,7 +82,7 @@ class ElectricityDiscipline(EnergyDiscipline):
 
             if techno_list is not None:
                 if hydropower_name in techno_list:
-                    dynamic_outputs['prod_hydropower_constraint'] = {'type': 'dataframe', 'user_level': 2,
+                    dynamic_outputs['prod_hydropower_constraint'] = {'type': 'dataframe', 'user_level': 2, 'unit': 'TWh',
                                                                      'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                      'namespace': 'ns_functions'}
         self.add_outputs(dynamic_outputs)
@@ -120,8 +122,8 @@ class ElectricityDiscipline(EnergyDiscipline):
         if hydropower_name in self.energy_model.subelements_list:
             self.set_partial_derivative_for_other_types(('prod_hydropower_constraint', 'hydropower_constraint'), (
                 'Hydropower.techno_production', f'{Electricity.name} ({Electricity.unit})'),
-                                                        - inputs_dict['scaling_factor_techno_production'] * np.identity(
-                                                            len(years)) / inputs_dict['hydropower_constraint_ref'])
+                - inputs_dict['scaling_factor_techno_production'] * np.identity(
+                len(years)) / inputs_dict['hydropower_constraint_ref'])
 
         EnergyDiscipline.compute_sos_jacobian(self)
 

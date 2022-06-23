@@ -37,12 +37,12 @@ class GasolineDiscipline(EnergyDiscipline):
         'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': ['Refinery'],
                               'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                               'namespace': 'ns_liquid_fuel',
-                              'structuring': True},
+                              'structuring': True, 'unit': '-'},
         'data_fuel_dict': {'type': 'dict',
                            'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                            'namespace': 'ns_liquid_fuel',
                            'default': Gasoline.data_energy_dict},
-        }
+    }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
     energy_name = Gasoline.name
