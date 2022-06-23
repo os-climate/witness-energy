@@ -316,7 +316,7 @@ class TechnoType:
                     ratio_values
         self.consumption_woratio = pd.DataFrame({'years': self.years})
         for col in self.consumption.columns:
-            if col not in ['years', 'copper_resource (Mt)']:
+            if col not in ['years'] + [f'{resource} (Mt)' for resource in self.construction_resource_list]:
                 self.consumption_woratio[col] = self.consumption[col].values
                 self.consumption[col] = self.consumption[col].values * \
                     ratio_values

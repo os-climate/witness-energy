@@ -55,8 +55,8 @@ class Nuclear(ElectricityTechno):
         """
         self.compute_primary_energy_production()
 
-        # self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
-        #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
+            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
         '''
         One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel
         => 1 kg of fuel => 8.33 kg of ore
@@ -126,7 +126,7 @@ class Nuclear(ElectricityTechno):
         According to the IEA, Nuclear power stations need 1473 kg of copper for each MW implemented
         Computing the need in Mt/MW
         """
-        copper_need = self.techno_infos_dict['copper_needs'] #/ 1000 / 1000 / 1000
+        copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
 
         return copper_need
 

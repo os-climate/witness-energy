@@ -46,7 +46,7 @@ class Hydropower(ElectricityTechno):
         It needs 1100 kg / MW
         Computing the need in Mt/MW
         """
-        copper_need = self.techno_infos_dict['copper_needs'] #/ 1000 / 1000 / 1000
+        copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
 
         return copper_need
 
