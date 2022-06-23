@@ -361,7 +361,7 @@ class TechnoDiscipline(SoSDiscipline):
             
             if column not in ['years']:
                 
-                if column == 'copper_resource (Mt)': 
+                if column in [f'{resource} (Mt)' for resource in self.techno_model.construction_resource_list]: 
                     var_cons = (consumption[column] /
                             power_production['new_power_production']).fillna(
                     0)
@@ -380,7 +380,7 @@ class TechnoDiscipline(SoSDiscipline):
                         var_cons[line] = var_cons[line + 1]
                     self.dcons_column_dinvest[line, :] = self.dprod_dinvest[line,
                                                                             :] * var_cons[line]
-                    if column == 'copper_resource (Mt)' : 
+                    if column in [f'{resource} (Mt)' for resource in self.techno_model.construction_resource_list] : 
                         self.dcons_column_dinvest[line, :] = self.dpower_dinvest[line,
                                                                             :] * var_cons[line]
                 if column in [f'{resource} (Mt)' for resource in self.techno_model.construction_resource_list] :

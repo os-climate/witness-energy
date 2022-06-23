@@ -43,6 +43,6 @@ class WindOffshore(ElectricityTechno):
         According to the IEA, Offshore Wind turbines need 8000 kg of copper for each MW implemented
         Computing the need in Mt/MW
         """
-        copper_need = self.techno_infos_dict['copper_needs'] #/ 1000 / 1000 / 1000
+        copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
 
         return copper_need
