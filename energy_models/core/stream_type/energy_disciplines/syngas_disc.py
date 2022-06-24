@@ -22,7 +22,7 @@ from energy_models.core.stream_type.energy_models.syngas import Syngas, \
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
-
+from copy import deepcopy
 
 class SyngasDiscipline(EnergyDiscipline):
     # ontology information
@@ -121,7 +121,8 @@ class SyngasDiscipline(EnergyDiscipline):
     def compute_data_energy_dict(self):
 
         data_energy_dict = {}
-        for key, value in self.get_sosdisc_inputs('data_fuel_dict').items():
+        data_fuel_dict = deepcopy(self.get_sosdisc_inputs('data_fuel_dict'))
+        for key, value in data_fuel_dict.items():
             data_energy_dict[key] = value
 
         data_energy_dict['molar_mass'] = compute_molar_mass(
@@ -185,8 +186,8 @@ class SyngasDiscipline(EnergyDiscipline):
             fprimesgx = compute_dcal_val_dsyngas_ratio(
                 outputs_dict['syngas_ratio'] / 100.0, type_cal='high_calorific_value')
 
-            co2_per_use = self.get_sosdisc_inputs(
-                'data_fuel_dict')['CO2_per_use']
+            co2_per_use = deepcopy(self.get_sosdisc_inputs(
+                'data_fuel_dict')['CO2_per_use'])
             if co2_per_use != 0:
                 grad_carbon_tax_vs_prod = -grad_syngas_prod * fprimesgx * \
                     outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
