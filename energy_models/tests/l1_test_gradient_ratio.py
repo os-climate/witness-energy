@@ -1102,8 +1102,9 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         coupled_inputs = [
-            'Test_Ratio.EnergyMix.fuel.liquid_fuel.energy_consumption_woratio',
-            'Test_Ratio.EnergyMix.methane.energy_production']
+            # 'Test_Ratio.EnergyMix.fuel.liquid_fuel.energy_consumption_woratio',
+            # 'Test_Ratio.EnergyMix.methane.energy_production',
+            'Test_Ratio.EnergyMix.electricity.energy_consumption']
         coupled_outputs = ['Test_Ratio.EnergyMix.all_streams_demand_ratio',]
 
         #coupled_inputs = ['Test_Ratio.EnergyMix.hydrogen.gaseous_hydrogen.energy_production',]
@@ -1472,4 +1473,5 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = RatioJacobianTestCase()
     cls.setUp()
-    cls.test_07_ratio_CalciumLooping_discipline_jacobian()
+    #cls.test_07_ratio_CalciumLooping_discipline_jacobian()
+    cls.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian()
