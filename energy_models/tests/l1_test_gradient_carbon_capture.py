@@ -162,7 +162,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
             {'years': years, 'transport': np.ones(len(years)) * 0.0})
         #---Ratios---
         demand_ratio_dict = dict(
-            zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
+            zip(EnergyMix.energy_list, np.linspace(0.7, 1.0, len(years))))
         demand_ratio_dict['years'] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
@@ -445,22 +445,24 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.invest_before_ystart':
                        DirectAirCaptureTechnoDiscipline.invest_before_year_start,
                        f'{self.name}.resources_price': self.resources_prices,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_dac_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
                                     f'{self.name}.CO2_taxes',
                                     f'{self.name}.resources_price',
                                     f'{self.name}.resources_CO2_emissions',
+                                    f'{self.name}.all_streams_demand_ratio',
                                     ],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
                                      f'{self.name}.{self.model_name}.CO2_emissions',

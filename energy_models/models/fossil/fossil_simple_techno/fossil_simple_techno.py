@@ -17,6 +17,7 @@ limitations under the License.
 from energy_models.core.techno_type.base_techno_models.fossil_techno import FossilTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.fossil import Fossil
+from energy_models.core.stream_type.energy_models.methane import Methane
 
 
 class FossilSimpleTechno(FossilTechno):
@@ -47,3 +48,20 @@ class FossilSimpleTechno(FossilTechno):
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{FossilTechno.energy_name} ({self.product_energy_unit})'] + \
             co2_from_raw_to_net
+        self.compute_ch4_emissions()
+
+    def compute_ch4_emissions(self):
+        '''
+        Method to compute CH4 emissions from gas production
+        The proposed V0 only depends on production.
+        Equation is taken from the GAINS model for crude oil
+        https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+        CH4 emissions can be separated in three categories : flaring,venting and unintended leakage
+        emission_factor is in Mt/TWh
+        '''
+        emission_factor = self.techno_infos_dict['CH4_flaring_emission_factor'] + \
+            self.techno_infos_dict['CH4_venting_emission_factor'] + \
+            self.techno_infos_dict['CH4_unintended_leakage_emission_factor']
+
+        self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
+            self.production[f'{FossilTechno.energy_name} ({self.product_energy_unit})'].values
