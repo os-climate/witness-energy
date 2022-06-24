@@ -18,6 +18,7 @@ from energy_models.core.stream_type.energy_models.gaseous_hydrogen import Gaseou
 from energy_models.core.stream_type.energy_type import EnergyType
 
 import numpy as np
+from copy import deepcopy
 import logging
 
 
@@ -59,6 +60,8 @@ class Syngas(EnergyType):
         EnergyType.configure_parameters_update(self, inputs_dict)
         for techno in self.subelements_list:
             self.syngas_ratio[techno] = inputs_dict[f'{techno}.syngas_ratio'][0]
+        #Added to overwrite the definition of data energy dict input from energy type but with a deepcopy
+        self.data_energy_dict_input = deepcopy(inputs_dict['data_fuel_dict'])
 
     def compute_syngas_ratio(self):
         """

@@ -18,7 +18,7 @@ from abc import abstractmethod
 from energy_models.core.stream_type.energy_models.syngas import Syngas, compute_molar_mass, \
     compute_calorific_value, compute_density
 from energy_models.core.techno_type.techno_type import TechnoType
-
+from copy import deepcopy
 
 class SyngasTechno(TechnoType):
 
@@ -27,7 +27,7 @@ class SyngasTechno(TechnoType):
 
     def configure_energy_data(self, inputs_dict):
 
-        self.data_energy_dict = inputs_dict['data_fuel_dict']
+        self.data_energy_dict = deepcopy(inputs_dict['data_fuel_dict'])
 
         molar_mass = compute_molar_mass(self.syngas_COH2_ratio / 100.)
         calorific_value = compute_calorific_value(
