@@ -71,9 +71,9 @@ class DiscDoubleRunTestCase(unittest.TestCase):
         test_passed = True
         for disc in self.ee.factory.sos_disciplines:
             # RUN 1
-            local_data1 = disc.execute(deepcopy(local_data))
+            local_data1 = deepcopy(disc.execute(deepcopy(local_data)))
             # RUN 2
-            local_data2 = disc.execute(deepcopy(local_data))
+            local_data2 = deepcopy(disc.execute(deepcopy(local_data)))
             # COMPARE DICT
             dict_error = {}
             compare_dict(local_data1, local_data2, '', dict_error)
