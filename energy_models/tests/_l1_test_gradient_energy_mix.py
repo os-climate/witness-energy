@@ -32,7 +32,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
     """
     Energy mix jacobian test class
     """
-    AbstractJacobianUnittest.DUMP_JACOBIAN = False
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = False
     parallel = True
 
     def analytic_grad_entry(self):
