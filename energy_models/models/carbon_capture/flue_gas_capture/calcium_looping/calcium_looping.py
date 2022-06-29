@@ -38,19 +38,18 @@ class CalciumLooping(CCTechno):
         """
         Compute primary costs which depends on the technology
         """
-        self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.cost_details['elec_needs'] = self.get_electricity_needs() / self.cost_details['efficiency']
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
-                                                   / self.cost_details['efficiency'])
+                                                   )
 
         self.cost_details[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect)
 
-        self.cost_details['heat_needs'] = self.get_heat_needs()
 
-        self.cost_details[Methane.name] = list(self.prices[Methane.name] * self.cost_details['heat_needs']
-                                                   / self.cost_details['efficiency'])
 
-        return self.cost_details[Electricity.name] + self.cost_details[Methane.name]
+
+
+        return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -61,8 +60,7 @@ class CalciumLooping(CCTechno):
         heat_needs = self.get_heat_needs()
         efficiency = self.configure_efficiency()
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency * self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect),
-                Methane.name: np.identity(len(self.years)) * heat_needs / efficiency}
+            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect)}
 
     def compute_consumption_and_production(self):
         """
@@ -73,8 +71,20 @@ class CalciumLooping(CCTechno):
         # Consumption
         self.consumption[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
             self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']
-        self.consumption[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+
+
+    def compute_CO2_emissions_from_input_resources(self):
+        '''
+        Need to take into account  CO2 from Methane and electricity consumption
+        '''
+
+
+        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs'] * self.compute_electricity_variation_from_fg_ratio(
+            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect)
+
+        return self.carbon_emissions[Electricity.name] - 1.0
+
+
 
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)

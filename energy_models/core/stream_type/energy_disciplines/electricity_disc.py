@@ -22,13 +22,13 @@ import pandas as pd
 from plotly import graph_objects as go
 import plotly.colors as plt_color
 
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import InstantiatedPlotlyNativeChart
+from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+    InstantiatedPlotlyNativeChart
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import hydropower_name
 
 
 class ElectricityDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Electricity Energy Model',
@@ -43,18 +43,22 @@ class ElectricityDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list',
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': Electricity.default_techno_list,
                                      'default': Electricity.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_electricity', 'structuring': True},
+                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_electricity',
+                                     'structuring': True, 'unit': '-'},
                'hydropower_production_current': {'type': 'float',
-                                                 'default': 6600.0,  # 4400TWh is total production, we use a 50% higher value
+                                                 'default': 6600.0,
+                                                 # 4400TWh is total production,
+                                                 # we use a 50% higher value
                                                  'unit': 'Twh',
                                                  'user_level': 2,
                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                  'namespace': 'ns_ref'},
                'hydropower_constraint_ref': {'type': 'float',
                                              'default': 1000.,
+                                             'unit': 'Twh',
                                              'user_level': 2,
                                              'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                              'namespace': 'ns_ref'},
@@ -78,8 +82,9 @@ class ElectricityDiscipline(EnergyDiscipline):
 
             if techno_list is not None:
                 if hydropower_name in techno_list:
-                    dynamic_outputs['prod_hydropower_constraint'] = {'type': 'dataframe', 'user_level': 2,
-                                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'}
+                    dynamic_outputs['prod_hydropower_constraint'] = {'type': 'dataframe', 'user_level': 2, 'unit': 'TWh',
+                                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                     'namespace': 'ns_functions'}
         self.add_outputs(dynamic_outputs)
 
         EnergyDiscipline.setup_sos_disciplines(self)
@@ -115,9 +120,10 @@ class ElectricityDiscipline(EnergyDiscipline):
         years = np.arange(inputs_dict['year_start'],
                           inputs_dict['year_end'] + 1)
         if hydropower_name in self.energy_model.subelements_list:
-
             self.set_partial_derivative_for_other_types(('prod_hydropower_constraint', 'hydropower_constraint'), (
-                'Hydropower.techno_production', f'{Electricity.name} ({Electricity.unit})'), - inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) / inputs_dict['hydropower_constraint_ref'])
+                'Hydropower.techno_production', f'{Electricity.name} ({Electricity.unit})'),
+                - inputs_dict['scaling_factor_techno_production'] * np.identity(
+                len(years)) / inputs_dict['hydropower_constraint_ref'])
 
         EnergyDiscipline.compute_sos_jacobian(self)
 
@@ -169,7 +175,7 @@ class ElectricityDiscipline(EnergyDiscipline):
         for key in constraints_dict.keys():
             fig.add_trace(go.Scatter(x=list(years),
                                      y=list(constraints_dict[key]), name=key,
-                                     mode='lines',))
+                                     mode='lines', ))
         fig.update_layout(title={'text': chart_name, 'x': 0.5, 'y': 0.95, 'xanchor': 'center', 'yanchor': 'top'},
                           xaxis_title='years', yaxis_title=f'value of constraint')
         fig.update_layout(

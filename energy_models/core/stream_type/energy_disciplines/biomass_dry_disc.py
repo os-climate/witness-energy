@@ -21,7 +21,6 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 
 class BiomassDryDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Dry Biomass Model',
@@ -36,13 +35,14 @@ class BiomassDryDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list',
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': BiomassDry.default_techno_list,
                                      'default': BiomassDry.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_biomass_dry',
-                                     'structuring': True},
-               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'unit': 'defined in dict',
+                                     'structuring': True, 'unit': '-'},
+               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                  'unit': 'defined in dict',
                                   'namespace': 'ns_biomass_dry', 'default': BiomassDry.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)

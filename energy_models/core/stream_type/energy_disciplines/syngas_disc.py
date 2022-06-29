@@ -17,15 +17,14 @@ limitations under the License.
 import numpy as np
 
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
-from energy_models.core.stream_type.energy_models.syngas import Syngas,\
+from energy_models.core.stream_type.energy_models.syngas import Syngas, \
     compute_calorific_value, compute_molar_mass, compute_high_calorific_value, compute_dcal_val_dsyngas_ratio
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
-
+from copy import deepcopy
 
 class SyngasDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Syngas Energy Model',
@@ -40,10 +39,12 @@ class SyngasDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': Syngas.default_techno_list,
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                     'possible_values': Syngas.default_techno_list,
                                      'default': Syngas.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_syngas', 'structuring': True},
+                                     'namespace': 'ns_syngas', 'structuring': True,
+                                     'unit': '-'},
 
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
@@ -57,7 +58,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
     DESC_OUT = {'syngas_ratio': {'type': 'array', 'unit': '%',
                                  'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
-                'syngas_ratio_technos': {'type': 'dict', 'unit': '%',
+                'syngas_ratio_technos': {'type': 'dict', 'unit': '%', 'subtype_descriptor': {'dict': 'float'},
                                          'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
                 }
 
@@ -120,7 +121,8 @@ class SyngasDiscipline(EnergyDiscipline):
     def compute_data_energy_dict(self):
 
         data_energy_dict = {}
-        for key, value in self.get_sosdisc_inputs('data_fuel_dict').items():
+        data_fuel_dict = deepcopy(self.get_sosdisc_inputs('data_fuel_dict'))
+        for key, value in data_fuel_dict.items():
             data_energy_dict[key] = value
 
         data_energy_dict['molar_mass'] = compute_molar_mass(
@@ -162,7 +164,7 @@ class SyngasDiscipline(EnergyDiscipline):
                     mix_weight_techno_other = mix_weight[techno_other].values / 100.0
                     grad_techno_mix_vs_prod = self.grad_techno_mix_vs_prod_dict[f'{techno} {techno_other}'] * np.sign(
                         mix_weight_techno_other)
-                    grad_syngas_prod +=  \
+                    grad_syngas_prod += \
                         np.array(
                             inputs_dict[f'{techno_other}.syngas_ratio']) * grad_techno_mix_vs_prod
 
@@ -184,11 +186,11 @@ class SyngasDiscipline(EnergyDiscipline):
             fprimesgx = compute_dcal_val_dsyngas_ratio(
                 outputs_dict['syngas_ratio'] / 100.0, type_cal='high_calorific_value')
 
-            co2_per_use = self.get_sosdisc_inputs(
-                'data_fuel_dict')['CO2_per_use']
+            co2_per_use = deepcopy(self.get_sosdisc_inputs(
+                'data_fuel_dict')['CO2_per_use'])
             if co2_per_use != 0:
                 grad_carbon_tax_vs_prod = -grad_syngas_prod * fprimesgx * \
-                    outputs_dict['CO2_per_use']['CO2_per_use'].values**2 / \
+                    outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
                     co2_per_use / 100.0
             else:
                 grad_carbon_tax_vs_prod = [0] * len(grad_syngas_prod)
@@ -200,7 +202,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
             if co2_per_use != 0:
                 grad_carbon_tax_vs_syngas_ratio = -mix_weight_techno * fprimesgx * \
-                    outputs_dict['CO2_per_use']['CO2_per_use'].values**2 / \
+                    outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
                     co2_per_use / 100.0
             else:
                 grad_carbon_tax_vs_syngas_ratio = [0] * len(mix_weight_techno)

@@ -32,7 +32,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
     """
     Energy mix jacobian test class
     """
-    AbstractJacobianUnittest.DUMP_JACOBIAN = False
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = False
     parallel = True
 
     def analytic_grad_entry(self):
@@ -1342,4 +1342,5 @@ if '__main__' == __name__:
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = EnergyMixJacobianTestCase()
     cls.setUp()
-    cls.test_04_energy_mix_discipline_co2_emissions_gt()
+    #cls.test_04_energy_mix_discipline_co2_emissions_gt()
+    cls.test_10_energy_mix_demand_dataframe()

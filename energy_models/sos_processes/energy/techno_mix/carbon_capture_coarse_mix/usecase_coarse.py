@@ -76,6 +76,7 @@ class Study(EnergyMixStudyManager):
         # reference_data_name = 'Reference_aircraft_data'
         self.energy_prices = pd.DataFrame({'years': years,
                                            'renewable': 10.0,
+                                           'fossil': 2.0,
                                            })
 
         # the value for invest_level is just set as an order of magnitude
@@ -98,16 +99,16 @@ class Study(EnergyMixStudyManager):
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 7.0})
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'amine': 0.0, 'potassium': 0.0, 'electricity': 0.0, 'calcium': 0.0})
+            {'years': years, 'amine': 0.0, 'potassium': 0.0, 'electricity': 0.0, 'calcium': 0.0, 'renewable': 0.0, 'fossil': 5.0})
 
-        flue_gas_list = ['fossil.FossilSimpleTechno']
+        flue_gas_list = ['fossil.FossilSimpleTechno', 'carbon_capture.direct_air_capture.DirectAirCaptureTechno' ]
         fossil_simple_techno_prod = pd.DataFrame({'years': years,
                                                   f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
 
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
-
+                       f'{self.study_name}.ccs_list': ['carbon_capture', 'carbon_storage'],
                        f'{self.study_name}.{ccs_name}.{flue_gas_name}.technologies_list': flue_gas_list,
                        f'{self.study_name}.{ccs_name}.technologies_list': self.technologies_list,
                        f'{self.study_name}.{ccs_name}.flue_gas_capture.flue_gas_mean': self.flue_gas_mean,
@@ -116,8 +117,6 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{ccs_name}.transport_cost': self.transport,
                        f'{self.study_name}.{ccs_name}.transport_margin': self.margin,
                        f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
-
-
                        }
 
         if self.main_study:

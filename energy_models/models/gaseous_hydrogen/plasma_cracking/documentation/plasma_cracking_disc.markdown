@@ -41,6 +41,8 @@ $$H2_{price}= PC_{cost} * Margin * X $$
 
   $$\dfrac {\partial H2_{price}}{\partial all\_stream\_demand\_ratio}= PC_{cost} * Margin * \dfrac {\partial X}{\partial all\_stream\_demand\_ratio} $$
 
+$$\dfrac {\partial H2_{price}}{\partial resources\_price}= PC_{cost} * Margin * \dfrac {\partial X}{\partial resources\_price} $$
+
 ### X computation:
 $$ X = \dfrac {H2\_revenue}{H2\_revenue 
 	+  A
@@ -148,6 +150,30 @@ $${\footnotesize A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}
     - \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]}$$
 
 $$ B = \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol} $$
+
+
+### resources price computation:
+
+$$ {\footnotesize\dfrac {\partial X}{\partial resources\_price} =
+\dfrac {
+    -
+    [\dfrac {\partial Carbon\_price} {\partial resources\_price} * B *
+    H2\_revenue]
+}{[H2\_revenue
+    + A]^2}}
+$$
+
+with:
+
+if  Carbon\_prod < Carbon\_demand : 
+
+$$ B = Carbon\_sold\_revenue$$
+
+if  Carbon\_prod > Carbon\_demand : 
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Carbon\_storage = Carbon\_prod - Carbon\_demand
+
+$$ B = Carbon\_demand $$
 
 
 ## Gradient computation - More details

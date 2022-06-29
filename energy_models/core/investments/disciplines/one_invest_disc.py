@@ -20,7 +20,6 @@ from energy_models.core.ccus.ccus import CCUS
 
 
 class OneInvestDiscipline(SoSDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Investment Distribution Model',
@@ -39,20 +38,25 @@ class OneInvestDiscipline(SoSDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'energy_investment': {'type': 'dataframe', 'unit': '100G$',
-                              'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                       'energy_investment': ('float',  None, True)},
+                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                       'energy_investment': ('float', None, True)},
                               'dataframe_edition_locked': False,
                               'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_public'},
+        'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
+                                             'namespace': 'ns_public'},
         'invest_mix': {'type': 'dataframe',
-                       'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                       'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
                        'dataframe_edition_locked': False},
-        'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
-        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
+        'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                        'possible_values': EnergyMix.energy_list,
+                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                        'editable': False, 'structuring': True},
+        'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
+                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
+                     'structuring': True},
         # WIP is_dev to remove once its validated on dev processes
-        'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}
+        'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
+                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}
     }
 
     energy_name = "one_invest"
@@ -83,10 +87,10 @@ class OneInvestDiscipline(SoSDiscipline):
                     else:
                         # Add technologies_list to inputs
                         dynamic_inputs[f'{energy}.technologies_list'] = {
-                            'type': 'string_list', 'structuring': True,
-                                    'visibility': 'Shared', 'namespace': 'ns_energy',
-                                    'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
-                                    'default': EnergyMix.stream_class_dict[energy].default_techno_list}
+                            'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
+                            'visibility': 'Shared', 'namespace': 'ns_energy',
+                            'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
+                            'default': EnergyMix.stream_class_dict[energy].default_techno_list}
                         # Add all invest_level outputs
                         if f'{energy}.technologies_list' in self._data_in:
                             technology_list = self.get_sosdisc_inputs(
@@ -103,7 +107,8 @@ class OneInvestDiscipline(SoSDiscipline):
                 for ccs in ccs_list:
                     # Add technologies_list to inputs
                     dynamic_inputs[f'{ccs}.technologies_list'] = {
-                        'type': 'string_list', 'structuring': True, 'visibility': 'Shared', 'namespace': 'ns_ccs',
+                        'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
+                        'visibility': 'Shared', 'namespace': 'ns_ccs',
                         'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
                         'default': EnergyMix.stream_class_dict[ccs].default_techno_list}
                     # Add all invest_level outputs
@@ -131,8 +136,9 @@ class OneInvestDiscipline(SoSDiscipline):
                 pass
             else:
                 for techno in input_dict[f'{energy}.technologies_list']:
-                    output_dict[f'{energy}.{techno}.invest_level'] = pd.DataFrame({'years': input_dict['energy_investment']['years'].values,
-                                                                                   'invest': all_invest_df[f'{energy}.{techno}'].values})
+                    output_dict[f'{energy}.{techno}.invest_level'] = pd.DataFrame(
+                        {'years': input_dict['energy_investment']['years'].values,
+                         'invest': all_invest_df[f'{energy}.{techno}'].values})
 
         self.store_sos_outputs_values(output_dict)
 
@@ -148,21 +154,26 @@ class OneInvestDiscipline(SoSDiscipline):
 
         for techno in self.one_invest_model.distribution_list:
             grad_energy = inputs_dict['invest_mix'][techno].values / \
-                norm_mix.values
+                          norm_mix.values
             self.set_partial_derivative_for_other_types(
-                (f'{techno}.invest_level', 'invest'), ('energy_investment', 'energy_investment'),  scaling_factor_energy_investment * np.identity(len(years)) * grad_energy[:, np.newaxis])
+                (f'{techno}.invest_level', 'invest'), ('energy_investment', 'energy_investment'),
+                scaling_factor_energy_investment * np.identity(len(years)) * grad_energy[:, np.newaxis])
 
-            grad_techno_mix = inputs_dict['energy_investment']['energy_investment'].values * scaling_factor_energy_investment * (
-                norm_mix.values - inputs_dict['invest_mix'][techno].values) / norm_mix.values**2
+            grad_techno_mix = inputs_dict['energy_investment'][
+                                  'energy_investment'].values * scaling_factor_energy_investment * (
+                                      norm_mix.values - inputs_dict['invest_mix'][techno].values) / norm_mix.values ** 2
             self.set_partial_derivative_for_other_types(
-                (f'{techno}.invest_level', 'invest'), ('invest_mix', techno),  np.identity(len(years)) * grad_techno_mix[:, np.newaxis])
+                (f'{techno}.invest_level', 'invest'), ('invest_mix', techno),
+                np.identity(len(years)) * grad_techno_mix[:, np.newaxis])
             for techno_other in self.one_invest_model.distribution_list:
                 if techno != techno_other:
-                    grad_techno_mix_other = -inputs_dict['energy_investment']['energy_investment'].values * scaling_factor_energy_investment * \
-                        inputs_dict['invest_mix'][techno].values / \
-                        norm_mix.values**2
+                    grad_techno_mix_other = -inputs_dict['energy_investment'][
+                        'energy_investment'].values * scaling_factor_energy_investment * \
+                                            inputs_dict['invest_mix'][techno].values / \
+                                            norm_mix.values ** 2
                     self.set_partial_derivative_for_other_types(
-                        (f'{techno}.invest_level', 'invest'), ('invest_mix', techno_other),  np.identity(len(years)) * grad_techno_mix_other[:, np.newaxis])
+                        (f'{techno}.invest_level', 'invest'), ('invest_mix', techno_other),
+                        np.identity(len(years)) * grad_techno_mix_other[:, np.newaxis])
 
     def get_chart_filter_list(self):
 
@@ -231,12 +242,12 @@ class OneInvestDiscipline(SoSDiscipline):
 
             instanciated_charts.insert(0, new_chart_energy)
 
-#             for year in years_list:
-#                 values = [all_invest_df.loc[all_invest_df['years']
-#                                             == year][[
-#                                                 col for col in all_invest_df.columns if col.startswith(f'{energy}.')]].sum(axis=1).values[0] for energy in energy_list + ccs_list]
-#                 if sum(values) != 0.0:
-#                     pie_chart = InstanciatedPieChart(
-#                         f'Energy investments in {year}', energy_list + ccs_list, values)
-#                     instanciated_charts.append(pie_chart)
+        #             for year in years_list:
+        #                 values = [all_invest_df.loc[all_invest_df['years']
+        #                                             == year][[
+        #                                                 col for col in all_invest_df.columns if col.startswith(f'{energy}.')]].sum(axis=1).values[0] for energy in energy_list + ccs_list]
+        #                 if sum(values) != 0.0:
+        #                     pie_chart = InstanciatedPieChart(
+        #                         f'Energy investments in {year}', energy_list + ccs_list, values)
+        #                     instanciated_charts.append(pie_chart)
         return instanciated_charts

@@ -86,7 +86,7 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
             {'years': np.arange(2020, 2051), 'margin': np.ones(len(np.arange(2020, 2051))) * 100})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.0})
+            {'years': years, 'electricity': 0.0, 'methane': 0.2})
 
         transport_cost = 0,
 

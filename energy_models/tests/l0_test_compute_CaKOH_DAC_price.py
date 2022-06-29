@@ -88,7 +88,7 @@ class CalciumPotassiumTestCase(unittest.TestCase):
 
         years = np.arange(2020, 2051)
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.0})
+            {'years': years, 'electricity': 0.0, 'methane': 0.2})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,

@@ -17,7 +17,6 @@ from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart imp
 
 
 class InvestEnergyDiscipline(SoSDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Investment Model',
@@ -37,15 +36,18 @@ class InvestEnergyDiscipline(SoSDiscipline):
         'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]',
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'energy_investment': {'type': 'dataframe',
-                              'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                       'energy_investment': ('float',  None, True)},
+                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                       'energy_investment': ('float', None, True)},
                               'dataframe_edition_locked': False},
-        'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_public'},
+        'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
+                                             'namespace': 'ns_public'},
         'invest_energy_mix': {'type': 'dataframe',
-                              'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
                               'dataframe_edition_locked': False},
-        'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True}
+        'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                        'possible_values': EnergyMix.energy_list,
+                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                        'editable': False, 'structuring': True}
     }
 
     energy_name = "invest_energy"
@@ -78,12 +80,13 @@ class InvestEnergyDiscipline(SoSDiscipline):
         input_dict = self.get_sosdisc_inputs()
         energy_invest_df = input_dict['energy_investment'].copy(deep=True)
         energy_invest_df['energy_investment'] = input_dict['energy_investment']['energy_investment'] * \
-            self.energy_model.rescaling_factor
+                                                self.energy_model.rescaling_factor
         self.energy_model.set_energy_list(input_dict['energy_list'])
 
         scaling_factor_energy_investment = input_dict['scaling_factor_energy_investment']
         scaled_energy_investment = pd.DataFrame(
-            {'years': input_dict['energy_investment']['years'], 'energy_investment': input_dict['energy_investment']['energy_investment'] * scaling_factor_energy_investment})
+            {'years': input_dict['energy_investment']['years'], 'energy_investment': input_dict['energy_investment'][
+                                                                                         'energy_investment'] * scaling_factor_energy_investment})
 
         energy_invest_df, unit = self.energy_model.get_invest_distrib(
             scaled_energy_investment,
@@ -112,26 +115,29 @@ class InvestEnergyDiscipline(SoSDiscipline):
 
         for energy in inputs_dict['energy_list']:
             grad_energy = inputs_dict['invest_energy_mix'][energy].values / \
-                norm_mix.values
+                          norm_mix.values
             self.set_partial_derivative_for_other_types(
-                (f'{energy}.invest_level', 'invest'), ('energy_investment', 'energy_investment'),  scaling_factor_energy_investment * np.identity(len(years)) * grad_energy[:, np.newaxis])
+                (f'{energy}.invest_level', 'invest'), ('energy_investment', 'energy_investment'),
+                scaling_factor_energy_investment * np.identity(len(years)) * grad_energy[:, np.newaxis])
 
             invest_copy = inputs_dict['energy_investment'].copy(deep=True)
             invest_copy.reset_index(inplace=True)
             invest_copy['energy_investment'] = inputs_dict['energy_investment']['energy_investment'] * \
-                scaling_factor_energy_investment
+                                               scaling_factor_energy_investment
 
             grad_energy_mix = invest_copy['energy_investment'].values * (
-                norm_mix.values - inputs_dict['invest_energy_mix'][energy].values) / norm_mix.values**2
+                    norm_mix.values - inputs_dict['invest_energy_mix'][energy].values) / norm_mix.values ** 2
             self.set_partial_derivative_for_other_types(
-                (f'{energy}.invest_level', 'invest'), ('invest_energy_mix', energy),  np.identity(len(years)) * grad_energy_mix[:, np.newaxis])
+                (f'{energy}.invest_level', 'invest'), ('invest_energy_mix', energy),
+                np.identity(len(years)) * grad_energy_mix[:, np.newaxis])
             for energy_other in inputs_dict['energy_list']:
                 if energy != energy_other:
                     grad_energy_mix_other = -invest_copy['energy_investment'].values * \
-                        inputs_dict['invest_energy_mix'][energy].values / \
-                        norm_mix.values**2
+                                            inputs_dict['invest_energy_mix'][energy].values / \
+                                            norm_mix.values ** 2
                     self.set_partial_derivative_for_other_types(
-                        (f'{energy}.invest_level', 'invest'), ('invest_energy_mix', energy_other),  np.identity(len(years)) * grad_energy_mix_other[:, np.newaxis])
+                        (f'{energy}.invest_level', 'invest'), ('invest_energy_mix', energy_other),
+                        np.identity(len(years)) * grad_energy_mix_other[:, np.newaxis])
 
     def get_chart_filter_list(self):
 

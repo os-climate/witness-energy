@@ -16,6 +16,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
+from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
@@ -129,12 +130,14 @@ if '__main__' == __name__:
                    technologies_list=DEFAULT_TECHNOLOGIES_LIST)
     uc_cls.load_data()
     uc_cls.run()
-#     ppf = PostProcessingFactory()
-#     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-#         filters = ppf.get_post_processing_filters_by_discipline(
-#             disc)
-#         graph_list = ppf.get_post_processing_by_discipline(
-#             disc, filters, as_json=False)
-#
-#         for graph in graph_list:
-#             graph.to_plotly()
+
+    # ppf = PostProcessingFactory()
+    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    #     filters = ppf.get_post_processing_filters_by_discipline(
+    #         disc)
+    #     graph_list = ppf.get_post_processing_by_discipline(
+    #         disc, filters, as_json=False)
+       
+    #     for graph in graph_list:
+    #         graph.to_plotly().show()
+

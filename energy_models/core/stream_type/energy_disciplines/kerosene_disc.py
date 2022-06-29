@@ -19,7 +19,6 @@ from energy_models.core.stream_type.energy_models.kerosene import Kerosene
 
 
 class KeroseneDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Kerosene Energy Model',
@@ -34,11 +33,12 @@ class KeroseneDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['AlcoholToFuel', 'BioFuel', 'EOR',
-                                                                                'Refinery', 'HEFA', 'FischerTropsch'],
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                     'possible_values': ['AlcoholToFuel', 'BioFuel', 'EOR',
+                                                         'Refinery', 'HEFA', 'FischerTropsch'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_liquid_fuel',
-                                     'structuring': True},
+                                     'structuring': True, 'unit': '-'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_liquid_fuel',

@@ -104,6 +104,7 @@ class CCUSDiscTestCase(unittest.TestCase):
             f'{self.name}.year_start': self.year_start,
             f'{self.name}.year_end': self.year_end,
             f'{self.name}.energy_list': self.energy_list,
+            f'{self.name}.ccs_list': ['carbon_capture', 'carbon_storage'],
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
             f'{self.name}.energy_production_detailed': self.energy_production_detailed,

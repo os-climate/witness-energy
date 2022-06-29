@@ -76,10 +76,17 @@ class EnergyType(BaseStream):
                 {'years': self.years})
             ghg_dict[f'{ghg_type}_per_use'][f'{ghg_type}_per_use'] = 0.0
             if f'{ghg_type}_per_use' in self.data_energy_dict:
-                if self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'kg/kg':
-                    ghg_dict[f'{ghg_type}_per_use'][f'{ghg_type}_per_use'] = self.data_energy_dict_input[f'{ghg_type}_per_use'] / \
-                        self.data_energy_dict_input['high_calorific_value']
-                elif self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'kg/kWh' or self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'Mt/TWh':
-                    ghg_dict[f'{ghg_type}_per_use'][f'{ghg_type}_per_use'] = self.data_energy_dict_input[f'{ghg_type}_per_use']
+                ghg_dict[f'{ghg_type}_per_use'][f'{ghg_type}_per_use'] = self.compute_ghg_per_use(
+                    ghg_type)
 
         return ghg_dict
+
+    def compute_ghg_per_use(self, ghg_type):
+
+        if self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'kg/kg':
+            ghg_type_per_use = self.data_energy_dict_input[f'{ghg_type}_per_use'] / \
+                self.data_energy_dict_input['high_calorific_value']
+        elif self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'kg/kWh' or self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'Mt/TWh':
+            ghg_type_per_use = self.data_energy_dict_input[f'{ghg_type}_per_use']
+
+        return ghg_type_per_use

@@ -75,7 +75,12 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                  'CO2_from_production_unit': 'kg/kg',
                                  'construction_delay': construction_delay,
                                  'resource_price': 75.0,
-                                 'resource_price_unit': '$/MWh'}
+                                 'resource_price_unit': '$/MWh',
+                                 'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,
+                                 'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
+                                 'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
+                                 'CH4_emission_factor_unit': 'Mt/TWh',
+                                 }
 
     techno_info_dict = techno_infos_dict_default
     # net production = 90717.76   TWh

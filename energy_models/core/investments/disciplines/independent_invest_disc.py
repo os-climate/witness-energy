@@ -15,7 +15,7 @@ from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilte
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
+from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
     compute_func_with_exp_min
 from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum, get_dsmooth_dvariable
 from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
@@ -24,7 +24,6 @@ from energy_models.core.ccus.ccus import CCUS
 
 
 class IndependentInvestDiscipline(SoSDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'InvestmentsDistribution',
@@ -43,34 +42,45 @@ class IndependentInvestDiscipline(SoSDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'energy_investment': {'type': 'dataframe', 'unit': '100G$',
-                              'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                       'energy_investment': ('float',  None, True)},
+                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                       'energy_investment': ('float', None, True)},
                               'dataframe_edition_locked': False,
                               'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_public'},
-        'invest_mix': {'type': 'dataframe',
-                       'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+        'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
+                                             'namespace': 'ns_public'},
+        'invest_mix': {'type': 'dataframe', 'unit': 'G$',
+                       'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
                        'dataframe_edition_locked': False},
-        'invest_objective_ref': {'type': 'float', 'default': 1.0, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
+        'invest_objective_ref': {'type': 'float', 'unit': 'G$', 'default': 1.0, 'user_level': 2, 'visibility': 'Shared',
+                                 'namespace': 'ns_ref'},
         'invest_sum_ref': {'type': 'float', 'unit': 'G$', 'default': 2., 'user_level': 2, 'visibility': 'Shared',
                            'namespace': 'ns_ref'},
-        'invest_constraint_ref': {'type': 'float', 'unit': 'G$', 'default': 80.0, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_ref'},
-        'energy_list': {'type': 'string_list', 'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
-        'ccs_list': {'type': 'string_list', 'possible_values': CCUS.ccs_list,
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
+        'invest_constraint_ref': {'type': 'float', 'unit': 'G$', 'default': 80.0, 'user_level': 2,
+                                  'visibility': 'Shared', 'namespace': 'ns_ref'},
+        'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                        'possible_values': EnergyMix.energy_list,
+                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                        'editable': False, 'structuring': True},
+        'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
+                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
+                     'structuring': True},
         'invest_limit_ref': {'type': 'float', 'default': 300., 'unit': 'G$', 'user_level': 2, 'visibility': 'Shared',
                              'namespace': 'ns_ref'},
-        'forest_investment': {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'dataframe_descriptor': {'years': ('int', [1900, 2100], False)}, 'namespace': 'ns_invest', 'dataframe_edition_locked': False},
+        'forest_investment': {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
+                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False)}, 'namespace': 'ns_invest',
+                              'dataframe_edition_locked': False},
         # WIP is_dev to remove once its validated on dev processes
-        'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}
+        'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
+                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}
     }
 
     energy_name = "one_invest"
 
     DESC_OUT = {
-        'invest_constraint': {'type': 'dataframe', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
-        'invest_objective': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'invest_constraint': {'type': 'dataframe', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                              'namespace': 'ns_functions'},
+        'invest_objective': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                             'namespace': 'ns_functions'},
         'invest_objective_sum': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                  'namespace': 'ns_functions'},
         'invest_sum_cons': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
@@ -100,23 +110,23 @@ class IndependentInvestDiscipline(SoSDiscipline):
                     if energy == BiomassDry.name and is_dev == True:
                         dynamic_inputs['managed_wood_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                            'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
                             'namespace': 'ns_forest', 'dataframe_edition_locked': False}
                         dynamic_inputs['deforestation_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                            'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
                             'namespace': 'ns_forest', 'dataframe_edition_locked': False}
                         dynamic_inputs['crop_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {'years': ('int',  [1900, 2100], False)},
+                            'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
                             'namespace': 'ns_crop', 'dataframe_edition_locked': False}
                     else:
                         # Add technologies_list to inputs
                         dynamic_inputs[f'{energy}.technologies_list'] = {
-                            'type': 'string_list', 'structuring': True,
-                                    'visibility': 'Shared', 'namespace': 'ns_energy',
-                                    'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
-                                    'default': EnergyMix.stream_class_dict[energy].default_techno_list}
+                            'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
+                            'visibility': 'Shared', 'namespace': 'ns_energy',
+                            'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
+                            'default': EnergyMix.stream_class_dict[energy].default_techno_list}
                         # Add all invest_level outputs
                         if f'{energy}.technologies_list' in self._data_in:
                             technology_list = self.get_sosdisc_inputs(
@@ -133,7 +143,8 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 for ccs in ccs_list:
                     # Add technologies_list to inputs
                     dynamic_inputs[f'{ccs}.technologies_list'] = {
-                        'type': 'string_list', 'structuring': True, 'visibility': 'Shared', 'namespace': 'ns_ccs',
+                        'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
+                        'visibility': 'Shared', 'namespace': 'ns_ccs',
                         'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list}
                     # Add all invest_level outputs
                     if f'{ccs}.technologies_list' in self._data_in:
@@ -167,8 +178,9 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 pass
             else:
                 for techno in input_dict[f'{energy}.technologies_list']:
-                    output_dict[f'{energy}.{techno}.invest_level'] = pd.DataFrame({'years': input_dict['energy_investment']['years'].values,
-                                                                                   'invest': input_dict['invest_mix'][f'{energy}.{techno}'].values})
+                    output_dict[f'{energy}.{techno}.invest_level'] = pd.DataFrame(
+                        {'years': input_dict['energy_investment']['years'].values,
+                         'invest': input_dict['invest_mix'][f'{energy}.{techno}'].values})
 
         self.store_sos_outputs_values(output_dict)
 
@@ -201,29 +213,32 @@ class IndependentInvestDiscipline(SoSDiscipline):
         idt = np.identity(delta_years)
         ddelta_dtech = -idt / energy_invest
         ddelta_dtot = (idt * energy_invest - (energy_invest -
-                                              techno_invest_sum) * idt) / energy_invest**2
+                                              techno_invest_sum) * idt) / energy_invest ** 2
 
-        dinvest_objective_dtechno_invest, dinvest_objective_dtotal_invest = self.compute_dinvest_objective_dinvest(techno_invest_sum,
-                                                                                                                   energy_invest,
-                                                                                                                   invest_objective_ref)
+        dinvest_objective_dtechno_invest, dinvest_objective_dtotal_invest = self.compute_dinvest_objective_dinvest(
+            techno_invest_sum,
+            energy_invest,
+            invest_objective_ref)
 
         dinvest_objective_sum_dtechno_invest, dinvest_objective_sum_dtotal_invest = self.compute_dinvest_objective_sum_dinvest(
             techno_invest_sum, energy_invest, invest_sum_ref)
         dinvest_objective_sum_cons_dtechno_invest, dinvest_objective_sum_cons_dtotal_invest = self.compute_dinvest_objective_sum_cons_dinvest(
             techno_invest_sum, energy_invest, invest_sum_ref, invest_limit_ref)
         dinvest_objective_sum_cons_dc_dtechno_invest, dinvest_objective_sum_cons_dc_dtotal_invest, _ = compute_ddelta_constraint(
-            techno_invest_sum, energy_invest, tolerable_delta=invest_limit_ref, delta_type='abs', reference_value=invest_sum_ref * delta_years)
+            techno_invest_sum, energy_invest, tolerable_delta=invest_limit_ref, delta_type='abs',
+            reference_value=invest_sum_ref * delta_years)
         dinvest_eq_cons_dtechno_invest, dinvest_eq_cons_dtotal_invest, _ = compute_ddelta_constraint(
             techno_invest_sum, energy_invest, tolerable_delta=invest_limit_ref, delta_type='normal',
             reference_value=invest_sum_ref * delta_years)
 
         for techno in self.independent_invest_model.distribution_list:
             self.set_partial_derivative_for_other_types(
-                (f'{techno}.invest_level', 'invest'), ('invest_mix', techno),  np.identity(len(years)))
+                (f'{techno}.invest_level', 'invest'), ('invest_mix', techno), np.identity(len(years)))
             self.set_partial_derivative_for_other_types(
-                ('invest_constraint', 'invest_constraint'), ('invest_mix', techno),  ddelta_dtech / invest_constraint_ref)
+                ('invest_constraint', 'invest_constraint'), ('invest_mix', techno),
+                ddelta_dtech / invest_constraint_ref)
             self.set_partial_derivative_for_other_types(
-                ('invest_objective', 'invest_objective'), ('invest_mix', techno),  dinvest_objective_dtechno_invest)
+                ('invest_objective', 'invest_objective'), ('invest_mix', techno), dinvest_objective_dtechno_invest)
             self.set_partial_derivative_for_other_types(
                 ('invest_objective_sum',), ('invest_mix', techno), dinvest_objective_sum_dtechno_invest)
             self.set_partial_derivative_for_other_types(
@@ -234,9 +249,13 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 ('invest_sum_eq_cons',), ('invest_mix', techno), dinvest_eq_cons_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_constraint', 'invest_constraint'), ('forest_investment', 'forest_investment'),  ddelta_dtech / invest_constraint_ref)
+            ('invest_constraint', 'invest_constraint'), ('forest_investment',
+                                                         'forest_investment'),
+            ddelta_dtech / invest_constraint_ref)
         self.set_partial_derivative_for_other_types(
-            ('invest_objective', 'invest_constraint'), ('forest_investment', 'forest_investment'),  dinvest_objective_dtechno_invest)
+            ('invest_objective', 'invest_constraint'), ('forest_investment',
+                                                        'forest_investment'),
+            dinvest_objective_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
             ('invest_objective_sum',), ('forest_investment', 'forest_investment'), dinvest_objective_sum_dtechno_invest)
@@ -245,16 +264,18 @@ class IndependentInvestDiscipline(SoSDiscipline):
             ('invest_sum_cons',), ('forest_investment', 'forest_investment'),
             -dinvest_objective_sum_cons_dtechno_invest / delta_years)
         self.set_partial_derivative_for_other_types(
-            ('invest_sum_cons_dc',), ('forest_investment', 'forest_investment'), dinvest_objective_sum_cons_dc_dtechno_invest)
+            ('invest_sum_cons_dc',), ('forest_investment', 'forest_investment'),
+            dinvest_objective_sum_cons_dc_dtechno_invest)
         self.set_partial_derivative_for_other_types(
             ('invest_sum_eq_cons',), ('forest_investment', 'forest_investment'), dinvest_eq_cons_dtechno_invest)
 
         if inputs_dict['is_dev'] and BiomassDry.name in energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                 self.set_partial_derivative_for_other_types(
-                    ('invest_constraint', 'invest_constraint'), (techno, 'investment'),  ddelta_dtech / invest_constraint_ref)
+                    ('invest_constraint', 'invest_constraint'), (techno, 'investment'),
+                    ddelta_dtech / invest_constraint_ref)
                 self.set_partial_derivative_for_other_types(
-                    ('invest_objective', 'invest_constraint'), (techno, 'investment'),  dinvest_objective_dtechno_invest)
+                    ('invest_objective', 'invest_constraint'), (techno, 'investment'), dinvest_objective_dtechno_invest)
 
                 self.set_partial_derivative_for_other_types(
                     ('invest_objective_sum',), (techno, 'investment'), dinvest_objective_sum_dtechno_invest)
@@ -268,21 +289,28 @@ class IndependentInvestDiscipline(SoSDiscipline):
                     ('invest_sum_eq_cons',), (techno, 'investment'), dinvest_eq_cons_dtechno_invest)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_constraint', 'invest_constraint'), ('energy_investment', 'energy_investment'),  ddelta_dtot * scaling_factor_energy_investment / invest_constraint_ref)
+            ('invest_constraint', 'invest_constraint'), ('energy_investment',
+                                                         'energy_investment'),
+            ddelta_dtot * scaling_factor_energy_investment / invest_constraint_ref)
         self.set_partial_derivative_for_other_types(
-            ('invest_objective', 'invest_objective'), ('energy_investment', 'energy_investment'),  dinvest_objective_dtotal_invest * scaling_factor_energy_investment)
+            ('invest_objective', 'invest_objective'), ('energy_investment',
+                                                       'energy_investment'),
+            dinvest_objective_dtotal_invest * scaling_factor_energy_investment)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_objective_sum',), ('energy_investment', 'energy_investment'), dinvest_objective_sum_dtotal_invest * scaling_factor_energy_investment)
+            ('invest_objective_sum',), ('energy_investment', 'energy_investment'),
+            dinvest_objective_sum_dtotal_invest * scaling_factor_energy_investment)
 
         self.set_partial_derivative_for_other_types(
             ('invest_sum_cons',), ('energy_investment', 'energy_investment'),
             -dinvest_objective_sum_cons_dtotal_invest * scaling_factor_energy_investment / delta_years)
         self.set_partial_derivative_for_other_types(
-            ('invest_sum_cons_dc',), ('energy_investment', 'energy_investment'), dinvest_objective_sum_cons_dc_dtotal_invest * scaling_factor_energy_investment)
+            ('invest_sum_cons_dc',), ('energy_investment', 'energy_investment'),
+            dinvest_objective_sum_cons_dc_dtotal_invest * scaling_factor_energy_investment)
 
         self.set_partial_derivative_for_other_types(
-            ('invest_sum_eq_cons',), ('energy_investment', 'energy_investment'), -dinvest_eq_cons_dtechno_invest * scaling_factor_energy_investment)
+            ('invest_sum_eq_cons',), ('energy_investment', 'energy_investment'),
+            -dinvest_eq_cons_dtechno_invest * scaling_factor_energy_investment)
 
     def compute_dinvest_objective_dinvest(self, techno_invest_sum, invest_tot, invest_objective_ref):
         '''
@@ -291,20 +319,20 @@ class IndependentInvestDiscipline(SoSDiscipline):
         '''
 
         delta = (invest_tot - techno_invest_sum) / invest_tot
-        abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
-        #smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
-        #invest_objective = abs_delta / invest_objective_ref
+        abs_delta = np.sqrt(compute_func_with_exp_min(delta ** 2, 1e-15))
+        # smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
+        # invest_objective = abs_delta / invest_objective_ref
 
         idt = np.identity(len(invest_tot))
 
         ddelta_dtech = -idt / invest_tot
         ddelta_dtot = (idt * invest_tot - (invest_tot -
-                                           techno_invest_sum) * idt) / invest_tot**2
+                                           techno_invest_sum) * idt) / invest_tot ** 2
 
         dabs_delta_dtech = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
-            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtech
+            delta ** 2, 1e-15))) * compute_dfunc_with_exp_min(delta ** 2, 1e-15) * ddelta_dtech
         dabs_delta_dtot = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
-            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtot
+            delta ** 2, 1e-15))) * compute_dfunc_with_exp_min(delta ** 2, 1e-15) * ddelta_dtot
 
         dsmooth_delta_dtech = get_dsmooth_dvariable(
             abs_delta, alpha=10) * dabs_delta_dtech.diagonal()
@@ -323,9 +351,9 @@ class IndependentInvestDiscipline(SoSDiscipline):
         '''
 
         delta = (invest_tot - techno_invest_sum) / invest_sum_ref
-        abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
-        #smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
-        #invest_objective = abs_delta
+        abs_delta = np.sqrt(compute_func_with_exp_min(delta ** 2, 1e-15))
+        # smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
+        # invest_objective = abs_delta
 
         idt = np.identity(len(invest_tot))
 
@@ -333,13 +361,14 @@ class IndependentInvestDiscipline(SoSDiscipline):
         ddelta_dtot = idt / invest_sum_ref
 
         dabs_delta_dtech = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
-            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtech
+            delta ** 2, 1e-15))) * compute_dfunc_with_exp_min(delta ** 2, 1e-15) * ddelta_dtech
         dabs_delta_dtot = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
-            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtot
+            delta ** 2, 1e-15))) * compute_dfunc_with_exp_min(delta ** 2, 1e-15) * ddelta_dtot
 
         return dabs_delta_dtech, dabs_delta_dtot
 
-    def compute_dinvest_objective_sum_cons_dinvest(self, techno_invest_sum, invest_tot, invest_sum_ref, invest_limit_ref):
+    def compute_dinvest_objective_sum_cons_dinvest(self, techno_invest_sum, invest_tot, invest_sum_ref,
+                                                   invest_limit_ref):
         '''
         Compute derivative of investment objective relative to investment by techno and
         compared to total energy invest
@@ -347,7 +376,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         delta = (invest_tot - techno_invest_sum)
         abs_delta = (np.sqrt(compute_func_with_exp_min(
-            delta**2, 1e-15)) - invest_limit_ref) / invest_sum_ref
+            delta ** 2, 1e-15)) - invest_limit_ref) / invest_sum_ref
 
         idt = np.identity(len(invest_tot))
 
@@ -355,9 +384,9 @@ class IndependentInvestDiscipline(SoSDiscipline):
         ddelta_dtot = idt
 
         dabs_delta_dtech = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
-            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtech / invest_sum_ref
+            delta ** 2, 1e-15))) * compute_dfunc_with_exp_min(delta ** 2, 1e-15) * ddelta_dtech / invest_sum_ref
         dabs_delta_dtot = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
-            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dtot / invest_sum_ref
+            delta ** 2, 1e-15))) * compute_dfunc_with_exp_min(delta ** 2, 1e-15) * ddelta_dtot / invest_sum_ref
 
         return dabs_delta_dtech, dabs_delta_dtot
 
@@ -456,7 +485,8 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 techno_invests = self.get_sosdisc_inputs(
                     'invest_mix')
 
-                techno_invests_sum = techno_invests[[column for column in techno_invests.columns if column != 'years']].sum(
+                techno_invests_sum = techno_invests[
+                    [column for column in techno_invests.columns if column != 'years']].sum(
                     axis=1)
                 forest_investment = self.get_sosdisc_inputs(
                     'forest_investment')
@@ -473,15 +503,17 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 chart_name = 'Distributed and allocated investments for energy sector '
                 new_chart_constraint = TwoAxesInstanciatedChart('years', 'Investments [G$]',
                                                                 chart_name=chart_name)
-                #, secondary_ordinate_axis_name='Constraint'
+                # , secondary_ordinate_axis_name='Constraint'
                 serie = InstanciatedSeries(
                     energy_investment['years'].values.tolist(),
-                    (energy_investment['energy_investment'].values * scaling_factor_energy_investment).tolist(), 'Total allocated energy investments',)
+                    (energy_investment['energy_investment'].values *
+                     scaling_factor_energy_investment).tolist(),
+                    'Total allocated energy investments', )
                 new_chart_constraint.series.append(serie)
 
                 serie = InstanciatedSeries(
                     energy_investment['years'].values.tolist(),
-                    techno_invests_sum.values.tolist(), 'Sum of distributed investments',)
+                    techno_invests_sum.values.tolist(), 'Sum of distributed investments', )
                 new_chart_constraint.series.append(serie)
                 instanciated_charts.insert(0, new_chart_constraint)
 

@@ -180,7 +180,8 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
 #
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default},
+                                     'default': techno_infos_dict_default,
+                                     'unit': 'define in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
