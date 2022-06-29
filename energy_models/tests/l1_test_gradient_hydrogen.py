@@ -341,7 +341,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.non_use_capital',
                                      ],)
 
-    def test_02_plasma_cracking_jacobian(self):
+    def _test_02_plasma_cracking_jacobian(self):
 
         self.name = 'Test'
         self.model_name = 'plasma_cracking'
@@ -741,7 +741,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
-
+        #AbstractJacobianUnittest.DUMP_JACOBIAN=True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}_negative.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
