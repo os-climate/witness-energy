@@ -49,7 +49,9 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_flue_gas': f'{ns_study}.{self.prefix_name}.{carbon_capture_name}.{flue_gas_name}',
                    'ns_public': f'{ns_study}',
                    'ns_energy_mix': f'{ns_study}.{energy_mix}',
-                   'ns_resource': f'{ns_study}.{energy_mix}'}
+                   'ns_resource': f'{ns_study}.{energy_mix}',
+                   'ns_ccs': f'{ns_study}.{energy_mix}',
+                   }
         mods_dict = {}
         mods_dict[f'{self.prefix_name}.{carbon_capture_name}'] = self.get_stream_disc_path(
             'carbon_disciplines', 'CarbonCapture')

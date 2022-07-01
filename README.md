@@ -49,4 +49,9 @@ There are more technolgies that could be implemented in the energy models, eithe
 
 Each technology can be improved further, for example by updating the data used to parameterized it or by implementing more complex mechanisms.
 
-##License
+## License
+The witness-energy source code is distributed under the Apache License Version 2.0.
+A copy of it can be found in the LICENSE file.
+
+The witness-energy product depends on other software which have various licenses.
+The list of dependencies with their licenses is given in the CREDITS.rst file.

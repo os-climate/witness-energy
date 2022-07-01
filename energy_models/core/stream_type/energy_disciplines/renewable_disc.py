@@ -18,7 +18,6 @@ from energy_models.core.stream_type.energy_models.renewable import Renewable
 
 
 class RenewableDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Renewable Energy Model',
@@ -33,12 +32,13 @@ class RenewableDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list',
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': Renewable.default_techno_list,
                                      'default': Renewable.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_renewable',
-                                     'structuring': True},
+                                     'structuring': True,
+                                     'unit': '-'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_renewable',

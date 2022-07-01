@@ -17,9 +17,12 @@ import numpy as np
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class BiogasFired(ElectricityTechno):
+
+    COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
 
     def compute_other_primary_energy_costs(self):
         """
@@ -46,6 +49,28 @@ class BiogasFired(ElectricityTechno):
         # Consumption
         self.consumption[f'{BioGas.name} ({self.product_energy_unit})'] = self.techno_infos_dict['biogas_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        
+    def compute_consumption_and_power_production(self):
+        """
+        Compute the resource consumption and the power installed (MW) of the technology for a given investment
+        """
+        self.compute_primary_power_production()
+
+        # FOR ALL_RESOURCES DISCIPLINE
+
+        copper_needs = self.get_theoretical_copper_needs(self)
+        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+
+    @staticmethod
+    def get_theoretical_copper_needs(self):
+        """
+        No data found, therefore we make the assumption that it needs at least a generator which uses the same amount of copper as a gaz powered station
+        It needs 1100 kg / MW
+        Computing the need in Mt/MW
+        """
+        copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
+
+        return copper_need
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 

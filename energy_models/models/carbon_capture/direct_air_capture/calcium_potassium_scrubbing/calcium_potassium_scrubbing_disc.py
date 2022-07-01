@@ -108,6 +108,8 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
                                                          0.0, 0.0]
                                              })
 
+    # use the same flue gas ratio as gas turbine one
+    FLUE_GAS_RATIO = np.array([0.0350])
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},
@@ -137,6 +139,6 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
-
+        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
         self.set_partial_derivatives_techno(
-            grad_dict, None, grad_dict_resources)
+            grad_dict, carbon_emissions, grad_dict_resources)

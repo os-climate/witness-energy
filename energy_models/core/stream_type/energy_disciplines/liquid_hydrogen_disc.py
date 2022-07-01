@@ -19,7 +19,6 @@ from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidH
 
 
 class LiquidHydrogenDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Liquid Hydrogen Model',
@@ -34,11 +33,12 @@ class LiquidHydrogenDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': LiquidHydrogen.default_techno_list,
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                     'possible_values': LiquidHydrogen.default_techno_list,
                                      'default': LiquidHydrogen.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_liquid_hydrogen',
-                                     'structuring': True},
+                                     'structuring': True, 'unit': '-'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_liquid_hydrogen',

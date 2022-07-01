@@ -69,6 +69,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
                    'ns_energy_study': f'{ns_study}',
                    'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
                    'ns_public': f'{ns_study}',
+                   'ns_ccs': f'{ns_study}',
                    'ns_energy_mix': f'{ns_study}.{energy_mix}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -132,7 +133,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
                        for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
         succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys,
                                              outputs=output_keys,
-                                             dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                                 f'jacobian_carbon_capture_discipline.pkl'))
 
         self.assertTrue(
@@ -220,7 +221,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
                        for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
         succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys,
                                              outputs=output_keys,
-                                             dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                                 f'jacobian_carbon_capture_discipline_limited.pkl'))
 
         self.assertTrue(

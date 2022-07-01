@@ -139,6 +139,52 @@ class SolarThermalPriceTestCase(unittest.TestCase):
 #         print(production)
 #         print(consumption)
 
+    def test_04_compute_solar_pv_power(self):
+
+        self.inputs_dict = {'year_start': 2020,
+                            'year_end': 2050,
+                            'techno_infos_dict': SolarThermalDiscipline.techno_infos_dict_default,
+                            'invest_level': self.invest_level_2,
+                            'invest_before_ystart': SolarThermalDiscipline.invest_before_year_start,
+                            'CO2_taxes': self.co2_taxes,
+                            'margin':  self.margin,
+                            'transport_cost': self.transport,
+                            'transport_margin': self.margin,
+                            'resources_price': self.resources_price,
+                            'energy_prices': self.energy_prices,
+                            'initial_production': SolarThermalDiscipline.initial_production,
+                            'initial_age_distrib': SolarThermalDiscipline.initial_age_distribution,
+                            'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                            'energy_CO2_emissions': pd.DataFrame(),
+                            'scaling_factor_invest_level': 1e3,
+                            'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
+                            'scaling_factor_techno_production': self.scaling_factor_techno_production,
+                            ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                            'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                            'is_stream_demand': self.is_stream_demand,
+                            'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                            'smooth_type': 'smooth_max',
+                            'data_fuel_dict': Electricity.data_energy_dict,
+                            }
+
+        solar_model = SolarThermal('SolarThermal')
+        solar_model.configure_parameters(self.inputs_dict)
+        solar_model.configure_parameters_update(self.inputs_dict)
+        price_details = solar_model.compute_price()
+        solar_model.compute_consumption_and_production()
+        solar_model.compute_consumption_and_power_production()
+
+        print(solar_model.power_production)
+
+        print(solar_model.power_production * solar_model.techno_infos_dict['full_load_hours'] / 1000)
+
+        print(solar_model.production[f'electricity ({solar_model.product_energy_unit})'])
+
+        self.assertLessEqual(list(solar_model.production[f'electricity ({solar_model.product_energy_unit})'].values),
+                            list(solar_model.power_production['total_installed_power'] * solar_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001) )
+        self.assertGreaterEqual(list(solar_model.production[f'electricity ({solar_model.product_energy_unit})'].values),
+                            list(solar_model.power_production['total_installed_power'] * solar_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999) )
+
     def test_03_solar_Thermal_discipline(self):
 
         self.name = 'Test'
@@ -179,3 +225,6 @@ class SolarThermalPriceTestCase(unittest.TestCase):
 
 #         for graph in graph_list:
 #             graph.to_plotly().show()
+
+# if __name__ == "__main__":
+#     unittest.main()

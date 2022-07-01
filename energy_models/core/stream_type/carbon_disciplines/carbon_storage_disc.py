@@ -23,7 +23,6 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 
 class CarbonStorageDiscipline(StreamDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Carbon Storage Model',
@@ -38,9 +37,10 @@ class CarbonStorageDiscipline(StreamDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list',
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': CarbonStorage.default_techno_list,
                                      'visibility': StreamDiscipline.SHARED_VISIBILITY,
+                                     'unit': '-',
                                      'namespace': 'ns_carbon_storage', 'structuring': True},
                'data_fuel_dict': {'type': 'dict', 'visibility': StreamDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_carbon_storage', 'default': CarbonStorage.data_energy_dict,

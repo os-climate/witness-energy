@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
@@ -74,6 +75,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'decommissioning_cost_unit': '$/kW',
                                  # World Nuclear Waste Report 2019, Chapter 6 (https://worldnuclearwastereport.org)
                                  # average of 1000 $/kW
+                                 'copper_needs': 1473, #IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
     techno_info_dict = techno_infos_dict_default
@@ -127,10 +129,10 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
             'techno_detailed_consumption')
         techno_production = self.get_sosdisc_outputs(
             'techno_detailed_production')
-        chart_name = f'Energy Production and consumption of the {self.techno_name} technology with input investments'
+        chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Energy [TWh]',
-                                             chart_name=chart_name, stacked_bar=True)
+                                             chart_name=chart_name.capitalize(), stacked_bar=True)
 
         for reactant in techno_consumption.columns:
             if reactant != 'years' and reactant.endswith('(TWh)'):
@@ -155,8 +157,73 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                 new_chart.series.append(serie)
         instanciated_charts.append(new_chart)
 
+        # Check if we have kg in the consumption or prod :
+
+        kg_values_consumption = 0
+        reactant_found = None
+        for reactant in techno_consumption.columns:
+            if reactant != 'years' and reactant.endswith('(Mt)'):
+                kg_values_consumption += 1
+                reactant_found = reactant
+
+        kg_values_production = 0
+        product_found = None
+        for product in techno_production.columns:
+            if product != 'years' and product.endswith('(Mt)'):
+                kg_values_production += 1
+                product_found = product
+        if kg_values_consumption == 1 and kg_values_production == 0:
+            legend_title = f'{reactant_found} consumption'.replace(
+                "(Mt)", "")
+            chart_name = f'{legend_title} of the {self.techno_name} technology<br>with input investments'
+        elif kg_values_production == 1 and kg_values_consumption == 0:
+            legend_title = f'{product_found} production'.replace(
+                "(Mt)", "")
+            chart_name = f'{legend_title} of the {self.techno_name} technology<br>with input investments'
+        else:
+            chart_name = f'{self.techno_name} technology mass Production & consumption<br>with input investments'
+
+        new_chart = TwoAxesInstanciatedChart('years', 'Mass [Mt]',
+                                             chart_name=chart_name, stacked_bar=True)
+
+        for reactant in techno_consumption.columns:
+            if reactant != 'years' and reactant.endswith('(Mt)'):
+                if 'uranium' in reactant : 
+                    legend_title = f'{reactant} consumption'.replace(
+                        "(Mt)", "")
+                    # 1GT = 1e9T = 1e12 kg
+                    mass = -techno_consumption[reactant].values / 1000 / 1000
+                    serie = InstanciatedSeries(
+                        techno_consumption['years'].values.tolist(),
+                        mass.tolist(), legend_title, 'bar')
+                    new_chart.series.append(serie)
+                else :
+                    legend_title = f'{reactant} consumption'.replace(
+                        "(Mt)", "")
+                    # 1GT = 1e9T = 1e12 kg
+                    mass = -techno_consumption[reactant].values
+                    serie = InstanciatedSeries(
+                        techno_consumption['years'].values.tolist(),
+                        mass.tolist(), legend_title, 'bar')
+                    new_chart.series.append(serie)
+        for product in techno_production.columns:
+            if product != 'years' and product.endswith('(Mt)'):
+                legend_title = f'{product} production'.replace(
+                    "(Mt)", "")
+                # 1GT = 1e9T = 1e12 kg
+                mass = techno_production[product].values
+                serie = InstanciatedSeries(
+                    techno_production['years'].values.tolist(),
+                    mass.tolist(), legend_title, 'bar')
+                new_chart.series.append(serie)
+
+        if kg_values_consumption > 0 or kg_values_production > 0:
+            instanciated_charts.append(new_chart)
+
+
         new_chart_water = None
         new_chart_uranium = None
+        new_chart_copper = None
         for product in techno_consumption.columns:
 
             if product != 'years' and product.endswith(f'(Mt)'):
@@ -164,6 +231,10 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                     chart_name = f'Mass consumption of water for the Nuclear technology with input investments'
                     new_chart_water = TwoAxesInstanciatedChart(
                         'years', 'Mass [Gt]', chart_name=chart_name, stacked_bar=True)
+                elif ResourceGlossary.Copper['name'] in product :
+                    chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
+                    new_chart_copper = TwoAxesInstanciatedChart(
+                        'years', 'Mass [t]', chart_name=chart_name, stacked_bar=True)
                 else:
                     chart_name = f'Mass consumption of uranium for the Nuclear technology with input investments'
                     new_chart_uranium = TwoAxesInstanciatedChart(
@@ -179,6 +250,14 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                     techno_consumption['years'].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_water.series.append(serie)
+            elif ResourceGlossary.Copper['name'] in reactant:
+                legend_title = f'{reactant} consumption'.replace(
+                    ' (Mt)', "")
+                mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
+                serie = InstanciatedSeries(
+                    techno_consumption['years'].values.tolist(),
+                    mass.tolist(), legend_title, 'bar')
+                new_chart_copper.series.append(serie)
             elif 'years' not in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     f' (Mt)', "")
@@ -191,8 +270,11 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
 
         instanciated_charts.append(new_chart_water)
         instanciated_charts.append(new_chart_uranium)
+        instanciated_charts.append(new_chart_copper)
 
         return instanciated_charts
+
+    
 
     def get_chart_detailed_price_in_dollar_kwh(self):
         """

@@ -19,7 +19,6 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 
 
 class MethaneDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': ' Methane Energy Model',
@@ -35,11 +34,14 @@ class MethaneDiscipline(EnergyDiscipline):
     }
     # -- add specific techno inputs to this
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': Methane.default_techno_list,
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                     'possible_values': Methane.default_techno_list,
                                      'default': Methane.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_methane', 'structuring': True
+                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_methane',
+                                     'structuring': True, 'unit': '-'
                                      },
-               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'unit': 'defined in dict',
+               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                  'unit': 'defined in dict',
                                   'namespace': 'ns_methane', 'default': Methane.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)

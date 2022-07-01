@@ -18,7 +18,6 @@ from energy_models.core.stream_type.energy_models.fossil import Fossil
 
 
 class FossilDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Fossil Energy Model',
@@ -33,12 +32,12 @@ class FossilDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list',
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': Fossil.default_techno_list,
                                      'default': Fossil.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_fossil',
-                                     'structuring': True},
+                                     'structuring': True, 'unit': '-'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_fossil',

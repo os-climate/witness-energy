@@ -19,7 +19,6 @@ from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumG
 
 
 class LiquefiedGasPetroleumDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Liquefied petroleum gas Model',
@@ -34,15 +33,16 @@ class LiquefiedGasPetroleumDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': ['Refinery'],
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_kerosene',
-                                     'structuring': True},
-               'data_fuel_dict': {'type': 'dict',
-                                  'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_kerosene',
-                                  'default': LiquefiedPetroleumGas.data_energy_dict},
-               }
+    DESC_IN = {
+        'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': ['Refinery'],
+                              'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                              'namespace': 'ns_kerosene',
+                              'structuring': True, 'unit': '-'},
+        'data_fuel_dict': {'type': 'dict',
+                           'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                           'namespace': 'ns_kerosene',
+                           'default': LiquefiedPetroleumGas.data_energy_dict, 'unit': 'define in dict'},
+    }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
 
     energy_name = LiquefiedPetroleumGas.name

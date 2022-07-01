@@ -19,7 +19,6 @@ from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import H
 
 
 class HydrotreatedOilFuelDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Hydrotreated Oil Fuel HEFA Model',
@@ -35,11 +34,12 @@ class HydrotreatedOilFuelDiscipline(EnergyDiscipline):
     }
     # -- add specific techno inputs to this
 
-    DESC_IN = {'technologies_list': {'type': 'string_list', 'possible_values': HydrotreatedOilFuel.default_techno_list,
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                     'possible_values': HydrotreatedOilFuel.default_techno_list,
                                      'default': HydrotreatedOilFuel.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_hydrotreated_oil_fuel',
-                                     'structuring': True},
+                                     'structuring': True, 'unit': '-'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_hydrotreated_oil_fuel',
