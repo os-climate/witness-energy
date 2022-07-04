@@ -25,6 +25,9 @@ PC_cost : Plasma Cracking cost
 
 $$H2_{price}= PC_{cost} * Margin * X $$
 
+$$H2_{price}= PC_{cost}(invest, energy\_prices,energy\_CO2\_emission) * Margin$$ 
+$$ * X(invest, energy\_prices, all\_stream\_demand\_ratio, resources\_price) $$
+
 
 
 ### Gradients to compute:
@@ -167,11 +170,16 @@ with:
 
 if  Carbon\_prod < Carbon\_demand : 
 
+$$ A = Carbon\_sold\_revenue$$
+
 $$ B = Carbon\_sold\_revenue$$
 
 if  Carbon\_prod > Carbon\_demand : 
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Carbon\_storage = Carbon\_prod - Carbon\_demand
+
+$${\footnotesize A = [\dfrac {Carbon\_prod* Carbon\_mol * CO2\_credit}{CO2\_mol}]+ [Carbon\_demand * (Carbon\_price
+    - \dfrac {Carbon\_mol * CO2\_credit}{CO2\_mol})]}$$
 
 $$ B = Carbon\_demand $$
 
