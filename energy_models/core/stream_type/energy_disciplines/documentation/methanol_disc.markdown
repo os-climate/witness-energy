@@ -1,7 +1,7 @@
 **Definition:**
 
 Methanol (CH3OH) is the simplest alcohol molecule. It has many applications and is mostly used in chemicals and 
-industrial areas. But it also as potential as a fuel, through combustion reaction:
+industrial areas. But it also has potential as a fuel, through combustion reaction:
 
 $$2CH_{3}OH + 3O_{2} --> 2CO_{2} + 4H_{2}O$$
 
