@@ -12,8 +12,8 @@ if __name__ == '__main__':
     AbstractJacobianUnittest.launch_all_pickle_generation(
         jacobian_target)
 
-    AbstractJacobianUnittest.launch_all_pickle_generation(
-        jacobian_target, '_l1_test_gradient_energy_mix.py')
+    #AbstractJacobianUnittest.launch_all_pickle_generation(
+    #    jacobian_target, '_l1_test_gradient_energy_mix.py')
 
     # AbstractJacobianUnittest.launch_all_pickle_generation(
     # jacobian_target, '_l2_test_gradient_energy_model_mda.py')
