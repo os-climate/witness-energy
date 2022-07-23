@@ -165,7 +165,7 @@ class CO2Hydrogenation(MethanolTechno):
         water_demand = self.techno_infos_dict['water_demand']                    # kg/kg
         methanol_calorific_value = Methanol.data_energy_dict['calorific_value']   # kWh/kg
 
-        water_needs = water_demand / methanol_calorific_value #kg/kWh
+        water_needs = water_demand / methanol_calorific_value #kg/kWh = Mt/TWh
         return water_needs
 
     def get_theoretical_electricity_needs(self):
