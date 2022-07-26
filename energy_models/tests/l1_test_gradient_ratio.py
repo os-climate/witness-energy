@@ -1468,10 +1468,130 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
+        
+    def test_05b_ratio_PEM_discipline_jacobian(self):
+        '''
+        Test the gradients of the ratios on a simple techno which uses a single resource ratio (platinum_resource consumption)
+        '''
+        self.techno_name = 'Electrolysis.PEM'
+        self.ee = ExecutionEngine(self.name)
+        ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
+                   'ns_energy_study': f'{self.name}',
+                   'ns_hydrogen': f'{self.name}',
+                   'ns_resource': f'{self.name}'}
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem_disc.ElectrolysisPEMDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.techno_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        pkl_file = open(
+            join(dirname(__file__), 'data_tests/mda_energy_data_technologies_input_dict.pkl'), 'rb')
+        mda_data_input_dict = pickle.load(pkl_file)
+        pkl_file.close()
+
+        namespace = f'{self.name}'
+        inputs_dict = {}
+        coupled_inputs = []
+        for key in mda_data_input_dict[self.techno_name].keys():
+            # Modify namespace of input 'key' if needed
+            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+                       'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
+                       'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
+                       'max_mda_iter_gs', 'relax_factor', 'epsilon0',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+                       'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
+                       'transport_cost', 'transport_margin', 'year_start', 'year_end',
+                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'resources_CO2_emissions', 'scaling_factor_techno_consumption',
+                       'scaling_factor_techno_production', 'is_apply_ratio',
+                       'is_stream_demand', 'is_apply_resource_ratio',
+                       'residuals_history', 'all_streams_demand_ratio', 'all_resource_ratio_usable_demand']:
+                inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                if mda_data_input_dict[self.techno_name][key]['is_coupling']:
+                    coupled_inputs += [f'{namespace}.{key}']
+            else:
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                if mda_data_input_dict[self.techno_name][key]['is_coupling']:
+                    coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
+
+        pkl_file = open(
+            join(dirname(__file__), 'data_tests/mda_energy_data_technologies_output_dict.pkl'), 'rb')
+        mda_data_output_dict = pickle.load(pkl_file)
+        pkl_file.close()
+
+        coupled_outputs = []
+        for key in mda_data_output_dict[self.techno_name].keys():
+            # Modify namespace of output 'key' if needed
+            if key in []:
+                if mda_data_output_dict[self.techno_name][key]['is_coupling']:
+                    coupled_outputs += [f'{namespace}.{key}']
+            else:
+                if mda_data_output_dict[self.techno_name][key]['is_coupling']:
+                    coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
+
+        # Overwrite values for ratios with values from setup
+
+        construction_delay = 2  # year
+        lifetime = 11  # Around 90000 operating hours with 8000 hours a year
+
+        inputs_dict[f'{namespace}.year_end'] = 2050
+        inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
+        inputs_dict[f'{namespace}.is_stream_demand'] = self.is_stream_demand
+        inputs_dict[f'{namespace}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
+        inputs_dict[f'{namespace}.all_streams_demand_ratio'] = self.all_streams_demand_ratio
+        inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
+        inputs_dict['Test_Ratio.Electrolysis.PEM.techno_infos_dict'] =  {'maturity': 5,
+                                    'Opex_percentage': 0.025,
+                                    'CO2_from_production': 0.0,
+                                    'CO2_from_production_unit': 'kg/kg',
+                                    'WACC': 0.05,
+                                    'learning_rate':  0.15,
+                                    'maximum_learning_capex_ratio': 500.0 / 1012.5,  # 500 euro/kw minimum capex
+                                    'lifetime': lifetime,
+                                    'lifetime_unit': 'years',
+                                    'stack_lifetime': 100000,
+                                    'stack_lifetime_unit': 'hours',
+                                    'Capex_init': 1012.5,  # for a power input of 2MW, decreases for 10 MW
+                                    'Capex_init_unit': 'euro/kW',
+                                    'euro_dollar': 1.114,
+                                    'full_load_hours': 8000,
+                                    'techno_evo_eff': 'yes',
+                                    'techno_evo_time': 10,
+                                    'efficiency evolution slope': 0.5,
+                                    # electric efficiency that we will use to
+                                    # compute elec needs
+                                    'efficiency': 0.65,
+                                    'efficiency_max': 0.75,
+                                    'construction_delay': construction_delay,
+                                    'platinum_needs': 1.0/8.0, #Fuel Cell technologies Office 2017
+                                    'platinum_needs_units': 'g/KW',}
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+
+        self.ee.execute()
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.techno_name}')[0]
+        coupled_inputs.append(
+            f'{namespace}.all_resource_ratio_usable_demand'
+        )
+        coupled_outputs.append(
+            f'{namespace}.{self.techno_name}.non_use_capital')
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            inputs=coupled_inputs,
+                            outputs=coupled_outputs,)
 
 if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = RatioJacobianTestCase()
     cls.setUp()
     #cls.test_07_ratio_CalciumLooping_discipline_jacobian()
-    cls.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian()
+    cls.test_05b_ratio_PEM_discipline_jacobian()
