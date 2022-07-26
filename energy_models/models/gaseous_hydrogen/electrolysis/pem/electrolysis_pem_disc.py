@@ -14,15 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import copy
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 import pandas as pd
 import numpy as np
 
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
 from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem import ElectrolysisPEM
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
 
 
 class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
@@ -71,9 +68,7 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.65,
                                  'efficiency_max': 0.75,
-                                 'construction_delay': construction_delay,
-                                 'platinum_needs': 1.0/8.0, #Fuel Cell technologies Office 2017
-                                 'platinum_needs_units': 'g/KW',}
+                                 'construction_delay': construction_delay,}
 
     # Around 50MW of nominal power *8000 hours per year
     initial_production = 0.4
@@ -109,31 +104,3 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = ElectrolysisPEM(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
-
-    def get_charts_consumption_and_production(self):
-        "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
-            'techno_detailed_consumption')
-
-        new_chart_platinum = None
-        for product in techno_consumption.columns:
-
-            if product != 'years' and product.endswith(f'(Mt)'):
-                if ResourceGlossary.Platinum['name'] in product :
-                    chart_name = f'Mass consumption of platinum for the {self.techno_name} technology with input investments'
-                    new_chart_platinum = TwoAxesInstanciatedChart(
-                        'years', 'Mass [kg]', chart_name=chart_name, stacked_bar=True)
-
-        for reactant in techno_consumption.columns:
-            if ResourceGlossary.Platinum['name'] in reactant:
-                legend_title = f'{reactant} consumption'.replace(
-                    ' (Mt)', "")
-                mass = techno_consumption[reactant].values * 1000 * 1000 * 1000 #convert Mt in kg for more readable post-proc
-                serie = InstanciatedSeries(
-                    techno_consumption['years'].values.tolist(),
-                    mass.tolist(), legend_title, 'bar')
-                new_chart_platinum.series.append(serie)
-        instanciated_chart.append(new_chart_platinum)
-        
-        return instanciated_chart
