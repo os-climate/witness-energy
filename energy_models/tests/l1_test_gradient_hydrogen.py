@@ -825,7 +825,9 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
 if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    np.set_printoptions(threshold = np.inf)
     cls = HydrogenJacobianTestCase()
     cls.setUp()
     # unittest.main()
-    cls.test_01_wgs_jacobian()
+    cls.test_03_electrolysis_PEMjacobian()
+    #cls.test_01_wgs_jacobian()
