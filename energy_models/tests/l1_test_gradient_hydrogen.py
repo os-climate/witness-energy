@@ -454,7 +454,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            discipline=disc_techno, step=1.0e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -825,8 +825,9 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
 if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    np.set_printoptions(threshold = np.inf)
     cls = HydrogenJacobianTestCase()
     cls.setUp()
     # unittest.main()
-    cls.test_01_wgs_jacobian()
-    print('------')
+    cls.test_03_electrolysis_PEMjacobian()
+    #cls.test_01_wgs_jacobian()
