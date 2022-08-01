@@ -40,7 +40,6 @@ from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonSt
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
 
-
 from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
