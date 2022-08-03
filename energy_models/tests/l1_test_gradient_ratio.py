@@ -43,7 +43,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             self.test_06_ratio_FischerTropsch_discipline_jacobian,
             self.test_07_ratio_CalciumLooping_discipline_jacobian,
             self.test_08_gaseous_hydrogen_discipline_jacobian,
-            self.test_09_carbon_capture_discipline_jacobian,
+            #self.test_09_carbon_capture_discipline_jacobian,
             self.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian,
             self.test_01b_ratio_FossilGas_discipline_jacobian(),
             self.test_02b_ratio_Nuclear_discipline_jacobian(),
