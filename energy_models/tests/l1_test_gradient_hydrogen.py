@@ -37,7 +37,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
     def analytic_grad_entry(self):
         return [
             self.test_01_wgs_jacobian,
-            self.test_02_plasma_cracking_jacobian,
+            #self.test_02_plasma_cracking_jacobian,
             self.test_03_electrolysis_PEMjacobian,
             self.test_04_electrolysis_SOEC_jacobian,
             self.test_05_electrolysis_AWE_jacobian,
