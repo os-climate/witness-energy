@@ -9,15 +9,9 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 from os import listdir
 
 if __name__ == '__main__':
-
-    # test_files_list=[file for file in listdir() if file.startswith('l1_test_gradient')]
-    #
-    # for test_file in test_files_list:
-    #     AbstractJacobianUnittest.launch_all_pickle_generation(
-    #         jacobian_target, test_file)
-
+    
     AbstractJacobianUnittest.launch_all_pickle_generation(
-       jacobian_target, 'l1_test_gradient_ratio.py')
+       jacobian_target, 'l1_test_gradient*.py')
 
     #AbstractJacobianUnittest.launch_all_pickle_generation(
     #    jacobian_target, '_l1_test_gradient_energy_mix.py')
