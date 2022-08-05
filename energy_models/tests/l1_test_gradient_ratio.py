@@ -49,6 +49,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             self.test_02b_ratio_Nuclear_discipline_jacobian(),
             self.test_03b_ratio_CoalExtraction_discipline_jacobian(),
             self.test_04b_ratio_Refinery_discipline_jacobian(),
+            self.test_05b_ratio_PEM_discipline_jacobian(),
             # self.test_10_energy_mix_discipline_jacobian,
         ]
 
