@@ -274,6 +274,6 @@ class GasTurbinePriceTestCase(unittest.TestCase):
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
         for graph in graph_list:
-            graph.to_plotly().show()
+            graph.to_plotly()#.show()
 if __name__ == "__main__":
     unittest.main()
