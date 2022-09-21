@@ -57,10 +57,6 @@ class EnergyDiscipline(StreamDiscipline):
     _maturity = 'Research'
     energy_name = 'energy'
 
-    def __init__(self, sos_name, ee):
-
-        StreamDiscipline.__init__(self, sos_name, ee)
-
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
         if 'technologies_list' in self._data_in:
