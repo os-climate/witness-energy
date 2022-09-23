@@ -25,6 +25,7 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def get_builders(self):
 
         optim_name = "EnergyOptimization"
@@ -34,9 +35,8 @@ class ProcessBuilder(BaseProcessBuilder):
             'energy_models.sos_processes.energy.MDO_subprocesses', 'energy_optim_sub_process_mda')
 
         # modify namespaces defined in the child process
-        for ns in self.ee.ns_manager.ns_list:
-            self.ee.ns_manager.update_namespace_with_extra_ns(
-                ns, optim_name, after_name=self.ee.study_name)  # optim_name
+        self.ee.ns_manager.update_namespace_list_with_extra_ns(
+            optim_name, after_name=self.ee.study_name)  # optim_name
 
         #-- set optim builder
         opt_builder = self.ee.factory.create_optim_builder(

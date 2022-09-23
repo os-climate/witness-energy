@@ -25,6 +25,10 @@ from sos_trades_core.tools.post_processing.post_processing_factory import PostPr
 from sos_trades_core.tools.base_functions.specific_check import specific_check_years
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
 
+import cProfile
+from io import StringIO
+import pstats
+
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -101,8 +105,17 @@ if '__main__' == __name__:
     uc_cls.load_data()
 #     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
 #         "reduced.pdf")
-
+    profil = cProfile.Profile()
+    profil.enable()
     uc_cls.run()
+    profil.disable()
+    result = StringIO()
+
+    ps = pstats.Stats(profil, stream=result)
+    ps.sort_stats('cumulative')
+    ps.print_stats(200)
+    result = result.getvalue()
+    print(result)
     # Always check if post procs are OK
     ppf = PostProcessingFactory()
     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
