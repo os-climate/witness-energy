@@ -27,6 +27,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def get_builders(self):
         coupling_name = "EnergyModelEval"
         designvariable_name = "DesignVariableDisc"
@@ -50,9 +51,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         chain_builders.append(fmanager_builder)
 
         # modify namespaces defined in the child process
-        for ns in self.ee.ns_manager.ns_list:
-            self.ee.ns_manager.update_namespace_with_extra_ns(
-                ns, coupling_name, after_name=self.ee.study_name)
+        self.ee.ns_manager.update_namespace_list_with_extra_ns(
+            coupling_name, after_name=self.ee.study_name)
 
         ns_dict = {'ns_energy_mix': f'{self.ee.study_name}.{coupling_name}.EnergyMix',
                    'ns_trade_input': f'{self.ee.study_name}.{coupling_name}.EnergyMix',
