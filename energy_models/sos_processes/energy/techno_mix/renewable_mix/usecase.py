@@ -41,7 +41,7 @@ class Study(EnergyMixStudyManager):
 
         if 'RenewableSimpleTechno' in self.technologies_list:
 
-            invest_renewable_mix_dict['RenewableSimpleTechno'] = np.ones(8)
+            invest_renewable_mix_dict['RenewableSimpleTechno'] = np.ones(16) # 09/12 16 pts coarse
 
         if self.bspline:
             invest_renewable_mix_dict['years'] = self.years
