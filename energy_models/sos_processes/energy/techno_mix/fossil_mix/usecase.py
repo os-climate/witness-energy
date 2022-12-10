@@ -42,7 +42,7 @@ class Study(EnergyMixStudyManager):
 
         if 'FossilSimpleTechno' in self.technologies_list:
 
-            invest_fossil_mix_dict['FossilSimpleTechno'] = np.ones(8)
+            invest_fossil_mix_dict['FossilSimpleTechno'] = np.ones(16)
 
         if self.bspline:
             invest_fossil_mix_dict['years'] = self.years

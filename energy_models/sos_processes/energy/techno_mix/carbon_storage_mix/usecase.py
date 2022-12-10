@@ -83,7 +83,7 @@ class Study(EnergyMixStudyManager):
 
         if 'CarbonStorageTechno' in self.technologies_list:
             invest_carbon_storage_mix_dict['CarbonStorageTechno'] = [
-                10 * (1 + 0.03) ** i for i in l_ctrl]
+                10 * (1 + 0.03) ** i for i in np.arange(0, 16)]
         if self.bspline:
             invest_carbon_storage_mix_dict['years'] = self.years
 

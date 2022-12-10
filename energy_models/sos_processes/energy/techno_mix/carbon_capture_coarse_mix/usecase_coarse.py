@@ -44,11 +44,11 @@ class Study(EnergyMixStudyManager):
 
     def get_investments(self):
         invest_carbon_capture_mix_dict = {}
-        l_ctrl = np.arange(0, 8)
+        l_ctrl = np.arange(0, 16)
 
         if 'direct_air_capture.DirectAirCaptureTechno' in self.technologies_list:
             invest_carbon_capture_mix_dict['direct_air_capture.DirectAirCaptureTechno'] = np.array(
-                [0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
+                [0.5, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
 
         if 'flue_gas_capture.FlueGasTechno' in self.technologies_list:
             invest_carbon_capture_mix_dict['flue_gas_capture.FlueGasTechno'] = [

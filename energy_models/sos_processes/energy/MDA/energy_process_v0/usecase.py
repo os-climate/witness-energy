@@ -376,7 +376,10 @@ class Study(EnergyStudyManager):
 
         # invest from WEI 2020 miss hydrogen
         invest_energy_mix_dict = {}
-        years = np.arange(0, 8)
+        if 'renewable' in self.energy_list and 'fossil' in self.energy_list: # 09/12 16 pts coarse
+            years = np.arange(0, 16)
+        else:
+            years = np.arange(0, 8)
         invest_energy_mix_dict['years'] = years
         invest_energy_mix_dict[Electricity.name] = [
             4.49, 35, 35, 35, 35, 35, 35, 35]
@@ -464,11 +467,19 @@ class Study(EnergyStudyManager):
 
         # invest from WEI 2020 miss hydrogen
         invest_ccs_mix_dict = {}
-        invest_ccs_mix_dict['years'] = np.arange(0, 8)
 
-        invest_ccs_mix_dict[CarbonCapture.name] = [
-            2.0, 25, 25, 25, 25, 25, 25, 25]
-        invest_ccs_mix_dict[CarbonStorage.name] = [0.003, 5, 5, 5, 5, 5, 5, 5]
+        if 'renewable' in self.energy_list and 'fossil' in self.energy_list: # 09/12 16 pts coarse
+            invest_ccs_mix_dict['years'] = np.arange(0, 16)
+
+            invest_ccs_mix_dict[CarbonCapture.name] = [
+                2.0, 2.0, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
+            invest_ccs_mix_dict[CarbonStorage.name] = [0.003, 0.003, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+        else:
+            invest_ccs_mix_dict['years'] = np.arange(0, 8)
+
+            invest_ccs_mix_dict[CarbonCapture.name] = [
+                2.0, 25, 25, 25, 25, 25, 25, 25]
+            invest_ccs_mix_dict[CarbonStorage.name] = [0.003, 5, 5, 5, 5, 5, 5, 5]
 
         if self.bspline:
             invest_ccs_mix_dict['years'] = self.years
@@ -531,8 +542,12 @@ class Study(EnergyStudyManager):
         indep_invest_df = pd.DataFrame(
             {'years': invest_mix_df['years'].values})
 
-        energy_invest_poles = energy_invest['energy_investment'].values[[i for i in range(
-            len(energy_invest['energy_investment'].values)) if i % 10 == 0]][0:-1]
+        if 'renewable' in self.energy_list and 'fossil' in self.energy_list: # 09/12 16 pts coarse
+            energy_invest_poles = energy_invest['energy_investment'].values[[i for i in range(
+                len(energy_invest['energy_investment'].values)) if i % 5 == 0]][0:-1]
+        else:
+            energy_invest_poles = energy_invest['energy_investment'].values[[i for i in range(
+                len(energy_invest['energy_investment'].values)) if i % 10 == 0]][0:-1]
         for column in invest_mix_df.columns:
             if column != 'years':
                 if len(invest_mix_df['years'].values) == len(energy_invest_poles):
