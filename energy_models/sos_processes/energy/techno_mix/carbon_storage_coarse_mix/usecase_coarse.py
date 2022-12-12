@@ -44,7 +44,7 @@ class Study(EnergyMixStudyManager):
     def get_investments(self):
         invest_carbon_storage_mix_dict = {}
         #invest_carbon_storage_mix_dict['years'] = self.years
-        l_ctrl = np.arange(0, 8)
+        l_ctrl = np.arange(0, 16) # 09/12 16 pts coarse
 
         if 'CarbonStorageTechno' in self.technologies_list:
             invest_carbon_storage_mix_dict['CarbonStorageTechno'] = [
