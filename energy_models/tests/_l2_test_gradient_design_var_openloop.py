@@ -15,10 +15,10 @@ limitations under the License.
 '''
 import numpy as np
 from os.path import join, dirname
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.sos_processes.energy.MDO_subprocesses.energy_optim_sub_process.usecase import Study
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class EnergyMixTestCase(AbstractJacobianUnittest):
@@ -88,7 +88,7 @@ class EnergyMixTestCase(AbstractJacobianUnittest):
     def test_02_check_gradient_with_open_loop_lagrangian_objective_vs_all_design_vars(self):
 
         self.model_name = 'lagrangian_obj_vs_design_var_open_loop'
-        disc_open_loop = self.ee.root_process.sos_disciplines[0]
+        disc_open_loop = self.ee.root_process.proxy_disciplines[0]
 
         input_names = ['CO2_taxes_array']
         for energy in self.usecase.energy_list:
@@ -127,7 +127,7 @@ class EnergyMixTestCase(AbstractJacobianUnittest):
             full_values_dict.update(dict_v)
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        disc_open_loop = self.ee.root_process.sos_disciplines[0]
+        disc_open_loop = self.ee.root_process.proxy_disciplines[0]
 
         input_names = ['CO2_taxes_array']
         for energy in self.usecase.energy_list:

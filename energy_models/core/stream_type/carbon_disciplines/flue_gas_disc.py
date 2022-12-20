@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 import numpy as np
 
-from sos_trades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
+from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
 from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import GasTurbineDiscipline
@@ -41,7 +41,7 @@ from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_t
 from energy_models.core.ccus.ccus import CCUS
 
 
-class FlueGasDiscipline(SoSDiscipline):
+class FlueGasDiscipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'Flue Gas Model',
@@ -75,12 +75,12 @@ class FlueGasDiscipline(SoSDiscipline):
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
-                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
                                      'structuring': True, 'unit': '-'},
-               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
                'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                             'editable': False,
                             'structuring': True,
                             'unit': '-'},
@@ -89,26 +89,26 @@ class FlueGasDiscipline(SoSDiscipline):
     energy_name = FlueGas.name
 
     DESC_OUT = {'flue_gas_mean': {'type': 'dataframe',
-                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
                                   'namespace': 'ns_flue_gas', 'unit': '%'},
                 'flue_gas_production': {'type': 'dataframe',
-                                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                        'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_flue_gas', 'unit': 'Mt'},
                 'flue_gas_prod_ratio': {'type': 'dataframe',
-                                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                        'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_flue_gas', 'unit': '%'}}
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.energy_model = FlueGas(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
         dynamic_inputs = {}
 
-        if 'technologies_list' in self._data_in and 'ccs_list' in self._data_in:
-            techno_list = self.get_sosdisc_inputs('technologies_list')
-            ccs_list = self.get_sosdisc_inputs('ccs_list')
+        if 'technologies_list' in proxy.get_data_in() and 'ccs_list' in proxy.get_data_in():
+            techno_list = proxy.get_sosdisc_inputs('technologies_list')
+            ccs_list = proxy.get_sosdisc_inputs('ccs_list')
 
             if techno_list is not None and ccs_list is not None:
                 for techno in techno_list:
@@ -123,14 +123,14 @@ class FlueGasDiscipline(SoSDiscipline):
 
                     dynamic_inputs[f'{techno}.techno_production'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
-                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': ns_variable}
                     dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
-                                                                      'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                       'namespace': ns_variable, 'unit': '',
                                                                       'default': self.POSSIBLE_FLUE_GAS_TECHNOS[techno]}
 
-        self.add_inputs(dynamic_inputs)
+        proxy.add_inputs(dynamic_inputs)
 
     def run(self):
         # -- get inputs
@@ -213,7 +213,7 @@ class FlueGasDiscipline(SoSDiscipline):
                  f'{self.energy_model.name} (Mt)'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix))
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
         chart_list = ['Average CO2 concentration in Flue gases',
@@ -224,7 +224,7 @@ class FlueGasDiscipline(SoSDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self, proxy, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -238,27 +238,27 @@ class FlueGasDiscipline(SoSDiscipline):
                     charts = chart_filter.selected_values
 
         if 'Flue gas production' in charts:
-            new_chart = self.get_flue_gas_production()
+            new_chart = self.get_flue_gas_production(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Average CO2 concentration in Flue gases' in charts:
-            new_chart = self.get_chart_average_co2_concentration()
+            new_chart = self.get_chart_average_co2_concentration(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Technologies CO2 concentration' in charts:
-            new_chart = self.get_table_technology_co2_concentration()
+            new_chart = self.get_table_technology_co2_concentration(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
-    def get_flue_gas_production(self):
-        flue_gas_total = self.get_sosdisc_outputs(
+    def get_flue_gas_production(self, proxy):
+        flue_gas_total = proxy.get_sosdisc_outputs(
             'flue_gas_production')[self.energy_name].values
-        flue_gas_prod_ratio = self.get_sosdisc_outputs('flue_gas_prod_ratio')
-        technologies_list = self.get_sosdisc_inputs('technologies_list')
+        flue_gas_prod_ratio = proxy.get_sosdisc_outputs('flue_gas_prod_ratio')
+        technologies_list = proxy.get_sosdisc_inputs('technologies_list')
         years = flue_gas_prod_ratio['years'].values
         chart_name = f'Flue gas emissions by technology'
         new_chart = TwoAxesInstanciatedChart(
@@ -278,8 +278,8 @@ class FlueGasDiscipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_average_co2_concentration(self):
-        flue_gas_co2_concentration = self.get_sosdisc_outputs('flue_gas_mean')
+    def get_chart_average_co2_concentration(self, proxy):
+        flue_gas_co2_concentration = proxy.get_sosdisc_outputs('flue_gas_mean')
 
         chart_name = f'Average CO2 concentration in Flue gases'
         new_chart = TwoAxesInstanciatedChart(
@@ -292,9 +292,9 @@ class FlueGasDiscipline(SoSDiscipline):
         new_chart.series.append(serie)
         return new_chart
 
-    def get_table_technology_co2_concentration(self):
+    def get_table_technology_co2_concentration(self, proxy):
         table_name = 'Concentration of CO2 in all flue gas streams'
-        technologies_list = self.get_sosdisc_inputs('technologies_list')
+        technologies_list = proxy.get_sosdisc_inputs('technologies_list')
 
         headers = ['Technology', 'CO2 concentration']
         cells = []
@@ -302,7 +302,7 @@ class FlueGasDiscipline(SoSDiscipline):
 
         col_data = []
         for techno in technologies_list:
-            val_co2 = round(self.get_sosdisc_inputs(
+            val_co2 = round(proxy.get_sosdisc_inputs(
                 f'{techno}.flue_gas_co2_ratio')[0] * 100, 2)
             col_data.append([f'{val_co2} %'])
         cells.append(col_data)

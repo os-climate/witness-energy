@@ -9,14 +9,14 @@ import pandas as pd
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.energy_invest import EnergyInvest
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 
 
-class InvestEnergyDiscipline(SoSDiscipline):
+class InvestEnergyDiscipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'Energy Investment Model',
@@ -32,9 +32,9 @@ class InvestEnergyDiscipline(SoSDiscipline):
     }
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]',
-                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                       'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]',
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'energy_investment': {'type': 'dataframe',
                               'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                        'energy_investment': ('float', None, True)},
@@ -46,7 +46,7 @@ class InvestEnergyDiscipline(SoSDiscipline):
                               'dataframe_edition_locked': False},
         'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                         'editable': False, 'structuring': True}
     }
 
@@ -57,23 +57,23 @@ class InvestEnergyDiscipline(SoSDiscipline):
     }
     _maturity = 'Research'
 
-    def init_execution(self):
+    def init_execution(self, proxy):
         self.energy_model = EnergyInvest(self.energy_name)
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
         '''
         Construct the desc_out to couple energy invest levels to techno_invest_disc
         '''
         dynamic_outputs = {}
 
-        if 'energy_list' in self._data_in:
-            energy_list = self.get_sosdisc_inputs('energy_list')
+        if 'energy_list' in proxy.get_data_in():
+            energy_list = proxy.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
                     dynamic_outputs[f'{energy}.invest_level'] = {
                         'type': 'dataframe', 'unit': 'G$'}
 
-        self.add_outputs(dynamic_outputs)
+        proxy.add_outputs(dynamic_outputs)
 
     def run(self):
 
@@ -139,7 +139,7 @@ class InvestEnergyDiscipline(SoSDiscipline):
                         (f'{energy}.invest_level', 'invest'), ('invest_energy_mix', energy_other),
                         np.identity(len(years)) * grad_energy_mix_other[:, np.newaxis])
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
         chart_list = ['Invest Distribution']
@@ -153,14 +153,14 @@ class InvestEnergyDiscipline(SoSDiscipline):
             'Years for invest mix', years, [year_start, year_end], 'years'))
         return chart_filters
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self, proxy, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
 
         instanciated_charts = []
         charts = []
-        years_list = [self.get_sosdisc_inputs('year_start')]
+        years_list = [proxy.get_sosdisc_inputs('year_start')]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -170,9 +170,9 @@ class InvestEnergyDiscipline(SoSDiscipline):
                     years_list = chart_filter.selected_values
 
         if 'Invest Distribution' in charts:
-            energy_invest_df = self.get_sosdisc_outputs(
+            energy_invest_df = proxy.get_sosdisc_outputs(
                 'energy_invest_df')
-            energy_list = self.get_sosdisc_inputs(
+            energy_list = proxy.get_sosdisc_inputs(
                 'energy_list')
             chart_name = f'Distribution of Investments vs years'
 

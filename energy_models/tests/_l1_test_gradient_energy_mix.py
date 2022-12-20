@@ -17,12 +17,12 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from os.path import dirname
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.sos_processes.energy.MDO_subprocesses.energy_optim_sub_process.usecase import Study
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as Study_open
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 import scipy.interpolate as sc

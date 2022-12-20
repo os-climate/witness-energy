@@ -20,7 +20,7 @@ import numpy as np
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
 from energy_models.models.electricity.wind_offshore.wind_offshore import WindOffshore
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 
 
@@ -104,15 +104,15 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
 
     _maturity = 'Research'
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.techno_model = WindOffshore(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
-    def get_charts_consumption_and_production(self):
+    def get_charts_consumption_and_production(self, proxy):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
+        instanciated_chart = super().get_charts_consumption_and_production(proxy)
+        techno_consumption = proxy.get_sosdisc_outputs(
             'techno_detailed_consumption')
 
         new_chart_copper = None

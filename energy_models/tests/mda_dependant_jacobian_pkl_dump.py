@@ -5,7 +5,7 @@ Created on 10 May 2021
 
 import energy_models.tests as jacobian_target
 
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.tests.data_tests.mda_energy_data_generator import launch_data_pickle_generation
 import os
 

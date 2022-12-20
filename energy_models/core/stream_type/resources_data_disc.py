@@ -19,9 +19,9 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
@@ -54,7 +54,7 @@ def get_static_prices(years):
     return pd.DataFrame(resources_prices_default_dict)
 
 
-class ResourcesDisc(SoSDiscipline):
+class ResourcesDisc(SoSWrapp):
 
     # ontology information
     _ontology_data = {
@@ -87,18 +87,18 @@ class ResourcesDisc(SoSDiscipline):
 
     DESC_OUT = {
 
-        'resources_price': {'type': 'dataframe', 'unit': '[$/t]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
-        'resources_CO2_emissions': {'type': 'dataframe', 'unit': '[kgCO2/kg]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'}
+        'resources_price': {'type': 'dataframe', 'unit': '[$/t]', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
+        'resources_CO2_emissions': {'type': 'dataframe', 'unit': '[kgCO2/kg]', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'}
     }
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
 
-        if self._data_in is not None:
-            if 'year_start' in self._data_in:
-                year_start, year_end = self.get_sosdisc_inputs(
+        if proxy.get_data_in() is not None:
+            if 'year_start' in proxy.get_data_in():
+                year_start, year_end = proxy.get_sosdisc_inputs(
                     ['year_start', 'year_end'])
                 years = np.arange(year_start, year_end + 1)
-                resources_price = self.get_sosdisc_inputs(
+                resources_price = proxy.get_sosdisc_inputs(
                     'resources_price')
                 new_default_prices = get_static_prices(years)
                 new_default_emissions = get_static_CO2_emissions(years)
@@ -132,7 +132,7 @@ class ResourcesDisc(SoSDiscipline):
     def compute_sos_jacobian(self):
         pass
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
         chart_list = ['Resources prices', 'Resources CO2 emissions']
@@ -141,7 +141,7 @@ class ResourcesDisc(SoSDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self, proxy, filters=None):
 
         instanciated_charts = []
         charts = []
@@ -162,9 +162,9 @@ class ResourcesDisc(SoSDiscipline):
                 instanciated_charts.append(new_chart)
         return instanciated_charts
 
-    def get_chart_prices_in_dollar_kg(self):
+    def get_chart_prices_in_dollar_kg(self, proxy):
 
-        resources_price = self.get_sosdisc_outputs(
+        resources_price = proxy.get_sosdisc_outputs(
             'resources_price')
         chart_name = f'Resources prices'
 
@@ -182,9 +182,9 @@ class ResourcesDisc(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_CO2_emissions(self):
+    def get_chart_CO2_emissions(self, proxy):
 
-        resources_co2_emissions = self.get_sosdisc_outputs(
+        resources_co2_emissions = proxy.get_sosdisc_outputs(
             'resources_CO2_emissions')
         chart_name = f'Resources CO2 emissions in kgCO2/kg'
 

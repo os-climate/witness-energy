@@ -20,8 +20,8 @@ import numpy as np
 from energy_models.models.liquid_fuel.refinery.refinery import Refinery
 from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import LiquidFuelTechnoDiscipline
 
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.kerosene import Kerosene
 from energy_models.core.stream_type.energy_models.gasoline import Gasoline
@@ -166,8 +166,8 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     _maturity = 'Research'
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.techno_model = Refinery(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
@@ -249,7 +249,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
         chart_list = ['Detailed prices', 'Prices per flow',
@@ -263,7 +263,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
             'Price unit', price_unit_list, price_unit_list, 'price_unit'))
         return chart_filters
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self, proxy, filters=None):
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t', "$/USgallon"]
@@ -279,19 +279,19 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                     price_unit_list = chart_filter.selected_values
 
         generic_filter = LiquidFuelTechnoDiscipline.get_chart_filter_list(
-            self)
+            self, proxy)
         instanciated_charts = LiquidFuelTechnoDiscipline.get_post_processing_list(
-            self, generic_filter)
+            self, proxy, generic_filter)
 
         if 'Detailed prices' in charts and '$/USgallon' in price_unit_list:
-            techno_detailed_prices = self.get_sosdisc_outputs(
+            techno_detailed_prices = proxy.get_sosdisc_outputs(
                 'techno_detailed_prices')
             chart_name = f'Detailed prices of {self.techno_name} technology over the years'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/USgallon]',
                                                  chart_name=chart_name)
 
-            if 'part_of_total' in self._data_in:
+            if 'part_of_total' in proxy.get_data_in():
                 part_of_total = self.get_sosdisc_inputs('part_of_total')
                 new_chart.annotation_upper_left = {
                     'Percentage of total price': f'{part_of_total[0]*100.0} %'}
@@ -314,7 +314,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'Prices per flow' in charts and '$/USgallon' in price_unit_list:
-            techno_detailed_prices = self.get_sosdisc_outputs(
+            techno_detailed_prices = proxy.get_sosdisc_outputs(
                 'techno_detailed_prices')
             chart_name = f'Refinery breakdown price for {self.techno_name} technology over the years'
             year_start = min(techno_detailed_prices['years'].values.tolist())
@@ -341,12 +341,12 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         return instanciated_charts
 
-    def get_charts_consumption_and_production(self):
+    def get_charts_consumption_and_production(self, proxy):
         instanciated_charts = []
         # Charts for consumption and prod
-        techno_consumption = self.get_sosdisc_outputs(
+        techno_consumption = proxy.get_sosdisc_outputs(
             'techno_detailed_consumption')
-        techno_production = self.get_sosdisc_outputs(
+        techno_production = proxy.get_sosdisc_outputs(
             'techno_detailed_production')
         chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'
 

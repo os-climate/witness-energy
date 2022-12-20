@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 from energy_models.models.carbon_storage.depleted_oil_gas.depleted_oil_gas import DepletedOilGas
 from energy_models.models.carbon_storage.depleted_oil_gas.depleted_oil_gas_disc import DepletedOilGasDiscipline
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel

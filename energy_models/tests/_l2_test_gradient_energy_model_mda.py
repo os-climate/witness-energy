@@ -21,12 +21,12 @@ import numpy as np
 import pandas as pd
 
 from os.path import join, dirname
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_MDA
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as Study_open
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from sos_trades_core.study_manager.base_study_manager import BaseStudyManager
-from sos_trades_core.tools.rw.load_dump_dm_data import DirectLoadDump
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.study_manager.base_study_manager import BaseStudyManager
+from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
 
 
 class TestMDAAnalyticGradient(AbstractJacobianUnittest):

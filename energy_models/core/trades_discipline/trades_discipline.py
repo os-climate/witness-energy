@@ -14,15 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
     InstantiatedParetoFrontOptimalChart
 
 
-class TradesDiscipline(SoSDiscipline):
+class TradesDiscipline(SoSWrapp):
     """
     """
 
@@ -41,21 +41,21 @@ class TradesDiscipline(SoSDiscipline):
     }
     _maturity = 'Research'
 
-    DESC_IN = {'scenario_list': {SoSDiscipline.TYPE: 'list', SoSDiscipline.SUBTYPE: {'list': 'string'},
-                                 SoSDiscipline.VISIBILITY:
-                                     SoSDiscipline.SHARED_VISIBILITY, SoSDiscipline.NAMESPACE: 'ns_scatter_scenario',
+    DESC_IN = {'scenario_list': {SoSWrapp.TYPE: 'list', SoSWrapp.SUBTYPE: {'list': 'string'},
+                                 SoSWrapp.VISIBILITY:
+                                     SoSWrapp.SHARED_VISIBILITY, SoSWrapp.NAMESPACE: 'ns_scatter_scenario',
                                  'structuring': True},
                'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2,
-                                                    'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_public'}}
     DESC_OUT = {}
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
 
-        if 'scenario_list' in self._data_in:
-            scenario_list = self.get_sosdisc_inputs('scenario_list')
+        if 'scenario_list' in proxy.get_data_in():
+            scenario_list = proxy.get_sosdisc_inputs('scenario_list')
 
             if scenario_list is not None:
                 inputs = {}
@@ -69,13 +69,13 @@ class TradesDiscipline(SoSDiscipline):
                     inputs[f'{scenario}{ns_value_long.split(ns_value_short)[1]}.energy_production'] = {
                         'type': 'dataframe', 'unit': 'MWh', 'visibility': 'Shared', 'namespace': 'ns_scatter_scenario'}
 
-                self.add_inputs(inputs, clean_inputs=True)
+                proxy.add_inputs(inputs, clean_inputs=True)
 
     def run(self):
 
         pass
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
 
@@ -86,7 +86,7 @@ class TradesDiscipline(SoSDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         instanciated_charts = []
 
@@ -99,14 +99,14 @@ class TradesDiscipline(SoSDiscipline):
             graphs_list = [
                 'CO2 emissions vs Energy production']
 
-        scenario_list = self.get_sosdisc_inputs(
+        scenario_list = proxy.get_sosdisc_inputs(
             'scenario_list')
 
-        dynamic_inputs = self.get_sosdisc_inputs(
+        dynamic_inputs = proxy.get_sosdisc_inputs(
             list(self.inst_desc_in.keys()), in_dict=True)
 
-        year_end = self.get_sosdisc_inputs('year_end')
-        scaling_factor_energy_production = self.get_sosdisc_inputs(
+        year_end = proxy.get_sosdisc_inputs('year_end')
+        scaling_factor_energy_production = proxy.get_sosdisc_inputs(
             'scaling_factor_energy_production')
 
         """

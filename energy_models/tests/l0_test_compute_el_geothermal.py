@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 
 from energy_models.models.electricity.geothermal.geothermal import Geothermal
 from energy_models.models.electricity.geothermal.geothermal_disc import GeothermalDiscipline
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel

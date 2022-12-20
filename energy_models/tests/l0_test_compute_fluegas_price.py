@@ -17,7 +17,7 @@ import unittest
 import pandas as pd
 import numpy as np
 from os.path import join, dirname
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class FlueGasRatioTestCase(unittest.TestCase):
@@ -121,7 +121,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
                        'scaling_factor_techno_production': self.scaling_factor_techno_production, }
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        disc_techno = self.ee.root_process.proxy_disciplines[0]
 
         succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.electricity.CoalGen.techno_production',
                                                                                  f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_production',

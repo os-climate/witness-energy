@@ -19,7 +19,7 @@ import numpy as np
 
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
 from energy_models.models.carbon_storage.reforestation.reforestation import Reforestation
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from copy import deepcopy
 
 
@@ -124,18 +124,18 @@ class ReforestationDiscipline(CSTechnoDiscipline):
     # -- add specific techno outputs to this
     DESC_OUT = CSTechnoDiscipline.DESC_OUT
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.techno_model = Reforestation(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self, proxy, filters=None):
 
-        generic_filter = CSTechnoDiscipline.get_chart_filter_list(self)
+        generic_filter = CSTechnoDiscipline.get_chart_filter_list(self, proxy)
         instanciated_charts = CSTechnoDiscipline.get_post_processing_list(
-            self, generic_filter)
+            self, proxy, generic_filter)
 
-        available_land = self.get_sosdisc_outputs('land_use_required')
+        available_land = proxy.get_sosdisc_outputs('land_use_required')
         year_start = self.get_sosdisc_inputs('year_start')
         year_end = self.get_sosdisc_inputs('year_end')
         years = np.arange(year_start, year_end + 1)

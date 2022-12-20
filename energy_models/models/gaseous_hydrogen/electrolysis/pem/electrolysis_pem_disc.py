@@ -21,7 +21,7 @@ import numpy as np
 
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
 from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem import ElectrolysisPEM
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 
 
@@ -105,15 +105,15 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
     # -- add specific techno outputs to this
     DESC_OUT = GaseousHydrogenTechnoDiscipline.DESC_OUT
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.techno_model = ElectrolysisPEM(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
-    def get_charts_consumption_and_production(self):
+    def get_charts_consumption_and_production(self, proxy):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
+        instanciated_chart = super().get_charts_consumption_and_production(proxy)
+        techno_consumption = proxy.get_sosdisc_outputs(
             'techno_detailed_consumption')
 
         new_chart_platinum = None

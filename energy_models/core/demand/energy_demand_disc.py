@@ -18,15 +18,15 @@ import numpy as np
 
 from energy_models.core.demand.energy_demand import EnergyDemand
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class EnergyDemandDiscipline(SoSDiscipline):
+class EnergyDemandDiscipline(SoSWrapp):
 
     # ontology information
     _ontology_data = {
@@ -48,22 +48,22 @@ class EnergyDemandDiscipline(SoSDiscipline):
                                               'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                                        'demand': ('float',  None, True)},
                                               'dataframe_edition_locked': False,
-                                              'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix'},
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix'},
                # 'default': 22847.66
                # old value is 20900TWh
                'initial_electricity_demand': {'type': 'float', 'default': 18000., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': '-'},
-               'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
                'transport_demand': {'type': 'dataframe', 'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                                                   'transport_demand': ('float',  None, True)},
                                     'dataframe_edition_locked': False, 'unit': 'TWh'},
-               'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'additional_demand_transport': {'type': 'float', 'default': 10., 'unit': '%'}}
 
-    DESC_OUT = {'electricity_demand_constraint': {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+    DESC_OUT = {'electricity_demand_constraint': {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
                 'electricity_demand': {'type': 'dataframe', 'unit': 'TWh'},
-                'transport_demand_constraint': {'type': 'array', 'unit': 'TWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                'transport_demand_constraint': {'type': 'array', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
                 'net_transport_production': {'type': 'array', 'unit': 'TWh'},
                 }
     name = EnergyDemand.name
@@ -72,8 +72,8 @@ class EnergyDemandDiscipline(SoSDiscipline):
         EnergyDemand.energy_list_transport
     elec_prod_column = EnergyDemand.elec_prod_column
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.demand_model = EnergyDemand('EnergyDemand')
         self.demand_model.configure_parameters(inputs_dict)
 
@@ -112,7 +112,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
                                                     f"production {energy_name} ({EnergyMix.stream_class_dict[energy_name].unit})"),
                 dtransport_demand_denergy_prod)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
         chart_list = ['Electricity Demand Constraint',
@@ -122,7 +122,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self, proxy, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -137,37 +137,37 @@ class EnergyDemandDiscipline(SoSDiscipline):
                     charts = chart_filter.selected_values
 
         if 'Electricity Demand Constraint' in charts:
-            new_chart = self.get_chart_elec_demand_constraint()
+            new_chart = self.get_chart_elec_demand_constraint(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Electrical Machine Efficiency' in charts:
-            new_chart = self.get_chart_elec_machine_efficiency()
+            new_chart = self.get_chart_elec_machine_efficiency(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Transport Demand Constraint' in charts:
-            new_chart = self.get_chart_transport_demand_constraint()
+            new_chart = self.get_chart_transport_demand_constraint(proxy)
 
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
-    def get_chart_elec_demand_constraint(self):
+    def get_chart_elec_demand_constraint(self, proxy):
         chart_name = 'Electricity Demand Constraint'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Energy demand [TWh]',
                                              chart_name=chart_name, stacked_bar=True)
 
-        electricity_demand = self.get_sosdisc_outputs('electricity_demand')
+        electricity_demand = proxy.get_sosdisc_outputs('electricity_demand')
 
         serie = InstanciatedSeries(
             electricity_demand['years'].values.tolist(),
             electricity_demand['elec_demand (TWh)'].values.tolist(), 'electricity demand', 'lines')
         new_chart.series.append(serie)
 
-        energy_production_detailed = self.get_sosdisc_inputs(
+        energy_production_detailed = proxy.get_sosdisc_inputs(
             'energy_production_detailed')
         net_elec_prod = energy_production_detailed
         serie = InstanciatedSeries(
@@ -177,7 +177,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_transport_demand_constraint(self):
+    def get_chart_transport_demand_constraint(self, proxy):
         chart_name = 'Transport Demand Constraint'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Energy demand [TWh]',
@@ -186,14 +186,14 @@ class EnergyDemandDiscipline(SoSDiscipline):
         note = {
             'Transport energies': 'Liquid hydrogen, liquid fuel, biodiesel, methane, biogas, HEFA'}
         new_chart.annotation_upper_left = note
-        transport_demand, energy_production_detailed = self.get_sosdisc_inputs(
+        transport_demand, energy_production_detailed = proxy.get_sosdisc_inputs(
             ['transport_demand', 'energy_production_detailed'])
 
         serie = InstanciatedSeries(
             transport_demand['years'].values.tolist(),
             transport_demand['transport_demand'].values.tolist(), 'transport demand', 'lines')
         new_chart.series.append(serie)
-        net_transport_production = self.get_sosdisc_outputs(
+        net_transport_production = proxy.get_sosdisc_outputs(
             'net_transport_production')
         serie = InstanciatedSeries(
             transport_demand['years'].values.tolist(),
@@ -202,7 +202,7 @@ class EnergyDemandDiscipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_elec_machine_efficiency(self):
+    def get_chart_elec_machine_efficiency(self, proxy):
         chart_name = 'Electrical Machine Efficiency'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Electrical efficiency [-]',

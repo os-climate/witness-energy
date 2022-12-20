@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 from energy_models.core.energy_study_manager import DEFAULT_ENERGY_LIST, DEFAULT_CCS_LIST, DEFAULT_TECHNO_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
 
@@ -29,7 +29,7 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         self.invest_discipline = INVEST_DISCIPLINE_DEFAULT
         self.process_level = 'val'
 
-    def setup_process(self, techno_dict, invest_discipline=INVEST_DISCIPLINE_DEFAULT, process_level='val'):
+    def setup_process(self, techno_dict, invest_discipline=INVEST_DISCIPLINE_DEFAULT, process_level='val', associate_namespace=False):
         '''
         Setup process function which will be called if the builder is retrieved with get_builder_from_process with args
         This allows to define instance variables inside the class as energy_list or one invest discipline
@@ -42,3 +42,4 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         self.techno_dict = techno_dict
         self.invest_discipline = invest_discipline
         self.process_level = process_level
+        self.associate_namespace = associate_namespace

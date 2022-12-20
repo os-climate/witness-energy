@@ -41,7 +41,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         liquid_hydrogen_name = LiquidHydrogen.name
         energy_mix = 'EnergyMix'
 
-        ns_dict = {'ns_liquid_hydrogen': f'{ns_study}.EnergyMix.{liquid_hydrogen_name}',
+        ns_dict = {'ns_liquid_hydrogen': f'{ns_study}.{energy_mix}.{liquid_hydrogen_name}',
                    #'ns_hydrogen': f'{ns_study}.EnergyMix.{hydrogen_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
@@ -55,7 +55,7 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{energy_mix}.{liquid_hydrogen_name}.{techno_name}'] = self.get_techno_disc_path(
                 LiquidHydrogen.short_name, techno_name)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             mods_dict_invest = {f'{energy_mix}.{liquid_hydrogen_name}': 'energy_models.core.investments.disciplines.techno_invest_disc.InvestTechnoDiscipline',
                                 }

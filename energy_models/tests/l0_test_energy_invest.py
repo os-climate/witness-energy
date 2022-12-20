@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 from energy_models.core.investments.energy_invest import EnergyInvest
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestEnergyInvest(unittest.TestCase):
@@ -228,7 +228,7 @@ class TestEnergyInvest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.invest_level': self.invest_df_techno}
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
 
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.invest_level',
                                                                           f'{self.name}.{self.model_name}.invest_techno_mix'],
@@ -267,7 +267,7 @@ class TestEnergyInvest(unittest.TestCase):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.energy_investment',
                                                                           f'{self.name}.{self.model_name}.invest_energy_mix'],
                                       outputs=[

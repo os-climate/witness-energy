@@ -17,11 +17,11 @@ from energy_models.core.energy_ghg_emissions.energy_ghg_emissions import EnergyG
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
     AgricultureMixDiscipline
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from energy_models.core.ccus.ccus import CCUS
 
@@ -32,7 +32,7 @@ from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissi
     GHGemissionsDiscipline
 
 
-class EnergyGHGEmissionsDiscipline(SoSDiscipline):
+class EnergyGHGEmissionsDiscipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'Energy GHG emissions Model',
@@ -52,12 +52,12 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                         'editable': False, 'structuring': True},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                              'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'GHG_global_warming_potential20': {'type': 'dict','subtype_descriptor':{'dict':'float'}, 'unit': 'kgCO2eq/kg',
                                            'default': GHGemissionsDiscipline.GWP_20_default,
                                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -67,14 +67,14 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_witness', 'user_level': 3},
         'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh',
-                                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+                                       'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt',
                                   'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                                'namespace': 'ns_energy'},
         'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
+                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True},
         }
 
@@ -89,58 +89,58 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
 
     name = f'{GHGemissionsDiscipline.name}.Energy'
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.model = EnergyGHGEmissions(self.name)
         self.model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
 
         dynamic_inputs = {}
         dynamic_outputs = {}
-        if 'is_dev' in self._data_in:
-            is_dev = self.get_sosdisc_inputs('is_dev')
+        if 'is_dev' in proxy.get_data_in():
+            is_dev = proxy.get_sosdisc_inputs('is_dev')
 
-        if 'energy_list' in self._data_in:
-            energy_list = self.get_sosdisc_inputs('energy_list')
+        if 'energy_list' in proxy.get_data_in():
+            energy_list = proxy.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
                     if energy == BiomassDry.name:
                         for ghg in GHGEmissions.GHG_TYPE_LIST:
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.{ghg}_per_use'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness',
-                                'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                                'visibility': SoSWrapp.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_consumption'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_production'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                     else:
                         for ghg in GHGEmissions.GHG_TYPE_LIST:
                             dynamic_inputs[f'{energy}.{ghg}_per_use'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh',
-                                'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                'visibility': SoSWrapp.SHARED_VISIBILITY,
                                 'namespace': 'ns_energy'}
                         dynamic_inputs[f'{energy}.energy_consumption'] = {
                             'type': 'dataframe', 'unit': 'PWh',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_energy'}
                         dynamic_inputs[f'{energy}.energy_production'] = {
                             'type': 'dataframe', 'unit': 'PWh',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_energy'}
-            if 'ccs_list' in self._data_in:
-                ccs_list = self.get_sosdisc_inputs('ccs_list')
+            if 'ccs_list' in proxy.get_data_in():
+                ccs_list = proxy.get_sosdisc_inputs('ccs_list')
                 if ccs_list is not None:
                     for ccs in ccs_list:
                         dynamic_inputs[f'{ccs}.energy_production'] = {
                             'type': 'dataframe', 'unit': 'PWh',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
 
-        self.add_inputs(dynamic_inputs)
-        self.add_outputs(dynamic_outputs)
+        proxy.add_inputs(dynamic_inputs)
+        proxy.add_outputs(dynamic_outputs)
 
     def run(self):
         # -- get inputs
@@ -171,8 +171,8 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
         scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
         CO2_emissions_sources = outputs_dict['CO2_emissions_sources']
         CO2_emissions_sinks = outputs_dict['CO2_emissions_sinks']
-        energy_production_detailed = self.get_sosdisc_inputs(
-            'energy_production_detailed')
+        energy_production_detailed = inputs_dict[
+            'energy_production_detailed']
 
         # ------------------------------------#
         # -- CO2 emissions sources gradients--#
@@ -353,7 +353,7 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
              'Total CO2 emissions'), ('co2_emissions_needed_by_energy_mix', 'carbon_capture needed by energy mix (Gt)'),
             -np.identity(len(years)))
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
         chart_list = ['Global Warming Potential', 'Total CO2 emissions',
@@ -365,7 +365,7 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self, proxy, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -378,36 +378,36 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
 
         if 'Global Warming Potential' in charts:
             for gwp_year in [20, 100]:
-                new_chart = self.get_chart_gwp(gwp_year)
+                new_chart = self.get_chart_gwp(proxy, gwp_year)
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
         if 'Total CO2 emissions' in charts:
 
-            new_chart = self.get_chart_total_co2_emissions()
+            new_chart = self.get_chart_total_co2_emissions(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Emissions per energy' in charts:
             for ghg in EnergyGHGEmissions.GHG_TYPE_LIST:
-                new_chart = self.get_chart_ghg_emissions_per_energy(ghg)
+                new_chart = self.get_chart_ghg_emissions_per_energy(proxy, ghg)
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
         if 'CO2 sources' in charts:
 
-            new_chart = self.get_chart_CO2_sources()
+            new_chart = self.get_chart_CO2_sources(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'CO2 sinks' in charts:
-            new_chart = self.get_chart_CO2_sinks()
+            new_chart = self.get_chart_CO2_sinks(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
-    def get_chart_total_co2_emissions(self):
-        GHG_total_energy_emissions = self.get_sosdisc_outputs(
+    def get_chart_total_co2_emissions(self, proxy):
+        GHG_total_energy_emissions = proxy.get_sosdisc_outputs(
             'GHG_total_energy_emissions')
 
         chart_name = f'Total CO2 emissions for energy sector'
@@ -422,8 +422,8 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_gwp(self, gwp_year):
-        GWP_emissions = self.get_sosdisc_outputs(
+    def get_chart_gwp(self, proxy, gwp_year):
+        GWP_emissions = proxy.get_sosdisc_outputs(
             'GWP_emissions')
 
         chart_name = f'Global warming potential for energy sector emissions at {gwp_year} years'
@@ -439,14 +439,14 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_ghg_emissions_per_energy(self, ghg):
-        GHG_emissions_per_energy = self.get_sosdisc_outputs(
+    def get_chart_ghg_emissions_per_energy(self, proxy, ghg):
+        GHG_emissions_per_energy = proxy.get_sosdisc_outputs(
             'GHG_emissions_per_energy')
 
         chart_name = f'{ghg} emissions per energy'
         new_chart = TwoAxesInstanciatedChart(
             'years', f'{ghg} emissions [Mt]', chart_name=chart_name, stacked_bar=True)
-        energy_list = self.get_sosdisc_inputs('energy_list')
+        energy_list = proxy.get_sosdisc_inputs('energy_list')
         for energy in energy_list:
             ghg_energy = GHG_emissions_per_energy[ghg][[
                 col for col in GHG_emissions_per_energy[ghg] if energy in col]].sum(axis=1).values
@@ -459,8 +459,8 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_CO2_sources(self):
-        CO2_emissions_sources = self.get_sosdisc_outputs(
+    def get_chart_CO2_sources(self, proxy):
+        CO2_emissions_sources = proxy.get_sosdisc_outputs(
             'CO2_emissions_sources')
 
         chart_name = f'CO2 emissions by consumption - Sources'
@@ -477,8 +477,8 @@ class EnergyGHGEmissionsDiscipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_CO2_sinks(self):
-        CO2_emissions_sinks = self.get_sosdisc_outputs(
+    def get_chart_CO2_sinks(self, proxy):
+        CO2_emissions_sinks = proxy.get_sosdisc_outputs(
             'CO2_emissions_sinks')
 
         chart_name = f'CO2 emissions by consumption - Sinks'

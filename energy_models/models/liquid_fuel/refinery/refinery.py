@@ -18,7 +18,7 @@ from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.resources_models.oil import CrudeOil
-from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min, compute_dfunc_with_exp_min
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min, compute_dfunc_with_exp_min
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 import pandas as pd

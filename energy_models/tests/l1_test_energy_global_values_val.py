@@ -6,7 +6,7 @@ import unittest
 import time
 import numpy as np
 import pandas as pd
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_open
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as agri_study_open
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT

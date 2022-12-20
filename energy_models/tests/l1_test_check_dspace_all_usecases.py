@@ -16,15 +16,15 @@ limitations under the License.
 
 from numpy import empty
 from array import array
-from sos_trades_core.study_manager.study_manager import StudyManager
-from sos_trades_core.sos_processes.processes_factory import SoSProcessFactory
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.sos_processes.processes_factory import SoSProcessFactory
 from importlib import import_module
 from os.path import dirname, isdir
 from os import listdir, makedirs
 from tempfile import gettempdir
 from collections.abc import MutableMapping
 from contextlib import suppress
-from sos_trades_core.execution_engine.namespace import Namespace
+from sostrades_core.execution_engine.namespace import Namespace
 import unittest
 
 

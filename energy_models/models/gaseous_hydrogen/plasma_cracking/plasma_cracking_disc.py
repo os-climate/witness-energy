@@ -120,26 +120,26 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                 'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt', 'namespace': 'ns_carb', 'visibility': 'Shared'}}
     DESC_OUT.update(GaseousHydrogenTechnoDiscipline.DESC_OUT)
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
 
-        GaseousHydrogenTechnoDiscipline.setup_sos_disciplines(self)
+        GaseousHydrogenTechnoDiscipline.setup_sos_disciplines(self, proxy)
 
-        if self._data_in is not None:
-            if 'year_start' in self._data_in:
-                year_start, year_end = self.get_sosdisc_inputs(
+        if proxy.get_data_in() is not None:
+            if 'year_start' in proxy.get_data_in():
+                year_start, year_end = proxy.get_sosdisc_inputs(
                     ['year_start', 'year_end'])
                 years = np.arange(year_start, year_end + 1)
 
-                if self.get_sosdisc_inputs('CO2_credits')['years'].values.tolist() != list(years):
-                    self.update_default_value(
+                if proxy.get_sosdisc_inputs('CO2_credits')['years'].values.tolist() != list(years):
+                    proxy.update_default_value(
                         'CO2_credits', self.IO_TYPE_IN, pd.DataFrame({'years': years, 'CO2_credits': 50.}))
 
-                if self.get_sosdisc_inputs('market_demand')['years'].values.tolist() != list(years):
-                    self.update_default_value(
+                if proxy.get_sosdisc_inputs('market_demand')['years'].values.tolist() != list(years):
+                    proxy.update_default_value(
                         'market_demand', self.IO_TYPE_IN, pd.DataFrame({'years': years, 'carbon_demand': 5e-2}))
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.techno_model = PlasmaCracking(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 

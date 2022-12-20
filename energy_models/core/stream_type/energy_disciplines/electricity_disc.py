@@ -15,16 +15,16 @@ limitations under the License.
 '''
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 import numpy as np
 import pandas as pd
 from plotly import graph_objects as go
 import plotly.colors as plt_color
 
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import hydropower_name
 
 
@@ -54,13 +54,13 @@ class ElectricityDiscipline(EnergyDiscipline):
                                                  # we use a 50% higher value
                                                  'unit': 'Twh',
                                                  'user_level': 2,
-                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                  'namespace': 'ns_ref'},
                'hydropower_constraint_ref': {'type': 'float',
                                              'default': 1000.,
                                              'unit': 'Twh',
                                              'user_level': 2,
-                                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                                              'namespace': 'ns_ref'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
@@ -75,22 +75,22 @@ class ElectricityDiscipline(EnergyDiscipline):
     # -- add specific techno outputs to this
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
         dynamic_outputs = {}
-        if 'technologies_list' in self._data_in:
-            techno_list = self.get_sosdisc_inputs('technologies_list')
+        if 'technologies_list' in proxy.get_data_in():
+            techno_list = proxy.get_sosdisc_inputs('technologies_list')
 
             if techno_list is not None:
                 if hydropower_name in techno_list:
                     dynamic_outputs['prod_hydropower_constraint'] = {'type': 'dataframe', 'user_level': 2, 'unit': 'TWh',
-                                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                      'namespace': 'ns_functions'}
-        self.add_outputs(dynamic_outputs)
+        proxy.add_outputs(dynamic_outputs)
 
-        EnergyDiscipline.setup_sos_disciplines(self)
+        EnergyDiscipline.setup_sos_disciplines(self, proxy)
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.energy_model = Electricity(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
 
@@ -127,9 +127,9 @@ class ElectricityDiscipline(EnergyDiscipline):
 
         EnergyDiscipline.compute_sos_jacobian(self)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
-        chart_filters = EnergyDiscipline.get_chart_filter_list(self)
+        chart_filters = EnergyDiscipline.get_chart_filter_list(self, proxy)
         chart_list = ['Energy price', 'Technology mix', 'CO2 emissions',
                       'Consumption and production', 'Constraints']
 
@@ -138,13 +138,13 @@ class ElectricityDiscipline(EnergyDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self, proxy, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
 
         instanciated_charts = EnergyDiscipline.get_post_processing_list(
-            self, filters)
+            self, proxy, filters)
         charts = []
         if filters is not None:
             for chart_filter in filters:
@@ -153,12 +153,12 @@ class ElectricityDiscipline(EnergyDiscipline):
         if 'Constraints' in charts:
             constraints_list = ['prod_hydropower_constraint']
             new_chart = self.get_chart_constraint(
-                constraints_list)
+                proxy, constraints_list)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         return instanciated_charts
 
-    def get_chart_constraint(self, constraints_list):
+    def get_chart_constraint(self, proxy, constraints_list):
         """
         Function to create post-proc for the constraints of a node
         Input: constraints list (names)
@@ -167,9 +167,9 @@ class ElectricityDiscipline(EnergyDiscipline):
         constraints_dict = {}
         for constraint in constraints_list:
             constraints_dict[constraint] = list(
-                self.get_sosdisc_outputs(constraint).values[:, 1])
-        years = list(np.arange(self.get_sosdisc_inputs(
-            'year_start'), self.get_sosdisc_inputs('year_end') + 1))
+                proxy.get_sosdisc_outputs(constraint).values[:, 1])
+        years = list(np.arange(proxy.get_sosdisc_inputs(
+            'year_start'), proxy.get_sosdisc_inputs('year_end') + 1))
         chart_name = 'Constraints'
         fig = go.Figure()
         for key in constraints_dict.keys():

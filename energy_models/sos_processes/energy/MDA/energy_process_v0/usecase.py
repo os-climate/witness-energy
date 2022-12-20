@@ -18,7 +18,7 @@ import pandas as pd
 
 from energy_models.core.energy_study_manager import AGRI_TYPE, EnergyStudyManager,\
     DEFAULT_TECHNO_DICT, CCUS_TYPE, ENERGY_TYPE
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 
@@ -37,8 +37,8 @@ from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidH
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 
 from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.fossil import Fossil
@@ -802,15 +802,15 @@ if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
     # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    print(len(uc_cls.execution_engine.root_process.sos_disciplines))
+    print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
     uc_cls.run()
 
-    # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
-    #     if disc.sos_name == 'EnergyMix.fuel':
-    #         for graph in graph_list:
-    #             graph.to_plotly().show()
+    ppf = PostProcessingFactory()
+    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
+        filters = ppf.get_post_processing_filters_by_discipline(
+            disc)
+        graph_list = ppf.get_post_processing_by_discipline(
+            disc, filters, as_json=False)
+        #if disc.sos_name == 'EnergyMix.fuel':
+        for graph in graph_list:
+            graph.to_plotly()#.show()

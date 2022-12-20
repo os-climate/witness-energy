@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 from energy_models.core.investments.energy_or_ccsinvest import EnergyOrCCSInvest
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
@@ -142,7 +142,7 @@ class TestEnergyorCCSInvest(unittest.TestCase):
             f'{self.name}.{self.model_name}.{key}': value for key, value in self.input_dict.items()}
         self.ee.load_study_from_input_dict(namespaced_input_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.energy_investment',
                                                                           f'{self.name}.{self.model_name}.ccs_percentage'],
                                       outputs=[
@@ -211,7 +211,7 @@ class TestEnergyorCCSInvest(unittest.TestCase):
             f'{self.name}.{self.model_name}.{key}': value for key, value in self.input_dict.items()}
         self.ee.load_study_from_input_dict(namespaced_input_dict)
         ccs_list = [CarbonCapture.name, CarbonStorage.name]
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.ccs_investment',
                                                                           f'{self.name}.{self.model_name}.invest_ccs_mix'],
                                       outputs=[

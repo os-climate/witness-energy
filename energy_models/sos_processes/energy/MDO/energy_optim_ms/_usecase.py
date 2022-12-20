@@ -15,8 +15,8 @@ limitations under the License.
 '''
 import numpy as np
 
-from sos_trades_core.study_manager.study_manager import StudyManager
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.sos_processes.energy.MDO.energy_optim_process.usecase import Study as energy_optim_usecase
 
 

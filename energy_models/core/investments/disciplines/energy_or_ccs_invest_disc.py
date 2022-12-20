@@ -6,13 +6,13 @@ All rights reserved.
 import numpy as np
 
 from energy_models.core.investments.energy_or_ccsinvest import EnergyOrCCSInvest
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
 
-class InvestCCSorEnergyDiscipline(SoSDiscipline):
+class InvestCCSorEnergyDiscipline(SoSWrapp):
 
     # ontology information
     _ontology_data = {
@@ -49,7 +49,7 @@ class InvestCCSorEnergyDiscipline(SoSDiscipline):
     _maturity = 'Research'
     rescaling_factor = 1e2
 
-    def init_execution(self):
+    def init_execution(self, proxy):
         self.energy_model = EnergyOrCCSInvest()
 
     def run(self):
@@ -92,7 +92,7 @@ class InvestCCSorEnergyDiscipline(SoSDiscipline):
              'energy_investment'), ('ccs_percentage', 'ccs_percentage'),
             -np.identity(len_grad) * inputs_dict['energy_investment']['energy_investment'].values / 100.0)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
         chart_list = ['Global Invest Distribution']
@@ -101,7 +101,7 @@ class InvestCCSorEnergyDiscipline(SoSDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self, proxy, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -116,9 +116,9 @@ class InvestCCSorEnergyDiscipline(SoSDiscipline):
 
         if 'Global Invest Distribution' in charts:
 
-            ccs_percentage = self.get_sosdisc_inputs(
+            ccs_percentage = proxy.get_sosdisc_inputs(
                 'ccs_percentage')['ccs_percentage'].values / 100.0
-            total_energy_investment = self.get_sosdisc_inputs(
+            total_energy_investment = proxy.get_sosdisc_inputs(
                 'energy_investment')
 
             chart_name = 'Distribution of Investments into CCS and Energy Conversion'

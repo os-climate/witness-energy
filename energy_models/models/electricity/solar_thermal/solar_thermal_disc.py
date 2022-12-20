@@ -21,9 +21,9 @@ import numpy as np
 from energy_models.models.electricity.solar_thermal.solar_thermal import SolarThermal
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
 
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
@@ -113,15 +113,15 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
 
     _maturity = 'Research'
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.techno_model = SolarThermal(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
-    def get_charts_consumption_and_production(self):
+    def get_charts_consumption_and_production(self, proxy):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production()
-        techno_consumption = self.get_sosdisc_outputs(
+        instanciated_chart = super().get_charts_consumption_and_production(proxy)
+        techno_consumption = proxy.get_sosdisc_outputs(
             'techno_detailed_consumption')
 
         new_chart_copper = None

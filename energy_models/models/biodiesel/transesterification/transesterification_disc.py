@@ -60,22 +60,22 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
     # -- add specific techno outputs to this
     DESC_OUT = BioDieselTechnoDiscipline.DESC_OUT
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.techno_model = Transesterification(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
         '''
         Compute techno_infos_dict with updated data_fuel_dict
         '''
-        BioDieselTechnoDiscipline.setup_sos_disciplines(self)
-        dynamic_inputs = self.inst_desc_in
-        if self._data_in is not None:
-            if 'data_fuel_dict' in self._data_in:
-                biodiesel_calorific_value = self.get_sosdisc_inputs('data_fuel_dict')[
+        BioDieselTechnoDiscipline.setup_sos_disciplines(self, proxy)
+        dynamic_inputs = proxy.inst_desc_in
+        if proxy.get_data_in() is not None:
+            if 'data_fuel_dict' in proxy.get_data_in():
+                biodiesel_calorific_value = proxy.get_sosdisc_inputs('data_fuel_dict')[
                     'calorific_value']
-                biodiesel_density = self.get_sosdisc_inputs('data_fuel_dict')[
+                biodiesel_density = proxy.get_sosdisc_inputs('data_fuel_dict')[
                     'density']
 
                 # Beer, T., Grant, T., Morgan, G., Lapszewicz, J., Anyon, P., Edwards, J., Nelson, P., Watson, H. and Williams, D., 2001.
@@ -110,7 +110,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                     'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'}
                 dynamic_inputs['initial_production'] = {
                     'type': 'float', 'unit': 'TWh', 'default': initial_production}
-        self.add_inputs(dynamic_inputs)
+        proxy.add_inputs(dynamic_inputs)
 
     def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}, grad_dict_resources_co2={}):
         """

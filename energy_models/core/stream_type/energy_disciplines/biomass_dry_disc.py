@@ -16,7 +16,7 @@ limitations under the License.
 
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
 
@@ -51,12 +51,12 @@ class BiomassDryDiscipline(EnergyDiscipline):
 
     DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.energy_model = BiomassDry(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
 
-    def get_chart_co2_emissions(self):
+    def get_chart_co2_emissions(self, proxy):
         '''
         surcharged from EnergyDiscipline to have emissions from technology production
         '''
@@ -65,16 +65,16 @@ class BiomassDryDiscipline(EnergyDiscipline):
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions (Gt)', chart_name=chart_name, stacked_bar=True)
 
-        technology_list = self.get_sosdisc_inputs('technologies_list')
+        technology_list = proxy.get_sosdisc_inputs('technologies_list')
 
-        co2_per_use = self.get_sosdisc_outputs(
+        co2_per_use = proxy.get_sosdisc_outputs(
             'CO2_per_use')
 
-        energy_production = self.get_sosdisc_outputs('energy_production')
+        energy_production = proxy.get_sosdisc_outputs('energy_production')
         for technology in technology_list:
-            techno_emissions = self.get_sosdisc_inputs(
+            techno_emissions = proxy.get_sosdisc_inputs(
                 f'{technology}.CO2_emissions')
-            techno_production = self.get_sosdisc_inputs(
+            techno_production = proxy.get_sosdisc_inputs(
                 f'{technology}.techno_production')
             year_list = techno_emissions['years'].values.tolist()
             emission_list = techno_emissions[technology].values * \

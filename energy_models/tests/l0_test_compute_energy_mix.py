@@ -21,8 +21,8 @@ from pandas.util.testing import assert_frame_equal
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 import scipy.interpolate as sc
 

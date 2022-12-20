@@ -22,10 +22,10 @@ import pandas as pd
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect, get_dsmooth_dvariable_vect
-from sos_trades_core.tools.cst_manager.func_manager_common import soft_maximum_vect, get_dsoft_maximum_vect
-from sos_trades_core.tools.cst_manager.func_manager_common import cons_smooth_maximum_vect, get_dcons_smooth_dvariable_vect
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
+from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect, get_dsmooth_dvariable_vect
+from sostrades_core.tools.cst_manager.func_manager_common import soft_maximum_vect, get_dsoft_maximum_vect
+from sostrades_core.tools.cst_manager.func_manager_common import cons_smooth_maximum_vect, get_dcons_smooth_dvariable_vect
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
 
 
 class TechnoType:

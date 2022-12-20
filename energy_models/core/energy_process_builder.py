@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import re
-from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 INVEST_DISCIPLINE_OPTIONS = ['one_per_energy',  # Instantiate one disicpline for each energy to distribute investments
                              'one_invest',  # Only one discipline to distribute all investments with invest mix ratios
@@ -32,9 +32,10 @@ class EnergyProcessBuilder(BaseProcessBuilder):
         self.techno_list = None
         self.invest_discipline = INVEST_DISCIPLINE_DEFAULT
 
-    def setup_process(self, techno_list, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
+    def setup_process(self, techno_list, invest_discipline=INVEST_DISCIPLINE_DEFAULT, associate_namespace=False):
         self.techno_list = techno_list
         self.invest_discipline = invest_discipline
+        self.associate_namespace = associate_namespace
 
     def get_stream_disc_path(self, stream, substream_name):
         list_name = re.findall('[A-Z][^A-Z]*', substream_name)

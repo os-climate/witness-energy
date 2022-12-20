@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 from energy_models.models.syngas.co_electrolysis.co_electrolysis import CoElectrolysis
 from energy_models.models.syngas.co_electrolysis.co_electrolysis_disc import CoElectrolysisDiscipline
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix

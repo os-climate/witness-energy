@@ -20,14 +20,14 @@ import pandas as pd
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
     AgricultureMixDiscipline
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
@@ -36,13 +36,13 @@ from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidH
 from copy import deepcopy
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
     compute_func_with_exp_min
 from plotly import graph_objects as go
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-from sos_trades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
-from sos_trades_core.tools.cst_manager.func_manager_common import get_dsmooth_dvariable, \
+from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
+from sostrades_core.tools.cst_manager.func_manager_common import get_dsmooth_dvariable, \
     get_dsmooth_dvariable_vect
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
@@ -50,7 +50,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class Energy_Mix_Discipline(SoSDiscipline):
+class Energy_Mix_Discipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'Energy Mix Model',
@@ -83,60 +83,60 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
     DESC_IN = {'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                'possible_values': EnergyMix.energy_list,
-                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                                'editable': False, 'structuring': True},
                'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                             'possible_values': EnergyMix.ccs_list,
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                             'editable': False, 'structuring': True},
                'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
-                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
+                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
                'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8,
-                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'normalization_value_demand_constraints': {'type': 'float', 'default': 1000.0, 'unit': 'Twh',
-                                                          'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                           'namespace': 'ns_ref'},
-               'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+               'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                              'namespace': 'ns_energy_study',
                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                       'CO2_tax': ('float', None, True)},
                              'dataframe_edition_locked': False},
                'minimum_energy_production': {'type': 'float', 'default': 1e4,
-                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public',
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
                                              'unit': 'TWh'},
                'total_prod_minus_min_prod_constraint_ref': {'type': 'float', 'default': 1e4, 'unit': 'Twh',
-                                                            'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                             'namespace': 'ns_ref'},
                'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
                'production_threshold': {'type': 'float', 'default': 1e-3, 'unit': 'Twh'},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                                    'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_public'},
                'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                      'namespace': 'ns_public'},
                'solid_fuel_elec_percentage': {'type': 'float', 'default': 0.75, 'unit': '-', 'user_level': 2,
-                                              'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'solid_fuel_elec_constraint_ref': {'type': 'float', 'default': 10000., 'unit': 'Twh', 'user_level': 2,
-                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'liquid_hydrogen_percentage': {'type': 'array', 'user_level': 2, 'unit': '%',
-                                              'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'unit': 'Twh', 'user_level': 2,
-                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'syngas_prod_ref': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
-                                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'syngas_prod_constraint_limit': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
-                                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
 
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '-', 'user_level': 2,
-                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%',
                                           'range': [0., 100.]},
                # WIP is_dev to remove once its validated on dev processes
                'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
-                          'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
+                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
 
     DESC_OUT = {
         'energy_prices': {'type': 'dataframe', 'unit': '$/MWh'},
@@ -149,41 +149,41 @@ class Energy_Mix_Discipline(SoSDiscipline):
         'energy_production_brut_detailed': {'type': 'dataframe', 'unit': 'TWh'},
         'energy_mix': {'type': 'dataframe', 'unit': '%'},
         'energy_prices_after_tax': {'type': 'dataframe', 'unit': '$/MWh'},
-        'energy_production_objective': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'energy_production_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_functions'},
         'primary_energies_production': {'type': 'dataframe', 'unit': 'TWh',
-                                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'land_demand_df': {'type': 'dataframe', 'unit': 'Gha'},
         'energy_mean_price': {'type': 'dataframe', 'unit': '$/MWh'},
         'production_energy_net_positive': {'type': 'dataframe', 'unit': 'TWh'},
         EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: {
             'type': 'dataframe', 'unit': 'TWh',
-            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         EnergyMix.CONSTRAINT_PROD_H2_LIQUID: {
             'type': 'dataframe', 'unit': 'TWh',
-            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'
+            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
         },
         EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC: {
             'type': 'dataframe', 'unit': 'TWh',
-            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'
+            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
         },
 
         EnergyMix.SYNGAS_PROD_OBJECTIVE: {'type': 'array', 'unit': 'TWh',
-                                          'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         EnergyMix.SYNGAS_PROD_CONSTRAINT: {'type': 'array', 'unit': 'TWh',
-                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
-        'all_streams_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'all_streams_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                      'namespace': 'ns_energy'},
-        'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_functions'},
-        'resources_demand': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'resources_demand': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                              'namespace': 'ns_resource', 'unit': 'Mt'},
-        'resources_demand_woratio': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'resources_demand_woratio': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                      'namespace': 'ns_resource', 'unit': 'Mt'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
-                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
-                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
     }
 
     energy_name = EnergyMix.name
@@ -201,39 +201,39 @@ class Energy_Mix_Discipline(SoSDiscipline):
     energy_constraint_list = EnergyMix.energy_constraint_list
     movable_fuel_list = EnergyMix.movable_fuel_list
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.energy_model = EnergyMix(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
 
         dynamic_inputs = {}
         dynamic_outputs = {}
-        if 'is_dev' in self._data_in:
-            is_dev = self.get_sosdisc_inputs('is_dev')
+        if 'is_dev' in proxy.get_data_in():
+            is_dev = proxy.get_sosdisc_inputs('is_dev')
 
-        if 'energy_list' in self._data_in:
-            energy_list = self.get_sosdisc_inputs('energy_list')
-            self.update_default_energy_list()
+        if 'energy_list' in proxy.get_data_in():
+            energy_list = proxy.get_sosdisc_inputs('energy_list')
+            self.update_default_energy_list(proxy)
             if energy_list is not None:
                 for energy in energy_list:
                     if energy == BiomassDry.name and is_dev == True:
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_consumption'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_consumption_woratio'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_production'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_prices'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.land_use_required'] = {
                             'type': 'dataframe', 'unit': 'Gha', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                     else:
                         dynamic_inputs[f'{energy}.energy_consumption'] = {
                             'type': 'dataframe', 'unit': 'PWh'}
@@ -249,14 +249,14 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         if energy == BiomassDry.name and is_dev == True:
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_emissions'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness',
-                                'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                                'visibility': SoSWrapp.SHARED_VISIBILITY}
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_per_use'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness',
-                                'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                                'visibility': SoSWrapp.SHARED_VISIBILITY}
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.losses_percentage'] = {
                                 'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy],
                                 'range': [0., 100.], 'namespace': 'ns_witness',
-                                'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                                'visibility': SoSWrapp.SHARED_VISIBILITY}
                         else:
                             dynamic_inputs[f'{energy}.CO2_emissions'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh'}
@@ -268,62 +268,62 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
                 if 'syngas' in energy_list:
                     dynamic_inputs[f'syngas_ratio'] = {
-                        'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas',
+                        'type': 'array', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_syngas',
                         'unit': '%'}
 
-            if 'ccs_list' in self._data_in:
-                ccs_list = self.get_sosdisc_inputs('ccs_list')
+            if 'ccs_list' in proxy.get_data_in():
+                ccs_list = proxy.get_sosdisc_inputs('ccs_list')
                 if ccs_list is not None:
                     for ccs_name in ccs_list:
                         dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
                         dynamic_inputs[f'{ccs_name}.energy_consumption_woratio'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
                         dynamic_inputs[f'{ccs_name}.energy_production'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
                         dynamic_inputs[f'{ccs_name}.energy_prices'] = {
-                            'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
                         dynamic_inputs[f'{ccs_name}.land_use_required'] = {
-                            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
 
-        self.update_default_with_years()
+        self.update_default_with_years(proxy)
 
-        self.add_inputs(dynamic_inputs)
-        self.add_outputs(dynamic_outputs)
+        proxy.add_inputs(dynamic_inputs)
+        proxy.add_outputs(dynamic_outputs)
 
-    def update_default_with_years(self):
+    def update_default_with_years(self, proxy):
         '''
         Update default variables knowing the year start and the year end 
         '''
-        if 'year_start' in self._data_in:
-            year_start, year_end = self.get_sosdisc_inputs(
+        if 'year_start' in proxy.get_data_in():
+            year_start, year_end = proxy.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
             lh_perc_default = np.concatenate(
                 (np.ones(5) * 1e-4, np.ones(len(years) - 5) / 4), axis=None)
-            self.set_dynamic_default_values(
+            proxy.set_dynamic_default_values(
                 {'liquid_hydrogen_percentage': lh_perc_default})
 
-    def update_default_energy_list(self):
+    def update_default_energy_list(self, proxy):
         '''
         Update the default value of technologies list with techno discipline below the energy node and in possible values
         '''
 
-        found_energies = self.found_energy_under_energymix()
-        self.set_dynamic_default_values({'energy_list': found_energies})
+        found_energies = self.found_energy_under_energymix(proxy)
+        proxy.set_dynamic_default_values({'energy_list': found_energies})
 
-    def found_energy_under_energymix(self):
+    def found_energy_under_energymix(self, proxy):
         '''
         Set the default value of the energy list and the ccs_list with discipline under the energy_mix which are in possible values
         '''
-        my_name = self.get_disc_full_name()
+        my_name = proxy.get_disc_full_name()
         possible_energy = EnergyMix.energy_list
-        found_energy_list = self.dm.get_discipline_names_with_starting_name(
+        found_energy_list = proxy.dm.get_discipline_names_with_starting_name(
             my_name)
         short_energy_list = [name.split(
             f'{my_name}.')[-1] for name in found_energy_list if f'{my_name}.' in name]
@@ -1215,7 +1215,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
     #
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
         chart_list = ['Energy price', 'Energy mean price', 'Energy mix',
@@ -1236,7 +1236,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
             'Years for energy mix', years, [year_start, year_end], 'years'))
         return chart_filters
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self, proxy, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -1245,8 +1245,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
         charts = []
 
         price_unit_list = ['$/MWh', '$/t']
-        years_list = [self.get_sosdisc_inputs('year_start')]
-        energy_list = self.get_sosdisc_inputs('energy_list')
+        years_list = [proxy.get_sosdisc_inputs('year_start')]
+        energy_list = proxy.get_sosdisc_inputs('energy_list')
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -1259,89 +1259,89 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         if 'Energy price' in charts and '$/MWh' in price_unit_list:
 
-            new_chart = self.get_chart_energy_price_in_dollar_kwh_without_production_taxes()
+            new_chart = self.get_chart_energy_price_in_dollar_kwh_without_production_taxes(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_energy_price_in_dollar_kwh()
+            new_chart = self.get_chart_energy_price_in_dollar_kwh(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_energy_price_after_co2_tax_in_dollar_kwh()
+            new_chart = self.get_chart_energy_price_after_co2_tax_in_dollar_kwh(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         if 'Energy mean price' in charts:
 
-            new_chart = self.get_chart_energy_mean_price_in_dollar_mwh()
+            new_chart = self.get_chart_energy_mean_price_in_dollar_mwh(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Energy price' in charts and '$/t' in price_unit_list:
 
-            new_chart = self.get_chart_energy_price_in_dollar_t()
+            new_chart = self.get_chart_energy_price_in_dollar_t(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'CO2 emissions' in charts:
-            new_chart = self.get_chart_co2_needed_by_energy_mix()
+            new_chart = self.get_chart_co2_needed_by_energy_mix(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Carbon intensity' in charts:
-            new_charts = self.get_chart_comparison_carbon_intensity()
+            new_charts = self.get_chart_comparison_carbon_intensity(proxy)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
         if 'production' in charts:
-            new_chart = self.get_chart_energies_net_production()
+            new_chart = self.get_chart_energies_net_production(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_energies_brut_production()
+            new_chart = self.get_chart_energies_brut_production(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_energies_net_raw_production_and_limit()
+            new_chart = self.get_chart_energies_net_raw_production_and_limit(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         if 'Energy mix' in charts:
-            new_charts = self.get_pie_charts_production(years_list)
+            new_charts = self.get_pie_charts_production(proxy, years_list)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
         if 'Solid energy and electricity production constraint' in charts and len(
                 list(set(self.energy_constraint_list).intersection(energy_list))) > 0:
-            new_chart = self.get_chart_solid_energy_elec_constraint()
+            new_chart = self.get_chart_solid_energy_elec_constraint(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Liquid hydrogen production constraint' in charts and self.LIQUID_HYDROGEN_NAME in energy_list:
-            new_chart = self.get_chart_liquid_hydrogen_constraint()
+            new_chart = self.get_chart_liquid_hydrogen_constraint(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Stream ratio' in charts:
-            new_chart = self.get_chart_stream_ratio()
+            new_chart = self.get_chart_stream_ratio(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_stream_consumed_by_techno()
+            new_chart = self.get_chart_stream_consumed_by_techno(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Energy mix losses' in charts:
 
-            new_chart = self.get_chart_energy_mix_losses()
+            new_chart = self.get_chart_energy_mix_losses(proxy)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         return instanciated_charts
 
-    def get_chart_solid_energy_elec_constraint(self):
-        energy_production_detailed = self.get_sosdisc_outputs(
+    def get_chart_solid_energy_elec_constraint(self, proxy):
+        energy_production_detailed = proxy.get_sosdisc_outputs(
             'energy_production_detailed')
-        solid_fuel_elec_percentage = self.get_sosdisc_inputs(
+        solid_fuel_elec_percentage = proxy.get_sosdisc_inputs(
             'solid_fuel_elec_percentage')
         chart_name = f'Solid energy and electricity production constraint'
         new_chart = TwoAxesInstanciatedChart(
@@ -1360,10 +1360,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
         new_chart.series.append(new_serie)
         return new_chart
 
-    def get_chart_liquid_hydrogen_constraint(self):
-        energy_production_detailed = self.get_sosdisc_outputs(
+    def get_chart_liquid_hydrogen_constraint(self, proxy):
+        energy_production_detailed = proxy.get_sosdisc_outputs(
             'energy_production_detailed')
-        liquid_hydrogen_percentage = self.get_sosdisc_inputs(
+        liquid_hydrogen_percentage = proxy.get_sosdisc_inputs(
             'liquid_hydrogen_percentage')
         chart_name = f'Liquid hydrogen production constraint'
         new_chart = TwoAxesInstanciatedChart(
@@ -1386,14 +1386,14 @@ class Energy_Mix_Discipline(SoSDiscipline):
         new_chart.series.append(new_serie)
         return new_chart
 
-    def get_chart_comparison_carbon_intensity(self):
+    def get_chart_comparison_carbon_intensity(self, proxy):
         new_charts = []
-        energy_co2_emissions = self.get_sosdisc_outputs('energy_CO2_emissions')
+        energy_co2_emissions = proxy.get_sosdisc_outputs('energy_CO2_emissions')
         chart_name = f'Comparison of carbon intensity for production of all energies'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
-        energy_list = self.get_sosdisc_inputs('energy_list')
+        energy_list = proxy.get_sosdisc_inputs('energy_list')
 
         for energy in energy_list:
             if self.stream_class_dict[energy].unit == 'TWh':
@@ -1409,9 +1409,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
-        energy_co2_emissions = self.get_sosdisc_outputs(
+        energy_co2_emissions = proxy.get_sosdisc_outputs(
             'energy_CO2_emissions_after_use')
-        energy_list = self.get_sosdisc_inputs('energy_list')
+        energy_list = proxy.get_sosdisc_inputs('energy_list')
 
         for energy in energy_list:
             if self.stream_class_dict[energy].unit == 'TWh':
@@ -1424,18 +1424,18 @@ class Energy_Mix_Discipline(SoSDiscipline):
         new_charts.append(new_chart)
         return new_charts
 
-    def get_chart_energy_price_in_dollar_kwh(self):
-        energy_prices = self.get_sosdisc_outputs('energy_prices')
-        is_dev = self.get_sosdisc_inputs('is_dev')
+    def get_chart_energy_price_in_dollar_kwh(self, proxy):
+        energy_prices = proxy.get_sosdisc_outputs('energy_prices')
+        is_dev = proxy.get_sosdisc_inputs('is_dev')
         chart_name = 'Detailed prices of energy mix with CO2 taxes<br>from production (used for technology prices)'
-        energy_list = self.get_sosdisc_inputs('energy_list')
+        energy_list = proxy.get_sosdisc_inputs('energy_list')
         max_value = 0
         for energy in energy_list:
             ns_energy = energy
             if energy == BiomassDry.name and is_dev:
                 ns_energy = AgricultureMixDiscipline.name
             if self.stream_class_dict[energy].unit == 'TWh':
-                techno_price = self.get_sosdisc_inputs(
+                techno_price = proxy.get_sosdisc_inputs(
                     f'{ns_energy}.energy_prices')
                 max_value = max(
                     max(energy_prices[energy].values.tolist()), max_value)
@@ -1448,7 +1448,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
             if energy == BiomassDry.name and is_dev:
                 ns_energy = AgricultureMixDiscipline.name
             if self.stream_class_dict[energy].unit == 'TWh':
-                techno_price = self.get_sosdisc_inputs(
+                techno_price = proxy.get_sosdisc_inputs(
                     f'{ns_energy}.energy_prices')
                 serie = InstanciatedSeries(
                     energy_prices['years'].values.tolist(),
@@ -1457,11 +1457,11 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_energy_price_in_dollar_kwh_without_production_taxes(self):
-        energy_prices = self.get_sosdisc_outputs('energy_prices')
-        is_dev = self.get_sosdisc_inputs('is_dev')
+    def get_chart_energy_price_in_dollar_kwh_without_production_taxes(self, proxy):
+        energy_prices = proxy.get_sosdisc_outputs('energy_prices')
+        is_dev = proxy.get_sosdisc_inputs('is_dev')
         chart_name = 'Detailed prices of energy mix without CO2 taxes from production'
-        energy_list = self.get_sosdisc_inputs('energy_list')
+        energy_list = proxy.get_sosdisc_inputs('energy_list')
         max_value = 0
         for energy in energy_list:
             if self.stream_class_dict[energy].unit == 'TWh':
@@ -1476,7 +1476,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
             if energy == BiomassDry.name and is_dev:
                 ns_energy = AgricultureMixDiscipline.name
             if self.stream_class_dict[energy].unit == 'TWh':
-                techno_price = self.get_sosdisc_inputs(
+                techno_price = proxy.get_sosdisc_inputs(
                     f'{ns_energy}.energy_prices')
                 serie = InstanciatedSeries(
                     energy_prices['years'].values.tolist(),
@@ -1485,9 +1485,9 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_energy_price_after_co2_tax_in_dollar_kwh(self):
+    def get_chart_energy_price_after_co2_tax_in_dollar_kwh(self, proxy):
 
-        energy_prices_after_tax = self.get_sosdisc_outputs(
+        energy_prices_after_tax = proxy.get_sosdisc_outputs(
             'energy_prices_after_tax')
 
         chart_name = 'Detailed prices of energy mix after carbon taxes due to combustion'
@@ -1511,17 +1511,17 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_energy_price_in_dollar_t(self):
-        energy_prices = self.get_sosdisc_outputs('energy_prices')
+    def get_chart_energy_price_in_dollar_t(self, proxy):
+        energy_prices = proxy.get_sosdisc_outputs('energy_prices')
 
         chart_name = 'Detailed prices of Carbon Capture and Storage'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'Prices [$/t]', chart_name=chart_name)
 
-        ccs_list = self.get_sosdisc_inputs('ccs_list')
+        ccs_list = proxy.get_sosdisc_inputs('ccs_list')
 
         for ccs_name in ccs_list:
-            techno_price = self.get_sosdisc_inputs(
+            techno_price = proxy.get_sosdisc_inputs(
                 f'{ccs_name}.energy_prices')
             serie = InstanciatedSeries(
                 energy_prices['years'].values.tolist(),
@@ -1530,8 +1530,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_energy_mean_price_in_dollar_mwh(self):
-        energy_mean_price = self.get_sosdisc_outputs('energy_mean_price')
+    def get_chart_energy_mean_price_in_dollar_mwh(self, proxy):
+        energy_mean_price = proxy.get_sosdisc_outputs('energy_mean_price')
 
         chart_name = 'Mean price out of energy mix'
         new_chart = TwoAxesInstanciatedChart(
@@ -1544,8 +1544,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_co2_emissions_by_energy(self):
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions_by_energy')
+    def get_chart_co2_emissions_by_energy(self, proxy):
+        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions_by_energy')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)', [], [
         ], 'CO2 emissions by energy (Gt)', stacked_bar=True)
         x_serie_1 = co2_emissions['years'].values.tolist()
@@ -1565,8 +1565,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_energies_net_production(self):
-        energy_production_detailed = self.get_sosdisc_outputs(
+    def get_chart_energies_net_production(self, proxy):
+        energy_production_detailed = proxy.get_sosdisc_outputs(
             'energy_production_detailed')
         chart_name = 'Net Energies production/consumption'
         new_chart = TwoAxesInstanciatedChart('years', 'Net Energy [TWh]',
@@ -1587,16 +1587,16 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_energies_net_raw_production_and_limit(self):
-        energy_production_detailed = self.get_sosdisc_outputs(
+    def get_chart_energies_net_raw_production_and_limit(self, proxy):
+        energy_production_detailed = proxy.get_sosdisc_outputs(
             'energy_production_detailed')
-        minimum_energy_production = self.get_sosdisc_inputs(
+        minimum_energy_production = proxy.get_sosdisc_inputs(
             'minimum_energy_production')
         chart_name = 'Energy Total Production and Minimum Net Energy Limit'
         new_chart = TwoAxesInstanciatedChart('years', 'Energy [TWh]',
                                              chart_name=chart_name)
 
-        energy_prod_raw = self.get_sosdisc_outputs(
+        energy_prod_raw = proxy.get_sosdisc_outputs(
             'energy_production_brut')
         serie = InstanciatedSeries(
             energy_prod_raw['years'].values.tolist(),
@@ -1628,8 +1628,8 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_energies_brut_production(self):
-        energy_production_detailed = self.get_sosdisc_outputs(
+    def get_chart_energies_brut_production(self, proxy):
+        energy_production_detailed = proxy.get_sosdisc_outputs(
             'energy_production_brut_detailed')
         chart_name = 'Raw Energies production'
         new_chart = TwoAxesInstanciatedChart('years', 'Raw Energy [TWh]',
@@ -1650,10 +1650,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_pie_charts_production(self, years_list):
+    def get_pie_charts_production(self, proxy, years_list):
         instanciated_charts = []
-        energy_list = self.get_sosdisc_inputs('energy_list')
-        energy_production_detailed = self.get_sosdisc_outputs(
+        energy_list = proxy.get_sosdisc_inputs('energy_list')
+        energy_production_detailed = proxy.get_sosdisc_outputs(
             'energy_production_detailed')
         techno_production = energy_production_detailed[['years']]
 
@@ -1676,12 +1676,12 @@ class Energy_Mix_Discipline(SoSDiscipline):
             instanciated_charts.append(pie_chart)
         return instanciated_charts
 
-    def get_chart_co2_streams(self):
+    def get_chart_co2_streams(self, proxy):
         '''
         Plot the total co2 emissions sources - sinks
         '''
         chart_name = 'Total CO2 emissions before and after CCS'
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
+        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
@@ -1704,12 +1704,12 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_co2_to_store(self):
+    def get_chart_co2_to_store(self, proxy):
         '''
         Plot a graph to understand CO2 to store
         '''
         chart_name = 'CO2 emissions captured, used and to store'
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
+        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
@@ -1739,12 +1739,12 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_co2_limited_storage(self):
+    def get_chart_co2_limited_storage(self, proxy):
         '''
         Plot a graph to understand storage
         '''
         chart_name = 'CO2 emissions storage limited by CO2 to store'
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
+        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
@@ -1767,12 +1767,12 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_co2_emissions_sources(self):
+    def get_chart_co2_emissions_sources(self, proxy):
         '''
         Plot all CO2 emissions sources 
         '''
         chart_name = 'CO2 emissions sources'
-        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
+        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
@@ -1808,12 +1808,12 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_co2_needed_by_energy_mix(self):
+    def get_chart_co2_needed_by_energy_mix(self, proxy):
         '''
         Plot all CO2 emissions sinks 
         '''
         chart_name = 'CO2 emissions sinks'
-        co2_emissions = self.get_sosdisc_outputs(
+        co2_emissions = proxy.get_sosdisc_outputs(
             'co2_emissions_needed_by_energy_mix')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
@@ -1827,13 +1827,13 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         return new_chart
 
-    def get_chart_stream_ratio(self):
+    def get_chart_stream_ratio(self, proxy):
         '''
         Plot stream ratio chart
         '''
         chart_name = f'Stream Ratio Map'
 
-        all_streams_demand_ratio = self.get_sosdisc_outputs(
+        all_streams_demand_ratio = proxy.get_sosdisc_outputs(
             'all_streams_demand_ratio')
 
         years = all_streams_demand_ratio['years'].values
@@ -1855,7 +1855,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
             fig, chart_name=chart_name, default_title=True)
         return new_chart
 
-    def get_chart_energy_mix_losses(self):
+    def get_chart_energy_mix_losses(self, proxy):
         '''
         Plot chart on energy mix heat losses 
         '''
@@ -1864,13 +1864,13 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         chart_name = f'Energy mix losses'
 
-        raw_prod = self.get_sosdisc_outputs(
+        raw_prod = proxy.get_sosdisc_outputs(
             'energy_production_brut')
-        raw_prod_detailed = self.get_sosdisc_outputs(
+        raw_prod_detailed = proxy.get_sosdisc_outputs(
             'energy_production_brut_detailed')
         #             losses_percentage = self.get_sosdisc_inputs(
         #                 'losses_percentage')
-        heat_losses_percentage = self.get_sosdisc_inputs(
+        heat_losses_percentage = proxy.get_sosdisc_inputs(
             'heat_losses_percentage')
         years = raw_prod['years'].values.tolist()
 
@@ -1892,14 +1892,14 @@ class Energy_Mix_Discipline(SoSDiscipline):
         new_chart.add_series(serie)
         return new_chart
 
-    def get_chart_stream_consumed_by_techno(self):
+    def get_chart_stream_consumed_by_techno(self, proxy):
         '''
         Plot a table connecting all the streams in the ratio dataframe (left column)
         with the technologies consuming them (right column).
         '''
         chart_name = f'Stream consumption by technologies table'
 
-        all_streams_demand_ratio = self.get_sosdisc_outputs(
+        all_streams_demand_ratio = proxy.get_sosdisc_outputs(
             'all_streams_demand_ratio')
 
         streams = [
@@ -1907,14 +1907,14 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         technologies_list = []
         for stream in streams:
-            technologies_list_namespace_list = self.ee.dm.get_all_namespaces_from_var_name(
+            technologies_list_namespace_list = proxy.ee.dm.get_all_namespaces_from_var_name(
                 stream + '.technologies_list')
             if len(technologies_list_namespace_list) != 0:
-                technologies_list += self.ee.dm.get_data(
+                technologies_list += proxy.ee.dm.get_data(
                     technologies_list_namespace_list[0])['value']
         techno_cons_dict = {}
         for techno in technologies_list:
-            techno_disc = self.ee.dm.get_disciplines_with_name(self.ee.dm.get_all_namespaces_from_var_name(
+            techno_disc = proxy.ee.dm.get_disciplines_with_name(proxy.ee.dm.get_all_namespaces_from_var_name(
                 f'{techno}.techno_production')[0][:-len('.techno_production')])[0]
             cons_col = techno_disc.get_sosdisc_outputs(
                 'techno_detailed_consumption').columns
