@@ -71,11 +71,11 @@ class StreamDiscipline(SoSWrapp):
         SoSWrapp.__init__(self, sos_name)
         self.energy_model = None
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'technologies_list' in proxy.get_data_in():
-            techno_list = proxy.get_sosdisc_inputs('technologies_list')
+        if 'technologies_list' in self.get_data_in():
+            techno_list = self.get_sosdisc_inputs('technologies_list')
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.techno_consumption'] = {
@@ -89,7 +89,7 @@ class StreamDiscipline(SoSWrapp):
                     dynamic_inputs[f'{techno}.land_use_required'] = {
                         'type': 'dataframe', 'unit': 'Gha'}
 
-        proxy.add_inputs(dynamic_inputs)
+        self.add_inputs(dynamic_inputs)
 
     def run(self):
         '''
@@ -235,7 +235,7 @@ class StreamDiscipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 ('land_use_required', f'{techno} (Gha)'), (f'{techno}.land_use_required', f'{techno} (Gha)'), np.identity(len(years)))
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Energy price', 'Technology mix',
@@ -254,7 +254,7 @@ class StreamDiscipline(SoSWrapp):
             'Years for techno mix', years, [year_start, year_end], 'years'))
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -262,7 +262,7 @@ class StreamDiscipline(SoSWrapp):
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t']
-        years_list = [proxy.get_sosdisc_inputs('year_start')]
+        years_list = [self.get_sosdisc_inputs('year_start')]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -274,31 +274,31 @@ class StreamDiscipline(SoSWrapp):
                     years_list = chart_filter.selected_values
 
         if 'Energy price' in charts and '$/MWh' in price_unit_list:
-            new_chart = self.get_chart_energy_price_in_dollar_kwh(proxy)
+            new_chart = self.get_chart_energy_price_in_dollar_kwh()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
-        if 'Energy price' in charts and '$/t' in price_unit_list and 'calorific_value' in proxy.get_sosdisc_inputs('data_fuel_dict'):
-            new_chart = self.get_chart_energy_price_in_dollar_kg(proxy)
+        if 'Energy price' in charts and '$/t' in price_unit_list and 'calorific_value' in self.get_sosdisc_inputs('data_fuel_dict'):
+            new_chart = self.get_chart_energy_price_in_dollar_kg()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         if 'Consumption and production' in charts:
-            new_charts = self.get_charts_consumption_and_production(proxy)
+            new_charts = self.get_charts_consumption_and_production()
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
         if 'Technology mix' in charts:
-            new_charts = self.get_chart_technology_mix(proxy, years_list)
+            new_charts = self.get_chart_technology_mix(years_list)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-            new_charts = self.get_charts_production_by_techno(proxy)
+            new_charts = self.get_charts_production_by_techno()
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
         return instanciated_charts
 
-    def get_chart_energy_price_in_dollar_kwh(self, proxy):
-        energy_prices = proxy.get_sosdisc_outputs('energy_prices')
+    def get_chart_energy_price_in_dollar_kwh(self):
+        energy_prices = self.get_sosdisc_outputs('energy_prices')
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'Prices [$/MWh]', chart_name=chart_name)
@@ -309,10 +309,10 @@ class StreamDiscipline(SoSWrapp):
 
         new_chart.series.append(serie)
 
-        technology_list = proxy.get_sosdisc_inputs('technologies_list')
+        technology_list = self.get_sosdisc_inputs('technologies_list')
 
         for technology in technology_list:
-            techno_price = proxy.get_sosdisc_inputs(
+            techno_price = self.get_sosdisc_inputs(
                 f'{technology}.techno_prices')
             serie = InstanciatedSeries(
                 energy_prices['years'].values.tolist(),
@@ -321,26 +321,26 @@ class StreamDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_energy_price_in_dollar_kg(self, proxy):
-        energy_prices = proxy.get_sosdisc_outputs('energy_prices')
+    def get_chart_energy_price_in_dollar_kg(self):
+        energy_prices = self.get_sosdisc_outputs('energy_prices')
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'Prices [$/t]', chart_name=chart_name)
         total_price = energy_prices[self.energy_name].values * \
-            proxy.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
+            self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
         serie = InstanciatedSeries(
             energy_prices['years'].values.tolist(),
             total_price.tolist(), f'{self.energy_name} mix price', 'lines')
 
         new_chart.series.append(serie)
 
-        technology_list = proxy.get_sosdisc_inputs('technologies_list')
+        technology_list = self.get_sosdisc_inputs('technologies_list')
 
         for technology in technology_list:
-            techno_price = proxy.get_sosdisc_inputs(
+            techno_price = self.get_sosdisc_inputs(
                 f'{technology}.techno_prices')
             techno_price_kg = techno_price[technology].values * \
-                proxy.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
+                self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
             serie = InstanciatedSeries(
                 energy_prices['years'].values.tolist(),
                 techno_price_kg.tolist(), f'{technology}', 'lines')
@@ -348,14 +348,14 @@ class StreamDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_charts_consumption_and_production(self, proxy):
+    def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_consumption = proxy.get_sosdisc_outputs('energy_consumption')
-        energy_production = proxy.get_sosdisc_outputs('energy_production')
-        scaling_factor_energy_consumption = proxy.get_sosdisc_inputs(
+        energy_consumption = self.get_sosdisc_outputs('energy_consumption')
+        energy_production = self.get_sosdisc_outputs('energy_production')
+        scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
-        scaling_factor_energy_production = proxy.get_sosdisc_inputs(
+        scaling_factor_energy_production = self.get_sosdisc_inputs(
             'scaling_factor_energy_production')
         chart_name = f'{self.energy_name} Production & consumption<br>with input investments'
 
@@ -453,17 +453,17 @@ class StreamDiscipline(SoSWrapp):
 
         return instanciated_charts
 
-    def get_charts_production_by_techno(self, proxy):
+    def get_charts_production_by_techno(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_production = proxy.get_sosdisc_outputs(
+        energy_production = self.get_sosdisc_outputs(
             'energy_production_detailed')
 
         chart_name = f'Technology production for {self.energy_name}'
 
         new_chart = TwoAxesInstanciatedChart('years', f'Production ({self.energy_model.unit})',
                                              chart_name=chart_name, stacked_bar=True)
-        techno_list = proxy.get_sosdisc_inputs('technologies_list')
+        techno_list = self.get_sosdisc_inputs('technologies_list')
 
         for techno in techno_list:
             column_name = f'{self.energy_name} {techno} ({self.energy_model.unit})'
@@ -477,10 +477,10 @@ class StreamDiscipline(SoSWrapp):
 
         return instanciated_charts
 
-    def get_chart_technology_mix(self, proxy, years_list):
+    def get_chart_technology_mix(self, years_list):
         instanciated_charts = []
-        techno_list = proxy.get_sosdisc_inputs('technologies_list')
-        energy_production = proxy.get_sosdisc_outputs(
+        techno_list = self.get_sosdisc_inputs('technologies_list')
+        energy_production = self.get_sosdisc_outputs(
             'energy_production_detailed')
         techno_production = energy_production[['years']]
         display_techno_list = []

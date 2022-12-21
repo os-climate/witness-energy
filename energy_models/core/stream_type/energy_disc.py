@@ -57,13 +57,13 @@ class EnergyDiscipline(StreamDiscipline):
     _maturity = 'Research'
     energy_name = 'energy'
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
         dynamic_inputs = {}
-        if 'technologies_list' in proxy.get_data_in():
-            techno_list = proxy.get_sosdisc_inputs('technologies_list')
-            self.update_default_technology_list(proxy)
+        if 'technologies_list' in self.get_data_in():
+            techno_list = self.get_sosdisc_inputs('technologies_list')
+            self.update_default_technology_list()
             if techno_list is not None:
-                techno_list = proxy.get_sosdisc_inputs('technologies_list')
+                techno_list = self.get_sosdisc_inputs('technologies_list')
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.techno_consumption'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt'}
@@ -78,23 +78,23 @@ class EnergyDiscipline(StreamDiscipline):
                     dynamic_inputs[f'{techno}.land_use_required'] = {
                         'type': 'dataframe', 'unit': 'Gha'}
 
-        proxy.add_inputs(dynamic_inputs)
+        self.add_inputs(dynamic_inputs)
 
-    def update_default_technology_list(self, proxy):
+    def update_default_technology_list(self):
         '''
         Update the default value of technologies list with techno discipline below the energy node and in possible values
         '''
 
-        found_technos = self.found_technos_under_energy(proxy)
-        proxy.set_dynamic_default_values({'technologies_list': found_technos})
+        found_technos = self.found_technos_under_energy()
+        self.set_dynamic_default_values({'technologies_list': found_technos})
 
-    def found_technos_under_energy(self, proxy):
+    def found_technos_under_energy(self):
         '''
         Set the default value of the technology list with discipline under the energy which are in possible values
         '''
-        my_name = proxy.get_disc_full_name()
-        possible_technos = proxy.get_data_in()['technologies_list'][self.POSSIBLE_VALUES]
-        found_technos_list = proxy.dm.get_discipline_names_with_starting_name(
+        my_name = self.get_disc_full_name()
+        possible_technos = self.get_data_in()['technologies_list'][self.POSSIBLE_VALUES]
+        found_technos_list = self.dm.get_discipline_names_with_starting_name(
             my_name)
         short_technos_list = [name.split(
             f'{my_name}.')[-1] for name in found_technos_list if f'{my_name}.' in name]
@@ -172,7 +172,7 @@ class EnergyDiscipline(StreamDiscipline):
                     self.set_partial_derivative_for_other_types(
                         ('CO2_emissions', self.energy_name), (f'{techno}.techno_production', column_name), inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_co2_vs_prod)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Energy price', 'Technology mix', 'CO2 emissions',
@@ -191,13 +191,13 @@ class EnergyDiscipline(StreamDiscipline):
             'Years for techno mix', years, [year_start, year_end], 'years'))
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
 
         instanciated_charts = StreamDiscipline.get_post_processing_list(
-            self, proxy, filters)
+            self, filters)
         charts = []
         # Overload default value with chart filter
         if filters is not None:
@@ -206,27 +206,27 @@ class EnergyDiscipline(StreamDiscipline):
                     charts = chart_filter.selected_values
 
         if 'CO2 emissions' in charts:
-            new_charts = self.get_chart_comparison_carbon_intensity(proxy)
+            new_charts = self.get_chart_comparison_carbon_intensity()
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
-            new_charts = self.get_chart_co2_emissions(proxy)
+            new_charts = self.get_chart_co2_emissions()
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
         return instanciated_charts
 
-    def get_chart_comparison_carbon_intensity(self, proxy):
+    def get_chart_comparison_carbon_intensity(self):
         new_charts = []
         chart_name = f'Comparison of carbon intensity due to production<br>of {self.energy_name} technologies'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
-        technology_list = proxy.get_sosdisc_inputs('technologies_list')
+        technology_list = self.get_sosdisc_inputs('technologies_list')
 
         for technology in technology_list:
-            techno_emissions = proxy.get_sosdisc_inputs(
+            techno_emissions = self.get_sosdisc_inputs(
                 f'{technology}.CO2_emissions')
             year_list = techno_emissions['years'].values.tolist()
             emission_list = techno_emissions[technology].values.tolist()
@@ -238,11 +238,11 @@ class EnergyDiscipline(StreamDiscipline):
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
-        co2_per_use = proxy.get_sosdisc_outputs(
+        co2_per_use = self.get_sosdisc_outputs(
             'CO2_per_use')
 
         for technology in technology_list:
-            techno_emissions = proxy.get_sosdisc_inputs(
+            techno_emissions = self.get_sosdisc_inputs(
                 f'{technology}.CO2_emissions')
             year_list = techno_emissions['years'].values.tolist()
             emission_list = techno_emissions[technology].values + \
@@ -254,22 +254,22 @@ class EnergyDiscipline(StreamDiscipline):
         new_charts.append(new_chart)
         return new_charts
 
-    def get_chart_co2_emissions(self, proxy):
+    def get_chart_co2_emissions(self):
         new_charts = []
         chart_name = f'Comparison of CO2 emissions due to production and use<br>of {self.energy_name} technologies'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions (Mt)', chart_name=chart_name, stacked_bar=True)
 
-        technology_list = proxy.get_sosdisc_inputs('technologies_list')
+        technology_list = self.get_sosdisc_inputs('technologies_list')
 
-        co2_per_use = proxy.get_sosdisc_outputs(
+        co2_per_use = self.get_sosdisc_outputs(
             'CO2_per_use')
 
-        energy_production = proxy.get_sosdisc_outputs('energy_production')
-        scaling_factor_energy_production = proxy.get_sosdisc_inputs(
+        energy_production = self.get_sosdisc_outputs('energy_production')
+        scaling_factor_energy_production = self.get_sosdisc_inputs(
             'scaling_factor_energy_production')
         for technology in technology_list:
-            techno_emissions = proxy.get_sosdisc_inputs(
+            techno_emissions = self.get_sosdisc_inputs(
                 f'{technology}.CO2_emissions')
             year_list = techno_emissions['years'].values.tolist()
             emission_list = techno_emissions[technology].values * \
