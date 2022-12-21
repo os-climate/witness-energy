@@ -104,17 +104,17 @@ class TechnoDiscipline(SoSWrapp):
         SoSWrapp.__init__(self, sos_name)
         self.techno_model = None
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
         dynamic_inputs = {}
-        if proxy.get_data_in() is not None:
+        if self.get_data_in() is not None:
 
-            self.update_default_dataframes_with_years(proxy)
+            self.update_default_dataframes_with_years()
 
-            if 'is_apply_ratio' in proxy.get_data_in():
-                year_start, year_end = proxy.get_sosdisc_inputs(
+            if 'is_apply_ratio' in self.get_data_in():
+                year_start, year_end = self.get_sosdisc_inputs(
                     ['year_start', 'year_end'])
                 years = np.arange(year_start, year_end + 1)
-                if proxy.get_sosdisc_inputs('is_stream_demand'):
+                if self.get_sosdisc_inputs('is_stream_demand'):
                     demand_ratio_dict = dict(
                         zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years)) * 100.0))
                     demand_ratio_dict['years'] = years
@@ -124,7 +124,7 @@ class TechnoDiscipline(SoSWrapp):
                                                                   'default': all_streams_demand_ratio_default,
                                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                   'namespace': 'ns_energy'}
-                if proxy.get_sosdisc_inputs('is_apply_resource_ratio'):
+                if self.get_sosdisc_inputs('is_apply_resource_ratio'):
                     resource_ratio_dict = dict(
                         zip(EnergyMix.RESOURCE_LIST, np.ones(len(years)) * 100.0))
                     resource_ratio_dict['years'] = years
@@ -134,20 +134,20 @@ class TechnoDiscipline(SoSWrapp):
                                                                             'default': all_resource_ratio_usable_demand_default,
                                                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                             'namespace': 'ns_resource'}
-            proxy.add_inputs(dynamic_inputs)
+            self.add_inputs(dynamic_inputs)
 
-    def update_default_dataframes_with_years(self, proxy):
+    def update_default_dataframes_with_years(self):
         '''
         Update all default dataframes with years 
         '''
-        if 'year_start' in proxy.get_data_in():
-            year_start, year_end = proxy.get_sosdisc_inputs(
+        if 'year_start' in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
             default_margin = pd.DataFrame({'years': years,
                                            'margin': 110.0})
 
-            proxy.set_dynamic_default_values({'resources_price': get_static_prices(years),
+            self.set_dynamic_default_values({'resources_price': get_static_prices(years),
                                              'resources_CO2_emissions': get_static_CO2_emissions(years),
                                              'margin': default_margin,
                                              'transport_cost': pd.DataFrame({'years': years,
@@ -525,7 +525,7 @@ class TechnoDiscipline(SoSWrapp):
                 self.set_partial_derivative_for_other_types(
                     ('techno_prices', self.techno_name), ('resources_CO2_emissions', resource), self.dprices_demissions[resource])
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Detailed prices',
@@ -541,7 +541,7 @@ class TechnoDiscipline(SoSWrapp):
             'Price unit', price_unit_list, price_unit_list, 'price_unit'))
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -549,7 +549,7 @@ class TechnoDiscipline(SoSWrapp):
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t']
-        data_fuel_dict = proxy.get_sosdisc_inputs('data_fuel_dict')
+        data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -559,68 +559,68 @@ class TechnoDiscipline(SoSWrapp):
                     price_unit_list = chart_filter.selected_values
 
         if 'Detailed prices' in charts and '$/MWh' in price_unit_list:
-            new_chart = self.get_chart_detailed_price_in_dollar_kwh(proxy)
+            new_chart = self.get_chart_detailed_price_in_dollar_kwh()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Detailed prices' in charts \
                 and '$/t' in price_unit_list \
                 and 'calorific_value' in data_fuel_dict:
-            new_chart = self.get_chart_detailed_price_in_dollar_kg(proxy)
+            new_chart = self.get_chart_detailed_price_in_dollar_kg()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Consumption and production' in charts:
-            new_chart = self.get_chart_investments(proxy)
+            new_chart = self.get_chart_investments()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_charts = self.get_charts_consumption_and_production(proxy)
+            new_charts = self.get_charts_consumption_and_production()
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_required_land(proxy)
+            new_chart = self.get_chart_required_land()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Applied Ratio' in charts:
-            new_chart = self.get_chart_applied_ratio(proxy)
+            new_chart = self.get_chart_applied_ratio()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Initial Production' in charts:
-            if 'initial_production' in proxy.get_data_in():
-                new_chart = self.get_chart_initial_production(proxy)
+            if 'initial_production' in self.get_data_in():
+                new_chart = self.get_chart_initial_production()
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
         if 'Factory Mean Age' in charts:
-            new_chart = self.get_chart_factory_mean_age(proxy)
+            new_chart = self.get_chart_factory_mean_age()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'CO2 emissions' in charts:
-            new_chart = self.get_chart_co2_emissions_kwh(proxy)
+            new_chart = self.get_chart_co2_emissions_kwh()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
             if 'calorific_value' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
-                new_chart = self.get_chart_co2_emissions_kg(proxy)
+                new_chart = self.get_chart_co2_emissions_kg()
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
         if 'Non-Use Capital' in charts:
-            new_chart = self.get_chart_non_use_capital(proxy)
+            new_chart = self.get_chart_non_use_capital()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         if 'Power production' in charts:
-            new_chart = self.get_chart_power_production(proxy)
+            new_chart = self.get_chart_power_production()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         return instanciated_charts
 
-    def get_chart_detailed_price_in_dollar_kwh(self, proxy):
+    def get_chart_detailed_price_in_dollar_kwh(self):
 
-        techno_detailed_prices = proxy.get_sosdisc_outputs(
+        techno_detailed_prices = self.get_sosdisc_outputs(
             'techno_detailed_prices')
         chart_name = f'Detailed prices of {self.techno_name} technology over the years'
         year_start = min(techno_detailed_prices['years'].values.tolist())
@@ -632,8 +632,8 @@ class TechnoDiscipline(SoSWrapp):
         new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/MWh]', [year_start, year_end], [minimum, maximum],
                                              chart_name=chart_name)
 
-        if 'percentage_resource' in proxy.get_data_in():
-            percentage_resource = proxy.get_sosdisc_inputs(
+        if 'percentage_resource' in self.get_data_in():
+            percentage_resource = self.get_sosdisc_inputs(
                 'percentage_resource')
             new_chart.annotation_upper_left = {
                 'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
@@ -684,15 +684,15 @@ class TechnoDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_detailed_price_in_dollar_kg(self, proxy):
+    def get_chart_detailed_price_in_dollar_kg(self):
 
-        techno_detailed_prices = proxy.get_sosdisc_outputs(
+        techno_detailed_prices = self.get_sosdisc_outputs(
             'techno_detailed_prices')
 
         chart_name = f'Detailed prices of {self.techno_name} technology over the years'
         year_start = min(techno_detailed_prices['years'].values.tolist())
         year_end = max(techno_detailed_prices['years'].values.tolist())
-        data_fuel_dict = proxy.get_sosdisc_inputs('data_fuel_dict')
+        data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
         minimum = 0
         maximum = max(
             techno_detailed_prices[self.techno_name].values.tolist()) * 1.2 * data_fuel_dict['calorific_value']
@@ -700,8 +700,8 @@ class TechnoDiscipline(SoSWrapp):
         new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/t]', [year_start, year_end], [minimum, maximum],
                                              chart_name=chart_name)
 
-        if 'percentage_resource' in proxy.get_data_in():
-            percentage_resource = proxy.get_sosdisc_inputs(
+        if 'percentage_resource' in self.get_data_in():
+            percentage_resource = self.get_sosdisc_inputs(
                 'percentage_resource')
             new_chart.annotation_upper_left = {
                 'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
@@ -757,10 +757,10 @@ class TechnoDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_investments(self, proxy):
+    def get_chart_investments(self):
         # Chart for input investments
-        input_investments = proxy.get_sosdisc_inputs('invest_level')
-        scaling_factor_invest_level = proxy.get_sosdisc_inputs(
+        input_investments = self.get_sosdisc_inputs('invest_level')
+        scaling_factor_invest_level = self.get_sosdisc_inputs(
             'scaling_factor_invest_level')
 
         chart_name = f'Input investments over the years'
@@ -777,12 +777,12 @@ class TechnoDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_charts_consumption_and_production(self, proxy):
+    def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        techno_consumption = proxy.get_sosdisc_outputs(
+        techno_consumption = self.get_sosdisc_outputs(
             'techno_detailed_consumption')
-        techno_production = proxy.get_sosdisc_outputs(
+        techno_production = self.get_sosdisc_outputs(
             'techno_detailed_production')
         chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'
 
@@ -867,9 +867,9 @@ class TechnoDiscipline(SoSWrapp):
 
         return instanciated_charts
 
-    def get_chart_applied_ratio(self, proxy):
+    def get_chart_applied_ratio(self):
         # Charts for consumption and prod
-        applied_ratio = proxy.get_sosdisc_outputs(
+        applied_ratio = self.get_sosdisc_outputs(
             'applied_ratio')
         chart_name = f'Ratio applied on {self.techno_name} technology energy Production'
         fig = go.Figure()
@@ -882,13 +882,13 @@ class TechnoDiscipline(SoSWrapp):
             fig, chart_name=chart_name, default_title=True)
         return new_chart
 
-    def get_chart_initial_production(self, proxy):
+    def get_chart_initial_production(self):
 
-        year_start = proxy.get_sosdisc_inputs(
+        year_start = self.get_sosdisc_inputs(
             'year_start')
-        initial_production = proxy.get_sosdisc_inputs(
+        initial_production = self.get_sosdisc_inputs(
             'initial_production')
-        initial_age_distrib = proxy.get_sosdisc_inputs(
+        initial_age_distrib = self.get_sosdisc_inputs(
             'initial_age_distrib')
         initial_prod = pd.DataFrame({'age': initial_age_distrib['age'].values,
                                      'distrib': initial_age_distrib['distrib'].values, })
@@ -898,7 +898,7 @@ class TechnoDiscipline(SoSWrapp):
         initial_prod.sort_values('years', inplace=True)
         initial_prod['cum energy (TWh)'] = initial_prod['energy (TWh)'].cumsum(
         )
-        study_production = proxy.get_sosdisc_outputs(
+        study_production = self.get_sosdisc_outputs(
             'techno_detailed_production')
         chart_name = f'{self.energy_name} World Production via {self.techno_name}<br>with 2020 factories distribution'
 
@@ -923,8 +923,8 @@ class TechnoDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_age_distribution_production(self, proxy):
-        age_distrib_production = proxy.get_sosdisc_outputs(
+    def get_chart_age_distribution_production(self):
+        age_distrib_production = self.get_sosdisc_outputs(
             'age_distrib_production')
         chart_name = f'{self.techno_name} factories age in term of TWh of {self.energy_name} production'
 
@@ -947,8 +947,8 @@ class TechnoDiscipline(SoSWrapp):
 
             return new_chart
 
-    def get_chart_factory_mean_age(self, proxy):
-        age_distrib_production = proxy.get_sosdisc_outputs(
+    def get_chart_factory_mean_age(self):
+        age_distrib_production = self.get_sosdisc_outputs(
             'mean_age_production')
 
         if 'years' in age_distrib_production.columns:
@@ -971,11 +971,11 @@ class TechnoDiscipline(SoSWrapp):
 
             return new_chart
 
-    def get_chart_co2_emissions_kwh(self, proxy):
+    def get_chart_co2_emissions_kwh(self):
 
-        carbon_emissions = proxy.get_sosdisc_outputs('CO2_emissions_detailed')
+        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions_detailed')
         chart_name = f'CO2 emissions of {self.energy_name} via {self.techno_name}'
-        data_fuel_dict = proxy.get_sosdisc_inputs('data_fuel_dict')
+        data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
 
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions [kgCO2/kWh]',
                                              chart_name=chart_name, stacked_bar=True)
@@ -1016,15 +1016,15 @@ class TechnoDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_co2_emissions_kg(self, proxy):
+    def get_chart_co2_emissions_kg(self):
 
-        carbon_emissions = proxy.get_sosdisc_outputs('CO2_emissions_detailed')
+        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions_detailed')
 
         chart_name = f'CO2 emissions from {self.techno_name} technology'
 
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions [kgCO2/kg]',
                                              chart_name=chart_name, stacked_bar=True)
-        data_fuel_dict = proxy.get_sosdisc_inputs('data_fuel_dict')
+        data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
 
         CO2_per_use = np.zeros(
             len(carbon_emissions['years']))
@@ -1066,11 +1066,11 @@ class TechnoDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_required_land(self, proxy):
+    def get_chart_required_land(self):
         '''
         if land use required is filled, the chart giving the land use is shown
         '''
-        land_use_required = proxy.get_sosdisc_outputs('land_use_required')
+        land_use_required = self.get_sosdisc_outputs('land_use_required')
 
         new_chart = None
         if not (land_use_required[f'{self.techno_name} (Gha)'].all() == 0):
@@ -1086,10 +1086,10 @@ class TechnoDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_non_use_capital(self, proxy):
-        non_use_capital = proxy.get_sosdisc_outputs(
+    def get_chart_non_use_capital(self):
+        non_use_capital = self.get_sosdisc_outputs(
             'non_use_capital')
-        techno_capital = proxy.get_sosdisc_outputs(
+        techno_capital = self.get_sosdisc_outputs(
             'techno_capital')
         chart_name = f'Non-use capital per year due to unused {self.techno_name} factories vs total capital'
 
@@ -1110,8 +1110,8 @@ class TechnoDiscipline(SoSWrapp):
 
         return new_chart
     
-    def get_chart_power_production(self, proxy):
-        power_production = proxy.get_sosdisc_outputs(
+    def get_chart_power_production(self):
+        power_production = self.get_sosdisc_outputs(
             'power_production')
         chart_name = f'Power installed of {self.techno_name} factories'
 

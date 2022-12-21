@@ -201,21 +201,21 @@ class Energy_Mix_Discipline(SoSWrapp):
     energy_constraint_list = EnergyMix.energy_constraint_list
     movable_fuel_list = EnergyMix.movable_fuel_list
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = EnergyMix(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
 
         dynamic_inputs = {}
         dynamic_outputs = {}
-        if 'is_dev' in proxy.get_data_in():
-            is_dev = proxy.get_sosdisc_inputs('is_dev')
+        if 'is_dev' in self.get_data_in():
+            is_dev = self.get_sosdisc_inputs('is_dev')
 
-        if 'energy_list' in proxy.get_data_in():
-            energy_list = proxy.get_sosdisc_inputs('energy_list')
-            self.update_default_energy_list(proxy)
+        if 'energy_list' in self.get_data_in():
+            energy_list = self.get_sosdisc_inputs('energy_list')
+            self.update_default_energy_list()
             if energy_list is not None:
                 for energy in energy_list:
                     if energy == BiomassDry.name and is_dev == True:
@@ -271,8 +271,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                         'type': 'array', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_syngas',
                         'unit': '%'}
 
-            if 'ccs_list' in proxy.get_data_in():
-                ccs_list = proxy.get_sosdisc_inputs('ccs_list')
+            if 'ccs_list' in self.get_data_in():
+                ccs_list = self.get_sosdisc_inputs('ccs_list')
                 if ccs_list is not None:
                     for ccs_name in ccs_list:
                         dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
@@ -291,39 +291,39 @@ class Energy_Mix_Discipline(SoSWrapp):
                             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
 
-        self.update_default_with_years(proxy)
+        self.update_default_with_years()
 
-        proxy.add_inputs(dynamic_inputs)
-        proxy.add_outputs(dynamic_outputs)
+        self.add_inputs(dynamic_inputs)
+        self.add_outputs(dynamic_outputs)
 
-    def update_default_with_years(self, proxy):
+    def update_default_with_years(self):
         '''
         Update default variables knowing the year start and the year end 
         '''
-        if 'year_start' in proxy.get_data_in():
-            year_start, year_end = proxy.get_sosdisc_inputs(
+        if 'year_start' in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
             lh_perc_default = np.concatenate(
                 (np.ones(5) * 1e-4, np.ones(len(years) - 5) / 4), axis=None)
-            proxy.set_dynamic_default_values(
+            self.set_dynamic_default_values(
                 {'liquid_hydrogen_percentage': lh_perc_default})
 
-    def update_default_energy_list(self, proxy):
+    def update_default_energy_list(self):
         '''
         Update the default value of technologies list with techno discipline below the energy node and in possible values
         '''
 
-        found_energies = self.found_energy_under_energymix(proxy)
-        proxy.set_dynamic_default_values({'energy_list': found_energies})
+        found_energies = self.found_energy_under_energymix()
+        self.set_dynamic_default_values({'energy_list': found_energies})
 
-    def found_energy_under_energymix(self, proxy):
+    def found_energy_under_energymix(self):
         '''
         Set the default value of the energy list and the ccs_list with discipline under the energy_mix which are in possible values
         '''
-        my_name = proxy.get_disc_full_name()
+        my_name = self.get_disc_full_name()
         possible_energy = EnergyMix.energy_list
-        found_energy_list = proxy.dm.get_discipline_names_with_starting_name(
+        found_energy_list = self.dm.get_discipline_names_with_starting_name(
             my_name)
         short_energy_list = [name.split(
             f'{my_name}.')[-1] for name in found_energy_list if f'{my_name}.' in name]
@@ -1215,7 +1215,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     #
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Energy price', 'Energy mean price', 'Energy mix',
@@ -1236,7 +1236,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             'Years for energy mix', years, [year_start, year_end], 'years'))
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -1245,8 +1245,8 @@ class Energy_Mix_Discipline(SoSWrapp):
         charts = []
 
         price_unit_list = ['$/MWh', '$/t']
-        years_list = [proxy.get_sosdisc_inputs('year_start')]
-        energy_list = proxy.get_sosdisc_inputs('energy_list')
+        years_list = [self.get_sosdisc_inputs('year_start')]
+        energy_list = self.get_sosdisc_inputs('energy_list')
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -1259,89 +1259,89 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         if 'Energy price' in charts and '$/MWh' in price_unit_list:
 
-            new_chart = self.get_chart_energy_price_in_dollar_kwh_without_production_taxes(proxy)
+            new_chart = self.get_chart_energy_price_in_dollar_kwh_without_production_taxes()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_energy_price_in_dollar_kwh(proxy)
+            new_chart = self.get_chart_energy_price_in_dollar_kwh()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_energy_price_after_co2_tax_in_dollar_kwh(proxy)
+            new_chart = self.get_chart_energy_price_after_co2_tax_in_dollar_kwh()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         if 'Energy mean price' in charts:
 
-            new_chart = self.get_chart_energy_mean_price_in_dollar_mwh(proxy)
+            new_chart = self.get_chart_energy_mean_price_in_dollar_mwh()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Energy price' in charts and '$/t' in price_unit_list:
 
-            new_chart = self.get_chart_energy_price_in_dollar_t(proxy)
+            new_chart = self.get_chart_energy_price_in_dollar_t()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'CO2 emissions' in charts:
-            new_chart = self.get_chart_co2_needed_by_energy_mix(proxy)
+            new_chart = self.get_chart_co2_needed_by_energy_mix()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Carbon intensity' in charts:
-            new_charts = self.get_chart_comparison_carbon_intensity(proxy)
+            new_charts = self.get_chart_comparison_carbon_intensity()
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
         if 'production' in charts:
-            new_chart = self.get_chart_energies_net_production(proxy)
+            new_chart = self.get_chart_energies_net_production()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_energies_brut_production(proxy)
+            new_chart = self.get_chart_energies_brut_production()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_energies_net_raw_production_and_limit(proxy)
+            new_chart = self.get_chart_energies_net_raw_production_and_limit()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         if 'Energy mix' in charts:
-            new_charts = self.get_pie_charts_production(proxy, years_list)
+            new_charts = self.get_pie_charts_production(years_list)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
         if 'Solid energy and electricity production constraint' in charts and len(
                 list(set(self.energy_constraint_list).intersection(energy_list))) > 0:
-            new_chart = self.get_chart_solid_energy_elec_constraint(proxy)
+            new_chart = self.get_chart_solid_energy_elec_constraint()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Liquid hydrogen production constraint' in charts and self.LIQUID_HYDROGEN_NAME in energy_list:
-            new_chart = self.get_chart_liquid_hydrogen_constraint(proxy)
+            new_chart = self.get_chart_liquid_hydrogen_constraint()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Stream ratio' in charts:
-            new_chart = self.get_chart_stream_ratio(proxy)
+            new_chart = self.get_chart_stream_ratio()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_chart = self.get_chart_stream_consumed_by_techno(proxy)
+            new_chart = self.get_chart_stream_consumed_by_techno()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Energy mix losses' in charts:
 
-            new_chart = self.get_chart_energy_mix_losses(proxy)
+            new_chart = self.get_chart_energy_mix_losses()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         return instanciated_charts
 
-    def get_chart_solid_energy_elec_constraint(self, proxy):
-        energy_production_detailed = proxy.get_sosdisc_outputs(
+    def get_chart_solid_energy_elec_constraint(self):
+        energy_production_detailed = self.get_sosdisc_outputs(
             'energy_production_detailed')
-        solid_fuel_elec_percentage = proxy.get_sosdisc_inputs(
+        solid_fuel_elec_percentage = self.get_sosdisc_inputs(
             'solid_fuel_elec_percentage')
         chart_name = f'Solid energy and electricity production constraint'
         new_chart = TwoAxesInstanciatedChart(
@@ -1360,10 +1360,10 @@ class Energy_Mix_Discipline(SoSWrapp):
         new_chart.series.append(new_serie)
         return new_chart
 
-    def get_chart_liquid_hydrogen_constraint(self, proxy):
-        energy_production_detailed = proxy.get_sosdisc_outputs(
+    def get_chart_liquid_hydrogen_constraint(self):
+        energy_production_detailed = self.get_sosdisc_outputs(
             'energy_production_detailed')
-        liquid_hydrogen_percentage = proxy.get_sosdisc_inputs(
+        liquid_hydrogen_percentage = self.get_sosdisc_inputs(
             'liquid_hydrogen_percentage')
         chart_name = f'Liquid hydrogen production constraint'
         new_chart = TwoAxesInstanciatedChart(
@@ -1386,14 +1386,14 @@ class Energy_Mix_Discipline(SoSWrapp):
         new_chart.series.append(new_serie)
         return new_chart
 
-    def get_chart_comparison_carbon_intensity(self, proxy):
+    def get_chart_comparison_carbon_intensity(self):
         new_charts = []
-        energy_co2_emissions = proxy.get_sosdisc_outputs('energy_CO2_emissions')
+        energy_co2_emissions = self.get_sosdisc_outputs('energy_CO2_emissions')
         chart_name = f'Comparison of carbon intensity for production of all energies'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
-        energy_list = proxy.get_sosdisc_inputs('energy_list')
+        energy_list = self.get_sosdisc_inputs('energy_list')
 
         for energy in energy_list:
             if self.stream_class_dict[energy].unit == 'TWh':
@@ -1409,9 +1409,9 @@ class Energy_Mix_Discipline(SoSWrapp):
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions [kg/kWh]', chart_name=chart_name)
 
-        energy_co2_emissions = proxy.get_sosdisc_outputs(
+        energy_co2_emissions = self.get_sosdisc_outputs(
             'energy_CO2_emissions_after_use')
-        energy_list = proxy.get_sosdisc_inputs('energy_list')
+        energy_list = self.get_sosdisc_inputs('energy_list')
 
         for energy in energy_list:
             if self.stream_class_dict[energy].unit == 'TWh':
@@ -1424,18 +1424,18 @@ class Energy_Mix_Discipline(SoSWrapp):
         new_charts.append(new_chart)
         return new_charts
 
-    def get_chart_energy_price_in_dollar_kwh(self, proxy):
-        energy_prices = proxy.get_sosdisc_outputs('energy_prices')
-        is_dev = proxy.get_sosdisc_inputs('is_dev')
+    def get_chart_energy_price_in_dollar_kwh(self):
+        energy_prices = self.get_sosdisc_outputs('energy_prices')
+        is_dev = self.get_sosdisc_inputs('is_dev')
         chart_name = 'Detailed prices of energy mix with CO2 taxes<br>from production (used for technology prices)'
-        energy_list = proxy.get_sosdisc_inputs('energy_list')
+        energy_list = self.get_sosdisc_inputs('energy_list')
         max_value = 0
         for energy in energy_list:
             ns_energy = energy
             if energy == BiomassDry.name and is_dev:
                 ns_energy = AgricultureMixDiscipline.name
             if self.stream_class_dict[energy].unit == 'TWh':
-                techno_price = proxy.get_sosdisc_inputs(
+                techno_price = self.get_sosdisc_inputs(
                     f'{ns_energy}.energy_prices')
                 max_value = max(
                     max(energy_prices[energy].values.tolist()), max_value)
@@ -1448,7 +1448,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             if energy == BiomassDry.name and is_dev:
                 ns_energy = AgricultureMixDiscipline.name
             if self.stream_class_dict[energy].unit == 'TWh':
-                techno_price = proxy.get_sosdisc_inputs(
+                techno_price = self.get_sosdisc_inputs(
                     f'{ns_energy}.energy_prices')
                 serie = InstanciatedSeries(
                     energy_prices['years'].values.tolist(),
@@ -1457,11 +1457,11 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_energy_price_in_dollar_kwh_without_production_taxes(self, proxy):
-        energy_prices = proxy.get_sosdisc_outputs('energy_prices')
-        is_dev = proxy.get_sosdisc_inputs('is_dev')
+    def get_chart_energy_price_in_dollar_kwh_without_production_taxes(self):
+        energy_prices = self.get_sosdisc_outputs('energy_prices')
+        is_dev = self.get_sosdisc_inputs('is_dev')
         chart_name = 'Detailed prices of energy mix without CO2 taxes from production'
-        energy_list = proxy.get_sosdisc_inputs('energy_list')
+        energy_list = self.get_sosdisc_inputs('energy_list')
         max_value = 0
         for energy in energy_list:
             if self.stream_class_dict[energy].unit == 'TWh':
@@ -1476,7 +1476,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             if energy == BiomassDry.name and is_dev:
                 ns_energy = AgricultureMixDiscipline.name
             if self.stream_class_dict[energy].unit == 'TWh':
-                techno_price = proxy.get_sosdisc_inputs(
+                techno_price = self.get_sosdisc_inputs(
                     f'{ns_energy}.energy_prices')
                 serie = InstanciatedSeries(
                     energy_prices['years'].values.tolist(),
@@ -1485,9 +1485,9 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_energy_price_after_co2_tax_in_dollar_kwh(self, proxy):
+    def get_chart_energy_price_after_co2_tax_in_dollar_kwh(self):
 
-        energy_prices_after_tax = proxy.get_sosdisc_outputs(
+        energy_prices_after_tax = self.get_sosdisc_outputs(
             'energy_prices_after_tax')
 
         chart_name = 'Detailed prices of energy mix after carbon taxes due to combustion'
@@ -1511,17 +1511,17 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_energy_price_in_dollar_t(self, proxy):
-        energy_prices = proxy.get_sosdisc_outputs('energy_prices')
+    def get_chart_energy_price_in_dollar_t(self):
+        energy_prices = self.get_sosdisc_outputs('energy_prices')
 
         chart_name = 'Detailed prices of Carbon Capture and Storage'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'Prices [$/t]', chart_name=chart_name)
 
-        ccs_list = proxy.get_sosdisc_inputs('ccs_list')
+        ccs_list = self.get_sosdisc_inputs('ccs_list')
 
         for ccs_name in ccs_list:
-            techno_price = proxy.get_sosdisc_inputs(
+            techno_price = self.get_sosdisc_inputs(
                 f'{ccs_name}.energy_prices')
             serie = InstanciatedSeries(
                 energy_prices['years'].values.tolist(),
@@ -1530,8 +1530,8 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_energy_mean_price_in_dollar_mwh(self, proxy):
-        energy_mean_price = proxy.get_sosdisc_outputs('energy_mean_price')
+    def get_chart_energy_mean_price_in_dollar_mwh(self):
+        energy_mean_price = self.get_sosdisc_outputs('energy_mean_price')
 
         chart_name = 'Mean price out of energy mix'
         new_chart = TwoAxesInstanciatedChart(
@@ -1544,8 +1544,8 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_co2_emissions_by_energy(self, proxy):
-        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions_by_energy')
+    def get_chart_co2_emissions_by_energy(self):
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions_by_energy')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)', [], [
         ], 'CO2 emissions by energy (Gt)', stacked_bar=True)
         x_serie_1 = co2_emissions['years'].values.tolist()
@@ -1565,8 +1565,8 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_energies_net_production(self, proxy):
-        energy_production_detailed = proxy.get_sosdisc_outputs(
+    def get_chart_energies_net_production(self):
+        energy_production_detailed = self.get_sosdisc_outputs(
             'energy_production_detailed')
         chart_name = 'Net Energies production/consumption'
         new_chart = TwoAxesInstanciatedChart('years', 'Net Energy [TWh]',
@@ -1587,16 +1587,16 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_energies_net_raw_production_and_limit(self, proxy):
-        energy_production_detailed = proxy.get_sosdisc_outputs(
+    def get_chart_energies_net_raw_production_and_limit(self):
+        energy_production_detailed = self.get_sosdisc_outputs(
             'energy_production_detailed')
-        minimum_energy_production = proxy.get_sosdisc_inputs(
+        minimum_energy_production = self.get_sosdisc_inputs(
             'minimum_energy_production')
         chart_name = 'Energy Total Production and Minimum Net Energy Limit'
         new_chart = TwoAxesInstanciatedChart('years', 'Energy [TWh]',
                                              chart_name=chart_name)
 
-        energy_prod_raw = proxy.get_sosdisc_outputs(
+        energy_prod_raw = self.get_sosdisc_outputs(
             'energy_production_brut')
         serie = InstanciatedSeries(
             energy_prod_raw['years'].values.tolist(),
@@ -1628,8 +1628,8 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_energies_brut_production(self, proxy):
-        energy_production_detailed = proxy.get_sosdisc_outputs(
+    def get_chart_energies_brut_production(self):
+        energy_production_detailed = self.get_sosdisc_outputs(
             'energy_production_brut_detailed')
         chart_name = 'Raw Energies production'
         new_chart = TwoAxesInstanciatedChart('years', 'Raw Energy [TWh]',
@@ -1650,10 +1650,10 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_pie_charts_production(self, proxy, years_list):
+    def get_pie_charts_production(self, years_list):
         instanciated_charts = []
-        energy_list = proxy.get_sosdisc_inputs('energy_list')
-        energy_production_detailed = proxy.get_sosdisc_outputs(
+        energy_list = self.get_sosdisc_inputs('energy_list')
+        energy_production_detailed = self.get_sosdisc_outputs(
             'energy_production_detailed')
         techno_production = energy_production_detailed[['years']]
 
@@ -1676,12 +1676,12 @@ class Energy_Mix_Discipline(SoSWrapp):
             instanciated_charts.append(pie_chart)
         return instanciated_charts
 
-    def get_chart_co2_streams(self, proxy):
+    def get_chart_co2_streams(self):
         '''
         Plot the total co2 emissions sources - sinks
         '''
         chart_name = 'Total CO2 emissions before and after CCS'
-        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions')
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
@@ -1704,12 +1704,12 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_co2_to_store(self, proxy):
+    def get_chart_co2_to_store(self):
         '''
         Plot a graph to understand CO2 to store
         '''
         chart_name = 'CO2 emissions captured, used and to store'
-        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions')
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
@@ -1739,12 +1739,12 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_co2_limited_storage(self, proxy):
+    def get_chart_co2_limited_storage(self):
         '''
         Plot a graph to understand storage
         '''
         chart_name = 'CO2 emissions storage limited by CO2 to store'
-        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions')
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
@@ -1767,12 +1767,12 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_co2_emissions_sources(self, proxy):
+    def get_chart_co2_emissions_sources(self):
         '''
         Plot all CO2 emissions sources 
         '''
         chart_name = 'CO2 emissions sources'
-        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions')
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
@@ -1808,12 +1808,12 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_co2_needed_by_energy_mix(self, proxy):
+    def get_chart_co2_needed_by_energy_mix(self):
         '''
         Plot all CO2 emissions sinks 
         '''
         chart_name = 'CO2 emissions sinks'
-        co2_emissions = proxy.get_sosdisc_outputs(
+        co2_emissions = self.get_sosdisc_outputs(
             'co2_emissions_needed_by_energy_mix')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
@@ -1827,13 +1827,13 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_stream_ratio(self, proxy):
+    def get_chart_stream_ratio(self):
         '''
         Plot stream ratio chart
         '''
         chart_name = f'Stream Ratio Map'
 
-        all_streams_demand_ratio = proxy.get_sosdisc_outputs(
+        all_streams_demand_ratio = self.get_sosdisc_outputs(
             'all_streams_demand_ratio')
 
         years = all_streams_demand_ratio['years'].values
@@ -1855,7 +1855,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             fig, chart_name=chart_name, default_title=True)
         return new_chart
 
-    def get_chart_energy_mix_losses(self, proxy):
+    def get_chart_energy_mix_losses(self):
         '''
         Plot chart on energy mix heat losses 
         '''
@@ -1864,13 +1864,13 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         chart_name = f'Energy mix losses'
 
-        raw_prod = proxy.get_sosdisc_outputs(
+        raw_prod = self.get_sosdisc_outputs(
             'energy_production_brut')
-        raw_prod_detailed = proxy.get_sosdisc_outputs(
+        raw_prod_detailed = self.get_sosdisc_outputs(
             'energy_production_brut_detailed')
         #             losses_percentage = self.get_sosdisc_inputs(
         #                 'losses_percentage')
-        heat_losses_percentage = proxy.get_sosdisc_inputs(
+        heat_losses_percentage = self.get_sosdisc_inputs(
             'heat_losses_percentage')
         years = raw_prod['years'].values.tolist()
 
@@ -1892,14 +1892,14 @@ class Energy_Mix_Discipline(SoSWrapp):
         new_chart.add_series(serie)
         return new_chart
 
-    def get_chart_stream_consumed_by_techno(self, proxy):
+    def get_chart_stream_consumed_by_techno(self):
         '''
         Plot a table connecting all the streams in the ratio dataframe (left column)
         with the technologies consuming them (right column).
         '''
         chart_name = f'Stream consumption by technologies table'
 
-        all_streams_demand_ratio = proxy.get_sosdisc_outputs(
+        all_streams_demand_ratio = self.get_sosdisc_outputs(
             'all_streams_demand_ratio')
 
         streams = [
@@ -1907,14 +1907,14 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         technologies_list = []
         for stream in streams:
-            technologies_list_namespace_list = proxy.ee.dm.get_all_namespaces_from_var_name(
+            technologies_list_namespace_list = self.ee.dm.get_all_namespaces_from_var_name(
                 stream + '.technologies_list')
             if len(technologies_list_namespace_list) != 0:
-                technologies_list += proxy.ee.dm.get_data(
+                technologies_list += self.ee.dm.get_data(
                     technologies_list_namespace_list[0])['value']
         techno_cons_dict = {}
         for techno in technologies_list:
-            techno_disc = proxy.ee.dm.get_disciplines_with_name(proxy.ee.dm.get_all_namespaces_from_var_name(
+            techno_disc = self.ee.dm.get_disciplines_with_name(self.ee.dm.get_all_namespaces_from_var_name(
                 f'{techno}.techno_production')[0][:-len('.techno_production')])[0]
             cons_col = techno_disc.get_sosdisc_outputs(
                 'techno_detailed_consumption').columns
