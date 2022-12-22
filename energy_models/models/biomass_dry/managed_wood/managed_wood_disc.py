@@ -203,8 +203,8 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
     }
     DESC_OUT.update(BiomassDryTechnoDiscipline.DESC_OUT)
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = ManagedWood(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
@@ -219,7 +219,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self,  filters=None):
         instanciated_charts = []
         charts = []
         price_unit_list = []
@@ -232,27 +232,27 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
                 if chart_filter.filter_key == 'price_unit':
                     price_unit_list = chart_filter.selected_values
 
-        generic_filter = BiomassDryTechnoDiscipline.get_chart_filter_list(self, proxy)
+        generic_filter = BiomassDryTechnoDiscipline.get_chart_filter_list(self)
         instanciated_charts = BiomassDryTechnoDiscipline.get_post_processing_list(
-            self, proxy, generic_filter)
+            self, generic_filter)
         #instanciated_charts = []
         if 'Consumption and production' in charts:
-            production_chart = self.get_production_chart(proxy)
+            production_chart = self.get_production_chart()
             instanciated_charts.append(production_chart)
 
         if 'Detailed prices' in charts:
             if '$/MWh' in price_unit_list:
-                price_chart_Mwh = self.get_chart_price_in_dollar_Mwh(proxy)
+                price_chart_Mwh = self.get_chart_price_in_dollar_Mwh()
                 instanciated_charts.append(price_chart_Mwh)
             if '$/t' in price_unit_list:
-                price_chart = self.get_chart_price_in_dollar_kg(proxy)
+                price_chart = self.get_chart_price_in_dollar_kg()
                 instanciated_charts.append(price_chart)
 
         return instanciated_charts
 
-    def get_production_chart(self, proxy):
-        production_mix_df = proxy.get_sosdisc_outputs('mix_detailed_production')
-        production_df = proxy.get_sosdisc_outputs('techno_detailed_production')
+    def get_production_chart(self):
+        production_mix_df = self.get_sosdisc_outputs('mix_detailed_production')
+        production_df = self.get_sosdisc_outputs('techno_detailed_production')
 
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_wood = f'{self.energy_name}_wood (TWh)'
@@ -297,8 +297,8 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
         return new_chart
 
-    def get_chart_price_in_dollar_kg(self, proxy):
-        price_mix_df = proxy.get_sosdisc_outputs('mix_detailed_prices')
+    def get_chart_price_in_dollar_kg(self):
+        price_mix_df = self.get_sosdisc_outputs('mix_detailed_prices')
         name_residue = f'{self.energy_name}_residue'
         name_wood = f'{self.energy_name}_wood'
 
@@ -310,33 +310,33 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
         max1 = max(price_mix_df[name_residue].values.tolist())
         max2 = max(price_mix_df[name_wood].values.tolist())
         maximum = max(max1, max2) * 1.2 * \
-            proxy.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
+            self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
         new_chart = TwoAxesInstanciatedChart('years', f'Production of Managed wood ($/t)',
                                              [year_start, year_end], [0.0, maximum], chart_name=chart_name)
 
         residue_serie = InstanciatedSeries(
             price_mix_df['years'].values.tolist(),
             (price_mix_df[name_residue].values *
-             proxy.get_sosdisc_inputs('data_fuel_dict')['calorific_value']).tolist(),
+             self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']).tolist(),
             f'price of wood residue', 'lines')
         new_chart.series.append(residue_serie)
 
         wood_serie = InstanciatedSeries(
             price_mix_df['years'].values.tolist(),
             (price_mix_df[name_wood].values *
-             proxy.get_sosdisc_inputs('data_fuel_dict')['calorific_value']).tolist(),
+             self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']).tolist(),
             f'price of wood energy', 'lines')
         new_chart.series.append(wood_serie)
 
         return new_chart
 
-    def get_chart_price_in_dollar_Mwh(self, proxy):
-        price_mix_df = proxy.get_sosdisc_outputs('mix_detailed_prices')
+    def get_chart_price_in_dollar_Mwh(self):
+        price_mix_df = self.get_sosdisc_outputs('mix_detailed_prices')
         name_residue = f'{self.energy_name}_residue'
         name_wood = f'{self.energy_name}_wood'
 
         chart_name = f'Price of Managed wood technology over the years'
-        techno_price = proxy.get_sosdisc_outputs('techno_detailed_prices')
+        techno_price = self.get_sosdisc_outputs('techno_detailed_prices')
         year_start = min(price_mix_df['years'].values.tolist())
         year_end = max(price_mix_df['years'].values.tolist())
 
@@ -360,19 +360,19 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
         return new_chart
 
-    def get_chart_initial_production(self, proxy):
+    def get_chart_initial_production(self):
         # surcharge of the methode in techno_disc to change historical data with the
         # energy part
-        year_start = proxy.get_sosdisc_inputs(
+        year_start = self.get_sosdisc_inputs(
             'year_start')
-        initial_production = proxy.get_sosdisc_inputs(
+        initial_production = self.get_sosdisc_inputs(
             'initial_production')
-        initial_age_distrib = proxy.get_sosdisc_inputs(
+        initial_age_distrib = self.get_sosdisc_inputs(
             'initial_age_distrib')
         initial_prod = pd.DataFrame({'age': initial_age_distrib['age'].values,
                                      'distrib': initial_age_distrib['distrib'].values, })
 
-        techno_infos_dict = proxy.get_sosdisc_inputs(
+        techno_infos_dict = self.get_sosdisc_inputs(
             'techno_infos_dict')
         wood_percentage_for_non_energy = 1 - \
             techno_infos_dict['wood_percentage_for_energy']
@@ -390,7 +390,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
         initial_prod.sort_values('years', inplace=True)
         initial_prod['cum energy (TWh)'] = initial_prod['energy (TWh)'].cumsum(
         )
-        study_production = proxy.get_sosdisc_outputs(
+        study_production = self.get_sosdisc_outputs(
             'techno_detailed_production')
         chart_name = f'{self.energy_name} World Production for energy via {self.techno_name}<br>with 2020 factories distribution'
 

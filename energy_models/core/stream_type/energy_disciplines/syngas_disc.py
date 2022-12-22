@@ -65,17 +65,17 @@ class SyngasDiscipline(EnergyDiscipline):
     # -- add specific techno outputs to this
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = Syngas(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'technologies_list' in proxy.get_data_in():
-            techno_list = proxy.get_sosdisc_inputs('technologies_list')
-            self.update_default_technology_list(proxy)
+        if 'technologies_list' in self.get_data_in():
+            techno_list = self.get_sosdisc_inputs('technologies_list')
+            self.update_default_technology_list()
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.techno_consumption'] = {
@@ -93,7 +93,7 @@ class SyngasDiscipline(EnergyDiscipline):
                     dynamic_inputs[f'{techno}.land_use_required'] = {
                         'type': 'dataframe', 'unit': 'Gha'}
 
-        proxy.add_inputs(dynamic_inputs)
+        self.add_inputs(dynamic_inputs)
 
     def run(self):
         '''
@@ -211,18 +211,18 @@ class SyngasDiscipline(EnergyDiscipline):
                 (f'{techno}.syngas_ratio',),
                 np.atleast_2d(grad_carbon_tax_vs_syngas_ratio).T)
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
-        generic_filter = EnergyDiscipline.get_chart_filter_list(self, proxy)
+        generic_filter = EnergyDiscipline.get_chart_filter_list(self)
         instanciated_charts = EnergyDiscipline.get_post_processing_list(
-            self, proxy, generic_filter)
+            self, generic_filter)
 
-        year_start, year_end = proxy.get_sosdisc_inputs(
+        year_start, year_end = self.get_sosdisc_inputs(
             ['year_start', 'year_end'])
         years = np.arange(year_start, year_end + 1)
-        syngas_ratio = proxy.get_sosdisc_outputs(
+        syngas_ratio = self.get_sosdisc_outputs(
             'syngas_ratio')
-        syngas_ratio_technos = proxy.get_sosdisc_outputs(
+        syngas_ratio_technos = self.get_sosdisc_outputs(
             'syngas_ratio_technos')
         chart_name = f'Molar syngas CO over H2 ratio for the global mix'
 

@@ -120,7 +120,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     # -- add specific techno outputs to this
     DESC_OUT = HydrotreatedOilFuelTechnoDiscipline.DESC_OUT
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = HefaDecarboxylation(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)

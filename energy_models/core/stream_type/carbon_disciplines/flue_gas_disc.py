@@ -98,17 +98,17 @@ class FlueGasDiscipline(SoSWrapp):
                                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_flue_gas', 'unit': '%'}}
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = FlueGas(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'technologies_list' in proxy.get_data_in() and 'ccs_list' in proxy.get_data_in():
-            techno_list = proxy.get_sosdisc_inputs('technologies_list')
-            ccs_list = proxy.get_sosdisc_inputs('ccs_list')
+        if 'technologies_list' in self.get_data_in() and 'ccs_list' in self.get_data_in():
+            techno_list = self.get_sosdisc_inputs('technologies_list')
+            ccs_list = self.get_sosdisc_inputs('ccs_list')
 
             if techno_list is not None and ccs_list is not None:
                 for techno in techno_list:
@@ -130,7 +130,7 @@ class FlueGasDiscipline(SoSWrapp):
                                                                       'namespace': ns_variable, 'unit': '',
                                                                       'default': self.POSSIBLE_FLUE_GAS_TECHNOS[techno]}
 
-        proxy.add_inputs(dynamic_inputs)
+        self.add_inputs(dynamic_inputs)
 
     def run(self):
         # -- get inputs
@@ -213,7 +213,7 @@ class FlueGasDiscipline(SoSWrapp):
                  f'{self.energy_model.name} (Mt)'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len_matrix))
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Average CO2 concentration in Flue gases',
@@ -224,7 +224,7 @@ class FlueGasDiscipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -238,27 +238,27 @@ class FlueGasDiscipline(SoSWrapp):
                     charts = chart_filter.selected_values
 
         if 'Flue gas production' in charts:
-            new_chart = self.get_flue_gas_production(proxy)
+            new_chart = self.get_flue_gas_production()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Average CO2 concentration in Flue gases' in charts:
-            new_chart = self.get_chart_average_co2_concentration(proxy)
+            new_chart = self.get_chart_average_co2_concentration()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Technologies CO2 concentration' in charts:
-            new_chart = self.get_table_technology_co2_concentration(proxy)
+            new_chart = self.get_table_technology_co2_concentration()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
-    def get_flue_gas_production(self, proxy):
-        flue_gas_total = proxy.get_sosdisc_outputs(
+    def get_flue_gas_production(self):
+        flue_gas_total = self.get_sosdisc_outputs(
             'flue_gas_production')[self.energy_name].values
-        flue_gas_prod_ratio = proxy.get_sosdisc_outputs('flue_gas_prod_ratio')
-        technologies_list = proxy.get_sosdisc_inputs('technologies_list')
+        flue_gas_prod_ratio = self.get_sosdisc_outputs('flue_gas_prod_ratio')
+        technologies_list = self.get_sosdisc_inputs('technologies_list')
         years = flue_gas_prod_ratio['years'].values
         chart_name = f'Flue gas emissions by technology'
         new_chart = TwoAxesInstanciatedChart(
@@ -278,8 +278,8 @@ class FlueGasDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_average_co2_concentration(self, proxy):
-        flue_gas_co2_concentration = proxy.get_sosdisc_outputs('flue_gas_mean')
+    def get_chart_average_co2_concentration(self):
+        flue_gas_co2_concentration = self.get_sosdisc_outputs('flue_gas_mean')
 
         chart_name = f'Average CO2 concentration in Flue gases'
         new_chart = TwoAxesInstanciatedChart(
@@ -292,9 +292,9 @@ class FlueGasDiscipline(SoSWrapp):
         new_chart.series.append(serie)
         return new_chart
 
-    def get_table_technology_co2_concentration(self, proxy):
+    def get_table_technology_co2_concentration(self):
         table_name = 'Concentration of CO2 in all flue gas streams'
-        technologies_list = proxy.get_sosdisc_inputs('technologies_list')
+        technologies_list = self.get_sosdisc_inputs('technologies_list')
 
         headers = ['Technology', 'CO2 concentration']
         cells = []
@@ -302,7 +302,7 @@ class FlueGasDiscipline(SoSWrapp):
 
         col_data = []
         for techno in technologies_list:
-            val_co2 = round(proxy.get_sosdisc_inputs(
+            val_co2 = round(self.get_sosdisc_inputs(
                 f'{techno}.flue_gas_co2_ratio')[0] * 100, 2)
             col_data.append([f'{val_co2} %'])
         cells.append(col_data)

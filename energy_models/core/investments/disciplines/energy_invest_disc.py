@@ -57,23 +57,23 @@ class InvestEnergyDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
 
-    def init_execution(self, proxy):
+    def init_execution(self):
         self.energy_model = EnergyInvest(self.energy_name)
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
         '''
         Construct the desc_out to couple energy invest levels to techno_invest_disc
         '''
         dynamic_outputs = {}
 
-        if 'energy_list' in proxy.get_data_in():
-            energy_list = proxy.get_sosdisc_inputs('energy_list')
+        if 'energy_list' in self.get_data_in():
+            energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
                     dynamic_outputs[f'{energy}.invest_level'] = {
                         'type': 'dataframe', 'unit': 'G$'}
 
-        proxy.add_outputs(dynamic_outputs)
+        self.add_outputs(dynamic_outputs)
 
     def run(self):
 
@@ -139,7 +139,7 @@ class InvestEnergyDiscipline(SoSWrapp):
                         (f'{energy}.invest_level', 'invest'), ('invest_energy_mix', energy_other),
                         np.identity(len(years)) * grad_energy_mix_other[:, np.newaxis])
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Invest Distribution']
@@ -153,14 +153,14 @@ class InvestEnergyDiscipline(SoSWrapp):
             'Years for invest mix', years, [year_start, year_end], 'years'))
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
 
         instanciated_charts = []
         charts = []
-        years_list = [proxy.get_sosdisc_inputs('year_start')]
+        years_list = [self.get_sosdisc_inputs('year_start')]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -170,9 +170,9 @@ class InvestEnergyDiscipline(SoSWrapp):
                     years_list = chart_filter.selected_values
 
         if 'Invest Distribution' in charts:
-            energy_invest_df = proxy.get_sosdisc_outputs(
+            energy_invest_df = self.get_sosdisc_outputs(
                 'energy_invest_df')
-            energy_list = proxy.get_sosdisc_inputs(
+            energy_list = self.get_sosdisc_inputs(
                 'energy_list')
             chart_name = f'Distribution of Investments vs years'
 

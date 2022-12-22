@@ -67,20 +67,20 @@ class OneInvestDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
 
-    def init_execution(self, proxy):
+    def init_execution(self):
         self.one_invest_model = OneInvest()
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
         '''
         Construct the desc_out to couple energy invest levels to techno_invest_disc
         '''
         dynamic_outputs = {}
         dynamic_inputs = {}
 
-        if 'is_dev' in proxy.get_data_in():
-            is_dev = proxy.get_sosdisc_inputs('is_dev')
-        if 'energy_list' in proxy.get_data_in():
-            energy_list = proxy.get_sosdisc_inputs('energy_list')
+        if 'is_dev' in self.get_data_in():
+            is_dev = self.get_sosdisc_inputs('is_dev')
+        if 'energy_list' in self.get_data_in():
+            energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
                     if energy == BiomassDry.name and is_dev == True:
@@ -92,8 +92,8 @@ class OneInvestDiscipline(SoSWrapp):
                             'visibility': 'Shared', 'namespace': 'ns_energy',
                             'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
                             'default': EnergyMix.stream_class_dict[energy].default_techno_list}
-                        if f'{energy}.technologies_list' in proxy.get_data_in():
-                            technology_list = proxy.get_sosdisc_inputs(
+                        if f'{energy}.technologies_list' in self.get_data_in():
+                            technology_list = self.get_sosdisc_inputs(
                                 f'{energy}.technologies_list')
                             # Add all invest_level outputs
                             if technology_list is not None:
@@ -102,8 +102,8 @@ class OneInvestDiscipline(SoSWrapp):
                                         'type': 'dataframe', 'unit': 'G$',
                                         'visibility': 'Shared', 'namespace': 'ns_energy',}
 
-        if 'ccs_list' in proxy.get_data_in():
-            ccs_list = proxy.get_sosdisc_inputs('ccs_list')
+        if 'ccs_list' in self.get_data_in():
+            ccs_list = self.get_sosdisc_inputs('ccs_list')
             if ccs_list is not None:
                 for ccs in ccs_list:
                     # Add technologies_list to inputs
@@ -113,16 +113,16 @@ class OneInvestDiscipline(SoSWrapp):
                         'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
                         'default': EnergyMix.stream_class_dict[ccs].default_techno_list}
                     # Add all invest_level outputs
-                    if f'{ccs}.technologies_list' in proxy.get_data_in():
-                        technology_list = proxy.get_sosdisc_inputs(
+                    if f'{ccs}.technologies_list' in self.get_data_in():
+                        technology_list = self.get_sosdisc_inputs(
                             f'{ccs}.technologies_list')
                         if technology_list is not None:
                             for techno in technology_list:
                                 dynamic_outputs[f'{ccs}.{techno}.invest_level'] = {
                                     'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_ccs'}
 
-        proxy.add_inputs(dynamic_inputs)
-        proxy.add_outputs(dynamic_outputs)
+        self.add_inputs(dynamic_inputs)
+        self.add_outputs(dynamic_outputs)
 
     def run(self):
 
@@ -176,7 +176,7 @@ class OneInvestDiscipline(SoSWrapp):
                         (f'{techno}.invest_level', 'invest'), ('invest_mix', techno_other),
                         np.identity(len(years)) * grad_techno_mix_other[:, np.newaxis])
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Invest Distribution']
@@ -190,7 +190,7 @@ class OneInvestDiscipline(SoSWrapp):
             'Years for invest mix', years, [year_start, year_end], 'years'))
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -207,7 +207,7 @@ class OneInvestDiscipline(SoSWrapp):
                     years_list = chart_filter.selected_values
 
         if 'Invest Distribution' in charts:
-            all_invest_df = proxy.get_sosdisc_outputs(
+            all_invest_df = self.get_sosdisc_outputs(
                 'all_invest_df')
 
             chart_name = f'Distribution of investments on each energy vs years'

@@ -106,7 +106,7 @@ class DepletedOilGasDiscipline(CSTechnoDiscipline):
 
     _maturity = 'Research'
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = DepletedOilGas(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)

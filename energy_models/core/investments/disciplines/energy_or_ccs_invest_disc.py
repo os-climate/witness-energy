@@ -49,7 +49,7 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
     _maturity = 'Research'
     rescaling_factor = 1e2
 
-    def init_execution(self, proxy):
+    def init_execution(self):
         self.energy_model = EnergyOrCCSInvest()
 
     def run(self):
@@ -92,7 +92,7 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
              'energy_investment'), ('ccs_percentage', 'ccs_percentage'),
             -np.identity(len_grad) * inputs_dict['energy_investment']['energy_investment'].values / 100.0)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Global Invest Distribution']
@@ -101,7 +101,7 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -116,9 +116,9 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
 
         if 'Global Invest Distribution' in charts:
 
-            ccs_percentage = proxy.get_sosdisc_inputs(
+            ccs_percentage = self.get_sosdisc_inputs(
                 'ccs_percentage')['ccs_percentage'].values / 100.0
-            total_energy_investment = proxy.get_sosdisc_inputs(
+            total_energy_investment = self.get_sosdisc_inputs(
                 'energy_investment')
 
             chart_name = 'Distribution of Investments into CCS and Energy Conversion'

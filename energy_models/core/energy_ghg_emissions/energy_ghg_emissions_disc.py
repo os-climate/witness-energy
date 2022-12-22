@@ -89,20 +89,20 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
     name = f'{GHGemissionsDiscipline.name}.Energy'
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.model = EnergyGHGEmissions(self.name)
         self.model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
 
         dynamic_inputs = {}
         dynamic_outputs = {}
-        if 'is_dev' in proxy.get_data_in():
-            is_dev = proxy.get_sosdisc_inputs('is_dev')
+        if 'is_dev' in self.get_data_in():
+            is_dev = self.get_sosdisc_inputs('is_dev')
 
-        if 'energy_list' in proxy.get_data_in():
-            energy_list = proxy.get_sosdisc_inputs('energy_list')
+        if 'energy_list' in self.get_data_in():
+            energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
                     if energy == BiomassDry.name:
@@ -130,8 +130,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_energy'}
-            if 'ccs_list' in proxy.get_data_in():
-                ccs_list = proxy.get_sosdisc_inputs('ccs_list')
+            if 'ccs_list' in self.get_data_in():
+                ccs_list = self.get_sosdisc_inputs('ccs_list')
                 if ccs_list is not None:
                     for ccs in ccs_list:
                         dynamic_inputs[f'{ccs}.energy_production'] = {
@@ -139,8 +139,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
 
-        proxy.add_inputs(dynamic_inputs)
-        proxy.add_outputs(dynamic_outputs)
+        self.add_inputs(dynamic_inputs)
+        self.add_outputs(dynamic_outputs)
 
     def run(self):
         # -- get inputs
@@ -353,7 +353,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
              'Total CO2 emissions'), ('co2_emissions_needed_by_energy_mix', 'carbon_capture needed by energy mix (Gt)'),
             -np.identity(len(years)))
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Global Warming Potential', 'Total CO2 emissions',
@@ -365,7 +365,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -378,36 +378,36 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
         if 'Global Warming Potential' in charts:
             for gwp_year in [20, 100]:
-                new_chart = self.get_chart_gwp(proxy, gwp_year)
+                new_chart = self.get_chart_gwp(gwp_year)
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
         if 'Total CO2 emissions' in charts:
 
-            new_chart = self.get_chart_total_co2_emissions(proxy)
+            new_chart = self.get_chart_total_co2_emissions()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Emissions per energy' in charts:
             for ghg in EnergyGHGEmissions.GHG_TYPE_LIST:
-                new_chart = self.get_chart_ghg_emissions_per_energy(proxy, ghg)
+                new_chart = self.get_chart_ghg_emissions_per_energy( ghg)
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
         if 'CO2 sources' in charts:
 
-            new_chart = self.get_chart_CO2_sources(proxy)
+            new_chart = self.get_chart_CO2_sources()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'CO2 sinks' in charts:
-            new_chart = self.get_chart_CO2_sinks(proxy)
+            new_chart = self.get_chart_CO2_sinks()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
-    def get_chart_total_co2_emissions(self, proxy):
-        GHG_total_energy_emissions = proxy.get_sosdisc_outputs(
+    def get_chart_total_co2_emissions(self):
+        GHG_total_energy_emissions = self.get_sosdisc_outputs(
             'GHG_total_energy_emissions')
 
         chart_name = f'Total CO2 emissions for energy sector'
@@ -422,8 +422,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_gwp(self, proxy, gwp_year):
-        GWP_emissions = proxy.get_sosdisc_outputs(
+    def get_chart_gwp(self, gwp_year):
+        GWP_emissions = self.get_sosdisc_outputs(
             'GWP_emissions')
 
         chart_name = f'Global warming potential for energy sector emissions at {gwp_year} years'
@@ -439,14 +439,14 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_ghg_emissions_per_energy(self, proxy, ghg):
-        GHG_emissions_per_energy = proxy.get_sosdisc_outputs(
+    def get_chart_ghg_emissions_per_energy(self, ghg):
+        GHG_emissions_per_energy = self.get_sosdisc_outputs(
             'GHG_emissions_per_energy')
 
         chart_name = f'{ghg} emissions per energy'
         new_chart = TwoAxesInstanciatedChart(
             'years', f'{ghg} emissions [Mt]', chart_name=chart_name, stacked_bar=True)
-        energy_list = proxy.get_sosdisc_inputs('energy_list')
+        energy_list = self.get_sosdisc_inputs('energy_list')
         for energy in energy_list:
             ghg_energy = GHG_emissions_per_energy[ghg][[
                 col for col in GHG_emissions_per_energy[ghg] if energy in col]].sum(axis=1).values
@@ -459,8 +459,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_CO2_sources(self, proxy):
-        CO2_emissions_sources = proxy.get_sosdisc_outputs(
+    def get_chart_CO2_sources(self):
+        CO2_emissions_sources = self.get_sosdisc_outputs(
             'CO2_emissions_sources')
 
         chart_name = f'CO2 emissions by consumption - Sources'
@@ -477,8 +477,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_CO2_sinks(self, proxy):
-        CO2_emissions_sinks = proxy.get_sosdisc_outputs(
+    def get_chart_CO2_sinks(self):
+        CO2_emissions_sinks = self.get_sosdisc_outputs(
             'CO2_emissions_sinks')
 
         chart_name = f'CO2 emissions by consumption - Sinks'

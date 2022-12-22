@@ -91,14 +91,14 @@ class ResourcesDisc(SoSWrapp):
         'resources_CO2_emissions': {'type': 'dataframe', 'unit': '[kgCO2/kg]', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'}
     }
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
 
-        if proxy.get_data_in() is not None:
-            if 'year_start' in proxy.get_data_in():
-                year_start, year_end = proxy.get_sosdisc_inputs(
+        if self.get_data_in() is not None:
+            if 'year_start' in self.get_data_in():
+                year_start, year_end = self.get_sosdisc_inputs(
                     ['year_start', 'year_end'])
                 years = np.arange(year_start, year_end + 1)
-                resources_price = proxy.get_sosdisc_inputs(
+                resources_price = self.get_sosdisc_inputs(
                     'resources_price')
                 new_default_prices = get_static_prices(years)
                 new_default_emissions = get_static_CO2_emissions(years)
@@ -132,7 +132,7 @@ class ResourcesDisc(SoSWrapp):
     def compute_sos_jacobian(self):
         pass
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Resources prices', 'Resources CO2 emissions']
@@ -141,7 +141,7 @@ class ResourcesDisc(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         instanciated_charts = []
         charts = []
@@ -162,9 +162,9 @@ class ResourcesDisc(SoSWrapp):
                 instanciated_charts.append(new_chart)
         return instanciated_charts
 
-    def get_chart_prices_in_dollar_kg(self, proxy):
+    def get_chart_prices_in_dollar_kg(self):
 
-        resources_price = proxy.get_sosdisc_outputs(
+        resources_price = self.get_sosdisc_outputs(
             'resources_price')
         chart_name = f'Resources prices'
 
@@ -182,9 +182,9 @@ class ResourcesDisc(SoSWrapp):
 
         return new_chart
 
-    def get_chart_CO2_emissions(self, proxy):
+    def get_chart_CO2_emissions(self):
 
-        resources_co2_emissions = proxy.get_sosdisc_outputs(
+        resources_co2_emissions = self.get_sosdisc_outputs(
             'resources_CO2_emissions')
         chart_name = f'Resources CO2 emissions in kgCO2/kg'
 

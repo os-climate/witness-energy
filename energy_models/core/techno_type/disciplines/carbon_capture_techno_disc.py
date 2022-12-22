@@ -134,7 +134,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('techno_capital', self.techno_model.name), ('flue_gas_mean', 'flue_gas_mean'), dtechnocapital_dflue_gas_mean)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Detailed prices',
@@ -150,7 +150,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
             'Price unit', price_unit_list, price_unit_list, 'price_unit'))
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -167,41 +167,41 @@ class CCTechnoDiscipline(TechnoDiscipline):
                     price_unit_list = chart_filter.selected_values
 
         if 'Detailed prices' in charts and '$/tCO2' in price_unit_list:
-            new_chart = self.get_chart_detailed_price_in_dollar_tCO2(proxy)
+            new_chart = self.get_chart_detailed_price_in_dollar_tCO2()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Consumption and production' in charts:
-            new_chart = self.get_chart_investments(proxy)
+            new_chart = self.get_chart_investments()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-            new_charts = self.get_charts_consumption_and_production(proxy)
+            new_charts = self.get_charts_consumption_and_production()
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
-            new_charts = self.get_charts_consumption_and_production_energy(proxy)
+            new_charts = self.get_charts_consumption_and_production_energy()
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
         if 'Applied Ratio' in charts:
-            new_chart = self.get_chart_applied_ratio(proxy)
+            new_chart = self.get_chart_applied_ratio()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Initial Production' in charts:
-            if 'initial_production' in proxy.get_data_in():
-                new_chart = self.get_chart_initial_production(proxy)
+            if 'initial_production' in self.get_data_in():
+                new_chart = self.get_chart_initial_production()
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
-    def get_chart_detailed_price_in_dollar_tCO2(self, proxy):
+    def get_chart_detailed_price_in_dollar_tCO2(self):
 
-        techno_detailed_prices = proxy.get_sosdisc_outputs(
+        techno_detailed_prices = self.get_sosdisc_outputs(
             'techno_detailed_prices')
 
         chart_name = f'Detailed prices of {self.techno_name} technology over the years'
@@ -214,8 +214,8 @@ class CCTechnoDiscipline(TechnoDiscipline):
         new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/tCO2]', [year_start, year_end], [minimum, maximum],
                                              chart_name=chart_name)
 
-        if 'percentage_resource' in proxy.get_data_in():
-            percentage_resource = proxy.get_sosdisc_inputs(
+        if 'percentage_resource' in self.get_data_in():
+            percentage_resource = self.get_sosdisc_inputs(
                 'percentage_resource')
             new_chart.annotation_upper_left = {
                 'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
@@ -261,9 +261,9 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
         return new_chart
 
-    def get_chart_investments(self, proxy):
+    def get_chart_investments(self):
         # Chart for input investments
-        input_investments = proxy.get_sosdisc_inputs('invest_level')
+        input_investments = self.get_sosdisc_inputs('invest_level')
 
         chart_name = f'Input investments over the years'
 
@@ -278,12 +278,12 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
         return new_chart
 
-    def get_charts_consumption_and_production(self, proxy):
+    def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        techno_consumption = proxy.get_sosdisc_outputs(
+        techno_consumption = self.get_sosdisc_outputs(
             'techno_detailed_consumption')
-        techno_production = proxy.get_sosdisc_outputs(
+        techno_production = self.get_sosdisc_outputs(
             'techno_detailed_production')
         chart_name = f'{self.techno_name} resources production & consumption <br>with input investments'
 
@@ -315,12 +315,12 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
         return instanciated_charts
 
-    def get_charts_consumption_and_production_energy(self, proxy):
+    def get_charts_consumption_and_production_energy(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        techno_consumption = proxy.get_sosdisc_outputs(
+        techno_consumption = self.get_sosdisc_outputs(
             'techno_detailed_consumption')
-        techno_production = proxy.get_sosdisc_outputs(
+        techno_production = self.get_sosdisc_outputs(
             'techno_detailed_production')
         chart_name = f'{self.techno_name} energy production & consumption<br>with input investments'
 
@@ -352,13 +352,13 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
         return instanciated_charts
 
-    def get_chart_initial_production(self, proxy):
+    def get_chart_initial_production(self):
 
-        year_start = proxy.get_sosdisc_inputs(
+        year_start = self.get_sosdisc_inputs(
             'year_start')
-        initial_production = proxy.get_sosdisc_inputs(
+        initial_production = self.get_sosdisc_inputs(
             'initial_production')
-        initial_age_distrib = proxy.get_sosdisc_inputs(
+        initial_age_distrib = self.get_sosdisc_inputs(
             'initial_age_distrib')
         initial_prod = initial_age_distrib.copy(deep=True)
         initial_prod['CO2 (Mt)'] = initial_prod['distrib'] / \
@@ -367,7 +367,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
         initial_prod.sort_values('years', inplace=True)
         initial_prod['cum CO2 (Mt)'] = initial_prod['CO2 (Mt)'].cumsum()
 
-        study_production = proxy.get_sosdisc_outputs(
+        study_production = self.get_sosdisc_outputs(
             'techno_detailed_production')
         chart_name = f'World CO2 capture via {self.techno_name}<br>with 2020 factories distribution'
 

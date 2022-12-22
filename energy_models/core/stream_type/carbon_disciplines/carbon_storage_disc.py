@@ -53,12 +53,12 @@ class CarbonStorageDiscipline(StreamDiscipline):
 
     DESC_OUT = StreamDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = CarbonStorage(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['CO2 Storage price', 'Technology mix',
@@ -77,7 +77,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
             'Years for techno mix', years, [year_start, year_end], 'years'))
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -85,7 +85,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/ton']
-        years_list = [proxy.get_sosdisc_inputs('year_start')]
+        years_list = [self.get_sosdisc_inputs('year_start')]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -97,29 +97,29 @@ class CarbonStorageDiscipline(StreamDiscipline):
                     years_list = chart_filter.selected_values
 
         if 'CO2 Storage price' in charts and '$/ton' in price_unit_list:
-            new_chart = self.get_chart_CO2_storage_price_in_dollar_ton(proxy)
+            new_chart = self.get_chart_CO2_storage_price_in_dollar_ton()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'Consumption and production' in charts:
-            new_charts = self.get_charts_consumption_and_production(proxy)
+            new_charts = self.get_charts_consumption_and_production()
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
         if 'Technology mix' in charts:
-            new_charts = self.get_chart_technology_mix(proxy, years_list)
+            new_charts = self.get_chart_technology_mix( years_list)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-            new_charts = self.get_charts_production_by_techno(proxy)
+            new_charts = self.get_charts_production_by_techno()
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
         return instanciated_charts
 
-    def get_chart_CO2_storage_price_in_dollar_ton(self, proxy):
-        CO2_storage_prices = proxy.get_sosdisc_outputs('energy_prices')
+    def get_chart_CO2_storage_price_in_dollar_ton(self):
+        CO2_storage_prices = self.get_sosdisc_outputs('energy_prices')
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'Prices [$/ton]', chart_name=chart_name)
@@ -130,10 +130,10 @@ class CarbonStorageDiscipline(StreamDiscipline):
 
         new_chart.series.append(serie)
 
-        technology_list = proxy.get_sosdisc_inputs('technologies_list')
+        technology_list = self.get_sosdisc_inputs('technologies_list')
 
         for technology in technology_list:
-            techno_price = proxy.get_sosdisc_inputs(
+            techno_price = self.get_sosdisc_inputs(
                 f'{technology}.techno_prices')
             serie = InstanciatedSeries(
                 CO2_storage_prices['years'].values.tolist(),
@@ -142,11 +142,11 @@ class CarbonStorageDiscipline(StreamDiscipline):
 
         return new_chart
 
-    def get_charts_consumption_and_production(self, proxy):
+    def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_consumption = proxy.get_sosdisc_outputs('energy_consumption')
-        energy_production = proxy.get_sosdisc_outputs('energy_production')
+        energy_consumption = self.get_sosdisc_outputs('energy_consumption')
+        energy_production = self.get_sosdisc_outputs('energy_production')
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
         scaling_factor_energy_production = self.get_sosdisc_inputs(

@@ -442,7 +442,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                     instanciated_charts.append(new_chart)
 
         if 'Technology mix' in charts:
-            new_charts = self.get_chart_technology_mix(years_list)
+            new_charts = self.get_chart_technology_mix( years_list)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)

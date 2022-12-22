@@ -73,20 +73,20 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
 
     model_name = ConsumptionCO2Emissions.name
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.model = ConsumptionCO2Emissions(self.model_name)
         self.model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
 
         dynamic_inputs = {}
         dynamic_outputs = {}
-        if 'is_dev' in proxy.get_data_in():
-            is_dev = proxy.get_sosdisc_inputs('is_dev')
+        if 'is_dev' in self.get_data_in():
+            is_dev = self.get_sosdisc_inputs('is_dev')
 
-        if 'energy_list' in proxy.get_data_in():
-            energy_list = proxy.get_sosdisc_inputs('energy_list')
+        if 'energy_list' in self.get_data_in():
+            energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
                     if energy == BiomassDry.name and is_dev == True:
@@ -113,8 +113,8 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_energy'}
 
-        if 'ccs_list' in proxy.get_data_in():
-            ccs_list = proxy.get_sosdisc_inputs('ccs_list')
+        if 'ccs_list' in self.get_data_in():
+            ccs_list = self.get_sosdisc_inputs('ccs_list')
             if ccs_list is not None:
                 for ccs in ccs_list:
                     dynamic_inputs[f'{ccs}.energy_production'] = {
@@ -122,8 +122,8 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs'}
 
-        proxy.add_inputs(dynamic_inputs)
-        proxy.add_outputs(dynamic_outputs)
+        self.add_inputs(dynamic_inputs)
+        self.add_outputs(dynamic_outputs)
 
     def run(self):
         # -- get inputs
@@ -280,7 +280,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
 
 
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['CO2 sources', 'CO2 sinks']
@@ -290,7 +290,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -303,19 +303,19 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
 
         if 'CO2 sources' in charts:
 
-            new_chart = self.get_chart_CO2_sources(proxy)
+            new_chart = self.get_chart_CO2_sources()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'CO2 sinks' in charts:
-            new_chart = self.get_chart_CO2_sinks(proxy)
+            new_chart = self.get_chart_CO2_sinks()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
-    def get_chart_CO2_sources(self, proxy):
-        CO2_emissions_by_use_sources = proxy.get_sosdisc_outputs(
+    def get_chart_CO2_sources(self):
+        CO2_emissions_by_use_sources = self.get_sosdisc_outputs(
             'CO2_emissions_by_use_sources')
 
         chart_name = f'CO2 emissions by consumption - Sources'
@@ -332,8 +332,8 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_CO2_sinks(self, proxy):
-        CO2_emissions_by_use_sinks = proxy.get_sosdisc_outputs(
+    def get_chart_CO2_sinks(self):
+        CO2_emissions_by_use_sinks = self.get_sosdisc_outputs(
             'CO2_emissions_by_use_sinks')
 
         chart_name = f'CO2 emissions by consumption - Sinks'

@@ -119,23 +119,23 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
     _maturity = 'Research'
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
 
-        CSTechnoDiscipline.setup_sos_disciplines(self, proxy)
+        CSTechnoDiscipline.setup_sos_disciplines(self)
 
-        if proxy.get_data_in() is not None:
-            if 'year_start' in proxy.get_data_in():
-                year_start, year_end = proxy.get_sosdisc_inputs(
+        if self.get_data_in() is not None:
+            if 'year_start' in self.get_data_in():
+                year_start, year_end = self.get_sosdisc_inputs(
                     ['year_start', 'year_end'])
                 years = np.arange(year_start, year_end + 1)
 
-                if proxy.get_sosdisc_inputs('carbon_quantity_to_be_stored') is not None:
-                    if proxy.get_sosdisc_inputs('carbon_quantity_to_be_stored')['years'].values.tolist() != list(years):
-                        proxy.update_default_value(
+                if self.get_sosdisc_inputs('carbon_quantity_to_be_stored') is not None:
+                    if self.get_sosdisc_inputs('carbon_quantity_to_be_stored')['years'].values.tolist() != list(years):
+                        self.update_default_value(
                             'carbon_quantity_to_be_stored', self.IO_TYPE_IN, pd.DataFrame({'years': years, 'carbon_storage': 0.}))
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = PureCarbonSS(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
@@ -209,9 +209,9 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                 self.set_partial_derivative_for_other_types(
                     ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'), ('invest_level', 'invest'), value * scaling_factor_invest_level / scaling_factor_techno_production)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
-        chart_filters = CSTechnoDiscipline.get_chart_filter_list(self, proxy)
+        chart_filters = CSTechnoDiscipline.get_chart_filter_list(self)
         chart_list = chart_filters[0].filter_values
         chart_list.append('Constraint')
         chart_filters.append(ChartFilter(
@@ -219,13 +219,13 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
 
         instanciated_charts = CSTechnoDiscipline.get_post_processing_list(
-            self, proxy, filters)
+            self, filters)
         charts = []
         # Overload default value with chart filter
         if filters is not None:
@@ -236,20 +236,20 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                     price_unit_list = chart_filter.selected_values
 
         if 'Constraint' in charts:
-            new_chart = self.get_chart_constraint(proxy)
+            new_chart = self.get_chart_constraint()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
-    def get_chart_constraint(self, proxy):
+    def get_chart_constraint(self):
                 #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inputs += list(self.inst_desc_in.keys())
         inputs_dict = self.get_sosdisc_inputs()#inputs, in_dict=True)
 
         outputs = list(self.DESC_OUT.keys())
-        outputs_dict = proxy.get_sosdisc_outputs()#outputs, in_dict=True)
+        outputs_dict = self.get_sosdisc_outputs()#outputs, in_dict=True)
 
         # -- configure class with inputs
         self.techno_model.configure_parameters_update(inputs_dict)

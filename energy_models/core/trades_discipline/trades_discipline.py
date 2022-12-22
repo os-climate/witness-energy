@@ -52,10 +52,10 @@ class TradesDiscipline(SoSWrapp):
                                                     'namespace': 'ns_public'}}
     DESC_OUT = {}
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
 
-        if 'scenario_list' in proxy.get_data_in():
-            scenario_list = proxy.get_sosdisc_inputs('scenario_list')
+        if 'scenario_list' in self.get_data_in():
+            scenario_list = self.get_sosdisc_inputs('scenario_list')
 
             if scenario_list is not None:
                 inputs = {}
@@ -69,13 +69,13 @@ class TradesDiscipline(SoSWrapp):
                     inputs[f'{scenario}{ns_value_long.split(ns_value_short)[1]}.energy_production'] = {
                         'type': 'dataframe', 'unit': 'MWh', 'visibility': 'Shared', 'namespace': 'ns_scatter_scenario'}
 
-                proxy.add_inputs(inputs, clean_inputs=True)
+                self.add_inputs(inputs, clean_inputs=True)
 
     def run(self):
 
         pass
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
 
@@ -86,7 +86,7 @@ class TradesDiscipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         instanciated_charts = []
 
@@ -99,14 +99,14 @@ class TradesDiscipline(SoSWrapp):
             graphs_list = [
                 'CO2 emissions vs Energy production']
 
-        scenario_list = proxy.get_sosdisc_inputs(
+        scenario_list = self.get_sosdisc_inputs(
             'scenario_list')
 
-        dynamic_inputs = proxy.get_sosdisc_inputs(
+        dynamic_inputs = self.get_sosdisc_inputs(
             list(self.inst_desc_in.keys()), in_dict=True)
 
-        year_end = proxy.get_sosdisc_inputs('year_end')
-        scaling_factor_energy_production = proxy.get_sosdisc_inputs(
+        year_end = self.get_sosdisc_inputs('year_end')
+        scaling_factor_energy_production = self.get_sosdisc_inputs(
             'scaling_factor_energy_production')
 
         """

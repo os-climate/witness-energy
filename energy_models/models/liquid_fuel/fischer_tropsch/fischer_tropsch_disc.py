@@ -136,8 +136,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     # -- add specific techno inputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = FischerTropsch(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
@@ -319,7 +319,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         self.store_sos_outputs_values(
             {'xto_liquid_prices': xto_liquid_prices})
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['Detailed prices',
@@ -333,7 +333,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             'Price unit', price_unit_list, price_unit_list, 'price_unit'))
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t', "$/USgallon"]
@@ -348,19 +348,19 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                 if chart_filter.filter_key == 'price_unit':
                     price_unit_list = chart_filter.selected_values
 
-        generic_filter = LiquidFuelTechnoDiscipline.get_chart_filter_list(self, proxy)
+        generic_filter = LiquidFuelTechnoDiscipline.get_chart_filter_list(self)
         instanciated_charts = LiquidFuelTechnoDiscipline.get_post_processing_list(
-            self, proxy, generic_filter)
+            self, generic_filter)
 
         if 'Detailed prices' in charts and '$/USgallon' in price_unit_list:
-            techno_detailed_prices = proxy.get_sosdisc_outputs(
+            techno_detailed_prices = self.get_sosdisc_outputs(
                 'techno_detailed_prices')
             chart_name = f'Detailed prices of {self.techno_name} technology over the years'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/USgallon]',
                                                  chart_name=chart_name)
 
-            if 'part_of_total' in proxy.get_data_in():
+            if 'part_of_total' in self.get_data_in():
                 part_of_total = self.get_sosdisc_inputs('part_of_total')
                 new_chart.annotation_upper_left = {
                     'Percentage of total price': f'{part_of_total[0]*100.0} %'}
@@ -385,9 +385,9 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         return instanciated_charts
 
-    def get_chart_detailed_price_in_dollar_kwh(self, proxy):
+    def get_chart_detailed_price_in_dollar_kwh(self):
 
-        techno_detailed_prices = proxy.get_sosdisc_outputs(
+        techno_detailed_prices = self.get_sosdisc_outputs(
             'techno_detailed_prices')
         chart_name = f'Detailed prices of {self.techno_name} technology over the years'
         year_start = min(techno_detailed_prices['years'].values.tolist())
@@ -466,9 +466,9 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         return new_chart
 
-    def get_chart_detailed_price_in_dollar_kg(self, proxy):
+    def get_chart_detailed_price_in_dollar_kg(self):
 
-        techno_detailed_prices = proxy.get_sosdisc_outputs(
+        techno_detailed_prices = self.get_sosdisc_outputs(
             'techno_detailed_prices')
         calorific_value = self.get_sosdisc_inputs('data_fuel_dict')[
             'calorific_value']

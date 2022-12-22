@@ -117,16 +117,16 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
 
     _maturity = 'Research'
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = Nuclear(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
     
-    def get_charts_consumption_and_production(self, proxy):
+    def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
-        instanciated_chart = super().get_charts_consumption_and_production(proxy)
-        techno_consumption = proxy.get_sosdisc_outputs(
+        instanciated_chart = super().get_charts_consumption_and_production()
+        techno_consumption = self.get_sosdisc_outputs(
             'techno_detailed_consumption')
 
         new_chart_copper = None
@@ -152,17 +152,17 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         return instanciated_chart
     
 
-    def get_chart_detailed_price_in_dollar_kwh(self, proxy):
+    def get_chart_detailed_price_in_dollar_kwh(self):
         """
         overloads the price chart from techno_disc to display decommissioning costs
         """
 
         new_chart = ElectricityTechnoDiscipline.get_chart_detailed_price_in_dollar_kwh(
-            self, proxy)
+            self)
 
         # decommissioning price part
-        techno_infos_dict = proxy.get_sosdisc_inputs('techno_infos_dict')
-        techno_detailed_prices = proxy.get_sosdisc_outputs(
+        techno_infos_dict = self.get_sosdisc_inputs('techno_infos_dict')
+        techno_detailed_prices = self.get_sosdisc_outputs(
             'techno_detailed_prices')
         ratio = techno_infos_dict['decommissioning_cost'] / \
             techno_infos_dict['Capex_init']

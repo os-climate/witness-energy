@@ -80,19 +80,19 @@ class CCUS_Discipline(SoSWrapp):
 
     }
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.ccus_model = CCUS('CCUS')
         self.ccus_model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
 
         dynamic_inputs = {}
         dynamic_outputs = {}
 
-        if 'ccs_list' in proxy.get_data_in():
-            ccs_list = proxy.get_sosdisc_inputs('ccs_list')
-            self.update_default_ccs_list(proxy)
+        if 'ccs_list' in self.get_data_in():
+            ccs_list = self.get_sosdisc_inputs('ccs_list')
+            self.update_default_ccs_list()
             if ccs_list is not None:
                 for ccs_name in ccs_list:
                     dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
@@ -111,33 +111,33 @@ class CCUS_Discipline(SoSWrapp):
                         'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs'}
 
-        if 'year_start' in proxy.get_data_in() and 'year_end' in proxy.get_data_in():
-            year_start = proxy.get_sosdisc_inputs('year_start')
-            year_end = proxy.get_sosdisc_inputs('year_end')
+        if 'year_start' in self.get_data_in() and 'year_end' in self.get_data_in():
+            year_start = self.get_sosdisc_inputs('year_start')
+            year_end = self.get_sosdisc_inputs('year_end')
 
             if year_start is not None and year_end is not None:
                 dynamic_inputs['co2_for_food'] = {
                     'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame(columns=[f'{CO2.name} for food (Mt)']),
                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'}
 
-        proxy.add_inputs(dynamic_inputs)
-        proxy.add_outputs(dynamic_outputs)
+        self.add_inputs(dynamic_inputs)
+        self.add_outputs(dynamic_outputs)
 
-    def update_default_ccs_list(self, proxy):
+    def update_default_ccs_list(self):
         '''
         Update the default value of technologies list with techno discipline below the ccs node and in possible values
         '''
 
-        found_ccs = self.found_ccs_under_ccsmix(proxy)
-        proxy.set_dynamic_default_values({'ccs_list': found_ccs})
+        found_ccs = self.found_ccs_under_ccsmix()
+        self.set_dynamic_default_values({'ccs_list': found_ccs})
 
-    def found_ccs_under_ccsmix(self, proxy):
+    def found_ccs_under_ccsmix(self):
         '''
         Set the default value of the ccs list and the ccs_list with discipline under the ccs_mix which are in possible values
         '''
-        my_name = proxy.get_disc_full_name()
+        my_name = self.get_disc_full_name()
         possible_ccs = CCUS.ccs_list
-        found_ccs_list = proxy.dm.get_discipline_names_with_starting_name(
+        found_ccs_list = self.dm.get_discipline_names_with_starting_name(
             my_name)
         short_ccs_list = [name.split(
             f'{my_name}.')[-1] for name in found_ccs_list if f'{my_name}.' in name]
@@ -357,7 +357,7 @@ class CCUS_Discipline(SoSWrapp):
                 ('CCS_price', 'ccs_price_per_tCO2'), (f'{CarbonStorage.name}.energy_prices', CarbonStorage.name),
                 np.identity(len(years)))
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
         chart_list = ['CCS price', 'Carbon storage constraint',
@@ -377,7 +377,7 @@ class CCUS_Discipline(SoSWrapp):
             'Years for energy mix', years, [year_start, year_end], 'years'))
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
         # range
@@ -386,7 +386,7 @@ class CCUS_Discipline(SoSWrapp):
         charts = []
 
         price_unit_list = ['$/MWh', '$/t']
-        years_list = [proxy.get_sosdisc_inputs('year_start')]
+        years_list = [self.get_sosdisc_inputs('year_start')]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -398,30 +398,30 @@ class CCUS_Discipline(SoSWrapp):
                     years_list = chart_filter.selected_values
 
         if 'Carbon storage constraint' in charts:
-            new_chart = self.get_chart_carbon_storage_constraint(proxy)
+            new_chart = self.get_chart_carbon_storage_constraint()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'CCS price' in charts:
-            new_chart = self.get_chart_CCS_price(proxy)
+            new_chart = self.get_chart_CCS_price()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'CO2 storage limited by capture' in charts:
-            new_chart = self.get_chart_co2_limited_storage(proxy)
+            new_chart = self.get_chart_co2_limited_storage()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         if 'CO2 emissions captured, used and to store' in charts:
-            new_chart = self.get_chart_co2_to_store(proxy)
+            new_chart = self.get_chart_co2_to_store()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
-    def get_chart_CCS_price(self, proxy):
+    def get_chart_CCS_price(self):
 
-        ccs_prices = proxy.get_sosdisc_outputs('CCS_price')
+        ccs_prices = self.get_sosdisc_outputs('CCS_price')
 
         years = list(ccs_prices['years'].values)
 
@@ -439,16 +439,16 @@ class CCUS_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_co2_to_store(self, proxy):
+    def get_chart_co2_to_store(self):
         '''
         Plot a graph to understand CO2 to store
         '''
         chart_name = 'CO2 emissions captured, used and to store'
-        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions_ccus')
-        co2_for_food = proxy.get_sosdisc_inputs('co2_for_food')
-        carbon_capture_from_energy_mix = proxy.get_sosdisc_inputs(
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
+        co2_for_food = self.get_sosdisc_inputs('co2_for_food')
+        carbon_capture_from_energy_mix = self.get_sosdisc_inputs(
             'carbon_capture_from_energy_mix')
-        co2_emissions_needed_by_energy_mix = proxy.get_sosdisc_inputs(
+        co2_emissions_needed_by_energy_mix = self.get_sosdisc_inputs(
             'co2_emissions_needed_by_energy_mix')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
@@ -485,13 +485,13 @@ class CCUS_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_co2_limited_storage(self, proxy):
+    def get_chart_co2_limited_storage(self):
         '''
         Plot a graph to understand storage
         '''
         chart_name = 'CO2 emissions storage limited by CO2 to store'
-        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions_ccus')
-        carbon_storage_by_invest = proxy.get_sosdisc_outputs('carbon_storage_by_invest')
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
+        carbon_storage_by_invest = self.get_sosdisc_outputs('carbon_storage_by_invest')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
@@ -514,12 +514,12 @@ class CCUS_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_co2_emissions_sources(self, proxy):
+    def get_chart_co2_emissions_sources(self):
         '''
         Plot all CO2 emissions sources 
         '''
         chart_name = 'CO2 emissions sources'
-        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions')
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions')
         new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
@@ -554,11 +554,11 @@ class CCUS_Discipline(SoSWrapp):
 
         return new_chart
 
-    def get_chart_carbon_storage_constraint(self, proxy):
+    def get_chart_carbon_storage_constraint(self):
 
-        co2_emissions = proxy.get_sosdisc_outputs('co2_emissions_ccus_Gt')
+        co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus_Gt')
 
-        carbon_storage_limit = proxy.get_sosdisc_inputs('carbonstorage_limit')
+        carbon_storage_limit = self.get_sosdisc_inputs('carbonstorage_limit')
         years = list(co2_emissions['years'])
 
         chart_name = 'Cumulated carbon storage (Gt) vs years'
