@@ -141,18 +141,19 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         namespaced_input_dict = {
             f'{self.name}.{self.model_name}.{key}': value for key, value in self.input_dict.items()}
         self.ee.load_study_from_input_dict(namespaced_input_dict)
-
-        disc = self.ee.root_process.proxy_disciplines[0]
+        self.ee.execute()
+        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.energy_investment',
                                                                           f'{self.name}.{self.model_name}.ccs_percentage'],
                                       outputs=[
             f'{self.name}.{self.model_name}.Energy.energy_investment',
             f'{self.name}.{self.model_name}.ccs_investment'],
+                                      input_data = disc.local_data,
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_energy_invest_or_ccs_disc.pkl'))
 
         self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
+            succeed, msg=f"Wrong gradient")
 
     def test_04_ccs_invest_disc(self):
 
@@ -207,16 +208,19 @@ class TestEnergyorCCSInvest(unittest.TestCase):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+
         namespaced_input_dict = {
             f'{self.name}.{self.model_name}.{key}': value for key, value in self.input_dict.items()}
         self.ee.load_study_from_input_dict(namespaced_input_dict)
+        self.ee.execute()
         ccs_list = [CarbonCapture.name, CarbonStorage.name]
-        disc = self.ee.root_process.proxy_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.ccs_investment',
                                                                           f'{self.name}.{self.model_name}.invest_ccs_mix'],
                                       outputs=[
             f'{self.name}.{self.model_name}.{ccs}.invest_level' for ccs in ccs_list],
+            input_data = disc.local_data,
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_invest_ccs_disc.pkl'))
         self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
+            succeed, msg=f"Wrong gradient")

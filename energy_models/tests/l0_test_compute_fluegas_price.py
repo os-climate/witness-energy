@@ -120,8 +120,9 @@ class FlueGasRatioTestCase(unittest.TestCase):
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production, }
         self.ee.load_study_from_input_dict(inputs_dict)
+        self.ee.execute()
 
-        disc_techno = self.ee.root_process.proxy_disciplines[0]
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.electricity.CoalGen.techno_production',
                                                                                  f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_production',
@@ -130,8 +131,9 @@ class FlueGasRatioTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}.flue_gas_mean',
             f'{self.name}.{self.model_name}.flue_gas_production',
             f'{self.name}.{self.model_name}.flue_gas_prod_ratio'],
+            input_data = disc_techno.local_data,
             dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_fluegas_discipline.pkl'))
 
         self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc_techno.get_disc_full_name()}")
+            succeed, msg=f"Wrong gradient")

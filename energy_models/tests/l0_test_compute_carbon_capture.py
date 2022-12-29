@@ -131,13 +131,15 @@ class CarbonCaptureTestCase(unittest.TestCase):
         data_out = disc_techno.get_data_out()
         output_keys = [disc_techno.get_var_full_name(key, data_out)
                        for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
-        succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys,
+        self.ee.execute()
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys, input_data = disc_techno.local_data,
                                              outputs=output_keys,
                                              load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                                 f'jacobian_carbon_capture_discipline.pkl'))
 
         self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc_techno.get_disc_full_name()}")
+            succeed, msg=f"Wrong gradient")
 
     def test_03_carbon_capture_discipline_limited(self):
 
@@ -225,7 +227,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
                                                                 f'jacobian_carbon_capture_discipline_limited.pkl'))
 
         self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc_techno.get_disc_full_name()}")
+            succeed, msg=f"Wrong gradient")
 
 
 if '__main__' == __name__:

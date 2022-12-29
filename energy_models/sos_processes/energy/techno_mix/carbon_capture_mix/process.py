@@ -36,7 +36,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         EnergyProcessBuilder.__init__(self, ee)
         self.techno_list = TECHNOLOGIES_LIST
         self.prefix_name = 'EnergyMix'
-
+        self.associate_namespace = True
     def get_builders(self):
 
         ns_study = self.ee.study_name
