@@ -1312,7 +1312,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{name}.EnergyMix')[0]
 
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_agriculture_mix.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step',

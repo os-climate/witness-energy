@@ -152,7 +152,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             }
 
             builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict, associate_namespace=True)
+                mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_invest)
         else:
             raise Exception(

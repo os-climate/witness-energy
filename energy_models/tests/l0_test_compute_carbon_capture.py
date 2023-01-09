@@ -213,15 +213,16 @@ class CarbonCaptureTestCase(unittest.TestCase):
         inputs_dict['Test.EnergyMix.carbon_capture.flue_gas_capture.CalciumLooping.techno_production'][
             'carbon_capture (Mt)'] *= 5.0
         self.ee.load_study_from_input_dict(inputs_dict)
-
+        self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0]
-        data_in = disc_techno._data_in
+        data_in = disc_techno.get_data_in()
         input_keys = [disc_techno.get_var_full_name(key, data_in)
                       for key in disc_techno.get_sosdisc_inputs() if data_in[key]['type'] == 'dataframe']
 
-        output_keys = [disc_techno.get_var_full_name(key, disc_techno._data_out)
+        output_keys = [disc_techno.get_var_full_name(key, disc_techno.get_data_out())
                        for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
-        succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys,
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        succeed = disc_techno.check_jacobian(derr_approx='complex_step', input_data = disc_techno.local_data, inputs=input_keys,
                                              outputs=output_keys,
                                              load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                                 f'jacobian_carbon_capture_discipline_limited.pkl'))

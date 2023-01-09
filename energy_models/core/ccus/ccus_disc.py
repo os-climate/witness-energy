@@ -117,7 +117,7 @@ class CCUS_Discipline(SoSWrapp):
 
             if year_start is not None and year_end is not None:
                 dynamic_inputs['co2_for_food'] = {
-                    'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame(columns=[f'{CO2.name} for food (Mt)']),
+                    'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame({'years': np.arange(year_start, year_end + 1), f'{CO2.name} for food (Mt)': 0.0}),
                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'}
 
         self.add_inputs(dynamic_inputs)
