@@ -23,7 +23,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 import numpy as np
 import pandas as pd
-from sostrades_core.execution_engine.sos_optim_scenario import SoSOptimScenario
+#from sostrades_core.execution_engine.sos_optim_scenario import SoSOptimScenario
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT

@@ -69,7 +69,7 @@ class TradesDiscipline(SoSWrapp):
                     inputs[f'{scenario}{ns_value_long.split(ns_value_short)[1]}.energy_production'] = {
                         'type': 'dataframe', 'unit': 'MWh', 'visibility': 'Shared', 'namespace': 'ns_scatter_scenario'}
 
-                self.add_inputs(inputs, clean_inputs=True)
+                self.add_inputs(inputs)
 
     def run(self):
 

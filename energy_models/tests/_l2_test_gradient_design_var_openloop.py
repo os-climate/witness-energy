@@ -81,7 +81,7 @@ class EnergyMixTestCase(AbstractJacobianUnittest):
             out, disc_design_var._data_out) for out in output_names]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
-                            discipline=disc_design_var, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc_design_var, step=1.0e-16, derr_approx='complex_step', threshold=1e-5, local_data = disc_design_var.local_data,
                             inputs=input_full_names,
                             outputs=output_full_names, parallel=True)
 
@@ -101,7 +101,7 @@ class EnergyMixTestCase(AbstractJacobianUnittest):
             inp, disc_open_loop._data_in) for inp in input_names]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
-                            discipline=disc_open_loop, step=1.0e-16, derr_approx='complex_step', threshold=1e-12,
+                            discipline=disc_open_loop, step=1.0e-16, derr_approx='complex_step', threshold=1e-12, local_data=disc_open_loop.local_data,
                             inputs=input_full_names,
                             outputs=[f'{self.name}.objective_lagrangian'], parallel=True)
 
@@ -140,7 +140,7 @@ class EnergyMixTestCase(AbstractJacobianUnittest):
             inp, disc_open_loop._data_in) for inp in input_names]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
-                            discipline=disc_open_loop, step=1.0e-16, derr_approx='complex_step', threshold=1e-12,
+                            discipline=disc_open_loop, step=1.0e-16, derr_approx='complex_step', threshold=1e-12,local_data=disc_open_loop.local_data,
                             inputs=input_full_names, outputs=[f'{self.name}.objective_lagrangian'], parallel=True)
 
     # def test_04_check_open_loop_gradient_until_2100(self):

@@ -81,7 +81,7 @@ class TestCheckJacobian(AbstractJacobianUnittest):
             mode_jac_keys, in_dict=True)
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_obj_dv_closed_loop.pkl',
-                            discipline=optim_disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-12,
+                            discipline=optim_disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-12,local_data=optim_disc.local_data,
                             inputs=jac_inputs['inputs'],
                             outputs=jac_inputs['outputs'],)
 

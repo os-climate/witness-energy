@@ -349,7 +349,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                          ]
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_obj_constraints_wrt_state_variables.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc.local_data,
                             inputs=inputs_names, outputs=outputs_names, parallel=self.parallel)
 
     def test_02_energy_mix_discipline_residual_vars_wrt_state_variables(self):
@@ -407,7 +407,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                          f'{name}.{model_name}.energy_CO2_emissions']
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_output_vs_design_vars.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc.local_data,
                             inputs=inputs_names, outputs=outputs_names, parallel=self.parallel)
 
     def test_03_gradient_energy_mix_with_open_loop(self):
@@ -469,7 +469,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         # np.set_printoptions(threshold=1000000)
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_open_loop_objectives_demand.pkl',
-                            discipline=disc_energy_mix, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc_energy_mix, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_energy_mix.local_data,
                             inputs=inputs_full_names, outputs=outputs_full_names, parallel=self.parallel)
 
 #         # check gradient of 'energy_production' output
@@ -569,7 +569,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
             [f'{name}.{model_name}.syngas.syngas_ratio'])
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_co2_emissions.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc.local_data,
                             inputs=inputs_names, outputs=[f'{name}.{model_name}.co2_emissions_needed_by_energy_mix',
                                                           f'{name}.{model_name}.carbon_capture_from_energy_mix'])
 
@@ -622,7 +622,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         outputs_names = [f'{name}.{model_name}.energy_mean_price']
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mean_price_energy_prices_production.pkl',
-                            discipline=disc, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,local_data=disc.local_data,
                             inputs=inputs_names, outputs=outputs_names, parallel=self.parallel)
 
     def test_06_energy_mix_all_outputs(self):
@@ -681,7 +681,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                              f'{name}.{model_name}.energy_prices_after_tax']
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_outputs.pkl',
-                            discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,local_data=disc.local_data,
                             inputs=inputs_names, outputs=energy_mix_output, parallel=self.parallel)
 
     def test_07_energy_mix_co2_tax(self):
@@ -723,7 +723,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                              f'{name}.{model_name}.energy_prices_after_tax']
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_co2_tax.pkl',
-                            discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,local_data=disc.local_data,
                             inputs=inputs_names, outputs=energy_mix_output, parallel=self.parallel)
 
     def test_08_energy_mix_gradients_exponential_limit(self):
@@ -840,7 +840,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                              f'{name}.{func_manager_name}.carbon_storage_constraint']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_outputs_limit.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-3,
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-3,local_data=disc.local_data,
                             inputs=inputs_names, outputs=energy_mix_output)
 
     def _test_09_energy_mix_gradients_cutoff(self):
@@ -981,7 +981,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
                              f'{name}.{func_manager_name}.carbon_storage_constraint']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_outputs_cutoff.pkl',
-                            discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,local_data=disc.local_data,
                             inputs=inputs_names, outputs=energy_mix_output, parallel=self.parallel)
 
     def test_10_energy_mix_demand_dataframe(self):
@@ -1022,7 +1022,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         energy_mix_output = [f'{name}.{model_name}.resources_demand']
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_demand_df.pkl',
-                            discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,local_data=disc.local_data,
                             inputs=inputs_names, outputs=energy_mix_output, parallel=self.parallel)
 
     def test_11_energy_mix_detailed_co2_emissions(self):
@@ -1071,7 +1071,7 @@ class EnergyMixJacobianTestCase(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_detailed_co2_emissions.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step',
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step',local_data=disc.local_data,
                             inputs=inputs_names,  outputs=[f'{name}.{model_name}.energy_production',
                                                            f'{name}.{model_name}.energy_CO2_emissions',
                                                            f'{name}.{model_name}.energy_mean_price',

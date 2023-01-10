@@ -92,7 +92,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
             f'{self.name}.EnergyMix.{energy}.energy_prices' for energy in output_columns]
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_price_test.pkl',
-                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
                             inputs=[f'{self.name}.EnergyMix.syngas.SMR.invest_level'], outputs=output_prices + [f'{self.name}.EnergyMix.energy_mean_price'], parallel=True)
 
     def test_02_check_gradient_price_vs_invests(self):
@@ -128,7 +128,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
             f'{self.name}.EnergyMix.{energy}.energy_prices' for energy in output_columns]
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_invest.pkl',
-                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
                             inputs=[
                                 f'{self.name}.EnergyMix.energy_investment'],
                             outputs=output_prices + [f'{self.name}.EnergyMix.energy_prices'], parallel=True)
@@ -180,7 +180,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
             f'{self.name}.EnergyMix.{energy}.CO2_emissions' for energy in output_columns[:-2]]
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_CO2_emissions.pkl',
-                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
                             inputs=[f'{self.name}.energy_CO2_emissions'],
                             outputs=output_prices + output_co2_emissions + output_hydrogen_prices + output_lf_prices +
                             [f'{self.name}.EnergyMix.energy_prices',
@@ -221,7 +221,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
                              f'{self.name}.FunctionManagerDisc.primary_energies_production', f'{self.name}.EnergyMix.CCS_price']
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_energymixoutputs_vs_energy_investment.pkl',
-                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
                             inputs=[
                                 f'{self.name}.EnergyMix.energy_investment'],
                             outputs=energy_mix_output, parallel=True)
@@ -299,7 +299,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
                     f'{usecase.study_name}.EnergyMix.{energy}.{techno}.techno_prices')
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_after_MDA_results.pkl',
-                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
                             inputs=[
                                 f'{self.name}.EnergyMix.energy_investment'],
                             outputs=energy_price_outputs + [f'{usecase.study_name}.EnergyMix.energy_mean_price'], parallel=True)
@@ -378,7 +378,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
                              f'{self.name}.FunctionManagerDisc.primary_energies_production', f'{self.name}.EnergyMix.CCS_price']
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_gradient_energymixoutputs_vs_energy_mixes.pkl',
-                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
                             inputs=input_full_names,
                             outputs=energy_mix_output, parallel=True)
 #
