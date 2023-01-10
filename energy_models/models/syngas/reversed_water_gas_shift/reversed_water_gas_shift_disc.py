@@ -112,7 +112,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
                }
     # -- add specific techno inputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
-
+    DESC_OUT = TechnoDiscipline.DESC_OUT
     # -- add specific techno outputs to this
 
     def init_execution(self):
@@ -125,10 +125,6 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
 
         TechnoDiscipline.run(self)
 
-        outputs_dict = {'syngas_ratio': np.array(
-            [self.techno_model.needed_syngas_ratio])}
-        # -- store outputs
-        self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice

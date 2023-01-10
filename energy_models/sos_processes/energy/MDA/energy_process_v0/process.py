@@ -55,7 +55,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             energy_builder_list = self.ee.factory.get_builder_from_process(
                 'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
                 techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline,
-                associate_namespace=True
+                associate_namespace=False
             )
 
             builder_list.extend(energy_builder_list)
@@ -77,7 +77,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             emissions_mod_dict = {
                 'consumptionco2': 'energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions_disc.ConsumptionCO2EmissionsDiscipline'}
         builder_emission_list = self.create_builder_list(
-            emissions_mod_dict, ns_dict=ns_dict, associate_namespace=True)
+            emissions_mod_dict, ns_dict=ns_dict, associate_namespace=False)
         builder_list.extend(builder_emission_list)
 
         # Add demand, energymix and resources discipline
@@ -87,10 +87,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                      }
 
         builder_other_list = self.create_builder_list(
-            mods_dict, ns_dict=ns_dict, associate_namespace=True)
+            mods_dict, ns_dict=ns_dict, associate_namespace=False)
         builder_list.extend(builder_other_list)
         chain_builders_resource = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'resources_process', associate_namespace=True)
+            'climateeconomics.sos_processes.iam.witness', 'resources_process', associate_namespace=False)
         builder_list.extend(chain_builders_resource)
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
@@ -104,14 +104,14 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             }
 
             builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict, associate_namespace=True)
+                mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_invest)
 
             mods_dict = {
                 energy_mix: 'energy_models.core.investments.disciplines.energy_or_ccs_invest_disc.InvestCCSorEnergyDiscipline',
             }
 
-            builder_invest = self.create_builder_list(mods_dict, ns_dict={}, associate_namespace=True)
+            builder_invest = self.create_builder_list(mods_dict, ns_dict={}, associate_namespace=False)
             builder_list.extend(builder_invest)
 
             ns_dict = {'ns_public': f'{ns_study}',
@@ -121,7 +121,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             }
 
             builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict, associate_namespace=True)
+                mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_invest)
 
         elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
@@ -135,7 +135,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             }
 
             builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict, associate_namespace=True)
+                mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_invest)
 
         elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
@@ -167,7 +167,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
                 proc_builder.setup_process(
                     techno_list=self.techno_dict[ccs_name]['value'], invest_discipline=self.invest_discipline,
-                    associate_namespace=True,
+                    associate_namespace=False,
                 )
             energy_builder_list = proc_builder.get_builders()
             builder_list.extend(energy_builder_list)
@@ -191,7 +191,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 f'{energy_mix}.{FuelDiscipline.name}': 'energy_models.core.stream_type.energy_disciplines.fuel_disc.FuelDiscipline',
             }
 
-            builder_fuel = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=True)
+            builder_fuel = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_fuel)
 
         # For now only electricity demand constraint is available in the energy
@@ -202,6 +202,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             }
 
             builder_demand = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict, associate_namespace=True)
+                mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_demand)
         return builder_list
