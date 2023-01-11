@@ -31,6 +31,7 @@ class EnergyProcessBuilder(BaseProcessBuilder):
         BaseProcessBuilder.__init__(self, ee)
         self.techno_list = None
         self.invest_discipline = INVEST_DISCIPLINE_DEFAULT
+        self.associate_namespace = False
 
     def setup_process(self, techno_list, invest_discipline=INVEST_DISCIPLINE_DEFAULT, associate_namespace=False):
         self.techno_list = techno_list
