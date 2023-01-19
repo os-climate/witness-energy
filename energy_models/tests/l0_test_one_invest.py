@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 from energy_models.core.investments.one_invest import OneInvest
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestOneInvest(unittest.TestCase):
@@ -183,8 +183,8 @@ class TestOneInvest(unittest.TestCase):
                        f'{self.name}.energy_investment': self.energy_investment}
 
         self.ee.load_study_from_input_dict(inputs_dict)
-
-        disc = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         all_technos_list = [
             f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in inputs_dict[f'{self.name}.{energy}.technologies_list']]
@@ -192,11 +192,11 @@ class TestOneInvest(unittest.TestCase):
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.energy_investment',
                                                                           f'{self.name}.{self.model_name}.invest_mix'],
                                       outputs=[
-            f'{self.name}.{techno}.invest_level' for techno in all_technos_list],
+            f'{self.name}.{techno}.invest_level' for techno in all_technos_list], input_data=disc.local_data,
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_all_invest_disc.pkl'))
         self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
+            succeed, msg=f"Wrong gradient")
 
 
 if '__main__' == __name__:

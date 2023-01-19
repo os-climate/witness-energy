@@ -43,8 +43,8 @@ from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from copy import deepcopy
-from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 

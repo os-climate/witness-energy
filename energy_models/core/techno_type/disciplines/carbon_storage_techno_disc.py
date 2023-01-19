@@ -18,8 +18,8 @@ import pandas as pd
 
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
 
@@ -140,7 +140,7 @@ class CSTechnoDiscipline(TechnoDiscipline):
         new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/tCO2]', [year_start, year_end], [minimum, maximum],
                                              chart_name=chart_name)
 
-        if 'percentage_resource' in self._data_in:
+        if 'percentage_resource' in self.get_data_in():
             percentage_resource = self.get_sosdisc_inputs(
                 'percentage_resource')
             new_chart.annotation_upper_left = {

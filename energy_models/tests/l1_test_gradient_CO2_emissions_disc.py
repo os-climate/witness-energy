@@ -18,8 +18,8 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 import pickle
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study
@@ -124,7 +124,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
+            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
         coupled_inputs = [
             f'{self.name}.{self.model_name}.{energy}.CO2_per_use' for energy in self.energy_list]
@@ -135,6 +135,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data = disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
@@ -183,7 +184,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
+            f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
         coupled_inputs = [
             f'{self.name}.{energy}.energy_production' for energy in self.ccs_list]
@@ -198,7 +199,8 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_prodcons.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs,
+                            local_data = disc.local_data)
 
 
 if '__main__' == __name__:

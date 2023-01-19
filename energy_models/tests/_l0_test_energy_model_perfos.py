@@ -17,7 +17,7 @@ import unittest
 from time import sleep
 from shutil import rmtree
 from pathlib import Path
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
 import cProfile
 import pstats

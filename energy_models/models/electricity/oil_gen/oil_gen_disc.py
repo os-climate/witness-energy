@@ -19,7 +19,7 @@ import numpy as np
 from energy_models.models.electricity.oil_gen.oil_gen import OilGen
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 

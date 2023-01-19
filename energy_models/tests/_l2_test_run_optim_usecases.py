@@ -17,7 +17,7 @@ limitations under the License.
 import pprint
 import unittest
 
-from sos_trades_core.sos_processes.run_all_usecases import run_optim_usecases
+from sostrades_core.sos_processes.run_all_usecases import run_optim_usecases
 
 
 class TestUseCases(unittest.TestCase):

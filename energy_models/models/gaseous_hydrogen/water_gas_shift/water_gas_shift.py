@@ -27,7 +27,7 @@ from energy_models.core.stream_type.energy_models.syngas import compute_molar_ma
 from energy_models.core.stream_type.energy_models.syngas import compute_calorific_value as compute_syngas_calorific_value
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
 
 
 class WGS(GaseousHydrogenTechno):

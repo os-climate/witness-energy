@@ -17,8 +17,8 @@ import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
 
@@ -108,7 +108,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
                     instanciated_charts.append(new_chart)
 
         if 'Technology mix' in charts:
-            new_charts = self.get_chart_technology_mix(years_list)
+            new_charts = self.get_chart_technology_mix( years_list)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)

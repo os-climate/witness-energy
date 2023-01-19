@@ -19,7 +19,7 @@ import numpy as np
 
 from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import BiomassDryTechnoDiscipline
 from energy_models.models.biomass_dry.managed_wood.managed_wood import ManagedWood
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 
 
 class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
@@ -219,7 +219,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self,  filters=None):
         instanciated_charts = []
         charts = []
         price_unit_list = []

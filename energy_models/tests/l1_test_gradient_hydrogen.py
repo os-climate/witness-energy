@@ -19,10 +19,10 @@ import pandas as pd
 import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
     get_static_prices
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 import pickle
@@ -318,12 +318,11 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-
-        disc_techno = self.ee.root_process.sos_disciplines[0]
         self.ee.execute()
-        print('---------')
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -378,14 +377,15 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
 
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         np.set_printoptions(100)
         # np.set_printoptions(threshold=50)
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',local_data = disc_techno.local_data,
                             inputs=[
                                 f'{self.name}.{self.model_name}.invest_level',
                                 f'{self.name}.energy_prices',
@@ -451,10 +451,12 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1.0e-15, derr_approx='complex_step',local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -505,10 +507,12 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -559,10 +563,12 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -602,19 +608,13 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': 2020,
                        f'{self.name}.year_end': 2050,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.technologies_list': ['WaterGasShift', 'Electrolysis', 'PlasmaCracking'],
+                       f'{self.name}.technologies_list': ['WaterGasShift', 'PlasmaCracking'],
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption': self.smr_consumption,
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption_woratio': self.smr_consumption,
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_production': self.smr_production,
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_prices': self.smr_techno_prices,
                        f'{self.name}.{self.model_name}.WaterGasShift.CO2_emissions': self.smr_carbon_emissions,
                        f'{self.name}.{self.model_name}.WaterGasShift.land_use_required': self.land_use_required_WaterGasShift,
-                       f'{self.name}.{self.model_name}.Electrolysis.techno_consumption': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.Electrolysis.techno_consumption_woratio': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.Electrolysis.techno_production': self.electrolysis_production,
-                       f'{self.name}.{self.model_name}.Electrolysis.techno_prices': self.electrolysis_techno_prices,
-                       f'{self.name}.{self.model_name}.Electrolysis.CO2_emissions': self.electrolysis_carbon_emissions,
-                       f'{self.name}.{self.model_name}.Electrolysis.land_use_required': self.land_use_required_Electrolysis,
                        f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption': self.plasmacracking_consumption,
                        f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption_woratio': self.plasmacracking_consumption,
                        f'{self.name}.{self.model_name}.PlasmaCracking.techno_production': self.plasmacracking_production,
@@ -627,21 +627,19 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step',
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step',local_data = disc.local_data,
                             inputs=[f'{self.name}.{self.model_name}.WaterGasShift.techno_prices',
-                                    f'{self.name}.{self.model_name}.Electrolysis.techno_prices',
                                     f'{self.name}.{self.model_name}.PlasmaCracking.techno_prices',
                                     f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption',
-                                    f'{self.name}.{self.model_name}.Electrolysis.techno_consumption',
                                     f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption',
                                     f'{self.name}.{self.model_name}.WaterGasShift.techno_production',
-                                    f'{self.name}.{self.model_name}.Electrolysis.techno_production',
                                     f'{self.name}.{self.model_name}.PlasmaCracking.techno_production',
                                     f'{self.name}.{self.model_name}.WaterGasShift.CO2_emissions',
-                                    f'{self.name}.{self.model_name}.Electrolysis.CO2_emissions',
                                     f'{self.name}.{self.model_name}.PlasmaCracking.CO2_emissions'],
                             outputs=[f'{self.name}.{self.model_name}.techno_mix',
                                      f'{self.name}.{self.model_name}.energy_prices',
@@ -740,10 +738,12 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN=True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}_negative.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -815,10 +815,10 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0]
+            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 

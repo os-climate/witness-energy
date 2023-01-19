@@ -18,8 +18,8 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.study_manager.study_manager import StudyManager
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,\

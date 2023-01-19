@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift import WGS
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
@@ -253,7 +253,7 @@ class WGSPriceTestCase(unittest.TestCase):
 #         for graph in graph_list:
 #             graph.to_plotly().show()
 
-#         disc_techno = self.ee.root_process.sos_disciplines[0]
+#         disc_techno = self.ee.root_process.proxy_disciplines[0]
 #
 #         disc_techno.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.invest_level',
 #                                                                        f'{self.name}.energy_prices',

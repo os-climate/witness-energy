@@ -21,7 +21,7 @@ import numpy as np
 
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
 from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem import ElectrolysisPEM
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 
 

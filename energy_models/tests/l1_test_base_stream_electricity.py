@@ -18,9 +18,9 @@ import pandas as pd
 import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class BaseStreamTestCase(AbstractJacobianUnittest):
@@ -132,7 +132,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        # self.ee.execute()
+        self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
             f'{self.name}.{self.model_name}.energy_prices')
@@ -145,10 +145,10 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.electricity')[0]
+            f'{self.name}.electricity')[0].mdo_discipline_wrapp.mdo_discipline
         inputs_name = ['Test.electricity.GasTurbine.techno_production',
                        'Test.electricity.GasTurbine.techno_consumption', 'Test.electricity.Hydropower.techno_production', 'Test.electricity.Hydropower.techno_consumption']
         outputs_name = ['Test.prod_hydropower_constraint']
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_electricity_stream.pkl',
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_electricity_stream.pkl', local_data = disc.local_data,
                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
                             inputs=inputs_name, outputs=outputs_name)

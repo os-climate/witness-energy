@@ -19,9 +19,9 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
@@ -54,7 +54,7 @@ def get_static_prices(years):
     return pd.DataFrame(resources_prices_default_dict)
 
 
-class ResourcesDisc(SoSDiscipline):
+class ResourcesDisc(SoSWrapp):
 
     # ontology information
     _ontology_data = {
@@ -87,14 +87,14 @@ class ResourcesDisc(SoSDiscipline):
 
     DESC_OUT = {
 
-        'resources_price': {'type': 'dataframe', 'unit': '[$/t]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
-        'resources_CO2_emissions': {'type': 'dataframe', 'unit': '[kgCO2/kg]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'}
+        'resources_price': {'type': 'dataframe', 'unit': '[$/t]', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
+        'resources_CO2_emissions': {'type': 'dataframe', 'unit': '[kgCO2/kg]', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'}
     }
 
     def setup_sos_disciplines(self):
 
-        if self._data_in is not None:
-            if 'year_start' in self._data_in:
+        if self.get_data_in() is not None:
+            if 'year_start' in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs(
                     ['year_start', 'year_end'])
                 years = np.arange(year_start, year_end + 1)

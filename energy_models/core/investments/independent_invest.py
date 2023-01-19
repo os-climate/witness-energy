@@ -18,9 +18,9 @@ from .base_invest import BaseInvest
 import pandas as pd
 import numpy as np
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
-from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum
+from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 
 
 class IndependentInvest(BaseInvest):

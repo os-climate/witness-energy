@@ -17,8 +17,8 @@ limitations under the License.
 import numpy as np
 
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
 
@@ -59,7 +59,7 @@ class EnergyDiscipline(StreamDiscipline):
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
-        if 'technologies_list' in self._data_in:
+        if 'technologies_list' in self.get_data_in():
             techno_list = self.get_sosdisc_inputs('technologies_list')
             self.update_default_technology_list()
             if techno_list is not None:
@@ -93,7 +93,7 @@ class EnergyDiscipline(StreamDiscipline):
         Set the default value of the technology list with discipline under the energy which are in possible values
         '''
         my_name = self.get_disc_full_name()
-        possible_technos = self._data_in['technologies_list'][self.POSSIBLE_VALUES]
+        possible_technos = self.get_data_in()['technologies_list'][self.POSSIBLE_VALUES]
         found_technos_list = self.dm.get_discipline_names_with_starting_name(
             my_name)
         short_technos_list = [name.split(

@@ -18,11 +18,11 @@ import numpy as np
 
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_disciplines.liquid_fuel_disc import LiquidFuelDiscipline
@@ -32,7 +32,7 @@ from energy_models.core.stream_type.energy_disciplines.ethanol_disc import Ethan
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class FuelDiscipline(SoSDiscipline):
+class FuelDiscipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'Fuel Energy Model',
@@ -59,20 +59,20 @@ class FuelDiscipline(SoSDiscipline):
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                                    'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_public'},
                'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                      'namespace': 'ns_public'},
                'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-',
-                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                      'namespace': 'ns_public', 'user_level': 2},
                'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-',
-                                                    'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_public', 'user_level': 2},
                'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                'possible_values': EnergyMix.energy_list,
-                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                                'editable': False, 'structuring': True},
                }
 
@@ -90,7 +90,7 @@ class FuelDiscipline(SoSDiscipline):
 
         dynamic_inputs = {}
 
-        if 'energy_list' in self._data_in:
+        if 'energy_list' in self.get_data_in():
             energy_mix_list = self.get_sosdisc_inputs('energy_list')
             if energy_mix_list is not None:
                 self.energy_list = list(
@@ -98,27 +98,27 @@ class FuelDiscipline(SoSDiscipline):
                 for energy in self.energy_list:
                     dynamic_inputs[f'{energy}.energy_prices'] = {'type': 'dataframe',
                                                                  'unit': '$/MWh',
-                                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                  'namespace': 'ns_energy_mix'
                                                                  }
                     dynamic_inputs[f'{energy}.energy_detailed_techno_prices'] = {'type': 'dataframe',
                                                                                  'unit': '$/MWh',
-                                                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                  'namespace': 'ns_energy_mix'
                                                                                  }
                     dynamic_inputs[f'{energy}.energy_consumption'] = {'type': 'dataframe',
                                                                       'unit': 'PWh',
-                                                                      'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                       'namespace': 'ns_energy_mix'
                                                                       }
                     dynamic_inputs[f'{energy}.energy_production'] = {'type': 'dataframe',
                                                                      'unit': 'PWh',
-                                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                      'namespace': 'ns_energy_mix'
                                                                      }
                     dynamic_inputs[f'{energy}.energy_production_detailed'] = {'type': 'dataframe',
                                                                               'unit': 'TWh',
-                                                                              'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                              'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                               'namespace': 'ns_energy_mix'
                                                                               }
 

@@ -16,15 +16,15 @@ limitations under the License.
 
 import numpy as np
 
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class StreamDiscipline(SoSDiscipline):
+class StreamDiscipline(SoSWrapp):
 
     # ontology information
     _ontology_data = {
@@ -43,10 +43,10 @@ class StreamDiscipline(SoSDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
-        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2}
+        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2}
     }
 
     # -- Here are the results of concatenation of each techno prices,consumption and production
@@ -66,15 +66,15 @@ class StreamDiscipline(SoSDiscipline):
     _maturity = 'Research'
     energy_name = 'stream'
 
-    def __init__(self, sos_name, ee):
+    def __init__(self, sos_name):
 
-        SoSDiscipline.__init__(self, sos_name, ee)
+        SoSWrapp.__init__(self, sos_name)
         self.energy_model = None
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'technologies_list' in self._data_in:
+        if 'technologies_list' in self.get_data_in():
             techno_list = self.get_sosdisc_inputs('technologies_list')
             if techno_list is not None:
                 for techno in techno_list:

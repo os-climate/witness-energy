@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 from energy_models.models.electricity.hydropower.hydropower_disc import HydropowerDiscipline
 from energy_models.models.electricity.hydropower.hydropower import Hydropower
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.electricity import Electricity

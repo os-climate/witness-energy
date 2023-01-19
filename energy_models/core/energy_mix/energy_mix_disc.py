@@ -20,14 +20,14 @@ import pandas as pd
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
     AgricultureMixDiscipline
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
@@ -36,13 +36,13 @@ from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidH
 from copy import deepcopy
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
     compute_func_with_exp_min
 from plotly import graph_objects as go
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-from sos_trades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
-from sos_trades_core.tools.cst_manager.func_manager_common import get_dsmooth_dvariable, \
+from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
+from sostrades_core.tools.cst_manager.func_manager_common import get_dsmooth_dvariable, \
     get_dsmooth_dvariable_vect
 from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
@@ -50,7 +50,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class Energy_Mix_Discipline(SoSDiscipline):
+class Energy_Mix_Discipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'Energy Mix Model',
@@ -83,60 +83,60 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
     DESC_IN = {'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                'possible_values': EnergyMix.energy_list,
-                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                                'editable': False, 'structuring': True},
                'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                             'possible_values': EnergyMix.ccs_list,
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                             'editable': False, 'structuring': True},
                'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
-                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
+                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
                'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8,
-                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'normalization_value_demand_constraints': {'type': 'float', 'default': 1000.0, 'unit': 'Twh',
-                                                          'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                           'namespace': 'ns_ref'},
-               'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+               'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                              'namespace': 'ns_energy_study',
                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                       'CO2_tax': ('float', None, True)},
                              'dataframe_edition_locked': False},
                'minimum_energy_production': {'type': 'float', 'default': 1e4,
-                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public',
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
                                              'unit': 'TWh'},
                'total_prod_minus_min_prod_constraint_ref': {'type': 'float', 'default': 1e4, 'unit': 'Twh',
-                                                            'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                             'namespace': 'ns_ref'},
                'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
                'production_threshold': {'type': 'float', 'default': 1e-3, 'unit': 'Twh'},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                                    'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_public'},
                'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                      'namespace': 'ns_public'},
                'solid_fuel_elec_percentage': {'type': 'float', 'default': 0.75, 'unit': '-', 'user_level': 2,
-                                              'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'solid_fuel_elec_constraint_ref': {'type': 'float', 'default': 10000., 'unit': 'Twh', 'user_level': 2,
-                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'liquid_hydrogen_percentage': {'type': 'array', 'user_level': 2, 'unit': '%',
-                                              'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'unit': 'Twh', 'user_level': 2,
-                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'syngas_prod_ref': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
-                                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'syngas_prod_constraint_limit': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
-                                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
 
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '-', 'user_level': 2,
-                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%',
                                           'range': [0., 100.]},
                # WIP is_dev to remove once its validated on dev processes
                'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
-                          'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
+                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
 
     DESC_OUT = {
         'energy_prices': {'type': 'dataframe', 'unit': '$/MWh'},
@@ -149,41 +149,41 @@ class Energy_Mix_Discipline(SoSDiscipline):
         'energy_production_brut_detailed': {'type': 'dataframe', 'unit': 'TWh'},
         'energy_mix': {'type': 'dataframe', 'unit': '%'},
         'energy_prices_after_tax': {'type': 'dataframe', 'unit': '$/MWh'},
-        'energy_production_objective': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'energy_production_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_functions'},
         'primary_energies_production': {'type': 'dataframe', 'unit': 'TWh',
-                                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'land_demand_df': {'type': 'dataframe', 'unit': 'Gha'},
         'energy_mean_price': {'type': 'dataframe', 'unit': '$/MWh'},
         'production_energy_net_positive': {'type': 'dataframe', 'unit': 'TWh'},
         EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: {
             'type': 'dataframe', 'unit': 'TWh',
-            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         EnergyMix.CONSTRAINT_PROD_H2_LIQUID: {
             'type': 'dataframe', 'unit': 'TWh',
-            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'
+            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
         },
         EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC: {
             'type': 'dataframe', 'unit': 'TWh',
-            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'
+            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
         },
 
         EnergyMix.SYNGAS_PROD_OBJECTIVE: {'type': 'array', 'unit': 'TWh',
-                                          'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         EnergyMix.SYNGAS_PROD_CONSTRAINT: {'type': 'array', 'unit': 'TWh',
-                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
-        'all_streams_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'all_streams_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                      'namespace': 'ns_energy'},
-        'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_functions'},
-        'resources_demand': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'resources_demand': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                              'namespace': 'ns_resource', 'unit': 'Mt'},
-        'resources_demand_woratio': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'resources_demand_woratio': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                      'namespace': 'ns_resource', 'unit': 'Mt'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
-                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
-                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
     }
 
     energy_name = EnergyMix.name
@@ -210,10 +210,10 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
         dynamic_inputs = {}
         dynamic_outputs = {}
-        if 'is_dev' in self._data_in:
+        if 'is_dev' in self.get_data_in():
             is_dev = self.get_sosdisc_inputs('is_dev')
 
-        if 'energy_list' in self._data_in:
+        if 'energy_list' in self.get_data_in():
             energy_list = self.get_sosdisc_inputs('energy_list')
             self.update_default_energy_list()
             if energy_list is not None:
@@ -221,19 +221,19 @@ class Energy_Mix_Discipline(SoSDiscipline):
                     if energy == BiomassDry.name and is_dev == True:
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_consumption'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_consumption_woratio'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_production'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_prices'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.land_use_required'] = {
                             'type': 'dataframe', 'unit': 'Gha', 'namespace': 'ns_witness',
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                            'visibility': SoSWrapp.SHARED_VISIBILITY}
                     else:
                         dynamic_inputs[f'{energy}.energy_consumption'] = {
                             'type': 'dataframe', 'unit': 'PWh'}
@@ -249,14 +249,14 @@ class Energy_Mix_Discipline(SoSDiscipline):
                         if energy == BiomassDry.name and is_dev == True:
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_emissions'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness',
-                                'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                                'visibility': SoSWrapp.SHARED_VISIBILITY}
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_per_use'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness',
-                                'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                                'visibility': SoSWrapp.SHARED_VISIBILITY}
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.losses_percentage'] = {
                                 'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy],
                                 'range': [0., 100.], 'namespace': 'ns_witness',
-                                'visibility': SoSDiscipline.SHARED_VISIBILITY}
+                                'visibility': SoSWrapp.SHARED_VISIBILITY}
                         else:
                             dynamic_inputs[f'{energy}.CO2_emissions'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh'}
@@ -268,27 +268,27 @@ class Energy_Mix_Discipline(SoSDiscipline):
 
                 if 'syngas' in energy_list:
                     dynamic_inputs[f'syngas_ratio'] = {
-                        'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas',
+                        'type': 'array', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_syngas',
                         'unit': '%'}
 
-            if 'ccs_list' in self._data_in:
+            if 'ccs_list' in self.get_data_in():
                 ccs_list = self.get_sosdisc_inputs('ccs_list')
                 if ccs_list is not None:
                     for ccs_name in ccs_list:
                         dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
                         dynamic_inputs[f'{ccs_name}.energy_consumption_woratio'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
                         dynamic_inputs[f'{ccs_name}.energy_production'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
                         dynamic_inputs[f'{ccs_name}.energy_prices'] = {
-                            'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
                         dynamic_inputs[f'{ccs_name}.land_use_required'] = {
-                            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs'}
 
         self.update_default_with_years()
@@ -300,7 +300,7 @@ class Energy_Mix_Discipline(SoSDiscipline):
         '''
         Update default variables knowing the year start and the year end 
         '''
-        if 'year_start' in self._data_in:
+        if 'year_start' in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)

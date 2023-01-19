@@ -21,7 +21,7 @@ from os.path import join, dirname
 
 from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import FischerTropschDiscipline
 from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch import FischerTropsch
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_prices,\
     get_static_CO2_emissions
 
@@ -283,9 +283,9 @@ class FTPriceTestCase(unittest.TestCase):
 
         self.ee2.execute()
         ratio = self.ee.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[
-            0].techno_model.applied_ratio['applied_ratio'].values
+            0].mdo_discipline_wrapp.wrapper.techno_model.applied_ratio['applied_ratio'].values
         ratio2 = self.ee2.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[
-            0].techno_model.applied_ratio['applied_ratio'].values
+            0].mdo_discipline_wrapp.wrapper.techno_model.applied_ratio['applied_ratio'].values
         techno_production_with_ratio = self.ee2.dm.get_value(
             f'{self.name}.{self.model_name}.techno_production')
 

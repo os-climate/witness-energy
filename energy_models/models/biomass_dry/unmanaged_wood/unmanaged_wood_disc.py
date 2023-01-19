@@ -19,7 +19,7 @@ import numpy as np
 
 from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import BiomassDryTechnoDiscipline
 from energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood import UnmanagedWood
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 
 
 class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):

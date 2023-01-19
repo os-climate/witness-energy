@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.demand.energy_demand import EnergyDemand
 from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 

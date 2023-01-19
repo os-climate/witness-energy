@@ -19,19 +19,19 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, get_static_prices
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from copy import deepcopy
 from plotly import graph_objects as go
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import InstantiatedPlotlyNativeChart
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import InstantiatedPlotlyNativeChart
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class TechnoDiscipline(SoSDiscipline):
+class TechnoDiscipline(SoSWrapp):
 
     # ontology information
     _ontology_data = {
@@ -57,23 +57,23 @@ class TechnoDiscipline(SoSDiscipline):
                                                   'invest': ('float', None, True)},
                          'dataframe_edition_locked': False
                          },
-        'energy_prices': {'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
-        'energy_CO2_emissions': {'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+        'energy_prices': {'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+        'energy_CO2_emissions': {'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'margin': {'type': 'dataframe', 'unit': '%'},
-        'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+        'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                       'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                'CO2_tax': ('float',  None, True)},
                       'dataframe_edition_locked': False},
-        'resources_price': {'type': 'dataframe', 'unit': '$/t', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
-        'resources_CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kg', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+        'resources_price': {'type': 'dataframe', 'unit': '$/t', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+        'resources_CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kg', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
         'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
-        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'smooth_type': {'type': 'string', 'default': 'cons_smooth_max', 'possible_values': ['smooth_max', 'soft_max', 'cons_smooth_max'],
-                        'user_level': 2, 'structuring': False, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'is_apply_ratio': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'is_stream_demand': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'is_apply_resource_ratio': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
+                        'user_level': 2, 'structuring': False, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'is_apply_ratio': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'is_stream_demand': {'type': 'bool', 'default': True, 'user_level': 2, 'structuring': True, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'is_apply_resource_ratio': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'}}
 
     # -- Change output that are not clear, transform to dataframe since r_* is price
     DESC_OUT = {
@@ -99,18 +99,18 @@ class TechnoDiscipline(SoSDiscipline):
     techno_name = 'Fill techno name'
     energy_name = 'Fill the energy name for this techno'
 
-    def __init__(self, sos_name, ee):
+    def __init__(self, sos_name):
 
-        SoSDiscipline.__init__(self, sos_name, ee)
+        SoSWrapp.__init__(self, sos_name)
         self.techno_model = None
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
-        if self._data_in is not None:
+        if self.get_data_in() is not None:
 
             self.update_default_dataframes_with_years()
 
-            if 'is_apply_ratio' in self._data_in:
+            if 'is_apply_ratio' in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs(
                     ['year_start', 'year_end'])
                 years = np.arange(year_start, year_end + 1)
@@ -122,7 +122,7 @@ class TechnoDiscipline(SoSDiscipline):
                         demand_ratio_dict)
                     dynamic_inputs['all_streams_demand_ratio'] = {'type': 'dataframe', 'unit': '-',
                                                                   'default': all_streams_demand_ratio_default,
-                                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                   'namespace': 'ns_energy'}
                 if self.get_sosdisc_inputs('is_apply_resource_ratio'):
                     resource_ratio_dict = dict(
@@ -132,7 +132,7 @@ class TechnoDiscipline(SoSDiscipline):
                         resource_ratio_dict)
                     dynamic_inputs[ResourceMixModel.RATIO_USABLE_DEMAND] = {'type': 'dataframe', 'unit': '-',
                                                                             'default': all_resource_ratio_usable_demand_default,
-                                                                            'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                             'namespace': 'ns_resource'}
             self.add_inputs(dynamic_inputs)
 
@@ -140,7 +140,7 @@ class TechnoDiscipline(SoSDiscipline):
         '''
         Update all default dataframes with years 
         '''
-        if 'year_start' in self._data_in:
+        if 'year_start' in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
@@ -632,7 +632,7 @@ class TechnoDiscipline(SoSDiscipline):
         new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/MWh]', [year_start, year_end], [minimum, maximum],
                                              chart_name=chart_name)
 
-        if 'percentage_resource' in self._data_in:
+        if 'percentage_resource' in self.get_data_in():
             percentage_resource = self.get_sosdisc_inputs(
                 'percentage_resource')
             new_chart.annotation_upper_left = {
@@ -700,7 +700,7 @@ class TechnoDiscipline(SoSDiscipline):
         new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/t]', [year_start, year_end], [minimum, maximum],
                                              chart_name=chart_name)
 
-        if 'percentage_resource' in self._data_in:
+        if 'percentage_resource' in self.get_data_in():
             percentage_resource = self.get_sosdisc_inputs(
                 'percentage_resource')
             new_chart.annotation_upper_left = {

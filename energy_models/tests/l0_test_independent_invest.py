@@ -19,9 +19,9 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 from energy_models.core.investments.independent_invest import IndependentInvest
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum
 
 
 class TestIndependentInvest(unittest.TestCase):
@@ -315,8 +315,8 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.crop_investment': self.crop_invest_df}
 
         self.ee.load_study_from_input_dict(inputs_dict)
-
-        disc = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         all_technos_list = [
             f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in inputs_dict[f'{self.name}.{energy}.technologies_list']]
 
@@ -330,10 +330,11 @@ class TestIndependentInvest(unittest.TestCase):
                                                                                     f'{self.name}.invest_sum_cons',
                                                                                     f'{self.name}.invest_sum_cons_dc',
                                                                                     f'{self.name}.invest_sum_eq_cons'],
+                                      input_data = disc.local_data,
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_independent_invest_disc.pkl'))
         self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
+            succeed, msg=f"Wrong gradient")
 
 
 if '__main__' == __name__:

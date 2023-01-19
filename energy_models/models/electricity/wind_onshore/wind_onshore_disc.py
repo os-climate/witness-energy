@@ -19,7 +19,7 @@ import numpy as np
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
 from energy_models.models.electricity.wind_onshore.wind_onshore import WindOnshore
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 
 

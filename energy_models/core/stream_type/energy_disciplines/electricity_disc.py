@@ -15,16 +15,16 @@ limitations under the License.
 '''
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 import numpy as np
 import pandas as pd
 from plotly import graph_objects as go
 import plotly.colors as plt_color
 
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import hydropower_name
 
 
@@ -54,13 +54,13 @@ class ElectricityDiscipline(EnergyDiscipline):
                                                  # we use a 50% higher value
                                                  'unit': 'Twh',
                                                  'user_level': 2,
-                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                  'namespace': 'ns_ref'},
                'hydropower_constraint_ref': {'type': 'float',
                                              'default': 1000.,
                                              'unit': 'Twh',
                                              'user_level': 2,
-                                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                                              'namespace': 'ns_ref'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
@@ -77,13 +77,13 @@ class ElectricityDiscipline(EnergyDiscipline):
 
     def setup_sos_disciplines(self):
         dynamic_outputs = {}
-        if 'technologies_list' in self._data_in:
+        if 'technologies_list' in self.get_data_in():
             techno_list = self.get_sosdisc_inputs('technologies_list')
 
             if techno_list is not None:
                 if hydropower_name in techno_list:
                     dynamic_outputs['prod_hydropower_constraint'] = {'type': 'dataframe', 'user_level': 2, 'unit': 'TWh',
-                                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                      'namespace': 'ns_functions'}
         self.add_outputs(dynamic_outputs)
 
@@ -169,7 +169,7 @@ class ElectricityDiscipline(EnergyDiscipline):
             constraints_dict[constraint] = list(
                 self.get_sosdisc_outputs(constraint).values[:, 1])
         years = list(np.arange(self.get_sosdisc_inputs(
-            'year_start'), self.get_sosdisc_inputs('year_end') + 1))
+            'year_start').get_sosdisc_inputs('year_end') + 1))
         chart_name = 'Constraints'
         fig = go.Figure()
         for key in constraints_dict.keys():
