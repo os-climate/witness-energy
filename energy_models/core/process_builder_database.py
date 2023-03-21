@@ -36,6 +36,8 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
         ns_ids = []
         if ns_dict is not None:
             ns_ids = self.ee.ns_manager.add_ns_def(ns_dict, database_name=database_name)
+        if database_location is not None:
+            self.ee.ns_manager.database_location = database_location
         return ns_ids
 
     def create_builder_list(self, mods_dict, ns_dict=None, associate_namespace=False, database_location=None, database_name=None):
