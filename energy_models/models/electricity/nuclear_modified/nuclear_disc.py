@@ -45,12 +45,12 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
     # Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020.
     # 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798).
     # National Renewable Energy Lab.(NREL), Golden, CO (United States).
-    lifetime = 60.0
+    lifetime = 60
     # Timilsina, G.R., 2020. Demystifying the Costs of Electricity Generation
     # Technologies., average
-    construction_delay = 6.0
+    construction_delay = 6
 
-    techno_infos_dict_default = {'maturity': 0.0,
+    techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.024,
                                  # Fixed 1.9 and recurrent 0.5 %
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
@@ -59,7 +59,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
-                                 'Capex_init': 6765.0,
+                                 'Capex_init': 6765,
                                  'Capex_init_unit': '$/kW',
                                  'full_load_hours': 8760.0,  # Full year hours
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
@@ -116,7 +116,12 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                   'namespace': 'ns_electricity_nuc'}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
-
+    DESC_IN.update({'invest_level': {'type': 'dataframe', 'unit': 'G$',
+                         'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                  'invest': ('float', None, True)},
+                         'dataframe_edition_locked': False, 'visibility': ElectricityTechnoDiscipline.SHARED_VISIBILITY,
+                                  'namespace': 'ns_electricity_nuc'
+                         }})
     DESC_OUT = ElectricityTechnoDiscipline.DESC_OUT
 
     _maturity = 'Research'
