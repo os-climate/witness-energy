@@ -549,7 +549,9 @@ class TechnoDiscipline(SoSWrapp):
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t']
-        data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
+        inputs_dict = self.get_sosdisc_inputs()
+        data_fuel_dict = inputs_dict['data_fuel_dict']
+        technos_info_dict = inputs_dict['technos_info_dict']
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -613,7 +615,7 @@ class TechnoDiscipline(SoSWrapp):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         if 'Power production' in charts:
-            new_chart = self.get_chart_power_production()
+            new_chart = self.get_chart_power_production(technos_info_dict)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         return instanciated_charts
@@ -1110,7 +1112,7 @@ class TechnoDiscipline(SoSWrapp):
 
         return new_chart
     
-    def get_chart_power_production(self):
+    def get_chart_power_production(self, technos_info_dict):
         power_production = self.get_sosdisc_outputs(
             'power_production')
         chart_name = f'Power installed of {self.techno_name} factories'
@@ -1118,7 +1120,7 @@ class TechnoDiscipline(SoSWrapp):
         new_chart =  TwoAxesInstanciatedChart('years', 'Power [MW]',
                                              chart_name=chart_name)
         
-        if not 'full_load_hours' in self.techno_model.techno_infos_dict :
+        if not 'full_load_hours' in technos_info_dict :
 
             note = {f'The full_load_hours data is not set for {self.techno_name}' : 'default = 8760.0 hours, full year hours  '}
             new_chart.annotation_upper_left = note
