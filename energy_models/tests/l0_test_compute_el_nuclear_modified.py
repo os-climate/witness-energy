@@ -107,7 +107,7 @@ class NuclearTestCase(unittest.TestCase):
         ns_id = self.ee.ns_manager.add_ns_def(ns_dict_bis)
         ns_id = self.ee.ns_manager.add_ns_def(ns_dict_bis, database_name = 'Europe')
         file_path = join(dirname(__file__), 'data_tests', 'data_nuclear_test.json')
-        self.ee.ns_manager.set_ns_database_directory(file_path)
+        self.ee.ns_manager.set_ns_database_location(file_path)
         mod_path = 'energy_models.models.electricity.nuclear_modified.nuclear_disc.NuclearDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
