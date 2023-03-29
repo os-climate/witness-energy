@@ -551,7 +551,7 @@ class TechnoDiscipline(SoSWrapp):
         price_unit_list = ['$/MWh', '$/t']
         inputs_dict = self.get_sosdisc_inputs()
         data_fuel_dict = inputs_dict['data_fuel_dict']
-        technos_info_dict = inputs_dict['technos_info_dict']
+        technos_info_dict = inputs_dict['techno_infos_dict']
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
