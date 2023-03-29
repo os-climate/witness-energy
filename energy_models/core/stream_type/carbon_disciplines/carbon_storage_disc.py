@@ -85,6 +85,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/ton']
+        unit = 'Mt'
         years_list = [self.get_sosdisc_inputs('year_start')]
         # Overload default value with chart filter
         if filters is not None:
@@ -112,7 +113,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-            new_charts = self.get_charts_production_by_techno()
+            new_charts = self.get_charts_production_by_techno(unit)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
