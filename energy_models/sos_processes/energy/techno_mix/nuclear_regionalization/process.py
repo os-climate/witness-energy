@@ -51,7 +51,8 @@ class ProcessBuilder(ProcessBuilderDatabase):
         builder_europe = self.create_builder_list(mods_dict_europe, ns_dict=ns_dict, associate_namespace=False)
         builder_US = self.create_builder_list(mods_dict_us, ns_dict=ns_dict, associate_namespace=False)
         file_path = join(dirname(dirname(dirname(dirname(__file__)))), 'regionalization_data', 'data_nuclear_test.json')
-        self.set_builder_specific_ns_database(builder_europe , ns_dict = ns_europe, associate_namespace=True, database_location=file_path, database_name='Europe')
-        self.set_builder_specific_ns_database(builder_US , ns_dict = ns_us, associate_namespace=True, database_location=file_path, database_name='US')
+        self.ee.ns_manager.set_ns_database_location(file_path)
+        self.set_builder_specific_ns_database(builder_europe , ns_dict = ns_europe, associate_namespace=True, database_name='Europe')
+        self.set_builder_specific_ns_database(builder_US , ns_dict = ns_us, associate_namespace=True, database_name='US')
 
         return [builder_europe, builder_US]
