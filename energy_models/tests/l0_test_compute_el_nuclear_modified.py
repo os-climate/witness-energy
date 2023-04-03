@@ -115,7 +115,7 @@ class NuclearTestCase(unittest.TestCase):
         model_name_US = 'Nuclear_US'
         builder_us = self.ee.factory.get_builder_from_module(
             model_name_US, mod_path)
-        ns_id = self.ee.ns_manager.add_ns_def({'ns_electricity_nuc': f'{self.name}.{model_name_US}'})
+        ns_id = self.ee.ns_manager.add_ns_def({'ns_electricity_nuc': f'{self.name}.{model_name_US}'}, database_name = 'US')
         builder_us.associate_namespaces(ns_id)
         self.ee.factory.set_builders_to_coupling_builder([builder, builder_us])
 
