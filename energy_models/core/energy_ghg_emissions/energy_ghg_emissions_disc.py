@@ -58,11 +58,13 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'GHG_global_warming_potential20': {'type': 'dict','subtype_descriptor':{'dict':'float'}, 'unit': 'kgCO2eq/kg',
+        'GHG_global_warming_potential20': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+                                           'unit': 'kgCO2eq/kg',
                                            'default': GHGemissionsDiscipline.GWP_20_default,
                                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                            'namespace': 'ns_witness', 'user_level': 3},
-        'GHG_global_warming_potential100': {'type': 'dict','subtype_descriptor':{'dict':'float'}, 'unit': 'kgCO2eq/kg',
+        'GHG_global_warming_potential100': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+                                            'unit': 'kgCO2eq/kg',
                                             'default': GHGemissionsDiscipline.GWP_100_default,
                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                             'namespace': 'ns_witness', 'user_level': 3},
@@ -76,14 +78,14 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True},
-        }
+    }
 
     DESC_OUT = {
         'CO2_emissions_sources': {'type': 'dataframe', 'unit': 'Gt'},
         'CO2_emissions_sinks': {'type': 'dataframe', 'unit': 'Gt'},
         'GHG_total_energy_emissions': {'type': 'dataframe', 'unit': 'Gt',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'GHG_emissions_per_energy': {'type': 'dict','subtype_descriptor':{'dict':'dataframe'}, 'unit': 'Gt'},
+        'GHG_emissions_per_energy': {'type': 'dict', 'subtype_descriptor': {'dict': 'dataframe'}, 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'},
     }
 
@@ -98,8 +100,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
         dynamic_inputs = {}
         dynamic_outputs = {}
-        if 'is_dev' in self.get_data_in():
-            is_dev = self.get_sosdisc_inputs('is_dev')
 
         if 'energy_list' in self.get_data_in():
             energy_list = self.get_sosdisc_inputs('energy_list')
@@ -390,7 +390,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
         if 'Emissions per energy' in charts:
             for ghg in EnergyGHGEmissions.GHG_TYPE_LIST:
-                new_chart = self.get_chart_ghg_emissions_per_energy( ghg)
+                new_chart = self.get_chart_ghg_emissions_per_energy(ghg)
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
         if 'CO2 sources' in charts:

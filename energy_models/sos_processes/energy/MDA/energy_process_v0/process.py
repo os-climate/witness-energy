@@ -28,7 +28,6 @@ from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import En
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy v0 Process',
@@ -65,17 +64,16 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         ns_dict = {'ns_functions': f'{ns_study}.{func_manager_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_mix': f'{ns_study}.{energy_mix}',
-                   'ns_carb':  f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
+                   'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
                    'ns_resource': f'{ns_study}.{energy_mix}.resource',
                    'ns_ref': f'{ns_study}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
-        if self.process_level == 'dev':
-            emissions_mod_dict = {
-                EnergyGHGEmissionsDiscipline.name: 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'}
-        else:
-            emissions_mod_dict = {
-                'consumptionco2': 'energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions_disc.ConsumptionCO2EmissionsDiscipline'}
+        emissions_mod_dict = {
+            EnergyGHGEmissionsDiscipline.name: 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'}
+        # else:
+        #     emissions_mod_dict = {
+        #         'consumptionco2': 'energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions_disc.ConsumptionCO2EmissionsDiscipline'}
         builder_emission_list = self.create_builder_list(
             emissions_mod_dict, ns_dict=ns_dict, associate_namespace=False)
         builder_list.extend(builder_emission_list)
