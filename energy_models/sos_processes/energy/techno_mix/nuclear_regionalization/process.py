@@ -32,7 +32,6 @@ class ProcessBuilder(ProcessBuilderDatabase):
 
         ns_study = self.ee.study_name
 
-        electricity_name = Electricity.name
         ns_dict = {'ns_electricity': f'{ns_study}',
                    'ns_energy': f'{ns_study}',
                    'ns_energy_study': f'{ns_study}',
@@ -44,15 +43,15 @@ class ProcessBuilder(ProcessBuilderDatabase):
         mods_dict_us = {'Nuclear_US': 'energy_models.models.electricity.nuclear_modified.nuclear_disc.NuclearDiscipline'}
 
         ns_us = {'ns_electricity_nuc': f'{ns_study}.Nuclear_US'}
-        #ns_us.update(ns_dict) 
-
         ns_europe = {'ns_electricity_nuc': f'{ns_study}.Nuclear_Europe'} 
-        #ns_europe.update(ns_dict)       
         builder_europe = self.create_builder_list(mods_dict_europe, ns_dict=ns_dict, associate_namespace=False)
         builder_US = self.create_builder_list(mods_dict_us, ns_dict=ns_dict, associate_namespace=False)
-        builder_europe[0].set_builder_info('database_id', 'nuclear_techno_infos')
-        builder_US[0].set_builder_info('database_id', 'nuclear_techno_infos')
-        self.set_builder_specific_ns_database(builder_europe , ns_dict = ns_europe, associate_namespace=True, database_name='Europe')
-        self.set_builder_specific_ns_database(builder_US , ns_dict = ns_us, associate_namespace=True, database_name='US')
+
+        self.set_builder_specific_ns_database(builder_europe , ns_dict = ns_europe, associate_namespace=True, get_from_database=True)
+        self.set_builder_specific_ns_database(builder_US , ns_dict = ns_us, associate_namespace=True, get_from_database=True)
+
+        builder_europe[0].set_builder_info('local_namespace_database', True)
+        builder_US[0].set_builder_info('local_namespace_database', True)
+
 
         return [builder_europe, builder_US]
