@@ -20,7 +20,7 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
     def get_builders(self):
         return []
 
-    def process_namespace(self, ns_dict=None, database_name=None):
+    def process_namespace(self, ns_dict=None, get_from_database=False):
         '''
         Adds a namespace definition to the EE namespace manager and returns the associated namespace ID(s).
 
@@ -34,17 +34,17 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
         '''
         ns_ids = []
         if ns_dict is not None:
-            ns_ids = self.ee.ns_manager.add_ns_def(ns_dict, database_name=database_name)
+            ns_ids = self.ee.ns_manager.add_ns_def(ns_dict, get_from_database=get_from_database)
 
         return ns_ids
 
-    def create_builder_list(self, mods_dict, ns_dict=None, associate_namespace=False,  database_name=None):
+    def create_builder_list(self, mods_dict, ns_dict=None, associate_namespace=False,  get_from_database=False):
         ''' 
         define a base namespace
         instantiate builders iterating over a list of module paths
         return the list of disciplines built
         '''
-        ns_ids = self.process_namespace(ns_dict, database_name)
+        ns_ids = self.process_namespace(ns_dict, get_from_database)
         builders = []
         for disc_name, mod_path in mods_dict.items():
             a_b = self.ee.factory.get_builder_from_module(disc_name, mod_path)
@@ -53,7 +53,7 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
             builders.append(a_b)
         return builders
 
-    def set_builder_specific_ns_database(self, builders_list, ns_dict=None, associate_namespace=False, database_name=None):
+    def set_builder_specific_ns_database(self, builders_list, ns_dict=None, associate_namespace=False, get_from_database=False):
         '''
         Associates specific namespace dictionaries with their respective builders and/or saves them to a database.
 
@@ -67,7 +67,7 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
         Returns:
         None
         '''
-        ns_ids = self.process_namespace(ns_dict, database_name)
+        ns_ids = self.process_namespace(ns_dict, get_from_database)
         for builder in builders_list:
             if associate_namespace: 
                 builder.associate_namespaces(ns_ids)
