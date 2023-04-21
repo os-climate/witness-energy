@@ -1290,10 +1290,11 @@ class Energy_Mix_Discipline(SoSWrapp):
             new_chart = self.get_chart_stream_ratio()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
-
-            new_chart = self.get_chart_stream_consumed_by_techno()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
+        # Need data not in data_io of the discipline
+        # TODO move this chart in a namespace post processing
+        # new_chart = self.get_chart_stream_consumed_by_techno()
+        # if new_chart is not None:
+        #     instanciated_charts.append(new_chart)
 
         if 'Energy mix losses' in charts:
 
@@ -1390,7 +1391,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     def get_chart_energy_price_in_dollar_kwh(self):
         energy_prices = self.get_sosdisc_outputs('energy_prices')
-        is_dev = self.get_sosdisc_inputs('is_dev')
+
         chart_name = 'Detailed prices of energy mix with CO2 taxes<br>from production (used for technology prices)'
         energy_list = self.get_sosdisc_inputs('energy_list')
         max_value = 0
@@ -1419,7 +1420,6 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     def get_chart_energy_price_in_dollar_kwh_without_production_taxes(self):
         energy_prices = self.get_sosdisc_outputs('energy_prices')
-        is_dev = self.get_sosdisc_inputs('is_dev')
         chart_name = 'Detailed prices of energy mix without CO2 taxes from production'
         energy_list = self.get_sosdisc_inputs('energy_list')
         max_value = 0

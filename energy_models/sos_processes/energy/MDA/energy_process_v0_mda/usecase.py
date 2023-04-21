@@ -29,7 +29,6 @@ import cProfile
 from io import StringIO
 import pstats
 
-
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
@@ -39,8 +38,9 @@ FUNC_DF = FunctionManagerDisc.FUNC_DF
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100., techno_dict=DEFAULT_TECHNO_DICT, bspline=True, invest_discipline=INVEST_DISCIPLINE_DEFAULT, execution_engine=None):
-
+    def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
+                 techno_dict=DEFAULT_TECHNO_DICT, bspline=True, invest_discipline=INVEST_DISCIPLINE_DEFAULT,
+                 execution_engine=None):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -52,26 +52,24 @@ class Study(StudyManager):
         self.lower_bound_techno = lower_bound_techno
         self.upper_bound_techno = upper_bound_techno
 
-        #-- Call class constructor after attributes have been set for setup_process usage
+        # -- Call class constructor after attributes have been set for setup_process usage
         super().__init__(__file__, execution_engine=execution_engine)
 
         self.study_v0 = Study_v0(
-            self.year_start, self.year_end, self.time_step, main_study=False, bspline=self.bspline, execution_engine=execution_engine,
+            self.year_start, self.year_end, self.time_step, main_study=False, bspline=self.bspline,
+            execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.study_v0.sub_study_path_dict
 
     def setup_objectives(self):
-
         func_df = Study_v0.setup_objectives(self)
         return func_df
 
     def setup_constraints(self):
-
         func_df = Study_v0.setup_constraints(self)
         return func_df
 
     def setup_usecase(self):
-
         values_dict_list = []
 
         self.study_v0.study_name = self.study_name
@@ -84,7 +82,7 @@ class Study(StudyManager):
         self.dict_technos = self.study_v0.dict_technos
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 50,
+            f'{self.study_name}.max_mda_iter': 1,
             f'{self.study_name}.tolerance': 1.0e-7,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
@@ -103,8 +101,8 @@ class Study(StudyManager):
 if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
-#     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
-#         "reduced.pdf")
+    #     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
+    #         "reduced.pdf")
     profil = cProfile.Profile()
     profil.enable()
     uc_cls.run()
@@ -118,7 +116,7 @@ if '__main__' == __name__:
     print(result)
     # Always check if post procs are OK
     ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
         filters = ppf.get_post_processing_filters_by_discipline(
             disc)
         graph_list = ppf.get_post_processing_by_discipline(
