@@ -82,7 +82,7 @@ class Study(StudyManager):
         self.dict_technos = self.study_v0.dict_technos
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 1,
+            f'{self.study_name}.max_mda_iter': 50,
             f'{self.study_name}.tolerance': 1.0e-7,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
@@ -121,6 +121,6 @@ if '__main__' == __name__:
             disc)
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
-#         if disc.sos_name == 'EnergyMix' or disc.sos_name == 'CCUS':
-#             for graph in graph_list:
-#                 graph.to_plotly().show()
+        if disc.sos_name == 'EnergyMix' or disc.sos_name == 'CCUS':
+            for graph in graph_list:
+                graph.to_plotly().show()
