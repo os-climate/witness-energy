@@ -37,7 +37,7 @@ def post_processing_filters(execution_engine, namespace):
 
     chart_list = []
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[
-        0].energy_name
+        0].mdo_discipline_wrapp.wrapper.energy_name
     chart_list += [f'{energy} CO2 intensity']
     chart_list += [f'{energy} CO2 breakdown sankey']
     chart_list += [f'{energy} CO2 breakdown bar']
@@ -63,7 +63,7 @@ def post_processings(execution_engine, namespace, filters):
     # ----
     # energy = execution_engine.dm.get_disciplines_with_name(namespace)[
     #     0].energy_name
-    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].energy_name
+    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
     if f'{energy} CO2 intensity' in graphs_list:
         chart_name = f'{energy} CO2 intensity summary'
         new_chart = get_chart_green_technologies(
@@ -260,7 +260,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
         index=idx,
         columns=['production', 'invest', 'CO2_per_kWh', 'price_per_kWh', 'price_per_kWh_wotaxes'])
     energy_list = [execution_engine.dm.get_disciplines_with_name(namespace)[
-                       0].energy_name]
+                       0].mdo_discipline_wrapp.wrapper.energy_name]
     for energy in energy_list:
         energy_disc = execution_engine.dm.get_disciplines_with_name(
             f'{namespace}')[0]
@@ -581,7 +581,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     @return multilevel_df: Dataframe
     '''
 
-    energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[0]
+    energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper
     energy_list = [energy_disc.energy_name]
 
     years = np.arange(energy_disc.get_sosdisc_inputs(
