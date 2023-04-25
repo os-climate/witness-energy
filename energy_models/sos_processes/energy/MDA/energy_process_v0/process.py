@@ -25,10 +25,10 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import EnergyGHGEmissionsDiscipline
+from energy_models.core.energy_study_manager import AGRI_TYPE
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy v0 Process',
@@ -52,11 +52,12 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         for energy_name in self.energy_list:
             dot_list = energy_name.split('.')
             short_name = dot_list[-1]
-            energy_builder_list = self.ee.factory.get_builder_from_process(
-                'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
-                techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline,
-                associate_namespace=False
-            )
+            if self.techno_dict[energy_name]['type'] != AGRI_TYPE:
+                energy_builder_list = self.ee.factory.get_builder_from_process(
+                    'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
+                    techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline,
+                    associate_namespace=False
+                )
 
             builder_list.extend(energy_builder_list)
 
@@ -65,17 +66,16 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         ns_dict = {'ns_functions': f'{ns_study}.{func_manager_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_mix': f'{ns_study}.{energy_mix}',
-                   'ns_carb':  f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
+                   'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
                    'ns_resource': f'{ns_study}.{energy_mix}.resource',
                    'ns_ref': f'{ns_study}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
-        if self.process_level == 'dev':
-            emissions_mod_dict = {
-                EnergyGHGEmissionsDiscipline.name: 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'}
-        else:
-            emissions_mod_dict = {
-                'consumptionco2': 'energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions_disc.ConsumptionCO2EmissionsDiscipline'}
+        emissions_mod_dict = {
+            EnergyGHGEmissionsDiscipline.name: 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'}
+        # else:
+        #     emissions_mod_dict = {
+        #         'consumptionco2': 'energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions_disc.ConsumptionCO2EmissionsDiscipline'}
         builder_emission_list = self.create_builder_list(
             emissions_mod_dict, ns_dict=ns_dict, associate_namespace=False)
         builder_list.extend(builder_emission_list)
