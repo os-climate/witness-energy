@@ -16,16 +16,16 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
-from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
-from energy_models.models.heat.high.heatpump.heatpump import HeatPump
+from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
+from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
+from energy_models.models.heat.low.heatpump.heatpump import HeatPump
 
 
-class HeatPumpDiscipline(HighHeatTechnoDiscipline):
+class HeatPumpDiscipline(LowHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Heat Pump High Heat Model',
+        'label': 'Heat Pump Low Heat Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -37,8 +37,8 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'HighHeatPump'
-    energy_name = HighTemperatureHeat.name
+    techno_name = 'LowHeatPump'
+    energy_name = LowTemperatureHeat.name
 
     # # Conversions
     pound_to_kg = 0.45359237
@@ -80,11 +80,12 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
         'efficiency': 1,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
-        'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
+        'elec_demand': (1.0 / COP),  #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
         'elec_demand_unit': 'kWh/kW',
         'heating_space': 92.9,
         'heating_space_unit': 'm^2',
-        'heat_required_per_meter_square': 0.00879, #https://carbonswitch.com/heat-pump-sizing-guide/#:~:text=If%20you%20Google%20%E2%80%9Cheat%20pump,a%2060%2C000%20BTU%20heat%20pump.
+        'heat_required_per_meter_square': 0.00879,
+        # https://carbonswitch.com/heat-pump-sizing-guide/#:~:text=If%20you%20Google%20%E2%80%9Cheat%20pump,a%2060%2C000%20BTU%20heat%20pump.
         'heat_required_per_meter_square_unit': 'kW/m^2',
 ##        'water_demand':  3.5,
 ##        'water_demand_unit': 'm3/m3',
@@ -128,9 +129,9 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
-    DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)
+    DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
-    DESC_OUT = HighHeatTechnoDiscipline.DESC_OUT
+    DESC_OUT = LowHeatTechnoDiscipline.DESC_OUT
     _maturity = 'Research'
 
     def init_execution(self):

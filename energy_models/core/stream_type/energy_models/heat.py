@@ -23,6 +23,7 @@ class LowTemperatureHeat(EnergyType):
     data_energy_dict = {'maturity': 5,
                         'Highest_Temperature': 100,
                         'Temperature_unit': 'c',
+                        'COP': 3.5
                         }
 
 
@@ -32,9 +33,10 @@ class MediumTemperatureHeat(EnergyType):
     short_name = 'mediumheat'
     default_techno_list = ['HeatPump']
     data_energy_dict = {'maturity': 5,
-                        'Highest_Temperature': 200,
+                        'Highest_Temperature': 400,
                         'Lowest_Temperature': 100,
                         'Temperature_unit': 'c',
+                        'COP': 3.5
                         }
 
 
@@ -44,6 +46,8 @@ class HighTemperatureHeat(EnergyType):
     short_name = 'highheat'
     default_techno_list = ['HeatPump']
     data_energy_dict = {'maturity': 5,
-                        'Lowest_Temperature': 200,
+                        'density': 100,
+                        'Lowest_Temperature': 400,
                         'Temperature_unit': 'c',
+                        'COP':  3.5
                         }

@@ -25,10 +25,10 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-#from energy_models.core.stream_type.energy_models.ethanol import Ethanol
+from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
 
 
-class HeatPumpHighTemperaureTestCase(unittest.TestCase):
+class HeatPumpLowTemperaureTestCase(unittest.TestCase):
     """
     HeatPump prices test class
     """
@@ -82,12 +82,12 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'ethanol.BiomassFermentation']
+                                                == 'heat.HeatPump']
 
     def tearDown(self):
         pass
 
-    def _test_01_compute_heatpump_price(self):
+    def test_01_compute_heatpump_price(self):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
@@ -112,7 +112,7 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
-
+                       'data_fuel_dict': LowTemperatureHeat.data_energy_dict,
                        }
 
         heatpump_model = HeatPump('HeatPump')
@@ -129,12 +129,12 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
-                   'ns_ethanol': f'{self.name}',
+                   'ns_heat': f'{self.name}',
                    'ns_resource': self.name
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.high.heatpump.heatpump_disc.HeatPumpDiscipline'
+        mod_path = 'energy_models.models.heat.low.heatpump.heatpump_disc.HeatPumpDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

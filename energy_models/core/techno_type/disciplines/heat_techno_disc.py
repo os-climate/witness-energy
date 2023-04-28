@@ -44,8 +44,8 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
                                     'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                              'margin': ('float', None, True)},
                                     'dataframe_edition_locked': False},
-               ##               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-               ##                                  'namespace': 'ns_ethanol', 'default': Ethanol.data_energy_dict},
+                             'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                'namespace': 'ns_heat', 'default': LowTemperatureHeat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 
@@ -90,8 +90,8 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
                                     'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                              'margin': ('float', None, True)},
                                     'dataframe_edition_locked': False},
-               ##               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-               ##                                  'namespace': 'ns_ethanol', 'default': Ethanol.data_energy_dict},
+                              'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                 'namespace': 'ns_heat', 'default': MediumTemperatureHeat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 
@@ -136,8 +136,8 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
                                     'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                              'margin': ('float', None, True)},
                                     'dataframe_edition_locked': False},
-               ##               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-               ##                                  'namespace': 'ns_ethanol', 'default': Ethanol.data_energy_dict},
+                              'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                 'namespace': 'ns_heat', 'default': HighTemperatureHeat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 
