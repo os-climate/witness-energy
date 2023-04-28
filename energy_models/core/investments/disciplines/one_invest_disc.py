@@ -55,9 +55,6 @@ class OneInvestDiscipline(SoSWrapp):
         'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True},
-        # WIP is_dev to remove once its validated on dev processes
-        'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
-                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'}
     }
 
     energy_name = "one_invest"
@@ -77,13 +74,11 @@ class OneInvestDiscipline(SoSWrapp):
         dynamic_outputs = {}
         dynamic_inputs = {}
 
-        if 'is_dev' in self.get_data_in():
-            is_dev = self.get_sosdisc_inputs('is_dev')
         if 'energy_list' in self.get_data_in():
             energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
-                    if energy == BiomassDry.name and is_dev == True:
+                    if energy == BiomassDry.name:
                         pass
                     else:
                         # Add technologies_list to inputs
@@ -100,7 +95,7 @@ class OneInvestDiscipline(SoSWrapp):
                                 for techno in technology_list:
                                     dynamic_outputs[f'{energy}.{techno}.invest_level'] = {
                                         'type': 'dataframe', 'unit': 'G$',
-                                        'visibility': 'Shared', 'namespace': 'ns_energy',}
+                                        'visibility': 'Shared', 'namespace': 'ns_energy', }
 
         if 'ccs_list' in self.get_data_in():
             ccs_list = self.get_sosdisc_inputs('ccs_list')
@@ -127,13 +122,13 @@ class OneInvestDiscipline(SoSWrapp):
     def run(self):
 
         input_dict = self.get_sosdisc_inputs()
-        is_dev = input_dict['is_dev']
+
         all_invest_df = self.one_invest_model.compute(input_dict)
 
         output_dict = {'all_invest_df': all_invest_df}
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
-            if energy == BiomassDry.name and is_dev == True:
+            if energy == BiomassDry.name:
                 pass
             else:
                 for techno in input_dict[f'{energy}.technologies_list']:

@@ -93,7 +93,10 @@ class Study(StudyManager):
                        f'{self.study_name}.transport_cost': transport,
                        f'{self.study_name}.resources_price': resources_price,
                        f'{self.study_name}.{model_name_Europe}.margin':  margin,
-                       f'{self.study_name}.{model_name_US}.margin':  margin}
+                       f'{self.study_name}.{model_name_US}.margin':  margin, 
+                       f'{self.study_name}.{model_name_Europe}.database_subname' : 'Europe', 
+                       f'{self.study_name}.{model_name_US}.database_subname': 'US', 
+                        }
 
         values_dict.update(inputs_dict)
         return [values_dict]

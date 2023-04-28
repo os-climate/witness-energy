@@ -100,8 +100,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
     })
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default, 'unit': 'defined in dict', 'visibility': ElectricityTechnoDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_electricity_nuc'},
+                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production, 'visibility': ElectricityTechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_electricity_nuc'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
@@ -113,7 +112,9 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False, 'visibility': ElectricityTechnoDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_electricity_nuc'}}
+                                  'namespace': 'ns_electricity_nuc'}, 
+                'database_id' : {'type': 'string', 'default': 'nuclear_techno_infos', 'numerical': True, 'structuring': True}
+                }
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
     DESC_IN.update({'invest_level': {'type': 'dataframe', 'unit': 'G$',

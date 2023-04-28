@@ -82,7 +82,8 @@ class ElectricityDiscipline(EnergyDiscipline):
 
             if techno_list is not None:
                 if hydropower_name in techno_list:
-                    dynamic_outputs['prod_hydropower_constraint'] = {'type': 'dataframe', 'user_level': 2, 'unit': 'TWh',
+                    dynamic_outputs['prod_hydropower_constraint'] = {'type': 'dataframe', 'user_level': 2,
+                                                                     'unit': 'TWh',
                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                      'namespace': 'ns_functions'}
         self.add_outputs(dynamic_outputs)
@@ -122,8 +123,8 @@ class ElectricityDiscipline(EnergyDiscipline):
         if hydropower_name in self.energy_model.subelements_list:
             self.set_partial_derivative_for_other_types(('prod_hydropower_constraint', 'hydropower_constraint'), (
                 'Hydropower.techno_production', f'{Electricity.name} ({Electricity.unit})'),
-                - inputs_dict['scaling_factor_techno_production'] * np.identity(
-                len(years)) / inputs_dict['hydropower_constraint_ref'])
+                                                        - inputs_dict['scaling_factor_techno_production'] * np.identity(
+                                                            len(years)) / inputs_dict['hydropower_constraint_ref'])
 
         EnergyDiscipline.compute_sos_jacobian(self)
 
@@ -169,7 +170,7 @@ class ElectricityDiscipline(EnergyDiscipline):
             constraints_dict[constraint] = list(
                 self.get_sosdisc_outputs(constraint).values[:, 1])
         years = list(np.arange(self.get_sosdisc_inputs(
-            'year_start').get_sosdisc_inputs('year_end') + 1))
+            'year_start'), self.get_sosdisc_inputs('year_end') + 1))
         chart_name = 'Constraints'
         fig = go.Figure()
         for key in constraints_dict.keys():

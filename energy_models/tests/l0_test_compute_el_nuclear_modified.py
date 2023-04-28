@@ -107,7 +107,7 @@ class NuclearTestCase(unittest.TestCase):
         ns_id = self.ee.ns_manager.add_ns_def(ns_dict_bis)
         ns_id = self.ee.ns_manager.add_ns_def(ns_dict_bis, database_name = 'Europe')
         file_path = join(dirname(__file__), 'data_tests', 'data_nuclear_test.json')
-        self.ee.ns_manager.set_ns_database_directory(file_path)
+        self.ee.ns_manager.set_ns_database_location(file_path)
         mod_path = 'energy_models.models.electricity.nuclear_modified.nuclear_disc.NuclearDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
@@ -115,7 +115,7 @@ class NuclearTestCase(unittest.TestCase):
         model_name_US = 'Nuclear_US'
         builder_us = self.ee.factory.get_builder_from_module(
             model_name_US, mod_path)
-        ns_id = self.ee.ns_manager.add_ns_def({'ns_electricity_nuc': f'{self.name}.{model_name_US}'})
+        ns_id = self.ee.ns_manager.add_ns_def({'ns_electricity_nuc': f'{self.name}.{model_name_US}'}, database_name = 'US')
         builder_us.associate_namespaces(ns_id)
         self.ee.factory.set_builders_to_coupling_builder([builder, builder_us])
 
