@@ -5,8 +5,8 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.high_temp.natural_gas_disc import HighTemperatureHeatDiscipline
-from energy_models.models.heat.high_temp.natural_gas import HighTemperatureHeat
+from energy_models.models.heat.medium_temp.natural_gas_disc import MediumTemperatureHeatDiscipline
+from energy_models.models.heat.medium_temp.natural_gas import MediumTemperatureHeat
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
@@ -73,40 +73,40 @@ class NaturalGasTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    # def test_01_compute_natural_gas_price_prod_consumption(self):
-    #
-    #     inputs_dict = {'year_start': 2020,
-    #                    'year_end': 2050,
-    #                    'techno_infos_dict': HighTemperatureHeatDiscipline.techno_infos_dict_default,
-    #                    'energy_prices': self.energy_prices,
-    #                    'resources_price': self.resources_price,
-    #                    'invest_level': self.invest_level,
-    #                    'invest_before_ystart': HighTemperatureHeatDiscipline.invest_before_year_start,
-    #                    'CO2_taxes': self.co2_taxes,
-    #                    'margin':  self.margin,
-    #                    'transport_cost': self.transport,
-    #                    'transport_margin': self.margin,
-    #                    'initial_production': HighTemperatureHeatDiscipline.initial_production,
-    #                    'initial_age_distrib': HighTemperatureHeatDiscipline.initial_age_distribution,
-    #                    'energy_CO2_emissions': self.energy_carbon_emissions,
-    #                    'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-    #                    'scaling_factor_invest_level': 1e3,
-    #                    'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-    #                    'scaling_factor_techno_production': self.scaling_factor_techno_production,
-    #                    ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-    #                    'all_streams_demand_ratio': self.all_streams_demand_ratio,
-    #                    'is_stream_demand': self.is_stream_demand,
-    #                    'is_apply_resource_ratio': self.is_apply_resource_ratio,
-    #                    'smooth_type': 'smooth_max',
-    #                    'data_fuel_dict': Methane.data_energy_dict,
-    #                    }
-    #
-    #     ng_model = HighTemperatureHeat('NaturalGas')
-    #     ng_model.configure_parameters(inputs_dict)
-    #     ng_model.configure_parameters_update(inputs_dict)
-    #     price_details = ng_model.compute_price()
-    #     ng_model.compute_consumption_and_production()
-    #     # ng_model.check_outputs_dict(self.biblio_data)
+    def test_01_compute_natural_gas_price_prod_consumption(self):
+
+        inputs_dict = {'year_start': 2020,
+                       'year_end': 2050,
+                       'techno_infos_dict': MediumTemperatureHeatDiscipline.techno_infos_dict_default,
+                       'energy_prices': self.energy_prices,
+                       'resources_price': self.resources_price,
+                       'invest_level': self.invest_level,
+                       'invest_before_ystart': MediumTemperatureHeatDiscipline.invest_before_year_start,
+                       'CO2_taxes': self.co2_taxes,
+                       'margin':  self.margin,
+                       'transport_cost': self.transport,
+                       'transport_margin': self.margin,
+                       'initial_production': MediumTemperatureHeatDiscipline.initial_production,
+                       'initial_age_distrib': MediumTemperatureHeatDiscipline.initial_age_distribution,
+                       'energy_CO2_emissions': self.energy_carbon_emissions,
+                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       'scaling_factor_invest_level': 1e3,
+                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
+                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
+                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
+                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       'is_stream_demand': self.is_stream_demand,
+                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
+                       'smooth_type': 'smooth_max',
+                       'data_fuel_dict': Methane.data_energy_dict,
+                       }
+
+        ng_model = MediumTemperatureHeat('NaturalGas')
+        ng_model.configure_parameters(inputs_dict)
+        ng_model.configure_parameters_update(inputs_dict)
+        price_details = ng_model.compute_price()
+        ng_model.compute_consumption_and_production()
+        # ng_model.check_outputs_dict(self.biblio_data)
 
     def test_02_natural_gas_discipline(self):
 
@@ -120,7 +120,7 @@ class NaturalGasTestCase(unittest.TestCase):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.high_temp.natural_gas_disc.HighTemperatureHeatDiscipline'
+        mod_path = 'energy_models.models.heat.medium_temp.natural_gas_disc.MediumTemperatureHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

@@ -109,7 +109,7 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
-        
+
 
 class LowHeatTechnoDiscipline(TechnoDiscipline):
 
