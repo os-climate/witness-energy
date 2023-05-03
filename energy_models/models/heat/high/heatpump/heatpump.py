@@ -20,7 +20,6 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 
 import numpy as np
 
-
 class HeatPump(HighHeatTechno):
     """
     From Renewable Fuels Association - https://ethanolrfa.org/ethanol-101/how-is-ethanol-made

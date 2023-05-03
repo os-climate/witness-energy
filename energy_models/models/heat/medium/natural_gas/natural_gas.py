@@ -124,8 +124,8 @@ class NaturalGasMediumHeat(MediumHeatTechno):
         """
         methane_demand = self.techno_infos_dict['methane_demand']
 
-        heat_density = MediumTemperatureHeat.data_energy_dict['density']                       # kg/m3
-        heat_calorific_value = MediumTemperatureHeat.data_energy_dict['calorific_value']       # kWh/kg
+        heat_density = Methane.data_energy_dict['density']                       # kg/m3
+        heat_calorific_value = Methane.data_energy_dict['calorific_value']       # kWh/kg
         methane_calorific_value = Methane.data_energy_dict['calorific_value']    # kWh/kg
 
         methane_needs = methane_demand * methane_calorific_value / (heat_density * heat_calorific_value)
@@ -141,8 +141,8 @@ class NaturalGasMediumHeat(MediumHeatTechno):
         """
         water_demand = self.techno_infos_dict['water_demand']
         water_density = Water.data_energy_dict['density']                       # kg/m3
-        heat_density = MediumTemperatureHeat.data_energy_dict['density']                   # kg/m3
-        heat_calorific_value = MediumTemperatureHeat.data_energy_dict['calorific_value']   # kWh/kg
+        heat_density = Methane.data_energy_dict['density']                   # kg/m3
+        heat_calorific_value = Methane.data_energy_dict['calorific_value']   # kWh/kg
 
         water_needs = water_demand * water_density / (heat_density * heat_calorific_value)
         return water_needs
@@ -153,8 +153,8 @@ class NaturalGasMediumHeat(MediumHeatTechno):
         Electricity usage there averaged 0.70 kilowatt hours per gallon of ethanol.
         """
         elec_demand = self.techno_infos_dict['elec_demand']
-        heat_density = MediumTemperatureHeat.data_energy_dict['density']                   # kg/m3
-        heat_calorific_value = MediumTemperatureHeat.data_energy_dict['calorific_value']   # kWh/kg
+        heat_density = Methane.data_energy_dict['density']                   # kg/m3
+        heat_calorific_value = Methane.data_energy_dict['calorific_value']   # kWh/kg
 
         electricity_needs = elec_demand / (heat_density * heat_calorific_value)
 
@@ -169,8 +169,8 @@ class NaturalGasMediumHeat(MediumHeatTechno):
         - 1 pound = 0.45359237 kg
         """
         co2_captured__production = self.techno_infos_dict['co2_captured__production']
-        heat_density = MediumTemperatureHeat.data_energy_dict['density']                       # kg/m3
-        heat_calorific_value = MediumTemperatureHeat.data_energy_dict['calorific_value']       # kWh/kg
+        heat_density = Methane.data_energy_dict['density']                       # kg/m3
+        heat_calorific_value = Methane.data_energy_dict['calorific_value']       # kWh/kg
 
         co2_prod = co2_captured__production / (heat_density * heat_calorific_value)
 

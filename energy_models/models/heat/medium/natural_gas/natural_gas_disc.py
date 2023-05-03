@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
-from energy_models.models.heat.medium_temp.natural_gas import NaturalGasMediumHeat
+from energy_models.models.heat.medium.natural_gas.natural_gas import NaturalGasMediumHeat
 
 
 class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
@@ -31,8 +31,8 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
     liter_per_gallon = 3.78541178
 
     # energy data
-    heat_density = MediumTemperatureHeat.data_energy_dict['density']
-    heat_calorific_value = MediumTemperatureHeat.data_energy_dict['calorific_value']
+    #heat_density = MediumTemperatureHeat.data_energy_dict['density']
+    #heat_calorific_value = MediumTemperatureHeat.data_energy_dict['calorific_value']
 
     # Heat Producer [Online]
     # http://www.heatproducer.com/articles/2005/time-testing#:~:text=Most%20experts%20suggest%20dry%2Dmill,of%20%22useful%22%20life%20expectancy.

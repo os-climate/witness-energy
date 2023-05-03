@@ -5,8 +5,8 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.medium_temp.natural_gas_disc import MediumTemperatureHeatDiscipline
-from energy_models.models.heat.medium_temp.natural_gas import MediumTemperatureHeat
+from energy_models.models.heat.medium.natural_gas.natural_gas_disc import MediumTemperatureHeatDiscipline
+from energy_models.models.heat.medium.natural_gas.natural_gas import NaturalGasMediumHeat
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
@@ -101,7 +101,7 @@ class NaturalGasTestCase(unittest.TestCase):
                        'data_fuel_dict': Methane.data_energy_dict,
                        }
 
-        ng_model = MediumTemperatureHeat('NaturalGas')
+        ng_model = NaturalGasMediumHeat('NaturalGas')
         ng_model.configure_parameters(inputs_dict)
         ng_model.configure_parameters_update(inputs_dict)
         price_details = ng_model.compute_price()
@@ -116,11 +116,12 @@ class NaturalGasTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_methane': f'{self.name}',
-                   'ns_resource': self.name
+                   'ns_resource': self.name,
+                   'ns_heat': f'{self.name}'
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.medium_temp.natural_gas_disc.MediumTemperatureHeatDiscipline'
+        mod_path = 'energy_models.models.heat.medium.natural_gas.natural_gas_disc.MediumTemperatureHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -148,8 +149,8 @@ class NaturalGasTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
 
 
 if __name__ == "__main__":
