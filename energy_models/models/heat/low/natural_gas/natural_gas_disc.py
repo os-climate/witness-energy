@@ -84,7 +84,7 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
         # 'steam_flow_temp_unit': 'c',
         # 'steam_pressure': 980665,
         # 'steam_pressure_unit': 'Pa',
-        'methane_demand': 15,                    #https://www.google.com/search?rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdcR4EQ92q759bjYnDoiqylBbOY4kA:1683143130053&q=What+is+the+cost+of+methane+to+burn+kWh+in+natural+gas+boiler&spell=1&sa=X&ved=2ahUKEwihxv3i9Nn-AhUE-jgGHQMXChwQBSgAegQIBxAB&biw=1280&bih=601&dpr=1.5
+        'methane_demand': 45,              #https://www.iea.org/reports/global-methane-tracker-2022/overview
         'methane_demand_unit': 'KWh/kg',
         # 'elec_demand': 0.70 / gallon_to_m3,
         # 'elec_demand_unit': 'kWh/m3',
