@@ -54,4 +54,5 @@ class Methane(EnergyType):
                         # Energy Policy, Volume 105, 2017, Pages 263-268, ISSN 0301-4215,
                         # https://doi.org/10.1016/j.enpol.2017.02.027.
                         'learning_rate': 0.13,
+                        'cost_details': 5.98,
                         }
