@@ -35,19 +35,23 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
     #heat_calorific_value = MediumTemperatureHeat.data_energy_dict['calorific_value']
 
     # Heat Producer [Online]
-    # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+    # http://www.heatproducer.com/articles/2005/time-testing#:~:text=Most%20experts%20suggest%20dry%2Dmill,of%20%22useful%22%20life%20expectancy.
     lifetime = 45          # years
     # Economic and Technical Analysis of Heat Dry Milling: Model Description.
     # Rhys T.Dale and Wallace E.Tyner Staff Paper
+    # 06-04 April 2006
     # Agricultural Economics Department Purdue University
     construction_delay = 2  # years
 
     techno_infos_dict_default = {
 
+        # Gubicza K, Nieves IU, Sagues WJ, Barta Z, Shanmugam KT, Ingram LO.Techno - economic analysis of heat
+        # production from sugarcane bagasse using a Liquefaction plus Simultaneous Saccharification and co -
+        # Fermentation process.Bioresour Technol. 2016
+        # from table 6: capex 1.95$/liter
         'Capex_init': 199.8,
         'Capex_init_unit': '$/kW',
-        'Opex_init': 10.565,
-        'Opex_init_unit': '$/kW',
+        'Opex_percentage': 0.024,
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
@@ -64,37 +68,32 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
         'gas_fired_boiler_unit': 'kW/kWh',
         'wall_temp': 300,
         'wall_temp_unit': 'c',
-        # 'area': 3000,
-        # 'area_unit': 'm2',
-        # 'volume': 10000,
-        # 'volume_unit': 'm3',
-        # 'water_demand': 3.5,
-        # 'water_demand_unit': 'm3/m3',
-        # 'water_flow_rate':  8000,
-        # 'water_flow_rate_unit': 'kg/h',
-        # 'water_wetness_fraction': 0.5,
-        # 'air_flow_rate': 1000,
-        # 'air_flow_rate_unit': 'kg/h',
-        # 'air_temp': 200,
-        # 'air_temp_unit': 'c',
-        # 'excess_air_ratio': 0.11,
-        # 'steam_flow_rate': 8000,
-        # 'steam_flow_rate_unit': 'kg/h',
-        # 'steam_flow_temp': 180,
-        # 'steam_flow_temp_unit': 'c',
-        # 'steam_pressure': 980665,
-        # 'steam_pressure_unit': 'Pa',
-        'methane_demand': 70,              #https://www.iea.org/reports/global-methane-tracker-2022/overview
-        'methane_demand_unit': 'KWh/kg',
-        # 'elec_demand': 0.70 / gallon_to_m3,
-        # 'elec_demand_unit': 'kWh/m3',
-        'density': 0.83,                         #https://cdn.intechopen.com/pdfs/11474/InTech-Environmental_technology_assessment_of_natural_gas_compared_to_biogas.pdf
-        #'maturity': 0,
-        'co2_captured__production': 0.21,        #per kg kWh
-                                                 #https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
-        'calorific_value': 15.27,                #https://www.google.com/search?q=What+is+the+calorific+value+of+methane+to+burn+kWh+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEdeVw3daWU9daM6lZi591JsDcc5TWQ%3A1683144074088&ei=ir1SZIaFBae84-EPkOWS8AI&ved=0ahUKEwiG8pCl-Nn-AhUn3jgGHZCyBC4Q4dUDCA8&uact=5&oq=What+is+the+calorific+value+of+methane+to+burn+kWh+in+natural+gas+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAB4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
-        'calorific_value_unit': 'kWh/kg',        #https://www.google.com/search?q=mj+to+kwh&rlz=1C1UEAD_enIN1000IN1000&oq=MJ+to+&aqs=chrome.1.69i57j0i20i131i263i433i512j0i67i650j0i67i131i433i650j0i67i650l5j0i512.5384j0j7&sourceid=chrome&ie=UTF-8
-                                 'Opex_percentage': 0.024,
+        'area': 3000,
+        'area_unit': 'm2',
+        'volume': 10000,
+        'volume_unit': 'm3',
+        'water_demand': 3.5,
+        'water_demand_unit': 'm3/m3',
+        'water_flow_rate':  8000,
+        'water_flow_rate_unit': 'kg/h',
+        'water_wetness_fraction': 0.5,
+        'air_flow_rate': 1000,
+        'air_flow_rate_unit': 'kg/h',
+        'air_temp': 200,
+        'air_temp_unit': 'c',
+        'excess_air_ratio': 0.11,
+        'steam_flow_rate': 8000,
+        'steam_flow_rate_unit': 'kg/h',
+        'steam_flow_temp': 180,
+        'steam_flow_temp_unit': 'c',
+        'steam_pressure': 980665,
+        'steam_pressure_unit': 'Pa',
+        'methane_demand': 1,                             #update exact value
+        'elec_demand': 0.70 / gallon_to_m3,
+        'elec_demand_unit': 'kWh/m3',
+        'maturity': 0,
+        'co2_captured__production': 0,
+        'calorific_value': 0,
                                  # Fixed 1.9 and recurrent 0.5 %
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
                                  'WACC': 0.058,  # Weighted averaged cost of capital / ATB NREL 2020
