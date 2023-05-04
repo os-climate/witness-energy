@@ -51,7 +51,7 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
     # Heat pumps could satisfy over 80% of global space and water heating needs with a lower carbon
     # footprint than gas-fired condensing boilers: however, in 2021 they only met 10%
     construction_delay = 1  # years
-    COP = 3.5
+    #COP = 3.5
 
     techno_infos_dict_default = {
         'Capex_init': 1051, # https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
@@ -64,8 +64,8 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
         'efficiency': 1,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
-        'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
-        'elec_demand_unit': 'kWh/kWh',
+        #'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
+        #'elec_demand_unit': 'kWh/kWh',
         # 'heating_space': 92.9,
         # 'heating_space_unit': 'm^2',
         # 'heat_required_per_meter_square': 0.00879, #https://carbonswitch.com/heat-pump-sizing-guide/#:~:text=If%20you%20Google%20%E2%80%9Cheat%20pump,a%2060%2C000%20BTU%20heat%20pump.

@@ -40,20 +40,14 @@ class HeatPump(HighHeatTechno):
     def grad_price_vs_energy_price(self):
         elec_needs = self.get_theoretical_electricity_needs()
         heat_generated = self.get_theoretical_heat_generated()
-        efficiency = self.techno_infos_dict['COP']
+        Mean_Temperature = HighTemperatureHeat.data_energy_dict['Mean_Temperature']
+        Ambient_Temperature = HighTemperatureHeat.data_energy_dict['Output_Temperature']
+        COP = Ambient_Temperature / (Mean_Temperature - Ambient_Temperature)
+        efficiency = COP
+        #efficiency = self.techno_infos_dict['COP']
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
                HighTemperatureHeat.name: np.identity(len(self.years)) * heat_generated / efficiency,
                }
-##
-##    def grad_price_vs_resources_price(self):
-##        '''
-##        Compute the gradient of global price vs resources prices
-##        '''
-##        efficiency = self.techno_infos_dict['efficiency']
-##        water_needs = self.get_theoretical_water_needs()
-##
-##        return {Water.name: np.identity(len(self.years)) * water_needs / efficiency,
-##                }
 
     def compute_consumption_and_production(self):
         """
@@ -81,11 +75,14 @@ class HeatPump(HighHeatTechno):
 
     def get_theoretical_electricity_needs(self):
 
-        elec_demand = self.techno_infos_dict['elec_demand']  # kWh/kWh
+        #elec_demand = self.techno_infos_dict['elec_demand']  # kWh/kWh
+        Mean_Temperature = HighTemperatureHeat.data_energy_dict['Mean_Temperature']
+        Ambient_Temperature = HighTemperatureHeat.data_energy_dict['Output_Temperature']
+        COP = Ambient_Temperature/(Mean_Temperature-Ambient_Temperature)
         # COP = HighTemperatureHeat.data_energy_dict['COP']                   # kg/m3
         # heating_space = self.techno_infos_dict['heating_space']
         # heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']
-        electricity_needs = elec_demand   # (heating_space*heat_required_per_meter_square) / COP
+        electricity_needs = 1 / COP   # (heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs
 
