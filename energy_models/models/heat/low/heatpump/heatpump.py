@@ -157,12 +157,12 @@ class HeatPump(LowHeatTechno):
         Electricity usage there averaged 0.70 kilowatt hours per gallon of ethanol.
         """
         elec_demand = self.techno_infos_dict['elec_demand']
-        COP = LowTemperatureHeat.data_energy_dict['COP']                   # kg/m3
-        heating_space = self.techno_infos_dict['heating_space']
-        heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']
-        #ethanol_calorific_value = HighTemperatureHeat.data_energy_dict['calorific_value']   # kWh/kg
+        # COP = LowTemperatureHeat.data_energy_dict['COP']                   # kg/m3
+        # heating_space = self.techno_infos_dict['heating_space']
+        # heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']
+        # #ethanol_calorific_value = HighTemperatureHeat.data_energy_dict['calorific_value']   # kWh/kg
 
-        electricity_needs = (heating_space*heat_required_per_meter_square) / COP
+        electricity_needs = elec_demand   # (heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs
 

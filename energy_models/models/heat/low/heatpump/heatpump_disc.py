@@ -40,17 +40,6 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
     techno_name = 'LowHeatPump'
     energy_name = LowTemperatureHeat.name
 
-    # # Conversions
-    pound_to_kg = 0.45359237
-    gallon_to_m3 = 0.00378541
-    liter_per_gallon = 3.78541178
-    #
-    # # energy data
-    # ethanol_density = HighTemperatureHeat.data_energy_dict['density']
-    # ethanol_calorific_value = HighTemperatureHeat.data_energy_dict['calorific_value']
-
-    # Ethanol Producer [Online]
-    # http://www.ethanolproducer.com/articles/2005/time-testing#:~:text=Most%20experts%20suggest%20dry%2Dmill,of%20%22useful%22%20life%20expectancy.
     lifetime = 25           # years
     # https://www.energy.gov/energysaver/heat-pump-systems
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.
@@ -61,7 +50,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
     # With 1 kWh of electricity, heat pump can transfer 3 to 6 kWh of thermal energy into a building.
     # Heat pumps could satisfy over 80% of global space and water heating needs with a lower carbon
     # footprint than gas-fired condensing boilers: however, in 2021 they only met 10%
-    construction_delay = 2  # years
+    construction_delay = 1  # years
     COP = 3.5
 
     techno_infos_dict_default = {
@@ -116,7 +105,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
     # Renewable Fuels Association [online]
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
+        {'past years': np.array(-construction_delay), 'invest': 1051 * np.array([1062000000])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

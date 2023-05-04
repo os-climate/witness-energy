@@ -146,23 +146,23 @@ class HeatPump(MediumHeatTechno):
 ##
 ##        water_needs = water_demand * water_density / (ethanol_density * ethanol_calorific_value)
 ##        return water_needs
-    def get_theoretical_heat_generated(self):
-       heating_space = self.techno_infos_dict['heating_space']
-       heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']                       # kg/m3
-       heat_generated = heating_space * heat_required_per_meter_square
-       return heat_generated
+    # def get_theoretical_heat_generated(self):
+    #    heating_space = self.techno_infos_dict['heating_space']
+    #    heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']                       # kg/m3
+    #    heat_generated = heating_space * heat_required_per_meter_square
+    #    return heat_generated
     def get_theoretical_electricity_needs(self):
         """
         From Ethanol Today Online (http://www.ethanoltoday.com/index.php?option=com_content&task=view&id=5&fid=53&Itemid=6)
         Electricity usage there averaged 0.70 kilowatt hours per gallon of ethanol.
         """
         elec_demand = self.techno_infos_dict['elec_demand']
-        COP = MediumTemperatureHeat.data_energy_dict['COP']                   # kg/m3
-        heating_space = self.techno_infos_dict['heating_space']
-        heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']
-        #ethanol_calorific_value = HighTemperatureHeat.data_energy_dict['calorific_value']   # kWh/kg
+        # COP = MediumTemperatureHeat.data_energy_dict['COP']                   # kg/m3
+        # heating_space = self.techno_infos_dict['heating_space']
+        # heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']
+        # #ethanol_calorific_value = HighTemperatureHeat.data_energy_dict['calorific_value']   # kWh/kg
 
-        electricity_needs = (heating_space*heat_required_per_meter_square) / COP
+        electricity_needs = elec_demand #(heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs
 

@@ -40,19 +40,7 @@ class HeatPumpDiscipline(MediumHeatTechnoDiscipline):
     techno_name = 'MediumHeatPump'
     energy_name = MediumTemperatureHeat.name
 
-    # # Conversions
-    pound_to_kg = 0.45359237
-    gallon_to_m3 = 0.00378541
-    liter_per_gallon = 3.78541178
-    #
-    # # energy data
-    # ethanol_density = HighTemperatureHeat.data_energy_dict['density']
-    # ethanol_calorific_value = HighTemperatureHeat.data_energy_dict['calorific_value']
-
-    # Ethanol Producer [Online]
-    # http://www.ethanolproducer.com/articles/2005/time-testing#:~:text=Most%20experts%20suggest%20dry%2Dmill,of%20%22useful%22%20life%20expectancy.
-    lifetime = 25           # years
-    # https://www.energy.gov/energysaver/heat-pump-systems
+    lifetime = 25           # years # https://www.energy.gov/energysaver/heat-pump-systems
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.
     # Heat pump can reduce your electricity use for heating by approximately 50% compared to
     # electric resistance heating such as furnaces and baseboard heaters.
@@ -61,15 +49,10 @@ class HeatPumpDiscipline(MediumHeatTechnoDiscipline):
     # With 1 kWh of electricity, heat pump can transfer 3 to 6 kWh of thermal energy into a building.
     # Heat pumps could satisfy over 80% of global space and water heating needs with a lower carbon
     # footprint than gas-fired condensing boilers: however, in 2021 they only met 10%
-    construction_delay = 2  # years
+    construction_delay = 1  # years
     COP = 3.5
 
     techno_infos_dict_default = {
-
-        # Gubicza K, Nieves IU, Sagues WJ, Barta Z, Shanmugam KT, Ingram LO.Techno - economic analysis of ethanol
-        # production from sugarcane bagasse using a Liquefaction plus Simultaneous Saccharification and co -
-        # Fermentation process.Bioresour Technol. 2016
-        # from table 6: capex 1.95$/liter
         'Capex_init': 1051, # https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'Capex_init_unit': '$/kW',
         'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
@@ -81,24 +64,18 @@ class HeatPumpDiscipline(MediumHeatTechnoDiscipline):
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
         'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
-        'elec_demand_unit': 'kWh/kW',
+        'elec_demand_unit': 'kWh/kWh',
         'heating_space': 92.9,
         'heating_space_unit': 'm^2',
-        'heat_required_per_meter_square': 0.00879,
-        # https://carbonswitch.com/heat-pump-sizing-guide/#:~:text=If%20you%20Google%20%E2%80%9Cheat%20pump,a%2060%2C000%20BTU%20heat%20pump.
+        'heat_required_per_meter_square': 0.00879, #https://carbonswitch.com/heat-pump-sizing-guide/#:~:text=If%20you%20Google%20%E2%80%9Cheat%20pump,a%2060%2C000%20BTU%20heat%20pump.
         'heat_required_per_meter_square_unit': 'kW/m^2',
-##        'water_demand':  3.5,
-##        'water_demand_unit': 'm3/m3',
-##        'biomass_dry_demand': 56 * pound_to_kg / (2.9 * gallon_to_m3),
-##        'biomass_dry_demand_unit': 'kg/m3',
-        # 'co2_captured__production': 17 * pound_to_kg / (2.9 * gallon_to_m3),
-        # 'co2_captured__production_unit': 'kg/m3',
-        'maturity': 5,
-        'learning_rate': 0.1,
+        #'maturity': 5,
+        'learning_rate': 0.00,
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
     }
+
 
     # heatpump Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
@@ -116,7 +93,7 @@ class HeatPumpDiscipline(MediumHeatTechnoDiscipline):
     # Renewable Fuels Association [online]
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
+        {'past years': np.array(-construction_delay), 'invest': 1051 * np.array([1062000000])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

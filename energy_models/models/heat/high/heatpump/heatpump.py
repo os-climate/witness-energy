@@ -21,18 +21,9 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 import numpy as np
 
 class HeatPump(HighHeatTechno):
-    """
-    From Renewable Fuels Association - https://ethanolrfa.org/ethanol-101/how-is-ethanol-made
-
-        56 pounds of corn --> 17 pounds of captured CO2 + 2.9 gallons on Ethanol (+ corn residues)
-
-    Conversions:
-        - 1 gallon = 0.00378541 m3
-        - 1 pound = 0.45359237 kg
-    """
     def compute_other_primary_energy_costs(self):
         """
-        Compute primary costs to produce 1kWh of biodiesel
+        Compute primary costs to produce 1kWh of Heat Pump Heat Generation
         """
 
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
@@ -82,21 +73,19 @@ class HeatPump(HighHeatTechno):
             self.production[f'{HighTemperatureHeat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
-    def get_theoretical_heat_generated(self):
-       heating_space = self.techno_infos_dict['heating_space']
-       heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']                       # kg/m3
-       heat_generated = heating_space * heat_required_per_meter_square
-       return heat_generated
+    # def get_theoretical_heat_generated(self):
+    #    heating_space = self.techno_infos_dict['heating_space']
+    #    heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']                       # kg/m3
+    #    heat_generated = heating_space * heat_required_per_meter_square
+    #    return heat_generated
 
     def get_theoretical_electricity_needs(self):
 
-        elec_demand = self.techno_infos_dict['elec_demand']
-        COP = HighTemperatureHeat.data_energy_dict['COP']                   # kg/m3
-        heating_space = self.techno_infos_dict['heating_space']
-        heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']
-        #ethanol_calorific_value = HighTemperatureHeat.data_energy_dict['calorific_value']   # kWh/kg
-
-        electricity_needs = (heating_space*heat_required_per_meter_square) / COP
+        elec_demand = self.techno_infos_dict['elec_demand']  # kWh/kWh
+        # COP = HighTemperatureHeat.data_energy_dict['COP']                   # kg/m3
+        # heating_space = self.techno_infos_dict['heating_space']
+        # heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']
+        electricity_needs = elec_demand   # (heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs
 
