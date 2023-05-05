@@ -21,6 +21,8 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 import numpy as np
 
 class HeatPump(HighHeatTechno):
+    #self.Mean_Temperature = 500
+    #self.Output_Temperature =400
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kWh of Heat Pump Heat Generation
@@ -74,11 +76,12 @@ class HeatPump(HighHeatTechno):
     #    return heat_generated
 
     def get_theoretical_electricity_needs(self):
-
+        #self.Mean_Temperature = 500
+        #self.Output_Temperature = 400
         #elec_demand = self.techno_infos_dict['elec_demand']  # kWh/kWh
-        Mean_Temperature = HighTemperatureHeat.data_energy_dict['Mean_Temperature']
-        Ambient_Temperature = HighTemperatureHeat.data_energy_dict['Output_Temperature']
-        COP = Ambient_Temperature/(Mean_Temperature-Ambient_Temperature)
+        #Mean_Temperature = HighTemperatureHeat.data_energy_dict['Mean_Temperature']
+        #Ambient_Temperature = HighTemperatureHeat.data_energy_dict['Output_Temperature']
+        COP = self.Output_Temperature/(self.Output_Temperature - self.Mean_Temperature)
         # COP = HighTemperatureHeat.data_energy_dict['COP']                   # kg/m3
         # heating_space = self.techno_infos_dict['heating_space']
         # heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']

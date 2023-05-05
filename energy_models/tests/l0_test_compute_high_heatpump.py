@@ -37,6 +37,8 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
+        self.Mean_Temperature = 400
+        self.Output_Temperature = 500
         years = np.arange(2020, 2051)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -116,6 +118,8 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
                        'data_fuel_dict': HighTemperatureHeat.data_energy_dict,
                        }
 
+        HeatPump.Mean_Temperature = self.Mean_Temperature
+        HeatPump.Output_Temperature = self.Output_Temperature
         heatpump_model = HeatPump('HeatPump')
         heatpump_model.configure_parameters(inputs_dict)
         heatpump_model.configure_parameters_update(inputs_dict)
@@ -163,8 +167,8 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
 
 
 if __name__ == "__main__":

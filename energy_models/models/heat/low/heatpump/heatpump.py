@@ -88,8 +88,9 @@ class HeatPump(LowHeatTechno):
         # heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']
 
         #elec_demand = self.techno_infos_dict['elec_demand']  # kWh/kWh
-        Mean_Temperature = LowTemperatureHeat.data_energy_dict['Mean_Temperature']
-        Ambient_Temperature = LowTemperatureHeat.data_energy_dict['Output_Temperature']
-        COP = Ambient_Temperature/(Mean_Temperature-Ambient_Temperature)
+        # Mean_Temperature = LowTemperatureHeat.data_energy_dict['Mean_Temperature']
+        # Ambient_Temperature = LowTemperatureHeat.data_energy_dict['Output_Temperature']
+        # COP = Ambient_Temperature/(Mean_Temperature-Ambient_Temperature)
+        COP = self.Output_Temperature / (self.Output_Temperature - self.Mean_Temperature)
         electricity_needs = 1 / COP   # (heating_space*heat_required_per_meter_square) / COP
         return electricity_needs
