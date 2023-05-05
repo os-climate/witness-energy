@@ -52,7 +52,7 @@ class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 80,    # consumptions and productions already have efficiency included
+        'efficiency': 0.8,    # consumptions and productions already have efficiency included
         'natural_gas_calorific_val': 53600,
         'natural_gas_calorific_val_unit': 'kJ/kg',
         'natural_gas_flow_rate': 100,
@@ -85,13 +85,14 @@ class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
         # 'steam_pressure': 980665,
         # 'steam_pressure_unit': 'Pa',
         'methane_demand': 92,                   #https://www.iea.org/reports/global-methane-tracker-2022/overview
-        'methane_demand_unit': 'KWh/kg',
+        'methane_demand_unit': 'kWh/kWh',
         # 'elec_demand': 0.70 / gallon_to_m3,
         # 'elec_demand_unit': 'kWh/m3',
         'density': 0.83,                         #https://cdn.intechopen.com/pdfs/11474/InTech-Environmental_technology_assessment_of_natural_gas_compared_to_biogas.pdf
         #'maturity': 0,
-        'co2_captured__production': 0.21,        #per kg kWh
-                                                 #https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
+        'CO2_from_production': 0.21,        #kg per kWh of heat
+        'unit' : 'kg/kwh',
+                             #https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
         'calorific_value': 15.27,                #https://www.google.com/search?q=What+is+the+calorific+value+of+methane+to+burn+kWh+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEdeVw3daWU9daM6lZi591JsDcc5TWQ%3A1683144074088&ei=ir1SZIaFBae84-EPkOWS8AI&ved=0ahUKEwiG8pCl-Nn-AhUn3jgGHZCyBC4Q4dUDCA8&uact=5&oq=What+is+the+calorific+value+of+methane+to+burn+kWh+in+natural+gas+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAB4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
         'calorific_value_unit': 'kWh/kg',        #https://www.google.com/search?q=mj+to+kwh&rlz=1C1UEAD_enIN1000IN1000&oq=MJ+to+&aqs=chrome.1.69i57j0i20i131i263i433i512j0i67i650j0i67i131i433i650j0i67i650l5j0i512.5384j0j7&sourceid=chrome&ie=UTF-8
                                  'Opex_percentage': 0.024,
