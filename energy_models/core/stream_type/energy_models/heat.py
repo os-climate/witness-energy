@@ -23,8 +23,6 @@ class LowTemperatureHeat(EnergyType):
     data_energy_dict = {'maturity': 5,
                         'Highest_Temperature': 100,
                         'Temperature_unit': 'c',
-                        #'Mean_Temperature': 60,
-                        #'Output_Temperature': 40,
                         }
 
 
@@ -37,8 +35,6 @@ class MediumTemperatureHeat(EnergyType):
                         'Highest_Temperature': 400,
                         'Lowest_Temperature': 100,
                         'Temperature_unit': 'c',
-                        #'Mean_Temperature': 250,
-                        #'Output_Temperature': 200,
                         }
 
 
@@ -51,6 +47,4 @@ class HighTemperatureHeat(EnergyType):
                         'density': 100,
                         'Lowest_Temperature': 400,
                         'Temperature_unit': 'c',
-                        #'Mean_Temperature': 500,
-                        #'Output_Temperature': 400,
                         }
