@@ -17,9 +17,9 @@ class NaturalGasHighHeat(HighHeatTechno):
 
         self.cost_details[f'{Methane.name}'] = \
             self.prices[f'{Methane.name}'] * \
-            self.cost_details[f'{Methane.name}_needs'] \
-            # / \
-            # self.cost_details['efficiency']
+            self.cost_details[f'{Methane.name}_needs']  / \
+            self.cost_details['efficiency']
+
 
         return self.cost_details[f'{Methane.name}']
 
@@ -42,11 +42,9 @@ class NaturalGasHighHeat(HighHeatTechno):
 
         self.compute_primary_energy_production()
 
-        # Production
-        carbon_production_factor = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
-            self.production[f'{HighTemperatureHeat.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+
+        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
+            self.production[f'{HighTemperatureHeat.energy_name} ({self.product_energy_unit})']
 
         # Consumption
 
@@ -55,32 +53,23 @@ class NaturalGasHighHeat(HighHeatTechno):
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
-        Need to take into account CO2 from fuel production
+        Need to take into account CO2 from Methane production
         '''
 
         self.carbon_emissions[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-            self.cost_details[f'{Methane.name}_needs'] / \
-            self.cost_details['efficiency']
+            self.cost_details[f'{Methane.name}_needs'] 
 
         return self.carbon_emissions[f'{Methane.name}']
 
     def get_theoretical_methane_needs(self):
-
+        # we need as output kwh/kwh 
         methane_demand = self.techno_infos_dict['methane_demand']
 
-        heat_density = Methane.data_energy_dict['density']                       # kg/m3
-        #cost_details = Methane.data_energy_dict['cost_details']
-        methane_price = Methane.name['prices']
 
-        methane_needs = (methane_demand / heat_density) * methane_price
+        h#eat_density = Methane.data_energy_dict['density']                       # kg/m3
+
+        methane_needs = methane_demand
         return methane_needs
 
-    def get_theoretical_co2_prod(self, unit='kg/kWh'):
 
-        co2_captured__production = self.techno_infos_dict['co2_captured__production']
-        heat_density = Methane.data_energy_dict['density']                       # kg/Nm3
-        heat_calorific_value = Methane.data_energy_dict['calorific_value']       # kWh/kg
 
-        co2_prod = co2_captured__production / (heat_density * heat_calorific_value)
-
-        return co2_prod
