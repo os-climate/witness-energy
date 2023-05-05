@@ -1,28 +1,44 @@
+'''
+Copyright 2022 Airbus SAS
 
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
 import unittest
 import pandas as pd
 import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.medium.natural_gas.natural_gas_disc import MediumTemperatureHeatDiscipline
-from energy_models.models.heat.medium.natural_gas.natural_gas import NaturalGasMediumHeat
+from energy_models.models.heat.high.heatpump.heatpump_disc import HeatPumpDiscipline
+from energy_models.models.heat.low.heatpump.heatpump import HeatPump
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
 
 
-class NaturalGasTestCase(unittest.TestCase):
+class HeatPumpLowTemperaureTestCase(unittest.TestCase):
     """
-    NaturalGas test class
+    HeatPump prices test class
     """
 
     def setUp(self):
         '''
         Initialize third data needed for testing
         '''
+        self.Mean_Temperature = 40
+        self.Output_Temperature = 60
         years = np.arange(2020, 2051)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -34,17 +50,17 @@ class NaturalGasTestCase(unittest.TestCase):
 
         self.energy_prices = pd.DataFrame({'years': years,
                                            'electricity': np.ones(len(years)) * 10.0,
-                                           'methane': np.ones(len(years)) * 45.0,
+                                           'biomass_dry': np.ones(len(years)) * 45.0,
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, 'methane': 0.0})
+        self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, 'biomass_dry': - 0.64 / 4.86})
         self.resources_price = pd.DataFrame({'years': years, 'water_resource': 2.0})
-        self.resources_CO2_emissions = pd.DataFrame({'years': years, 'water': 0.0})
+
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': np.ones(len(years)) * 10.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69,   50.29]
+                     29.01,  34.05,   39.08,  44.69,   50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -68,26 +84,26 @@ class NaturalGasTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'methane.NaturalGas']
+                                                == 'heat.HeatPump']
 
     def tearDown(self):
         pass
 
-    def test_01_compute_natural_gas_price_prod_consumption(self):
+    def test_01_compute_heatpump_price(self):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
-                       'techno_infos_dict': MediumTemperatureHeatDiscipline.techno_infos_dict_default,
+                       'techno_infos_dict': HeatPumpDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
                        'resources_price': self.resources_price,
                        'invest_level': self.invest_level,
-                       'invest_before_ystart': MediumTemperatureHeatDiscipline.invest_before_year_start,
+                       'invest_before_ystart': HeatPumpDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
                        'transport_margin': self.margin,
-                       'initial_production': MediumTemperatureHeatDiscipline.initial_production,
-                       'initial_age_distrib': MediumTemperatureHeatDiscipline.initial_age_distribution,
+                       'initial_production': HeatPumpDiscipline.initial_production,
+                       'initial_age_distrib': HeatPumpDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
                        'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
@@ -98,30 +114,30 @@ class NaturalGasTestCase(unittest.TestCase):
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Methane.data_energy_dict,
+                       'data_fuel_dict': LowTemperatureHeat.data_energy_dict,
                        }
+        HeatPump.Mean_Temperature = self.Mean_Temperature
+        HeatPump.Output_Temperature = self.Output_Temperature
+        heatpump_model = HeatPump('HeatPump')
+        heatpump_model.configure_parameters(inputs_dict)
+        heatpump_model.configure_parameters_update(inputs_dict)
+        price_details = heatpump_model.compute_price()
+        heatpump_model.compute_consumption_and_production()
+        # bf_model.check_outputs_dict(self.biblio_data)
 
-        ng_model = NaturalGasMediumHeat('NaturalGas')
-        ng_model.configure_parameters(inputs_dict)
-        ng_model.configure_parameters_update(inputs_dict)
-        price_details = ng_model.compute_price()
-        ng_model.compute_consumption_and_production()
-        # ng_model.check_outputs_dict(self.biblio_data)
-
-    def test_02_natural_gas_discipline(self):
+    def test_02_heatpump_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'NaturalGas'
+        self.model_name = 'HeatPump'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
-                   'ns_methane': f'{self.name}',
-                   'ns_resource': self.name,
-                   'ns_heat': f'{self.name}'
+                   'ns_heat': f'{self.name}',
+                   'ns_resource': self.name
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.medium.natural_gas.natural_gas_disc.MediumTemperatureHeatDiscipline'
+        mod_path = 'energy_models.models.heat.low.heatpump.heatpump_disc.HeatPumpDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

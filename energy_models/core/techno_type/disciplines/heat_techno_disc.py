@@ -14,18 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
-from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
 from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
-
+from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 
 
-class HighHeatTechnoDiscipline(TechnoDiscipline):
-
+class LowHeatTechnoDiscipline(TechnoDiscipline):
     # ontology information
     _ontology_data = {
-        'label': 'High Heat Technology Model',
+        'label': 'Low Heat Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -36,22 +34,24 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_methane',
-                                  'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                           'transport': ('float',  None, True)},
+    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                  'namespace': 'ns_heat',
+                                  'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                           'transport': ('float', None, True)},
                                   'dataframe_edition_locked': False},
-               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_methane',
-                                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                             'margin': ('float',  None, True)},
+               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                    'namespace': 'ns_heat',
+                                    'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                             'margin': ('float', None, True)},
                                     'dataframe_edition_locked': False},
-               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_methane', 'default': HighTemperatureHeat.data_energy_dict},
+                             'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                'namespace': 'ns_heat', 'default': LowTemperatureHeat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 
     _maturity = 'Research'
 
-    energy_name = HighTemperatureHeat.name
+    energy_name = LowTemperatureHeat.name
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
@@ -67,10 +67,9 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
 
 
 class MediumHeatTechnoDiscipline(TechnoDiscipline):
-
     # ontology information
     _ontology_data = {
-        'label': 'Medium Heat Technology Model',
+        'label': 'Medium Heat Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -81,16 +80,18 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_methane',
-                                  'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                           'transport': ('float',  None, True)},
+    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                  'namespace': 'ns_heat',
+                                  'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                           'transport': ('float', None, True)},
                                   'dataframe_edition_locked': False},
-               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_methane',
-                                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                             'margin': ('float',  None, True)},
+               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                    'namespace': 'ns_heat',
+                                    'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                             'margin': ('float', None, True)},
                                     'dataframe_edition_locked': False},
-               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_methane', 'default': MediumTemperatureHeat.data_energy_dict},
+                              'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                 'namespace': 'ns_heat', 'default': MediumTemperatureHeat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 
@@ -109,13 +110,12 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
-        
 
-class LowHeatTechnoDiscipline(TechnoDiscipline):
 
+class HighHeatTechnoDiscipline(TechnoDiscipline):
     # ontology information
     _ontology_data = {
-        'label': 'Low Heat Technology Model',
+        'label': 'High Heat Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -126,22 +126,24 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_methane',
-                                  'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                           'transport': ('float',  None, True)},
+    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                  'namespace': 'ns_heat',
+                                  'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                           'transport': ('float', None, True)},
                                   'dataframe_edition_locked': False},
-               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_methane',
-                                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                             'margin': ('float',  None, True)},
+               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                    'namespace': 'ns_heat',
+                                    'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                             'margin': ('float', None, True)},
                                     'dataframe_edition_locked': False},
-               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_methane', 'default': LowTemperatureHeat.data_energy_dict},
+                              'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                 'namespace': 'ns_heat', 'default': HighTemperatureHeat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 
     _maturity = 'Research'
 
-    energy_name = LowTemperatureHeat.name
+    energy_name = HighTemperatureHeat.name
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
