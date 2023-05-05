@@ -17,8 +17,9 @@ class NaturalGasHighHeat(HighHeatTechno):
 
         self.cost_details[f'{Methane.name}'] = \
             self.prices[f'{Methane.name}'] * \
-            self.cost_details[f'{Methane.name}_needs'] / \
-            self.cost_details['efficiency']
+            self.cost_details[f'{Methane.name}_needs'] \
+            # / \
+            # self.cost_details['efficiency']
 
         return self.cost_details[f'{Methane.name}']
 
@@ -68,9 +69,10 @@ class NaturalGasHighHeat(HighHeatTechno):
         methane_demand = self.techno_infos_dict['methane_demand']
 
         heat_density = Methane.data_energy_dict['density']                       # kg/m3
-        cost_details = Methane.data_energy_dict['cost_details']
+        #cost_details = Methane.data_energy_dict['cost_details']
+        methane_price = Methane.name['prices']
 
-        methane_needs = (methane_demand / heat_density) * cost_details
+        methane_needs = (methane_demand / heat_density) * methane_price
         return methane_needs
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):

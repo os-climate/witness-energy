@@ -64,32 +64,9 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
         'gas_fired_boiler_unit': 'kW/kWh',
         'wall_temp': 300,
         'wall_temp_unit': 'c',
-        # 'area': 3000,
-        # 'area_unit': 'm2',
-        # 'volume': 10000,
-        # 'volume_unit': 'm3',
-        # 'water_demand': 3.5,
-        # 'water_demand_unit': 'm3/m3',
-        # 'water_flow_rate':  8000,
-        # 'water_flow_rate_unit': 'kg/h',
-        # 'water_wetness_fraction': 0.5,
-        # 'air_flow_rate': 1000,
-        # 'air_flow_rate_unit': 'kg/h',
-        # 'air_temp': 200,
-        # 'air_temp_unit': 'c',
-        # 'excess_air_ratio': 0.11,
-        # 'steam_flow_rate': 8000,
-        # 'steam_flow_rate_unit': 'kg/h',
-        # 'steam_flow_temp': 180,
-        # 'steam_flow_temp_unit': 'c',
-        # 'steam_pressure': 980665,
-        # 'steam_pressure_unit': 'Pa',
         'methane_demand': 45,              #https://www.iea.org/reports/global-methane-tracker-2022/overview
         'methane_demand_unit': 'KWh/kg',
-        # 'elec_demand': 0.70 / gallon_to_m3,
-        # 'elec_demand_unit': 'kWh/m3',
         'density': 0.83,                         #https://cdn.intechopen.com/pdfs/11474/InTech-Environmental_technology_assessment_of_natural_gas_compared_to_biogas.pdf
-        #'maturity': 0,
         'co2_captured__production': 0.21,        #per kg kWh
                                                  #https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
         'calorific_value': 15.27,                #https://www.google.com/search?q=What+is+the+calorific+value+of+methane+to+burn+kWh+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEdeVw3daWU9daM6lZi591JsDcc5TWQ%3A1683144074088&ei=ir1SZIaFBae84-EPkOWS8AI&ved=0ahUKEwiG8pCl-Nn-AhUn3jgGHZCyBC4Q4dUDCA8&uact=5&oq=What+is+the+calorific+value+of+methane+to+burn+kWh+in+natural+gas+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAB4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
