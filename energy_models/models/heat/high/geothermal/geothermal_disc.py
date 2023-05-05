@@ -50,22 +50,20 @@ class GeothermalHeatDiscipline(HighHeatTechnoDiscipline):
     # With 1 kWh of electricity, heat pump can transfer 3 to 6 kWh of thermal energy into a building.
     # Heat pumps could satisfy over 80% of global space and water heating needs with a lower carbon
     # footprint than gas-fired condensing boilers: however, in 2021 they only met 10%
-    construction_delay = 1  # years
-    COP = 3.5
-
+    construction_delay = 2  # years
     techno_infos_dict_default = {
-        'Capex_init': 1051, # https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        'Capex_init': 3830, # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
         'Capex_init_unit': '$/kW',
-        'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        'Opex_percentage': 0.0287, # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
         'efficiency': 1,    # consumptions and productions already have efficiency included
-        'CO2_from_production': 0.0,
-        'CO2_from_production_unit': 'kg/kg',
-        'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
-        'elec_demand_unit': 'kWh/kWh',
+        'CO2_from_production': 0.122, # https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf
+        'CO2_from_production_unit': 'kg/kWh',
+        # 'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
+        # 'elec_demand_unit': 'kWh/kWh',
         # 'heating_space': 92.9,
         # 'heating_space_unit': 'm^2',
         # 'heat_required_per_meter_square': 0.00879, #https://carbonswitch.com/heat-pump-sizing-guide/#:~:text=If%20you%20Google%20%E2%80%9Cheat%20pump,a%2060%2C000%20BTU%20heat%20pump.
