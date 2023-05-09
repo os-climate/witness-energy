@@ -60,17 +60,14 @@ class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
         'gas_fired_boiler_unit': 'kW/kWh',
         'wall_temp': 300,
         'wall_temp_unit': 'c',
-        'methane_demand': 92,                   #https://www.iea.org/reports/global-methane-tracker-2022/overview
-                                             #https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
+        'methane_demand': 97.06,             #https://www.google.com/search?q=How+much+methane+needed+to+produce+1+kWh+of+heat+at+heat+temperature+80%3F&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEddzSFHzwGkGFXCu_rQQ19T3kjnXYw%3A1683615064049&ei=WO1ZZNC-Ar2QseMPjY2w0A0&ved=0ahUKEwjQytLu0uf-AhU9SGwGHY0GDNoQ4dUDCA8&uact=5&oq=How+much+methane+needed+to+produce+1+kWh+of+heat+at+heat+temperature+80%3F&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAF4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
+                                             #https://iopscience.iop.org/article/10.1088/1755-1315/230/1/012075/pdf#:~:text=With%20assumption%20of%20electrical%20conversion,methane%20will%20yield%2010%20kWh.
+                                             #https://www.calculat.org/en/energy-fuel/gas-consumption/
 
         'methane_demand_unit': 'kWh/kWh',
-        # 'elec_demand': 0.70 / gallon_to_m3,
-        # 'elec_demand_unit': 'kWh/m3',
-        'density': 0.83,                         #https://cdn.intechopen.com/pdfs/11474/InTech-Environmental_technology_assessment_of_natural_gas_compared_to_biogas.pdf
-        #'maturity': 0,
-        'CO2_from_production': 0.21,            #kg per kWh of heat
-        'unit': 'kg/kwh',
-                             #https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
+        'density': 0.83,                       #https://cdn.intechopen.com/pdfs/11474/InTech-Environmental_technology_assessment_of_natural_gas_compared_to_biogas.pdf
+        'CO2_from_production': 0.43,           #https://www.eia.gov/tools/faqs/faq.php?id=74&t=11
+        'unit': 'kg/kwh',                      #https://www.google.com/search?q=pounds+to+kg&rlz=1C1UEAD_enIN1000IN1000&oq=pounds+&aqs=chrome.1.69i57j0i67i131i433i650l2j0i67i650j0i131i433i512j0i67i433i650j0i67i131i433i650j0i67i650j0i131i433i512l2.4124j0j7&sourceid=chrome&ie=UTF-8
 
         'calorific_value': 15.27,                #https://www.google.com/search?q=What+is+the+calorific+value+of+methane+to+burn+kWh+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEdeVw3daWU9daM6lZi591JsDcc5TWQ%3A1683144074088&ei=ir1SZIaFBae84-EPkOWS8AI&ved=0ahUKEwiG8pCl-Nn-AhUn3jgGHZCyBC4Q4dUDCA8&uact=5&oq=What+is+the+calorific+value+of+methane+to+burn+kWh+in+natural+gas+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAB4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
         'calorific_value_unit': 'kWh/kg',        #https://www.google.com/search?q=mj+to+kwh&rlz=1C1UEAD_enIN1000IN1000&oq=MJ+to+&aqs=chrome.1.69i57j0i20i131i263i433i512j0i67i650j0i67i131i433i650j0i67i650l5j0i512.5384j0j7&sourceid=chrome&ie=UTF-8
@@ -88,7 +85,7 @@ class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
 
     }
 
-    # Renewable Fuels Association [online]
+    # Renewable Methane Association [online]
     # production in 2019: 29330 million gallons
     # in TWh
     initial_production = 29330
@@ -103,8 +100,7 @@ class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
 
-    # Renewable Fuels Association [online]
-    # https://heatrfa.org/markets-and-statistics/annual-heat-production
+    # Renewable Methane Association [online]
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
 
