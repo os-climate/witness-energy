@@ -5,18 +5,18 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.low.natural_gas.natural_gas_disc import LowTemperatureHeatDiscipline
-from energy_models.models.heat.low.natural_gas.natural_gas import NaturalGasLowHeat
+from energy_models.models.heat.low.electric_boiler.electric_boiler_disc import LowTemperatureHeatDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
+from energy_models.models.heat.low.electric_boiler.electric_boiler import ElectricBoilerHeat
 
 
-class NaturalGasTestCase(unittest.TestCase):
+class ElectricBoilerTestCase(unittest.TestCase):
     """
-    NaturalGas test class
+    Electric Boiler test class
     """
 
     def setUp(self):
@@ -34,10 +34,10 @@ class NaturalGasTestCase(unittest.TestCase):
 
         self.energy_prices = pd.DataFrame({'years': years,
                                            'electricity': np.ones(len(years)) * 10.0,
-                                           'methane': np.ones(len(years)) * 45.0,
+                                           'heat': np.ones(len(years)) * 45.0,
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, 'methane': 0.0})
+        self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, 'heat': 0.0})
         self.resources_price = pd.DataFrame({'years': years, 'water_resource': 2.0})
         self.resources_CO2_emissions = pd.DataFrame({'years': years, 'water': 0.0})
         self.invest_level = pd.DataFrame(
@@ -68,7 +68,7 @@ class NaturalGasTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'methane.NaturalGas']
+                                                == 'heat.ElectricBoiler']
         # self.technologies_list = [
         #     'natural_gas_resource']
 
@@ -100,10 +100,10 @@ class NaturalGasTestCase(unittest.TestCase):
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Methane.data_energy_dict
+                       'data_fuel_dict': LowTemperatureHeat.data_energy_dict
                        }
 
-        ng_model = NaturalGasLowHeat('NaturalGas')
+        ng_model = ElectricBoilerHeat('ElectricBoiler')
         ng_model.configure_parameters(inputs_dict)
         ng_model.configure_parameters_update(inputs_dict)
         price_details = ng_model.compute_price()
@@ -117,13 +117,12 @@ class NaturalGasTestCase(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
-                   'ns_methane': f'{self.name}',
                    'ns_resource': self.name,
                    'ns_heat': f'{self.name}'
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.low.natural_gas.natural_gas_disc.LowTemperatureHeatDiscipline'
+        mod_path = 'energy_models.models.heat.low.electric_boiler.electric_boiler_disc.LowTemperatureHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -151,8 +150,8 @@ class NaturalGasTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
 
 
 if __name__ == "__main__":
