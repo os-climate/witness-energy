@@ -60,7 +60,7 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
         'gas_fired_boiler_unit': 'kW/kWh',
         'wall_temp': 300,
         'wall_temp_unit': 'c',
-        'methane_demand': 1055,              #https://www.google.com/search?q=How+much+methane+needed+to+produce+1+kWh+of+heat+at+heat+temperature+80%3F&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEddzSFHzwGkGFXCu_rQQ19T3kjnXYw%3A1683615064049&ei=WO1ZZNC-Ar2QseMPjY2w0A0&ved=0ahUKEwjQytLu0uf-AhU9SGwGHY0GDNoQ4dUDCA8&uact=5&oq=How+much+methane+needed+to+produce+1+kWh+of+heat+at+heat+temperature+80%3F&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAF4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
+        'methane_demand': 42.2,              #https://www.google.com/search?q=How+much+methane+needed+to+produce+1+kWh+of+heat+at+heat+temperature+80%3F&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEddzSFHzwGkGFXCu_rQQ19T3kjnXYw%3A1683615064049&ei=WO1ZZNC-Ar2QseMPjY2w0A0&ved=0ahUKEwjQytLu0uf-AhU9SGwGHY0GDNoQ4dUDCA8&uact=5&oq=How+much+methane+needed+to+produce+1+kWh+of+heat+at+heat+temperature+80%3F&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAF4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
                                              #https://iopscience.iop.org/article/10.1088/1755-1315/230/1/012075/pdf#:~:text=With%20assumption%20of%20electrical%20conversion,methane%20will%20yield%2010%20kWh.
                                              #https://www.calculat.org/en/energy-fuel/gas-consumption/
 
