@@ -32,7 +32,6 @@ class ElectricBoilerHeat(LowHeatTechno):
     def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices
-        Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_theoretical_electricity_needs()
         efficiency = self.techno_infos_dict['efficiency']
@@ -68,27 +67,20 @@ class ElectricBoilerHeat(LowHeatTechno):
 
     def get_theoretical_water_needs(self):
         """
-        From Renewable Fuel Association (https://ethanolrfa.org/file/1795/waterusagenrel-1.pdf)
-        3 to 4 gallons of water per gallon of ethanol produced
-
-        Needs in kg of Water per kWh of Ethanol
+        Needs in kg of Water per kWh of heat
         """
         water_demand = self.techno_infos_dict['water_demand']
         water_density = Water.data_energy_dict['density']  # kg/m3
-        heat_density = LowTemperatureHeat.data_energy_dict['density']  # kg/m3
 
-        water_needs = water_demand * water_density / heat_density
+        water_needs = water_demand * water_density
         return water_needs
 
     def get_theoretical_electricity_needs(self):
-        """
-        From Ethanol Today Online (http://www.ethanoltoday.com/index.php?option=com_content&task=view&id=5&fid=53&Itemid=6)
-        Electricity usage there averaged 0.70 kilowatt hours per gallon of ethanol.
-        """
-        elec_demand = self.techno_infos_dict['elec_demand']
-        heat_density = LowTemperatureHeat.data_energy_dict['density']  # kg/m3
+        # we need as output kwh/kwh
 
-        electricity_needs = elec_demand /heat_density
+        elec_demand = self.techno_infos_dict['elec_demand']
+
+        electricity_needs = elec_demand
 
         return electricity_needs
 

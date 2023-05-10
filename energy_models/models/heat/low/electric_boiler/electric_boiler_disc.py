@@ -31,34 +31,32 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
     liter_per_gallon = 3.78541178
 
     # Heat Producer [Online]
-    # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+    #https://www.google.com/search?q=electric+boiler+maximum+heat+temperature+in+degree+celcius&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdf5IN3xbJw5uB3tC7-M-5nvtg8TKg%3A1683626939090&ei=uxtaZNOCBYWeseMP6ZuEwAM&ved=0ahUKEwiTzI2N_-f-AhUFT2wGHekNATgQ4dUDCA8&uact=5&oq=electric+boiler+maximum+heat+temperature+in+degree+celcius&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCCEQoAEyBQghEKABMgUIIRCgATIFCCEQoAE6CwgAEIoFEIYDELADOggIIRAWEB4QHToHCCEQoAEQCjoECCEQFUoECEEYAVDPB1izUGDqoQVoAXAAeACAAZ0BiAGUBJIBAzAuNJgBAKABAcgBA8ABAQ&sclient=gws-wiz-serp
+    #https://www.google.com/search?q=electric+boiler+lifetime&rlz=1C1UEAD_enIN1000IN1000&oq=electric+boiler+lifetime&aqs=chrome..69i57j0i22i30l4j0i390i650l4.14155j0j7&sourceid=chrome&ie=UTF-8
     lifetime = 45          # years
-    # Economic and Technical Analysis of Heat Dry Milling: Model Description.
-    # Rhys T.Dale and Wallace E.Tyner Staff Paper
-    # Agricultural Economics Department Purdue University
+
     construction_delay = 2  # years
 
     techno_infos_dict_default = {
 
-        'Capex_init': 2000,
+        'Capex_init': 2000,           #https://www.google.com/search?q=capex+of+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=capeHow%20much%20does%20an%20electric%20boiler%20capital%20cost?The%20costs%20of%20an%20electric%20boiler%20installation%20can%20range%20from%20a%C2%A0minimum%20$6,469%20to%20$11,885%C2%A0in%20total%20price.
         'Capex_init_unit': '$/kW',    # $ per kW of electricity
-        'Opex_percentage': 0.15,
+        'Opex_percentage': 1.6,       #https://www.google.com/search?q=+OPEX+%25+of+an+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEddXq4YjX58191BnDyTZd08c2VWtJw%3A1683713517747&ei=7W1bZJqaLaicseMP_pSKkAQ&ved=0ahUKEwjaxIPRwer-AhUoTmwGHX6KAkIQ4dUDCA8&uact=5&oq=+OPEX+%25+of+an+electric+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQogQyBQgAEKIEMgUIABCiBDIFCAAQogQ6BQghEKABSgQIQRgAUABYxSdggjFoAHAAeACAAZYBiAGuA5IBAzIuMpgBAKABAcABAQ&sclient=gws-wiz-serp
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 1,    # consumptions and productions already have efficiency included
-        'elec_demand': 40,
+        'efficiency': 1,            # consumptions and productions already have efficiency included
+        'elec_demand': 4.5,         #https://www.google.com/search?q=electric+demand+of+electric+boiler+in+kwh+per+m3&rlz=1C1UEAD_enIN1000IN1000&oq=&aqs=chrome.0.35i39i362l8.275158j0j7&sourceid=chrome&ie=UTF-8
         'elec_demand_unit': 'kWh/h',
-        'water_demand': 1.13,
-        'water_demand_unit': 'm3/h',
+        'water_demand': 1.13,         #https://www.google.com/search?q=water+required+in+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=water+required+in+electric+boiler+&aqs=chrome..69i57j33i160j33i22i29i30.14095j0j7&sourceid=chrome&ie=UTF-8
+        'water_demand_unit': 'm3/h',  #https://www.xconvert.com/unit-converter/gallons-per-minute-to-cubic-meters-per-hour
         'learning_rate': 0.56,
         'full_load_hours': 8760.0,
         'WACC': 0.062,
         'techno_evo_eff': 'no',
     }
 
-    # Renewable Methane Association [online]
     # production in 2019: 29330 million gallons
     # in TWh
     initial_production = 29330

@@ -23,7 +23,6 @@ class LowTemperatureHeat(EnergyType):
     data_energy_dict = {'maturity': 5,
                         'Highest_Temperature': 100,
                         'Temperature_unit': 'c',
-                        'density': 1000,   #kg/m3
                         }
 
 
