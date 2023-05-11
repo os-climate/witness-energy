@@ -56,8 +56,8 @@ class NaturalGasHighHeat(HighHeatTechno):
             self.production[f'{HighTemperatureHeat.name} ({self.product_energy_unit})']
 
         # CO2 production
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / Methane.data_energy_dict[
-                                                                                   'calorific_value'] * \
+        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
+                                                                               Methane.data_energy_dict['calorific_value'] * \
             self.consumption[f'{Methane.name} ({self.product_energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):

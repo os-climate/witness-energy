@@ -49,13 +49,15 @@ class NaturalGasMediumHeat(MediumHeatTechno):
 
         self.compute_primary_energy_production()
 
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
-            self.production[f'{MediumTemperatureHeat.name} ({self.product_energy_unit})']
-
         # Consumption
 
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
             self.production[f'{MediumTemperatureHeat.name} ({self.product_energy_unit})']
+
+        # CO2 production
+        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
+                                                                               Methane.data_energy_dict['calorific_value'] * \
+            self.consumption[f'{Methane.name} ({self.product_energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
