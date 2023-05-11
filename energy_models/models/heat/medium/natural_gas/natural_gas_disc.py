@@ -60,15 +60,12 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
         'gas_fired_boiler_unit': 'kW/kWh',
         'wall_temp': 300,
         'wall_temp_unit': 'c',
-        'methane_demand': 99.17,             #https://www.google.com/search?q=How+much+methane+needed+to+produce+1+kWh+of+heat+at+heat+temperature+80%3F&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEddzSFHzwGkGFXCu_rQQ19T3kjnXYw%3A1683615064049&ei=WO1ZZNC-Ar2QseMPjY2w0A0&ved=0ahUKEwjQytLu0uf-AhU9SGwGHY0GDNoQ4dUDCA8&uact=5&oq=How+much+methane+needed+to+produce+1+kWh+of+heat+at+heat+temperature+80%3F&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAF4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
-                                             #https://iopscience.iop.org/article/10.1088/1755-1315/230/1/012075/pdf#:~:text=With%20assumption%20of%20electrical%20conversion,methane%20will%20yield%2010%20kWh.
-                                             #https://www.calculat.org/en/energy-fuel/gas-consumption/
-
+        'methane_demand': 4.1,              #https://www.google.com/search?q=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEddkE5qRhRRbGSHtQirxZW_RtyyzWw%3A1683733882525&ei=er1bZIrJH8yYseMPjN-D0AQ&ved=0ahUKEwiK7tq_jev-AhVMTGwGHYzvAEoQ4dUDCA8&uact=5&oq=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAF4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
+                                            #https://www.kylesconverter.com/energy,-work,-and-heat/cubic-feet-of-natural-gas-to-kilowatt--hours
         'methane_demand_unit': 'kWh/kWh',
         'density': 0.83,                       #https://cdn.intechopen.com/pdfs/11474/InTech-Environmental_technology_assessment_of_natural_gas_compared_to_biogas.pdf
-        'CO2_from_production': 0.43,           #https://www.eia.gov/tools/faqs/faq.php?id=74&t=11
-        'unit': 'kg/kwh',                      #https://www.google.com/search?q=pounds+to+kg&rlz=1C1UEAD_enIN1000IN1000&oq=pounds+&aqs=chrome.1.69i57j0i67i131i433i650l2j0i67i650j0i131i433i512j0i67i433i650j0i67i131i433i650j0i67i650j0i131i433i512l2.4124j0j7&sourceid=chrome&ie=UTF-8
-
+        'CO2_from_production': 0.21,           #https://www.open.edu/openlearn/nature-environment/energy-buildings/content-section-3.5
+        'unit': 'kg/kwh',
         'calorific_value': 15.27,                #https://www.google.com/search?q=What+is+the+calorific+value+of+methane+to+burn+kWh+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEdeVw3daWU9daM6lZi591JsDcc5TWQ%3A1683144074088&ei=ir1SZIaFBae84-EPkOWS8AI&ved=0ahUKEwiG8pCl-Nn-AhUn3jgGHZCyBC4Q4dUDCA8&uact=5&oq=What+is+the+calorific+value+of+methane+to+burn+kWh+in+natural+gas+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAB4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
         'calorific_value_unit': 'kWh/kg',        #https://www.google.com/search?q=mj+to+kwh&rlz=1C1UEAD_enIN1000IN1000&oq=MJ+to+&aqs=chrome.1.69i57j0i20i131i263i433i512j0i67i650j0i67i131i433i650j0i67i650l5j0i512.5384j0j7&sourceid=chrome&ie=UTF-8
                                  'Opex_percentage': 0.024,
