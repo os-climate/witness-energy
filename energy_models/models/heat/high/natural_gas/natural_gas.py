@@ -55,11 +55,6 @@ class NaturalGasHighHeat(HighHeatTechno):
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
             self.production[f'{HighTemperatureHeat.name} ({self.product_energy_unit})']
 
-        Twh *  Methane.data_energy_dict['CO2_per_use'] / \
-                                                                               Methane.data_energy_dict[
-                                                                                   'calorific_value']
-                                                                                   kg/kg / kwh/kg -> kg/kwh
-        kg/kwh 
         # CO2 production
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / Methane.data_energy_dict[
                                                                                    'calorific_value'] * \
