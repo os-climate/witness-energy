@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
@@ -99,9 +100,9 @@ class TechnoDiscipline(SoSWrapp):
     techno_name = 'Fill techno name'
     energy_name = 'Fill the energy name for this techno'
 
-    def __init__(self, sos_name):
+    def __init__(self, sos_name, logger:logging.Logger):
 
-        SoSWrapp.__init__(self, sos_name)
+        SoSWrapp.__init__(self, sos_name, logger)
         self.techno_model = None
 
     def setup_sos_disciplines(self):
