@@ -1,5 +1,6 @@
 import json
-
+import numpy as np
+import pandas as pd
 def preprocess_json(data):
     """
     Replaces all occurrences of . in the keys of a dictionary with #.
@@ -65,6 +66,27 @@ def postprocess_json(data):
         processed_data[processed_key] = processed_value
     return processed_data
 
+
+def convert_to_editable_json(data):
+    def convert(obj):
+
+        if isinstance(obj, pd.DataFrame):
+            df = obj.apply(lambda x: x.astype(int) if x.dtype == np.int32 else x)
+            df = df.where(pd.notnull(df), None)
+            return [{col: df[col].values.tolist()} for col in df.columns]
+        elif isinstance(obj, dict):
+            return {k: convert(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [convert(elem) for elem in obj]
+        elif isinstance(obj, float):
+            return obj  # Round to 2 decimal places
+        elif isinstance(obj, np.int32):
+            return int(obj)
+        else:
+            return obj
+    
+    data = convert(data)
+    return json.dumps(data, ensure_ascii=False)
 
 
 def get_document_from_cosmosdb_pymongo(connection_string: str, database_name: str, collection_name: str, query: dict):
