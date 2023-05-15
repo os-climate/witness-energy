@@ -2,6 +2,8 @@
 
 A gas-fired boiler provides hot water to taps throughout the home and also to radiators in the central heating system.
 
+High temperature heat in natural gas technology, the temperature range is above 400 degree C.
+
 Gas boilers work by releasing the fuel through a gas valve into a sealed combustion chamber in the boiler through small jets. With an electrical ignition, the gas is combusted to create heat. This heat is absorbed by a connected pipe carrying cold water.
 
 Working:

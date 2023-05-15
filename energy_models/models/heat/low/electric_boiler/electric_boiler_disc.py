@@ -39,7 +39,7 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
 
     techno_infos_dict_default = {
 
-        'Capex_init': 2000,           #https://www.google.com/search?q=capex+of+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=capeHow%20much%20does%20an%20electric%20boiler%20capital%20cost?The%20costs%20of%20an%20electric%20boiler%20installation%20can%20range%20from%20a%C2%A0minimum%20$6,469%20to%20$11,885%C2%A0in%20total%20price.
+        'Capex_init': 150,           #https://www.google.com/search?q=capex+of+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=capeHow%20much%20does%20an%20electric%20boiler%20capital%20cost?The%20costs%20of%20an%20electric%20boiler%20installation%20can%20range%20from%20a%C2%A0minimum%20$6,469%20to%20$11,885%C2%A0in%20total%20price.
         'Capex_init_unit': '$/kW',    # $ per kW of electricity
         'Opex_percentage': 1.6,       #https://www.google.com/search?q=+OPEX+%25+of+an+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEddXq4YjX58191BnDyTZd08c2VWtJw%3A1683713517747&ei=7W1bZJqaLaicseMP_pSKkAQ&ved=0ahUKEwjaxIPRwer-AhUoTmwGHX6KAkIQ4dUDCA8&uact=5&oq=+OPEX+%25+of+an+electric+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQogQyBQgAEKIEMgUIABCiBDIFCAAQogQ6BQghEKABSgQIQRgAUABYxSdggjFoAHAAeACAAZYBiAGuA5IBAzIuMpgBAKABAcABAQ&sclient=gws-wiz-serp
         'lifetime': lifetime,
@@ -47,7 +47,7 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
         'efficiency': 1,            # consumptions and productions already have efficiency included
-        'elec_demand': 4.5,         #https://www.google.com/search?q=electric+demand+of+electric+boiler+in+kwh+per+m3&rlz=1C1UEAD_enIN1000IN1000&oq=&aqs=chrome.0.35i39i362l8.275158j0j7&sourceid=chrome&ie=UTF-8
+        'elec_demand': 10,          #https://billswiz.com/electric-boiler-electricity-use
         'elec_demand_unit': 'kWh/h',
         'water_demand': 1.13,         #https://www.google.com/search?q=water+required+in+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=water+required+in+electric+boiler+&aqs=chrome..69i57j33i160j33i22i29i30.14095j0j7&sourceid=chrome&ie=UTF-8
         'water_demand_unit': 'm3/h',  #https://www.xconvert.com/unit-converter/gallons-per-minute-to-cubic-meters-per-hour
