@@ -2,6 +2,18 @@
 
 A gas-fired boiler provides hot water to taps throughout the home and also to radiators in the central heating system.
 
+High temperature heat in natural gas technology, the temperature range is 100 to 400 degree C.
+
+In Methane demand calculation, Methane is used to produce 1kwh of heat (this information in kwh) : methane_needs is in kwh of methane / kwh of heat 
+
+price of methane is in $/kWh of heat.
+    
+initial_production: is in TWh
+
+production in 2020 that is total heat produced by Natural gas is 55 MJ/kg = 153000 TWh
+    
+initial production for medium heat temp = 51000         
+
 Gas boilers work by releasing the fuel through a gas valve into a sealed combustion chamber in the boiler through small jets. With an electrical ignition, the gas is combusted to create heat. This heat is absorbed by a connected pipe carrying cold water.
 
 Working:
@@ -9,6 +21,7 @@ Hot gases are produced by burning fuel in the furnace. These hot gases are made 
 
 Natural gas consists mostly methane (typical >85%) with the balance being varying amounts of ethane, propane, butane and some inert components (nitrogen, carbon dioxide and helium).
 
+![img.png](img.png)
 ## Data     
 The data used for this model is extracted from the IEA Data, ScienceDirect & MET
 
