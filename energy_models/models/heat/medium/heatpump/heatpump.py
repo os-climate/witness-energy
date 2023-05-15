@@ -93,15 +93,11 @@ class HeatPump(MediumHeatTechno):
 
 
     def get_theoretical_electricity_needs(self):
-        """
-        From Ethanol Today Online (http://www.ethanoltoday.com/index.php?option=com_content&task=view&id=5&fid=53&Itemid=6)
-        Electricity usage there averaged 0.70 kilowatt hours per gallon of ethanol.
-        """
-        # Mean_Temperature = MediumTemperatureHeat.data_energy_dict['Mean_Temperature']
-        # Ambient_Temperature = MediumTemperatureHeat.data_energy_dict['Output_Temperature']
-        # COP = Ambient_Temperature/(Mean_Temperature-Ambient_Temperature)
-        COP = self.Output_Temperature / (self.Output_Temperature - self.Mean_Temperature)
+        Mean_Temperature = self.techno_infos_dict['mean_temperature']
+        Output_Temperature = self.techno_infos_dict['output_temperature']
+        COP = Output_Temperature/(Output_Temperature - Mean_Temperature)
         electricity_needs = 1 / COP   # (heating_space*heat_required_per_meter_square) / COP
+
         return electricity_needs
 
 ##    def get_theoretical_co2_prod(self, unit='kg/kWh'):

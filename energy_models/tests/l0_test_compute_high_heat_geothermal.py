@@ -37,8 +37,6 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.Mean_Temperature = 400
-        self.Output_Temperature = 500
         years = np.arange(2020, 2051)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -118,8 +116,7 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
                        'data_fuel_dict': HighTemperatureHeat.data_energy_dict,
                        }
 
-        GeothermalHeat.Mean_Temperature = self.Mean_Temperature
-        GeothermalHeat.Output_Temperature = self.Output_Temperature
+
         geothermal_heat_model = GeothermalHeat('GeothermalHeat')
         geothermal_heat_model.configure_parameters(inputs_dict)
         geothermal_heat_model.configure_parameters_update(inputs_dict)

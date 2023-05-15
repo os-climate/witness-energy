@@ -60,6 +60,10 @@ class GeothermalHeatDiscipline(MediumHeatTechnoDiscipline):
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
+        'output_temperature': 250,
+        'mean_temperature': 200,
+        'output_temperature_unit': 'K',
+        'mean_temperature_unit': 'K',
         'steel_needs': 968,    # Page:21 #https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
     }
 

@@ -75,6 +75,10 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
+        'output_temperature': 500,
+        'mean_temperature': 400,
+        'output_temperature_unit': 'K',
+        'mean_temperature_unit': 'K'
     }
 
     # heatpump Heat production

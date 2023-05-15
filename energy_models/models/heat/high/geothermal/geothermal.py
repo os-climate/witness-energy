@@ -76,15 +76,9 @@ class GeothermalHeat(HighHeatTechno):
     #    return heat_generated
 
     def get_theoretical_electricity_needs(self):
-        #self.Mean_Temperature = 500
-        #self.Output_Temperature = 400
-        #elec_demand = self.techno_infos_dict['elec_demand']  # kWh/kWh
-        #Mean_Temperature = HighTemperatureHeat.data_energy_dict['Mean_Temperature']
-        #Ambient_Temperature = HighTemperatureHeat.data_energy_dict['Output_Temperature']
-        COP = self.Output_Temperature/(self.Output_Temperature - self.Mean_Temperature)
-        # COP = HighTemperatureHeat.data_energy_dict['COP']                   # kg/m3
-        # heating_space = self.techno_infos_dict['heating_space']
-        # heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']
+        Mean_Temperature = self.techno_infos_dict['mean_temperature']
+        Output_Temperature = self.techno_infos_dict['output_temperature']
+        COP = Output_Temperature/(Output_Temperature - Mean_Temperature)
         electricity_needs = 1 / COP   # (heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs

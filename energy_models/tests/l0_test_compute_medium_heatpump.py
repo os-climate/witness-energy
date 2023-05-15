@@ -37,8 +37,6 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.Mean_Temperature = 200
-        self.Output_Temperature = 250
         years = np.arange(2020, 2051)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -116,8 +114,6 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
                        'smooth_type': 'smooth_max',
                        'data_fuel_dict': MediumTemperatureHeat.data_energy_dict,
                        }
-        HeatPump.Mean_Temperature = self.Mean_Temperature
-        HeatPump.Output_Temperature = self.Output_Temperature
         heatpump_model = HeatPump('HeatPump')
         heatpump_model.configure_parameters(inputs_dict)
         heatpump_model.configure_parameters_update(inputs_dict)
