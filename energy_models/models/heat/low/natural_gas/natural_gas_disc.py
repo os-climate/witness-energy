@@ -77,9 +77,12 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
     }
 
     # Renewable Methane Association [online]
-    # production in 2019: 29330 million gallons
+    # production in 2020: 51000 million gallons
     # in TWh
-    initial_production = 29330
+    # initial production i.e. total heat produced by NG is 55 MJ/kg = 1.53 e8 TWh =>153000000 TWh/kg = 153000 TWh
+
+    initial_production = 51000      # https://world-nuclear.org/information-library/facts-and-figures/heat-values-of-various-fuels.aspx
+                                    # https://www.google.com/search?q=how+much+heat+produced+by+natural+gas&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEde4P7ReCphsNRB9zNWCtf5KizY1Wg%3A1684144512917&ei=gAFiZKjMN5_i4-EPvK6LmAI&ved=0ahUKEwiojMWbh_f-AhUf8TgGHTzXAiMQ4dUDCA8&uact=5&oq=how+much+heat+produced+by+natural+gas&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQogQyBQgAEKIEMgUIABCiBDIFCAAQogQ6CggAEEcQ1gQQsAM6CgghEKABEMMEEAo6CAghEKABEMMESgQIQRgAULsIWPF0YOq0AWgBcAB4AIABnAGIAb0NkgEEMS4xNJgBAKABAcgBCMABAQ&sclient=gws-wiz-serp
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
