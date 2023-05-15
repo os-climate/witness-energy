@@ -16,16 +16,16 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
-from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
-from energy_models.models.heat.high.geothermal.geothermal import GeothermalHeat
+from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
+from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
+from energy_models.models.heat.low.geothermal.geothermal import GeothermalHeat
 
 
-class GeothermalHeatDiscipline(HighHeatTechnoDiscipline):
+class GeothermalHeatDiscipline(LowHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Geothermal High Heat Model',
+        'label': 'Geothermal Low Heat Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -37,8 +37,8 @@ class GeothermalHeatDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'HighHeatGeothermal'
-    energy_name = HighTemperatureHeat.name
+    techno_name = 'LowHeatGeothermal'
+    energy_name = LowTemperatureHeat.name
 
 
     lifetime = 25    # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
@@ -90,9 +90,9 @@ class GeothermalHeatDiscipline(HighHeatTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
-    DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)
+    DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
-    DESC_OUT = HighHeatTechnoDiscipline.DESC_OUT
+    DESC_OUT = LowHeatTechnoDiscipline.DESC_OUT
     _maturity = 'Research'
 
     def init_execution(self):
