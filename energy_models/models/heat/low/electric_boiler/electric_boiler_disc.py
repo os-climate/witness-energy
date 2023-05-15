@@ -3,14 +3,14 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
-from energy_models.models.heat.low.natural_gas.natural_gas import NaturalGasLowHeat
+from energy_models.models.heat.low.electric_boiler.electric_boiler import ElectricBoilerHeat
 
 
 class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Natural Gas Model',
+        'label': 'Electric Boiler Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -22,7 +22,7 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'NaturalGas'
+    techno_name = 'ElectricBoiler'
     energy_name = LowTemperatureHeat.name
 
     # Conversions
@@ -31,52 +31,32 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
     liter_per_gallon = 3.78541178
 
     # Heat Producer [Online]
-    # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+    #https://www.google.com/search?q=electric+boiler+maximum+heat+temperature+in+degree+celcius&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdf5IN3xbJw5uB3tC7-M-5nvtg8TKg%3A1683626939090&ei=uxtaZNOCBYWeseMP6ZuEwAM&ved=0ahUKEwiTzI2N_-f-AhUFT2wGHekNATgQ4dUDCA8&uact=5&oq=electric+boiler+maximum+heat+temperature+in+degree+celcius&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCCEQoAEyBQghEKABMgUIIRCgATIFCCEQoAE6CwgAEIoFEIYDELADOggIIRAWEB4QHToHCCEQoAEQCjoECCEQFUoECEEYAVDPB1izUGDqoQVoAXAAeACAAZ0BiAGUBJIBAzAuNJgBAKABAcgBA8ABAQ&sclient=gws-wiz-serp
+    #https://www.google.com/search?q=electric+boiler+lifetime&rlz=1C1UEAD_enIN1000IN1000&oq=electric+boiler+lifetime&aqs=chrome..69i57j0i22i30l4j0i390i650l4.14155j0j7&sourceid=chrome&ie=UTF-8
     lifetime = 45          # years
-    # Economic and Technical Analysis of Heat Dry Milling: Model Description.
-    # Rhys T.Dale and Wallace E.Tyner Staff Paper
-    # Agricultural Economics Department Purdue University
+
     construction_delay = 2  # years
 
     techno_infos_dict_default = {
 
-        'Capex_init': 199.8,
-        'Capex_init_unit': '$/kW',
-        'Opex_init': 10.565,
-        'Opex_init_unit': '$/kW',
+        'Capex_init': 2000,           #https://www.google.com/search?q=capex+of+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=capeHow%20much%20does%20an%20electric%20boiler%20capital%20cost?The%20costs%20of%20an%20electric%20boiler%20installation%20can%20range%20from%20a%C2%A0minimum%20$6,469%20to%20$11,885%C2%A0in%20total%20price.
+        'Capex_init_unit': '$/kW',    # $ per kW of electricity
+        'Opex_percentage': 1.6,       #https://www.google.com/search?q=+OPEX+%25+of+an+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEddXq4YjX58191BnDyTZd08c2VWtJw%3A1683713517747&ei=7W1bZJqaLaicseMP_pSKkAQ&ved=0ahUKEwjaxIPRwer-AhUoTmwGHX6KAkIQ4dUDCA8&uact=5&oq=+OPEX+%25+of+an+electric+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQogQyBQgAEKIEMgUIABCiBDIFCAAQogQ6BQghEKABSgQIQRgAUABYxSdggjFoAHAAeACAAZYBiAGuA5IBAzIuMpgBAKABAcABAQ&sclient=gws-wiz-serp
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 0.8,    # consumptions and productions already have efficiency included
-        'natural_gas_calorific_val': 53600,
-        'natural_gas_calorific_val_unit': 'kJ/kg',
-        'natural_gas_flow_rate': 100,
-        'natural_gas_flow_rate_unit': 'kg/h',
-        'natural_gas_temp': 25,
-        'natural_gas_temp_unit': 'c',
-        'stoichiometric_ratio': 10,
-        'gas_fired_boiler': 2.051,
-        'gas_fired_boiler_unit': 'kW/kWh',
-        'wall_temp': 300,
-        'wall_temp_unit': 'c',
-        'methane_demand': 2.16,             #https://www.google.com/search?q=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEddkE5qRhRRbGSHtQirxZW_RtyyzWw%3A1683733882525&ei=er1bZIrJH8yYseMPjN-D0AQ&ved=0ahUKEwiK7tq_jev-AhVMTGwGHYzvAEoQ4dUDCA8&uact=5&oq=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAF4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
-                                            #https://www.kylesconverter.com/energy,-work,-and-heat/cubic-feet-of-natural-gas-to-kilowatt--hours
-        'methane_demand_unit': 'kWh/kWh',
-        'density': 0.83,                       #https://cdn.intechopen.com/pdfs/11474/InTech-Environmental_technology_assessment_of_natural_gas_compared_to_biogas.pdf
-                                 'Opex_percentage': 0.024,
-                                 # Fixed 1.9 and recurrent 0.5 %
-                                 # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
-                                 'WACC': 0.058,  # Weighted averaged cost of capital / ATB NREL 2020
-                                 'learning_rate': 0.00,  # Cost development of low carbon energy technologies
-                                 'full_load_hours': 8760.0,  # Full year hours
-                                 # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
-                                 'capacity_factor': 0.90,
-                                 'techno_evo_eff': 'no'
-
+        'efficiency': 1,            # consumptions and productions already have efficiency included
+        'elec_demand': 4.5,         #https://www.google.com/search?q=electric+demand+of+electric+boiler+in+kwh+per+m3&rlz=1C1UEAD_enIN1000IN1000&oq=&aqs=chrome.0.35i39i362l8.275158j0j7&sourceid=chrome&ie=UTF-8
+        'elec_demand_unit': 'kWh/h',
+        'water_demand': 1.13,         #https://www.google.com/search?q=water+required+in+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=water+required+in+electric+boiler+&aqs=chrome..69i57j33i160j33i22i29i30.14095j0j7&sourceid=chrome&ie=UTF-8
+        'water_demand_unit': 'm3/h',  #https://www.xconvert.com/unit-converter/gallons-per-minute-to-cubic-meters-per-hour
+        'learning_rate': 0.56,
+        'full_load_hours': 8760.0,
+        'WACC': 0.062,
+        'techno_evo_eff': 'no',
     }
 
-    # Renewable Methane Association [online]
     # production in 2019: 29330 million gallons
     # in TWh
     initial_production = 29330
@@ -108,5 +88,5 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = NaturalGasLowHeat(self.techno_name)
+        self.techno_model = ElectricBoilerHeat(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)

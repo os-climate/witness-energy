@@ -58,6 +58,7 @@ class MediumHeatTechno(TechnoType):
 
         return transport_cost
 
+
     @abstractmethod
     def compute_other_primary_energy_costs(self):
         '''
