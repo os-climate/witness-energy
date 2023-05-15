@@ -44,6 +44,21 @@ def preprocess_and_save_json(input_file_path, output_file_path):
     with open(output_file_path, 'w') as output_file:
         json.dump(processed_data, output_file, indent=4)
 
+def preprocess_data_and_save_json(data, output_file_path):
+    """
+    gets data, preprocesses it by replacing all occurrences of . in the keys with #,
+    and writes the result to another file.
+
+    Args:
+        data (str): input data JSON file.
+        output_file_path (str): The path to the output JSON file.
+    """
+
+    processed_data = preprocess_json(data)
+    with open(output_file_path, 'w') as output_file:
+        json.dump(processed_data, output_file, indent=4)
+
+
 def postprocess_json(data):
     """
     Replaces all occurrences of # in the keys of a dictionary with .
@@ -78,6 +93,8 @@ def convert_to_editable_json(data):
             return {k: convert(v) for k, v in obj.items()}
         elif isinstance(obj, list):
             return [convert(elem) for elem in obj]
+        elif isinstance(obj, np.ndarray): 
+            return [convert(elem) for elem in obj]
         elif isinstance(obj, float):
             return obj  # Round to 2 decimal places
         elif isinstance(obj, np.int32):
@@ -86,7 +103,7 @@ def convert_to_editable_json(data):
             return obj
     
     data = convert(data)
-    return json.dumps(data, ensure_ascii=False)
+    return data
 
 
 def get_document_from_cosmosdb_pymongo(connection_string: str, database_name: str, collection_name: str, query: dict):
