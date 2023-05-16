@@ -8,6 +8,8 @@ In Methane demand calculation, Methane is used to produce 1kwh of heat (this inf
 
 price of methane is in $/kWh of heat.
 
+CO2 production is in Kg/KWh. That values from methane: CO2 per use(kg/kg) / calorific value(KWh/kg)
+
 initial_production: is in TWh
 
 production in 2020 that is total heat produced by Natural gas is 55 MJ/kg = 153000 TWh

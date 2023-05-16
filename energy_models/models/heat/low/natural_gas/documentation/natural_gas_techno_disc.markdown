@@ -2,11 +2,13 @@
 
 A gas-fired boiler provides hot water to taps throughout the home and also to radiators in the central heating system.
 
-High temperature heat in natural gas technology, the temperature range is below 100 degree C.
+Low temperature heat in natural gas technology, the temperature range is below 100 degree C.
 
 In Methane demand calculation, Methane is used to produce 1kwh of heat (this information in kwh) : methane_needs is in kwh of methane / kwh of heat
 
 price of methane is in $/kWh of heat.
+
+CO2 production is in Kg/KWh. That values from methane: CO2 per use(kg/kg) / calorific value(KWh/kg)
 
 initial_production: is in TWh
 
