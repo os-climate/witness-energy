@@ -162,9 +162,14 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
 
 
 if __name__ == "__main__":
     unittest.main()
+
+# Test Results
+#https://www.iea.org/data-and-statistics/charts/levelised-cost-of-heating-for-air-to-air-and-air-to-water-heat-pumps-and-gas-boilers-for-selected-countries-and-sensitivity-to-fuel-prices-h1-2021-h1-2022
+#https://www.iea.org/data-and-statistics/charts/marginal-cost-of-heating-with-residential-heat-pumps-and-gas-boilers-under-different-energy-cost-assumptions-in-selected-countries-between-h1-2021-and-h1-2022
+
