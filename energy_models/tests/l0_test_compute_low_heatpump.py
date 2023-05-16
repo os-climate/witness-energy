@@ -48,7 +48,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({'years': years,
-                                           'electricity': np.ones(len(years)) * 10.0,
+                                           'electricity': np.ones(len(years)) * 150.0,
                                            'biomass_dry': np.ones(len(years)) * 45.0,
                                            })
 
@@ -56,7 +56,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
         self.resources_price = pd.DataFrame({'years': years, 'water_resource': 2.0})
 
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 10.0})
+            {'years': years, 'invest': np.ones(len(years)) * 0.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -69,7 +69,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 100})
+            {'years': years, 'transport': np.ones(len(years)) * 0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(

@@ -69,7 +69,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
-        'output_temperature': 500,
+        'output_temperature': 60,
         'mean_temperature': 20,
         'output_temperature_unit': '°C',
         'mean_temperature_unit': '°C',
@@ -78,7 +78,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
     # heatpump Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
     # in TWh
-    initial_production = 1/8760
+    initial_production = 1*8760*0.5/3
 
     distrib = [9.677419355, 7.52688172, 0,
                5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
@@ -91,7 +91,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
     # Renewable Fuels Association [online]
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), 'invest': 718/(25*8760) * np.array([(1/8760)*1e+9])})
+        {'past years': np.array(-construction_delay), 'invest': 718/(25*8760) * np.array([1*8760*0.5/3])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
