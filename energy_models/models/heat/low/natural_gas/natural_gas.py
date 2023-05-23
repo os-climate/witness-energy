@@ -76,5 +76,13 @@ class NaturalGasLowHeat(LowHeatTechno):
         methane_needs = methane_demand
         return methane_needs
 
+    def get_theoretical_co2_prod(self, unit='kg/kWh'):
+        co2_captured__production = self.techno_infos_dict['co2_captured__production']
+        heat_density = Methane.data_energy_dict['density']  # kg/m^3
+        heat_calorific_value = Methane.data_energy_dict['calorific_value']  # kWh/kg
+
+        co2_prod = co2_captured__production / (heat_density * heat_calorific_value)
+
+        return co2_prod
 
 

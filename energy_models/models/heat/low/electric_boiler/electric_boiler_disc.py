@@ -49,8 +49,8 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
         'efficiency': 1,            # consumptions and productions already have efficiency included
         'elec_demand': 10,          #https://billswiz.com/electric-boiler-electricity-use
         'elec_demand_unit': 'kWh/h',
-        'water_demand': 1.13,         #https://www.google.com/search?q=water+required+in+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=water+required+in+electric+boiler+&aqs=chrome..69i57j33i160j33i22i29i30.14095j0j7&sourceid=chrome&ie=UTF-8
-        'water_demand_unit': 'm3/h',  #https://www.xconvert.com/unit-converter/gallons-per-minute-to-cubic-meters-per-hour
+        'water_demand': 1.2,
+        'water_demand_unit': 'Kg/KWh',
         'learning_rate': 0.56,
         'full_load_hours': 8760.0,
         'WACC': 0.062,

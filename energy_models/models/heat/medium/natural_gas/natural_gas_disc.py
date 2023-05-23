@@ -60,10 +60,11 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
         'gas_fired_boiler_unit': 'kW/kWh',
         'wall_temp': 300,
         'wall_temp_unit': 'c',
-        'methane_demand': 4.11,              #https://www.google.com/search?q=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEddkE5qRhRRbGSHtQirxZW_RtyyzWw%3A1683733882525&ei=er1bZIrJH8yYseMPjN-D0AQ&ved=0ahUKEwiK7tq_jev-AhVMTGwGHYzvAEoQ4dUDCA8&uact=5&oq=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAF4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
-                                            #https://www.kylesconverter.com/energy,-work,-and-heat/cubic-feet-of-natural-gas-to-kilowatt--hours
+        'methane_demand': 1.21,              #https://www.google.com/search?q=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEddkE5qRhRRbGSHtQirxZW_RtyyzWw%3A1683733882525&ei=er1bZIrJH8yYseMPjN-D0AQ&ved=0ahUKEwiK7tq_jev-AhVMTGwGHYzvAEoQ4dUDCA8&uact=5&oq=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAF4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
+                                             #https://www.kylesconverter.com/energy,-work,-and-heat/cubic-feet-of-natural-gas-to-kilowatt--hours
         'methane_demand_unit': 'kWh/kWh',
-        'density': 0.83,                       #https://cdn.intechopen.com/pdfs/11474/InTech-Environmental_technology_assessment_of_natural_gas_compared_to_biogas.pdf
+        'co2_captured__production': 0.21,  # per kg kWh
+                                           # https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
                                  'Opex_percentage': 0.024,
                                  # Fixed 1.9 and recurrent 0.5 %
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
