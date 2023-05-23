@@ -60,10 +60,7 @@ class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
         'gas_fired_boiler_unit': 'kW/kWh',
         'wall_temp': 300,
         'wall_temp_unit': 'c',
-        # 'Output_Temp': 500,
-        # 'Mean_Temp': 20,
-        'methane_demand': 1.35,              #https://www.google.com/search?q=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEddkE5qRhRRbGSHtQirxZW_RtyyzWw%3A1683733882525&ei=er1bZIrJH8yYseMPjN-D0AQ&ved=0ahUKEwiK7tq_jev-AhVMTGwGHYzvAEoQ4dUDCA8&uact=5&oq=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAF4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
-                                             #https://www.kylesconverter.com/energy,-work,-and-heat/cubic-feet-of-natural-gas-to-kilowatt--hours
+        'methane_demand': 1.35,            #https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
         'methane_demand_unit': 'kWh/kWh',
         'co2_captured__production': 0.21,  # per kg kWh
                                            # https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
