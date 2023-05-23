@@ -68,7 +68,7 @@ class StreamDiscipline(SoSWrapp):
     energy_name = 'stream'
 
     def __init__(self, sos_name, logger: logging.Logger):
-        super().__init__(sos_name, logger)
+        super().__init__(sos_name=sos_name, logger=logger)
         self.energy_model = None
 
     def setup_sos_disciplines(self):

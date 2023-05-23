@@ -101,8 +101,7 @@ class TechnoDiscipline(SoSWrapp):
     energy_name = 'Fill the energy name for this techno'
 
     def __init__(self, sos_name, logger:logging.Logger):
-
-        SoSWrapp.__init__(self, sos_name, logger)
+        super().__init__(sos_name=sos_name, logger=logger)
         self.techno_model = None
 
     def setup_sos_disciplines(self):
