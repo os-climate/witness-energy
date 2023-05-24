@@ -62,8 +62,9 @@ class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
         'wall_temp_unit': 'c',
         'methane_demand': 1.35,            #https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
         'methane_demand_unit': 'kWh/kWh',
-        'co2_captured__production': 0.21,  # per kg kWh
+        'co2_captured__production': 0.25,  # per kg kWh
                                            # https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
+                                           # https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
                                  'Opex_percentage': 0.024,
                                  # Fixed 1.9 and recurrent 0.5 %
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
@@ -82,8 +83,8 @@ class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
     # in TWh
     # initial production i.e. total heat produced by NG is 6236731 TJ = 1683 TWh
 
-    initial_production = 561 * 0.5       # https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser?country=WORLD&fuel=Electricity%20and%20heat&indicator=HeatGenByFuel
-                                         # https://www.google.com/search?q=TJ+to+TWh&rlz=1C1UEAD_enIN1000IN1000&oq=TJ+to+TWh&aqs=chrome..69i57.35591j0j7&sourceid=chrome&ie=UTF-8
+    initial_production = 561       # https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser?country=WORLD&fuel=Electricity%20and%20heat&indicator=HeatGenByFuel
+                                   # https://www.google.com/search?q=TJ+to+TWh&rlz=1C1UEAD_enIN1000IN1000&oq=TJ+to+TWh&aqs=chrome..69i57.35591j0j7&sourceid=chrome&ie=UTF-8
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
@@ -97,7 +98,7 @@ class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
 
     # Renewable Methane Association [online]
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': 199.8/(16 * 8760) * np.array([0, 561 * 0.5])})
+        {'past years': np.arange(-construction_delay, 0), 'invest': 199.8/(16 * 8760) * np.array([0, 561])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
