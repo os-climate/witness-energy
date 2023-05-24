@@ -1,7 +1,6 @@
 # EnergyModels
 
 
-
 ## Description
 EnergyModels is the Python package containing models for energy production technologies, carbon capture, usage and storage (CCUS) technologies, and the processes to combine them into a single energy mix.
 
