@@ -72,7 +72,9 @@ class ElectricBoilerHeat(LowHeatTechno):
         water_demand = self.techno_infos_dict['water_demand']
         water_density = Water.data_energy_dict['density']  # kg/m3
 
-        water_needs = water_demand * water_density
+        water_needs = water_demand
+        #\
+                      #* water_density
         return water_needs
 
     def get_theoretical_electricity_needs(self):

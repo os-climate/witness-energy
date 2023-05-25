@@ -37,8 +37,6 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.Mean_Temperature = 200
-        self.Output_Temperature = 250
         years = np.arange(2020, 2051)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -49,7 +47,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({'years': years,
-                                           'electricity': np.ones(len(years)) * 10.0,
+                                           'electricity': np.ones(len(years)) * 150.0,
                                            'biomass_dry': np.ones(len(years)) * 45.0,
                                            })
 
@@ -57,7 +55,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
         self.resources_price = pd.DataFrame({'years': years, 'water_resource': 2.0})
 
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 10.0})
+            {'years': years, 'invest': np.ones(len(years)) * 0.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -70,7 +68,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 100})
+            {'years': years, 'transport': np.ones(len(years)) * 0.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -116,8 +114,6 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
                        'smooth_type': 'smooth_max',
                        'data_fuel_dict': MediumTemperatureHeat.data_energy_dict,
                        }
-        HeatPump.Mean_Temperature = self.Mean_Temperature
-        HeatPump.Output_Temperature = self.Output_Temperature
         heatpump_model = HeatPump('HeatPump')
         heatpump_model.configure_parameters(inputs_dict)
         heatpump_model.configure_parameters_update(inputs_dict)
@@ -165,8 +161,8 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
 
 
 if __name__ == "__main__":

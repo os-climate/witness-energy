@@ -16,15 +16,15 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
-from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
-from energy_models.models.heat.high.geothermal.geothermal import GeothermalHeat
+from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
+from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
+from energy_models.models.heat.medium.geothermal.geothermal import GeothermalHeat
 
 
-class GeothermalHeatDiscipline(HighHeatTechnoDiscipline):
+class GeothermalHeatDiscipline(MediumHeatTechnoDiscipline):
     # ontology information
     _ontology_data = {
-        'label': 'Geothermal High Heat Model',
+        'label': 'Geothermal Medium Heat Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -36,8 +36,8 @@ class GeothermalHeatDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'HighHeatGeothermal'
-    energy_name = HighTemperatureHeat.name
+    techno_name = 'MediumHeatGeothermal'
+    energy_name = MediumTemperatureHeat.name
 
     lifetime = 25  # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
 
@@ -62,7 +62,7 @@ class GeothermalHeatDiscipline(HighHeatTechnoDiscipline):
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
-        'output_temperature': 500,
+        'output_temperature': 250,
         'mean_temperature': 200,
         'output_temperature_unit': 'K',
         'mean_temperature_unit': 'K',
@@ -79,6 +79,7 @@ class GeothermalHeatDiscipline(HighHeatTechnoDiscipline):
     # on Fig 11 in 2020 almost 1EJ of heat use via geothermal heat pump
     initial_production = 277.77 / 3
     # TWH we assume equal part of high medium and low heat
+
     distrib = [9.677419355, 7.52688172, 0,
                5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
                13.97849462, 9.677419355, 7.52688172, 1.075268817,
@@ -101,9 +102,9 @@ class GeothermalHeatDiscipline(HighHeatTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int', [-20, -1], False),
                                                                  'invest': ('float', None, True)},
                                         'dataframe_edition_locked': False}}
-    DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)
+    DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
-    DESC_OUT = HighHeatTechnoDiscipline.DESC_OUT
+    DESC_OUT = MediumHeatTechnoDiscipline.DESC_OUT
     _maturity = 'Research'
 
     def init_execution(self):

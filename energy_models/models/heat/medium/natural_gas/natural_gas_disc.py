@@ -22,7 +22,7 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'NaturalGas'
+    techno_name = 'MediumHeat NaturalGas'
     energy_name = MediumTemperatureHeat.name
 
     # Conversions
@@ -60,10 +60,11 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
         'gas_fired_boiler_unit': 'kW/kWh',
         'wall_temp': 300,
         'wall_temp_unit': 'c',
-        'methane_demand': 4.11,              #https://www.google.com/search?q=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&biw=1280&bih=601&sxsrf=APwXEddkE5qRhRRbGSHtQirxZW_RtyyzWw%3A1683733882525&ei=er1bZIrJH8yYseMPjN-D0AQ&ved=0ahUKEwiK7tq_jev-AhVMTGwGHYzvAEoQ4dUDCA8&uact=5&oq=How+much+natural+gas+is+required+to+produce+1+kWh+of+heat&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQA0oECEEYAFAAWABgAGgAcAF4AIABAIgBAJIBAJgBAKABAQ&sclient=gws-wiz-serp
-                                            #https://www.kylesconverter.com/energy,-work,-and-heat/cubic-feet-of-natural-gas-to-kilowatt--hours
+        'methane_demand': 1.21,             #https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
         'methane_demand_unit': 'kWh/kWh',
-        'density': 0.83,                       #https://cdn.intechopen.com/pdfs/11474/InTech-Environmental_technology_assessment_of_natural_gas_compared_to_biogas.pdf
+        'co2_captured__production': 0.23,  # per kg kWh
+                                           # https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
+                                           #https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
                                  'Opex_percentage': 0.024,
                                  # Fixed 1.9 and recurrent 0.5 %
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
@@ -77,9 +78,13 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
     }
 
     # Renewable Methane Association [online]
-    # production in 2019: 29330 million gallons
+    # production in 2020: 561 million gallons
     # in TWh
-    initial_production = 29330
+    # initial production i.e. total heat produced by NG is 6236731 TJ = 1683 TWh
+
+    initial_production = 561            # https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser?country=WORLD&fuel=Electricity%20and%20heat&indicator=HeatGenByFuel
+                                        # https://www.google.com/search?q=TJ+to+TWh&rlz=1C1UEAD_enIN1000IN1000&oq=TJ+to+TWh&aqs=chrome..69i57.35591j0j7&sourceid=chrome&ie=UTF-8
+
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
@@ -93,7 +98,7 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
 
     # Renewable Methane Association [online]
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
+        {'past years': np.arange(-construction_delay, 0), 'invest': 199.8/(16 * 8760) * np.array([0, 561])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},

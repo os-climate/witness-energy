@@ -20,7 +20,7 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 
 import numpy as np
 
-class HeatPump(HighHeatTechno):
+class GeothermalHeat(HighHeatTechno):
     #self.Mean_Temperature = 500
     #self.Output_Temperature =400
     def compute_other_primary_energy_costs(self):
@@ -76,12 +76,22 @@ class HeatPump(HighHeatTechno):
     #    return heat_generated
 
     def get_theoretical_electricity_needs(self):
-
         Mean_Temperature = self.techno_infos_dict['mean_temperature']
         Output_Temperature = self.techno_infos_dict['output_temperature']
         COP = Output_Temperature/(Output_Temperature - Mean_Temperature)
         electricity_needs = 1 / COP   # (heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs
+
+
+    @staticmethod
+    def get_theoretical_steel_needs(self):
+        """
+        According to the IEA, Nuclear power stations need 1473 kg of copper for each MW implemented
+        Computing the need in Mt/MW
+        """
+        steel_need = self.techno_infos_dict['steel_needs'] / 1000 / 1000 / 1000
+
+        return steel_need
 
 

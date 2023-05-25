@@ -33,8 +33,7 @@ class NaturalGasTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({'years': years,
-                                           'electricity': np.ones(len(years)) * 10.0,
-                                           'methane': np.ones(len(years)) * 45.0,
+                                           'methane': np.ones(len(years)) * 100.0,
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, 'methane': 0.0})
@@ -54,7 +53,7 @@ class NaturalGasTestCase(unittest.TestCase):
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 100})
+            {'years': years, 'transport': np.ones(len(years)) * 0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -151,8 +150,8 @@ class NaturalGasTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
 
 
 if __name__ == "__main__":
