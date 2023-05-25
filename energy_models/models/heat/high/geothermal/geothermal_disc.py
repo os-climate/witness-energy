@@ -62,7 +62,7 @@ class GeothermalHeatDiscipline(HighHeatTechnoDiscipline):
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
-        'output_temperature': 250,
+        'output_temperature': 500,
         'mean_temperature': 200,
         'output_temperature_unit': 'K',
         'mean_temperature_unit': 'K',
