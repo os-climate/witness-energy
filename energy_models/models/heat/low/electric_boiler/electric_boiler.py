@@ -55,7 +55,7 @@ class ElectricBoilerHeat(LowHeatTechno):
 
         self.compute_primary_energy_production()
 
-        self.production[f'{LowTemperatureHeat.name} ({self.mass_unit})'] = self.production[f'{LowTemperatureHeat.name} ({self.product_energy_unit})']
+        self.production[f'{LowTemperatureHeat.short_name} ({self.mass_unit})'] = self.production[f'{LowTemperatureHeat.name} ({self.product_energy_unit})']
 
         # Consumption
 
@@ -69,11 +69,10 @@ class ElectricBoilerHeat(LowHeatTechno):
         """
         Needs in kg of Water per kWh of heat
         """
-        water_demand = self.techno_infos_dict['water_demand']
-        water_density = Water.data_energy_dict['density']  # kg/m3
+        water_demand = self.techno_infos_dict['water_demand']   #kg/KWh
+        # water_density = Water.data_energy_dict['density']  # kg/m3
 
         water_needs = water_demand
-        #\
                       #* water_density
         return water_needs
 

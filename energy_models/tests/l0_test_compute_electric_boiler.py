@@ -33,11 +33,11 @@ class ElectricBoilerTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({'years': years,
-                                           'electricity': np.ones(len(years)) * 10.0,
-                                           'water': np.ones(len(years)) * 85.0,  #https://www.researchgate.net/figure/WATER-INTENSITY-OF-POWER-GENERATION-BY-STATE-LISTED-HIGHEST-TO-LOWEST-AND-PRICE-OF_tbl1_261162975
+                                           'electricity': np.ones(len(years)) * 50.0,
+                                           'water': np.ones(len(years)) * 85.0,     #https://www.researchgate.net/figure/WATER-INTENSITY-OF-POWER-GENERATION-BY-STATE-LISTED-HIGHEST-TO-LOWEST-AND-PRICE-OF_tbl1_261162975
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, 'heat': 0.0})
+        self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, 'water': 0.0})
         self.resources_price = pd.DataFrame({'years': years, 'water_resource': 2.0})
         self.resources_CO2_emissions = pd.DataFrame({'years': years, 'water': 0.0})
         self.invest_level = pd.DataFrame(
@@ -103,7 +103,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
                        'data_fuel_dict': LowTemperatureHeat.data_energy_dict
                        }
 
-        ng_model = ElectricBoilerHeat('ElectricBoiler')
+        ng_model = ElectricBoilerHeat('Electric Boiler')
         ng_model.configure_parameters(inputs_dict)
         ng_model.configure_parameters_update(inputs_dict)
         price_details = ng_model.compute_price()
@@ -113,7 +113,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
     def test_02_natural_gas_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'NaturalGas'
+        self.model_name = 'Electric Boiler'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',

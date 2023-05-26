@@ -22,7 +22,7 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'ElectricBoiler'
+    techno_name = 'Electric Boiler'
     energy_name = LowTemperatureHeat.name
 
     # Conversions
@@ -39,16 +39,16 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
 
     techno_infos_dict_default = {
 
-        'Capex_init': 150,           #https://www.google.com/search?q=capex+of+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=capeHow%20much%20does%20an%20electric%20boiler%20capital%20cost?The%20costs%20of%20an%20electric%20boiler%20installation%20can%20range%20from%20a%C2%A0minimum%20$6,469%20to%20$11,885%C2%A0in%20total%20price.
-        'Capex_init_unit': '$/kW',    # $ per kW of electricity
+        'Capex_init': 1500,           #https://www.google.com/search?q=capex+of+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=capeHow%20much%20does%20an%20electric%20boiler%20capital%20cost?The%20costs%20of%20an%20electric%20boiler%20installation%20can%20range%20from%20a%C2%A0minimum%20$6,469%20to%20$11,885%C2%A0in%20total%20price.
+        'Capex_init_unit': '$/kW',    # $ per kW of electricity   #it's for sept 2021 (capex value)
         'Opex_percentage': 1.6,       #https://www.google.com/search?q=+OPEX+%25+of+an+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEddXq4YjX58191BnDyTZd08c2VWtJw%3A1683713517747&ei=7W1bZJqaLaicseMP_pSKkAQ&ved=0ahUKEwjaxIPRwer-AhUoTmwGHX6KAkIQ4dUDCA8&uact=5&oq=+OPEX+%25+of+an+electric+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQogQyBQgAEKIEMgUIABCiBDIFCAAQogQ6BQghEKABSgQIQRgAUABYxSdggjFoAHAAeACAAZYBiAGuA5IBAzIuMpgBAKABAcABAQ&sclient=gws-wiz-serp
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 1,            # consumptions and productions already have efficiency included
-        'elec_demand': 10,          #https://billswiz.com/electric-boiler-electricity-use
-        'elec_demand_unit': 'kWh/h',
+        'efficiency': 1,              # consumptions and productions already have efficiency included
+        'elec_demand': 1,           #10   #https://billswiz.com/electric-boiler-electricity-use
+        'elec_demand_unit': 'KWh',        #'kWh/h',
         'water_demand': 1.2,
         'water_demand_unit': 'Kg/KWh',
         'learning_rate': 0.56,
@@ -57,9 +57,9 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
         'techno_evo_eff': 'no',
     }
 
-    # production in 2019: 29330 million gallons
+    # production in 2020: 43 EJ = 11944 TWh
     # in TWh
-    initial_production = 29330
+    initial_production = 11944
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
@@ -73,7 +73,7 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
 
     # Renewable Methane Association [online]
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
+        {'past years': np.arange(-construction_delay, 0), 'invest': 1500 * np.array([0, 11944])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
