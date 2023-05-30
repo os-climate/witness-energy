@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 
 import numpy as np
 
@@ -66,9 +67,8 @@ class StreamDiscipline(SoSWrapp):
     _maturity = 'Research'
     energy_name = 'stream'
 
-    def __init__(self, sos_name):
-
-        SoSWrapp.__init__(self, sos_name)
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name=sos_name, logger=logger)
         self.energy_model = None
 
     def setup_sos_disciplines(self):

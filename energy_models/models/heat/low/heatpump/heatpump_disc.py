@@ -54,12 +54,8 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
 
     techno_infos_dict_default = {
 
-        # Gubicza K, Nieves IU, Sagues WJ, Barta Z, Shanmugam KT, Ingram LO.Techno - economic analysis of ethanol
-        # production from sugarcane bagasse using a Liquefaction plus Simultaneous Saccharification and co -
-        # Fermentation process.Bioresour Technol. 2016
-        # from table 6: capex 1.95$/liter
-        'Capex_init': 1051, # https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
-        'Capex_init_unit': '$/kW',
+        'Capex_init': 718/(25*8760), # https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
         'lifetime_unit': 'years',
@@ -68,34 +64,21 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
         'efficiency': 1,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
-        # 'elec_demand': (1.0 / COP),  #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
-        # 'elec_demand_unit': 'kWh/kW',
-        # 'heating_space': 92.9,
-        # 'heating_space_unit': 'm^2',
-        # 'heat_required_per_meter_square': 0.00879,
-        # # https://carbonswitch.com/heat-pump-sizing-guide/#:~:text=If%20you%20Google%20%E2%80%9Cheat%20pump,a%2060%2C000%20BTU%20heat%20pump.
-        # 'heat_required_per_meter_square_unit': 'kW/m^2',
-##        'water_demand':  3.5,
-##        'water_demand_unit': 'm3/m3',
-##        'biomass_dry_demand': 56 * pound_to_kg / (2.9 * gallon_to_m3),
-##        'biomass_dry_demand_unit': 'kg/m3',
-        # 'co2_captured__production': 17 * pound_to_kg / (2.9 * gallon_to_m3),
-        # 'co2_captured__production_unit': 'kg/m3',
         'maturity': 5,
         'learning_rate': 0.1,
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
         'output_temperature': 60,
-        'mean_temperature': 40,
-        'output_temperature_unit': 'K',
-        'mean_temperature_unit': 'K',
+        'mean_temperature': 20,
+        'output_temperature_unit': '°C',
+        'mean_temperature_unit': '°C',
     }
 
     # heatpump Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
     # in TWh
-    initial_production = 1.452777
+    initial_production = 1*8760*0.5/3
 
     distrib = [9.677419355, 7.52688172, 0,
                5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
@@ -108,7 +91,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
     # Renewable Fuels Association [online]
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), 'invest': 1051 * np.array([1062000000])})
+        {'past years': np.array(-construction_delay), 'invest': 718/(25*8760) * np.array([1*8760*0.5/3])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

@@ -54,14 +54,14 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
     #COP = 3.5
 
     techno_infos_dict_default = {
-        'Capex_init': 1051, # https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
-        'Capex_init_unit': '$/kW',
+        'Capex_init': 718/(25*8760),   #660euro/kW
+        'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 1,    # consumptions and productions already have efficiency included
+        'efficiency': 1.0,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
         #'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
@@ -76,15 +76,15 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
         'WACC': 0.075,
         'techno_evo_eff': 'no',
         'output_temperature': 500,
-        'mean_temperature': 400,
-        'output_temperature_unit': 'K',
-        'mean_temperature_unit': 'K'
+        'mean_temperature': 20,
+        'output_temperature_unit': '°C',
+        'mean_temperature_unit': '°C'
     }
 
     # heatpump Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
     # in TWh
-    initial_production = 1.452777
+    initial_production = 1*8760*0.5/3
 
     distrib = [9.677419355, 7.52688172, 0,
                5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
@@ -100,7 +100,7 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
     # Expected Globally Heat Generated in 2030 is 2592 GW
     # Yearly Heat Generation increment will be 170 GW
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), 'invest': 1051 * np.array([1062000000])})
+        {'past years': np.array(-construction_delay), 'invest': 718/(25*8760) * np.array([1*8760*0.5/3])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

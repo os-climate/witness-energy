@@ -19,7 +19,7 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.high.heatpump.heatpump_disc import HeatPumpDiscipline
+from energy_models.models.heat.low.heatpump.heatpump_disc import HeatPumpDiscipline
 from energy_models.models.heat.low.heatpump.heatpump import HeatPump
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
@@ -48,7 +48,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({'years': years,
-                                           'electricity': np.ones(len(years)) * 10.0,
+                                           'electricity': np.ones(len(years)) * 150.0,
                                            'biomass_dry': np.ones(len(years)) * 45.0,
                                            })
 
@@ -56,7 +56,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
         self.resources_price = pd.DataFrame({'years': years, 'water_resource': 2.0})
 
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 10.0})
+            {'years': years, 'invest': np.ones(len(years)) * 0.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -69,7 +69,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 100})
+            {'years': years, 'transport': np.ones(len(years)) * 0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -162,9 +162,14 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
 
 
 if __name__ == "__main__":
     unittest.main()
+
+# Test Results
+#https://www.iea.org/data-and-statistics/charts/levelised-cost-of-heating-for-air-to-air-and-air-to-water-heat-pumps-and-gas-boilers-for-selected-countries-and-sensitivity-to-fuel-prices-h1-2021-h1-2022
+#https://www.iea.org/data-and-statistics/charts/marginal-cost-of-heating-with-residential-heat-pumps-and-gas-boilers-under-different-energy-cost-assumptions-in-selected-countries-between-h1-2021-and-h1-2022
+
