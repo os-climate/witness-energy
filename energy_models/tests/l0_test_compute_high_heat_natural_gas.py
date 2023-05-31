@@ -33,8 +33,7 @@ class NaturalGasTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({'years': years,
-                                           'electricity': np.ones(len(years)) * 10.0,
-                                           'methane': np.ones(len(years)) * 45.0,
+                                           'methane': np.ones(len(years)) * 100,  #($/MWh)
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, 'methane': 0.0})

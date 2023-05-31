@@ -17,8 +17,8 @@ from energy_models.core.stream_type.energy_type import EnergyType
 
 
 class LowTemperatureHeat(EnergyType):
-    name = 'heat.lowheat'
-    short_name = 'lowheat'
+    name = 'Low temperature heat production'
+    short_name = 'low heat'
     default_techno_list = ['HeatPump']
     data_energy_dict = {'maturity': 5,
                         'Highest_Temperature': 100,
@@ -28,8 +28,8 @@ class LowTemperatureHeat(EnergyType):
 
 class MediumTemperatureHeat(EnergyType):
 
-    name = 'heat.mediumheat'
-    short_name = 'mediumheat'
+    name = 'Medium temperature heat production'
+    short_name = 'medium heat'
     default_techno_list = ['HeatPump']
     data_energy_dict = {'maturity': 5,
                         'Highest_Temperature': 400,
@@ -40,8 +40,8 @@ class MediumTemperatureHeat(EnergyType):
 
 class HighTemperatureHeat(EnergyType):
 
-    name = 'heat.highheat'
-    short_name = 'highheat'
+    name = 'High temperature heat production'
+    short_name = 'high heat'
     default_techno_list = ['HeatPump']
     data_energy_dict = {'maturity': 5,
                         'density': 100,

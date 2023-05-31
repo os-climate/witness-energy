@@ -66,7 +66,7 @@ class NaturalGasHighHeat(HighHeatTechno):
         '''
 
         self.carbon_emissions[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-            self.cost_details[f'{Methane.name}_needs'] 
+            self.cost_details[f'{Methane.name}_needs']
 
         return self.carbon_emissions[f'{Methane.name}']
 
@@ -75,7 +75,16 @@ class NaturalGasHighHeat(HighHeatTechno):
         methane_demand = self.techno_infos_dict['methane_demand']
 
         methane_needs = methane_demand
+
         return methane_needs
 
+    def get_theoretical_co2_prod(self, unit='kg/kWh'):
+        co2_captured__production = self.techno_infos_dict['co2_captured__production']
+        heat_density = Methane.data_energy_dict['density']  # kg/m^3
+        heat_calorific_value = Methane.data_energy_dict['calorific_value']  # kWh/kg
+
+        co2_prod = co2_captured__production / (heat_density * heat_calorific_value)
+
+        return co2_prod
 
 
