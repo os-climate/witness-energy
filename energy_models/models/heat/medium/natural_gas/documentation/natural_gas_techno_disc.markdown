@@ -10,11 +10,9 @@ price of methane is in $/kWh of heat.
     
 CO2 production is in Kg/KWh. That values from methane: CO2 per use(kg/kg) / calorific value(KWh/kg)
 
-initial_production: is in TWh
-
 production in 2020 that is total heat produced by Natural gas is 6236761 TJ = 1683 TWh
     
-initial production for medium heat temp = 561         
+initial production for medium heat temp = 561 TWh       
 
 Gas boilers work by releasing the fuel through a gas valve into a sealed combustion chamber in the boiler through small jets. With an electrical ignition, the gas is combusted to create heat. This heat is absorbed by a connected pipe carrying cold water.
 

@@ -22,7 +22,7 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'LowHeat NaturalGas'
+    techno_name = 'Low Heat Natural Gas'
     energy_name = LowTemperatureHeat.name
 
     # Conversions
