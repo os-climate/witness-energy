@@ -48,7 +48,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({'years': years,
-                                           'electricity': np.ones(len(years)) * 150.0,
+                                           'electricity': np.ones(len(years)) * 148.0, #https://www.statista.com/statistics/1271525/denmark-monthly-wholesale-electricity-price/
                                            'biomass_dry': np.ones(len(years)) * 45.0,
                                            })
 

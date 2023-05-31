@@ -53,14 +53,14 @@ class GeothermalHeatDiscipline(MediumHeatTechnoDiscipline):
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
         'efficiency': 1,    # consumptions and productions already have efficiency included
-        'CO2_from_production': 0.122, # https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf
+        'CO2_from_production': 0.122, # high GHG concentrations in the reservoir fluid # https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf
         'CO2_from_production_unit': 'kg/kWh',
         'maturity': 5,
         'learning_rate': 0.00,
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
-        'output_temperature': 250,
+        'output_temperature': 250, # Average Medium Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
         'mean_temperature': 200,
         'output_temperature_unit': 'K',
         'mean_temperature_unit': 'K',
@@ -70,7 +70,7 @@ class GeothermalHeatDiscipline(MediumHeatTechnoDiscipline):
     # geothermal Heat production
     # production in 2019 #https://en.wikipedia.org/wiki/Geothermal_power
     # in TWh
-    initial_production = 0.0154
+    initial_production = 182500/3 # Equally split for High, low and Medium Heat production, #https://www.iea.org/data-and-statistics/charts/direct-use-of-geothermal-energy-world-2012-2024
 
     distrib = [9.677419355, 7.52688172, 0,
                5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
@@ -81,7 +81,7 @@ class GeothermalHeatDiscipline(MediumHeatTechnoDiscipline):
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), 'invest': 1051 * np.array([1062000000])})
+        {'past years': np.array(-construction_delay), 'invest': 3830/(25*8760) * np.array([182500/3])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

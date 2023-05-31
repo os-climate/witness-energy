@@ -54,7 +54,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
 
     techno_infos_dict_default = {
 
-        'Capex_init': 718/(25*8760), # https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        'Capex_init': 718/(25*8760), #660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
@@ -69,7 +69,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
-        'output_temperature': 60,
+        'output_temperature': 60, # Average Low Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
         'mean_temperature': 20,
         'output_temperature_unit': '°C',
         'mean_temperature_unit': '°C',
@@ -78,7 +78,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
     # heatpump Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
     # in TWh
-    initial_production = 1*8760*0.5/3
+    initial_production = 1*8760/3 # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
 
     distrib = [9.677419355, 7.52688172, 0,
                5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
@@ -91,7 +91,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
     # Renewable Fuels Association [online]
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), 'invest': 718/(25*8760) * np.array([1*8760*0.5/3])})
+        {'past years': np.array(-construction_delay), 'invest': 0 * np.array([1*8760*0.5*0.5/3])}) # Invest before year start is 0
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
