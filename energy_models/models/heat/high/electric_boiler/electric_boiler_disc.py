@@ -1,12 +1,12 @@
 
 import pandas as pd
 import numpy as np
-from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
-from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
-from energy_models.models.heat.low.electric_boiler.electric_boiler import ElectricBoilerHeat
+from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
+from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
+from energy_models.models.heat.high.electric_boiler.electric_boiler import ElectricBoilerHeat
 
 
-class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
+class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
@@ -23,7 +23,7 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = 'Electric Boiler'
-    energy_name = LowTemperatureHeat.name
+    energy_name = HighTemperatureHeat.name
 
     # Conversions
     pound_to_kg = 0.45359237
@@ -49,7 +49,7 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
         'efficiency': 1,              # consumptions and productions already have efficiency included
                                       # https://www.google.com/search?q=electric+boiler+efficiency&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEddgb3MP-p7vfw3Bi3_aNLESRLQX8g%3A1685475202926&ei=gk92ZJKcOL-VseMPs4WWuA0&ved=0ahUKEwiS5f215J3_AhW_SmwGHbOCBdcQ4dUDCA8&uact=5&oq=electric+boiler+efficiency&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQgAQyBQgAEIAEMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjoKCAAQRxDWBBCwAzoECCMQJzoHCCMQ6gIQJzoVCAAQAxCPARDqAhC0AhCMAxDlAhgBOhUILhADEI8BEOoCELQCEIwDEOUCGAE6BwgAEIoFEEM6CAgAEIoFEJECOgsIABCABBCxAxCDAToNCAAQigUQsQMQgwEQQzoKCAAQigUQsQMQQzoICAAQgAQQsQM6CggAEIAEEBQQhwJKBAhBGABQ-QRYx1pgxWVoAnABeAOAAcMBiAG0K5IBBTI3LjI2mAEAoAEBsAEUwAEByAEI2gEGCAEQARgL&sclient=gws-wiz-serp
         'elec_demand': 1,             #10   #https://billswiz.com/electric-boiler-electricity-use
-        'elec_demand_unit': 'KWh',    #'kWh/h',
+        'elec_demand_unit': 'KWh',        #'kWh/h',
         'learning_rate': 0.56,
         'full_load_hours': 8760.0,
         'WACC': 0.062,
@@ -81,9 +81,9 @@ class LowTemperatureHeatDiscipline(LowHeatTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
-    DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)
+    DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
-    DESC_OUT = LowHeatTechnoDiscipline.DESC_OUT
+    DESC_OUT = HighHeatTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()

@@ -1,12 +1,12 @@
 
-from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
-from energy_models.core.techno_type.base_techno_models.heat_techno import LowHeatTechno
+from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
+from energy_models.core.techno_type.base_techno_models.heat_techno import MediumHeatTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 
 import numpy as np
 
 
-class ElectricBoilerHeat(LowHeatTechno):
+class ElectricBoilerHeat(MediumHeatTechno):
 
     def compute_other_primary_energy_costs(self):
         """
@@ -37,11 +37,11 @@ class ElectricBoilerHeat(LowHeatTechno):
 
         self.compute_primary_energy_production()
 
-        # self.production[f'{LowTemperatureHeat.short_name} ({self.heat_unit})'] = self.production[f'{LowTemperatureHeat.name} ({self.product_energy_unit})']
+        # self.production[f'{MediumTemperatureHeat.short_name} ({self.heat_unit})'] = self.production[f'{MediumTemperatureHeat.name} ({self.product_energy_unit})']
 
         # Consumption
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-            self.production[f'{LowTemperatureHeat.name} ({self.product_energy_unit})']
+            self.production[f'{MediumTemperatureHeat.name} ({self.product_energy_unit})']
 
     def get_theoretical_electricity_needs(self):
         # we need as output kwh/kwh

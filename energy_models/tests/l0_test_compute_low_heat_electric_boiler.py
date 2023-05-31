@@ -33,8 +33,8 @@ class ElectricBoilerTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({'years': years,
-                                           'electricity': np.ones(len(years)) * 50.0,
-                                           'water': np.ones(len(years)) * 85.0,     #https://www.researchgate.net/figure/WATER-INTENSITY-OF-POWER-GENERATION-BY-STATE-LISTED-HIGHEST-TO-LOWEST-AND-PRICE-OF_tbl1_261162975
+                                           'electricity': np.ones(len(years)) * 181.0,  #$/MWh
+                                                                                        #https://tradingeconomics.com/france/electricity-price
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, 'water': 0.0})

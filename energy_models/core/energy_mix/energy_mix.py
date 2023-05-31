@@ -28,6 +28,9 @@ from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
+from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -79,6 +82,9 @@ class EnergyMix(BaseStream):
                          BioGas.name: BioGas,
                          BioDiesel.name: BioDiesel,
                          Ethanol.name: Ethanol,
+                         HighTemperatureHeat.name: HighTemperatureHeat,
+                         MediumTemperatureHeat.name: MediumTemperatureHeat,
+                         LowTemperatureHeat.name: LowTemperatureHeat,
                          SolidFuel.name: SolidFuel,
                          Syngas.name: Syngas,
                          BiomassDry.name: BiomassDry,
