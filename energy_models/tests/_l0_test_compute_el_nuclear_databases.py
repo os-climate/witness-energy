@@ -93,7 +93,7 @@ class NuclearTestCase(unittest.TestCase):
     
 
     def test_01_nuclear_discipline(self):
-
+        # TODO: test commented out bc needs to be updated with new database connector def
         self.name = 'Test'
         self.model_name = 'Nuclear_Europe'
         self.ee = ExecutionEngine(self.name)
