@@ -12,11 +12,6 @@ price of methane is in $/kWh of heat.
 CO2 production is in Kg/KWh. That values from methane: CO2 per use(kg/kg) / calorific value(KWh/kg)
 
 production in 2020 that is total heat produced by Natural gas is 6236761 TJ = 1683 TWh
-<<<<<<< Updated upstream
-=======
-    
-initial production for high heat temp = 561 TWh         
->>>>>>> Stashed changes
 
 initial production for high heat temp = 561 TWh
 

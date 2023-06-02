@@ -41,6 +41,8 @@ def post_processing_filters(execution_engine, namespace):
     chart_list += [f'{energy} CO2 intensity']
     chart_list += [f'{energy} CO2 breakdown sankey']
     chart_list += [f'{energy} CO2 breakdown bar']
+    chart_list += [f'{energy} CO2 breakdown post processing']
+
     # The filters are set to False by default since the graphs are not yet
     # mature
     filters.append(ChartFilter('Charts', chart_list, chart_list, 'Charts'))
@@ -90,7 +92,172 @@ def post_processings(execution_engine, namespace, filters):
         if new_chart is not None:
             instanciated_charts.append(new_chart)
 
+    if f'{energy} CO2 breakdown post processing' in graphs_list:
+        chart_name = f'{energy} CO2 breakdown post processing summary'
+        new_chart = get_chart_post_processing(
+            execution_engine, namespace, energy_name=energy, chart_name=chart_name)
+        if new_chart is not None:
+            instanciated_charts.append(new_chart)
+
+        chart_name = f'{energy} CO2 breakdown post processing by years'
+        new_chart = get_chart_post_processing(
+            execution_engine, namespace, energy_name=energy, chart_name=chart_name, summary=False)
+        if new_chart is not None:
+            instanciated_charts.append(new_chart)
+
     return instanciated_charts
+
+def get_chart_post_processing(execution_engine, namespace, energy_name, chart_name='Technologies Post Processing',
+                                 summary=True):
+    '''! Function to create the green_techno/_energy scatter chart
+    @param execution_engine: Execution engine object from which the data is gathered
+    @param namespace: String containing the namespace to access the data
+    @param chart_name:String, title of the post_proc
+    @param energy_name:String, name of the energy that the technologies produce
+    @param summary:Boolean, switch from summary (True) to detailed by years via sliders (False)
+
+    @return new_chart: InstantiatedPlotlyNativeChart Scatter plot
+    '''
+
+    # Prepare data
+    multilevel_df, years = get_multilevel_df(
+        execution_engine, namespace, columns=['Capex_part', 'Opex_part',
+                                              'Co2_Taxes', 'Price','l'])
+    energy_list = list(set(multilevel_df.index.droplevel(1)))
+    # Create Figure
+    fig = go.Figure()
+    # Get min and max CO2 emissions for colorscale and max of production for
+    # marker size
+    array_of_cmin, array_of_cmax, array_of_pmax, array_of_pintmax = [], [], [], []
+    for (array_c, array_p) in multilevel_df[['Co2_Taxes', 'production']].values:
+        array_of_cmin += [array_c.min()]
+        array_of_cmax += [array_c.max()]
+        array_of_pmax += [array_p.max()]
+        array_of_pintmax += [array_p.sum()]
+    cmin, cmax = np.min(array_of_cmin), np.max(array_of_cmax)
+    pmax, pintmax = np.max(array_of_pmax), np.max(array_of_pintmax)
+    if summary:
+        # Create a graph to aggregate the informations on all years
+        Capex_part, Opex_part, Co2_Taxes, label, Price,l , total = [
+        ], [], [], [], [], [], []
+        energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
+            0]
+        CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs('CO2_taxes')[
+            'CO2_tax'].values, []
+        for i, row in multilevel_df.iterrows():
+            # skip techno that do not produce the selected energy
+            if i[0] != energy_name:
+                continue
+            Capex_part += [np.mean(row['Capex_part']), ]
+            Opex_part += [np.mean(row['Opex_part']), ]
+            Co2_Taxes += [np.mean(row['Co2_Taxes']), ]
+            label += [i, ]
+            Price += [np.sum(row['production']), ]
+            l += [np.sum(row['invest']), ]
+            total += [np.sum(row['CO2_per_kWh'] *
+                                 row['production']), ]
+            CO2_taxes_array += [np.mean(CO2_taxes), ]
+        customdata = [label, Capex_part, Co2_Taxes,
+                      Price, l, total, CO2_taxes_array,
+                      Opex_part]
+        hovertemplate = '<br>Name: %{customdata[0]}' + \
+                        '<br>Mean Opex part: %{customdata[7]: .2e}' + \
+                        '<br>Mean CO2 tax: %{customdata[2]: .2e}' + \
+                        '<br>Integrated Total CO2: %{customdata[5]: .2e}' + \
+                        '<br>Integrated Price: %{customdata[3]: .2e}' + \
+                        '<br>Integrated l: %{customdata[4]: .2e}' + \
+                        '<br>Mean Capex: %{customdata[1]: .2e}' + \
+                        '<br>Mean CO2 taxes: %{customdata[6]: .2e}'
+        marker_sizes = np.multiply(Price, 20.0) / \
+                       pintmax + 10.0
+        scatter = go.Scatter(x=list(Opex_part), y=list(Co2_Taxes),
+                             customdata=list(np.asarray(customdata).T),
+                             hovertemplate=hovertemplate,
+                             text=label,
+                             textposition="top center",
+                             mode='markers+text',
+                             marker=dict(color=Co2_Taxes,
+                                         cmin=cmin, cmax=cmax,
+                                         colorscale='RdYlGn_r', size=list(marker_sizes),
+                                         colorbar=dict(title='Co2 Taxes', thickness=20)),
+                             visible=True)
+        fig.add_trace(scatter)
+    else:
+        # Fill figure with data by year
+        for i_year in range(len(years)):
+            ################
+            # -technology level-#
+            ################
+            Capex_part, Opex_part, Co2_Taxes, label, Price, l, total = [
+            ], [], [], [], [], [], []
+            energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
+                0]
+            CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs('CO2_taxes')[
+                'CO2_tax'].values, []
+            for i, row in multilevel_df.iterrows():
+                # skip techno that do not produce the selected energy
+                if i[0] != energy_name:
+                    continue
+                Capex_part += [row['Capex_part'][i_year], ]
+                Opex_part += [row['Opex_part'][i_year], ]
+                Co2_Taxes += [row['Co2_Taxes'][i_year], ]
+                label += [i, ]
+                Price += [row['Price'][i_year], ]
+                l += [row['l'][i_year], ]
+                total += [row['Co2_Taxes'][i_year] *
+                              row['Price'][i_year], ]
+                CO2_taxes_array += [CO2_taxes[i_year], ]
+            customdata = [label, Capex_part, Co2_Taxes,
+                          Price, l, total, CO2_taxes_array,
+                          Opex_part]
+            hovertemplate = '<br>Name: %{customdata[0]}' + \
+                            '<br>Opex part: %{customdata[7]: .2e}' + \
+                            '<br>CO2 taxes: %{customdata[2]: .2e}' + \
+                            '<br>Total CO2: %{customdata[5]: .2e}' + \
+                            '<br>Price: %{customdata[3]: .2e}' + \
+                            '<br>l: %{customdata[4]: .2e}' + \
+                            '<br>Capex part: %{customdata[1]: .2e}' + \
+                            '<br>CO2 taxes: %{customdata[6]: .2e}'
+            marker_sizes = np.multiply(Price, 20.0) / \
+                           pmax + 10.0
+            scatter = go.Scatter(x=list(Opex_part), y=list(Co2_Taxes),
+                                 customdata=list(np.asarray(customdata).T),
+                                 hovertemplate=hovertemplate,
+                                 text=label,
+                                 textposition="top center",
+                                 mode='markers+text',
+                                 marker=dict(color=Co2_Taxes,
+                                             cmin=cmin, cmax=cmax,
+                                             colorscale='RdYlGn_r', size=list(marker_sizes),
+                                             colorbar=dict(title='Co2 Taxes ', thickness=20)),
+                                 visible=False)
+            fig.add_trace(scatter)
+        # Prepare year slider and layout updates
+        steps = []
+        for i in range(int(len(fig.data)) - 1):
+            step = dict(
+                method="update",
+                args=[{"visible": [False] * len(fig.data)}, ],
+                label=str(2020 + i)
+            )
+            step["args"][0]["visible"][i] = True
+            steps.append(step)
+        sliders = [dict(
+            active=0,
+            currentvalue={"prefix": "Year: "},
+            steps=steps), ]
+
+        fig.update_layout(
+            sliders=sliders
+        )
+
+    fig.update_xaxes(title_text='Price per MWh [$/MWh] (without CO2 taxes)')
+    fig.update_yaxes(title_text='CO2 taxes [kgCO2/kWh]')
+    fig.data[0].visible = True
+
+    new_chart = InstantiatedPlotlyNativeChart(
+        fig, chart_name=chart_name, default_title=True)
+    return new_chart
 
 
 def get_chart_green_technologies(execution_engine, namespace, energy_name, chart_name='Technologies CO2 intensity',

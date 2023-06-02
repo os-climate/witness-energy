@@ -13,32 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
-from energy_models.core.techno_type.base_techno_models.heat_techno import LowHeatTechno
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.core.techno_type.base_techno_models.heat_techno import lowheattechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat as lowtempheat
 import numpy as np
 
 
-class HeatPump(LowHeatTechno):
-    """
-    From Renewable Fuels Association - https://ethanolrfa.org/ethanol-101/how-is-ethanol-made
+class HeatPump(lowheattechno):
 
-        56 pounds of corn --> 17 pounds of captured CO2 + 2.9 gallons on Ethanol (+ corn residues)
-
-    Conversions:
-        - 1 gallon = 0.00378541 m3
-        - 1 pound = 0.45359237 kg
-    """
     def compute_other_primary_energy_costs(self):
         """
-        Compute primary costs to produce 1kWh of biodiesel
+        Compute primary costs to produce 1kWh of Heat Pump Heat Generation
         """
-
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
-
-
         self.cost_details[f'{Electricity.name}'] = \
             self.prices[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
@@ -46,17 +34,16 @@ class HeatPump(LowHeatTechno):
 
         return self.cost_details[f'{Electricity.name}']
 
-
     def grad_price_vs_energy_price(self):
         elec_needs = self.get_theoretical_electricity_needs()
         heat_generated = self.get_theoretical_heat_generated()
-        Mean_Temperature = LowTemperatureHeat.data_energy_dict['Mean_Temperature']
-        Ambient_Temperature = LowTemperatureHeat.data_energy_dict['Output_Temperature']
-        COP = Ambient_Temperature / (Mean_Temperature - Ambient_Temperature)
+        mean_temperature = lowtemperatureheat.data_energy_dict['mean_temperature']
+        output_temperature = lowtemperatureheat.data_energy_dict['output_temperature']
+        COP = output_temperature / (output_temperature - mean_temperature)
         efficiency = COP
         # efficiency = self.techno_infos_dict['COP']
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-                LowTemperatureHeat.name: np.identity(len(self.years)) * heat_generated / efficiency,
+                lowtemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
                 }
 
     def compute_consumption_and_production(self):
@@ -67,20 +54,19 @@ class HeatPump(LowHeatTechno):
         self.compute_primary_energy_production()
 
         # Production
-        carbon_production_factor = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
-            self.production[f'{LowTemperatureHeat.name} ({self.product_energy_unit})'] / \
+        self.production[f'{lowtempheat.name} ({self.product_energy_unit})'] =  \
+            self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
         # Consumption
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-            self.production[f'{LowTemperatureHeat.name} ({self.product_energy_unit})'] / \
+            self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
     def get_theoretical_electricity_needs(self):
-        Mean_Temperature = self.techno_infos_dict['mean_temperature']
-        Output_Temperature = self.techno_infos_dict['output_temperature']
-        COP = Output_Temperature/(Output_Temperature - Mean_Temperature)
+        mean_temperature = self.techno_infos_dict['mean_temperature']
+        output_temperature = self.techno_infos_dict['output_temperature']
+        COP = output_temperature/(output_temperature - mean_temperature)
         electricity_needs = 1 / COP   # (heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs

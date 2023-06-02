@@ -25,7 +25,7 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 
 class HeatPumpHighTemperaureTestCase(unittest.TestCase):
@@ -51,7 +51,7 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
                                            'biomass_dry': np.ones(len(years)) * 45.0,
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, 'biomass_dry': - 0.64 / 4.86})
+        self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, })
         self.resources_price = pd.DataFrame({'years': years, 'water_resource': 2.0})
 
         self.invest_level = pd.DataFrame(
@@ -66,7 +66,7 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
             {'years': years, 'CO2_tax': func(years)})
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
-        # From future of hydrogen
+        # From future of HeatPump
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 0.0})
         self.scaling_factor_techno_consumption = 1e3
@@ -113,7 +113,7 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
-                       'data_fuel_dict': HighTemperatureHeat.data_energy_dict,
+                       'data_fuel_dict': hightemperatureheat.data_energy_dict,
                        }
         heatpump_model = HeatPump('HeatPump')
         heatpump_model.configure_parameters(inputs_dict)
@@ -162,8 +162,8 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
 
 
 if __name__ == "__main__":

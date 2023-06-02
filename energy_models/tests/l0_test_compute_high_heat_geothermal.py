@@ -25,7 +25,7 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 
 class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
@@ -113,7 +113,7 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
-                       'data_fuel_dict': HighTemperatureHeat.data_energy_dict,
+                       'data_fuel_dict': hightemperatureheat.data_energy_dict,
                        }
 
 
@@ -164,8 +164,8 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
 
 
 if __name__ == "__main__":

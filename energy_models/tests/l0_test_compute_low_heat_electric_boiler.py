@@ -5,13 +5,14 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.low.electric_boiler.electric_boiler_disc import LowTemperatureHeatDiscipline
+from energy_models.models.heat.low.electric_boiler.electric_boiler_disc import ElectricBoilerLowHeatDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
-from energy_models.models.heat.low.electric_boiler.electric_boiler import ElectricBoilerHeat
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.models.heat.low.electric_boiler.electric_boiler import ElectricBoilerLowHeat
+
 
 
 class ElectricBoilerTestCase(unittest.TestCase):
@@ -68,9 +69,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'heat.ElectricBoiler']
-        # self.technologies_list = [
-        #     'natural_gas_resource']
+                                                == 'electricity.ElectricBoiler']
 
     def tearDown(self):
         pass
@@ -79,17 +78,17 @@ class ElectricBoilerTestCase(unittest.TestCase):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
-                       'techno_infos_dict': LowTemperatureHeatDiscipline.techno_infos_dict_default,
+                       'techno_infos_dict': ElectricBoilerLowHeatDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
                        'resources_price': self.resources_price,
                        'invest_level': self.invest_level,
-                       'invest_before_ystart': LowTemperatureHeatDiscipline.invest_before_year_start,
+                       'invest_before_ystart': ElectricBoilerLowHeatDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
                        'transport_margin': self.margin,
-                       'initial_production': LowTemperatureHeatDiscipline.initial_production,
-                       'initial_age_distrib': LowTemperatureHeatDiscipline.initial_age_distribution,
+                       'initial_production': ElectricBoilerLowHeatDiscipline.initial_production,
+                       'initial_age_distrib': ElectricBoilerLowHeatDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
                        'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
@@ -100,10 +99,10 @@ class ElectricBoilerTestCase(unittest.TestCase):
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
-                       'data_fuel_dict': LowTemperatureHeat.data_energy_dict
+                       'data_fuel_dict': lowtemperatureheat.data_energy_dict
                        }
 
-        ng_model = ElectricBoilerHeat('Electric Boiler')
+        ng_model = ElectricBoilerLowHeat('Electric Boiler')
         ng_model.configure_parameters(inputs_dict)
         ng_model.configure_parameters_update(inputs_dict)
         price_details = ng_model.compute_price()
@@ -122,7 +121,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.low.electric_boiler.electric_boiler_disc.LowTemperatureHeatDiscipline'
+        mod_path = 'energy_models.models.heat.low.electric_boiler.electric_boiler_disc.ElectricBoilerLowHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -150,8 +149,8 @@ class ElectricBoilerTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
 
 
 if __name__ == "__main__":

@@ -13,14 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
-from energy_models.core.techno_type.base_techno_models.heat_techno import LowHeatTechno
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.core.techno_type.base_techno_models.heat_techno import lowheattechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 
 import numpy as np
 
-class GeothermalHeat(LowHeatTechno):
+class GeothermalHeat(lowheattechno):
     #self.Mean_Temperature = 500
     #self.Output_Temperature =400
     def compute_other_primary_energy_costs(self):
@@ -42,13 +42,13 @@ class GeothermalHeat(LowHeatTechno):
     def grad_price_vs_energy_price(self):
         elec_needs = self.get_theoretical_electricity_needs()
         heat_generated = self.get_theoretical_heat_generated()
-        Mean_Temperature = LowTemperatureHeat.data_energy_dict['Mean_Temperature']
-        Ambient_Temperature = LowTemperatureHeat.data_energy_dict['Output_Temperature']
+        Mean_Temperature = lowtemperatureheat.data_energy_dict['Mean_Temperature']
+        Ambient_Temperature = lowtemperatureheat.data_energy_dict['Output_Temperature']
         COP = Ambient_Temperature / (Mean_Temperature - Ambient_Temperature)
         efficiency = COP
         #efficiency = self.techno_infos_dict['COP']
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-               LowTemperatureHeat.name: np.identity(len(self.years)) * heat_generated / efficiency,
+               lowtemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
                }
 
     def compute_consumption_and_production(self):
@@ -61,12 +61,12 @@ class GeothermalHeat(LowHeatTechno):
         # Production
         carbon_production_factor = self.get_theoretical_co2_prod()
         self.production[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
-            self.production[f'{LowTemperatureHeat.name} ({self.product_energy_unit})'] / \
+            self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
         # Consumption
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-            self.production[f'{LowTemperatureHeat.name} ({self.product_energy_unit})'] / \
+            self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
     # def get_theoretical_heat_generated(self):

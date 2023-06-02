@@ -17,7 +17,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.models.heat.high.heatpump.heatpump import HeatPump
 
 
@@ -38,7 +38,7 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = 'HighHeatPump'
-    energy_name = HighTemperatureHeat.name
+    energy_name = hightemperatureheat.name
 
 
     lifetime = 25           # years # https://www.energy.gov/energysaver/heat-pump-systems

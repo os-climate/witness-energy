@@ -17,7 +17,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
-from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.models.heat.medium.geothermal.geothermal import GeothermalHeat
 
 
@@ -38,7 +38,7 @@ class GeothermalHeatDiscipline(MediumHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = 'MediumHeatGeothermal'
-    energy_name = MediumTemperatureHeat.name
+    energy_name = mediumtemperatureheat.name
 
 
     lifetime = 25    # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
