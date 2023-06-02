@@ -38,7 +38,7 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
             'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage', 'Low heat temperature', \
-            'Medium heat temperature', 'High heat temperature']]
+            'Medium heat temperature', 'High heat temperature', 'biomass_dry']]
         self.ccs_list = ['carbon_capture', 'carbon_storage']
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
@@ -70,7 +70,6 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_ccs': self.name,
-                   'ns_witness': self.name,
                    'ns_energy_study': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
