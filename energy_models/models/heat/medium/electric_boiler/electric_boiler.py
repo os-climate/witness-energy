@@ -5,8 +5,7 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 
 import numpy as np
 
-
-class ElectricBoilerHeat(mediumheattechno):
+class ElectricBoilerMediumHeat(mediumheattechno):
 
     def compute_other_primary_energy_costs(self):
         """

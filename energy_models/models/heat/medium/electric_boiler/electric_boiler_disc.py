@@ -3,10 +3,11 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.models.heat.medium.electric_boiler.electric_boiler import ElectricBoilerHeat
+from energy_models.models.heat.medium.electric_boiler.electric_boiler import ElectricBoilerMediumHeat
 
 
-class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
+
+class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
@@ -46,10 +47,10 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 1,              # consumptions and productions already have efficiency included
+        'efficiency': 0.99,           # consumptions and productions already have efficiency included
                                       # https://www.google.com/search?q=electric+boiler+efficiency&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEddgb3MP-p7vfw3Bi3_aNLESRLQX8g%3A1685475202926&ei=gk92ZJKcOL-VseMPs4WWuA0&ved=0ahUKEwiS5f215J3_AhW_SmwGHbOCBdcQ4dUDCA8&uact=5&oq=electric+boiler+efficiency&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQgAQyBQgAEIAEMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjoKCAAQRxDWBBCwAzoECCMQJzoHCCMQ6gIQJzoVCAAQAxCPARDqAhC0AhCMAxDlAhgBOhUILhADEI8BEOoCELQCEIwDEOUCGAE6BwgAEIoFEEM6CAgAEIoFEJECOgsIABCABBCxAxCDAToNCAAQigUQsQMQgwEQQzoKCAAQigUQsQMQQzoICAAQgAQQsQM6CggAEIAEEBQQhwJKBAhBGABQ-QRYx1pgxWVoAnABeAOAAcMBiAG0K5IBBTI3LjI2mAEAoAEBsAEUwAEByAEI2gEGCAEQARgL&sclient=gws-wiz-serp
-        'elec_demand': 1,             #10   #https://billswiz.com/electric-boiler-electricity-use
-        'elec_demand_unit': 'KWh',        #'kWh/h',
+        'elec_demand': 1,             #https://billswiz.com/electric-boiler-electricity-use
+        'elec_demand_unit': 'KWh',
         'learning_rate': 0.56,
         'full_load_hours': 8760.0,
         'WACC': 0.062,
@@ -87,5 +88,5 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = ElectricBoilerHeat(self.techno_name)
+        self.techno_model = ElectricBoilerMediumHeat(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
