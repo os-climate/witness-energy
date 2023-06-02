@@ -1,12 +1,12 @@
 
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
-from energy_models.core.techno_type.base_techno_models.heat_techno import HighHeatTechno
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.techno_type.base_techno_models.heat_techno import highheattechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 
 import numpy as np
 
 
-class ElectricBoilerHeat(HighHeatTechno):
+class ElectricBoilerHeat(highheattechno):
 
     def compute_other_primary_energy_costs(self):
         """
@@ -41,7 +41,7 @@ class ElectricBoilerHeat(HighHeatTechno):
 
         # Consumption
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-            self.production[f'{HighTemperatureHeat.name} ({self.product_energy_unit})']
+            self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
 
     def get_theoretical_electricity_needs(self):
         # we need as output kwh/kwh

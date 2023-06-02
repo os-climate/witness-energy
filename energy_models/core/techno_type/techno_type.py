@@ -458,6 +458,17 @@ class TechnoType:
         else:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
 
+        # CAPEX in ($/MWh)
+        self.cost_details['CAPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * self.crf
+
+        # Running OPEX in ($/MWh)
+        self.cost_details['OPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * \
+                                         (self.crf + self.techno_infos_dict['Opex_percentage']) + \
+                                         self.cost_details['transport']
+        # CO2 Tax in ($/MWh)
+        self.cost_details['CO2Tax_Part'] = self.cost_details[self.name] - self.cost_details[f'{self.name}_wotaxes']
+
+
         return self.cost_details
 
     def add_percentage_to_total(self, part_of_total):

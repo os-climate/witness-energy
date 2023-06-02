@@ -36,9 +36,9 @@ from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidH
 from copy import deepcopy
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
-from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
     compute_func_with_exp_min
 from plotly import graph_objects as go
@@ -197,9 +197,9 @@ class Energy_Mix_Discipline(SoSWrapp):
     SOLIDFUEL_NAME = SolidFuel.name
     ELECTRICITY_NAME = Electricity.name
     GASEOUS_HYDROGEN_NAME = GaseousHydrogen.name
-    LowTemperatureHeat_name = LowTemperatureHeat.name
-    MediumTemperatureHeat_name = MediumTemperatureHeat.name
-    HighTemperatureHeat_name = HighTemperatureHeat.name
+    LowTemperatureHeat_name = lowtemperatureheat.name
+    MediumTemperatureHeat_name = mediumtemperatureheat.name
+    HighTemperatureHeat_name = hightemperatureheat.name
 
     energy_constraint_list = EnergyMix.energy_constraint_list
     movable_fuel_list = EnergyMix.movable_fuel_list

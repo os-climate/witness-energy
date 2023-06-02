@@ -42,9 +42,9 @@ from energy_models.core.stream_type.energy_models.syngas import Syngas,\
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.stream_type.energy_models.fossil import Fossil
-from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
-from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from copy import deepcopy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum
@@ -85,9 +85,9 @@ class EnergyMix(BaseStream):
                          LiquidHydrogen.name: LiquidHydrogen,
                          Renewable.name: Renewable,
                          Fossil.name: Fossil,
-                         LowTemperatureHeat.name: LowTemperatureHeat,
-                         MediumTemperatureHeat.name: MediumTemperatureHeat,
-                         HighTemperatureHeat.name: HighTemperatureHeat
+                         lowtemperatureheat.name: lowtemperatureheat,
+                         mediumtemperatureheat.name: mediumtemperatureheat,
+                         hightemperatureheat.name: hightemperatureheat
                          }
 
     # For simplified energy mix , raw_to_net factor is used to compute net
@@ -115,13 +115,13 @@ class EnergyMix(BaseStream):
     liquidHydrogen_name = LiquidHydrogen.name
     biomass_name = BiomassDry.name
     syngas_name = Syngas.name
-    LowTemperatureHeat_name = LowTemperatureHeat.name
-    MediumTemperatureHeat_name = MediumTemperatureHeat.name
-    HighTemperatureHeat_name = HighTemperatureHeat.name
+    lowtemperatureheat_name = lowtemperatureheat.name
+    mediumtemperatureheat_name = mediumtemperatureheat.name
+    hightemperatureheat_name = hightemperatureheat.name
 
     energy_constraint_list = [solidFuel_name,
-                              electricity_name, biomass_name, LowTemperatureHeat_name, MediumTemperatureHeat_name,
-                              HighTemperatureHeat_name]
+                              electricity_name, biomass_name, lowtemperatureheat_name, mediumtemperatureheat_name,
+                              hightemperatureheat_name]
     movable_fuel_list = [liquidHydrogen_name,
                          LiquidFuel.name, BioDiesel.name, Methane.name]
 

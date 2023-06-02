@@ -1,13 +1,13 @@
 
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
-from energy_models.core.techno_type.base_techno_models.heat_techno import HighHeatTechno
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.techno_type.base_techno_models.heat_techno import highheattechno
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 
 import numpy as np
 
 
-class NaturalGasHighHeat(HighHeatTechno):
+class NaturalGasHighHeat(highheattechno):
 
     def compute_other_primary_energy_costs(self):
         """
@@ -53,7 +53,7 @@ class NaturalGasHighHeat(HighHeatTechno):
         # Consumption
 
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
-            self.production[f'{HighTemperatureHeat.name} ({self.product_energy_unit})']
+            self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
 
         # CO2 production
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \

@@ -16,7 +16,7 @@ limitations under the License.
 from energy_models.core.stream_type.energy_type import EnergyType
 
 
-class LowTemperatureHeat(EnergyType):
+class lowtemperatureheat(EnergyType):
     name = 'Low temperature heat production'
     short_name = 'low heat'
     default_techno_list = ['HeatPump']
@@ -26,7 +26,7 @@ class LowTemperatureHeat(EnergyType):
                         }
 
 
-class MediumTemperatureHeat(EnergyType):
+class mediumtemperatureheat(EnergyType):
 
     name = 'Medium temperature heat production'
     short_name = 'medium heat'
@@ -38,7 +38,7 @@ class MediumTemperatureHeat(EnergyType):
                         }
 
 
-class HighTemperatureHeat(EnergyType):
+class hightemperatureheat(EnergyType):
 
     name = 'High temperature heat production'
     short_name = 'high heat'

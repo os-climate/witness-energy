@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
-from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.models.heat.medium.electric_boiler.electric_boiler import ElectricBoilerHeat
 
 
@@ -23,7 +23,7 @@ class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = 'Electric Boiler'
-    energy_name = MediumTemperatureHeat.name
+    energy_name = mediumtemperatureheat.name
 
     # Conversions
     pound_to_kg = 0.45359237

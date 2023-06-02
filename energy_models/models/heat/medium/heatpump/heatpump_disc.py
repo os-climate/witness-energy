@@ -18,7 +18,7 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
 from energy_models.models.heat.medium.heatpump.heatpump import HeatPump
-from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 
 
 class HeatPumpDiscipline(MediumHeatTechnoDiscipline):
@@ -38,7 +38,7 @@ class HeatPumpDiscipline(MediumHeatTechnoDiscipline):
     }
     # -- add specific techno inputs to this
     techno_name = 'MediumHeatPump'
-    energy_name = MediumTemperatureHeat.name
+    energy_name = mediumtemperatureheat.name
 
     lifetime = 25           # years # https://www.energy.gov/energysaver/heat-pump-systems
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.

@@ -15,14 +15,15 @@ limitations under the License.
 '''
 from abc import abstractmethod
 
-from energy_models.core.stream_type.energy_models.heat import LowTemperatureHeat
-from energy_models.core.stream_type.energy_models.heat import MediumTemperatureHeat
-from energy_models.core.stream_type.energy_models.heat import HighTemperatureHeat
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.techno_type import TechnoType
 
 
-class LowHeatTechno(TechnoType):
-    energy_name = LowTemperatureHeat.name
+
+class lowheattechno(TechnoType):
+    energy_name = lowtemperatureheat.name
 
     def compute_transport(self):
         # Electricity has no Calorific value overload
@@ -47,8 +48,8 @@ class LowHeatTechno(TechnoType):
         return 0.0
 
 
-class MediumHeatTechno(TechnoType):
-    energy_name = MediumTemperatureHeat.name
+class mediumheattechno(TechnoType):
+    energy_name = mediumtemperatureheat.name
 
     def compute_transport(self):
         # Electricity has no Calorific value overload
@@ -74,8 +75,8 @@ class MediumHeatTechno(TechnoType):
         return 0.0
 
 
-class HighHeatTechno(TechnoType):
-    energy_name = HighTemperatureHeat.name
+class highheattechno(TechnoType):
+    energy_name = hightemperatureheat.name
 
     def compute_transport(self):
         # Electricity has no Calorific value overload
