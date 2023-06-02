@@ -412,6 +412,10 @@ class TechnoType:
         )
 
         # Factory cost including CAPEX OPEX
+        # self.cost_details['CAPEX_heat_tech'] = self.cost_details[f'Capex_{self.name}'] * self.crf
+        # self.cost_details['OPEX_heat_tech'] = self.cost_details[f'Opex_{self.name}'] * self.crf
+        # self.cost_details['CO2_taxes'] = self.cost_details[f'Capex_{self.name}'] * self.crf
+
         self.cost_details[f'{self.name}_factory'] = self.cost_details[f'Capex_{self.name}'] * \
             (self.crf + self.techno_infos_dict['Opex_percentage'])
 
@@ -457,6 +461,16 @@ class TechnoType:
                 self.cost_details['CO2_taxes_factory']
         else:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
+
+        # CAPEX in ($/MWh)
+        self.cost_details['CAPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * self.crf
+
+        # Running OPEX in ($/MWh)
+        self.cost_details['OPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * \
+                                         (self.crf + self.techno_infos_dict['Opex_percentage']) + \
+                                         self.cost_details['transport']
+        # CO2 Tax in ($/MWh)
+        self.cost_details['CO2Tax_Part'] = self.cost_details[self.name] - self.cost_details[f'{self.name}_wotaxes']
 
         return self.cost_details
 
