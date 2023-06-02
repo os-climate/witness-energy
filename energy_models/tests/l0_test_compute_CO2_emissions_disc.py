@@ -70,6 +70,7 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_ccs': self.name,
+                   'ns_witness': self.name,
                    'ns_energy_study': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 

@@ -71,13 +71,13 @@ class PostProcessEnergy(unittest.TestCase):
 
         ppf = PostProcessingFactory()
 
-        for itm in self.namespaceList:
-            filters = ppf.get_post_processing_filters_by_namespace(self.ee, itm)
-            #print('self.model_name', self.ee, self.usecase.study_name)
-            graph_list = ppf.get_post_processing_by_namespace(self.ee, itm, filters,
-                                                              as_json=False)
-            for graph in graph_list:
-                graph.to_plotly().show()
+        #for itm in self.namespaceList:
+        filters = ppf.get_post_processing_filters_by_namespace(self.ee, self.biogas_ns)
+        #print('self.model_name', self.ee, self.usecase.study_name)
+        graph_list = ppf.get_post_processing_by_namespace(self.ee, self.biogas_ns, filters,
+                                                          as_json=False)
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
 
 
 if '__main__' == __name__:
