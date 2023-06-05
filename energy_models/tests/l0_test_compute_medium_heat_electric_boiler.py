@@ -1,4 +1,3 @@
-
 import unittest
 import pandas as pd
 import numpy as np
@@ -14,12 +13,10 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.models.heat.medium.electric_boiler.electric_boiler import ElectricBoilerMediumHeat
 
 
-
 class ElectricBoilerTestCase(unittest.TestCase):
     """
     Electric Boiler test class
     """
-
     def setUp(self):
         '''
         Initialize third data needed for testing
@@ -107,7 +104,6 @@ class ElectricBoilerTestCase(unittest.TestCase):
         ng_model.configure_parameters_update(inputs_dict)
         price_details = ng_model.compute_price()
         ng_model.compute_consumption_and_production()
-        # ng_model.check_outputs_dict(self.biblio_data)
 
     def test_02_natural_gas_discipline(self):
 
