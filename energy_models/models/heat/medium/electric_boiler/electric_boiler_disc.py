@@ -51,6 +51,8 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     }
 
     # production in 2020: 43 EJ = 11944 TWh
+    # https://www.iea.org/reports/buildings
+    #https: // www.convert - measurement - units.com / conversion - calculator.php?type = energie
     # in TWh
     initial_production = 3981
 
