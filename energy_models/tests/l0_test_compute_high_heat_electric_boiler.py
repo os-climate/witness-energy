@@ -1,4 +1,3 @@
-
 import unittest
 import pandas as pd
 import numpy as np
@@ -14,12 +13,10 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.models.heat.high.electric_boiler.electric_boiler import ElectricBoilerHighHeat
 
 
-
 class ElectricBoilerTestCase(unittest.TestCase):
     """
     Electric Boiler test class
     """
-
     def setUp(self):
         '''
         Initialize third data needed for testing
@@ -74,7 +71,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_compute_natural_gas_price_prod_consumption(self):
+    def test_01_compute_electric_boiler_price_prod_consumption(self):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
@@ -107,9 +104,8 @@ class ElectricBoilerTestCase(unittest.TestCase):
         ng_model.configure_parameters_update(inputs_dict)
         price_details = ng_model.compute_price()
         ng_model.compute_consumption_and_production()
-        # ng_model.check_outputs_dict(self.biblio_data)
 
-    def test_02_natural_gas_discipline(self):
+    def test_02_electric_boiler_discipline(self):
 
         self.name = 'Test'
         self.model_name = 'Electric Boiler'

@@ -1,10 +1,8 @@
-
 import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.models.heat.medium.electric_boiler.electric_boiler import ElectricBoilerMediumHeat
-
 
 
 class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
@@ -25,11 +23,6 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     # -- add specific techno inputs to this
     techno_name = 'Electric Boiler'
     energy_name = mediumtemperatureheat.name
-
-    # Conversions
-    pound_to_kg = 0.45359237
-    gallon_to_m3 = 0.00378541
-    liter_per_gallon = 3.78541178
 
     # Heat Producer [Online]
     #https://www.google.com/search?q=electric+boiler+maximum+heat+temperature+in+degree+celcius&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEdf5IN3xbJw5uB3tC7-M-5nvtg8TKg%3A1683626939090&ei=uxtaZNOCBYWeseMP6ZuEwAM&ved=0ahUKEwiTzI2N_-f-AhUFT2wGHekNATgQ4dUDCA8&uact=5&oq=electric+boiler+maximum+heat+temperature+in+degree+celcius&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCCEQoAEyBQghEKABMgUIIRCgATIFCCEQoAE6CwgAEIoFEIYDELADOggIIRAWEB4QHToHCCEQoAEQCjoECCEQFUoECEEYAVDPB1izUGDqoQVoAXAAeACAAZ0BiAGUBJIBAzAuNJgBAKABAcgBA8ABAQ&sclient=gws-wiz-serp
@@ -58,8 +51,10 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     }
 
     # production in 2020: 43 EJ = 11944 TWh
+    # https://www.iea.org/reports/buildings
+    #https: // www.convert - measurement - units.com / conversion - calculator.php?type = energie
     # in TWh
-    initial_production = 11944/3
+    initial_production = 3981
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
@@ -69,11 +64,11 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                ]
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
+                                             'distrib': 100 / sum(distrib) * np.array(distrib)})
 
-    # Renewable Methane Association [online]
+    # Renewable Association [online]
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': 0})  #'invest': 1500 * np.array([0, 11944])
+        {'past years': np.arange(-construction_delay, 0), 'invest': 0})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
