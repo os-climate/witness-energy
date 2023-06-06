@@ -71,7 +71,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_compute_natural_gas_price_prod_consumption(self):
+    def test_01_compute_electric_boiler_price_prod_consumption(self):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
@@ -105,7 +105,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
         price_details = ng_model.compute_price()
         ng_model.compute_consumption_and_production()
 
-    def test_02_natural_gas_discipline(self):
+    def test_02_electric_boiler_discipline(self):
 
         self.name = 'Test'
         self.model_name = 'Electric Boiler'
