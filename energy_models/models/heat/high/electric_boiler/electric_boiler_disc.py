@@ -32,8 +32,10 @@ class ElectricBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
     construction_delay = 2  # years
 
     techno_infos_dict_default = {
-        'Capex_init': 1500,           #https://www.google.com/search?q=capex+of+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=capeHow%20much%20does%20an%20electric%20boiler%20capital%20cost?The%20costs%20of%20an%20electric%20boiler%20installation%20can%20range%20from%20a%C2%A0minimum%20$6,469%20to%20$11,885%C2%A0in%20total%20price.
-        'Capex_init_unit': '$/kW',    # $ per kW of electricity   #it's for sept 2021 (capex value)
+
+        'Capex_init': 42.86,          #https://capgemini-my.sharepoint.com/personal/valentin_joncquieres_capgemini_com/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fvalentin%5Fjoncquieres%5Fcapgemini%5Fcom%2FDocuments%2FFichiers%20de%20conversation%20Microsoft%20Teams%2FPriyankaChintada%5Ffinal%5Fthesis%2Epdf&parent=%2Fpersonal%2Fvalentin%5Fjoncquieres%5Fcapgemini%5Fcom%2FDocuments%2FFichiers%20de%20conversation%20Microsoft%20Teams&ga=1
+                                      # table 5.2.
+        'Capex_init_unit': '$/kW',    # $ per kW of electricity
         'Opex_percentage': 1.6,       #https://www.google.com/search?q=+OPEX+%25+of+an+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEddXq4YjX58191BnDyTZd08c2VWtJw%3A1683713517747&ei=7W1bZJqaLaicseMP_pSKkAQ&ved=0ahUKEwjaxIPRwer-AhUoTmwGHX6KAkIQ4dUDCA8&uact=5&oq=+OPEX+%25+of+an+electric+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQogQyBQgAEKIEMgUIABCiBDIFCAAQogQ6BQghEKABSgQIQRgAUABYxSdggjFoAHAAeACAAZYBiAGuA5IBAzIuMpgBAKABAcABAQ&sclient=gws-wiz-serp
         'lifetime': lifetime,
         'lifetime_unit': 'years',
@@ -49,11 +51,11 @@ class ElectricBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
         'techno_evo_eff': 'no',
     }
 
-    # production in 2020: 43 EJ = 11944 TWh
-    # https://www.iea.org/reports/buildings
-    #https: // www.convert - measurement - units.com / conversion - calculator.php?type = energie
+    # production in 2019: 1.51 EJ = 419 TWh
+    # https://www.worldbioenergy.org/uploads/211214%20WBA%20GBS%202021.pdf
+    # page 14
     # in TWh
-    initial_production = 3981
+    initial_production = 139.67
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
