@@ -105,7 +105,7 @@ class NuclearTestCase(unittest.TestCase):
         self.ee.ns_manager.add_ns_def(ns_dict)
         ns_dict_bis = {'ns_electricity_nuc': f'{self.name}.{self.model_name}'}
         ns_id = self.ee.ns_manager.add_ns_def(ns_dict_bis)
-        ns_id = self.ee.ns_manager.add_ns_def(ns_dict_bis, database_name = 'Europe')
+        ns_id = self.ee.ns_manager.add_ns_def(ns_dict_bis, database_name = 'Europe')  # pylint: disable=E1123
         file_path = join(dirname(__file__), 'data_tests', 'data_nuclear_test.json')
         self.ee.ns_manager.set_ns_database_location(file_path)
         mod_path = 'energy_models.models.electricity.nuclear_modified.nuclear_disc.NuclearDiscipline'
@@ -115,7 +115,7 @@ class NuclearTestCase(unittest.TestCase):
         model_name_US = 'Nuclear_US'
         builder_us = self.ee.factory.get_builder_from_module(
             model_name_US, mod_path)
-        ns_id = self.ee.ns_manager.add_ns_def({'ns_electricity_nuc': f'{self.name}.{model_name_US}'}, database_name = 'US')
+        ns_id = self.ee.ns_manager.add_ns_def({'ns_electricity_nuc': f'{self.name}.{model_name_US}'}, database_name = 'US')  # pylint: disable=E1123
         builder_us.associate_namespaces(ns_id)
         self.ee.factory.set_builders_to_coupling_builder([builder, builder_us])
 
