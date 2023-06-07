@@ -25,7 +25,7 @@ class GeothermalHeat(lowheattechno):
     #self.Output_Temperature =400
     def compute_other_primary_energy_costs(self):
         """
-        Compute primary costs to produce 1kWh of Heat Pump Heat Generation
+        Compute primary costs to produce 1kWh of Geothermal Heat Generation
         """
 
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
@@ -42,9 +42,9 @@ class GeothermalHeat(lowheattechno):
     def grad_price_vs_energy_price(self):
         elec_needs = self.get_theoretical_electricity_needs()
         heat_generated = self.get_theoretical_heat_generated()
-        Mean_Temperature = lowtemperatureheat.data_energy_dict['Mean_Temperature']
-        Ambient_Temperature = lowtemperatureheat.data_energy_dict['Output_Temperature']
-        COP = Ambient_Temperature / (Mean_Temperature - Ambient_Temperature)
+        mean_temperature = self.techno_infos_dict['mean_temperature']
+        output_temperature = self.techno_infos_dict['output_temperature']
+        COP = output_temperature / (output_temperature - mean_temperature)
         efficiency = COP
         #efficiency = self.techno_infos_dict['COP']
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
@@ -69,16 +69,10 @@ class GeothermalHeat(lowheattechno):
             self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
-    # def get_theoretical_heat_generated(self):
-    #    heating_space = self.techno_infos_dict['heating_space']
-    #    heat_required_per_meter_square = self.techno_infos_dict['heat_required_per_meter_square']                       # kg/m3
-    #    heat_generated = heating_space * heat_required_per_meter_square
-    #    return heat_generated
-
     def get_theoretical_electricity_needs(self):
-        Mean_Temperature = self.techno_infos_dict['mean_temperature']
-        Output_Temperature = self.techno_infos_dict['output_temperature']
-        COP = Output_Temperature/(Output_Temperature - Mean_Temperature)
+        mean_temperature = self.techno_infos_dict['mean_temperature']
+        output_temperature = self.techno_infos_dict['output_temperature']
+        COP = output_temperature / (output_temperature - mean_temperature)
         electricity_needs = 1 / COP   # (heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs
@@ -87,7 +81,8 @@ class GeothermalHeat(lowheattechno):
     @staticmethod
     def get_theoretical_steel_needs(self):
         """
-        According to the IEA, Nuclear power stations need 1473 kg of copper for each MW implemented
+        Page:21 #https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+        According to the www.energy.gov, Geothermal need 968 kg of copper for each MW implemented
         Computing the need in Mt/MW
         """
         steel_need = self.techno_infos_dict['steel_needs'] / 1000 / 1000 / 1000
