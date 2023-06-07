@@ -11,9 +11,9 @@ High temperature heat in electric boiler technology, the temperature range is ab
 In electricity demand, Electricity is used to produce 1KWh of heat(this information in KWh): elec_demand is in
 KWh of electricity / KWh of heat.
 
-Production in 2020 that is total heat produced by Electric boiler is 43 EJ = 11944 TWh.
+Production in 2019 that is total heat produced by Electric boiler is 1.51 EJ = 419 TWh.
 
-Initial production for high heat temp = 3981 TWh.
+Initial production for high heat temp = 139.67 TWh.
 
 Working:
 
@@ -29,7 +29,7 @@ The exact way in which the boiler works in terms of heating and storing the wate
 
 ![img.png](img.png)
 ## Data     
-The data used for this model is extracted from IEA, EHC, EHB Leaflet & Rio heating
+The data used for this model is extracted from EHC, WBA, EHB Leaflet & Rio heating
 
 [^1]: [Electric boiler Working - rio heating](https://www.rioheating.com/how-do-electric-heaters-work/#:~:text=Electric%20heating%20is%20the%20process,where%20the%20heat%20is%20created.)
 
@@ -39,4 +39,4 @@ The data used for this model is extracted from IEA, EHC, EHB Leaflet & Rio heati
 
 [^4]: [About Electric Boiler – EHB Leaflet](https://www.labour.gov.hk/eng/public/bpvd/EHB_Leaflet_2016_Eng_2%20web.pdf)
 
-[^5]: [Electric Boiler: World heat production – iea](https://www.iea.org/reports/buildings)
+[^5]: [Electric Boiler: World heat production – WBA(World Bioenergy Association)](https://www.worldbioenergy.org/uploads/211214%20WBA%20GBS%202021.pdf)
