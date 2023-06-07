@@ -27,57 +27,50 @@ from os.path import join, dirname
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
-
 class PostProcessEnergy(unittest.TestCase):
     def setUp(self):
         """
         setup of test
         """
         self.study_name = 'post-processing'
-        self.repo = 'climateeconomics.sos_processes.iam.witness' #'energy_models.sos_processes.energy.MDA'
-        self.proc_name = 'witness' #'energy_process_v0'
+        self.repo = 'climateeconomics.sos_processes.iam.witness'
+        self.proc_name = 'witness'
 
         self.ee = ExecutionEngine(self.study_name)
         builder = self.ee.factory.get_builder_from_process(repo=self.repo,
                                                            mod_id=self.proc_name)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
-        # Added directly to witness process
-        # self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_witness',
-        #     'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_ssp_comparison.post_processing_ssp_comparison')
         self.ee.configure()
+
         self.usecase = Study()
         self.usecase.study_name = self.study_name
         values_dict = self.usecase.setup_usecase()
         for values_dict_i in values_dict:
             self.ee.load_study_from_input_dict(values_dict_i)
-            #print('values_dict_i', values_dict_i)
         self.ee.load_study_from_input_dict({f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
                                             f'{self.study_name}.max_mda_iter': 2})
-        self.methane_ns = f'{self.study_name}.EnergyMix.methane'
-        self.biogas_ns = f'{self.study_name}.EnergyMix.biogas'
 
-        self.namespaceList = [self.methane_ns, self.biogas_ns]
-
+        energylist = ['methane', 'hydrogen.gaseous_hydrogen', 'biogas', 'syngas', 'fuel.liquid_fuel', \
+                      'fuel.hydrotreated_oil_fuel', 'solid_fuel', 'biomass_dry', \
+                      'electricity', 'fuel.biodiesel', 'fuel.ethanol', 'hydrogen.liquid_hydrogen']
+        self.namespace_list =[]
+        for energ in energylist:
+            self.namespace_list.append(f'{self.study_name}.EnergyMix.{energ}')
     def test_post_processing_plots(self):
         """
         Test to check the generation of plots to compare WITNESS to IPCC SSP baseline scenarios 1-5
         """
         self.ee.execute()
 
-        # self.usecase.static_dump_data('.', self.ee, DirectLoadDump())
-        # from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
-        # self.usecase.static_load_data('.', self.ee, DirectLoadDump())
-
         ppf = PostProcessingFactory()
 
-        #for itm in self.namespaceList:
-        filters = ppf.get_post_processing_filters_by_namespace(self.ee, self.biogas_ns)
-        #print('self.model_name', self.ee, self.usecase.study_name)
-        graph_list = ppf.get_post_processing_by_namespace(self.ee, self.biogas_ns, filters,
-                                                          as_json=False)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for itm in self.namespace_list:
+            filters = ppf.get_post_processing_filters_by_namespace(self.ee, itm)
+            graph_list = ppf.get_post_processing_by_namespace(self.ee, itm, filters,
+                                                              as_json=False)
+            # for graph in graph_list:
+            #     graph.to_plotly().show()
 
 
 if '__main__' == __name__:

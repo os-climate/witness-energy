@@ -16,7 +16,6 @@ limitations under the License.
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.techno_type.base_techno_models.heat_techno import lowheattechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat as lowtempheat
 import numpy as np
 
 
@@ -54,7 +53,7 @@ class HeatPump(lowheattechno):
         self.compute_primary_energy_production()
 
         # Production
-        self.production[f'{lowtempheat.name} ({self.product_energy_unit})'] =  \
+        self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] =  \
             self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 

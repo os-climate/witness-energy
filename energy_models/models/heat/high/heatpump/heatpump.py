@@ -16,8 +16,6 @@ limitations under the License.
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.heat_techno import highheattechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat as hightempheat
-
 import numpy as np
 
 class HeatPump(highheattechno):
@@ -49,7 +47,7 @@ class HeatPump(highheattechno):
         """
         self.compute_primary_energy_production()
         # Production
-        self.production[f'{hightempheat.name} ({self.product_energy_unit})'] = \
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
             self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
