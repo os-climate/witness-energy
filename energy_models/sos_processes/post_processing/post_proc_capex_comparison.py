@@ -15,14 +15,13 @@ limitations under the License.
 '''
 
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart,\
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 
 import numpy as np
 
 
 def post_processing_filters(execution_engine, namespace):
-
     filters = []
 
     chart_list = ['Factory']
@@ -33,7 +32,6 @@ def post_processing_filters(execution_engine, namespace):
 
 
 def post_processings(execution_engine, namespace, filters):
-
     chart_results = []
 
     # Overload default value with chart filter
@@ -52,16 +50,15 @@ def post_processings(execution_engine, namespace, filters):
                     execution_engine, namespace, energy)
                 if chart is not None:
                     chart_results.append(chart)
-
-        chart_energy = create_chart_factory_comparison_energy(
-            execution_engine, namespace, energy_list)
-        chart_results.append(chart_energy)
+        if not namespace.endswith('AgricultureMix'):
+            chart_energy = create_chart_factory_comparison_energy(
+                execution_engine, namespace, energy_list)
+            chart_results.append(chart_energy)
 
     return chart_results
 
 
 def create_chart_factory_comparison_technos(execution_engine, namespace, energy):
-
     all_ns_detailed_prices = execution_engine.dm.get_all_namespaces_from_var_name(
         'techno_detailed_prices')
 
@@ -89,19 +86,21 @@ def create_chart_factory_comparison_technos(execution_engine, namespace, energy)
 
 
 def create_chart_factory_comparison_energy(execution_engine, namespace, energy_list):
-
     all_ns_detailed_prices = execution_engine.dm.get_all_namespaces_from_var_name(
         'techno_detailed_prices')
     mean_factory = {}
+
     for energy in energy_list:
-        energy_production = execution_engine.dm.get_value(
-            f'{namespace}.{energy}.energy_production')
+        if energy == 'biomass_dry':
+            continue
+        ns_energy = f'{namespace}.{energy}'
+        energy_production = execution_engine.dm.get_value(f'{ns_energy}.energy_production')
         energy_detailed_prices = [
             ns for ns in all_ns_detailed_prices if ns.startswith(f'{namespace}.{energy}')]
         years = energy_production['years'].values
         factory_mean = np.zeros(len(years))
         for techno in energy_detailed_prices:
-            techno_name = techno.replace(f'{namespace}.{energy}.', '').replace(
+            techno_name = techno.replace(f'{ns_energy}.', '').replace(
                 '.techno_detailed_prices', '')
             techno_detailed_prices = execution_engine.dm.get_value(techno)
             factory_techno = techno_detailed_prices[f'{techno_name}_factory'].values

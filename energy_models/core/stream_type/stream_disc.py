@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 
 import numpy as np
 
@@ -66,9 +67,8 @@ class StreamDiscipline(SoSWrapp):
     _maturity = 'Research'
     energy_name = 'stream'
 
-    def __init__(self, sos_name):
-
-        SoSWrapp.__init__(self, sos_name)
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name=sos_name, logger=logger)
         self.energy_model = None
 
     def setup_sos_disciplines(self):
@@ -262,6 +262,7 @@ class StreamDiscipline(SoSWrapp):
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t']
+        unit = 'TWh'
         years_list = [self.get_sosdisc_inputs('year_start')]
         # Overload default value with chart filter
         if filters is not None:
@@ -291,7 +292,7 @@ class StreamDiscipline(SoSWrapp):
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-            new_charts = self.get_charts_production_by_techno()
+            new_charts = self.get_charts_production_by_techno(unit)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
@@ -453,7 +454,7 @@ class StreamDiscipline(SoSWrapp):
 
         return instanciated_charts
 
-    def get_charts_production_by_techno(self):
+    def get_charts_production_by_techno(self, unit):
         instanciated_charts = []
         # Charts for consumption and prod
         energy_production = self.get_sosdisc_outputs(
@@ -461,12 +462,12 @@ class StreamDiscipline(SoSWrapp):
 
         chart_name = f'Technology production for {self.energy_name}'
 
-        new_chart = TwoAxesInstanciatedChart('years', f'Production ({self.energy_model.unit})',
+        new_chart = TwoAxesInstanciatedChart('years', f'Production ({unit})',
                                              chart_name=chart_name, stacked_bar=True)
         techno_list = self.get_sosdisc_inputs('technologies_list')
 
         for techno in techno_list:
-            column_name = f'{self.energy_name} {techno} ({self.energy_model.unit})'
+            column_name = f'{self.energy_name} {techno} ({unit})'
             techno_prod = energy_production[column_name].values
 
             serie = InstanciatedSeries(

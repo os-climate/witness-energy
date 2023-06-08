@@ -55,20 +55,21 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
         'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True},
-        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
-        # WIP is_dev to remove once its validated on dev processes
-        'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'}
+        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                       'namespace': 'ns_energy'},
     }
 
     DESC_OUT = {
         'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Gt',
                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
                                          'namespace': 'ns_ccs'},
-        'CO2_emissions_by_use_sinks':  {'type': 'dataframe', 'unit': 'Gt',
-                                        'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                        'namespace': 'ns_ccs'},
+        'CO2_emissions_by_use_sinks': {'type': 'dataframe', 'unit': 'Gt',
+                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                       'namespace': 'ns_ccs'},
     }
 
     model_name = ConsumptionCO2Emissions.name
@@ -82,14 +83,12 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
 
         dynamic_inputs = {}
         dynamic_outputs = {}
-        if 'is_dev' in self.get_data_in():
-            is_dev = self.get_sosdisc_inputs('is_dev')
 
         if 'energy_list' in self.get_data_in():
             energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
-                    if energy == BiomassDry.name and is_dev == True:
+                    if energy == BiomassDry.name:
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_per_use'] = {
                             'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness',
                             'visibility': SoSWrapp.SHARED_VISIBILITY}
@@ -133,7 +132,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
         inputs_dict = {}
         inputs_dict.update(inputs_dict_orig)
         energy_list = self.get_sosdisc_inputs('energy_list')
-        if inputs_dict['is_dev'] and 'biomass_dry' in energy_list:
+        if 'biomass_dry' in energy_list:
             inputs_dict[f'{BiomassDry.name}.energy_consumption'] = inputs_dict_orig.pop(
                 f'{AgricultureMixDiscipline.name}.energy_consumption')
             inputs_dict[f'{BiomassDry.name}.energy_production'] = inputs_dict_orig.pop(
@@ -162,7 +161,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
         CO2_emissions_by_use_sinks = outputs_dict['CO2_emissions_by_use_sinks']
         energy_production_detailed = self.get_sosdisc_inputs(
             'energy_production_detailed')
-        is_dev = inputs_dict['is_dev']
+
         # ------------------------------------#
         # -- CO2 emissions sources gradients--#
         # ------------------------------------#
@@ -176,7 +175,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
             last_part_key = energy_prod_info.split('#')[1]
             if co2_emission_column in CO2_emissions_by_use_sources.columns and energy in energy_list:
                 ns_energy = energy
-                if energy == BiomassDry.name and is_dev:
+                if energy == BiomassDry.name:
                     ns_energy = AgricultureMixDiscipline.name
                 if last_part_key == 'prod':
                     if 'Total CO2 by use' in co2_emission_column:
@@ -228,11 +227,9 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                 f'{ns_energy}.energy_production', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
 
-
-
-        #------------------------------------#
-        #-- CO2 emissions sinks gradients--#
-        #------------------------------------#
+        # ------------------------------------#
+        # -- CO2 emissions sinks gradients--#
+        # ------------------------------------#
         dtot_co2_emissions_sinks = self.model.compute_grad_CO2_emissions_sinks(
             energy_production_detailed)
 
@@ -243,7 +240,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
             last_part_key = energy_prod_info.split('#')[1]
             if co2_emission_column in CO2_emissions_by_use_sinks.columns and energy in energy_list:
                 ns_energy = energy
-                if energy == BiomassDry.name and is_dev:
+                if energy == BiomassDry.name:
                     ns_energy = AgricultureMixDiscipline.name
                 if last_part_key == 'prod':
                     self.set_partial_derivative_for_other_types(
@@ -277,8 +274,6 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                             ('CO2_emissions_by_use_sinks', co2_emission_column), (
                                 f'{ns_energy}.energy_consumption', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1e3)
-
-
 
     def get_chart_filter_list(self):
 

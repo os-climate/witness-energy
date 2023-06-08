@@ -22,7 +22,7 @@ import pandas as pd
 
 
 class BaseInvest:
-    #-- $ for now, to be able to change to euros if necessary
+    # -- $ for now, to be able to change to euros if necessary
     POS_UNIT = ['$', 'k$', 'M$', 'G$', 'T$']
     name = 'base_invest'
 
@@ -34,7 +34,8 @@ class BaseInvest:
         self.energy_list = None
         self.column_name = None
         self.distribution_list = None
-    #-- Setters
+
+    # -- Setters
 
     def set_invest_unit(self, unit):
         self.check_unit(unit)
@@ -54,7 +55,7 @@ class BaseInvest:
         else:
             raise TypeError('invest_mix must be a dataframe')
 
-    #-- Methods
+    # -- Methods
     def check_unit(self, unit):
         if unit not in self.POS_UNIT:
             raise Exception(ValueError(
@@ -66,7 +67,7 @@ class BaseInvest:
         ind_in = self.POS_UNIT.index(unit)
         ind_obj = self.POS_UNIT.index(self.invest_unit)
         delta = ind_in - ind_obj
-        fact = 1.e3**(-delta)
+        fact = 1.e3 ** (-delta)
         out_df[self.column_name] = self.invest_df[self.column_name] * fact
         return out_df
 
@@ -81,17 +82,15 @@ class BaseInvest:
         invest_distrib = pd.merge(self.mix_df, converted_invest_df, on='years')
 
         for energy in base_list:
-
             invest_distrib[energy] *= invest_distrib[self.column_name].values / \
-                norm_mix.values
+                                      norm_mix.values
 
         return invest_distrib[self.energy_list + ['years']], output_unit
 
     def compute_distribution_list(self, input_dict):
         self.distribution_list = []
-        is_dev = input_dict['is_dev']
         for energy in input_dict['energy_list']:
-            if energy == BiomassDry.name and is_dev == True:
+            if energy == BiomassDry.name:
                 pass
             else:
                 for techno in input_dict[f'{energy}.technologies_list']:
@@ -102,7 +101,6 @@ class BaseInvest:
 
 
 def compute_norm_mix(mix_df, base_list):
-
     norm_mix = mix_df[base_list].sum(axis=1)
 
     return norm_mix
