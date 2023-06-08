@@ -23,16 +23,19 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 import pickle
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as WITNESSFull_subprocess
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as WITNESSFull_subprocess
 from energy_models.tests.data_tests.mda_energy_data_generator import launch_data_pickle_generation
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import AgricultureMixDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
+    AgricultureMixDiscipline
 
 
 class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
     """
     GHGEnergy Emissions Discipline jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -56,7 +59,8 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage']]
+            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage',
+            'Low heat temperature', 'Medium heat temperature', 'High heat temperature']]
         self.ccs_list = ['carbon_capture', 'carbon_storage']
 
         pkl_file = open(
@@ -83,10 +87,12 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.energy_production_detailed = streams_outputs_dict['energy_production_detailed']
 
         self.co2_emissions_ccus_Gt = pd.DataFrame({'years': self.years,
-                                                   'carbon_storage Limited by capture (Gt)': np.linspace(1, 6, len(self.years))
+                                                   'carbon_storage Limited by capture (Gt)': np.linspace(1, 6,
+                                                                                                         len(self.years))
                                                    })
         self.co2_emissions_needed_by_energy_mix = pd.DataFrame({'years': self.years,
-                                                                'carbon_capture needed by energy mix (Gt)': np.linspace(0.001, 0.3, len(self.years))
+                                                                'carbon_capture needed by energy mix (Gt)': np.linspace(
+                                                                    0.001, 0.3, len(self.years))
                                                                 })
         self.name = 'Test'
         self.model_name = 'EnergyGHGEmissions'
@@ -124,8 +130,10 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CO2_per_use'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CH4_per_use'] = self.CH4_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.N2O_per_use'] = self.N2O_per_use[energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.energy_production'] = self.energy_production[energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.energy_consumption'] = self.energy_consumption[energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.energy_production'] = self.energy_production[
+                    energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.energy_consumption'] = \
+                self.energy_consumption[energy]
             else:
 
                 inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
@@ -168,12 +176,13 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs = [
             f'{self.name}.GHG_total_energy_emissions']
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_02_GHGEnergy_emissions_discipline_energy_prod_cons_jacobian(self):
         '''
@@ -185,7 +194,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
         energy_list_wobiomass_dry = [
-            energy for energy in self.energy_list  if energy != 'biomass_dry']
+            energy for energy in self.energy_list if energy != 'biomass_dry']
         coupled_inputs = [
             f'{self.name}.{energy}.energy_production' for energy in energy_list_wobiomass_dry]
         coupled_inputs.extend([
@@ -197,12 +206,13 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                                f'{self.name}.{AgricultureMixDiscipline.name}.energy_consumption'])
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_prodcons.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_03_GHGENergy_from_energy_mix_jacobian(self):
         '''
@@ -219,12 +229,13 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_emission_energy_mix.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_04_GHGENergy_energy_production_detailed_jacobian(self):
         '''
@@ -240,16 +251,18 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}_energy_production_detailed.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+        self.check_jacobian(location=dirname(__file__),
+                            filename=f'jacobian_{self.model_name}_energy_production_detailed.pkl',
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
 
 if '__main__' == __name__:
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = GHGEnergyEmissionsDiscJacobianTestCase()
     cls.setUp()
     # cls.launch_data_pickle_generation()
