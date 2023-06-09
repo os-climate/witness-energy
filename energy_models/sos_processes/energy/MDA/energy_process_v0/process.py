@@ -181,6 +181,25 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_liquid_hydrogen',
                     'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+
+            if energy == 'fuel.liquid_fuel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_liquid_fuel',
+                    'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+            if energy == 'fuel.hydrotreated_oil_fuel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_hydrotreated_oil_fuel',
+                    'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+            if energy == 'fuel.biodiesel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_biodiesel',
+                    'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+            if energy == 'fuel.ethanol':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_ethanol',
+                    'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+
+
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 f'ns_{energy}',
                 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
