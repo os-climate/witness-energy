@@ -60,10 +60,10 @@ def get_figures_table(table):
 
     return new_chart
 
-def getcomparisiondata(execution_engine, namespace):
+def get_comparision_data(execution_engine, namespace):
 
     '''
-    Extracting Capex, Opex, CO2_Tax and total price from data management
+    Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
     '''
 
     var_f_name = f"{namespace}.technologies_list"
@@ -105,7 +105,7 @@ def post_processings(execution_engine, namespace, filters):
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
 
-    price_comparision_table_data = getcomparisiondata(execution_engine, namespace)
+    price_comparision_table_data = get_comparision_data(execution_engine, namespace)
 
     instanciated_charts = []
 
