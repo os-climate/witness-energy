@@ -57,7 +57,8 @@ class PostProcessEnergy(unittest.TestCase):
         self.namespace_list =[]
         for energ in energylist:
             self.namespace_list.append(f'{self.study_name}.EnergyMix.{energ}')
-    def test_post_processing_plots(self):
+
+    def test_post_processing_plots(self): # FIXME: rename and fix docstrings
         """
         Test to check the generation of plots to compare WITNESS to IPCC SSP baseline scenarios 1-5
         """
@@ -69,8 +70,12 @@ class PostProcessEnergy(unittest.TestCase):
             filters = ppf.get_post_processing_filters_by_namespace(self.ee, itm)
             graph_list = ppf.get_post_processing_by_namespace(self.ee, itm, filters,
                                                               as_json=False)
+
+            # FIXME: too many plots. Plot only the tables without index-based (use title?)
             # for graph in graph_list:
             #     graph.to_plotly().show()
+
+            # graph_list[-5].to_plotly().show() # FIXME: biomass_dry plots not showing ?
 
 
 if '__main__' == __name__:

@@ -217,7 +217,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
         marker_sizes = np.multiply(production, 20.0) / \
                        pintmax + 10.0
         scatter = go.Scatter(x=list(price_per_kWh_wotaxes), y=list(CO2_per_kWh),
-                             customdata=list(np.asarray(customdata).T),
+                             customdata=list(np.asarray(customdata, dtype='object').T),
                              hovertemplate=hovertemplate,
                              text=label,
                              textposition="top center",
@@ -267,7 +267,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
             marker_sizes = np.multiply(production, 20.0) / \
                            pmax + 10.0
             scatter = go.Scatter(x=list(price_per_kWh_wotaxes), y=list(CO2_per_kWh),
-                                 customdata=list(np.asarray(customdata).T),
+                                 customdata=list(np.asarray(customdata, dtype='object').T),
                                  hovertemplate=hovertemplate,
                                  text=label,
                                  textposition="top center",
