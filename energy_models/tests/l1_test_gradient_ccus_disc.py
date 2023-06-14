@@ -23,7 +23,8 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 import pickle
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as WITNESSFull_subprocess
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as WITNESSFull_subprocess
 from energy_models.tests.data_tests.mda_energy_data_generator import launch_data_pickle_generation
 
 
@@ -31,7 +32,8 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
     """
     Consumption CO2 Emissions Discipline jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -169,16 +171,17 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
                            f'{self.name}.CCS_price',
                            f'{self.name}.carbon_storage_constraint']
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = CCUSDiscJacobianTestCase()
     cls.setUp()
     # self.launch_data_pickle_generation()
