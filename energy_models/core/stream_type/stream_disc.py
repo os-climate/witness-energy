@@ -79,15 +79,58 @@ class StreamDiscipline(SoSWrapp):
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.techno_consumption'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt'}
+                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                'electricity (TWh)': ('float', None, True),
+                                                'amine (Mt)': ('float', None, True),
+                                                'methane (TWh)': ('float', None, True),
+                                                'calcium (Mt)': ('float', None, True),
+                                                'potassium (Mt)': ('float', None, True),}}
                     dynamic_inputs[f'{techno}.techno_consumption_woratio'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt'}
+                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'amine (Mt)': ('float', None, True),
+                                                 'methane (TWh)': ('float', None, True),
+                                                 'calcium (Mt)': ('float', None, True),
+                                                 'potassium (Mt)': ('float', None, True),
+                                                 'electricity (TWh)': ('float', None, True),
+                                                 }}
                     dynamic_inputs[f'{techno}.techno_production'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt'}
+                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'carbon_capture (Mt)': ('float', None, True),
+                                                'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                }}
                     dynamic_inputs[f'{techno}.techno_prices'] = {
-                        'type': 'dataframe', 'unit': '$/MWh'}
+                        'type': 'dataframe', 'unit': '$/MWh',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                'direct_air_capture.AmineScrubbing': ('float', None, True),
+                                                'direct_air_capture.AmineScrubbing_wotaxes': ('float', None, True),
+                                                'direct_air_capture.CalciumPotassiumScrubbing': ('float', None, True),
+                                                'direct_air_capture.CalciumPotassiumScrubbing_wotaxes': ('float', None, True),
+                                                'flue_gas_capture.CalciumLooping': ('float', None, True),
+                                                'flue_gas_capture.CalciumLooping_wotaxes': ('float', None, True),
+                                                'flue_gas_capture.ChilledAmmoniaProcess': ('float', None, True),
+                                                'flue_gas_capture.ChilledAmmoniaProcess_wotaxes': ('float', None, True),
+                                                'flue_gas_capture.CO2Membranes': ('float', None, True),
+                                                'flue_gas_capture.CO2Membranes_wotaxes': ('float', None, True),
+                                                'flue_gas_capture.MonoEthanolAmine': ('float', None, True),
+                                                'flue_gas_capture.MonoEthanolAmine_wotaxes': ('float', None, True),
+                                                'flue_gas_capture.PiperazineProcess': ('float', None, True),
+                                                'flue_gas_capture.PiperazineProcess_wotaxes': ('float', None, True),
+                                                'flue_gas_capture.PressureSwingAdsorption': ('float', None, True),
+                                                'flue_gas_capture.PressureSwingAdsorption_wotaxes': ('float', None, True),}}
                     dynamic_inputs[f'{techno}.land_use_required'] = {
-                        'type': 'dataframe', 'unit': 'Gha'}
+                        'type': 'dataframe', 'unit': 'Gha',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                  'direct_air_capture.AmineScrubbing (Gha)': ('float', None, True),
+                                                'direct_air_capture.CalciumPotassiumScrubbing (Gha)': ('float', None, True),
+                                                'flue_gas_capture.CalciumLooping (Gha)': ('float', None, True),
+                                                'flue_gas_capture.ChilledAmmoniaProcess (Gha)': ('float', None, True),
+                                                'flue_gas_capture.CO2Membranes (Gha)': ('float', None, True),
+                                                'flue_gas_capture.MonoEthanolAmine (Gha)': ('float', None, True),
+                                                'flue_gas_capture.PiperazineProcess (Gha)': ('float', None, True),
+                                                'flue_gas_capture.PressureSwingAdsorption (Gha)': ('float', None, True),}}
 
         self.add_inputs(dynamic_inputs)
 

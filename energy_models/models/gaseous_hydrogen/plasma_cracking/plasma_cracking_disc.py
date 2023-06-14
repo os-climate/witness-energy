@@ -100,15 +100,25 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe',
-                                       'unit': '%', 'default': initial_age_distribution},
+                                       'unit': '%', 'default': initial_age_distribution,
+                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                                                'age': ('float', None, True),
+                                                                'distrib':('float', None, True)}},
                'invest_before_ystart': {'type': 'dataframe',
                                         'unit': 'G$',
                                         'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False},
-               'CO2_credits': {'type': 'dataframe', 'default': CO2_credits, 'unit': '$/t/year', 'structuring': True},
-               'market_demand': {'type': 'dataframe', 'default': market_demand, 'unit': 'Mt/year', 'structuring': True}
+               'CO2_credits': {'type': 'dataframe', 'default': CO2_credits, 'unit': '$/t/year', 'structuring': True,
+                               'dataframe_descriptor': {'years': ('float', None, True),
+                                                        'CO2_credits': ('float', None, True),}
+                               },
+               'market_demand': {'type': 'dataframe', 'default': market_demand, 'unit': 'Mt/year', 'structuring': True,
+                                 'dataframe_descriptor': {'years': ('float', None, True),
+                                                          'carbon_demand': ('float', None, True),
+                                                          'distrib': ('float', None, True)}
+                                 }
                }
 
     # -- add specific techno inputs to this

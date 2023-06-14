@@ -75,7 +75,11 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                'initial_production': {'type': 'float',
                                       'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe',
-                                       'unit': '%', 'default': initial_age_distribution},
+                                       'unit': '%', 'default': initial_age_distribution,
+                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                                                'age': ('float', None, True),
+                                                                'distrib': ('float', None, True)}
+                                       },
                'invest_before_ystart': {'type': 'dataframe',
                                         'unit': 'G$',
                                         'default': invest_before_year_start,

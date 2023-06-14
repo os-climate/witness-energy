@@ -66,17 +66,57 @@ class EnergyDiscipline(StreamDiscipline):
                 techno_list = self.get_sosdisc_inputs('technologies_list')
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.techno_consumption'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt'}
+                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'biomass_dry (TWh)': ('float', None, True),
+                                                 'electricity (TWh)': ('float', None, True),
+                                                 'methane (TWh)': ('float', None, True),
+                                                 'water (Mt)': ('float', None, True),}}
                     dynamic_inputs[f'{techno}.techno_consumption_woratio'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt'}
+                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'electricity (TWh)': ('float', None, True),
+                                                 'water (Mt)': ('float', None, True),
+                                                 'methane (TWh)': ('float', None, True),}}
                     dynamic_inputs[f'{techno}.techno_production'] = {
-                        'type': 'dataframe', 'unit': 'TWh or Mt'}
+                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'biomass_dry (TWh)': ('float', None, True),
+                                                 'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
+                                                 'CO2 (Mt)': ('float', None, True),
+'O2 (Mt)': ('float', None, True),
+'C (Mt)': ('float', None, True),}}
                     dynamic_inputs[f'{techno}.techno_prices'] = {
-                        'type': 'dataframe', 'unit': '$/MWh'}
+                        'type': 'dataframe', 'unit': '$/MWh',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'Crop': ('float', None, True),
+                                                 'Crop_wotaxes': ('float', None, True),
+                                                 'Forest_wotaxes': ('float', None, True),
+                                                 'Forest': ('float', None, True),
+                                                 'WaterGasShift': ('float', None, True),
+                                                 'WaterGasShift_wotaxes': ('float', None, True),
+                                                 'Electrolysis.PEM': ('float', None, True),
+                                                 'Electrolysis.PEM_wotaxes': ('float', None, True),
+                                                 'PlasmaCracking': ('float', None, True),
+                                                 'PlasmaCracking_wotaxes': ('float', None, True),
+                                                 }}
                     dynamic_inputs[f'{techno}.CO2_emissions'] = {
-                        'type': 'dataframe', 'unit': 'kg/kWh'}
+                        'type': 'dataframe', 'unit': 'kg/kWh',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'Crop': ('float', None, True),
+                                                 'Forest': ('float', None, True),
+                                                 'PlasmaCracking': ('float', None, True),
+                                                 'Electrolysis.PEM': ('float', None, True),
+                                                 'WaterGasShift': ('float', None, True),}}
                     dynamic_inputs[f'{techno}.land_use_required'] = {
-                        'type': 'dataframe', 'unit': 'Gha'}
+                        'type': 'dataframe', 'unit': 'Gha',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'Crop (Gha)': ('float', None, True),
+                                                 'Crop for Food (Gha)': ('float', None, True),
+                                                 'Forest (Gha)': ('float', None, True),
+                                                 'WaterGasShift (Gha)': ('float', None, True),
+'Electrolysis.PEM (Gha)': ('float', None, True),
+'PlasmaCracking (Gha)': ('float', None, True),}}
 
         self.add_inputs(dynamic_inputs)
 

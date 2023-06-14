@@ -46,7 +46,8 @@ class EnergyDemandDiscipline(SoSWrapp):
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh',
                                               'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                                       'demand': ('float',  None, True)},
+                                                                       'demand': ('float',  None, True),
+                                                                       'production electricity (TWh)': ('float',  None, True)},
                                               'dataframe_edition_locked': False,
                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix'},
                # 'default': 22847.66
@@ -54,7 +55,10 @@ class EnergyDemandDiscipline(SoSWrapp):
                'initial_electricity_demand': {'type': 'float', 'default': 18000., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': '-'},
                'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+               'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness',
+                                 'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                          'population': ('float', None, True),}
+                                 },
                'transport_demand': {'type': 'dataframe', 'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                                                   'transport_demand': ('float',  None, True)},
                                     'dataframe_edition_locked': False, 'unit': 'TWh'},
