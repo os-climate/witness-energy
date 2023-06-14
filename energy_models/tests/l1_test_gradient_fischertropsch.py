@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 from os.path import join, dirname
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -31,7 +31,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
     """
     Fischer Tropsch jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -93,7 +94,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         # CO2 Taxe Data
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
 
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
@@ -106,7 +107,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         # From future of hydrogen
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 100})
-        #---Ratios---
+        # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
         demand_ratio_dict['years'] = years
@@ -119,7 +120,6 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
             resource_ratio_dict)
 
     def test_01_FT_gradient_syngas_ratio_08(self):
-
         self.name = 'Test'
         self.model_name = 'fischer_tropsch_WGS'
         self.ee = ExecutionEngine(self.name)
@@ -162,9 +162,10 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -181,7 +182,6 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                                      ])
 
     def test_02_FT_gradient_syngas_ratio_03(self):
-
         self.name = 'Test'
         self.model_name = 'fischer_tropsch_RWGS'
         self.ee = ExecutionEngine(self.name)
@@ -226,7 +226,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices', f'{self.name}.energy_CO2_emissions',
                                     f'{self.name}.syngas_ratio',
@@ -239,10 +240,9 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_03_FT_gradient_variable_syngas_ratio(self):
-
         self.name = 'Test'
         self.model_name = 'fischer_tropsch_RWGS_and_WGS'
         self.ee = ExecutionEngine(self.name)
@@ -287,7 +287,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -301,10 +302,9 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_04_FT_gradient_variable_syngas_ratio_bis(self):
-
         self.name = 'Test'
         self.model_name = 'fischer_tropsch_RWGS_and_WGS_bis'
         self.ee = ExecutionEngine(self.name)
@@ -335,7 +335,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.syngas_ratio': np.array(list(np.linspace(100, 0, 15)) + list(np.linspace(0, 100, 16))),
+                       f'{self.name}.syngas_ratio': np.array(
+                           list(np.linspace(100, 0, 15)) + list(np.linspace(0, 100, 16))),
                        f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
                        f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
@@ -349,7 +350,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions', f'{self.name}.syngas_ratio',
@@ -362,10 +364,9 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_05_FT_gradient_ratio_available_cc(self):
-
         self.name = 'Test'
         self.model_name = 'fischer_tropsch_ratio_available_cc'
         self.ee = ExecutionEngine(self.name)
@@ -407,9 +408,10 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices', f'{self.name}.energy_CO2_emissions',
                                     f'{self.name}.syngas_ratio',
@@ -425,7 +427,6 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                                      ])
 
     def test_06_FT_gradient_variable_syngas_ratio_invest_negative(self):
-
         self.name = 'Test'
         self.model_name = 'fischer_tropsch_RWGS_and_WGS_negative'
         self.ee = ExecutionEngine(self.name)
@@ -470,7 +471,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -484,11 +486,11 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = FTJacobianTestCase()
     cls.setUp()
     cls.test_05_FT_gradient_ratio_available_cc()

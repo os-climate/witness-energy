@@ -21,7 +21,7 @@ from os.path import join, dirname
 import scipy.interpolate as sc
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -33,7 +33,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
     """
     Carbon Storage jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -64,9 +65,9 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         co2_taxes_nul = [0, 0, 0,
-                         0,  0,   0,  0,   0]
+                         0, 0, 0, 0, 0]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         func_nul = sc.interp1d(co2_taxes_year, co2_taxes_nul,
@@ -85,7 +86,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * transport_cost})
         self.resources_price = pd.DataFrame({'years': years})
-        #---Ratios---
+        # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
         demand_ratio_dict['years'] = years
@@ -143,9 +144,10 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
@@ -154,7 +156,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_02_deep_ocean_injection_discipline_analytic_grad(self):
 
@@ -194,7 +196,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
@@ -203,7 +206,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_03_deep_saline_discipline_analytic_grad(self):
 
@@ -243,7 +246,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
@@ -252,7 +256,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_04_depleted_oil_gas_discipline_analytic_grad(self):
 
@@ -292,7 +296,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
@@ -301,7 +306,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_05_pure_carbon_solid_storage_discipline_analytic_grad(self):
 
@@ -346,7 +351,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -359,7 +365,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_production',
 
                                      # f'{self.name}.{self.model_name}.carbon_to_be_stored_constraint'],)
-                                     f'{self.name}.carbon_to_be_stored_constraint'],)
+                                     f'{self.name}.carbon_to_be_stored_constraint'], )
 
     def test_06_geologic_mineralization_discipline_analytic_grad(self):
 
@@ -399,7 +405,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
@@ -408,7 +415,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_07_enhanced_oil_recovery_discipline_analytic_grad(self):
 
@@ -448,7 +455,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
@@ -457,7 +465,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_08_reforestation_discipline_analytic_grad(self):
 
@@ -499,7 +507,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
@@ -509,7 +518,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
 
-                                     f'{self.name}.{self.model_name}.land_use_required'],)
+                                     f'{self.name}.{self.model_name}.land_use_required'], )
 
     def test_09_carbon_storage_discipline_jacobian(self):
 
@@ -547,7 +556,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
+                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
+                    'value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
 
@@ -567,16 +577,17 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data=disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = CarbonStorageJacobianTestCase()
     cls.setUp()
     cls.test_09_carbon_storage_discipline_jacobian()
