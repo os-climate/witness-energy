@@ -21,10 +21,10 @@ import pandas as pd
 from os.path import join, dirname
 import scipy.interpolate as sc
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 import pickle
@@ -35,7 +35,8 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
     """
     DemandModel jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -51,24 +52,31 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1)
 
         self.energy_production_detailed = pd.DataFrame({'years': self.years,
-                                                        EnergyDemand.elec_prod_column: np.linspace(20000, 19000, len(self.years)),
-                                                        'production hydrogen.liquid_hydrogen (TWh)' : np.linspace(20000, 19000, len(self.years)),
-                                                        'production fuel.liquid_fuel (TWh)': np.linspace(10000, 12000, len(self.years)),
-                                                        'production fuel.biodiesel (TWh)': np.linspace(11000, 12000, len(self.years)),
-                                                        'production methane (TWh)': np.linspace(5000., 6000., len(self.years)),
-                                                        'production biogas (TWh)': np.linspace(1000., 1500., len(self.years)),
-                                                        'production fuel.hydrotreated_oil_fuel (TWh)': np.linspace(2000., 3000., len(self.years)),
+                                                        EnergyDemand.elec_prod_column: np.linspace(20000, 19000,
+                                                                                                   len(self.years)),
+                                                        'production hydrogen.liquid_hydrogen (TWh)': np.linspace(20000,
+                                                                                                                 19000,
+                                                                                                                 len(self.years)),
+                                                        'production fuel.liquid_fuel (TWh)': np.linspace(10000, 12000,
+                                                                                                         len(self.years)),
+                                                        'production fuel.biodiesel (TWh)': np.linspace(11000, 12000,
+                                                                                                       len(self.years)),
+                                                        'production methane (TWh)': np.linspace(5000., 6000.,
+                                                                                                len(self.years)),
+                                                        'production biogas (TWh)': np.linspace(1000., 1500.,
+                                                                                               len(self.years)),
+                                                        'production fuel.hydrotreated_oil_fuel (TWh)': np.linspace(
+                                                            2000., 3000., len(self.years)),
                                                         })
         self.population = pd.DataFrame({'years': self.years,
                                         'population': np.linspace(7794.79, 9000., len(self.years))})
-        self.transport_demand=pd.DataFrame({'years': self.years,
-                                'transport_demand': np.linspace(33600., 30000., len(self.years))})
+        self.transport_demand = pd.DataFrame({'years': self.years,
+                                              'transport_demand': np.linspace(33600., 30000., len(self.years))})
 
     def tearDown(self):
         pass
 
     def test_01_demand_model_discipline_jacobian(self):
-
         self.name = 'Test'
         self.model_name = 'demand_model'
         self.ee = ExecutionEngine(self.name)
@@ -96,19 +104,21 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.energy_production_detailed',
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.{self.model_name}.electricity_demand_constraint',
                                      f'{self.name}.{self.model_name}.transport_demand_constraint'
-                                     ],)
+                                     ], )
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = DemandModelJacobianTestCase()
     cls.setUp()
     cls.test_01_demand_model_discipline_jacobian()

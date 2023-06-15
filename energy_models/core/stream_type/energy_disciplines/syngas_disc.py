@@ -19,7 +19,7 @@ import numpy as np
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.syngas import Syngas, \
     compute_calorific_value, compute_molar_mass, compute_high_calorific_value, compute_dcal_val_dsyngas_ratio
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from copy import deepcopy
@@ -73,7 +73,7 @@ class SyngasDiscipline(EnergyDiscipline):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'technologies_list' in self._data_in:
+        if 'technologies_list' in self.get_data_in():
             techno_list = self.get_sosdisc_inputs('technologies_list')
             self.update_default_technology_list()
             if techno_list is not None:

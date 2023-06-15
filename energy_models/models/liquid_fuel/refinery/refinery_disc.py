@@ -20,8 +20,8 @@ import numpy as np
 from energy_models.models.liquid_fuel.refinery.refinery import Refinery
 from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import LiquidFuelTechnoDiscipline
 
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.kerosene import Kerosene
 from energy_models.core.stream_type.energy_models.gasoline import Gasoline
@@ -291,7 +291,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
             new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/USgallon]',
                                                  chart_name=chart_name)
 
-            if 'part_of_total' in self._data_in:
+            if 'part_of_total' in self.get_data_in():
                 part_of_total = self.get_sosdisc_inputs('part_of_total')
                 new_chart.annotation_upper_left = {
                     'Percentage of total price': f'{part_of_total[0]*100.0} %'}

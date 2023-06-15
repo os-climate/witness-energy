@@ -21,7 +21,7 @@ from os.path import join, dirname
 
 from energy_models.models.solid_fuel.coal_extraction.coal_extraction_disc import CoalExtractionDiscipline
 from energy_models.models.solid_fuel.coal_extraction.coal_extraction import CoalExtraction
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_prices,\
     get_static_CO2_emissions
 

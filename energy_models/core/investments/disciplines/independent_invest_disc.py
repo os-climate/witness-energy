@@ -10,20 +10,20 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.independent_invest import IndependentInvest
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
     compute_func_with_exp_min
-from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum, get_dsmooth_dvariable
-from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
+from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum, get_dsmooth_dvariable
+from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.ccus.ccus import CCUS
 
 
-class IndependentInvestDiscipline(SoSDiscipline):
+class IndependentInvestDiscipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'InvestmentsDistribution',
@@ -59,35 +59,32 @@ class IndependentInvestDiscipline(SoSDiscipline):
                                   'visibility': 'Shared', 'namespace': 'ns_ref'},
         'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                         'editable': False, 'structuring': True},
         'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
+                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True},
         'invest_limit_ref': {'type': 'float', 'default': 300., 'unit': 'G$', 'user_level': 2, 'visibility': 'Shared',
                              'namespace': 'ns_ref'},
         'forest_investment': {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
                               'dataframe_descriptor': {'years': ('int', [1900, 2100], False)}, 'namespace': 'ns_invest',
                               'dataframe_edition_locked': False},
-        # WIP is_dev to remove once its validated on dev processes
-        'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
-                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}
     }
 
     energy_name = "one_invest"
 
     DESC_OUT = {
-        'invest_constraint': {'type': 'dataframe', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'invest_constraint': {'type': 'dataframe', 'unit': '', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                               'namespace': 'ns_functions'},
-        'invest_objective': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'invest_objective': {'type': 'array', 'unit': '', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                              'namespace': 'ns_functions'},
-        'invest_objective_sum': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'invest_objective_sum': {'type': 'array', 'unit': '', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                  'namespace': 'ns_functions'},
-        'invest_sum_cons': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'invest_sum_cons': {'type': 'array', 'unit': '', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_functions'},
-        'invest_sum_eq_cons': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'invest_sum_eq_cons': {'type': 'array', 'unit': '', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                'namespace': 'ns_functions'},
-        'invest_sum_cons_dc': {'type': 'array', 'unit': '', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'invest_sum_cons_dc': {'type': 'array', 'unit': '', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                'namespace': 'ns_functions'},
     }
     _maturity = 'Research'
@@ -101,13 +98,12 @@ class IndependentInvestDiscipline(SoSDiscipline):
         '''
         dynamic_outputs = {}
         dynamic_inputs = {}
-        if 'is_dev' in self._data_in:
-            is_dev = self.get_sosdisc_inputs('is_dev')
-        if 'energy_list' in self._data_in:
+
+        if 'energy_list' in self.get_data_in():
             energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
-                    if energy == BiomassDry.name and is_dev == True:
+                    if energy == BiomassDry.name:
                         dynamic_inputs['managed_wood_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
                             'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
@@ -128,7 +124,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                             'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
                             'default': EnergyMix.stream_class_dict[energy].default_techno_list}
                         # Add all invest_level outputs
-                        if f'{energy}.technologies_list' in self._data_in:
+                        if f'{energy}.technologies_list' in self.get_data_in():
                             technology_list = self.get_sosdisc_inputs(
                                 f'{energy}.technologies_list')
                             if technology_list is not None:
@@ -137,7 +133,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                                         'type': 'dataframe', 'unit': 'G$',
                                         'visibility': 'Shared', 'namespace': 'ns_energy'}
 
-        if 'ccs_list' in self._data_in:
+        if 'ccs_list' in self.get_data_in():
             ccs_list = self.get_sosdisc_inputs('ccs_list')
             if ccs_list is not None:
                 for ccs in ccs_list:
@@ -147,7 +143,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                         'visibility': 'Shared', 'namespace': 'ns_ccs',
                         'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list}
                     # Add all invest_level outputs
-                    if f'{ccs}.technologies_list' in self._data_in:
+                    if f'{ccs}.technologies_list' in self.get_data_in():
                         technology_list = self.get_sosdisc_inputs(
                             f'{ccs}.technologies_list')
                         if technology_list is not None:
@@ -161,7 +157,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
     def run(self):
 
         input_dict = self.get_sosdisc_inputs()
-        is_dev = input_dict['is_dev']
+
         invest_constraint_df, invest_objective, abs_delta, abs_delta_cons, abs_delta_cons_dc, delta_eq_cons = self.independent_invest_model.compute_invest_constraint_and_objective(
             input_dict)
 
@@ -174,7 +170,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                        }
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
-            if energy == BiomassDry.name and is_dev == True:
+            if energy == BiomassDry.name:
                 pass
             else:
                 for techno in input_dict[f'{energy}.technologies_list']:
@@ -200,11 +196,11 @@ class IndependentInvestDiscipline(SoSDiscipline):
         invest_limit_ref = inputs_dict['invest_limit_ref']
         techno_invest_sum = techno_invests.sum(axis=1).values
         energy_invest = energy_investment['energy_investment'].values * \
-            scaling_factor_energy_investment
+                        scaling_factor_energy_investment
 
         techno_invest_sum += inputs_dict['forest_investment']['forest_investment'].values
         energy_list = inputs_dict['energy_list']
-        if inputs_dict['is_dev'] and BiomassDry.name in energy_list:
+        if BiomassDry.name in energy_list:
             techno_invest_sum += inputs_dict['managed_wood_investment']['investment'].values
             techno_invest_sum += inputs_dict['deforestation_investment']['investment'].values
             techno_invest_sum += inputs_dict['crop_investment']['investment'].values
@@ -269,7 +265,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
         self.set_partial_derivative_for_other_types(
             ('invest_sum_eq_cons',), ('forest_investment', 'forest_investment'), dinvest_eq_cons_dtechno_invest)
 
-        if inputs_dict['is_dev'] and BiomassDry.name in energy_list:
+        if BiomassDry.name in energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                 self.set_partial_derivative_for_other_types(
                     ('invest_constraint', 'invest_constraint'), (techno, 'investment'),
@@ -406,7 +402,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
         instanciated_charts = []
         charts = []
-        is_dev = self.get_sosdisc_inputs('is_dev')
+
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -461,7 +457,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
 
             new_chart_energy.series.append(serie)
 
-            if is_dev and BiomassDry.name in energy_list:
+            if BiomassDry.name in energy_list:
                 chart_name = f'Distribution of agriculture sector investments vs years'
                 agriculture_chart = TwoAxesInstanciatedChart('years', 'Invest [G$]',
                                                              chart_name=chart_name, stacked_bar=True)
@@ -491,7 +487,7 @@ class IndependentInvestDiscipline(SoSDiscipline):
                 forest_investment = self.get_sosdisc_inputs(
                     'forest_investment')
                 techno_invests_sum += forest_investment['forest_investment']
-                if is_dev and BiomassDry.name in energy_list:
+                if BiomassDry.name in energy_list:
                     for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                         invest = self.get_sosdisc_inputs(techno)
                         techno_invests_sum += invest['investment']

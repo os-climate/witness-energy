@@ -22,10 +22,10 @@ import pandas as pd
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect, get_dsmooth_dvariable_vect
-from sos_trades_core.tools.cst_manager.func_manager_common import soft_maximum_vect, get_dsoft_maximum_vect
-from sos_trades_core.tools.cst_manager.func_manager_common import cons_smooth_maximum_vect, get_dcons_smooth_dvariable_vect
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
+from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect, get_dsmooth_dvariable_vect
+from sostrades_core.tools.cst_manager.func_manager_common import soft_maximum_vect, get_dsoft_maximum_vect
+from sostrades_core.tools.cst_manager.func_manager_common import cons_smooth_maximum_vect, get_dcons_smooth_dvariable_vect
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
 
 
 class TechnoType:
@@ -412,6 +412,10 @@ class TechnoType:
         )
 
         # Factory cost including CAPEX OPEX
+        # self.cost_details['CAPEX_heat_tech'] = self.cost_details[f'Capex_{self.name}'] * self.crf
+        # self.cost_details['OPEX_heat_tech'] = self.cost_details[f'Opex_{self.name}'] * self.crf
+        # self.cost_details['CO2_taxes'] = self.cost_details[f'Capex_{self.name}'] * self.crf
+
         self.cost_details[f'{self.name}_factory'] = self.cost_details[f'Capex_{self.name}'] * \
             (self.crf + self.techno_infos_dict['Opex_percentage'])
 
@@ -457,6 +461,18 @@ class TechnoType:
                 self.cost_details['CO2_taxes_factory']
         else:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
+
+        # CAPEX in ($/MWh)
+        self.cost_details['CAPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * self.crf
+
+        # Running OPEX in ($/MWh)
+        self.cost_details['OPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * \
+                                         (self.crf + self.techno_infos_dict['Opex_percentage']) + \
+                                         self.cost_details['transport']
+        # CO2 Tax in ($/MWh)
+        self.cost_details['CO2Tax_Part'] = self.cost_details[self.name] - \
+                                           self.cost_details[f'{self.name}_wotaxes']
+
 
         return self.cost_details
 

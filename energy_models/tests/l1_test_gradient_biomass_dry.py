@@ -20,10 +20,10 @@ import scipy.interpolate as sc
 from os.path import join, basename, dirname
 import pickle
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 
@@ -31,7 +31,8 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
     """
     Biomass Dry jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -87,7 +88,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                                    'Agriculture total (Gha)': np.ones(len(self.years)) * 4.8})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -98,7 +99,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         # From future of hydrogen
         self.transport = pd.DataFrame(
             {'years': self.years, 'transport': np.ones(len(self.years)) * 0.1})
-        #---Ratios---
+        # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(self.years))))
         demand_ratio_dict['years'] = self.years
@@ -144,16 +145,17 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
-
+        self.ee.execute()
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
+                            local_data=disc_techno.local_data,
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level', f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -167,7 +169,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_production',
                                      f'{self.name}.{self.model_name}.land_use_required',
                                      f'{self.name}.{self.model_name}.techno_capital',
-                                     f'{self.name}.{self.model_name}.non_use_capital'],)
+                                     f'{self.name}.{self.model_name}.non_use_capital'], )
 
     def test_02_managed_wood_discipline_analytic_grad(self):
 
@@ -198,17 +200,18 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level', f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
                             outputs=[f'{self.name}.{self.model_name}.techno_prices',
@@ -216,7 +219,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     f'{self.name}.{self.model_name}.land_use_required'],)
+                                     f'{self.name}.{self.model_name}.land_use_required'], )
 
     def test_03_unmanaged_wood_discipline_analytic_grad(self):
 
@@ -248,17 +251,19 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
+        self.ee.execute()
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
@@ -305,7 +310,8 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
+                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
+                    'value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
 
@@ -324,17 +330,18 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0]
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = BiomassDryJacobianTestCase()
     cls.setUp()
     cls.test_01_crop_energy_discipline_analytic_grad()

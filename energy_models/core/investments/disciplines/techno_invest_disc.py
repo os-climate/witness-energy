@@ -7,14 +7,14 @@ import numpy as np
 
 from energy_models.core.investments.energy_invest import EnergyInvest
 from energy_models.core.investments.base_invest import compute_norm_mix
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 
 
-class InvestTechnoDiscipline(SoSDiscipline):
+class InvestTechnoDiscipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'Energy Technologies Investment Model',
@@ -30,9 +30,9 @@ class InvestTechnoDiscipline(SoSDiscipline):
     }
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]',
-                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                       'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]',
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'invest_level': {'type': 'dataframe', 'unit': 'G$',
                          'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                   'invest': ('float', None, True)},
@@ -59,7 +59,7 @@ class InvestTechnoDiscipline(SoSDiscipline):
         '''
         dynamic_outputs = {}
 
-        if 'technologies_list' in self._data_in:
+        if 'technologies_list' in self.get_data_in():
             techno_list = self.get_sosdisc_inputs('technologies_list')
             if techno_list is not None:
                 for techno in techno_list:

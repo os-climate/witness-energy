@@ -17,7 +17,7 @@ import unittest
 import pandas as pd
 import numpy as np
 from os.path import join, dirname
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import Study
 from copy import deepcopy
 
@@ -124,20 +124,22 @@ class CarbonCaptureTestCase(unittest.TestCase):
         inputs_dict = self.dm_dict
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
-        data_in = disc_techno._data_in
+        disc_techno = self.ee.root_process.proxy_disciplines[0]
+        data_in = disc_techno.get_data_in()
         input_keys = [disc_techno.get_var_full_name(key, data_in)
                       for key in disc_techno.get_sosdisc_inputs() if data_in[key]['type'] == 'dataframe']
-
-        output_keys = [disc_techno.get_var_full_name(key, disc_techno._data_out)
+        data_out = disc_techno.get_data_out()
+        output_keys = [disc_techno.get_var_full_name(key, data_out)
                        for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
-        succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys,
+        self.ee.execute()
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys, input_data = disc_techno.local_data,
                                              outputs=output_keys,
                                              load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                                 f'jacobian_carbon_capture_discipline.pkl'))
 
         self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc_techno.get_disc_full_name()}")
+            succeed, msg=f"Wrong gradient")
 
     def test_03_carbon_capture_discipline_limited(self):
 
@@ -211,21 +213,22 @@ class CarbonCaptureTestCase(unittest.TestCase):
         inputs_dict['Test.EnergyMix.carbon_capture.flue_gas_capture.CalciumLooping.techno_production'][
             'carbon_capture (Mt)'] *= 5.0
         self.ee.load_study_from_input_dict(inputs_dict)
-
-        disc_techno = self.ee.root_process.sos_disciplines[0]
-        data_in = disc_techno._data_in
+        self.ee.execute()
+        disc_techno = self.ee.root_process.proxy_disciplines[0]
+        data_in = disc_techno.get_data_in()
         input_keys = [disc_techno.get_var_full_name(key, data_in)
                       for key in disc_techno.get_sosdisc_inputs() if data_in[key]['type'] == 'dataframe']
 
-        output_keys = [disc_techno.get_var_full_name(key, disc_techno._data_out)
+        output_keys = [disc_techno.get_var_full_name(key, disc_techno.get_data_out())
                        for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
-        succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys,
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        succeed = disc_techno.check_jacobian(derr_approx='complex_step', input_data = disc_techno.local_data, inputs=input_keys,
                                              outputs=output_keys,
                                              load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                                 f'jacobian_carbon_capture_discipline_limited.pkl'))
 
         self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc_techno.get_disc_full_name()}")
+            succeed, msg=f"Wrong gradient")
 
 
 if '__main__' == __name__:

@@ -17,7 +17,7 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 from os.path import join, dirname
@@ -38,10 +38,14 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage']]
+            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage', 'Low heat temperature', \
+            'Medium heat temperature', 'High heat temperature']]
+        #print('energy_list', self.energy_list)
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)
+        #print('streams_outputs_dict', streams_outputs_dict.keys())
+        #print('pkl_file', pkl_file)
         pkl_file.close()
         self.ccs_list = ['carbon_capture', 'carbon_storage']
 
@@ -50,6 +54,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
         self.N2O_per_use = {}
         self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
+            #print('energy', energy)
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
             self.CH4_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CH4_per_use']['value']
             self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']

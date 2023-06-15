@@ -21,12 +21,13 @@ from os.path import join, dirname
 import scipy.interpolate as sc
 import pickle
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -34,7 +35,8 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
     """
     Ethanol Fuel jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -76,7 +78,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                                           })
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27, 29.01,
-                     34.05,   39.08,  44.69,   50.29]
+                     34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -91,7 +93,6 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
         pass
 
     def test_01_biomass_fermentation_discipline_analytic_grad(self):
-
         self.name = 'Test'
         self.model_name = 'BiomassFermentation'
         self.ee = ExecutionEngine(self.name)
@@ -118,16 +119,18 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
 
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.resources_price',
@@ -142,7 +145,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = EthanolJacobianCase()
     cls.setUp()
     cls.test_01_biomass_fermentation_discipline_analytic_grad()

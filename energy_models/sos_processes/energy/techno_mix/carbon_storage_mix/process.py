@@ -60,7 +60,7 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{self.prefix_name}.{carbon_storage_name}.{techno_name}'] = self.get_techno_disc_path(
                 carbon_storage_name, techno_name)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             mods_dict_invest = {f'{self.prefix_name}.{carbon_storage_name}': 'energy_models.core.investments.disciplines.techno_invest_disc.InvestTechnoDiscipline',
                                 }

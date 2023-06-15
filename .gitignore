@@ -5,6 +5,7 @@ __pycache__
 coverage.xml
 nosetests.xml
 .coverage
+.vscode/
 energy_models/tests/*/output/*.png
 build/
 dist/

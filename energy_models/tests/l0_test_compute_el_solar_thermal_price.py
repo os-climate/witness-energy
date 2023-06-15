@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 from energy_models.models.electricity.solar_thermal.solar_thermal_disc import SolarThermalDiscipline
 from energy_models.models.electricity.solar_thermal.solar_thermal import SolarThermal
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -223,8 +223,8 @@ class SolarThermalPriceTestCase(unittest.TestCase):
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
 
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
 
 # if __name__ == "__main__":
 #     unittest.main()

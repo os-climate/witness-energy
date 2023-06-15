@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 from energy_models.core.investments.energy_invest import EnergyInvest
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestEnergyInvest(unittest.TestCase):
@@ -228,17 +228,19 @@ class TestEnergyInvest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.invest_level': self.invest_df_techno}
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        disc = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.invest_level',
                                                                           f'{self.name}.{self.model_name}.invest_techno_mix'],
                                       outputs=[
             f'{self.name}.{self.model_name}.{techno}.invest_level' for techno in technology_list],
+                                      input_data = disc.local_data,
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_techno_invest_disc.pkl'))
 
         self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
+            succeed, msg=f"Wrong gradient")
 
     def test_07_energy_invest_disc_check_jacobian(self):
 
@@ -266,14 +268,15 @@ class TestEnergyInvest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.energy_investment': self.invest_df}
 
         self.ee.load_study_from_input_dict(inputs_dict)
-
-        disc = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.energy_investment',
                                                                           f'{self.name}.{self.model_name}.invest_energy_mix'],
                                       outputs=[
             f'{self.name}.{self.model_name}.{energy}.invest_level' for energy in energy_list],
+            input_data = disc.local_data,
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_energy_invest_disc.pkl'))
 
         self.assertTrue(
-            succeed, msg=f"Wrong gradient in {disc.get_disc_full_name()}")
+            succeed, msg=f"Wrong gradient")

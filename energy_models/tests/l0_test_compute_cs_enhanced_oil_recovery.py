@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 from energy_models.models.carbon_storage.enhanced_oil_recovery.enhanced_oil_recovery import EnhancedOilRecovery
 from energy_models.models.carbon_storage.enhanced_oil_recovery.enhanced_oil_recovery_disc import EnhancedOilRecoveryDiscipline
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix

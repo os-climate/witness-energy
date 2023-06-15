@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.models.liquid_fuel.refinery.refinery import Refinery
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
     get_static_prices
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel

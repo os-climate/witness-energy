@@ -6,13 +6,13 @@ All rights reserved.
 import numpy as np
 
 from energy_models.core.investments.energy_or_ccsinvest import EnergyOrCCSInvest
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
 
-class InvestCCSorEnergyDiscipline(SoSDiscipline):
+class InvestCCSorEnergyDiscipline(SoSWrapp):
 
     # ontology information
     _ontology_data = {

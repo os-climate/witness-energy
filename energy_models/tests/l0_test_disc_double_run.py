@@ -18,7 +18,7 @@ import unittest
 
 import numpy as np
 from os.path import join, dirname
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as StudyMDA
 from copy import deepcopy
@@ -64,16 +64,17 @@ class DiscDoubleRunTestCase(unittest.TestCase):
             f'{self.name}.sub_mda_class': 'MDANewtonRaphson'}
         dict_aggr.update(numerical_values_dict)
         self.ee.load_study_from_input_dict(dict_aggr)
-        local_data = self.ee.execute()
-
+        proxy_factory = self.ee.execute()
+        local_data = proxy_factory.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline.local_data
         # self.ee.root_process.pre_run_mda()
         output_error = ''
         test_passed = True
-        for disc in self.ee.factory.sos_disciplines:
+        for disc in self.ee.factory.proxy_disciplines:
+            local_data = disc.mdo_discipline_wrapp.mdo_discipline.local_data
             # RUN 1
-            local_data1 = deepcopy(disc.execute(deepcopy(local_data)))
+            local_data1 = deepcopy(disc.mdo_discipline_wrapp.mdo_discipline.execute(deepcopy(local_data)))
             # RUN 2
-            local_data2 = deepcopy(disc.execute(deepcopy(local_data)))
+            local_data2 = deepcopy(disc.mdo_discipline_wrapp.mdo_discipline.execute(deepcopy(local_data)))
             # COMPARE DICT
             dict_error = {}
             compare_dict(local_data1, local_data2, '', dict_error)

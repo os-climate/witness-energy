@@ -7,17 +7,17 @@ import numpy as np
 
 from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.energy_invest import EnergyInvest
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 
 
-class InvestCCSDiscipline(SoSDiscipline):
+class InvestCCSDiscipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'Energy CCS Investment Model',
@@ -33,9 +33,9 @@ class InvestCCSDiscipline(SoSDiscipline):
     }
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]',
-                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                       'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]',
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
 
         'ccs_investment': {'type': 'dataframe', 'unit': 'G$',
                            'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
@@ -47,7 +47,7 @@ class InvestCCSDiscipline(SoSDiscipline):
         'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                      'possible_values': [CarbonCapture.name, CarbonStorage.name],
                      'default': [CarbonCapture.name, CarbonStorage.name],
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
+                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True}
     }
 
@@ -67,7 +67,7 @@ class InvestCCSDiscipline(SoSDiscipline):
         '''
         dynamic_outputs = {}
 
-        if 'ccs_list' in self._data_in:
+        if 'ccs_list' in self.get_data_in():
             ccs_list = self.get_sosdisc_inputs('ccs_list')
             if ccs_list is not None:
                 for ccs_name in ccs_list:

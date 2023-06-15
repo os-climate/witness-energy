@@ -13,18 +13,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 
 import numpy as np
 
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class StreamDiscipline(SoSDiscipline):
+class StreamDiscipline(SoSWrapp):
 
     # ontology information
     _ontology_data = {
@@ -43,10 +44,10 @@ class StreamDiscipline(SoSDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
-        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2}
+        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2}
     }
 
     # -- Here are the results of concatenation of each techno prices,consumption and production
@@ -66,15 +67,14 @@ class StreamDiscipline(SoSDiscipline):
     _maturity = 'Research'
     energy_name = 'stream'
 
-    def __init__(self, sos_name, ee):
-
-        SoSDiscipline.__init__(self, sos_name, ee)
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name=sos_name, logger=logger)
         self.energy_model = None
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'technologies_list' in self._data_in:
+        if 'technologies_list' in self.get_data_in():
             techno_list = self.get_sosdisc_inputs('technologies_list')
             if techno_list is not None:
                 for techno in techno_list:
@@ -262,6 +262,7 @@ class StreamDiscipline(SoSDiscipline):
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t']
+        unit = 'TWh'
         years_list = [self.get_sosdisc_inputs('year_start')]
         # Overload default value with chart filter
         if filters is not None:
@@ -291,7 +292,7 @@ class StreamDiscipline(SoSDiscipline):
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-            new_charts = self.get_charts_production_by_techno()
+            new_charts = self.get_charts_production_by_techno(unit)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
@@ -453,7 +454,7 @@ class StreamDiscipline(SoSDiscipline):
 
         return instanciated_charts
 
-    def get_charts_production_by_techno(self):
+    def get_charts_production_by_techno(self, unit):
         instanciated_charts = []
         # Charts for consumption and prod
         energy_production = self.get_sosdisc_outputs(
@@ -461,12 +462,12 @@ class StreamDiscipline(SoSDiscipline):
 
         chart_name = f'Technology production for {self.energy_name}'
 
-        new_chart = TwoAxesInstanciatedChart('years', f'Production ({self.energy_model.unit})',
+        new_chart = TwoAxesInstanciatedChart('years', f'Production ({unit})',
                                              chart_name=chart_name, stacked_bar=True)
         techno_list = self.get_sosdisc_inputs('technologies_list')
 
         for techno in techno_list:
-            column_name = f'{self.energy_name} {techno} ({self.energy_model.unit})'
+            column_name = f'{self.energy_name} {techno} ({unit})'
             techno_prod = energy_production[column_name].values
 
             serie = InstanciatedSeries(

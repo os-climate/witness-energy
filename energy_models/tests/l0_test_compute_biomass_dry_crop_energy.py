@@ -20,7 +20,7 @@ import scipy.interpolate as sc
 from os.path import join, dirname
 from energy_models.models.biomass_dry.crop_energy.crop_energy_disc import CropEnergyDiscipline
 from energy_models.models.biomass_dry.crop_energy.crop_energy import CropEnergy
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel

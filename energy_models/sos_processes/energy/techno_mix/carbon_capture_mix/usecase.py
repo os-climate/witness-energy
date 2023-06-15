@@ -99,11 +99,11 @@ class Study(EnergyMixStudyManager):
 
         if 'direct_air_capture.DirectAirCaptureTechno' in self.technologies_list:
             invest_carbon_capture_mix_dict['direct_air_capture.DirectAirCaptureTechno'] = np.array(
-                [0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
+                [0.5, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]) # 09/12 16 pts coarse
 
         if 'flue_gas_capture.FlueGasTechno' in self.technologies_list:
             invest_carbon_capture_mix_dict['flue_gas_capture.FlueGasTechno'] = [
-                10 * (1 - 0.04) ** i for i in l_ctrl]
+                10 * (1 - 0.04) ** i for i in np.arange(0, 16)] # 09/12 16 pts coarse
 
         if self.bspline:
             invest_carbon_capture_mix_dict['years'] = self.years

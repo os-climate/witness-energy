@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 import numpy as np
 
-from sos_trades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
+from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
 from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import GasTurbineDiscipline
@@ -41,7 +41,7 @@ from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_t
 from energy_models.core.ccus.ccus import CCUS
 
 
-class FlueGasDiscipline(SoSDiscipline):
+class FlueGasDiscipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'Flue Gas Model',
@@ -75,12 +75,12 @@ class FlueGasDiscipline(SoSDiscipline):
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
-                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
                                      'structuring': True, 'unit': '-'},
-               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
                'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
-                            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                             'editable': False,
                             'structuring': True,
                             'unit': '-'},
@@ -89,13 +89,13 @@ class FlueGasDiscipline(SoSDiscipline):
     energy_name = FlueGas.name
 
     DESC_OUT = {'flue_gas_mean': {'type': 'dataframe',
-                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
                                   'namespace': 'ns_flue_gas', 'unit': '%'},
                 'flue_gas_production': {'type': 'dataframe',
-                                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                        'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_flue_gas', 'unit': 'Mt'},
                 'flue_gas_prod_ratio': {'type': 'dataframe',
-                                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                        'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_flue_gas', 'unit': '%'}}
 
     def init_execution(self):
@@ -106,7 +106,7 @@ class FlueGasDiscipline(SoSDiscipline):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'technologies_list' in self._data_in and 'ccs_list' in self._data_in:
+        if 'technologies_list' in self.get_data_in() and 'ccs_list' in self.get_data_in():
             techno_list = self.get_sosdisc_inputs('technologies_list')
             ccs_list = self.get_sosdisc_inputs('ccs_list')
 
@@ -123,10 +123,10 @@ class FlueGasDiscipline(SoSDiscipline):
 
                     dynamic_inputs[f'{techno}.techno_production'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
-                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': ns_variable}
                     dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
-                                                                      'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                       'namespace': ns_variable, 'unit': '',
                                                                       'default': self.POSSIBLE_FLUE_GAS_TECHNOS[techno]}
 

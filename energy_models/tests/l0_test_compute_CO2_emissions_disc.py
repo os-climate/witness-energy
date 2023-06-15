@@ -17,7 +17,7 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 from os.path import join, dirname
@@ -37,7 +37,8 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage']]
+            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage', 'Low heat temperature', \
+            'Medium heat temperature', 'High heat temperature', 'biomass_dry']]
         self.ccs_list = ['carbon_capture', 'carbon_storage']
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')

@@ -9,14 +9,14 @@ import pandas as pd
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.energy_invest import EnergyInvest
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 
 
-class InvestEnergyDiscipline(SoSDiscipline):
+class InvestEnergyDiscipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'Energy Investment Model',
@@ -32,9 +32,9 @@ class InvestEnergyDiscipline(SoSDiscipline):
     }
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]',
-                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                       'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]',
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'energy_investment': {'type': 'dataframe',
                               'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                        'energy_investment': ('float', None, True)},
@@ -46,7 +46,7 @@ class InvestEnergyDiscipline(SoSDiscipline):
                               'dataframe_edition_locked': False},
         'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                         'editable': False, 'structuring': True}
     }
 
@@ -66,7 +66,7 @@ class InvestEnergyDiscipline(SoSDiscipline):
         '''
         dynamic_outputs = {}
 
-        if 'energy_list' in self._data_in:
+        if 'energy_list' in self.get_data_in():
             energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:

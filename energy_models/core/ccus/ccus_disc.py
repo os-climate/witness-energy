@@ -18,18 +18,18 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from energy_models.core.ccus.ccus import CCUS
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class CCUS_Discipline(SoSDiscipline):
+class CCUS_Discipline(SoSWrapp):
     # ontology information
     _ontology_data = {
         'label': 'Carbon Capture and Storage Model',
@@ -46,36 +46,36 @@ class CCUS_Discipline(SoSDiscipline):
 
     DESC_IN = {
         'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
+                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True},
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
-                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
+                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
-                                              'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2,
-                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2,
-                                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
-                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
-                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
     }
 
     DESC_OUT = {
         'co2_emissions_ccus': {'type': 'dataframe', 'unit': 'Mt'},
         'carbon_storage_by_invest': {'type': 'array', 'unit': 'Mt'},
-        'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                   'namespace': 'ns_ccs'},
 
-        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                       'namespace': 'ns_energy_study'},
         EnergyMix.CARBON_STORAGE_CONSTRAINT: {'type': 'array', 'unit': '',
-                                              'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY,
                                               'namespace': 'ns_functions'},
 
     }
@@ -90,35 +90,35 @@ class CCUS_Discipline(SoSDiscipline):
         dynamic_inputs = {}
         dynamic_outputs = {}
 
-        if 'ccs_list' in self._data_in:
+        if 'ccs_list' in self.get_data_in():
             ccs_list = self.get_sosdisc_inputs('ccs_list')
             self.update_default_ccs_list()
             if ccs_list is not None:
                 for ccs_name in ccs_list:
                     dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
-                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs'}
                     dynamic_inputs[f'{ccs_name}.energy_consumption_woratio'] = {
-                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs'}
                     dynamic_inputs[f'{ccs_name}.energy_production'] = {
-                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs'}
                     dynamic_inputs[f'{ccs_name}.energy_prices'] = {
-                        'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs'}
                     dynamic_inputs[f'{ccs_name}.land_use_required'] = {
-                        'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                        'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs'}
 
-        if 'year_start' in self._data_in and 'year_end' in self._data_in:
+        if 'year_start' in self.get_data_in() and 'year_end' in self.get_data_in():
             year_start = self.get_sosdisc_inputs('year_start')
             year_end = self.get_sosdisc_inputs('year_end')
 
             if year_start is not None and year_end is not None:
                 dynamic_inputs['co2_for_food'] = {
-                    'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame(columns=[f'{CO2.name} for food (Mt)']),
-                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'}
+                    'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame({'years': np.arange(year_start, year_end + 1), f'{CO2.name} for food (Mt)': 0.0}),
+                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)

@@ -20,10 +20,10 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 import pickle
 
@@ -32,7 +32,8 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
     """
     Solid fuel jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -48,23 +49,24 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
         self.energy_name = 'solid_fuel'
         years = np.arange(2020, 2051)
         # crude oil price : 1.5$/gallon /43.9
-        self.energy_prices = pd.DataFrame({'years': years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                                                    0.159236536471781, 0.15899046935409588, 0.15874840310033885,
-                                                                                    0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
-                                                                                    0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
-                                                                                    0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
-                                                                                    0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
-                                                                                    0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
-                                                                                    0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
-                                                                                    0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
-                                                                                    0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                                                                    0.1628246539459331]) * 1000.0,
-                                           'biomass_dry': np.ones(len(years)) * 68.12 / 3.36
+        self.energy_prices = pd.DataFrame(
+            {'years': years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+                                                      0.159236536471781, 0.15899046935409588, 0.15874840310033885,
+                                                      0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
+                                                      0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
+                                                      0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
+                                                      0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
+                                                      0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
+                                                      0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
+                                                      0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
+                                                      0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
+                                                      0.1628246539459331]) * 1000.0,
+             'biomass_dry': np.ones(len(years)) * 68.12 / 3.36
 
-                                           })
+             })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.0,  'biomass_dry': - 0.425 * 44.01 / 12.0})
+            {'years': years, 'electricity': 0.0, 'biomass_dry': - 0.425 * 44.01 / 12.0})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -78,24 +80,23 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                            ]) / 40 * 1e-9
 
         self.invest_level_pellet = pd.DataFrame(
-            {'years': years, 'invest':  np.array([12009047700.0, 13746756900.0, 15735912630.0,
-                                                  18012899180.0, 20619365690.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0]) * 1e-9})
-
+            {'years': years, 'invest': np.array([12009047700.0, 13746756900.0, 15735912630.0,
+                                                 18012899180.0, 20619365690.0, 23602987910.0,
+                                                 23602987910.0, 23602987910.0, 23602987910.0,
+                                                 23602987910.0, 23602987910.0, 23602987910.0,
+                                                 23602987910.0, 23602987910.0, 23602987910.0,
+                                                 23602987910.0, 23602987910.0, 23602987910.0,
+                                                 23602987910.0, 23602987910.0, 23602987910.0,
+                                                 23602987910.0, 23602987910.0, 23602987910.0,
+                                                 23602987910.0, 23602987910.0, 23602987910.0,
+                                                 23602987910.0, 23602987910.0, 23602987910.0,
+                                                 23602987910.0]) * 1e-9})
 
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': invest})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -117,9 +118,12 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
 
         self.resources_price = pd.DataFrame(columns=['years', 'CO2', 'water'])
         self.resources_price['years'] = years
-        self.resources_price['CO2'] = np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542,
-                                                0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
-        #---Ratios---
+        self.resources_price['CO2'] = np.array(
+            [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052,
+             0.0542,
+             0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916,
+             0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
+        # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
         demand_ratio_dict['years'] = years
@@ -163,16 +167,19 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -184,7 +191,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_02_pelletizing_jacobian(self):
 
@@ -214,7 +221,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport_pellet,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.resources_price': self.resources_price,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
@@ -222,10 +229,13 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -235,7 +245,7 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_03_solid_fuel_discipline_jacobian(self):
 
@@ -273,7 +283,8 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
+                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
+                    'value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
 
@@ -292,17 +303,18 @@ class SolidFuelJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0]
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = SolidFuelJacobianTestCase()
     cls.setUp()
     cls.test_01_coal_extraction_jacobian()

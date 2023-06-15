@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from sos_trades_core.tools.base_functions.s_curve import s_curve
+from sostrades_core.tools.base_functions.s_curve import s_curve
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.electricity import Electricity

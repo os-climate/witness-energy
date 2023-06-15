@@ -21,8 +21,8 @@ from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch import Fis
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
 from energy_models.models.syngas.biomass_gasification.biomass_gasification_disc import BiomassGasificationDiscipline
 from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
@@ -360,7 +360,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/USgallon]',
                                                  chart_name=chart_name)
 
-            if 'part_of_total' in self._data_in:
+            if 'part_of_total' in self.get_data_in():
                 part_of_total = self.get_sosdisc_inputs('part_of_total')
                 new_chart.annotation_upper_left = {
                     'Percentage of total price': f'{part_of_total[0]*100.0} %'}

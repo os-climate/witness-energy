@@ -25,10 +25,10 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import EnergyGHGEmissionsDiscipline
+from energy_models.core.energy_study_manager import AGRI_TYPE
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy v0 Process',
@@ -52,29 +52,32 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         for energy_name in self.energy_list:
             dot_list = energy_name.split('.')
             short_name = dot_list[-1]
-            energy_builder_list = self.ee.factory.get_builder_from_process('energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
-                                                                           techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline)
+            if self.techno_dict[energy_name]['type'] != AGRI_TYPE:
+                energy_builder_list = self.ee.factory.get_builder_from_process(
+                    'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
+                    techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline,
+                    associate_namespace=False
+                )
 
             builder_list.extend(energy_builder_list)
 
         # Needed namespaces for the 3 disciplines below
         # All other namespaces are specified in each subprocess
         ns_dict = {'ns_functions': f'{ns_study}.{func_manager_name}',
-                   'ns_energy': f'{ns_study}',
+                   'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_mix': f'{ns_study}.{energy_mix}',
-                   'ns_carb':  f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
+                   'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
                    'ns_resource': f'{ns_study}.{energy_mix}.resource',
                    'ns_ref': f'{ns_study}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
-        if self.process_level == 'dev':
-            emissions_mod_dict = {
-                EnergyGHGEmissionsDiscipline.name: 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'}
-        else:
-            emissions_mod_dict = {
-                'consumptionco2': 'energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions_disc.ConsumptionCO2EmissionsDiscipline'}
+        emissions_mod_dict = {
+            EnergyGHGEmissionsDiscipline.name: 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'}
+        # else:
+        #     emissions_mod_dict = {
+        #         'consumptionco2': 'energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions_disc.ConsumptionCO2EmissionsDiscipline'}
         builder_emission_list = self.create_builder_list(
-            emissions_mod_dict, ns_dict=ns_dict)
+            emissions_mod_dict, ns_dict=ns_dict, associate_namespace=False)
         builder_list.extend(builder_emission_list)
 
         # Add demand, energymix and resources discipline
@@ -84,10 +87,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                      }
 
         builder_other_list = self.create_builder_list(
-            mods_dict, ns_dict=ns_dict)
+            mods_dict, ns_dict=ns_dict, associate_namespace=False)
         builder_list.extend(builder_other_list)
         chain_builders_resource = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'resources_process')
+            'climateeconomics.sos_processes.iam.witness', 'resources_process', associate_namespace=False)
         builder_list.extend(chain_builders_resource)
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
@@ -101,14 +104,14 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             }
 
             builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict)
+                mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_invest)
 
             mods_dict = {
                 energy_mix: 'energy_models.core.investments.disciplines.energy_or_ccs_invest_disc.InvestCCSorEnergyDiscipline',
             }
 
-            builder_invest = self.create_builder_list(mods_dict, ns_dict={})
+            builder_invest = self.create_builder_list(mods_dict, ns_dict={}, associate_namespace=False)
             builder_list.extend(builder_invest)
 
             ns_dict = {'ns_public': f'{ns_study}',
@@ -118,28 +121,30 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             }
 
             builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict)
+                mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_invest)
 
         elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
             ns_dict = {'ns_public': f'{ns_study}',
                        'ns_energy_study': f'{ns_study}',
                        'ns_witness': f'{ns_study}',
+                       'ns_energy': f'{ns_study}.{energy_mix}',
                        'ns_ccs': f'{ns_study}.{CCS_NAME}'}
             mods_dict = {
                 INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline',
             }
 
             builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict)
+                mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_invest)
 
         elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
             ns_dict = {'ns_public': f'{ns_study}',
                        'ns_energy_study': f'{ns_study}',
                        'ns_emissions': f'{ns_study}',
+                       'ns_energy': f'{ns_study}',
                        'ns_witness': f'{ns_study}',
-                       'ns_ccs': f'{ns_study}.{CCS_NAME}',
+                       'ns_ccs': f'{ns_study}',
                        'ns_ref': f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
                        'ns_functions': f'{ns_study}.{func_manager_name}', }
             mods_dict = {
@@ -147,7 +152,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             }
 
             builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict)
+                mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_invest)
         else:
             raise Exception(
@@ -161,22 +166,44 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             proc_builder.prefix_name = 'CCUS'
             if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
                 proc_builder.setup_process(
-                    techno_list=self.techno_dict[ccs_name]['value'], invest_discipline=self.invest_discipline)
+                    techno_list=self.techno_dict[ccs_name]['value'], invest_discipline=self.invest_discipline,
+                    associate_namespace=False,
+                )
             energy_builder_list = proc_builder.get_builders()
             builder_list.extend(energy_builder_list)
 
+        post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown'
         for energy in self.energy_list:
             if energy == 'hydrogen.gaseous_hydrogen':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_hydrogen',
-                    'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+                    post_proc_mod)
             if energy == 'hydrogen.liquid_hydrogen':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_liquid_hydrogen',
-                    'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+                    post_proc_mod)
+
+            if energy == 'fuel.liquid_fuel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_liquid_fuel',
+                    post_proc_mod)
+            if energy == 'fuel.hydrotreated_oil_fuel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_hydrotreated_oil_fuel',
+                    post_proc_mod)
+            if energy == 'fuel.biodiesel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_biodiesel',
+                    post_proc_mod)
+            if energy == 'fuel.ethanol':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_ethanol',
+                    post_proc_mod)
+
+
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 f'ns_{energy}',
-                'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+                post_proc_mod)
 
         if len(set(FuelDiscipline.fuel_list).intersection(set(self.energy_list))) > 0:
             ns_dict = {'ns_fuel': f'{ns_study}.{energy_mix}.fuel'}
@@ -184,7 +211,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 f'{energy_mix}.{FuelDiscipline.name}': 'energy_models.core.stream_type.energy_disciplines.fuel_disc.FuelDiscipline',
             }
 
-            builder_fuel = self.create_builder_list(mods_dict, ns_dict=ns_dict)
+            builder_fuel = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_fuel)
 
         # For now only electricity demand constraint is available in the energy
@@ -195,6 +222,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             }
 
             builder_demand = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict)
+                mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_demand)
         return builder_list

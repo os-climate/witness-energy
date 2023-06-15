@@ -17,8 +17,8 @@ import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
 
@@ -410,6 +410,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/t']
+        unit = 'Mt'
         years_list = [self.get_sosdisc_inputs('year_start')]
         # Overload default value with chart filter
         if filters is not None:
@@ -442,11 +443,11 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                     instanciated_charts.append(new_chart)
 
         if 'Technology mix' in charts:
-            new_charts = self.get_chart_technology_mix(years_list)
+            new_charts = self.get_chart_technology_mix( years_list)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-            new_charts = self.get_charts_production_by_techno()
+            new_charts = self.get_charts_production_by_techno(unit)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)

@@ -19,8 +19,8 @@ import numpy as np
 
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
 
@@ -123,8 +123,8 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
         CSTechnoDiscipline.setup_sos_disciplines(self)
 
-        if self._data_in is not None:
-            if 'year_start' in self._data_in:
+        if self.get_data_in() is not None:
+            if 'year_start' in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs(
                     ['year_start', 'year_end'])
                 years = np.arange(year_start, year_end + 1)
@@ -155,10 +155,10 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inputs += list(self.inst_desc_in.keys())
-        inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        inputs_dict = self.get_sosdisc_inputs()#inputs, in_dict=True)
 
         outputs = list(self.DESC_OUT.keys())
-        outputs_dict = self.get_sosdisc_outputs(outputs, in_dict=True)
+        outputs_dict = self.get_sosdisc_outputs()#outputs, in_dict=True)
 
         # -- configure class with inputs
         self.techno_model.configure_parameters_update(inputs_dict)
@@ -246,10 +246,10 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                 #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inputs += list(self.inst_desc_in.keys())
-        inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        inputs_dict = self.get_sosdisc_inputs()#inputs, in_dict=True)
 
         outputs = list(self.DESC_OUT.keys())
-        outputs_dict = self.get_sosdisc_outputs(outputs, in_dict=True)
+        outputs_dict = self.get_sosdisc_outputs()#outputs, in_dict=True)
 
         # -- configure class with inputs
         self.techno_model.configure_parameters_update(inputs_dict)

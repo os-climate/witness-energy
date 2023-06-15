@@ -21,13 +21,14 @@ from os.path import join, dirname
 import scipy.interpolate as sc
 
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 import pickle
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -35,7 +36,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     """
     Liquid Fuel jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -53,21 +55,22 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         years = np.arange(2020, 2051)
         self.energy_name = 'liquid_fuel'
         # crude oil price : 1.3$/gallon
-        self.energy_prices = pd.DataFrame({'years': years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                                                    0.159236536471781, 0.15899046935409588, 0.15874840310033885,
-                                                                                    0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
-                                                                                    0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
-                                                                                    0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
-                                                                                    0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
-                                                                                    0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
-                                                                                    0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
-                                                                                    0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
-                                                                                    0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                                                                    0.1628246539459331]) * 1000.0,
-                                           'CO2': 0.0,
-                                           'syngas': 34,
-                                           'hydrogen.gaseous_hydrogen': 15.,
-                                           })
+        self.energy_prices = pd.DataFrame(
+            {'years': years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+                                                      0.159236536471781, 0.15899046935409588, 0.15874840310033885,
+                                                      0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
+                                                      0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
+                                                      0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
+                                                      0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
+                                                      0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
+                                                      0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
+                                                      0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
+                                                      0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
+                                                      0.1628246539459331]) * 1000.0,
+             'CO2': 0.0,
+             'syngas': 34,
+             'hydrogen.gaseous_hydrogen': 15.,
+             })
 
         self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34,
                                                     # price to be updated for
@@ -136,7 +139,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
             {'years': years, 'invest': invest})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -152,7 +155,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
                                                 == 'liquid_fuel.Refinery']
-        #---Ratios---
+        # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
         demand_ratio_dict['years'] = years
@@ -196,19 +199,22 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.{self.model_name}.invest_before_ystart':
-                       RefineryDiscipline.invest_before_year_start,
+                           RefineryDiscipline.invest_before_year_start,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -220,7 +226,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_02_transesterification_discipline_analytic_grad(self):
 
@@ -251,7 +257,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
@@ -260,10 +266,13 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -276,7 +285,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_03_transesterification_discipline_analytic_grad_negative_invest(self):
 
@@ -307,7 +316,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
@@ -315,10 +324,14 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        disc_techno = self.ee.root_process.sos_disciplines[0]
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}_negative.pkl',
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__),
+                            filename=f'jacobian_{self.energy_name}_{self.model_name}_negative.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -331,7 +344,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_04_transesterification_discipline_analytic_grad_negative_invest2(self):
 
@@ -362,7 +375,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
@@ -370,9 +383,13 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        disc_techno = self.ee.root_process.sos_disciplines[0]
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}_negative2.pkl',
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__),
+                            filename=f'jacobian_{self.energy_name}_{self.model_name}_negative2.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -385,7 +402,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
-                                     ],)
+                                     ], )
 
     def test_05_liquid_fuel_discipline_jacobian(self):
 
@@ -424,7 +441,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
+                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
+                    'value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
 
@@ -447,17 +465,18 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0]
+            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = LiquidFuelJacobianCase()
     cls.setUp()
     cls.test_05_liquid_fuel_discipline_jacobian()

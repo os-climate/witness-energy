@@ -26,7 +26,7 @@ from energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.pip
     import PiperazineProcessDiscipline
 from energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.piperazine_process import PiperazineProcess
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix

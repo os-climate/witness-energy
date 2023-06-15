@@ -25,7 +25,7 @@ from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec i
 from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec_disc import ElectrolysisSOECDiscipline
 from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe import ElectrolysisAWE
 from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe_disc import ElectrolysisAWEDiscipline
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel

@@ -20,16 +20,20 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
-from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import AmineScrubbingDiscipline
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import CalciumPotassiumScrubbingDiscipline
-from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import CalciumLoopingDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import \
+    AmineScrubbingDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import \
+    CalciumPotassiumScrubbingDiscipline
+from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import \
+    CalciumLoopingDiscipline
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import DirectAirCaptureTechnoDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import \
+    DirectAirCaptureTechnoDiscipline
 
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 import pickle
 
@@ -38,7 +42,8 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
     """
     Carbon capture jacobian test class
     """
-                    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -72,60 +77,61 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
 
         years = np.arange(2020, 2051)
 
-        self.energy_prices = pd.DataFrame({'years': years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                                                    0.159236536471781, 0.15899046935409588, 0.15874840310033885,
-                                                                                    0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
-                                                                                    0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
-                                                                                    0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
-                                                                                    0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
-                                                                                    0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
-                                                                                    0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
-                                                                                    0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
-                                                                                    0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                                                                    0.1628246539459331]) * 1000.0,
-                                           'renewable': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                                                    0.159236536471781, 0.15899046935409588, 0.15874840310033885,
-                                                                                    0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
-                                                                                    0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
-                                                                                    0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
-                                                                                    0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
-                                                                                    0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
-                                                                                    0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
-                                                                                    0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
-                                                                                    0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                                                                    0.1628246539459331]) * 1000.0,
-                                           'methane': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                                                    0.159236536471781, 0.15899046935409588, 0.15874840310033885,
-                                                                                    0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
-                                                                                    0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
-                                                                                    0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
-                                                                                    0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
-                                                                                    0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
-                                                                                    0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
-                                                                                    0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
-                                                                                    0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                                                                    0.1628246539459331]) * 1000.0,
-                                           'fossil': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                                0.159236536471781, 0.15899046935409588,
-                                                                0.15874840310033885,
-                                                                0.15875044941298937, 0.15875249600769718,
-                                                                0.15875454288453355,
-                                                                0.15875659004356974, 0.1587586374848771,
-                                                                0.15893789675406477,
-                                                                0.15911934200930778, 0.15930302260662477,
-                                                                0.15948898953954933,
-                                                                0.15967729551117891, 0.15986799501019029,
-                                                                0.16006114439108429,
-                                                                0.16025680195894345, 0.16045502805900876,
-                                                                0.16065588517140537,
-                                                                0.1608594380113745, 0.16106575363539733,
-                                                                0.16127490155362818,
-                                                                0.16148695384909017, 0.1617019853041231,
-                                                                0.1619200735346165,
-                                                                0.16214129913260598, 0.16236574581786147,
-                                                                0.16259350059915213,
-                                                                0.1628246539459331]) * 1000.0
-                                           })
+        self.energy_prices = pd.DataFrame(
+            {'years': years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+                                                      0.159236536471781, 0.15899046935409588, 0.15874840310033885,
+                                                      0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
+                                                      0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
+                                                      0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
+                                                      0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
+                                                      0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
+                                                      0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
+                                                      0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
+                                                      0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
+                                                      0.1628246539459331]) * 1000.0,
+             'renewable': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+                                    0.159236536471781, 0.15899046935409588, 0.15874840310033885,
+                                    0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
+                                    0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
+                                    0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
+                                    0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
+                                    0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
+                                    0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
+                                    0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
+                                    0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
+                                    0.1628246539459331]) * 1000.0,
+             'methane': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+                                  0.159236536471781, 0.15899046935409588, 0.15874840310033885,
+                                  0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
+                                  0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
+                                  0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
+                                  0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
+                                  0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
+                                  0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
+                                  0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
+                                  0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
+                                  0.1628246539459331]) * 1000.0,
+             'fossil': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+                                 0.159236536471781, 0.15899046935409588,
+                                 0.15874840310033885,
+                                 0.15875044941298937, 0.15875249600769718,
+                                 0.15875454288453355,
+                                 0.15875659004356974, 0.1587586374848771,
+                                 0.15893789675406477,
+                                 0.15911934200930778, 0.15930302260662477,
+                                 0.15948898953954933,
+                                 0.15967729551117891, 0.15986799501019029,
+                                 0.16006114439108429,
+                                 0.16025680195894345, 0.16045502805900876,
+                                 0.16065588517140537,
+                                 0.1608594380113745, 0.16106575363539733,
+                                 0.16127490155362818,
+                                 0.16148695384909017, 0.1617019853041231,
+                                 0.1619200735346165,
+                                 0.16214129913260598, 0.16236574581786147,
+                                 0.16259350059915213,
+                                 0.1628246539459331]) * 1000.0
+             })
 
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'amine': 0.0, 'electricity': 0.0, 'methane': 0.2, 'fossil': 0.2, 'renewable': 0.0})
@@ -141,16 +147,17 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                            3894500000.0, 3780750000.0, 3567000000.0,
                            ]) * 0.02 / 1000 * 1.0e-9
 
-        self.resources_prices = pd.DataFrame({'years': years, ResourceGlossary.Amine['name']: amine_price, ResourceGlossary.Potassium['name']: KOH_price,
-                                              ResourceGlossary.Calcium['name']: CaO_price,
-                                              })
+        self.resources_prices = pd.DataFrame(
+            {'years': years, ResourceGlossary.Amine['name']: amine_price, ResourceGlossary.Potassium['name']: KOH_price,
+             ResourceGlossary.Calcium['name']: CaO_price,
+             })
         self.flue_gas_mean = pd.DataFrame(
             {'years': years, 'flue_gas_mean': np.linspace(0.1, 0.46, len(years))})
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': invest})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -160,7 +167,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 0.0})
-        #---Ratios---
+        # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(0.7, 1.0, len(years))))
         demand_ratio_dict['years'] = years
@@ -204,9 +211,9 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.{self.model_name}.invest_before_ystart':
-                       AmineScrubbingDiscipline.invest_before_year_start,
+                           AmineScrubbingDiscipline.invest_before_year_start,
                        f'{self.name}.resources_price': self.resources_prices,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
@@ -214,10 +221,13 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc_techno, step=1.0e-18, local_data=disc_techno.local_data,
+                            derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -231,7 +241,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
                                      f'{self.name}.{self.model_name}.techno_capital',
-                                     f'{self.name}.{self.model_name}.non_use_capital'],)
+                                     f'{self.name}.{self.model_name}.non_use_capital'], )
 
     def test_02_CaKOH_jacobian(self):
 
@@ -262,20 +272,21 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.{self.model_name}.invest_before_ystart':
-                       CalciumPotassiumScrubbingDiscipline.invest_before_year_start,
+                           CalciumPotassiumScrubbingDiscipline.invest_before_year_start,
                        f'{self.name}.resources_price': self.resources_prices,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -289,7 +300,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
                                      f'{self.name}.{self.model_name}.techno_capital',
-                                     f'{self.name}.{self.model_name}.non_use_capital'],)
+                                     f'{self.name}.{self.model_name}.non_use_capital'], )
 
     def test_03_Calcium_looping_jacobian(self):
 
@@ -321,9 +332,9 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.{self.model_name}.invest_before_ystart':
-                       CalciumLoopingDiscipline.invest_before_year_start,
+                           CalciumLoopingDiscipline.invest_before_year_start,
                        f'{self.name}.resources_price': self.resources_prices,
                        f'{self.name}.flue_gas_mean': self.flue_gas_mean,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
@@ -331,11 +342,12 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -387,7 +399,8 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
+                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
+                    'value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
 
@@ -406,13 +419,14 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0]
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_05_direct_air_capture_techno_discipline_gradient(self):
 
@@ -441,21 +455,22 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.{self.model_name}.invest_before_ystart':
-                       DirectAirCaptureTechnoDiscipline.invest_before_year_start,
+                           DirectAirCaptureTechnoDiscipline.invest_before_year_start,
                        f'{self.name}.resources_price': self.resources_prices,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
+        self.ee.execute()
 
-
-        disc_techno = self.ee.root_process.sos_disciplines[0]
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_dac_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -470,10 +485,11 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      f'{self.name}.{self.model_name}.techno_production',
                                      f'{self.name}.{self.model_name}.techno_capital',
-                                     f'{self.name}.{self.model_name}.non_use_capital'],)
+                                     f'{self.name}.{self.model_name}.non_use_capital'], )
+
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = CarbonCaptureJacobianTestCase()
     cls.setUp()
     cls.test_03_Calcium_looping_jacobian()

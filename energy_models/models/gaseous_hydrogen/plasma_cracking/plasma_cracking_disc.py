@@ -124,8 +124,8 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
 
         GaseousHydrogenTechnoDiscipline.setup_sos_disciplines(self)
 
-        if self._data_in is not None:
-            if 'year_start' in self._data_in:
+        if self.get_data_in() is not None:
+            if 'year_start' in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs(
                     ['year_start', 'year_end'])
                 years = np.arange(year_start, year_end + 1)

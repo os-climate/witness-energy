@@ -146,6 +146,13 @@ class Study(EnergyMixStudyManager):
                     invest_level_techno = pd.DataFrame({'years': self.invest_level['years'].values,
                                                         'invest': self.invest_level['invest'].values * investment_mix[techno].values / investment_mix_sum})
                     values_dict[f'{self.study_name}.{energy_name}.{techno}.invest_level'] = invest_level_techno
+            elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
+                investment_mix_sum = investment_mix.drop(
+                    columns=['years']).sum(axis=1)
+                for techno in self.technologies_list:
+                    invest_level_techno = pd.DataFrame({'years': self.invest_level['years'].values,
+                                                        'invest': self.invest_level['invest'].values * investment_mix[techno].values / investment_mix_sum})
+                    values_dict[f'{self.study_name}.{energy_name}.{techno}.invest_level'] = invest_level_techno
             else:
                 values_dict[f'{self.study_name}.{energy_name}.invest_level'] = self.invest_level
         else:
