@@ -94,7 +94,9 @@ class SyngasDiscipline(EnergyDiscipline):
                                                 'biomass_dry (TWh)': ('float', None, True),
                                                 'solid_fuel (TWh)': ('float', None, True),
                                                 'carbon_capture (Mt)': ('float', None, True),
-                                                'water (Mt)': ('float', None, True),}}
+                                                'water (Mt)': ('float', None, True),
+                                                 'water_resource (Mt)': ('float', None, True),
+                                                 'dioxygen_resource (Mt)': ('float', None, True),}}
                     dynamic_inputs[f'{techno}.techno_consumption_woratio'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {'years': ('float', None, True),
@@ -111,7 +113,10 @@ class SyngasDiscipline(EnergyDiscipline):
                                                 'biomass_dry (TWh)': ('float', None, True),
                                                 'solid_fuel (TWh)': ('float', None, True),
                                                 'carbon_capture (Mt)': ('float', None, True),
-                                                'water (Mt)': ('float', None, True),}}
+                                                'water (Mt)': ('float', None, True),
+                                                 'water_resource (Mt)': ('float', None, True),
+                                                 'dioxygen_resource (Mt)': ('float', None, True),
+                                                 }}
                     dynamic_inputs[f'{techno}.techno_production'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {'years': ('float', None, True),
@@ -127,7 +132,10 @@ class SyngasDiscipline(EnergyDiscipline):
                                                 'electricity': ('float', None, True),
                                                 'carbon_capture (Mt)': ('float', None, True),
                                                  'water (Mt)': ('float', None, True),
-                                                 'dioxygen (Mt)': ('float', None, True),}}
+                                                 'dioxygen (Mt)': ('float', None, True),
+                                                 'CH4 (Mt)': ('float', None, True),
+                                                 'water_resource (Mt)': ('float', None, True),
+                                                 'dioxygen_resource (Mt)': ('float', None, True),}}
                     dynamic_inputs[f'{techno}.techno_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
                         'dataframe_descriptor': {'years': ('float', None, True),
