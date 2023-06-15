@@ -83,7 +83,7 @@ class EnergyDiscipline(StreamDiscipline):
                                                  'syngas (TWh)': ('float', None, True),
                                                  'platinum_resource (Mt)': ('float', None, True),
                                                  'oil_resource (Mt)': ('float', None, True),
-                                                 'carbon_capture (TWh)': ('float', None, True),
+                                                 'carbon_capture (Mt)': ('float', None, True),
                                                  'carbon_storage (Mt)': ('float', None, True),
                                                  'natural_gas_resource (Mt)': ('float', None, True),
                                                  'mono_ethanol_amine_resource (Mt)': ('float', None, True),
@@ -107,7 +107,7 @@ class EnergyDiscipline(StreamDiscipline):
                                                  'syngas (TWh)': ('float', None, True),
                                                  'platinum_resource (Mt)': ('float', None, True),
                                                  'oil_resource (Mt)': ('float', None, True),
-                                                 'carbon_capture (TWh)': ('float', None, True),
+                                                 'carbon_capture (Mt)': ('float', None, True),
                                                  'carbon_storage (Mt)': ('float', None, True),
                                                  'natural_gas_resource (Mt)': ('float', None, True),
                                                  'mono_ethanol_amine_resource (Mt)': ('float', None, True),
@@ -141,6 +141,7 @@ class EnergyDiscipline(StreamDiscipline):
                                                  'carbon_storage (Mt)': ('float', None, True),
                                                  'fuel.methanol (TWh)': ('float', None, True),
                                                  'solid_fuel (TWh)': ('float', None, True),
+                                                 'hydrogen.liquid_hydrogen (TWh)': ('float', None, True),
                                                  }}
                     dynamic_inputs[f'{techno}.techno_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
@@ -209,6 +210,8 @@ class EnergyDiscipline(StreamDiscipline):
                                                  'CoalExtraction_wotaxes': ('float', None, True),
                                                  'Pelletizing': ('float', None, True),
                                                  'Pelletizing_wotaxes': ('float', None, True),
+                                                 'HydrogenLiquefaction': ('float', None, True),
+                                                 'HydrogenLiquefaction_wotaxes': ('float', None, True),
                                                  }}
                     dynamic_inputs[f'{techno}.CO2_emissions'] = {
                         'type': 'dataframe', 'unit': 'kg/kWh',
@@ -250,6 +253,7 @@ class EnergyDiscipline(StreamDiscipline):
                                                  'CO2Hydrogenation': ('float', None, True),
                                                  'CoalExtraction': ('float', None, True),
                                                  'Pelletizing': ('float', None, True),
+                                                 'HydrogenLiquefaction': ('float', None, True),
                                                  }}
                     dynamic_inputs[f'{techno}.land_use_required'] = {
                         'type': 'dataframe', 'unit': 'Gha',
@@ -287,6 +291,7 @@ class EnergyDiscipline(StreamDiscipline):
                                                  'CO2Hydrogenation (Gha)': ('float', None, True),
                                                  'CoalExtraction (Gha)': ('float', None, True),
                                                  'Pelletizing (Gha)': ('float', None, True),
+                                                 'HydrogenLiquefaction (Gha)': ('float', None, True),
                                                  }}
 
         self.add_inputs(dynamic_inputs)
