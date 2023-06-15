@@ -47,7 +47,14 @@ class EnergyDemandDiscipline(SoSWrapp):
                'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh',
                                               'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                                        'demand': ('float',  None, True),
-                                                                       'production electricity (TWh)': ('float',  None, True)},
+                                                                       'production electricity (TWh)': ('float',  None, True),
+                                                                       'production hydrogen.liquid_hydrogen (TWh)': ('float', None, True),
+                                                                        'production fuel.liquid_fuel (TWh)': ('float', None, True),
+                                                                        'production fuel.biodiesel (TWh)': ('float', None, True),
+                                                                        'production methane (TWh)': ('float', None, True),
+                                                                        'production biogas (TWh)': ('float', None, True),
+                                                                        'production fuel.hydrotreated_oil_fuel (TWh)': ('float', None, True),},
+
                                               'dataframe_edition_locked': False,
                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix'},
                # 'default': 22847.66

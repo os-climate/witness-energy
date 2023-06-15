@@ -110,17 +110,20 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                             'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {'years': ('float', None, True),
-                                                     'LOL1': ('float', None, True),}}
+                                                     'CO2_per_use': ('float', None, True),}}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_consumption'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {'years': ('float', None, True),
-                                                     'LOL2': ('float', None, True),}}
+                                                     'electricity (TWh)': ('float', None, True),
+                                                     'CO2_resource (Mt)': ('float', None, True),
+                                                     }}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.energy_production'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {'years': ('float', None, True),
-                                                     'LOL3': ('float', None, True),}}
+                                                     'biomass_dry': ('float', None, True),
+                                                     'CO2_resource (Mt)': ('float', None, True),}}
                     else:
                         dynamic_inputs[f'{energy}.CO2_per_use'] = {
                             'type': 'dataframe', 'unit': 'kg/kWh',
