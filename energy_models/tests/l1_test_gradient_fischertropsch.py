@@ -488,7 +488,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = FTJacobianTestCase()
     cls.setUp()
     cls.test_05_FT_gradient_ratio_available_cc()
