@@ -19,7 +19,7 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-
+import logging
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
@@ -38,15 +38,17 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.energy_name = 'electricity'
-
+        logging.disable(logging.INFO)
         years = np.arange(2020, 2051)
         self.years = years
 
         self.hydropower_techno_prices = pd.DataFrame({'Hydropower': np.linspace(100, 100 + len(years) - 1, len(years)),
-                                                      'Hydropower_wotaxes': np.linspace(100, 100 + len(years) - 1, len(years))})
+                                                      'Hydropower_wotaxes': np.linspace(100, 100 + len(years) - 1,
+                                                                                        len(years))})
 
         self.gasturbine_techno_prices = pd.DataFrame({'GasTurbine': np.linspace(10, 10 + len(years) - 1, len(years)),
-                                                      'GasTurbine_wotaxes': np.linspace(10, 10 + len(years) - 1, len(years))
+                                                      'GasTurbine_wotaxes': np.linspace(10, 10 + len(years) - 1,
+                                                                                        len(years))
                                                       })
 
         self.hydropower_consumption = pd.DataFrame({'years': years
@@ -68,7 +70,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
             {'years': years, 'Hydropower (Gha)': 0.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
-                     0.02901,  0.03405,   0.03908,  0.04469,   0.05029]
+                     0.02901, 0.03405, 0.03908, 0.04469, 0.05029]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -111,7 +113,8 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                                               'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
         gasturbine_production = pd.DataFrame({'years': self.years,
-                                              'electricity (TWh)': [low_prod] * years_low_prod + [100] * (len(self.years) - years_low_prod),
+                                              'electricity (TWh)': [low_prod] * years_low_prod + [100] * (
+                                                          len(self.years) - years_low_prod),
                                               'O2 (Mt)': [0.019217] * len(self.years)})
         inputs_dict = {f'{self.name}.year_start': 2020,
                        f'{self.name}.year_end': 2050,
@@ -142,13 +145,16 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         # We erase the influence of low prod to the price BUT the mix weight is
         # not 100% for the other techno
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.electricity')[0].mdo_discipline_wrapp.mdo_discipline
         inputs_name = ['Test.electricity.GasTurbine.techno_production',
-                       'Test.electricity.GasTurbine.techno_consumption', 'Test.electricity.Hydropower.techno_production', 'Test.electricity.Hydropower.techno_consumption']
+                       'Test.electricity.GasTurbine.techno_consumption',
+                       'Test.electricity.Hydropower.techno_production',
+                       'Test.electricity.Hydropower.techno_consumption']
         outputs_name = ['Test.prod_hydropower_constraint']
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_electricity_stream.pkl', local_data = disc.local_data,
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_electricity_stream.pkl',
+                            local_data=disc.local_data,
                             discipline=disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
                             inputs=inputs_name, outputs=outputs_name)

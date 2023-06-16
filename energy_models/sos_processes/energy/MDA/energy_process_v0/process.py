@@ -172,18 +172,38 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             energy_builder_list = proc_builder.get_builders()
             builder_list.extend(energy_builder_list)
 
+        post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown'
         for energy in self.energy_list:
             if energy == 'hydrogen.gaseous_hydrogen':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_hydrogen',
-                    'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+                    post_proc_mod)
             if energy == 'hydrogen.liquid_hydrogen':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_liquid_hydrogen',
-                    'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+                    post_proc_mod)
+
+            if energy == 'fuel.liquid_fuel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_liquid_fuel',
+                    post_proc_mod)
+            if energy == 'fuel.hydrotreated_oil_fuel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_hydrotreated_oil_fuel',
+                    post_proc_mod)
+            if energy == 'fuel.biodiesel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_biodiesel',
+                    post_proc_mod)
+            if energy == 'fuel.ethanol':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_ethanol',
+                    post_proc_mod)
+
+
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 f'ns_{energy}',
-                'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown')
+                post_proc_mod)
 
         if len(set(FuelDiscipline.fuel_list).intersection(set(self.energy_list))) > 0:
             ns_dict = {'ns_fuel': f'{ns_study}.{energy_mix}.fuel'}
