@@ -119,7 +119,10 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
                'flue_gas_mean': {'type': 'dataframe', 'namespace': 'ns_flue_gas',
-                                 'visibility': CCTechnoDiscipline.SHARED_VISIBILITY, 'unit': ''},
+                                 'visibility': CCTechnoDiscipline.SHARED_VISIBILITY, 'unit': '',
+                                 'dataframe_descriptor': {'years': ('float', None, True),
+                                                          'flue_gas_mean': ('float', None, True), }
+                                 },
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},

@@ -38,7 +38,10 @@ class InvestTechnoDiscipline(SoSWrapp):
                                                   'invest': ('float', None, True)},
                          'dataframe_edition_locked': False},
         'invest_techno_mix': {'type': 'dataframe',
-                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
+                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                       'SMR': ('float', None, False),
+                                                       'Electrolysis': ('float', None, False),
+                                                       'CoalGasification': ('float', None, False),},
                               'dataframe_edition_locked': False},
         'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True}
     }

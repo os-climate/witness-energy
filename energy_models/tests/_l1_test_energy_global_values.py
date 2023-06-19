@@ -9,13 +9,12 @@ import pandas as pd
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_open
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as agri_study_open
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
 
 
 class TestGlobalEnergyValues(unittest.TestCase):
     """
     This test class has the objective to test order of magnitude of some key values in energy models in 2020
-    We use in this test technologies from validation usecase
     All the data are taken either from ourworldindata:
         Hannah Ritchie, Max Roser and Pablo Rosado (2020) - "Energy". Published online at OurWorldInData.org.
         Retrieved from: 'https://ourworldindata.org/energy' [Online Resource]
@@ -35,7 +34,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         self.name = 'Test'
         self.energymixname = 'EnergyMix'
         self.agrimixname = 'AgricultureMix'
-        ns_crop = 'Food'
+        ns_crop = 'Crop'
         ns_forest = 'Forest'
 
         self.ee = ExecutionEngine(self.name)
@@ -46,7 +45,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         repo = 'energy_models.sos_processes.energy.MDA'
         builder = self.ee.factory.get_builder_from_process(
-            repo, 'energy_process_v0_mda', techno_dict=DEFAULT_TECHNO_DICT)
+            repo, 'energy_process_v0_mda', techno_dict=DEFAULT_TECHNO_DICT_DEV)
 
         for i, disc in enumerate(builder):
             if disc.sos_name == 'Resources':
@@ -64,7 +63,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         self.ee.factory.set_builders_to_coupling_builder(chain_builders)
         self.ee.configure()
         usecase = Study_open(execution_engine=self.ee,
-                             techno_dict=DEFAULT_TECHNO_DICT)
+                             techno_dict=DEFAULT_TECHNO_DICT_DEV)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -73,7 +72,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         for dict_v in values_dict:
             full_values_dict.update(dict_v)
 
-        # full_values_dict[f'{self.name}.is_dev'] = True
+        full_values_dict[f'{self.name}.is_dev'] = True
 
         full_values_dict[f'{self.name}.CO2_taxes'] = pd.DataFrame({'years': np.arange(2020, 2051),
                                                                    'CO2_tax': 20.0}, index=np.arange(2020, 2051))
@@ -292,13 +291,13 @@ class TestGlobalEnergyValues(unittest.TestCase):
         h2_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_detailed_production')
         computed_methane_co2_emissions = \
-        co2_emissions_by_energy['methane'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
-        elec_gt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
-                                                   == 2020].values[0] + \
-        elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_cgt_prod['years']
-                                                    == 2020].values[0] + \
-        h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod['years']
-                                              == 2020].values[0] * 0.75
+            co2_emissions_by_energy['methane'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
+            elec_gt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
+                                                       == 2020].values[0] + \
+            elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_cgt_prod['years']
+                                                        == 2020].values[0] + \
+            h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod['years']
+                                                  == 2020].values[0] * 0.75
 
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_methane_co2_emissions,
@@ -315,11 +314,11 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.CoalGen.techno_detailed_production')
 
         computed_coal_co2_emissions = \
-        co2_emissions_by_energy['solid_fuel'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
-        elec_coal_prod['CO2 from Flue Gas (Mt)'].loc[elec_coal_prod['years']
-                                                     == 2020].values[0] + \
-        h2_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
-                                              == 2020].values[0] * 0.25
+            co2_emissions_by_energy['solid_fuel'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
+            elec_coal_prod['CO2 from Flue Gas (Mt)'].loc[elec_coal_prod['years']
+                                                         == 2020].values[0] + \
+            h2_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
+                                                  == 2020].values[0] * 0.25
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_coal_co2_emissions,
                              coal_co2_emissions * 1.1)

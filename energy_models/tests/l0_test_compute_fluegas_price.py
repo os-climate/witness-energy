@@ -68,9 +68,9 @@ class FlueGasRatioTestCase(unittest.TestCase):
         inputs_dict = {f'{self.name}.{self.model_name}.technologies_list': ['hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen'],
                        f'{self.name}.electricity.CoalGen.techno_production': self.electricity_CoalGen_production,
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_production': self.hydrogen_WaterGasShift_production,
-                       f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': [0.2],
+                       f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': np.array([0.2]),
                        f'{self.name}.ccs_list': ['carbon_capture'],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': [0.4],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': np.array([0.4]),
                        f'{self.name}.{self.model_name}.scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        f'{self.name}.{self.model_name}.scaling_factor_techno_production': self.scaling_factor_techno_production, }
 
@@ -112,11 +112,11 @@ class FlueGasRatioTestCase(unittest.TestCase):
                        f'{self.name}.carbon_capture.direct_air_capture.DirectAirCaptureTechno.techno_production': self.electricity_CoalGen_production,
 
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_production': self.hydrogen_WaterGasShift_production,
-                       f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': [0.2],
-                       f'{self.name}.carbon_capture.flue_gas_co2_ratio' : [0.2],
+                       f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': np.array([0.2]),
+                       f'{self.name}.carbon_capture.flue_gas_co2_ratio' : np.array([0.2]),
                        f'{self.name}.ccs_list': ['carbon_capture'],
 
-                       f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': [0.4],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': np.array([0.4]),
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production, }
         self.ee.load_study_from_input_dict(inputs_dict)

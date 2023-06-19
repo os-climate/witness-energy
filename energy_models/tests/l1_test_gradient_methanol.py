@@ -22,7 +22,7 @@ import scipy.interpolate as sc
 import pickle
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -37,6 +37,7 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 import warnings
+
 warnings.filterwarnings("ignore")
 
 
@@ -44,7 +45,8 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
     """
     Methanol Fuel jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -91,7 +93,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                                           })
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27, 29.01,
-                     34.05,   39.08,  44.69,   50.29]
+                     34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -118,7 +120,6 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         pass
 
     def test_01_co2_hydrogenation_discipline_analytic_grad(self):
-
         self.name = 'Test'
         self.model_name = 'CO2Hydrogenation'
         self.ee = ExecutionEngine(self.name)
@@ -145,7 +146,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051))}
 
@@ -156,7 +157,8 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.resources_price',
@@ -170,7 +172,6 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                             )
 
     def test_02_methanol_discipline_jacobian(self):
-
         self.co2_hydrogenation_consumption = pd.DataFrame({'years': self.years,
                                                            f'{CarbonCapture.name} ({self.product_energy_unit})': 1.0,
                                                            f'{GaseousHydrogen.name} ({self.product_energy_unit})': 1.0,
@@ -179,7 +180,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                                                            })
         self.co2_hydrogenation_production = pd.DataFrame({'years': self.years,
                                                           f'{Methanol.name} ({self.product_energy_unit})': 1.0
-                                                  })
+                                                          })
         self.co2_hydrogenation_techno_prices = pd.DataFrame({'years': self.years,
                                                              f'{CO2HydrogenationDiscipline.techno_name}': 100.0,
                                                              f'{CO2HydrogenationDiscipline.techno_name}_wotaxes': 100.0,
@@ -227,9 +228,10 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_specific_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data=disc.local_data,
+                            discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=[f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_production',
                                     f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_consumption',
                                     f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_prices',
@@ -239,10 +241,11 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.CO2_per_use',
                                      f'{self.name}.{self.model_name}.energy_prices',
                                      f'{self.name}.{self.model_name}.energy_consumption',
-                                     f'{self.name}.{self.model_name}.energy_production'],)
+                                     f'{self.name}.{self.model_name}.energy_production'], )
+
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = MethanolJacobianCase()
     cls.setUp()
     cls.test_01_co2_hydrogenation_discipline_analytic_grad()

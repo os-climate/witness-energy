@@ -113,7 +113,12 @@ class ReforestationDiscipline(CSTechnoDiscipline):
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
                'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_storage},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
+               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                                       'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                                'age': ('float', None, True),
+                                                                'distrib': ('float', None, True),
+                                                                }
+                                       },
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
