@@ -9,12 +9,13 @@ import pandas as pd
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_open
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as agri_study_open
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 
 
 class TestGlobalEnergyValues(unittest.TestCase):
     """
     This test class has the objective to test order of magnitude of some key values in energy models in 2020
+    We use in this test technologies from validation usecase
     All the data are taken either from ourworldindata:
         Hannah Ritchie, Max Roser and Pablo Rosado (2020) - "Energy". Published online at OurWorldInData.org.
         Retrieved from: 'https://ourworldindata.org/energy' [Online Resource]
@@ -45,7 +46,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         repo = 'energy_models.sos_processes.energy.MDA'
         builder = self.ee.factory.get_builder_from_process(
-            repo, 'energy_process_v0_mda', techno_dict=DEFAULT_TECHNO_DICT_DEV)
+            repo, 'energy_process_v0_mda', techno_dict=DEFAULT_TECHNO_DICT)
 
         for i, disc in enumerate(builder):
             if disc.sos_name == 'Resources':
@@ -63,7 +64,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         self.ee.factory.set_builders_to_coupling_builder(chain_builders)
         self.ee.configure()
         usecase = Study_open(execution_engine=self.ee,
-                             techno_dict=DEFAULT_TECHNO_DICT_DEV)
+                             techno_dict=DEFAULT_TECHNO_DICT)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -72,7 +73,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         for dict_v in values_dict:
             full_values_dict.update(dict_v)
 
-        full_values_dict[f'{self.name}.is_dev'] = True
+        # full_values_dict[f'{self.name}.is_dev'] = True
 
         full_values_dict[f'{self.name}.CO2_taxes'] = pd.DataFrame({'years': np.arange(2020, 2051),
                                                                    'CO2_tax': 20.0}, index=np.arange(2020, 2051))
@@ -347,21 +348,24 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
         Total CO2 emissions are emissions from oil energy 
         '''
-        sources = self.ee.dm.get_value(
-            'Test.CCUS.CO2_emissions_by_use_sources')
-        sinks = self.ee.dm.get_value('Test.CCUS.CO2_emissions_by_use_sinks')[
-            'CO2_resource removed by energy mix (Gt)'].values[0]
-        sources_sum = sources.loc[sources['years'] == 2020][[
-            col for col in sources.columns if col != 'years']].sum(axis=1)[0]
-        computed_total_co2_emissions = (sources_sum - sinks) * 1000
-        # we compare in Mt and must be near 10% of error
-
+        # sources = self.ee.dm.get_value(
+        #     'Test.GHGEmissions.Energy.CO2_emissions_sources')
+        # sinks = self.ee.dm.get_value('Test.GHGEmissions.Energy.CO2_emissions_sinks')[
+        #     'CO2_resource removed by energy mix (Gt)'].values[0]
+        # sources_sum = sources.loc[sources['years'] == 2020][[
+        #     col for col in sources.columns if col != 'years']].sum(axis=1)[0]
+        # computed_total_co2_emissions = (sources_sum - sinks) * 1000
+        # # we compare in Mt and must be near 10% of error
+        ghg_total_energy_emissions = self.ee.dm.get_value(
+            'Test.GHG_total_energy_emissions')
+        computed_total_co2_emissions = ghg_total_energy_emissions.loc[ghg_total_energy_emissions['years'] == 2020][
+            'Total CO2 emissions'].values[0]
         print(
             f'Total CO2 emissions : ourworldindata {total_co2_emissions} Mt vs WITNESS {computed_total_co2_emissions} TWh')
         self.assertLessEqual(computed_total_co2_emissions,
                              total_co2_emissions * 1.1)
         self.assertGreaterEqual(
-            computed_total_co2_emissions, total_co2_emissions * 0.9)
+            total_co2_emissions * 0.9, computed_total_co2_emissions)
 
     def test_03_check_net_production_values(self):
         '''

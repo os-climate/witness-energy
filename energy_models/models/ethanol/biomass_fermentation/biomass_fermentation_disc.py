@@ -112,7 +112,10 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
         {'past years': np.arange(-construction_delay, 0), 'invest': 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
+               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                                                'age': ('float', None, True),
+                                                                'distrib': ('float', None, True)}},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),

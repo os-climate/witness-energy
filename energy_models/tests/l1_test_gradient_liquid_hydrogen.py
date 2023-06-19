@@ -20,7 +20,7 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
@@ -32,7 +32,8 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
     """
     LiquidHydrogen jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -49,38 +50,42 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         years = np.arange(2020, 2051)
         self.years = years
 
-        self.hydrogen_liquefaction_techno_prices = pd.DataFrame({'HydrogenLiquefaction': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
-                                                                                                   0.089236536471781, 0.08899046935409588, 0.08874840310033885,
-                                                                                                   0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
-                                                                                                   0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
-                                                                                                   0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
-                                                                                                   0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
-                                                                                                   0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
-                                                                                                   0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
-                                                                                                   0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
-                                                                                                   0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
-                                                                                                   0.0928246539459331]) * 1000.0,
-                                                                 'HydrogenLiquefaction_wotaxes': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
-                                                                                                           0.089236536471781, 0.08899046935409588, 0.08874840310033885,
-                                                                                                           0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
-                                                                                                           0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
-                                                                                                           0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
-                                                                                                           0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
-                                                                                                           0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
-                                                                                                           0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
-                                                                                                           0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
-                                                                                                           0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
-                                                                                                           0.0928246539459331]) * 1000.0})
+        self.hydrogen_liquefaction_techno_prices = pd.DataFrame(
+            {'HydrogenLiquefaction': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+                                               0.089236536471781, 0.08899046935409588, 0.08874840310033885,
+                                               0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
+                                               0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
+                                               0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
+                                               0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
+                                               0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
+                                               0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
+                                               0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
+                                               0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
+                                               0.0928246539459331]) * 1000.0,
+             'HydrogenLiquefaction_wotaxes': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+                                                       0.089236536471781, 0.08899046935409588, 0.08874840310033885,
+                                                       0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
+                                                       0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
+                                                       0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
+                                                       0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
+                                                       0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
+                                                       0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
+                                                       0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
+                                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
+                                                       0.0928246539459331]) * 1000.0})
 
         self.hydrogen_liquefaction_consumption = pd.DataFrame({'years': years,
-                                                               'hydrogen.gaseous_hydrogen (TWh)': [230.779470] * len(years),
+                                                               'hydrogen.gaseous_hydrogen (TWh)': [230.779470] * len(
+                                                                   years),
                                                                'electricity (TWh)': [82.649011] * len(years), })
 
         self.hydrogen_liquefaction_production = pd.DataFrame({'years': years,
-                                                              LiquidHydrogen.name + ' (TWh)': [2304.779470] * len(years), })
+                                                              LiquidHydrogen.name + ' (TWh)': [2304.779470] * len(
+                                                                  years), })
 
         self.hydrogen_liquefaction_carbon_emissions = pd.DataFrame(
-            {'years': years, 'HydrogenLiquefaction': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'electricity': 0.0, 'production': 0.0})
+            {'years': years, 'HydrogenLiquefaction': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'electricity': 0.0,
+             'production': 0.0})
 
         electricity_price = np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                       0.089236536471781, 0.08899046935409588, 0.08874840310033885,
@@ -106,7 +111,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -144,7 +149,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.land_use_required_HydrogenLiquefaction = pd.DataFrame(
             {'years': years, 'HydrogenLiquefaction (Gha)': 0.0})
-        #---Ratios---
+        # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
         demand_ratio_dict['years'] = years
@@ -184,9 +189,10 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.CO2_taxes': self.CO2_taxes,
-                       f'{self.name}.{self.model_name}.invest_level':  self.invest,
-                       f'{self.name}.transport_cost':  self.transport,
-                       f'{self.name}.transport_margin': pd.concat([self.margin['years'], self.margin['margin'] / 1.1], axis=1, keys=['years', 'margin']),
+                       f'{self.name}.{self.model_name}.invest_level': self.invest,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.transport_margin': pd.concat([self.margin['years'], self.margin['margin'] / 1.1],
+                                                                  axis=1, keys=['years', 'margin']),
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
@@ -200,7 +206,8 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5, local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',
                                     f'{self.name}.energy_CO2_emissions',
@@ -209,7 +216,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production', ],)
+                                     f'{self.name}.{self.model_name}.techno_production', ], )
 
     def test_02_liquid_hydrogen_discipline_jacobian(self):
 
@@ -249,7 +256,8 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
+                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
+                    'value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
 
@@ -272,16 +280,17 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5, local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = LiquidHydrogenJacobianTestCase()
     cls.setUp()
     cls.test_02_liquid_hydrogen_discipline_jacobian()
