@@ -172,6 +172,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             energy_builder_list = proc_builder.get_builders()
             builder_list.extend(energy_builder_list)
 
+        post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_energy_mix'
+        if energy_mix == 'EnergyMix':
+            self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                f'ns_energy_mix',
+                post_proc_mod)
+
+
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown'
         for energy in self.energy_list:
             if energy == 'hydrogen.gaseous_hydrogen':
