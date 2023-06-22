@@ -106,7 +106,7 @@ def get_comparision_data(execution_engine, namespace, year):
     #               'Price ($/MWh)': energy_costs_List}
     # table_data.update(price_data)
     # table = pd.DataFrame(table_data)
-    table = InstanciatedTable(str(year), headers, cells)
+    table = InstanciatedTable('Data Comparison for Year ' + str(year), headers, cells)
     return table
 
 def post_processings(execution_engine, namespace, filters):
