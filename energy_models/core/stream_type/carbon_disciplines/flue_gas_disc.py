@@ -124,7 +124,11 @@ class FlueGasDiscipline(SoSWrapp):
                     dynamic_inputs[f'{techno}.techno_production'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': ns_variable}
+                        'namespace': ns_variable,
+                        'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                 'CO2 from Flue Gas (Mt)': ('float', None, False),
+                                                 }
+                    }
                     dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
                                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                       'namespace': ns_variable, 'unit': '',

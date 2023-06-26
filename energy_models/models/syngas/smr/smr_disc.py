@@ -92,7 +92,11 @@ class SMRDiscipline(SyngasTechnoDiscipline):
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
+               'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                                                'age': ('float', None, True),
+                                                                'distrib': ('float', None, True)}
+                                       },
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},

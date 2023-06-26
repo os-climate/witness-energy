@@ -42,15 +42,28 @@ class IndependentInvestDiscipline(SoSWrapp):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'energy_investment': {'type': 'dataframe', 'unit': '100G$',
-                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                              'dataframe_descriptor': {'years': ('float', None, False),
                                                        'energy_investment': ('float', None, True)},
                               'dataframe_edition_locked': False,
                               'visibility': 'Shared', 'namespace': 'ns_witness'},
         'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
                                              'namespace': 'ns_public'},
         'invest_mix': {'type': 'dataframe', 'unit': 'G$',
-                       'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
-                       'dataframe_edition_locked': False},
+                       'dataframe_edition_locked': False,
+                       'dataframe_descriptor': {'years': ('float', None, True),
+                                                'electricity.SolarPv': ('float', None, True),
+                                                'electricity.WindOnshore': ('float', None, True),
+                                                'electricity.CoalGen': ('float', None, True),
+                                                'methane.FossilGas': ('float', None, True),
+                                                'methane.UpgradingBiogas': ('float', None, True),
+                                                'hydrogen.gaseous_hydrogen.WaterGasShift': ('float', None, True),
+                                                'hydrogen.gaseous_hydrogen.Electrolysis.AWE': ('float', None, True),
+                                                'carbon_capture.direct_air_capture.AmineScrubbing': (
+                                                'float', None, True),
+                                                'carbon_capture.flue_gas_capture.CalciumLooping': ('float', None, True),
+                                                'carbon_storage.DeepSalineFormation': ('float', None, True),
+                                                'carbon_storage.GeologicMineralization': ('float', None, True),
+                                                }},
         'invest_objective_ref': {'type': 'float', 'unit': 'G$', 'default': 1.0, 'user_level': 2, 'visibility': 'Shared',
                                  'namespace': 'ns_ref'},
         'invest_sum_ref': {'type': 'float', 'unit': 'G$', 'default': 2., 'user_level': 2, 'visibility': 'Shared',
@@ -67,7 +80,8 @@ class IndependentInvestDiscipline(SoSWrapp):
         'invest_limit_ref': {'type': 'float', 'default': 300., 'unit': 'G$', 'user_level': 2, 'visibility': 'Shared',
                              'namespace': 'ns_ref'},
         'forest_investment': {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                              'dataframe_descriptor': {'years': ('int', [1900, 2100], False)}, 'namespace': 'ns_invest',
+                              'dataframe_descriptor': {'years': ('float', None, False),
+                                                       'forest_investment': ('float', None, False)}, 'namespace': 'ns_invest',
                               'dataframe_edition_locked': False},
     }
 
@@ -106,15 +120,18 @@ class IndependentInvestDiscipline(SoSWrapp):
                     if energy == BiomassDry.name:
                         dynamic_inputs['managed_wood_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
-                            'namespace': 'ns_forest', 'dataframe_edition_locked': False}
+                            'dataframe_descriptor': {'years': ('float', None, False),
+                                                     'investment': ('float', None, False)},
+                            'namespace': 'ns_forest', 'dataframe_edition_locked': False,}
                         dynamic_inputs['deforestation_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
+                            'dataframe_descriptor': {'years': ('float', None, False),
+                                                     'investment': ('float', None, False)},
                             'namespace': 'ns_forest', 'dataframe_edition_locked': False}
                         dynamic_inputs['crop_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {'years': ('int', [1900, 2100], False)},
+                            'dataframe_descriptor': {'years': ('float', None, False),
+                                                     'investment': ('float', None, False)},
                             'namespace': 'ns_crop', 'dataframe_edition_locked': False}
                     else:
                         # Add technologies_list to inputs
