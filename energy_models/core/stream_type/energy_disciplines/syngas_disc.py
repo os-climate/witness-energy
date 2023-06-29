@@ -24,6 +24,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from copy import deepcopy
 
+
 class SyngasDiscipline(EnergyDiscipline):
     # ontology information
     _ontology_data = {
