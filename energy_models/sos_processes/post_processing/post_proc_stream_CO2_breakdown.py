@@ -99,14 +99,7 @@ def get_comparision_data(execution_engine, namespace, year):
     cells.append(opex_list)
     cells.append(CO2tax_list)
     cells.append(energy_costs_List)
-
-
-    # table_data = {'Technology': techno_list}
-    # price_data = {'CAPEX ($/MWh)': capex_list, 'OPEX ($/MWh)': opex_list, 'CO2Tax ($/MWh)':  CO2tax_list, \
-    #               'Price ($/MWh)': energy_costs_List}
-    # table_data.update(price_data)
-    # table = pd.DataFrame(table_data)
-    table = InstanciatedTable('Data Comparison for Year ' + str(year), headers, cells)
+    table = InstanciatedTable('Capex/Opex/CO2Tax Price and Percentage Data Comparison for Year ' + str(year), headers, cells)
     return table
 
 def post_processings(execution_engine, namespace, filters):
