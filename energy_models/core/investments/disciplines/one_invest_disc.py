@@ -105,6 +105,8 @@ class OneInvestDiscipline(SoSWrapp):
                                                 'carbon_storage.DepletedOilGas': ('float', None, True),
                                                 'carbon_storage.EnhancedOilRecovery': ('float', None, True),
                                                 'carbon_storage.PureCarbonSolidStorage': ('float', None, True),
+                                                'renewable.RenewableSimpleTechno': ('float', None, True),
+                                                'fossil.FossilSimpleTechno': ('float', None, True),
     },
                        'dataframe_edition_locked': False},
         'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
