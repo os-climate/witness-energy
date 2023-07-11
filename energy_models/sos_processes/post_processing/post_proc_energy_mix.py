@@ -230,30 +230,17 @@ def get_techno_comparision_data(execution_engine, namespace, year):
     cells.append(CO2tax_list)
     cells.append(energy_costs_List)
 
-
-    # table_data = {'Technology': techno_name_list}
-    # price_data = {'CAPEX ($/MWh)': capex_list, 'OPEX ($/MWh)': opex_list, 'CO2Tax ($/MWh)':  CO2tax_list, 'Price ($/MWh)': energy_costs_List}
-    # table_data.update(price_data)
-    # table = pd.DataFrame(table_data)
-
-
-    table = InstanciatedTable('Data Comparison for Year ' + str(year), headers, cells)
+    table = InstanciatedTable('Capex/Opex/CO2Tax Price and Percentage Production Average Data Comparison for Year ' + str(year), headers, cells)
     table_list.append(table)
 
-
-
-    # Energy production average price detail table
-    #print(len(energy_name_list), len(techno_name_list), len(average_capex_list), len(average_opex_list), len(average_CO2tax_list), len(average_energy_costs_List))
-
     headers_average = ['Energy', 'CAPEX ($/MWh)', 'OPEX ($/MWh)', 'CO2Tax ($/MWh)', 'Price ($/MWh)']
-    #print('average_capex_list', average_capex_list)
     cells_average  = []
     cells_average.append(energy_name_list)
     cells_average.append(average_capex_list)
     cells_average.append(average_opex_list)
     cells_average.append(average_CO2tax_list)
     cells_average.append(average_energy_costs_List)
-    table_average = InstanciatedTable('Production Average Data Comparison for Year ' + str(year), headers_average, cells_average)
+    table_average = InstanciatedTable('Capex/Opex/CO2Tax Price and Percentage Production Average Data Comparison for Year ' + str(year), headers_average, cells_average)
     table_list.append(table_average)
 
     return table_list

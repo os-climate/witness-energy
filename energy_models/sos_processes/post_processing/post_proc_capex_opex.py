@@ -40,10 +40,9 @@ def post_processing_filters(execution_engine, namespace):
     chart_list = []
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[
         0].mdo_discipline_wrapp.wrapper.energy_name
-    chart_list += [f'{energy} CO2 intensity']
-    chart_list += [f'{energy} CO2 breakdown sankey']
-    chart_list += [f'{energy} CO2 breakdown bar']
     chart_list += [f'{energy} Figures table']
+    chart_list += [f'{energy} Capex value']
+
 
     # The filters are set to False by default since the graphs are not yet
     # mature
@@ -99,7 +98,14 @@ def get_comparision_data(execution_engine, namespace, year):
     cells.append(opex_list)
     cells.append(CO2tax_list)
     cells.append(energy_costs_List)
-    table = InstanciatedTable('Capex/Opex/CO2Tax Price and Percentage Data Comparison for Year ' + str(year), headers, cells)
+
+
+    # table_data = {'Technology': techno_list}
+    # price_data = {'CAPEX ($/MWh)': capex_list, 'OPEX ($/MWh)': opex_list, 'CO2Tax ($/MWh)':  CO2tax_list, \
+    #               'Price ($/MWh)': energy_costs_List}
+    # table_data.update(price_data)
+    # table = pd.DataFrame(table_data)
+    table = InstanciatedTable('Data Comparison for Year ' + str(year), headers, cells)
     return table
 
 def post_processings(execution_engine, namespace, filters):
@@ -123,38 +129,17 @@ def post_processings(execution_engine, namespace, filters):
             #new_table = get_figures_table(price_comparision_table_data, str(year))
             instanciated_charts.append(new_table)
 
-
-    if f'{energy} CO2 intensity' in graphs_list:
-        chart_name = f'{energy} CO2 intensity summary'
+    if f'{energy} Capex value' in graphs_list:
+        chart_name = f'{energy} Capex value'
         new_chart = get_chart_green_technologies(
             execution_engine, namespace, energy_name=energy, chart_name=chart_name)
         if new_chart is not None:
             instanciated_charts.append(new_chart)
-
-        chart_name = f'{energy} CO2 intensity by years'
-        new_chart = get_chart_green_technologies(
-            execution_engine, namespace, energy_name=energy, chart_name=chart_name, summary=False)
-        if new_chart is not None:
-            instanciated_charts.append(new_chart)
-    # ---
-    if f'{energy} CO2 breakdown sankey' in graphs_list:
-        chart_name = f'{energy} CO2 breakdown sankey summary'
-        new_chart = get_chart_Energy_CO2_breakdown_sankey(
-            execution_engine, namespace, energy_name=energy, chart_name=chart_name)
-        if new_chart is not None:
-            instanciated_charts.append(new_chart)
-
-        chart_name = f'{energy} CO2 breakdown sankey by years'
-        new_chart = get_chart_Energy_CO2_breakdown_sankey(
-            execution_engine, namespace, energy_name=energy, chart_name=chart_name, summary=False)
-        if new_chart is not None:
-            instanciated_charts.append(new_chart)
-
 
     return instanciated_charts
 
 
-def get_chart_green_technologies(execution_engine, namespace, energy_name, chart_name='Technologies CO2 intensity',
+def get_chart_green_technologies(execution_engine, namespace, energy_name, chart_name='Technologies Capex Value',
                                  summary=True):
     '''! Function to create the green_techno/_energy scatter chart
     @param execution_engine: Execution engine object from which the data is gathered
@@ -207,14 +192,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
         customdata = [label, price_per_kWh, CO2_per_kWh,
                       production, invest, total_CO2, CO2_taxes_array,
                       price_per_kWh_wotaxes]
-        hovertemplate = '<br>Name: %{customdata[0]}' + \
-                        '<br>Mean Price per kWh before CO2 tax: %{customdata[7]: .2e}' + \
-                        '<br>Mean CO2 per kWh: %{customdata[2]: .2e}' + \
-                        '<br>Integrated Total CO2: %{customdata[5]: .2e}' + \
-                        '<br>Integrated Production: %{customdata[3]: .2e}' + \
-                        '<br>Integrated Invest: %{customdata[4]: .2e}' + \
-                        '<br>Mean Price per kWh: %{customdata[1]: .2e}' + \
-                        '<br>Mean CO2 taxes: %{customdata[6]: .2e}'
+        hovertemplate = ''
         marker_sizes = np.multiply(production, 20.0) / \
                        pintmax + 10.0
         scatter = go.Scatter(x=list(price_per_kWh_wotaxes), y=list(CO2_per_kWh),
@@ -226,7 +204,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
                              marker=dict(color=CO2_per_kWh,
                                          cmin=cmin, cmax=cmax,
                                          colorscale='RdYlGn_r', size=list(marker_sizes),
-                                         colorbar=dict(title='CO2 per kWh', thickness=20)),
+                                         colorbar=dict(title='Capex', thickness=20)),
                              visible=True)
         fig.add_trace(scatter)
     else:
@@ -257,14 +235,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
             customdata = [label, price_per_kWh, CO2_per_kWh,
                           production, invest, total_CO2, CO2_taxes_array,
                           price_per_kWh_wotaxes]
-            hovertemplate = '<br>Name: %{customdata[0]}' + \
-                            '<br>Price per kWh before CO2 tax: %{customdata[7]: .2e}' + \
-                            '<br>CO2 per kWh: %{customdata[2]: .2e}' + \
-                            '<br>Total CO2: %{customdata[5]: .2e}' + \
-                            '<br>Production: %{customdata[3]: .2e}' + \
-                            '<br>Invest: %{customdata[4]: .2e}' + \
-                            '<br>Price per kWh: %{customdata[1]: .2e}' + \
-                            '<br>CO2 taxes: %{customdata[6]: .2e}'
+            hovertemplate = ''
             marker_sizes = np.multiply(production, 20.0) / \
                            pmax + 10.0
             scatter = go.Scatter(x=list(price_per_kWh_wotaxes), y=list(CO2_per_kWh),
@@ -276,7 +247,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
                                  marker=dict(color=CO2_per_kWh,
                                              cmin=cmin, cmax=cmax,
                                              colorscale='RdYlGn_r', size=list(marker_sizes),
-                                             colorbar=dict(title='CO2 per kWh', thickness=20)),
+                                             colorbar=dict(title='Capex', thickness=20)),
                                  visible=False)
             fig.add_trace(scatter)
         # Prepare year slider and layout updates
@@ -298,14 +269,13 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
             sliders=sliders
         )
 
-    fig.update_xaxes(title_text='Price per MWh [$/MWh] (without CO2 taxes)')
-    fig.update_yaxes(title_text='CO2 per kWh [kgCO2/kWh]')
+    fig.update_xaxes(title_text='Years')
+    fig.update_yaxes(title_text='Capex [$/MWh]')
     fig.data[0].visible = True
 
     new_chart = InstantiatedPlotlyNativeChart(
         fig, chart_name=chart_name, default_title=True)
     return new_chart
-
 
 def get_multilevel_df(execution_engine, namespace, columns=None):
     '''! Function to create the dataframe with all the data necessary for the graphs in a multilevel [energy, technologies]
@@ -381,260 +351,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
 
     return multilevel_df, years
 
-
-def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_name, energy_name, summary=True):
-    '''! Function to create the CO2 breakdown Sankey diagram
-    @param execution_engine: Execution engine object from which the data is gathered
-    @param namespace: String containing the namespace to access the data
-    @param chart_name:String, title of the post_proc
-    @param energy: String, name of the energy to display
-
-    @return new_chart: InstantiatedPlotlyNativeChart a Sankey Diagram
-    '''
-
-    # Prepare data
-    multilevel_df, years = get_CO2_breakdown_multilevel_df(
-        execution_engine, namespace)
-    energy_list = list(set(multilevel_df.index.droplevel(1)))
-    technologies_list = list(multilevel_df.loc[energy_name].index.values)
-    other_emission_type = [col for col in multilevel_df.columns if col not in [
-        'energy', 'technology', 'production', 'CO2_from_production', 'CO2_per_use', 'CO2_after_use']]
-    label_col1 = ['CO2 from production', 'CO2 per use'] + other_emission_type
-    label_col2 = technologies_list
-    label_col3 = [f'Total CO2 emissions for {energy_name}', ]
-    label_list = label_col1 + label_col2 + label_col3
-
-    # Create Figure
-    chart_name = f'{chart_name}'
-    fig = go.Figure()
-
-    # Fill figure with data by year
-    # i_label_dict associates each label with an integer value
-    i_label_dict = dict((key, i) for i, key in enumerate(label_list))
-    fig = go.Figure()
-    cmap_over = cm.get_cmap('Reds')
-    cmap_under = cm.get_cmap('Greens')
-    if summary:
-        source, target = [], []
-        source_name, target_name = [], []
-        flux, flux_color = [], []
-        production_list = []
-        for i, technology in enumerate(technologies_list):
-            # energies level
-            production = np.sum(multilevel_df.loc[(
-                energy_name, technology)]['production'])
-            # per kWh
-            CO2_from_production = np.mean(multilevel_df.loc[(
-                energy_name, technology)]['CO2_from_production'])
-            CO2_per_use = np.mean(multilevel_df.loc[(
-                energy_name, technology)]['CO2_per_use'])
-            CO2_after_use = np.mean(multilevel_df.loc[(
-                energy_name, technology)]['CO2_after_use'])
-            # total
-            CO2_from_production_tot = np.sum(multilevel_df.loc[(energy_name, technology)]['CO2_from_production'] *
-                                             multilevel_df.loc[(energy_name, technology)]['production']) + \
-                                      1e-20
-            CO2_per_use_tot = np.sum(multilevel_df.loc[(energy_name, technology)]['CO2_per_use'] *
-                                     multilevel_df.loc[(energy_name, technology)]['production']) + \
-                              1e-20
-            CO2_after_use_tot = np.sum(multilevel_df.loc[(energy_name, technology)]['CO2_after_use'] *
-                                       multilevel_df.loc[(energy_name, technology)]['production']) + \
-                                1e-20
-            # Loop on every other energies
-            CO2_from_other_consumption, CO2_from_other_consumption_tot = {}, {}
-            for other_emission in other_emission_type:
-                CO2_from_other_consumption[other_emission] = np.mean(multilevel_df.loc[
-                                                                         (energy_name, technology)][other_emission])
-                CO2_from_other_consumption_tot[other_emission] = np.sum(multilevel_df.loc[(
-                    energy_name, technology)][other_emission] * multilevel_df.loc[(energy_name, technology)][
-                                                                            'production'])
-            # col1 to col2
-            source += [i_label_dict['CO2 from production'], ]
-            source_name += ['CO2 from production', ]
-            target += [i_label_dict[technology], ]
-            target_name += [technology, ]
-            flux += [CO2_from_production_tot, ]
-            flux_color += [CO2_from_production, ]
-            production_list += [production, ]
-            source += [i_label_dict['CO2 per use'], ]
-            source_name += ['CO2 per use', ]
-            target += [i_label_dict[technology], ]
-            target_name += [technology, ]
-            flux += [CO2_per_use_tot, ]
-            flux_color += [CO2_per_use, ]
-            production_list += [production, ]
-            for other_emission in other_emission_type:
-                source += [
-                    i_label_dict[other_emission], ]
-                source_name += [other_emission, ]
-                target += [i_label_dict[technology], ]
-                target_name += [technology, ]
-                flux += [CO2_from_other_consumption_tot[other_emission], ]
-                flux_color += [CO2_from_other_consumption[other_emission], ]
-                production_list += [production, ]
-            # col2 to col3
-            source += [i_label_dict[technology], ]
-            source_name += [technology, ]
-            target += [
-                i_label_dict[f'Total CO2 emissions for {energy_name}'], ]
-            target_name += [f'Total CO2 emissions for {energy_name}', ]
-            flux += [CO2_after_use_tot, ]
-            flux_color += [CO2_after_use, ]
-            production_list += [production, ]
-        customdata = list(
-            np.array([source_name, target_name, production_list, flux_color,
-                      np.where(np.array(flux) <= 1e-20, 0.0, np.array(flux))]).T)
-        hovertemplate = '<br>Source: %{customdata[0]}' + \
-                        '<br>Target: %{customdata[1]}' + \
-                        '<br>Production: %{customdata[2]: .2e}' + \
-                        '<br>CO2 per kWh (color): %{customdata[3]: .2e}' + \
-                        '<br>Total CO2 (thickness): %{customdata[4]: .2e}'
-        rgba_list_over = cmap_over(
-            0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)))
-        rgba_list_under = cmap_under(
-            0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)))
-        color_over = ['rgb' + str(tuple(int((255 * (x * 0.8 + 0.2)))
-                                        for x in rgba[0:3])) for rgba in rgba_list_over]
-        color_under = ['rgb' + str(tuple(int((255 * (x * 0.8 + 0.2)))
-                                         for x in rgba[0:3])) for rgba in rgba_list_under]
-        color = np.where(np.array(flux_color) > 0.0, color_over, color_under)
-        link = dict(source=source, target=target,
-                    value=list(np.where(np.abs(flux) > 0.0, 1.0 +
-                                        100.0 * np.abs(flux) / np.max(np.abs(flux)), 0.0)),
-                    color=list(color),
-                    customdata=customdata,
-                    hovertemplate=hovertemplate, )
-        sankey = go.Sankey(node=dict(pad=15, thickness=20, line=dict(color="black", width=0.5),
-                                     label=list(i_label_dict.keys()), color="black"),
-                           link=link,
-                           visible=False)
-        fig.add_trace(sankey)
-
-    else:
-        for i_year in range(len(years)):
-            source, target = [], []
-            source_name, target_name = [], []
-            flux, flux_color = [], []
-            production_list = []
-            for i, technology in enumerate(technologies_list):
-                # energies level
-                production = multilevel_df.loc[(
-                    energy_name, technology)]['production'][i_year]
-                # per kWh
-                CO2_from_production = multilevel_df.loc[(
-                    energy_name, technology)]['CO2_from_production'][i_year]
-                CO2_per_use = multilevel_df.loc[(
-                    energy_name, technology)]['CO2_per_use'][i_year]
-                CO2_after_use = multilevel_df.loc[(
-                    energy_name, technology)]['CO2_after_use'][i_year]
-                # total
-                CO2_from_production_tot = (multilevel_df.loc[(energy_name, technology)]['CO2_from_production'] *
-                                           multilevel_df.loc[(energy_name, technology)]['production'])[i_year] + \
-                                          1e-20
-                CO2_per_use_tot = (multilevel_df.loc[(energy_name, technology)]['CO2_per_use'] *
-                                   multilevel_df.loc[(energy_name, technology)]['production'])[i_year] + \
-                                  1e-20
-                CO2_after_use_tot = (multilevel_df.loc[(energy_name, technology)]['CO2_after_use'] *
-                                     multilevel_df.loc[(energy_name, technology)]['production'])[i_year] + \
-                                    1e-20
-                # Loop on every other energies
-                CO2_from_energy_consumption, CO2_from_energy_consumption_tot = {}, {}
-                for other_emisson in other_emission_type:
-                    CO2_from_energy_consumption[other_emisson] = multilevel_df.loc[
-                        (energy_name, technology)][other_emisson][i_year]
-                    CO2_from_energy_consumption_tot[other_emisson] = (
-                            multilevel_df.loc[(energy_name, technology)][other_emisson] *
-                            multilevel_df.loc[(energy_name, technology)]['production'])[i_year]
-                # col1 to col2
-                source += [i_label_dict['CO2 from production'], ]
-                source_name += ['CO2 from production', ]
-                target += [i_label_dict[technology], ]
-                target_name += [technology, ]
-                flux += [CO2_from_production_tot, ]
-                flux_color += [CO2_from_production, ]
-                production_list += [production, ]
-                source += [i_label_dict['CO2 per use'], ]
-                source_name += ['CO2 per use', ]
-                target += [i_label_dict[technology], ]
-                target_name += [technology, ]
-                flux += [CO2_per_use_tot, ]
-                flux_color += [CO2_per_use, ]
-                production_list += [production, ]
-                for other_emisson in other_emission_type:
-                    source += [
-                        i_label_dict[other_emisson], ]
-                    source_name += [other_emisson, ]
-                    target += [i_label_dict[technology], ]
-                    target_name += [technology, ]
-                    flux += [CO2_from_energy_consumption_tot[other_emisson], ]
-                    flux_color += [CO2_from_energy_consumption[other_emisson], ]
-                    production_list += [production, ]
-                # col2 to col3
-                source += [i_label_dict[technology], ]
-                source_name += [technology, ]
-                target += [
-                    i_label_dict[f'Total CO2 emissions for {energy_name}'], ]
-                target_name += [f'Total CO2 emissions for {energy_name}', ]
-                flux += [CO2_after_use_tot, ]
-                flux_color += [CO2_after_use, ]
-                production_list += [production, ]
-            customdata = list(
-                np.array([source_name, target_name, production_list, flux_color,
-                          np.where(np.array(flux) <= 1e-20, 0.0, np.array(flux))]).T)
-            hovertemplate = '<br>Source: %{customdata[0]}' + \
-                            '<br>Target: %{customdata[1]}' + \
-                            '<br>Production: %{customdata[2]: .2e}' + \
-                            '<br>CO2 per kWh (color): %{customdata[3]: .2e}' + \
-                            '<br>Total CO2 (thickness): %{customdata[4]: .2e}'
-            rgba_list_over = cmap_over(
-                0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)))
-            rgba_list_under = cmap_under(
-                0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)))
-            color_over = ['rgb' + str(tuple(int((255 * (x * 0.8 + 0.2)))
-                                            for x in rgba[0:3])) for rgba in rgba_list_over]
-            color_under = ['rgb' + str(tuple(int((255 * (x * 0.8 + 0.2)))
-                                             for x in rgba[0:3])) for rgba in rgba_list_under]
-            color = np.where(np.array(flux_color) > 0.0,
-                             color_over, color_under)
-            link = dict(source=source, target=target,
-                        value=list(np.where(
-                            np.abs(flux) > 0.0, 1.0 + 100.0 * np.abs(flux) / np.max(np.abs(flux)), 0.0)),
-                        color=list(color),
-                        customdata=customdata,
-                        hovertemplate=hovertemplate, )
-            sankey = go.Sankey(node=dict(pad=15, thickness=20, line=dict(color="black", width=0.5),
-                                         label=list(i_label_dict.keys()), color="black"),
-                               link=link,
-                               visible=False)
-            fig.add_trace(sankey)
-
-        # Prepare year slider and layout updates
-        steps = []
-        for i in range(int(len(fig.data)) - 1):
-            step = dict(
-                method="update",
-                args=[{"visible": [False] * len(fig.data)}, ],
-                label=str(2020 + i)
-            )
-            step["args"][0]["visible"][i] = True
-            steps.append(step)
-        sliders = [dict(
-            active=0,
-            currentvalue={"prefix": "Year: "},
-            steps=steps), ]
-
-        fig.update_layout(
-            sliders=sliders
-        )
-
-    fig.data[0].visible = True
-
-    new_chart = InstantiatedPlotlyNativeChart(
-        fig, chart_name=chart_name, default_title=True)
-    return new_chart
-
-
-def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
+def get_Capex_multilevel_df(execution_engine, namespace):
     '''! Function to create the dataframe with all the data necessary for the CO2 breakdown graphs in a multilevel [energy, technologies]
     @param execution_engine: Current execution engine object, from which the data is extracted
     @param namespace: Namespace at which the data can be accessed

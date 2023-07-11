@@ -1584,7 +1584,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                             outputs=coupled_outputs,)
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = RatioJacobianTestCase()
     cls.setUp()
     np.set_printoptions(threshold = 10000)
