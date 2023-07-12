@@ -31,6 +31,8 @@ from plotly.express.colors import qualitative
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
+
+
 def post_processing_filters(execution_engine, namespace):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the filters
@@ -131,7 +133,7 @@ def post_processings(execution_engine, namespace, filters):
 
     if f'{energy} Capex value' in graphs_list:
         chart_name = f'{energy} Capex value'
-        new_chart = get_chart_green_technologies(
+        new_chart = get_chart_all_technologies(
             execution_engine, namespace, energy_name=energy, chart_name=chart_name)
         if new_chart is not None:
             instanciated_charts.append(new_chart)
@@ -139,7 +141,7 @@ def post_processings(execution_engine, namespace, filters):
     return instanciated_charts
 
 
-def get_chart_green_technologies(execution_engine, namespace, energy_name, chart_name='Technologies Capex Value',
+def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_name='Technologies Capex Value',
                                  summary=True):
     '''! Function to create the green_techno/_energy scatter chart
     @param execution_engine: Execution engine object from which the data is gathered
@@ -153,15 +155,15 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
 
     # Prepare data
     multilevel_df, years = get_multilevel_df(
-        execution_engine, namespace, columns=['price_per_kWh', 'price_per_kWh_wotaxes',
-                                              'CO2_per_kWh', 'production', 'invest'])
+        execution_engine, namespace, columns=['price_per_kWh', 'years',
+                                              'Capex', 'production', 'invest'])
     energy_list = list(set(multilevel_df.index.droplevel(1)))
     # Create Figure
     fig = go.Figure()
     # Get min and max CO2 emissions for colorscale and max of production for
     # marker size
     array_of_cmin, array_of_cmax, array_of_pmax, array_of_pintmax = [], [], [], []
-    for (array_c, array_p) in multilevel_df[['CO2_per_kWh', 'production']].values:
+    for (array_c, array_p) in multilevel_df[['Capex', 'production']].values:
         array_of_cmin += [array_c.min()]
         array_of_cmax += [array_c.max()]
         array_of_pmax += [array_p.max()]
@@ -170,7 +172,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
     pmax, pintmax = np.max(array_of_pmax), np.max(array_of_pintmax)
     if summary:
         # Create a graph to aggregate the informations on all years
-        price_per_kWh, price_per_kWh_wotaxes, CO2_per_kWh, label, production, invest, total_CO2 = [
+        price_per_kWh, years, Capex, label, production, invest, total_CO2 = [
         ], [], [], [], [], [], []
         energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
             0]
@@ -181,27 +183,27 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
             if i[0] != energy_name:
                 continue
             price_per_kWh += [np.mean(row['price_per_kWh']), ]
-            price_per_kWh_wotaxes += [np.mean(row['price_per_kWh_wotaxes']), ]
-            CO2_per_kWh += [np.mean(row['CO2_per_kWh']), ]
+            years += [np.mean(row['years']), ]
+            Capex += [np.mean(row['Capex']), ]
             label += [i, ]
             production += [np.sum(row['production']), ]
             invest += [np.sum(row['invest']), ]
-            total_CO2 += [np.sum(row['CO2_per_kWh'] *
+            total_CO2 += [np.sum(row['Capex'] *
                                  row['production']), ]
             CO2_taxes_array += [np.mean(CO2_taxes), ]
-        customdata = [label, price_per_kWh, CO2_per_kWh,
+        customdata = [label, price_per_kWh, Capex,
                       production, invest, total_CO2, CO2_taxes_array,
-                      price_per_kWh_wotaxes]
+                      years]
         hovertemplate = ''
         marker_sizes = np.multiply(production, 20.0) / \
                        pintmax + 10.0
-        scatter = go.Scatter(x=list(price_per_kWh_wotaxes), y=list(CO2_per_kWh),
+        scatter = go.Scatter(x=list(years), y=list(Capex),
                              customdata=list(np.asarray(customdata, dtype='object').T),
                              hovertemplate=hovertemplate,
                              text=label,
                              textposition="top center",
                              mode='markers+text',
-                             marker=dict(color=CO2_per_kWh,
+                             marker=dict(color=Capex,
                                          cmin=cmin, cmax=cmax,
                                          colorscale='RdYlGn_r', size=list(marker_sizes),
                                          colorbar=dict(title='Capex', thickness=20)),
@@ -213,7 +215,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
             ################
             # -technology level-#
             ################
-            price_per_kWh, price_per_kWh_wotaxes, CO2_per_kWh, label, production, invest, total_CO2 = [
+            price_per_kWh, years, Capex, label, production, invest, total_CO2 = [
             ], [], [], [], [], [], []
             energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
                 0]
@@ -224,27 +226,27 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
                 if i[0] != energy_name:
                     continue
                 price_per_kWh += [row['price_per_kWh'][i_year], ]
-                price_per_kWh_wotaxes += [row['price_per_kWh_wotaxes'][i_year], ]
-                CO2_per_kWh += [row['CO2_per_kWh'][i_year], ]
+                years += [row['years'][i_year], ]
+                Capex += [row['Capex'][i_year], ]
                 label += [i, ]
                 production += [row['production'][i_year], ]
                 invest += [row['invest'][i_year], ]
-                total_CO2 += [row['CO2_per_kWh'][i_year] *
+                total_CO2 += [row['Capex'][i_year] *
                               row['production'][i_year], ]
                 CO2_taxes_array += [CO2_taxes[i_year], ]
-            customdata = [label, price_per_kWh, CO2_per_kWh,
+            customdata = [label, price_per_kWh, Capex,
                           production, invest, total_CO2, CO2_taxes_array,
-                          price_per_kWh_wotaxes]
+                          years]
             hovertemplate = ''
             marker_sizes = np.multiply(production, 20.0) / \
                            pmax + 10.0
-            scatter = go.Scatter(x=list(price_per_kWh_wotaxes), y=list(CO2_per_kWh),
+            scatter = go.Scatter(x=list(years), y=list(Capex),
                                  customdata=list(np.asarray(customdata, dtype='object').T),
                                  hovertemplate=hovertemplate,
                                  text=label,
                                  textposition="top center",
                                  mode='markers+text',
-                                 marker=dict(color=CO2_per_kWh,
+                                 marker=dict(color=Capex,
                                              cmin=cmin, cmax=cmax,
                                              colorscale='RdYlGn_r', size=list(marker_sizes),
                                              colorbar=dict(title='Capex', thickness=20)),
@@ -289,7 +291,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     idx = pd.MultiIndex.from_tuples([], names=['energy', 'techno'])
     multilevel_df = pd.DataFrame(
         index=idx,
-        columns=['production', 'invest', 'CO2_per_kWh', 'price_per_kWh', 'price_per_kWh_wotaxes'])
+        columns=['production', 'invest', 'Capex', 'price_per_kWh', 'years'])
     energy_list = [execution_engine.dm.get_disciplines_with_name(namespace)[
                        0].mdo_discipline_wrapp.wrapper.energy_name]
     for energy in energy_list:
@@ -324,20 +326,20 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                 if emission_type == techno:
                     total_carbon_emissions = CO2_per_use + \
                                              carbon_emissions[techno].values
-            CO2_per_kWh_techno = total_carbon_emissions
+            Capex_techno = total_carbon_emissions
             # Data for scatter plot
             price_per_kWh_techno = techno_disc.get_sosdisc_outputs('techno_prices')[
                 f'{techno}'].values
-            price_per_kWh_wotaxes_techno = techno_disc.get_sosdisc_outputs('techno_prices')[
+            years_techno = techno_disc.get_sosdisc_outputs('techno_prices')[
                 f'{techno}_wotaxes'].values
             idx = pd.MultiIndex.from_tuples(
                 [(f'{energy}', f'{techno}')], names=['energy', 'techno'])
             columns_techno = ['energy', 'technology',
                               'production', 'invest',
-                              'CO2_per_kWh', 'price_per_kWh',
-                              'price_per_kWh_wotaxes']
-            techno_df = pd.DataFrame([(energy, techno, production_techno, invest_techno, CO2_per_kWh_techno,
-                                       price_per_kWh_techno, price_per_kWh_wotaxes_techno)],
+                              'Capex', 'price_per_kWh',
+                              'years']
+            techno_df = pd.DataFrame([(energy, techno, production_techno, invest_techno, Capex_techno,
+                                       price_per_kWh_techno, years_techno)],
                                      index=idx, columns=columns_techno)
             multilevel_df = multilevel_df.append(techno_df)
 
@@ -352,7 +354,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     return multilevel_df, years
 
 def get_Capex_multilevel_df(execution_engine, namespace):
-    '''! Function to create the dataframe with all the data necessary for the CO2 breakdown graphs in a multilevel [energy, technologies]
+    '''! Function to create the dataframe with all the data necessary for the Capex graphs in a multilevel [energy, technologies]
     @param execution_engine: Current execution engine object, from which the data is extracted
     @param namespace: Namespace at which the data can be accessed
 
