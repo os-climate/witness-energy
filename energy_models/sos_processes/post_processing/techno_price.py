@@ -38,7 +38,7 @@ def get_comparision_data(execution_engine, namespace, year):
     table = InstanciatedTable('Data Comparison for Year ' , headers, cells)
     return table
 
-# def get_graphs(table, title):
+def get_graphs(table, title):
 #     '''
 #     Table chart where Capex, Opex and total price
 #     '''
