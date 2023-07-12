@@ -50,7 +50,7 @@ def get_comparision_data(execution_engine, namespace, year):
 
 
 
-# def dummy_price_data(techno):
+## def dummy_price_data(techno):
 #     # Ici, tu peux renvoyer des données factices pour les prix détaillés d'une technologie
 #     return {
 #         'CAPEX_Part': [100, 200, 300],
