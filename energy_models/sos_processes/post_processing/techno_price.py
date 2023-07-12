@@ -2,70 +2,89 @@ import pandas as pd
 from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
-def get_comparision_data(execution_engine, namespace, year):
-
+class InstanciatedTable:
     '''
-    Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
-    '''
+        Extracting Capex, Opex, and total price
+        '''
+    def __init__(self, title, headers, data):
+        self.title = title
+        self.headers = headers
+        self.data = data
 
+    def print_table(self):
+        print(self.title)
+        df = pd.DataFrame(self.data, columns=self.headers)
+        print(df)
+
+def get_comparison_data(execution_engine, namespace, years):
     var_f_name = f"{namespace}.technologies_list"
     techno_list = execution_engine.dm.get_value(var_f_name)
 
     if techno_list is None:
-        # Managing the case where the list of technologies is None
         raise ValueError("La liste des technologies est manquante ou vide.")
 
-    capex_list = []
-    opex_list = []
-    energy_costs_List = []
+    headers = ['Technology', 'Year', 'CAPEX ($/MWh)', 'OPEX ($/MWh)', 'Price ($/MWh)']
+    data = []
+
+    if isinstance(years, int):
+        years = [years]  # Convertir en liste si years est un entier unique
+
     for techno in techno_list:
-        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices" #	"energy_detailed_techno_prices" for Hydrogen and Fuel
-        price_details = execution_engine.dm.get_value(techno_prices_f_name)
+        for year in years:
+            techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"
+            price_details = execution_engine.dm.get_value(techno_prices_f_name)
 
-        filtereddata = price_details
-        capex_price = filtereddata['CAPEX_Part']
-        opex_price = filtereddata['OPEX_Part']
-        price = filtereddata[techno]
+            if price_details is not None:
+                filtered_data = price_details[price_details['years'] == year]
+                if not filtered_data.empty:
+                    capex_price = filtered_data['CAPEX_Part'].iloc[0]
+                    opex_price = filtered_data['OPEX_Part'].iloc[0]
+                    price = filtered_data[techno].iloc[0]
 
+                    row = [techno, year, capex_price, opex_price, price]
+                    data.append(row)
 
-    headers = ['Technology', 'CAPEX ($/MWh)', 'OPEX ($/MWh)', 'Price ($/MWh)']
-    cells = []
-    cells.append(techno_list)
-    cells.append(capex_list)
-    cells.append(opex_list)
-    cells.append(energy_costs_List)
-
-    table = InstanciatedTable('Data Comparison for Year ' , headers, cells)
+    table = InstanciatedTable('Data Comparison', headers, data)
     return table
 
-#def get_graphs(table, title):
-#     '''
-#     Table chart where Capex, Opex and total price
-#     '''
-#
-#
-#     return new_chart
+#"------------------------------------------------------"
+'''
+    Example of test 
+    '''
+class DummyExecutionEngine:
+    def __init__(self):
+        self.dm = DummyDataManager()
 
+class DummyDataManager:
+    def get_value(self, var_name):
+        # Renvoie des données factices pour les tests
+        if var_name == 'dummy_namespace.technologies_list':
+            return ['Tech1', 'Tech2', 'Tech3']
+        elif var_name == 'dummy_namespace.Tech1.techno_detailed_prices':
+            return dummy_price_data('Tech1')
+        elif var_name == 'dummy_namespace.Tech2.techno_detailed_prices':
+            return dummy_price_data('Tech2')
+        elif var_name == 'dummy_namespace.Tech3.techno_detailed_prices':
+            return dummy_price_data('Tech3')
 
+def dummy_price_data(techno):
+    # Renvoie des données factices pour les prix détaillés d'une technologie
+    return pd.DataFrame({
+        'years': [2020, 2021, 2022],
+        'CAPEX_Part': [100, 200, 300],
+        'OPEX_Part': [10, 20, 30],
+        techno: [50, 100, 150]
+    })
 
+# Crée une instance du moteur d'exécution fictif
+execution_engine = DummyExecutionEngine()
 
+# Définit le namespace et la liste des années
+namespace = 'dummy_namespace'
+years = [2020, 2021, 2022]
 
-## def dummy_price_data(techno):
-#     # Ici, tu peux renvoyer des données factices pour les prix détaillés d'une technologie
-#     return {
-#         'CAPEX_Part': [100, 200, 300],
-#         'OPEX_Part': [10, 20, 30],
-#         techno: ['a', 'b', 'c']
-#     }
-#
-# execution_engine = ['Tech1', 'Tech2', 'Tech3']
-# namespace =['a','b','c']
-# year = 2023
-#
-# # Étape 3 : Appel de la fonction get_comparision_data
-# result = get_comparision_data(execution_engine, namespace, year)
-#
-# # Étape 4 : Affichage de la table
-# table_data = result.get_table_data()  # Obtention des données de la table
-# df = pd.DataFrame(table_data[1:], columns=table_data[0])  # Conversion en DataFrame pandas
-# print(df)
+# Appelle la fonction get_comparison_data
+table = get_comparison_data(execution_engine, namespace, years)
+
+# Affiche la table
+table.print_table()
