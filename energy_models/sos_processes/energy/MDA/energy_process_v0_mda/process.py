@@ -57,6 +57,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # FIXME: post_processing is broken after merge of witness-full !
         # self.ee.post_processing_manager.add_post_processing_module_to_namespace(
         #     'ns_energy', 'energy_models.sos_processes.post_processing.post_proc_capex_comparison')
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            'cop_energy', 'energy_models.sos_processes.post_processing.techno_price')
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
               'ns_energy', 'energy_models\sos_processes\post_processing\post_proc_capex_opex')
