@@ -50,13 +50,10 @@ class PostProcessEnergy(unittest.TestCase):
                       'fuel.hydrotreated_oil_fuel', 'solid_fuel', 'biomass_dry', \
                       'electricity', 'fuel.biodiesel', 'fuel.ethanol', 'hydrogen.liquid_hydrogen']
         self.namespace_list = []
-
         """
         All energy list with study name for post processing
         """
-        energylist = ['methane']
-        for energy in energylist:
-            self.namespace_list.append(f'{self.study_name}.EnergyMix.{energy}')
+        self.namespace_list.append(f'{self.study_name}.EnergyMix')
 
     def test_post_processing_Table_plots(self):
         """
@@ -64,20 +61,17 @@ class PostProcessEnergy(unittest.TestCase):
         tables for each energy / each techno per energy
         """
         self.ee.execute()
-
         ppf = PostProcessingFactory()
 
         for itm in self.namespace_list:
             filters = ppf.get_post_processing_filters_by_namespace(self.ee, itm)
             graph_list = ppf.get_post_processing_by_namespace(self.ee, itm, filters,
                                                               as_json=False)
-
             #
             for graph in graph_list:
                 # if 'InstanciatedTable' in str(graph.__class__):  # Plotting only  capex, opex, CO2 tax and prices Tables
                     #if graph.chart_name == '':
                     graph.to_plotly().show()
-
 
 
 if '__main__' == __name__:
