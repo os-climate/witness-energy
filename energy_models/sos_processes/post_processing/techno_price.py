@@ -32,7 +32,7 @@ def post_processing_filters(execution_engine, namespace):
     '''
     filters = []
 
-    chart_list = []
+    chart_list = ["Comparaison Chart"]
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[
         0].mdo_discipline_wrapp.wrapper.energy_name
 
@@ -98,7 +98,7 @@ def post_processings(execution_engine, namespace, filters):
             #new_table = get_figures_table(price_comparision_table_data, str(year))
             instanciated_charts.append(new_table)
 
-    if f'{energy} Capex value' in graphs_list:
+    if "Comparaison Chart"in graphs_list:
         chart_name = f'{energy} Capex value'
         new_chart = get_chart_all_technologies(
             execution_engine, namespace, energy_name=energy, chart_name=chart_name)
