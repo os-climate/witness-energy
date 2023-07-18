@@ -154,7 +154,7 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
     # Get min and max CO2 emissions for colorscale and max of production for
     # marker size
     array_of_cmin, array_of_cmax, array_of_pmax, array_of_pintmax = [], [], [], []
-    for (array_c, array_p) in multilevel_df[['CO2_per_kWh', 'production']].values:
+    for (array_c, array_p) in multilevel_df[['capex', 'year']].values:
         array_of_cmin += [array_c.min()]
         array_of_cmax += [array_c.max()]
         array_of_pmax += [array_p.max()]
@@ -163,8 +163,8 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
     pmax, pintmax = np.max(array_of_pmax), np.max(array_of_pintmax)
     if summary:
         # Create a graph to aggregate the informations on all years
-        price_per_kWh, price_per_kWh_wotaxes, CO2_per_kWh, label, production, invest, total_CO2 = [
-        ], [], [], [], [], [], []
+        capex, label, year = [
+        ], [], []
         energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
             0]
         CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs('CO2_taxes')[
@@ -173,29 +173,23 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
             # skip techno that do not produce the selected energy
             if i[0] != energy_name:
                 continue
-            price_per_kWh += [np.mean(row['price_per_kWh']), ]
-            price_per_kWh_wotaxes += [np.mean(row['price_per_kWh_wotaxes']), ]
-            CO2_per_kWh += [np.mean(row['CO2_per_kWh']), ]
+            capex += [np.mean(row['Capex']), ]
             label += [i, ]
-            production += [np.sum(row['production']), ]
-            invest += [np.sum(row['invest']), ]
-            total_CO2 += [np.sum(row['CO2_per_kWh'] *
-                             row['production']), ]
-            CO2_taxes_array += [np.mean(CO2_taxes), ]
+            year += [np.sum(row['year']), ]
 
-        customdata = [label, price_per_kWh, CO2_per_kWh,
-                      production, invest, total_CO2, CO2_taxes_array,  years]
+
+        customdata = [label, capex, year, CO2_taxes_array,  years]
         hovertemplate = ''
 
-        marker_sizes = np.multiply(production, 20.0) / \
+        marker_sizes = np.multiply(year, 20.0) / \
                        pintmax + 10.0
-        scatter = go.Scatter(x=list(years), y=list(CO2_per_kWh),
+        scatter = go.Scatter(x=list(years), y=list(capex),
                              customdata=list(np.asarray(customdata, dtype='object').T),
                              hovertemplate=hovertemplate,
                              text=label,
                              textposition="top center",
                              mode='markers+text',
-                             marker=dict(color=CO2_per_kWh,
+                             marker=dict(color=capex,
                                          cmin=cmin, cmax=cmax,
                                          colorscale='RdYlGn_r', size=list(marker_sizes),
                                          colorbar=dict(title='CO2 per kWh', thickness=20)),
@@ -207,7 +201,7 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
             ################
             # -technology level-#
             ################
-            price_per_kWh, price_per_kWh_wotaxes, CO2_per_kWh, label, production, invest, total_CO2 = [], [], [], [], [], [], []
+            capex, label, year, invest = [], [], [], []
             energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
                 0]
             CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs('CO2_taxes')[
@@ -216,28 +210,21 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
                 # skip techno that do not produce the selected energy
                 if i[0] != energy_name:
                     continue
-                price_per_kWh += [row['price_per_kWh'][i_year], ]
-                price_per_kWh_wotaxes += [row['price_per_kWh_wotaxes'][i_year], ]
-                CO2_per_kWh += [row['CO2_per_kWh'][i_year], ]
+                capex += [row['capex'][i_year], ]
                 label += [i, ]
-                production += [row['production'][i_year], ]
-                invest += [row['invest'][i_year], ]
-                total_CO2 += [row['CO2 per kWh'][i_year] *
-                              row['production'][i_year], ]
-                CO2_taxes_array += [CO2_taxes[i_year], ]
-            customdata = [label, price_per_kWh, CO2_per_kWh,
-                          production, invest, total_CO2, CO2_taxes_array,
-                          price_per_kWh_wotaxes]
+                year += [row['year'][i_year], ]
+
+            customdata = [label, capex, year]
             hovertemplate = ''
-            marker_sizes = np.multiply(production, 20.0) / \
+            marker_sizes = np.multiply(year, 20.0) / \
                            pmax + 10.0
-            scatter = go.Scatter(x=list(price_per_kWh_wotaxes), y=list(CO2_per_kWh),
+            scatter = go.Scatter(x=list(), y=list(capex),
                                  customdata=list(np.asarray(customdata, dtype='object').T),
                                  hovertemplate=hovertemplate,
                                  text=label,
                                  textposition="top center",
                                  mode='markers+text',
-                                 marker=dict(color=CO2_per_kWh,
+                                 marker=dict(color=capex,
                                              cmin=cmin, cmax=cmax,
                                              colorscale='RdYlGn_r', size=list(marker_sizes),
                                              colorbar=dict(title='CO2 per kWh', thickness=20)),
