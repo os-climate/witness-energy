@@ -3,9 +3,8 @@ import unittest
 from matplotlib import pyplot as plt
 import numpy as np
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness_wo_damage_gdp_input import Study as Study
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study
 
 class PostProcessEnergy(unittest.TestCase):
     def setUp(self):
@@ -16,8 +15,8 @@ class PostProcessEnergy(unittest.TestCase):
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.study_name = 'post-processing'
-        self.repo = 'climateeconomics.sos_processes.iam.witness'
-        self.proc_name = 'witness'
+        self.repo = 'energy_models.sos_processes.energy.MDA'
+        self.proc_name = 'energy_process_v0'
 
         self.ee = ExecutionEngine(self.study_name)
         builder = self.ee.factory.get_builder_from_process(repo=self.repo,
@@ -32,7 +31,7 @@ class PostProcessEnergy(unittest.TestCase):
         for values_dict_i in values_dict:
             self.ee.load_study_from_input_dict(values_dict_i)
         self.ee.load_study_from_input_dict({f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
-                                            f'{self.study_name}.max_mda_iter':0})
+                                            f'{self.study_name}.max_mda_iter':1})
 
         """
         All energy list
@@ -44,7 +43,7 @@ class PostProcessEnergy(unittest.TestCase):
         """
         All energy list with study name for post processing
         """
-        self.namespace_list.append(f'{self.study_name}.EnergyMix')
+        self.namespace_list.append(f'{self.study_name}')
 
     def test_post_processing_Table_plots(self):
         """
