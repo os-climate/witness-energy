@@ -98,7 +98,7 @@ def post_processings(execution_engine, namespace, filters):
     energy_list = execution_engine.dm.get_value(f"{namespace}.energy_list")
     for energy in energy_list:
 
-        energy_ns = f"{namespace}.{energy}"
+        energy_ns = f"{namespace}.EnergyMix.{energy}"
 
         techno_list = execution_engine.dm.get_value(f"{energy_ns}.technologies_list")
 
