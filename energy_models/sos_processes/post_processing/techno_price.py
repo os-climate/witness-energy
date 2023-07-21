@@ -58,9 +58,6 @@ def get_comparison_data(execution_engine, namespace, years):
     var_f_name = f"{namespace}.technologies_list"
     techno_list = execution_engine.dm.get_value(var_f_name)
 
-    if techno_list is None:
-        raise ValueError("La liste des technologies est manquante ou vide.")
-
     headers = ['Technology', 'Year', 'CAPEX ($/MWh)', 'OPEX ($/MWh)', 'Price ($/MWh)']
     data = []
 
@@ -98,20 +95,30 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == 'Charts':
                 graphs_list.extend(chart_filter.selected_values)
     # ----
+    energy_list = execution_engine.dm.get_value(f"{namespace}.energy_list")
+    for energy in energy_list:
 
-    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
-    if  'Opex' in graphs_list:
-        for year in YEAR_COMPARISON:
-            new_table = get_comparison_data(execution_engine, namespace, year)
+        energy_ns = f"{namespace}.EnergyMix.{energy}"
+
+        techno_list = execution_engine.dm.get_value(f"{energy_ns}.technologies_list")
+
+        for techno in techno_list:
+            techno_ns = f"{energy_ns}.{techno}"
+            var_short_name=f"{namespace}.{namespace}"
+            CO2_per_kWh = execution_engine.dm.get_value(f"{techno_ns}.{var_short_name}")
+    #energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
+            if  'Opex' in graphs_list:
+                for year in YEAR_COMPARISON:
+                    new_table = get_comparison_data(execution_engine, namespace, year)
             #new_table = get_figures_table(price_comparision_table_data, str(year))
-            instanciated_charts.append(new_table)
+                    instanciated_charts.append(new_table)
 
-    if 'Capex' in graphs_list:
-        chart_name = ' Capex value'
-        new_chart = get_chart_all_technologies(
-            execution_engine, namespace, energy_name=energy, chart_name=chart_name)
-        if new_chart is not None:
-            instanciated_charts.append(new_chart)
+            if 'Capex' in graphs_list:
+                chart_name = ' Capex value'
+                new_chart = get_chart_all_technologies(
+                execution_engine, namespace, energy_name=energy, chart_name=chart_name)
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
 
     return instanciated_charts
 
