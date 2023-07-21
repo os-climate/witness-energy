@@ -81,24 +81,21 @@ def get_comparision_data(execution_engine, namespace, year):
         filtereddata = price_details[price_details['years'] == year] # Filtering data for a year of 2023
         capex_price = filtereddata['CAPEX_Part'].iloc[0]
         opex_price = filtereddata['OPEX_Part'].iloc[0]
-        CO2tax_price = filtereddata['CO2Tax_Part'].iloc[0]
         price = filtereddata[techno].iloc[0]
 
         capex_price_percentage = (capex_price)*100/price
         opex_price_percentage = (opex_price) * 100 / price
-        CO2tax_price_percentage = (CO2tax_price) * 100 / price
+
 
         capex_list.append(str(round(capex_price, DECIMAL)) + ' (' + str(round(capex_price_percentage, DECIMAL)) + '%)')
         opex_list.append(str(round(opex_price, DECIMAL)) + ' (' + str(round(opex_price_percentage, DECIMAL)) + '%)')
-        CO2tax_list.append(str(round(CO2tax_price, DECIMAL)) + ' (' + str(round(CO2tax_price_percentage, DECIMAL)) + '%)')
         energy_costs_List.append(round(price, DECIMAL))
 
-    headers = ['Technology', 'CAPEX ($/MWh)', 'OPEX ($/MWh)', 'CO2Tax ($/MWh)', 'Price ($/MWh)']
+    headers = ['Technology', 'CAPEX ($/MWh)', 'OPEX ($/MWh)',  'Price ($/MWh)']
     cells = []
     cells.append(techno_list)
     cells.append(capex_list)
     cells.append(opex_list)
-    cells.append(CO2tax_list)
     cells.append(energy_costs_List)
 
 

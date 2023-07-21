@@ -116,11 +116,13 @@ if '__main__' == __name__:
     print(result)
     # Always check if post procs are OK
     ppf = PostProcessingFactory()
+
     # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
+
     #     filters = ppf.get_post_processing_filters_by_discipline(
+
     #         disc)
-    graph_list = ppf.get_post_processings()#_by_discipline(
-            #disc, filters, as_json=False)
-        #f disc.sos_name == 'EnergyMix' or disc.sos_name == 'CCUS':
+
+    graph_list = ppf.get_all_post_processings(uc_cls.ee, filters_only=False)
     for graph in graph_list:
         graph.to_plotly().show()

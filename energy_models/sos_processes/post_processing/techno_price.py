@@ -8,11 +8,13 @@ from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plot
     InstantiatedPlotlyNativeChart
 import numpy as np
 from plotly import graph_objects as go
-
+from collections import defaultdict
 
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
+
+
 class InstanciatedTable:
     '''
         Extracting Capex, Opex, and total price
@@ -22,23 +24,27 @@ class InstanciatedTable:
         self.headers = headers
         self.data = data
 
-    def print_table(self):
-        print(self.title)
-        df = pd.DataFrame(self.data, columns=self.headers)
-        print(df)
+def print_table(self):
+    print(self.title)
+    df = pd.DataFrame(self.data, columns=self.headers)
+
 def post_processing_filters(execution_engine, namespace):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the filters
     '''
     filters = []
 
-    chart_list = []
-    energy = execution_engine.dm.get_disciplines_with_name(namespace)[
-        0].mdo_discipline_wrapp.wrapper.energy_name
+
+    chart_list = ['Capex','Opex','Prices']
+
+
+    #energy = execution_engine.dm.get_disciplines_with_name(namespace)[
+     #   0].mdo_discipline_wrapp.wrapper.energy_name
 
     filters.append(ChartFilter('Charts', chart_list, chart_list, 'Charts'))
 
     return filters
+
 def get_figures_table(table, title):
     '''
     Table chart where Capex, Opex, CO2_Tax and total price comparison
@@ -47,6 +53,7 @@ def get_figures_table(table, title):
     new_chart = InstantiatedPlotlyNativeChart(fig, chart_name=title)
 
     return new_chart
+
 def get_comparison_data(execution_engine, namespace, years):
     var_f_name = f"{namespace}.technologies_list"
     techno_list = execution_engine.dm.get_value(var_f_name)
@@ -77,6 +84,7 @@ def get_comparison_data(execution_engine, namespace, years):
 
     table = InstanciatedTable('Data Comparison', headers, data)
     return table
+
 def post_processings(execution_engine, namespace, filters):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
@@ -92,14 +100,14 @@ def post_processings(execution_engine, namespace, filters):
     # ----
 
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
-    if f'{energy} Figures table' in graphs_list:
+    if  'Opex' in graphs_list:
         for year in YEAR_COMPARISON:
             new_table = get_comparison_data(execution_engine, namespace, year)
             #new_table = get_figures_table(price_comparision_table_data, str(year))
             instanciated_charts.append(new_table)
 
-    if f'{energy} Capex value' in graphs_list:
-        chart_name = f'{energy} Capex value'
+    if 'Capex' in graphs_list:
+        chart_name = ' Capex value'
         new_chart = get_chart_all_technologies(
             execution_engine, namespace, energy_name=energy, chart_name=chart_name)
         if new_chart is not None:
@@ -138,8 +146,8 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
     pmax, pintmax = np.max(array_of_pmax), np.max(array_of_pintmax)
     if summary:
         # Create a graph to aggregate the informations on all years
-        price_per_kWh, years, Capex, label, production, invest, total_CO2 = [
-        ], [], [], [], [], [], []
+        price_per_kWh, years, Capex, label, Opex = [
+        ], [], [], [], []
         energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
             0]
         CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs('CO2_taxes')[
@@ -151,6 +159,7 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
             price_per_kWh += [np.mean(row['price_per_kWh']), ]
             years += [np.mean(row['years']), ]
             Capex += [np.mean(row['Capex']), ]
+            Opex += [np.mean(row['Opex']), ]
             label += [i, ]
             production += [np.sum(row['production']), ]
             invest += [np.sum(row['invest']), ]
@@ -158,8 +167,7 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
                                  row['production']), ]
             CO2_taxes_array += [np.mean(CO2_taxes), ]
         customdata = [label, price_per_kWh, Capex,
-                      production, invest, total_CO2, CO2_taxes_array,
-                      years]
+                      Opex,years]
         hovertemplate = ''
         marker_sizes = np.multiply(production, 20.0) / \
                        pintmax + 10.0
@@ -243,4 +251,81 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
 
     new_chart = InstantiatedPlotlyNativeChart(
         fig, chart_name=chart_name, default_title=True)
+
     return new_chart
+def get_multilevel_df(execution_engine, namespace, columns=None):
+    '''! Function to create the dataframe with all the data necessary for the graphs in a multilevel [energy, technologies]
+    @param execution_engine: Current execution engine object, from which the data is extracted
+    @param namespace: Namespace at which the data can be accessed
+
+    @return multilevel_df: Dataframe
+    '''
+    # Construct a DataFrame to organize the data on two levels: energy and
+    # techno
+    idx = pd.MultiIndex.from_tuples([], names=['energy', 'techno'])
+    multilevel_df = pd.DataFrame(
+        index=idx,
+        columns=['production', 'invest', 'Capex', 'price_per_kWh', 'years'])
+    energy_list = [execution_engine.dm.get_disciplines_with_name(namespace)[
+                       0].mdo_discipline_wrapp.wrapper.energy_name]
+    for energy in energy_list:
+        energy_disc = execution_engine.dm.get_disciplines_with_name(
+            f'{namespace}')[0]
+        techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
+        for techno in techno_list:
+            techno_disc = execution_engine.dm.get_disciplines_with_name(
+                f'{namespace}.{techno}')[0]
+            production_techno = techno_disc.get_sosdisc_outputs(
+                'techno_production')[f'{energy} (TWh)'].values * \
+                                techno_disc.get_sosdisc_inputs(
+                                    'scaling_factor_techno_production')
+            invest_techno = techno_disc.get_sosdisc_inputs('invest_level')[
+                                f'invest'].values * \
+                            techno_disc.get_sosdisc_inputs('scaling_factor_invest_level')
+            # Calculate total CO2 emissions
+            data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
+            carbon_emissions = techno_disc.get_sosdisc_outputs(
+                'CO2_emissions_detailed')
+            CO2_per_use = np.zeros(
+                len(carbon_emissions['years']))
+            if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
+                if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
+                    CO2_per_use = np.ones(
+                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
+                                      'high_calorific_value']
+                elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
+                    CO2_per_use = np.ones(
+                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use']
+            for emission_type in carbon_emissions:
+                if emission_type == techno:
+                    total_carbon_emissions = CO2_per_use + \
+                                             carbon_emissions[techno].values
+            Capex_techno = total_carbon_emissions
+            # Data for scatter plot
+            price_per_kWh_techno = techno_disc.get_sosdisc_outputs('techno_prices')[
+                f'{techno}'].values
+            years_techno = techno_disc.get_sosdisc_outputs('techno_prices')[
+                f'{techno}_wotaxes'].values
+            idx = pd.MultiIndex.from_tuples(
+                [(f'{energy}', f'{techno}')], names=['energy', 'techno'])
+            columns_techno = ['energy', 'technology',
+                              'production', 'invest',
+                              'Capex', 'price_per_kWh',
+                              'years']
+            techno_df = pd.DataFrame([(energy, techno, production_techno, invest_techno, Capex_techno,
+                                       price_per_kWh_techno, years_techno)],
+                                     index=idx, columns=columns_techno)
+            multilevel_df = multilevel_df.append(techno_df)
+
+    years = np.arange(energy_disc.get_sosdisc_inputs(
+        'year_start'), energy_disc.get_sosdisc_inputs('year_end') + 1, 1)
+
+    # If columns is not None, return a subset of multilevel_df with selected
+    # columns
+    if columns != None and type(columns) == list:
+        multilevel_df = pd.DataFrame(multilevel_df[columns])
+
+    return multilevel_df, years
+
+
+
