@@ -3,9 +3,9 @@ import unittest
 from matplotlib import pyplot as plt
 import numpy as np
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study
 
 class PostProcessEnergy(unittest.TestCase):
     def setUp(self):
