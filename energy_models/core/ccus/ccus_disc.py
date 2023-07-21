@@ -61,9 +61,22 @@ class CCUS_Discipline(SoSWrapp):
         'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2,
                                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
-                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
+                                                'dataframe_descriptor': {'years': ('float', None, True),
+                                                                         'carbon_capture': ('float', None, True),
+                                                                            'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                                            'carbon_storage': ('float', None, True),
+                                                                         'carbon_capture from energy mix (Gt)': ('float', None, True),
+                                                                         'carbon_capture needed by energy mix (Gt)': (
+                                                                         'float', None, True),
+                                                                         },},
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
-                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
+                                            'dataframe_descriptor': {'years': ('float', None, True),
+                                                                     'carbon_capture': ('float', None, True),
+                                                                        'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                                        'carbon_storage': ('float', None, True),
+                                                                     'carbon_capture from energy mix (Gt)': ('float', None, True),},}
     }
 
     DESC_OUT = {
@@ -97,19 +110,67 @@ class CCUS_Discipline(SoSWrapp):
                 for ccs_name in ccs_list:
                     dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': 'ns_ccs'}
+                        'namespace': 'ns_ccs',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'carbon_capture from energy mix (Gt)': ('float', None, True),
+                                                 'electricity (TWh)': ('float', None, True),
+                                                 'methane (TWh)': ('float', None, True),
+                                                 'amine (Mt)': ('float', None, True),
+                                                 'calcium (Mt)': ('float', None, True),
+                                                 'potassium (Mt)': ('float', None, True),
+                                                 'biomass_dry (TWh)': ('float', None, True),
+                                                 'carbon_capture (Mt)': ('float', None, True),
+                                                 'carbon_resource (Mt)': ('float', None, True),
+                                                 }}
                     dynamic_inputs[f'{ccs_name}.energy_consumption_woratio'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': 'ns_ccs'}
+                        'namespace': 'ns_ccs',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'electricity (TWh)': ('float', None, True),
+                                                'methane (TWh)': ('float', None, True),
+                                                'amine (Mt)': ('float', None, True),
+                                                'calcium (Mt)': ('float', None, True),
+                                                'potassium (Mt)': ('float', None, True),
+                                                'biomass_dry (TWh)': ('float', None, True),
+                                                'carbon_capture (Mt)': ('float', None, True),
+                                                'carbon_resource (Mt)': ('float', None, True),}}
                     dynamic_inputs[f'{ccs_name}.energy_production'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': 'ns_ccs'}
+                        'namespace': 'ns_ccs',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'carbon_capture': ('float', None, True),
+                                                'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                'carbon_storage': ('float', None, True),}}
                     dynamic_inputs[f'{ccs_name}.energy_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': 'ns_ccs'}
+                        'namespace': 'ns_ccs',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'carbon_capture': ('float', None, True),
+                                                    'carbon_capture_wotaxes': ('float', None, True),
+                                                    'carbon_storage': ('float', None, True),
+                                                    'carbon_storage_wotaxes': ('float', None, True),}}
                     dynamic_inputs[f'{ccs_name}.land_use_required'] = {
                         'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': 'ns_ccs'}
+                        'namespace': 'ns_ccs',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'direct_air_capture.AmineScrubbing (Gha)': ('float', None, True),
+                                                 'direct_air_capture.CalciumPotassiumScrubbing (Gha)': (
+                                                 'float', None, True),
+                                                 'flue_gas_capture.CalciumLooping (Gha)': ('float', None, True),
+                                                 'flue_gas_capture.ChilledAmmoniaProcess (Gha)': ('float', None, True),
+                                                 'flue_gas_capture.CO2Membranes (Gha)': ('float', None, True),
+                                                 'flue_gas_capture.MonoEthanolAmine (Gha)': ('float', None, True),
+                                                 'flue_gas_capture.PiperazineProcess (Gha)': ('float', None, True),
+                                                 'flue_gas_capture.PressureSwingAdsorption (Gha)': (
+                                                 'float', None, True),
+                                                 'BiomassBuryingFossilization (Gha)': ('float', None, True),
+                                                 'DeepOceanInjection (Gha)': ('float', None, True),
+                                                 'DeepSalineFormation (Gha)': ('float', None, True),
+                                                 'DepletedOilGas (Gha)': ('float', None, True),
+                                                 'EnhancedOilRecovery (Gha)': ('float', None, True),
+                                                 'GeologicMineralization (Gha)': ('float', None, True),
+                                                 'PureCarbonSolidStorage (Gha)': ('float', None, True),
+                                                 }}
 
         if 'year_start' in self.get_data_in() and 'year_end' in self.get_data_in():
             year_start = self.get_sosdisc_inputs('year_start')
@@ -118,7 +179,10 @@ class CCUS_Discipline(SoSWrapp):
             if year_start is not None and year_end is not None:
                 dynamic_inputs['co2_for_food'] = {
                     'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame({'years': np.arange(year_start, year_end + 1), f'{CO2.name} for food (Mt)': 0.0}),
-                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'}
+                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
+                    'dataframe_descriptor': {'years': ('float', None, True),
+                                             'CO2_resource for food (Mt)': ('float', None, True),}
+                }
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)

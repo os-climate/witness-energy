@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from functools import reduce
+from operator import mul
 
 import pandas as pd
 import numpy as np
@@ -29,8 +31,6 @@ from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shi
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift import WGS
 from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc import RWGSDiscipline
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
-from _functools import reduce
-from _operator import mul
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 

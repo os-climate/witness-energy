@@ -467,8 +467,8 @@ class TechnoType:
 
         # Running OPEX in ($/MWh)
         self.cost_details['OPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * \
-                                         (self.crf + self.techno_infos_dict['Opex_percentage']) + \
-                                         self.cost_details['transport']
+                                         (self.techno_infos_dict['Opex_percentage']) + \
+                                         self.cost_details['transport'] + self.cost_details['energy_costs']
         # CO2 Tax in ($/MWh)
         self.cost_details['CO2Tax_Part'] = self.cost_details[self.name] - \
                                            self.cost_details[f'{self.name}_wotaxes']

@@ -103,7 +103,11 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False},
-               'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt', 'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb', 'visibility': 'Shared', 'structuring': True}}
+               'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt', 'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb', 'visibility': 'Shared', 'structuring': True,
+                                                'dataframe_descriptor': {'years': ('int',  None, False),
+                                                                   'carbon_storage': ('float', None, False),
+                                                                   }
+    }}
     # -- add specific techno outputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)
 

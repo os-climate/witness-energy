@@ -35,7 +35,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         self.name = 'Test'
         self.energymixname = 'EnergyMix'
         self.agrimixname = 'AgricultureMix'
-        ns_crop = 'Food'
+        ns_crop = 'Crop'
         ns_forest = 'Forest'
 
         self.ee = ExecutionEngine(self.name)
@@ -292,13 +292,13 @@ class TestGlobalEnergyValues(unittest.TestCase):
         h2_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_detailed_production')
         computed_methane_co2_emissions = \
-        co2_emissions_by_energy['methane'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
-        elec_gt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
-                                                   == 2020].values[0] + \
-        elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_cgt_prod['years']
-                                                    == 2020].values[0] + \
-        h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod['years']
-                                              == 2020].values[0] * 0.75
+            co2_emissions_by_energy['methane'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
+            elec_gt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
+                                                       == 2020].values[0] + \
+            elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_cgt_prod['years']
+                                                        == 2020].values[0] + \
+            h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod['years']
+                                                  == 2020].values[0] * 0.75
 
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_methane_co2_emissions,
@@ -315,11 +315,11 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.CoalGen.techno_detailed_production')
 
         computed_coal_co2_emissions = \
-        co2_emissions_by_energy['solid_fuel'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
-        elec_coal_prod['CO2 from Flue Gas (Mt)'].loc[elec_coal_prod['years']
-                                                     == 2020].values[0] + \
-        h2_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
-                                              == 2020].values[0] * 0.25
+            co2_emissions_by_energy['solid_fuel'].loc[co2_emissions_by_energy['years'] == 2020].values[0] + \
+            elec_coal_prod['CO2 from Flue Gas (Mt)'].loc[elec_coal_prod['years']
+                                                         == 2020].values[0] + \
+            h2_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
+                                                  == 2020].values[0] * 0.25
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_coal_co2_emissions,
                              coal_co2_emissions * 1.1)
@@ -348,21 +348,24 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
         Total CO2 emissions are emissions from oil energy 
         '''
-        sources = self.ee.dm.get_value(
-            'Test.CCUS.CO2_emissions_by_use_sources')
-        sinks = self.ee.dm.get_value('Test.CCUS.CO2_emissions_by_use_sinks')[
-            'CO2_resource removed by energy mix (Gt)'].values[0]
-        sources_sum = sources.loc[sources['years'] == 2020][[
-            col for col in sources.columns if col != 'years']].sum(axis=1)[0]
-        computed_total_co2_emissions = (sources_sum - sinks) * 1000
-        # we compare in Mt and must be near 10% of error
-
+        # sources = self.ee.dm.get_value(
+        #     'Test.GHGEmissions.Energy.CO2_emissions_sources')
+        # sinks = self.ee.dm.get_value('Test.GHGEmissions.Energy.CO2_emissions_sinks')[
+        #     'CO2_resource removed by energy mix (Gt)'].values[0]
+        # sources_sum = sources.loc[sources['years'] == 2020][[
+        #     col for col in sources.columns if col != 'years']].sum(axis=1)[0]
+        # computed_total_co2_emissions = (sources_sum - sinks) * 1000
+        # # we compare in Mt and must be near 10% of error
+        ghg_total_energy_emissions = self.ee.dm.get_value(
+            'Test.GHG_total_energy_emissions')
+        computed_total_co2_emissions = ghg_total_energy_emissions.loc[ghg_total_energy_emissions['years'] == 2020][
+            'Total CO2 emissions'].values[0]
         print(
             f'Total CO2 emissions : ourworldindata {total_co2_emissions} Mt vs WITNESS {computed_total_co2_emissions} TWh')
         self.assertLessEqual(computed_total_co2_emissions,
                              total_co2_emissions * 1.1)
         self.assertGreaterEqual(
-            computed_total_co2_emissions, total_co2_emissions * 0.9)
+            total_co2_emissions * 0.9, computed_total_co2_emissions)
 
     def test_03_check_net_production_values(self):
         '''

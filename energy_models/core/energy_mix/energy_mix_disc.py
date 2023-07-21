@@ -173,7 +173,10 @@ class Energy_Mix_Discipline(SoSWrapp):
         EnergyMix.SYNGAS_PROD_CONSTRAINT: {'type': 'array', 'unit': 'TWh',
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'all_streams_demand_ratio': {'type': 'dataframe', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                     'namespace': 'ns_energy'},
+                                     'namespace': 'ns_energy',
+                                     'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                              'CO2_tax': ('float', None, True)}
+                                     },
         'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_functions'},
         'resources_demand': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -223,15 +226,72 @@ class Energy_Mix_Discipline(SoSWrapp):
                     ns_energy = self.get_ns_energy(energy)
 
                     dynamic_inputs[f'{ns_energy}.energy_consumption'] = {
-                        'type': 'dataframe', 'unit': 'PWh'}
+                        'type': 'dataframe', 'unit': 'PWh',
+                            'dataframe_descriptor': {'years': ('float', None, True),
+                                                     'CO2_resource (Mt)': ('float', None, True),
+                                                      'methane (TWh)': ('float', None, True),
+                                                      'water (Mt)': ('float', None, True),
+                                                      'CO2 (Mt)': ('float', None, True),
+                                                      'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
+                                                      'electricity (TWh)': ('float', None, True),
+                                                      'biogas (TWh)': ('float', None, True),
+                                                      'MEA (Mt)': ('float', None, True),
+                                                      'oil_resource (Mt)': ('float', None, True),
+                                                     }
+                    }
                     dynamic_inputs[f'{ns_energy}.energy_consumption_woratio'] = {
-                        'type': 'dataframe', 'unit': 'PWh'}
+                        'type': 'dataframe', 'unit': 'PWh',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                'CO2_resource (Mt)': ('float', None, True),
+                                                'methane (TWh)': ('float', None, True),
+                                                'water (Mt)': ('float', None, True),
+                                                'CO2 (Mt)': ('float', None, True),
+                                                'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
+                                                'electricity (TWh)': ('float', None, True),
+                                                'biogas (TWh)': ('float', None, True),
+                                                'MEA (Mt)': ('float', None, True),
+                                                'oil_resource (Mt)': ('float', None, True),}}
                     dynamic_inputs[f'{ns_energy}.energy_production'] = {
-                        'type': 'dataframe', 'unit': 'PWh'}
+                        'type': 'dataframe', 'unit': 'PWh',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'CO2 (Mt)': ('float', None, True),
+                                                 'hydrogen Electrolysis (TWh)': ('float', None, True),
+                                                 'biomass_dry': ('float', None, True),
+                                                 'methane': ('float', None, True),
+                                                 'hydrogen.gaseous_hydrogen': ('float', None, True),
+                                                 'hydrogen SMR (TWh)': ('float', None, True),
+                                                 'O2 (Mt)': ('float', None, True),
+                                                 'methane Emethane (TWh)': ('float', None, True),
+                                                 'invest': ('float', None, True),
+                                                 'water (Mt)': ('float', None, True),
+                                                 'methane UpgradingBiogas (TWh)': ('float', None, True),
+                                                 'renewable': ('float', None, True),
+                                                 'fossil': ('float', None, True),
+                                                 'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                 'CH4 (Mt)': ('float', None, True),
+                                                 }}
                     dynamic_inputs[f'{ns_energy}.energy_prices'] = {
-                        'type': 'dataframe', 'unit': '$/MWh'}
+                        'type': 'dataframe', 'unit': '$/MWh',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                'biomass_dry': ('float', None, True),
+                                                'biomass_dry_wotaxes': ('float', None, True),
+                                                'hydrogen.gaseous_hydrogen': ('float', None, True),
+                                                'hydrogen.gaseous_hydrogen_wotaxes': ('float', None, True),
+                                                'methane': ('float', None, True),
+                                                'methane_wotaxes': ('float', None, True),
+                                                 'renewable': ('float', None, True),
+                                                 'renewable_wotaxes': ('float', None, True),
+                                                 'fossil': ('float', None, True),
+                                                 'fossil_wotaxes': ('float', None, True),}}
                     dynamic_inputs[f'{ns_energy}.land_use_required'] = {
-                        'type': 'dataframe', 'unit': 'Gha'}
+                        'type': 'dataframe', 'unit': 'Gha',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'Crop (GHa)': ('float', None, True),
+                                                 'Forest (Gha)': ('float', None, True),
+                                                 'random techno (Gha)': ('float', None, True),
+                                                 'RenewableSimpleTechno (Gha)': ('float', None, True),
+                                                 'FossilSimpleTechno (Gha)': ('float', None, True),
+                                                 }}
                     # If the name is different than the energy then the namespace is also different
                     # Valid for biomass which is in agriculture node
                     if ns_energy != energy:
@@ -244,12 +304,25 @@ class Energy_Mix_Discipline(SoSWrapp):
                     if energy in self.energy_class_dict:
                         # Biomass energy is computed by the agriculture model
                         dynamic_inputs[f'{ns_energy}.CO2_emissions'] = {
-                            'type': 'dataframe', 'unit': 'kg/kWh'}
+                            'type': 'dataframe', 'unit': 'kg/kWh',
+                            'dataframe_descriptor': {'years': ('float', None, True),
+                                                     'hydrogen.gaseous_hydrogen': ('float', None, True),
+                                                     'methane': ('float', None, True),
+                                                     'biomass_dry': ('float', None, True),
+                                                     'renewable': ('float', None, True),
+                                                     'fossil': ('float', None, True),
+                                                     },}
                         dynamic_inputs[f'{ns_energy}.CO2_per_use'] = {
-                            'type': 'dataframe', 'unit': 'kg/kWh'}
+                            'type': 'dataframe', 'unit': 'kg/kWh',
+                            'dataframe_descriptor': {'years': ('float', None, True),
+                                                    'CO2_tax': ('float', None, True),
+                                                    'CO2_per_use': ('float', None, True),
+},}
                         dynamic_inputs[f'{ns_energy}.losses_percentage'] = {
                             'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy],
-                            'range': [0., 100.]}
+                            'range': [0., 100.],
+                            'dataframe_descriptor': {'years': ('float', None, True),
+                                                     'years7': ('float', None, True),},}
                         # If the name is different than the energy then the namespace is also different
                         # Valid for biomass which is in agriculture node
                         if ns_energy != energy:
@@ -270,19 +343,41 @@ class Energy_Mix_Discipline(SoSWrapp):
                     for ccs_name in ccs_list:
                         dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs'}
+                            'namespace': 'ns_ccs',
+                            'dataframe_descriptor': {'years': ('float', None, True),
+                                                     'renewable (TWh)': ('float', None, True),
+                                                     'fossil (TWh)': ('float', None, True),
+                                                     'carbon_capture (Mt)': ('float', None, True),}}
                         dynamic_inputs[f'{ccs_name}.energy_consumption_woratio'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs'}
+                            'namespace': 'ns_ccs',
+                            'dataframe_descriptor': {'years': ('float', None, True),
+                                                     'renewable (TWh)': ('float', None, True),
+                                                     'fossil (TWh)': ('float', None, True),
+                                                     'carbon_capture (Mt)': ('float', None, True),}}
                         dynamic_inputs[f'{ccs_name}.energy_production'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs'}
+                            'namespace': 'ns_ccs',
+                            'dataframe_descriptor': {'years': ('float', None, True),
+                                                     'carbon_capture': ('float', None, True),
+                                                     'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                     'carbon_storage': ('float', None, True),}}
                         dynamic_inputs[f'{ccs_name}.energy_prices'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs'}
+                            'namespace': 'ns_ccs',
+                            'dataframe_descriptor': {'years': ('float', None, True),
+                                                     'carbon_capture': ('float', None, True),
+                                                     'carbon_capture_wotaxes': ('float', None, True),
+                                                     'carbon_storage': ('float', None, True),
+                                                     'carbon_storage_wotaxes': ('float', None, True),}}
                         dynamic_inputs[f'{ccs_name}.land_use_required'] = {
                             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs'}
+                            'namespace': 'ns_ccs',
+                            'dataframe_descriptor': {'years': ('float', None, True),
+                                                     'direct_air_capture': ('float', None, True),
+                                                     'flue_gas_capture.FlueGasTechno (Gha)': ('float', None, True),
+                                                     'CarbonStorageTechno (Gha)': ('float', None, True),
+                                                     'direct_air_capture.DirectAirCaptureTechno (Gha)': ('float', None, True),}}
 
         self.update_default_with_years(inputs_dict)
 

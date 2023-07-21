@@ -25,11 +25,11 @@ from matplotlib.pyplot import cm
 from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 from plotly import figure_factory as ff
-
+from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
 import pandas as pd
 from plotly.express.colors import qualitative
 
-YEAR_COMPARISON = 2023
+YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
 def post_processing_filters(execution_engine, namespace):
     '''
@@ -51,16 +51,16 @@ def post_processing_filters(execution_engine, namespace):
 
     return filters
 
-def get_figures_table(table):
+def get_figures_table(table, title):
     '''
     Table chart where Capex, Opex, CO2_Tax and total price comparison
     '''
     fig = ff.create_table(table)
-    new_chart = InstantiatedPlotlyNativeChart(fig, chart_name='')
+    new_chart = InstantiatedPlotlyNativeChart(fig, chart_name=title)
 
     return new_chart
 
-def get_comparision_data(execution_engine, namespace):
+def get_comparision_data(execution_engine, namespace, year):
 
     '''
     Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
@@ -77,11 +77,11 @@ def get_comparision_data(execution_engine, namespace):
         techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices" #	"energy_detailed_techno_prices" for Hydrogen and Fuel
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
 
-        filtereddata = price_details[price_details['years'] == 2023] # Filtering data for a year of 2023
-        capex_price = float(filtereddata['CAPEX_Part'].to_string(index=False))
-        opex_price = float(filtereddata['OPEX_Part'].to_string(index=False))
-        CO2tax_price = float(filtereddata['CO2Tax_Part'].to_string(index=False))
-        price = float(filtereddata[techno].to_string(index=False)) #'energy_costs'
+        filtereddata = price_details[price_details['years'] == year] # Filtering data for a year of 2023
+        capex_price = filtereddata['CAPEX_Part'].iloc[0]
+        opex_price = filtereddata['OPEX_Part'].iloc[0]
+        CO2tax_price = filtereddata['CO2Tax_Part'].iloc[0]
+        price = filtereddata[techno].iloc[0]
 
         capex_price_percentage = (capex_price)*100/price
         opex_price_percentage = (opex_price) * 100 / price
@@ -92,21 +92,27 @@ def get_comparision_data(execution_engine, namespace):
         CO2tax_list.append(str(round(CO2tax_price, DECIMAL)) + ' (' + str(round(CO2tax_price_percentage, DECIMAL)) + '%)')
         energy_costs_List.append(round(price, DECIMAL))
 
+    headers = ['Technology', 'CAPEX ($/MWh)', 'OPEX ($/MWh)', 'CO2Tax ($/MWh)', 'Price ($/MWh)']
+    cells = []
+    cells.append(techno_list)
+    cells.append(capex_list)
+    cells.append(opex_list)
+    cells.append(CO2tax_list)
+    cells.append(energy_costs_List)
 
 
-    table_data = {'Technology': techno_list}
-    price_data = {'CAPEX ($/MWh)': capex_list, 'OPEX ($/MWh)': opex_list, 'CO2Tax ($/MWh)':  CO2tax_list, 'Price ($/MWh)': energy_costs_List}
-    table_data.update(price_data)
-    table = pd.DataFrame(table_data)
+    # table_data = {'Technology': techno_list}
+    # price_data = {'CAPEX ($/MWh)': capex_list, 'OPEX ($/MWh)': opex_list, 'CO2Tax ($/MWh)':  CO2tax_list, \
+    #               'Price ($/MWh)': energy_costs_List}
+    # table_data.update(price_data)
+    # table = pd.DataFrame(table_data)
+    table = InstanciatedTable('Data Comparison for Year ' + str(year), headers, cells)
     return table
 
 def post_processings(execution_engine, namespace, filters):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
-
-    price_comparision_table_data = get_comparision_data(execution_engine, namespace)
-
     instanciated_charts = []
 
     # Overload default value with chart filter
@@ -119,8 +125,10 @@ def post_processings(execution_engine, namespace, filters):
 
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
     if f'{energy} Figures table' in graphs_list:
-        new_table = get_figures_table(price_comparision_table_data)
-        instanciated_charts.append(new_table)
+        for year in YEAR_COMPARISON:
+            new_table = get_comparision_data(execution_engine, namespace, year)
+            #new_table = get_figures_table(price_comparision_table_data, str(year))
+            instanciated_charts.append(new_table)
 
 
     if f'{energy} CO2 intensity' in graphs_list:
