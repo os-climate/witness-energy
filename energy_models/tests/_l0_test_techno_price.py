@@ -12,7 +12,7 @@ class PostProcessEnergy(unittest.TestCase):
         """
         setup of test
         """
-        self.year_start = 2020
+        self.year_start = 2023
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.study_name = 'post-processing'
@@ -59,6 +59,7 @@ class PostProcessEnergy(unittest.TestCase):
             graph_list = ppf.get_post_processing_by_namespace(self.ee, itm, filters,
                                                               as_json=False)
             #
+
             for graph in graph_list:
                  #if 'InstanciatedTable' in str(graph.__class__):  # Plotting only  capex, opex, CO2 tax and prices Tables
                     #if graph.chart_name == '':
