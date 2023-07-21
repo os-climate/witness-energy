@@ -64,10 +64,10 @@ def get_figures_table(table, title):
 def get_comparision_data(execution_engine, namespace, year):
 
     '''
-    Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
+    Extracting Capex, Opex, CO2_Tax and total price from data manager for all energies in the techno list
     '''
 
-    var_f_name = f"{namespace}.technologies_list"
+    var_f_name = f"{namespace}.energies_list"
     techno_list = execution_engine.dm.get_value(var_f_name)
 
     capex_list = []
@@ -270,14 +270,15 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     multilevel_df = pd.DataFrame(
         index=idx,
         columns=[''])
-    energy_list = [execution_engine.dm.get_disciplines_with_name(namespace)[
-                       0].mdo_discipline_wrapp.wrapper.energy_name]
+    # energy_list = [execution_engine.dm.get_disciplines_with_name(namespace)[
+    #                    0].mdo_discipline_wrapp.wrapper.energy_name]
+    energy_list = execution_engine.dm.get_value({namespace}.energy_list)
     for energy in energy_list:
-        energy_disc = execution_engine.dm.get_disciplines_with_name(
+        energy_disc = execution_engine.dm.get_value(
             f'{namespace}')[0]
         techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
         for techno in techno_list:
-            techno_disc = execution_engine.dm.get_disciplines_with_name(
+            techno_disc = execution_engine.dm.get_value(
                 f'{namespace}.{techno}')[0]
             # production_techno = techno_disc.get_sosdisc_outputs(
             #     'techno_production')[f'{capex} (TWh)'].values * \
@@ -335,9 +336,9 @@ def get_Capex_multilevel_df(execution_engine, namespace):
 
     @return multilevel_df: Dataframe
     '''
-
-    energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper
-    energy_list = [energy_disc.energy_name]
+    # energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper
+    energy_disc = execution_engine.dm.get_value(namespace[0])
+    energy_list = [energy_disc.energy_list]
 
     years = np.arange(energy_disc.get_sosdisc_inputs(
         'year_start'), energy_disc.get_sosdisc_inputs('year_end') + 1, 1)
@@ -350,7 +351,7 @@ def get_Capex_multilevel_df(execution_engine, namespace):
     for energy in energy_list:
         techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
         for techno in techno_list:
-            techno_disc = execution_engine.dm.get_disciplines_with_name(
+            techno_disc = execution_engine.dm.get_value(
                 f'{namespace}.{techno}')[0]
     #         carbon_emissions = year_disc.get_sosdisc_outputs(
     #             'CO2_emissions_detailed')
@@ -362,11 +363,11 @@ def get_Capex_multilevel_df(execution_engine, namespace):
         index=idx,
         columns=columns)
     for energy in energy_list:
-        energy_disc = execution_engine.dm.get_disciplines_with_name(
+        energy_disc = execution_engine.dm.get_value(
             f'{namespace}')[0]
         techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
         for techno in techno_list:
-            techno_disc = execution_engine.dm.get_disciplines_with_name(
+            techno_disc = execution_engine.dm.get_value(
                 f'{namespace}.{techno}')[0]
             # production_techno = techno_disc.get_sosdisc_outputs(
             #     'techno_production')[f'{energy} (TWh)'].values * \
