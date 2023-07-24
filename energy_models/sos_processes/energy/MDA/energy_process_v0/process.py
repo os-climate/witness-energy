@@ -218,6 +218,40 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 f'ns_{energy}',
                 post_proc_mod)
 
+        post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_capex_opex'
+        for energy in self.energy_list:
+            if energy == 'hydrogen.gaseous_hydrogen':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_hydrogen',
+                    post_proc_mod)
+            if energy == 'hydrogen.liquid_hydrogen':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_liquid_hydrogen',
+                    post_proc_mod)
+
+            if energy == 'fuel.liquid_fuel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_liquid_fuel',
+                    post_proc_mod)
+            if energy == 'fuel.hydrotreated_oil_fuel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_hydrotreated_oil_fuel',
+                    post_proc_mod)
+            if energy == 'fuel.biodiesel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_biodiesel',
+                    post_proc_mod)
+            if energy == 'fuel.ethanol':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_ethanol',
+                    post_proc_mod)
+
+
+            self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                f'ns_{energy}',
+                post_proc_mod)
+            # print('energy', energy)
+
         if len(set(FuelDiscipline.fuel_list).intersection(set(self.energy_list))) > 0:
             ns_dict = {'ns_fuel': f'{ns_study}.{energy_mix}.fuel'}
             mods_dict = {
