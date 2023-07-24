@@ -104,8 +104,9 @@ def post_processings(execution_engine, namespace, filters):
 
         for techno in techno_list:
             techno_ns = f"{energy_ns}.{techno}"
-            var_short_name=f"{namespace}.{namespace}"
-            CO2_per_kWh = execution_engine.dm.get_value(f"{techno_ns}.{var_short_name}")
+            #var_short_name=f"{namespace}.technologies_list"
+            techno_details= execution_engine.dm.get_value(f"{techno_ns}.techno_detailed_prices")
+            #on récupère les colonnes stocker qq part  gros data frame avec toutes les données extraite
     #energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
             if  'Opex' in graphs_list:
                 for year in YEAR_COMPARISON:
