@@ -104,11 +104,15 @@ def post_processings(execution_engine, namespace, filters):
 
         for techno in techno_list:
             techno_ns = f"{energy_ns}.{techno}"
+
             #var_short_name=f"{namespace}.technologies_list"
             techno_details= execution_engine.dm.get_value(f"{techno_ns}.techno_detailed_prices")
             #on récupère les colonnes stocker qq part  gros data frame avec toutes les données extraite
+            # var_short_name = f"{namespace}.{namespace}"
+            var_short_name = f"{energy_list}.technologies_list"
+            CO2_per_kWh = execution_engine.dm.get_value(f"{techno_ns}.{var_short_name}")
     #energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
-            if  'Opex' in graphs_list:
+            if 'Opex' in graphs_list:
                 for year in YEAR_COMPARISON:
                     new_table = get_comparison_data(execution_engine, namespace, year)
             #new_table = get_figures_table(price_comparision_table_data, str(year))
@@ -125,14 +129,14 @@ def post_processings(execution_engine, namespace, filters):
 
 def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_name='Technologies Capex Value',
                                  summary=True):
-    '''! Function to create the green_techno/_energy scatter chart
+    '''! Function to create the green_techno/_energy bar chart
     @param execution_engine: Execution engine object from which the data is gathered
     @param namespace: String containing the namespace to access the data
     @param chart_name:String, title of the post_proc
     @param energy_name:String, name of the energy that the technologies produce
     @param summary:Boolean, switch from summary (True) to detailed by years via sliders (False)
 
-    @return new_chart: InstantiatedPlotlyNativeChart Scatter plot
+    @return new_chart: InstantiatedPlotlyNativeChart Bar plot
     '''
 
     # Prepare data
@@ -169,17 +173,17 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
             Capex += [np.mean(row['Capex']), ]
             Opex += [np.mean(row['Opex']), ]
             label += [i, ]
-            production += [np.sum(row['production']), ]
-            invest += [np.sum(row['invest']), ]
-            total_CO2 += [np.sum(row['Capex'] *
-                                 row['production']), ]
+            # production += [np.sum(row['production']), ]
+            # invest += [np.sum(row['invest']), ]
+            # total_CO2 += [np.sum(row['Capex'] *
+            #                      row['production']), ]
             CO2_taxes_array += [np.mean(CO2_taxes), ]
         customdata = [label, price_per_kWh, Capex,
                       Opex,years]
         hovertemplate = ''
-        marker_sizes = np.multiply(production, 20.0) / \
-                       pintmax + 10.0
-        scatter = go.Scatter(x=list(years), y=list(Capex),
+        # marker_sizes = np.multiply(production, 20.0) / \
+        #                pintmax + 10.0
+        bar = go.Bar(x=list(years), y=list(Capex),
                              customdata=list(np.asarray(customdata, dtype='object').T),
                              hovertemplate=hovertemplate,
                              text=label,
@@ -187,10 +191,10 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
                              mode='markers+text',
                              marker=dict(color=Capex,
                                          cmin=cmin, cmax=cmax,
-                                         colorscale='RdYlGn_r', size=list(marker_sizes),
+                                         colorscale='RdYlGn_r',
                                          colorbar=dict(title='Capex', thickness=20)),
                              visible=True)
-        fig.add_trace(scatter)
+        fig.add_trace(bar)
     else:
         # Fill figure with data by year
         for i_year in range(len(years)):
@@ -222,7 +226,7 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
             hovertemplate = ''
             marker_sizes = np.multiply(production, 20.0) / \
                            pmax + 10.0
-            scatter = go.Scatter(x=list(years), y=list(Capex),
+            bar = go.Bar(x=list(years), y=list(Capex),
                                  customdata=list(np.asarray(customdata, dtype='object').T),
                                  hovertemplate=hovertemplate,
                                  text=label,
@@ -233,7 +237,7 @@ def get_chart_all_technologies(execution_engine, namespace, energy_name, chart_n
                                              colorscale='RdYlGn_r', size=list(marker_sizes),
                                              colorbar=dict(title='Capex', thickness=20)),
                                  visible=False)
-            fig.add_trace(scatter)
+            fig.add_trace(bar)
         # Prepare year slider and layout updates
         steps = []
         for i in range(int(len(fig.data)) - 1):
@@ -309,7 +313,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                     total_carbon_emissions = CO2_per_use + \
                                              carbon_emissions[techno].values
             Capex_techno = total_carbon_emissions
-            # Data for scatter plot
+            # Data for bar graph
             price_per_kWh_techno = techno_disc.get_sosdisc_outputs('techno_prices')[
                 f'{techno}'].values
             years_techno = techno_disc.get_sosdisc_outputs('techno_prices')[
