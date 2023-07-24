@@ -31,7 +31,6 @@ from plotly.express.colors import qualitative
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
-# print('YEAR_COMPARISON', YEAR_COMPARISON)
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -61,7 +60,6 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
 
     var_f_name = f"{namespace}.technologies_list"
     techno_list = execution_engine.dm.get_value(var_f_name)
-    # print('techno_list', techno_list)
 
     year_list = []
     for techno in techno_list:
@@ -69,26 +67,18 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
         year_list = price_details['years'].tolist()
 
-    opex_list = []
-    CO2tax_list = []
-    energy_costs_List = []
+
     techno_price_data = {}
     #x_data_list = []
     for techno in techno_list:
-        capex_list = []
         techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices" #	"energy_detailed_techno_prices" for Hydrogen and Fuel
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
 
-        for year in year_list:
-            filtereddata = price_details[price_details['years'] == year] # Filtering data for a year of 2023
-            capex_price = filtereddata['CAPEX_Part'].iloc[0]
-            opex_price = filtereddata['OPEX_Part'].iloc[0]
-            CO2tax_price = filtereddata['CO2Tax_Part'].iloc[0]
-            price = filtereddata[techno].iloc[0]
-            capex_list.append(capex_price)
-            opex_list.append(opex_price)
-            CO2tax_list.append(CO2tax_price)
-            energy_costs_List.append(price)
+        capex_list = price_details['CAPEX_Part'].tolist()
+        opex_list = price_details['OPEX_Part'].tolist()
+        CO2tax_list = price_details['CO2Tax_Part'].tolist()
+        energy_costs_List = price_details[techno].tolist()
+
         if price_name == 'CAPEX_Part':
             techno_price_data[techno] = capex_list
         elif price_name == 'OPEX_Part':
@@ -100,13 +90,13 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
 
     trace_list = []
     for key in techno_price_data.keys():
-        trace1 = go.Bar(
+        trace = go.Bar(
             x=[key],
             y=[techno_price_data[key][0]],
             name=key + ' (' + str(year_list[0]) + ')',
             # offset=-0.2
         )
-        trace_list.append(trace1)
+        trace_list.append(trace)
 
     steps = []
     for i in range(len(year_list)):
@@ -172,14 +162,14 @@ def post_processings(execution_engine, namespace, filters):
     title = split_title[len(split_title) - 1] + ' Opex Price'
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
     if f'{energy} Capex value' in graphs_list:
-        capex_bar_slider_graph = get_techno_price_data(execution_engine, namespace, title, 'OPEX_Part', 'Opex')
-        instanciated_charts.append(capex_bar_slider_graph)
+        opex_bar_slider_graph = get_techno_price_data(execution_engine, namespace, title, 'OPEX_Part', 'Opex')
+        instanciated_charts.append(opex_bar_slider_graph)
 
     title = split_title[len(split_title) - 1] + ' Total Price'
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
     if f'{energy} Capex value' in graphs_list:
-        capex_bar_slider_graph = get_techno_price_data(execution_engine, namespace, title, 'Total_Price', 'Price')
-        instanciated_charts.append(capex_bar_slider_graph)
+        total_price_slider_graph = get_techno_price_data(execution_engine, namespace, title, 'Total_Price', 'Price')
+        instanciated_charts.append(total_price_slider_graph)
 
 
     return instanciated_charts
