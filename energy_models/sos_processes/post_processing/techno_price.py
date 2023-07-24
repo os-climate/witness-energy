@@ -107,10 +107,13 @@ def post_processings(execution_engine, namespace, filters):
 
             #var_short_name=f"{namespace}.technologies_list"
             techno_details= execution_engine.dm.get_value(f"{techno_ns}.techno_detailed_prices")
-            #on récupère les colonnes stocker qq part  gros data frame avec toutes les données extraite
+            #
             # var_short_name = f"{namespace}.{namespace}"
-            var_short_name = f"{energy_list}.technologies_list"
-            CO2_per_kWh = execution_engine.dm.get_value(f"{techno_ns}.{var_short_name}")
+           # var_short_name = f"{energy_list}.technologies_list"
+            techno_data =  techno_details[["OPEX_Part", "CO2Tax_Part"]]
+            techno_details_p = execution_engine.dm.get_value(f"{techno_ns}.techno_prices")
+            techno_data_p = techno_details_p[["FossilGas"]]
+            data=pd.concat([techno_data,techno_data_p],axis=1)
     #energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
             if 'Opex' in graphs_list:
                 for year in YEAR_COMPARISON:
