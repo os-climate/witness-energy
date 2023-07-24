@@ -112,9 +112,6 @@ def post_processings(execution_engine, namespace, filters):
 
     instanciated_charts = []
 
-    get_techno_price_data(execution_engine, namespace)
-    # print(m)
-    # instanciated_charts.append(m)
     # Overload default value with chart filter
     graphs_list = []
     if filters is not None:
