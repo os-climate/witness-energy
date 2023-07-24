@@ -104,6 +104,10 @@ def post_processings(execution_engine, namespace, filters):
 
         for techno in techno_list:
             techno_ns = f"{energy_ns}.{techno}"
+
+            #var_short_name=f"{namespace}.technologies_list"
+            techno_details= execution_engine.dm.get_value(f"{techno_ns}.techno_detailed_prices")
+            #on récupère les colonnes stocker qq part  gros data frame avec toutes les données extraite
             # var_short_name = f"{namespace}.{namespace}"
             var_short_name = f"{energy_list}.technologies_list"
             CO2_per_kWh = execution_engine.dm.get_value(f"{techno_ns}.{var_short_name}")
