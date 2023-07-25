@@ -38,7 +38,6 @@ def post_processing_filters(execution_engine, namespace):
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the filters
     '''
     filters = []
-
     chart_list = []
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[
         0].mdo_discipline_wrapp.wrapper.energy_name
@@ -53,7 +52,6 @@ def post_processing_filters(execution_engine, namespace):
 
 
 def get_techno_price_data(execution_engine, namespace, title, price_name, y_label):
-
     '''
     Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
     '''
@@ -67,11 +65,10 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
         year_list = price_details['years'].tolist()
 
-
     techno_price_data = {}
     #x_data_list = []
     for techno in techno_list:
-        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices" #	"energy_detailed_techno_prices" for Hydrogen and Fuel
+        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"    #"energy_detailed_techno_prices" for Hydrogen and Fuel
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
 
         capex_list = price_details['CAPEX_Part'].tolist()
@@ -88,13 +85,13 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
         else:
             techno_price_data[techno] = energy_costs_List
 
+# To display initial charts for start year
     trace_list = []
     for key in techno_price_data.keys():
         trace = go.Bar(
             x=[key],
             y=[techno_price_data[key][0]],
             name=key + ' (' + str(year_list[0]) + ')',
-            # offset=-0.2
         )
         trace_list.append(trace)
 
@@ -129,14 +126,12 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
         barmode='group'
     )
 
-
     fig = go.Figure(data=trace_list, layout=layout)
-
-
     #fig.show()
     new_chart = InstantiatedPlotlyNativeChart(
         fig, chart_name=title, default_title=True)
     return new_chart
+
 
 def post_processings(execution_engine, namespace, filters):
     '''
@@ -170,6 +165,5 @@ def post_processings(execution_engine, namespace, filters):
     if f'{energy} Capex value' in graphs_list:
         total_price_slider_graph = get_techno_price_data(execution_engine, namespace, title, 'Total_Price', 'Price')
         instanciated_charts.append(total_price_slider_graph)
-
 
     return instanciated_charts
