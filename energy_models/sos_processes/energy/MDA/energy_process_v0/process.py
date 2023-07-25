@@ -246,11 +246,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                     f'ns_ethanol',
                     post_proc_mod)
 
-
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 f'ns_{energy}',
                 post_proc_mod)
-            # print('energy', energy)
 
         if len(set(FuelDiscipline.fuel_list).intersection(set(self.energy_list))) > 0:
             ns_dict = {'ns_fuel': f'{ns_study}.{energy_mix}.fuel'}
