@@ -19,7 +19,8 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-
+import plotly.graph_objects as go
+import plotly.colors as pc
 import numpy as np
 from matplotlib.pyplot import cm
 from plotly import graph_objects as go
@@ -31,7 +32,15 @@ from plotly.express.colors import qualitative
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
+from plotly import colors
 
+def map_value_to_color(value, min_value, max_value):
+    # Remplacer 'Viridis' par une autre palette de couleur si désiré
+    # Assurez-vous d'avoir importé correctement les palettes de couleur
+    color_scale = colors.sequential.Viridis
+    normalized_value = (value - min_value) / (max_value - min_value)
+    index = int(normalized_value * (len(color_scale) - 1))
+    return color_scale[index]
 
 def post_processing_filters(execution_engine, namespace):
     '''
@@ -67,6 +76,8 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
 
     techno_price_data = {}
     #x_data_list = []
+    from plotly import colors
+
     for techno in techno_list:
         techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"    #"energy_detailed_techno_prices" for Hydrogen and Fuel
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
@@ -87,11 +98,34 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
 
 # To display initial charts for start year
     trace_list = []
+
+    def map_value_to_color(value):
+        color_scale = pc.sequential.Viridis
+        epsilon = 1e-10
+        normalized_value = (value +epsilon- min(min(techno_price_data.values()))) / (
+                   max( max(techno_price_data.values())) - min(min(techno_price_data.values())))
+        index = int(normalized_value * (len(color_scale) - 1))
+        return color_scale[index]
+    cmin = min(min(techno_price_data.values())),
+    cmax = max(max(techno_price_data.values())),
+    # c=[]
+
     for key in techno_price_data.keys():
+        # for l in techno_price_data.values():
+        #     c.append(np.mean(l))
         trace = go.Bar(
             x=[key],
             y=[techno_price_data[key][0]],
             name=key + ' (' + str(year_list[0]) + ')',
+
+            # marker=dict(color=c,
+            #             cmin=cmin, cmax=cmax,
+            #             colorscale='RdYlGn_r',
+            #             colorbar=dict(title='CO2 per kWh', thickness=20)),
+            # visible=True
+            #map_value_to_color(techno_price_data[key][0])
+            marker=dict(color=map_value_to_color(techno_price_data[key][0]),  colorscale='RdYlGn_r',
+                                         colorbar=dict(title='CO2 per kWh', thickness=20))
         )
         trace_list.append(trace)
 

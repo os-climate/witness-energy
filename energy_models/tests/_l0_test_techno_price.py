@@ -14,7 +14,7 @@ class PostProcessEnergy(unittest.TestCase):
         """
         self.year_start = 2023
         self.year_end = 2050
-        self.years = np.arange(self.year_start, self.year_end + 1)
+        #self.years = np.arange(self.year_start, self.year_end + 1)
         self.study_name = 'post-processing'
         self.repo = 'energy_models.sos_processes.energy.MDA'
         self.proc_name = 'energy_process_v0'
@@ -32,7 +32,7 @@ class PostProcessEnergy(unittest.TestCase):
         for values_dict_i in values_dict:
             self.ee.load_study_from_input_dict(values_dict_i)
         self.ee.load_study_from_input_dict({f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
-                                            f'{self.study_name}.max_mda_iter':1})
+                                            f'{self.study_name}.max_mda_iter':2})
 
         """
         All energy list
@@ -40,11 +40,21 @@ class PostProcessEnergy(unittest.TestCase):
         #energylist= ['electricity','methane', 'hydrogen.gaseous_hydrogen', 'biogas', 'syngas', 'fuel.liquid_fuel', \
                       #'fuel.hydrotreated_oil_fuel', 'solid_fuel', 'biomass_dry', \
                        #'fuel.biodiesel', 'fuel.ethanol', 'hydrogen.liquid_hydrogen']
+        ##self.namespace_list = []
+        """
+        All energy list with study name for post processing
+        """
+        ##self.namespace_list.append(f'{self.study_name}')
+        energylist = ['methane', 'hydrogen.gaseous_hydrogen', 'biogas', 'syngas', 'fuel.liquid_fuel', \
+                      'fuel.hydrotreated_oil_fuel', 'solid_fuel', 'biomass_dry', \
+                      'electricity', 'fuel.biodiesel', 'fuel.ethanol', 'hydrogen.liquid_hydrogen']
         self.namespace_list = []
         """
         All energy list with study name for post processing
         """
-        self.namespace_list.append(f'{self.study_name}')
+        energylist = ['methane']
+        for energy in energylist:
+            self.namespace_list.append(f'{self.study_name}.EnergyMix.{energy}')
 
     def test_post_processing_Table_plots(self):
         """
