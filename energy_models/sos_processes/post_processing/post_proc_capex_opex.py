@@ -51,13 +51,14 @@ def post_processing_filters(execution_engine, namespace):
     return filters
 
 
-def get_techno_price_data(execution_engine, namespace, title, price_name, y_label):
+def get_techno_price_data(execution_engine, namespace, title, price_name, y_label, summary=True):
     '''
     Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
     '''
-
     var_f_name = f"{namespace}.technologies_list"
     techno_list = execution_engine.dm.get_value(var_f_name)
+    # array_of_cmin, array_of_cmax = [], []
+    # cmin, cmax = np.min(array_of_cmin), np.max(array_of_cmax)
 
     year_list = []
     for techno in techno_list:
@@ -86,12 +87,32 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
             techno_price_data[techno] = energy_costs_List
 
 # To display initial charts for start year
+
+    array_of_cmin, array_of_cmax = [], []
+    cmin, cmax = np.min(array_of_cmin), np.max(array_of_cmax)
+    # for (array_c, array_p) in multilevel_df[['capex', 'production']].values:
+    #     array_of_cmin += [array_c.min()]
+    #     array_of_cmax += [array_c.max()]
+    #     array_of_pmax += [array_p.max()]
+    #     array_of_pintmax += [array_p.sum()]
+    # pmax, pintmax = np.max(array_of_pmax), np.max(array_of_pintmax)
+    # if summary:
+    #     # Create a graph to aggregate the informations on all years
+    #     capex, production = [], [],
     trace_list = []
     for key in techno_price_data.keys():
+        # marker_sizes = np.multiply(techno_prices_f_name, 20.0) / \
+        #                cmax + 10.0
         trace = go.Bar(
             x=[key],
             y=[techno_price_data[key][0]],
             name=key + ' (' + str(year_list[0]) + ')',
+            mode='markers+text',
+            marker=dict(color=techno_price_data.keys(),
+                        cmin=cmin, cmax=cmax,
+                        colorscale='RdYlGn_r', #size=list(marker_sizes),
+                        colorbar=dict(title='Capex', thickness=20)),
+            visible=True
         )
         trace_list.append(trace)
 
@@ -127,9 +148,13 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
     )
 
     fig = go.Figure(data=trace_list, layout=layout)
+
     #fig.show()
     new_chart = InstantiatedPlotlyNativeChart(
         fig, chart_name=title, default_title=True)
+
+    # years = np.arange(energy_disc.get_sosdisc_inputs(
+    #     'year_start'), energy_disc.get_sosdisc_inputs('year_end') + 1, 1)
     return new_chart
 
 
