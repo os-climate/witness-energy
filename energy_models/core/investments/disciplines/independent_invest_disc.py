@@ -151,6 +151,8 @@ class IndependentInvestDiscipline(SoSWrapp):
                                'namespace': 'ns_functions'},
         'invest_sum_cons_dc': {'type': 'array', 'unit': '', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                'namespace': 'ns_functions'},
+        'invest_sum_ineq_cons': {'type': 'array', 'unit': '', 'visibility': SoSWrapp.SHARED_VISIBILITY,
+                               'namespace': 'ns_functions'},
     }
     _maturity = 'Research'
 
@@ -226,7 +228,7 @@ class IndependentInvestDiscipline(SoSWrapp):
 
         input_dict = self.get_sosdisc_inputs()
 
-        invest_constraint_df, invest_objective, abs_delta, abs_delta_cons, abs_delta_cons_dc, delta_eq_cons = self.independent_invest_model.compute_invest_constraint_and_objective(
+        invest_constraint_df, invest_objective, abs_delta, abs_delta_cons, abs_delta_cons_dc, delta_eq_cons, dela_sum_cons_ineq = self.independent_invest_model.compute_invest_constraint_and_objective(
             input_dict)
 
         output_dict = {'invest_constraint': invest_constraint_df,
@@ -235,6 +237,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                        'invest_sum_cons': abs_delta_cons,
                        'invest_sum_cons_dc': abs_delta_cons_dc,
                        'invest_sum_eq_cons': delta_eq_cons,
+                       'invest_sum_ineq_cons' : dela_sum_cons_ineq
                        }
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
@@ -276,6 +279,8 @@ class IndependentInvestDiscipline(SoSWrapp):
         delta_years = len(years)
         idt = np.identity(delta_years)
         ddelta_dtech = -idt / energy_invest
+        dconstrantineq_dtech = idt / invest_sum_ref / delta_years
+
         ddelta_dtot = (idt * energy_invest - (energy_invest -
                                               techno_invest_sum) * idt) / energy_invest ** 2
 
@@ -301,6 +306,9 @@ class IndependentInvestDiscipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 ('invest_constraint', 'invest_constraint'), ('invest_mix', techno),
                 ddelta_dtech / invest_constraint_ref)
+            self.set_partial_derivative_for_other_types(
+                ('invest_sum_ineq_cons',), ('invest_mix', techno),
+                - dconstrantineq_dtech)
             self.set_partial_derivative_for_other_types(
                 ('invest_objective', 'invest_objective'), ('invest_mix', techno), dinvest_objective_dtechno_invest)
             self.set_partial_derivative_for_other_types(
@@ -333,6 +341,10 @@ class IndependentInvestDiscipline(SoSWrapp):
         self.set_partial_derivative_for_other_types(
             ('invest_sum_eq_cons',), ('forest_investment', 'forest_investment'), dinvest_eq_cons_dtechno_invest)
 
+        self.set_partial_derivative_for_other_types(
+            ('invest_sum_ineq_cons',), ('forest_investment', 'forest_investment'),
+            - dconstrantineq_dtech)
+
         if BiomassDry.name in energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                 self.set_partial_derivative_for_other_types(
@@ -352,10 +364,18 @@ class IndependentInvestDiscipline(SoSWrapp):
                 self.set_partial_derivative_for_other_types(
                     ('invest_sum_eq_cons',), (techno, 'investment'), dinvest_eq_cons_dtechno_invest)
 
+                self.set_partial_derivative_for_other_types(
+                    ('invest_sum_ineq_cons',), (techno, 'investment'), - dconstrantineq_dtech)
+
+
         self.set_partial_derivative_for_other_types(
             ('invest_constraint', 'invest_constraint'), ('energy_investment',
                                                          'energy_investment'),
             ddelta_dtot * scaling_factor_energy_investment / invest_constraint_ref)
+        
+        self.set_partial_derivative_for_other_types(
+                    ('invest_sum_ineq_cons',), ('energy_investment', 'energy_investment'), dconstrantineq_dtech * scaling_factor_energy_investment)
+        
         self.set_partial_derivative_for_other_types(
             ('invest_objective', 'invest_objective'), ('energy_investment',
                                                        'energy_investment'),
