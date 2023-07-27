@@ -34,13 +34,11 @@ YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
 from plotly import colors
 
-def map_value_to_color(value, min_value, max_value):
-    # Remplacer 'Viridis' par une autre palette de couleur si désiré
-    # Assurez-vous d'avoir importé correctement les palettes de couleur
-    color_scale = colors.sequential.Viridis
-    normalized_value = (value - min_value) / (max_value - min_value)
-    index = int(normalized_value * (len(color_scale) - 1))
-    return color_scale[index]
+# def map_value_to_color(value, min_value, max_value):
+#     color_scale = colors.sequential.Viridis
+#     normalized_value = (value - min_value) / (max_value - min_value)
+#     index = int(normalized_value * (len(color_scale) - 1))
+#     return color_scale[index]
 
 def post_processing_filters(execution_engine, namespace):
     '''
@@ -118,14 +116,9 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
             y=[techno_price_data[key][0]],
             name=key + ' (' + str(year_list[0]) + ')',
 
-            # marker=dict(color=c,
-            #             cmin=cmin, cmax=cmax,
-            #             colorscale='RdYlGn_r',
-            #             colorbar=dict(title='CO2 per kWh', thickness=20)),
-            # visible=True
-            #map_value_to_color(techno_price_data[key][0])
-            marker=dict(color=map_value_to_color(techno_price_data[key][0]),  colorscale='RdYlGn_r',
-                                         colorbar=dict(title='CO2 per kWh', thickness=20))
+            #list(techno_price_data.values())  #list of price value
+           marker=dict(color=map_value_to_color(techno_price_data[key][0]), colorscale='RdYlGn_r',
+                                         colorbar=dict(title='Price', thickness=20))
         )
         trace_list.append(trace)
 
