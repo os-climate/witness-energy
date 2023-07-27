@@ -43,7 +43,6 @@ def post_processing_filters(execution_engine, namespace):
         0].mdo_discipline_wrapp.wrapper.energy_name
     chart_list += [f'{energy} Capex value']
 
-
     # The filters are set to False by default since the graphs are not yet
     # mature
     filters.append(ChartFilter('Charts', chart_list, chart_list, 'Charts'))
@@ -51,18 +50,17 @@ def post_processing_filters(execution_engine, namespace):
     return filters
 
 
-def get_techno_price_data(execution_engine, namespace, title, price_name, y_label, summary=True):
+def get_techno_price_data(execution_engine, namespace, title, price_name, y_label):
     '''
     Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
     '''
+
     var_f_name = f"{namespace}.technologies_list"
     techno_list = execution_engine.dm.get_value(var_f_name)
-    # array_of_cmin, array_of_cmax = [], []
-    # cmin, cmax = np.min(array_of_cmin), np.max(array_of_cmax)
 
     year_list = []
     for techno in techno_list:
-        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices" #	"energy_detailed_techno_prices" for Hydrogen and Fuel
+        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"  #"energy_detailed_techno_prices" for Hydrogen and Fuel
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
         year_list = price_details['years'].tolist()
 
@@ -87,50 +85,40 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
             techno_price_data[techno] = energy_costs_List
 
 # To display initial charts for start year
-
-    array_of_cmin, array_of_cmax = [], []
-    cmin, cmax = np.min(array_of_cmin), np.max(array_of_cmax)
-    # for (array_c, array_p) in multilevel_df[['capex', 'production']].values:
-    #     array_of_cmin += [array_c.min()]
-    #     array_of_cmax += [array_c.max()]
-    #     array_of_pmax += [array_p.max()]
-    #     array_of_pintmax += [array_p.sum()]
-    # pmax, pintmax = np.max(array_of_pmax), np.max(array_of_pintmax)
-    # if summary:
-    #     # Create a graph to aggregate the informations on all years
-    #     capex, production = [], [],
-    trace_list = []
+    key_list = list(techno_price_data.keys())
+    initial_y_values = []
     for key in techno_price_data.keys():
-        # marker_sizes = np.multiply(techno_prices_f_name, 20.0) / \
-        #                cmax + 10.0
-        trace = go.Bar(
-            x=[key],
-            y=[techno_price_data[key][0]],
-            name=key + ' (' + str(year_list[0]) + ')',
-            mode='markers+text',
-            marker=dict(color=techno_price_data.keys(),
-                        cmin=cmin, cmax=cmax,
-                        colorscale='RdYlGn_r', #size=list(marker_sizes),
-                        colorbar=dict(title='Capex', thickness=20)),
-            visible=True
+        initial_y_values.append(techno_price_data[key][0])
+    trace = go.Bar(
+        x=key_list,
+        y=initial_y_values,
+        marker=dict(
+            # set color equal to a variable
+            color=initial_y_values,
+            cmin=min(initial_y_values), cmax=max(initial_y_values),
+            # one of plotly color scales
+            colorscale='RdYlGn_r',
+            # enable color scale
+            showscale=True,
+            colorbar=dict(title=y_label, thickness=20),
         )
-        trace_list.append(trace)
+    )
 
     steps = []
     for i in range(len(year_list)):
-        initial_y_values = []
+        y_values = []
         for key in techno_price_data.keys():
-            initial_y_values.append(techno_price_data[key][i])
+            y_values.append(techno_price_data[key][i])
         step = dict(
             method='update',
             args=[{
-                'x': [[i] for i in list(techno_price_data.keys())],
-                'y[0]': initial_y_values,
-                'name': [f'{x} ({year_list[i]}) ' for x in list(techno_price_data.keys())],  #list(techno_price_data.keys())
+                'x[0]': key_list,  #[[i] for i in list(techno_price_data.keys())],
+                'y': [y_values],
             }],
             label=str(year_list[i])
         )
         steps.append(step)
+
     # Create slider
     sliders = [dict(
         active=0,
@@ -147,14 +135,10 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
         barmode='group'
     )
 
-    fig = go.Figure(data=trace_list, layout=layout)
-
+    fig = go.Figure(data=[trace], layout=layout)
     #fig.show()
     new_chart = InstantiatedPlotlyNativeChart(
         fig, chart_name=title, default_title=True)
-
-    # years = np.arange(energy_disc.get_sosdisc_inputs(
-    #     'year_start'), energy_disc.get_sosdisc_inputs('year_end') + 1, 1)
     return new_chart
 
 
