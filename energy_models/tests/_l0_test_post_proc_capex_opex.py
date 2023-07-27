@@ -53,7 +53,7 @@ class PostProcessEnergy(unittest.TestCase):
         """
         All energy list with study name for post processing
         """
-        energylist = ['methane']
+        # energylist = ['methane']
         for energy in energylist:
             self.namespace_list.append(f'{self.study_name}.EnergyMix.{energy}')
 
