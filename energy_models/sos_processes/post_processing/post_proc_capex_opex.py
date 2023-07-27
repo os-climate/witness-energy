@@ -19,7 +19,8 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-
+import plotly.graph_objects as go
+import plotly.colors as pc
 import numpy as np
 from matplotlib.pyplot import cm
 from plotly import graph_objects as go
@@ -31,7 +32,13 @@ from plotly.express.colors import qualitative
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
+from plotly import colors
 
+# def map_value_to_color(value, min_value, max_value):
+#     color_scale = colors.sequential.Viridis
+#     normalized_value = (value - min_value) / (max_value - min_value)
+#     index = int(normalized_value * (len(color_scale) - 1))
+#     return color_scale[index]
 
 def post_processing_filters(execution_engine, namespace):
     '''
@@ -66,6 +73,8 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
 
     techno_price_data = {}
     #x_data_list = []
+    from plotly import colors
+
     for techno in techno_list:
         techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"    #"energy_detailed_techno_prices" for Hydrogen and Fuel
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
@@ -101,6 +110,7 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
             # enable color scale
             showscale=True,
             colorbar=dict(title=y_label, thickness=20),
+
         )
     )
 
