@@ -34,11 +34,6 @@ YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
 from plotly import colors
 
-# def map_value_to_color(value, min_value, max_value):
-#     color_scale = colors.sequential.Viridis
-#     normalized_value = (value - min_value) / (max_value - min_value)
-#     index = int(normalized_value * (len(color_scale) - 1))
-#     return color_scale[index]
 
 def post_processing_filters(execution_engine, namespace):
     '''
