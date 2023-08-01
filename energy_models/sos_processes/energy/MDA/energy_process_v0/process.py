@@ -178,11 +178,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             f'ns_energy_mix',
             post_proc_mod)
-        post_proc_mod = 'energy_models.sos_processes.post_processing.techno_price'
-        # if energy_mix == 'EnergyMix':
-        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-            f'ns_public',
-            post_proc_mod)
+
 
 
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown'
