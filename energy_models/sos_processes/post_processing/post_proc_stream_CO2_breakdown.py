@@ -383,6 +383,8 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     if columns != None and type(columns) == list:
         multilevel_df = pd.DataFrame(multilevel_df[columns])
 
+    print('multilevel_df', multilevel_df.to_string())
+
     return multilevel_df, years
 
 

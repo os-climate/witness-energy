@@ -74,10 +74,10 @@ class PostProcessEnergy(unittest.TestCase):
             graph_list = ppf.get_post_processing_by_namespace(self.ee, itm, filters,
                                                               as_json=False)
 
-            for graph in graph_list:
-                if 'InstanciatedTable' in str(graph.__class__):  # Plotting only  capex, opex, CO2 tax and prices Tables
-                    #if graph.chart_name == '':
-                    graph.to_plotly().show()
+            # for graph in graph_list:
+            #     if 'InstanciatedTable' in str(graph.__class__):  # Plotting only  capex, opex, CO2 tax and prices Tables
+            #         #if graph.chart_name == '':
+            #         graph.to_plotly().show()
 
 
 
