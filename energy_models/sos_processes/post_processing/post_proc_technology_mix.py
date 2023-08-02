@@ -39,6 +39,7 @@ def post_processing_filters(execution_engine, namespace):
     filters = []
 
     chart_list = []
+    energy_list = []
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[
         0].mdo_discipline_wrapp.wrapper.energy_name
     chart_list += [f'{energy} Figures table']
