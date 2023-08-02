@@ -34,10 +34,7 @@ YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
 from plotly import colors
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 4f6dc65468cf91de2c304c66fae23704b1fbdf2f
 def post_processing_filters(execution_engine, namespace):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the filters
@@ -70,23 +67,6 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
     for sublist in techno_list_:
         techno_list.extend(sublist)
 
-<<<<<<< HEAD
-    # year_list = []
-    # for techno in techno_list:
-    #     techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices" #	"energy_detailed_techno_prices" for Hydrogen and Fuel
-    #     price_details = execution_engine.dm.get_value(techno_prices_f_name)
-    #     year_list = price_details['years'].tolist()
-=======
-    var_f_name = f"{namespace}.technologies_list"
-    techno_list = execution_engine.dm.get_value(var_f_name)
-
-    year_list = []
-    for techno in techno_list:
-        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"  #"energy_detailed_techno_prices" for Hydrogen and Fuel
-        price_details = execution_engine.dm.get_value(techno_prices_f_name)
-        year_list = price_details['years'].tolist()
->>>>>>> 4f6dc65468cf91de2c304c66fae23704b1fbdf2f
-
     techno_price_data = {}
     #x_data_list = []
     from plotly import colors
@@ -101,7 +81,7 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
             CO2tax_list = price_details['CO2Tax_Part'].tolist()
             energy_costs_List = price_details[techno].tolist()
 
-<<<<<<< HEAD
+
             if price_name == 'CAPEX_Part':
                 techno_price_data[techno] = capex_list
             elif price_name == 'OPEX_Part':
@@ -111,32 +91,13 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
             else:
                 techno_price_data[techno] = energy_costs_List
         i=i+1
-=======
-    for techno in techno_list:
-        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"    #"energy_detailed_techno_prices" for Hydrogen and Fuel
-        price_details = execution_engine.dm.get_value(techno_prices_f_name)
 
-        capex_list = price_details['CAPEX_Part'].tolist()
-        opex_list = price_details['OPEX_Part'].tolist()
-        CO2tax_list = price_details['CO2Tax_Part'].tolist()
-        energy_costs_List = price_details[techno].tolist()
 
-        if price_name == 'CAPEX_Part':
-            techno_price_data[techno] = capex_list
-        elif price_name == 'OPEX_Part':
-            techno_price_data[techno] = opex_list
-        elif price_name == 'CO2Tax_Part':
-            techno_price_data[techno] = CO2tax_list
-        else:
-            techno_price_data[techno] = energy_costs_List
-
-# To display initial charts for start year
->>>>>>> 4f6dc65468cf91de2c304c66fae23704b1fbdf2f
     key_list = list(techno_price_data.keys())
     initial_y_values = []
     for key in techno_price_data.keys():
         initial_y_values.append(techno_price_data[key][0])
-<<<<<<< HEAD
+
         trace = go.Bar(
             x=key_list,
             y=initial_y_values,
@@ -149,21 +110,6 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
                 # enable color scale
                 showscale=True,
                 colorbar=dict(title=y_label, thickness=20),
-=======
-    trace = go.Bar(
-        x=key_list,
-        y=initial_y_values,
-        marker=dict(
-            # set color equal to a variable
-            color=initial_y_values,
-            cmin=min(initial_y_values), cmax=max(initial_y_values),
-            # one of plotly color scales
-            colorscale='RdYlGn_r',
-            # enable color scale
-            showscale=True,
-            colorbar=dict(title=y_label, thickness=20),
->>>>>>> 4f6dc65468cf91de2c304c66fae23704b1fbdf2f
-
         )
     )
 
@@ -175,11 +121,7 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
         step = dict(
             method='update',
             args=[{
-<<<<<<< HEAD
                 'x[0]': key_list,  # [[i] for i in list(techno_price_data.keys())],
-=======
-                'x[0]': key_list,  #[[i] for i in list(techno_price_data.keys())],
->>>>>>> 4f6dc65468cf91de2c304c66fae23704b1fbdf2f
                 'y': [y_values],
             }],
             label=str(year_list[i])
@@ -203,11 +145,7 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
     )
 
     fig = go.Figure(data=[trace], layout=layout)
-<<<<<<< HEAD
-    # fig.show()
-=======
-    #fig.show()
->>>>>>> 4f6dc65468cf91de2c304c66fae23704b1fbdf2f
+
     new_chart = InstantiatedPlotlyNativeChart(
         fig, chart_name=title, default_title=True)
     return new_chart
