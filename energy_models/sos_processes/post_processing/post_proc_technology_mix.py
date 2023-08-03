@@ -53,20 +53,22 @@ def post_processing_filters(execution_engine, namespace):
 def get_techno_price_filter_data(execution_engine, namespace, title, price_name, y_label):
     '''
     Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
+    title = string
+    price_name = string
+    y_label = string
     '''
     disc = execution_engine.dm.get_disciplines_with_name(namespace)
     disc_input = disc[0].get_sosdisc_inputs()
     energy_list = disc_input['energy_list']
-    # print('energy_list', energy_list)
     techno_list = []
     EnergyDict = {}
     year_list = []
-    # co2_intensity = []
     energy_name_list = []
 
     for energ in energy_list:
         var_f_name = f"{namespace}.{energ}.technologies_list"
 
+        # biomass_dry not having technolist and other than biomass we are extracting energy list
         if 'biomass_dry' not in var_f_name:
             EnergyDict[f"{energ}"] = {}
             loc_techno_list = execution_engine.dm.get_value(var_f_name)
@@ -76,26 +78,25 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
 
     techno_name_list = []
     techno_price_filter_data = {}
-    # co2_intensity = {}
+    co2_intensity = {}
+    co2_all_years = []
 
+    # looping energies
     for energyname in EnergyDict.keys():
         energy_name_list.append(energyname)
 
+        # looping technos for each energies
         for techno in EnergyDict[energyname]['TechnoName']:
-            techno_prices_f_name = f"{namespace}.{energyname}.{techno}.techno_detailed_prices"  # "energy_detailed_techno_prices" for Hydrogen and Fuel
-            # energy_CO2_intensity = f"{namespace}.{energyname}.{techno}.energy_prices"  # "energy_detailed_techno_prices" for Hydrogen and Fuel
-            techno_disc = execution_engine.dm.get_disciplines_with_name(
-                f'{namespace}.{energyname}.{techno}')[0]
+            # extracting price data from techno_detailed_prices
+            techno_prices_f_name = f"{namespace}.{energyname}.{techno}.techno_detailed_prices"
+            techno_disc = execution_engine.dm.get_disciplines_with_name(f'{namespace}.{energyname}.{techno}')[0]
             price_details = execution_engine.dm.get_value(techno_prices_f_name)
-            # energy_prices = execution_engine.dm.get_value(techno_prices_f_name)
-            # print('price_details', price_details)
 
             techno_name_list.append(techno)
             year_list = price_details['years'].tolist()
             capex_list = price_details['CAPEX_Part'].tolist()
             opex_list = price_details['OPEX_Part'].tolist()
             CO2tax_list = price_details['CO2Tax_Part'].tolist()
-            # co2_intensity = energy_prices['years'].tolist()
             energy_costs_List = price_details[techno].tolist()
 
             if price_name == 'CAPEX_Part':
@@ -109,60 +110,76 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
 
             # Calculate total CO2 emissions
             data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
-            carbon_emissions = techno_disc.get_sosdisc_outputs(
-                'CO2_emissions_detailed')
-            print('carbon_emissions', carbon_emissions)
-            CO2_per_use = np.zeros(
-                len(carbon_emissions['years']))
-            print('CO2_per_use', CO2_per_use)
+            carbon_emissions = techno_disc.get_sosdisc_outputs('CO2_emissions_detailed')
+            CO2_per_use = np.zeros(len(year_list))
+
             if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
                 if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
+                        len(year_list)) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
                                       'high_calorific_value']
                 elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use']
+                        len(year_list)) * data_fuel_dict['CO2_per_use']
+            for emission_type in carbon_emissions:
+                if emission_type == techno:
+                    total_carbon_emissions = CO2_per_use + \
+                                             carbon_emissions[techno].values
+            CO2_per_kWh_techno = total_carbon_emissions
+            co2_intensity[techno] = CO2_per_kWh_techno.tolist()
+            co2_all_years.extend(co2_intensity[techno])
 
     # To display initial charts for start year
-
+    fig = go.Figure()
     key_list = list(techno_price_filter_data.keys())
-    # print('key_list', key_list)
-    initial_y_values = []
-    for key in techno_price_filter_data.keys():
-        initial_y_values.append(techno_price_filter_data[key][0])
+    for i in range(len(year_list)):
+        initial_y_values = []
+        initial_co2 = []
+        for key in techno_price_filter_data.keys():
+            initial_y_values.append(techno_price_filter_data[key][i])
+            initial_co2.append(co2_intensity[key][i])
+        # creating dictinary to get technos, years and CO2
+        data_dict = {'techno': key_list, 'y_values': initial_y_values, 'co2': initial_co2}
+        filter_df = pd.DataFrame.from_dict(data_dict)
+        # Filtering most producing 15 technologies based on years
+        techno_filter = filter_df.sort_values(by=['y_values'], ascending=[False])
+        techno_filter_list = techno_filter['techno'].tolist()[:15]
 
-    trace = go.Bar(
-        x=key_list,
-        y=initial_y_values,
-        marker=dict(
-            # set color equal to a variable
-            color=CO2_per_use,
-            cmin=min(CO2_per_use), cmax=max(CO2_per_use),
-            # one of plotly color scales
-            colorscale='RdYlGn_r',
-            # enable color scale
-            showscale=True,
-            colorbar=dict(title='CO2 (Kg/kWh)', thickness=20),
+        initial_y_values = []
+        initial_co2 = []
+        for key in techno_filter_list:
+            initial_y_values.append(techno_price_filter_data[key][i])
+            initial_co2.append(co2_intensity[key][i])
+
+        trace = go.Bar(
+            x=techno_filter_list,
+            y=initial_y_values,
+            visible=False,
+            marker=dict(
+                # set color equal to a variable
+                color=initial_co2,
+                cmin=min(co2_all_years), cmax=max(co2_all_years),
+                # one of plotly color scales
+                colorscale='RdYlGn_r',
+                # enable color scale
+                showscale=True,
+                colorbar=dict(title='CO2 (Kg/kWh)', thickness=20),
+            )
         )
-    )
+        fig.add_trace(trace)
 
     steps = []
     for i in range(len(year_list)):
-        y_values = []
-        for key in techno_price_filter_data.keys():
-            y_values.append(techno_price_filter_data[key][i])
+
         step = dict(
             method='update',
-            args=[{
-                'x[0]': key_list,  # [[i] for i in list(techno_price_data.keys())],
-                'y': [y_values]
-            }],
+            args=[{"visible": [False] * len(fig.data)}],
             label=str(year_list[i])
         )
+        step["args"][0]["visible"][i] = True
         steps.append(step)
 
-        # Create slider
+    # Create slider
     sliders = [dict(
         active=0,
         pad=dict(t=10),
@@ -177,9 +194,9 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
         sliders=sliders,
         barmode='group'
     )
+    fig.update_layout(layout)
+    fig.data[0].visible = True
 
-    fig = go.Figure(data=[trace], layout=layout)
-    # fig.show()
     new_chart = InstantiatedPlotlyNativeChart(
         fig, chart_name=title, default_title=True)
     return new_chart
@@ -198,6 +215,7 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == 'Charts':
                 graphs_list.extend(chart_filter.selected_values)
     # ----
+    # split to get only technology name
     split_title = namespace.split('.')
     title = split_title[len(split_title) - 1] + ' Capex Price'
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
@@ -206,17 +224,10 @@ def post_processings(execution_engine, namespace, filters):
         instanciated_charts.append(capex_bar_slider_graph)
 
     split_title = namespace.split('.')
-    title = split_title[len(split_title) - 1] + ' Opex Price'
+    title = split_title[len(split_title) - 1] + ' Price'
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
     if f'{energy} Figures table' in graphs_list:
-        opex_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace, title, 'OPEX_Part', 'Opex')
-        instanciated_charts.append(opex_bar_slider_graph)
-
-    split_title = namespace.split('.')
-    title = split_title[len(split_title) - 1] + ' Total Price'
-    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
-    if f'{energy} Figures table' in graphs_list:
-        total_price_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace, title, 'PRICE_Part', 'Total Price')
+        total_price_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace, title, 'PRICE_Part', 'Price')
         instanciated_charts.append(total_price_bar_slider_graph)
 
     return instanciated_charts
