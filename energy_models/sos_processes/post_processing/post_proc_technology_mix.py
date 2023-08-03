@@ -64,7 +64,6 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     EnergyDict = {}
     year_list = []
     energy_name_list = []
-
     for energ in energy_list:
         var_f_name = f"{namespace}.{energ}.technologies_list"
 
@@ -99,6 +98,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
             CO2tax_list = price_details['CO2Tax_Part'].tolist()
             energy_costs_List = price_details[techno].tolist()
 
+            # based on price name we are extracting price data
             if price_name == 'CAPEX_Part':
                 techno_price_filter_data[techno] = capex_list
             elif price_name == 'OPEX_Part':
@@ -108,7 +108,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
             else:
                 techno_price_filter_data[techno] = energy_costs_List
 
-            # Calculate total CO2 emissions
+            # Calculate total CO2 intensity
             data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
             carbon_emissions = techno_disc.get_sosdisc_outputs('CO2_emissions_detailed')
             CO2_per_use = np.zeros(len(year_list))
@@ -126,38 +126,41 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
                     total_carbon_emissions = CO2_per_use + \
                                              carbon_emissions[techno].values
             CO2_per_kWh_techno = total_carbon_emissions
+            # Getting data for particular year
             co2_intensity[techno] = CO2_per_kWh_techno.tolist()
+            # Getting the co2 data for all the years
             co2_all_years.extend(co2_intensity[techno])
 
-    # To display initial charts for start year
+    # Gathering trace for all the years
     fig = go.Figure()
     key_list = list(techno_price_filter_data.keys())
     for i in range(len(year_list)):
-        initial_y_values = []
-        initial_co2 = []
+        y_values = []
+        co2_values = []
         for key in techno_price_filter_data.keys():
-            initial_y_values.append(techno_price_filter_data[key][i])
-            initial_co2.append(co2_intensity[key][i])
-        # creating dictinary to get technos, years and CO2
-        data_dict = {'techno': key_list, 'y_values': initial_y_values, 'co2': initial_co2}
+            y_values.append(techno_price_filter_data[key][i])
+            co2_values.append(co2_intensity[key][i])
+        # creating dictionary to get all technos, prices and CO2
+        data_dict = {'techno': key_list, 'y_values': y_values, 'co2': co2_values}
         filter_df = pd.DataFrame.from_dict(data_dict)
-        # Filtering most producing 15 technologies based on years
+        # Filtering pricing technologies in descending order
         techno_filter = filter_df.sort_values(by=['y_values'], ascending=[False])
+        # Extracting data for first 15 highest prices technologies
         techno_filter_list = techno_filter['techno'].tolist()[:15]
 
-        initial_y_values = []
-        initial_co2 = []
+        y_values = []
+        co2_values = []
         for key in techno_filter_list:
-            initial_y_values.append(techno_price_filter_data[key][i])
-            initial_co2.append(co2_intensity[key][i])
+            y_values.append(techno_price_filter_data[key][i])
+            co2_values.append(co2_intensity[key][i])
 
         trace = go.Bar(
             x=techno_filter_list,
-            y=initial_y_values,
+            y=y_values,
             visible=False,
             marker=dict(
                 # set color equal to a variable
-                color=initial_co2,
+                color=co2_values,
                 cmin=min(co2_all_years), cmax=max(co2_all_years),
                 # one of plotly color scales
                 colorscale='RdYlGn_r',
@@ -170,7 +173,6 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
 
     steps = []
     for i in range(len(year_list)):
-
         step = dict(
             method='update',
             args=[{"visible": [False] * len(fig.data)}],
@@ -215,7 +217,7 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == 'Charts':
                 graphs_list.extend(chart_filter.selected_values)
     # ----
-    # split to get only technology name
+    # split to get only technology name for title
     split_title = namespace.split('.')
     title = split_title[len(split_title) - 1] + ' Capex Price'
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
