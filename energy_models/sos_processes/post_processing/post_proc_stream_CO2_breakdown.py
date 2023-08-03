@@ -201,7 +201,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
                 continue
             price_per_kWh += [np.mean(row['price_per_kWh']), ]
             price_per_kWh_wotaxes += [np.mean(row['price_per_kWh_wotaxes']), ]
-            CO2_per_kWh += [np.mean(row['CO2_per_kWh']), ]
+            CO2_per_kWh  += [np.mean(row['CO2_per_kWh']), ]
             label += [i, ]
             production += [np.sum(row['production']), ]
             invest += [np.sum(row['invest']), ]
