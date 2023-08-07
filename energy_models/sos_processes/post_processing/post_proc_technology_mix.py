@@ -66,9 +66,11 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     energy_name_list = []
     for energ in energy_list:
         var_f_name = f"{namespace}.{energ}.technologies_list"
+        energy_production = f"{namespace}.{energ}.energy_production_detailed"
 
         # biomass_dry not having technolist and other than biomass we are extracting energy list
         if 'biomass_dry' not in var_f_name:
+            energy_production_df = execution_engine.dm.get_value(energy_production)
             EnergyDict[f"{energ}"] = {}
             loc_techno_list = execution_engine.dm.get_value(var_f_name)
             result = [f"{energ}." + direction for direction in loc_techno_list]
@@ -78,6 +80,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     techno_name_list = []
     techno_price_filter_data = {}
     co2_intensity = {}
+    # energy_prod = {}
     co2_all_years = []
 
     # looping energies
@@ -143,6 +146,11 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
         # creating dictionary to get all technos, prices and CO2
         data_dict = {'techno': key_list, 'y_values': y_values, 'co2': co2_values}
         filter_df = pd.DataFrame.from_dict(data_dict)
+        energy_prod_df = energy_production_df.copy()
+        energy_prod_df.columns = energy_prod_df.columns.str.replace("production ", "").str.replace("(TWh)", "")
+        filter_df = energy_prod_df.iloc[i]
+        print(energy_prod_df.to_string())
+
         # Filtering pricing technologies in descending order
         techno_filter = filter_df.sort_values(by=['y_values'], ascending=[False])
         # Extracting data for first 15 highest prices technologies
@@ -191,7 +199,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     # Set figure layout
     layout = go.Layout(
         title=title,
-        xaxis=dict(title='Technology'),
+        xaxis=dict(title='Technologies'),
         yaxis=dict(title=y_label + ' ($/MWh)'),
         sliders=sliders,
         barmode='group'
