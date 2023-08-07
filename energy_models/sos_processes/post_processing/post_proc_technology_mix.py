@@ -70,6 +70,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
 
         # biomass_dry not having technolist and other than biomass we are extracting energy list
         if 'biomass_dry' not in var_f_name:
+            energy_production_df = execution_engine.dm.get_value(energy_production)
             EnergyDict[f"{energ}"] = {}
             loc_techno_list = execution_engine.dm.get_value(var_f_name)
             result = [f"{energ}." + direction for direction in loc_techno_list]
@@ -79,7 +80,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     techno_name_list = []
     techno_price_filter_data = {}
     co2_intensity = {}
-    energy_prod = {}
+    # energy_prod = {}
     co2_all_years = []
 
     # looping energies
@@ -140,12 +141,16 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
         y_values = []
         co2_values = []
         for key in techno_price_filter_data.keys():
-            # energy_production.append(energy_prod[key][i])
             y_values.append(techno_price_filter_data[key][i])
             co2_values.append(co2_intensity[key][i])
         # creating dictionary to get all technos, prices and CO2
-        data_dict = {'techno': key_list, 'y_values': energy_production, 'co2': co2_values}
+        data_dict = {'techno': key_list, 'y_values': y_values, 'co2': co2_values}
         filter_df = pd.DataFrame.from_dict(data_dict)
+        energy_prod_df = energy_production_df.copy()
+        energy_prod_df.columns = energy_prod_df.columns.str.replace("production ", "").str.replace("(TWh)", "")
+        filter_df = energy_prod_df.iloc[i]
+        print(energy_prod_df.to_string())
+
         # Filtering pricing technologies in descending order
         techno_filter = filter_df.sort_values(by=['y_values'], ascending=[False])
         # Extracting data for first 15 highest prices technologies
@@ -154,7 +159,6 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
         y_values = []
         co2_values = []
         for key in techno_filter_list:
-            # energy_production.append(energy_prod[key][i])
             y_values.append(techno_price_filter_data[key][i])
             co2_values.append(co2_intensity[key][i])
 
