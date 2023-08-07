@@ -57,6 +57,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     price_name = string
     y_label = string
     '''
+    filtered_production_technology = 15
     disc = execution_engine.dm.get_disciplines_with_name(namespace)
     disc_input = disc[0].get_sosdisc_inputs()
     energy_list = disc_input['energy_list']
@@ -70,7 +71,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
         var_f_name = f"{namespace}.{energ}.technologies_list"
         var_energyproduction_name = f"{namespace}.{energ}.energy_production_detailed"
 
-        # biomass_dry not having technolist and other than biomass we are extracting energy list
+        # biomass_dry not having techno list and other than biomass we are extracting energy list
         if 'biomass_dry' not in var_f_name:
             EnergyDict[f"{energ}"] = {}
             loc_techno_list = execution_engine.dm.get_value(var_f_name)
@@ -80,7 +81,6 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
             var_energyproduction_df = execution_engine.dm.get_value(var_energyproduction_name)
             if y_incre == 0:
                 var_energyproduction_all_energy_df = var_energyproduction_df.copy()
-                #print(energ)
                 var_energyproduction_all_energy_df.columns = var_energyproduction_all_energy_df.columns.str.replace(
                     energ + " ", "").str.replace("(TWh)", "")
             else:
@@ -92,7 +92,6 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     techno_name_list = []
     techno_price_filter_data = {}
     co2_intensity = {}
-    # energy_prod = {}
     co2_all_years = []
 
     # looping energies
@@ -158,17 +157,16 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
         for key in techno_price_filter_data.keys():
             y_values.append(techno_price_filter_data[key][i])
             co2_values.append(co2_intensity[key][i])
-            #print('var_energyproduction_all_energy_df[key]', var_energyproduction_all_energy_df[key])
             production_values.append(var_energyproduction_all_energy_df[key][i])
         # creating dictionary to get all technos, prices and CO2
         data_dict = {'techno': key_list, 'y_values': y_values,
                      'co2': co2_values, 'production': production_values}
         filter_df = pd.DataFrame.from_dict(data_dict)
 
-        # Filtering pricing technologies in descending order
+        # Filtering most producing technologies in descending order based on production values
         techno_filter = filter_df.sort_values(by=['production'], ascending=[False])
-        # Extracting data for first 15 highest prices technologies
-        techno_filter_list = techno_filter['techno'].tolist()[:15]
+        # Extracting data for first 15 highest most producing technologies
+        techno_filter_list = techno_filter['techno'].tolist()[:filtered_production_technology]
 
         y_values = []
         co2_values = []
