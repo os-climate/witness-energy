@@ -64,18 +64,30 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     EnergyDict = {}
     year_list = []
     energy_name_list = []
+    var_energyproduction_all_energy_df = pd.DataFrame(columns=["years"])
+    y_incre = 0
     for energ in energy_list:
         var_f_name = f"{namespace}.{energ}.technologies_list"
-        energy_production = f"{namespace}.{energ}.energy_production_detailed"
+        var_energyproduction_name = f"{namespace}.{energ}.energy_production_detailed"
 
         # biomass_dry not having technolist and other than biomass we are extracting energy list
         if 'biomass_dry' not in var_f_name:
-            energy_production_df = execution_engine.dm.get_value(energy_production)
             EnergyDict[f"{energ}"] = {}
             loc_techno_list = execution_engine.dm.get_value(var_f_name)
             result = [f"{energ}." + direction for direction in loc_techno_list]
             techno_list.extend(result)
             EnergyDict[f"{energ}"]['TechnoName'] = loc_techno_list
+            var_energyproduction_df = execution_engine.dm.get_value(var_energyproduction_name)
+            if y_incre == 0:
+                var_energyproduction_all_energy_df = var_energyproduction_df.copy()
+                #print(energ)
+                var_energyproduction_all_energy_df.columns = var_energyproduction_all_energy_df.columns.str.replace(
+                    energ + " ", "").str.replace("(TWh)", "")
+            else:
+                var_energyproduction_all_energy_df = var_energyproduction_all_energy_df.merge(var_energyproduction_df)
+                var_energyproduction_all_energy_df.columns = var_energyproduction_all_energy_df.columns.str.replace(
+                    energ + " ", "").str.replace(r" \(.*\)", "")
+            y_incre += 1
 
     techno_name_list = []
     techno_price_filter_data = {}
@@ -137,22 +149,24 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     # Gathering trace for all the years
     fig = go.Figure()
     key_list = list(techno_price_filter_data.keys())
+
     for i in range(len(year_list)):
         y_values = []
         co2_values = []
+        production_values = []
+
         for key in techno_price_filter_data.keys():
             y_values.append(techno_price_filter_data[key][i])
             co2_values.append(co2_intensity[key][i])
+            #print('var_energyproduction_all_energy_df[key]', var_energyproduction_all_energy_df[key])
+            production_values.append(var_energyproduction_all_energy_df[key][i])
         # creating dictionary to get all technos, prices and CO2
-        data_dict = {'techno': key_list, 'y_values': y_values, 'co2': co2_values}
+        data_dict = {'techno': key_list, 'y_values': y_values,
+                     'co2': co2_values, 'production': production_values}
         filter_df = pd.DataFrame.from_dict(data_dict)
-        energy_prod_df = energy_production_df.copy()
-        energy_prod_df.columns = energy_prod_df.columns.str.replace("production ", "").str.replace("(TWh)", "")
-        filter_df = energy_prod_df.iloc[i]
-        print(energy_prod_df.to_string())
 
         # Filtering pricing technologies in descending order
-        techno_filter = filter_df.sort_values(by=['y_values'], ascending=[False])
+        techno_filter = filter_df.sort_values(by=['production'], ascending=[False])
         # Extracting data for first 15 highest prices technologies
         techno_filter_list = techno_filter['techno'].tolist()[:15]
 
