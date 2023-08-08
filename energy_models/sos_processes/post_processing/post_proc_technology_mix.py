@@ -41,7 +41,7 @@ def post_processing_filters(execution_engine, namespace):
     chart_list = []
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[
         0].mdo_discipline_wrapp.wrapper.energy_name
-    chart_list += [f'{energy} Figures table']
+    chart_list += [f'{energy} Price data of all technologies']
 
     # The filters are set to False by default since the graphs are not yet
     # mature
@@ -108,17 +108,11 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
             techno_name_list.append(techno)
             year_list = price_details['years'].tolist()
             capex_list = price_details['CAPEX_Part'].tolist()
-            opex_list = price_details['OPEX_Part'].tolist()
-            CO2tax_list = price_details['CO2Tax_Part'].tolist()
             energy_costs_List = price_details[techno].tolist()
 
             # based on price name we are extracting price data
             if price_name == 'CAPEX_Part':
                 techno_price_filter_data[techno] = capex_list
-            elif price_name == 'OPEX_Part':
-                techno_price_filter_data[techno] = opex_list
-            elif price_name == 'CO2Tax_Part':
-                techno_price_filter_data[techno] = CO2tax_list
             else:
                 techno_price_filter_data[techno] = energy_costs_List
 
@@ -165,7 +159,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
 
         # Filtering most producing technologies in descending order based on production values
         techno_filter = filter_df.sort_values(by=['production'], ascending=[False])
-        # Extracting data for first 15 highest most producing technologies
+        # Extracting data for first 'filtered_production_technology' highest most producing technologies
         techno_filter_list = techno_filter['techno'].tolist()[:filtered_production_technology]
 
         y_values = []
@@ -186,7 +180,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
                 colorscale='RdYlGn_r',
                 # enable color scale
                 showscale=True,
-                colorbar=dict(title='CO2 (Kg/kWh)', thickness=20),
+                colorbar=dict(title='CO2 Intensity (kg/kWh)', thickness=20),
             )
         )
         fig.add_trace(trace)
@@ -237,19 +231,16 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == 'Charts':
                 graphs_list.extend(chart_filter.selected_values)
     # ----
-    # split to get only technology name for title
-    split_title = namespace.split('.')
-    title = split_title[len(split_title) - 1] + ' Capex Price'
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
-    if f'{energy} Figures table' in graphs_list:
-        capex_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace, title, 'CAPEX_Part', 'Capex')
+    if f'{energy} Price data of all technologies' in graphs_list:
+        capex_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace,
+                                           'All Technologies Capex', 'CAPEX_Part', 'Capex')
         instanciated_charts.append(capex_bar_slider_graph)
 
-    split_title = namespace.split('.')
-    title = split_title[len(split_title) - 1] + ' Price'
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
-    if f'{energy} Figures table' in graphs_list:
-        total_price_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace, title, 'PRICE_Part', 'Price')
+    if f'{energy} Price data of all technologies' in graphs_list:
+        total_price_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace,
+                                            'All Technologies Price', 'PRICE_Part', 'Price')
         instanciated_charts.append(total_price_bar_slider_graph)
 
     return instanciated_charts
