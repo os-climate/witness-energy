@@ -198,7 +198,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     # Create slider
     sliders = [dict(
         active=0,
-        pad=dict(t=10),
+        pad=dict(t=70),
         steps=steps
     )]
 
@@ -211,6 +211,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
         barmode='group'
     )
     fig.update_layout(layout)
+    fig.update_xaxes(tickangle=25)
     fig.data[0].visible = True
 
     new_chart = InstantiatedPlotlyNativeChart(
@@ -234,13 +235,13 @@ def post_processings(execution_engine, namespace, filters):
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
     if f'{energy} Price data of all technologies' in graphs_list:
         capex_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace,
-                                           'All Technologies Capex', 'CAPEX_Part', 'Capex')
+                                           '15 Most Producing Technologies Capex', 'CAPEX_Part', 'Capex')
         instanciated_charts.append(capex_bar_slider_graph)
 
     energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
     if f'{energy} Price data of all technologies' in graphs_list:
         total_price_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace,
-                                            'All Technologies Price', 'PRICE_Part', 'Price')
+                                            '15 Most Producing Technologies Price', 'PRICE_Part', 'Price')
         instanciated_charts.append(total_price_bar_slider_graph)
 
     return instanciated_charts
