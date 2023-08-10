@@ -198,7 +198,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     # Create slider
     sliders = [dict(
         active=0,
-        pad=dict(t=70),
+        pad=dict(t=50),
         steps=steps
     )]
 
