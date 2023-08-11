@@ -19,13 +19,13 @@ import scipy.interpolate as sc
 
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
-DEFAULT_TECHNOLOGIES_LIST = ['FossilGas', 'UpgradingBiogas', 'Methanation']
-TECHNOLOGIES_LIST = ['FossilGas', 'UpgradingBiogas']
-TECHNOLOGIES_LIST_COARSE = ['FossilGas']
-TECHNOLOGIES_LIST_DEV = ['FossilGas', 'UpgradingBiogas', 'Methanation']
+DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump']
+TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler']
+TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoiler']
+TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump']
 
 
 class Study(EnergyMixStudyManager):
@@ -40,66 +40,66 @@ class Study(EnergyMixStudyManager):
         self.bspline = bspline
 
     def get_investments(self):
-        invest_methane_mix_dict = {}
+        invest_high_heat_mix_dict = {}
         l_ctrl = np.arange(0, 8)
 
-        if 'FossilGas' in self.technologies_list:
+        if 'NaturalGasBoiler' in self.technologies_list:
             #             invest_methane_mix_dict['FossilGas'] = [
             #                 max(1e-8, 1.88 - 0.04 * i) for i in l_ctrl]
-            invest_methane_mix_dict['FossilGas'] = [
+            invest_high_heat_mix_dict['NaturalGasBoiler'] = [
                 0.02, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
 
-        if 'UpgradingBiogas' in self.technologies_list:
+        if 'ElectricBoiler' in self.technologies_list:
             #             invest_methane_mix_dict['UpgradingBiogas'] = [
             #                 max(1e-8, 0.02 * (1 + 0.054)**i) for i in l_ctrl]
-            invest_methane_mix_dict['UpgradingBiogas'] = [
+            invest_high_heat_mix_dict['ElectricBoiler'] = [
                 0.02, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
-        if 'Methanation' in self.technologies_list:
-            invest_methane_mix_dict['Methanation'] = list(np.ones(
+        if 'HeatPump' in self.technologies_list:
+            invest_high_heat_mix_dict['HeatPump'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
         if self.bspline:
-            invest_methane_mix_dict['years'] = self.years
+            invest_high_heat_mix_dict['years'] = self.years
 
             for techno in self.technologies_list:
-                invest_methane_mix_dict[techno], _ = self.invest_bspline(
-                    invest_methane_mix_dict[techno], len(self.years))
+                invest_high_heat_mix_dict[techno], _ = self.invest_bspline(
+                    invest_high_heat_mix_dict[techno], len(self.years))
 
-        methane_mix_invest_df = pd.DataFrame(invest_methane_mix_dict)
+        high_heat_mix_invest_df = pd.DataFrame(invest_high_heat_mix_dict)
 
-        return methane_mix_invest_df
+        return high_heat_mix_invest_df
 
     def get_investments_old(self):
-        invest_methane_mix_dict = {}
+        invest_high_heat_mix_dict = {}
         l_ctrl = np.arange(0, 8)
 
-        if 'FossilGas' in self.technologies_list:
-            invest_methane_mix_dict['FossilGas'] = [
+        if 'NaturalGasBoiler' in self.technologies_list:
+            invest_high_heat_mix_dict['NaturalGasBoiler'] = [
                 max(1e-8, 1.88 - 0.04 * i) for i in l_ctrl]
 
-        if 'UpgradingBiogas' in self.technologies_list:
-            invest_methane_mix_dict['UpgradingBiogas'] = [
+        if 'ElectricBoiler' in self.technologies_list:
+            invest_high_heat_mix_dict['ElectricBoiler'] = [
                 max(1e-8, 0.02 * (1 + 0.054)**i) for i in l_ctrl]
 
-        if 'Methanation' in self.technologies_list:
-            invest_methane_mix_dict['Methanation'] = np.ones(
+        if 'HeatPump' in self.technologies_list:
+            invest_high_heat_mix_dict['HeatPump'] = np.ones(
                 len(l_ctrl)) * 0.001
 
         if self.bspline:
-            invest_methane_mix_dict['years'] = self.years
+            invest_high_heat_mix_dict['years'] = self.years
 
             for techno in self.technologies_list:
-                invest_methane_mix_dict[techno], _ = self.invest_bspline(
-                    invest_methane_mix_dict[techno], len(self.years))
+                invest_high_heat_mix_dict[techno], _ = self.invest_bspline(
+                    invest_high_heat_mix_dict[techno], len(self.years))
 
-        methane_mix_invest_df = pd.DataFrame(invest_methane_mix_dict)
+        high_heat_mix_invest_df = pd.DataFrame(invest_high_heat_mix_dict)
 
-        return methane_mix_invest_df
+        return high_heat_mix_invest_df
 
     def setup_usecase(self):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = Methane.name
+        self.energy_name = hightemperatureheat.name
         energy_name = f'EnergyMix.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
@@ -136,9 +136,9 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
                        f'{self.study_name}.{energy_name}.technologies_list': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.FossilGas.margin': self.margin,
-                       f'{self.study_name}.{energy_name}.UpgradingBiogas.margin': self.margin,
-                       f'{self.study_name}.{energy_name}.Methanation.margin': self.margin,
+                       f'{self.study_name}.{energy_name}.NaturalGasBoiler.margin': self.margin,
+                       f'{self.study_name}.{energy_name}.ElectricBoiler.margin': self.margin,
+                       f'{self.study_name}.{energy_name}.HeatPump.margin': self.margin,
                        f'{self.study_name}.{energy_name}.transport_cost': self.transport,
                        f'{self.study_name}.{energy_name}.transport_margin': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
