@@ -3,14 +3,14 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.models.heat.high.natural_gas.natural_gas import NaturalGasHighHeat
+from energy_models.models.heat.high.natural_gas_boiler.natural_gas_boiler import NaturalGasBoilerHighHeat
 
 
-class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
+class NaturalGasBoilerDiscipline(HighHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Natural Gas Model',
+        'label': 'Natural Gas Boiler Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -22,7 +22,7 @@ class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'High Heat Natural Gas'
+    techno_name = 'High Heat Natural Gas Boiler'
     energy_name = hightemperatureheat.name
 
     # Conversions
@@ -118,5 +118,5 @@ class HighTemperatureHeatDiscipline(HighHeatTechnoDiscipline):
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = NaturalGasHighHeat(self.techno_name)
+        self.techno_model = NaturalGasBoilerHighHeat(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)

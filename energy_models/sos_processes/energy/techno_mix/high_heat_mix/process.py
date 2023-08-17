@@ -53,7 +53,7 @@ class ProcessBuilder(EnergyProcessBuilder):
             'energy_disciplines', 'Heat')
         for techno_name in self.techno_list:
             mods_dict[f'{energy_mix}.{heat_name}.{techno_name}'] = self.get_techno_disc_path(
-                heat_name, techno_name)
+                'heat', techno_name, sub_dir='high')
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:

@@ -120,7 +120,7 @@ class NaturalGasTestCase(unittest.TestCase):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.medium.natural_gas.natural_gas_disc.MediumTemperatureHeatDiscipline'
+        mod_path = 'energy_models.models.heat.medium.natural_gas_boiler.natural_gas_disc.MediumTemperatureHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

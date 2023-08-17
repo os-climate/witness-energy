@@ -5,8 +5,8 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.high.natural_gas.natural_gas_disc import HighTemperatureHeatDiscipline
-from energy_models.models.heat.high.natural_gas.natural_gas import NaturalGasHighHeat
+from energy_models.models.heat.high.natural_gas_boiler.natural_gas_boiler_disc import HighTemperatureHeatDiscipline
+from energy_models.models.heat.high.natural_gas_boiler.natural_gas_boiler import NaturalGasBoilerHighHeat
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
@@ -100,7 +100,7 @@ class NaturalGasTestCase(unittest.TestCase):
                        'data_fuel_dict': Methane.data_energy_dict,
                        }
 
-        ng_model = NaturalGasHighHeat('NaturalGas')
+        ng_model = NaturalGasBoilerHighHeat('NaturalGas')
         ng_model.configure_parameters(inputs_dict)
         ng_model.configure_parameters_update(inputs_dict)
         price_details = ng_model.compute_price()
@@ -120,7 +120,7 @@ class NaturalGasTestCase(unittest.TestCase):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.high.natural_gas.natural_gas_disc.HighTemperatureHeatDiscipline'
+        mod_path = 'energy_models.models.heat.high.natural_gas_boiler.natural_gas_boiler_disc.HighTemperatureHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

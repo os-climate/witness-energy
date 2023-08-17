@@ -7,7 +7,7 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 import numpy as np
 
 
-class NaturalGasHighHeat(highheattechno):
+class NaturalGasBoilerHighHeat(highheattechno):
 
     def compute_other_primary_energy_costs(self):
         """
