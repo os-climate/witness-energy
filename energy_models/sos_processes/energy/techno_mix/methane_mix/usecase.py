@@ -166,13 +166,6 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    import logging
-    import sys
-
-    print("test stderr", file=sys.stderr)
-    for handler in logging.getLogger().handlers:
-        print(handler)
-    logging.info('TEST')
     uc_cls = Study(main_study=True,
                    technologies_list=TECHNOLOGIES_LIST)
     uc_cls.load_data()
