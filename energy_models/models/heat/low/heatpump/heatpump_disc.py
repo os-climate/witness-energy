@@ -75,7 +75,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
         'mean_temperature_unit': '°C',
     }
 
-    # heatpump Heat production
+    # heat_pump Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
     # in TWh
     initial_production = 1*8760/3 # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)

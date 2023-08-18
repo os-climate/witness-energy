@@ -133,7 +133,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.medium.heatpump.heatpump_disc.HeatPumpDiscipline'
+        mod_path = 'energy_models.models.heat.medium.heat_pump.heatpump_disc.HeatPumpDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

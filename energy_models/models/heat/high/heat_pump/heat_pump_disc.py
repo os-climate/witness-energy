@@ -18,7 +18,7 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.models.heat.high.heatpump.heatpump import HeatPump
+from energy_models.models.heat.high.heat_pump.heat_pump import HeatPump
 
 
 class HeatPumpDiscipline(HighHeatTechnoDiscipline):
@@ -81,7 +81,7 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
         'mean_temperature_unit': '°C'
     }
 
-    # heatpump Heat production
+    # heat_pump Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
     # in TWh
     initial_production = 1*8760/3  # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
