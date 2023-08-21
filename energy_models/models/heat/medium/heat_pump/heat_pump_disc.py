@@ -17,7 +17,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
-from energy_models.models.heat.medium.heatpump.heatpump import HeatPump
+from energy_models.models.heat.medium.heat_pump.heat_pump import HeatPump
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 
 

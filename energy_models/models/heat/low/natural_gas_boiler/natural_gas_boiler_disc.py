@@ -10,7 +10,7 @@ class NaturalGasBoilerDiscipline(LowHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Natural Gas Model',
+        'label': 'Natural Gas Boiler Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',

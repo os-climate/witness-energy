@@ -21,7 +21,7 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.models.heat.medium.geothermal.geothermal import GeothermalHeat
 
 
-class GeothermalHeatDiscipline(MediumHeatTechnoDiscipline):
+class GeothermalDiscipline(MediumHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {

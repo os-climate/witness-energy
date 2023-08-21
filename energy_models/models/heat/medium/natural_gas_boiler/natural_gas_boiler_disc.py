@@ -3,14 +3,14 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.models.heat.medium.natural_gas.natural_gas import NaturalGasMediumHeat
+from energy_models.models.heat.medium.natural_gas_boiler.natural_gas_boiler import NaturalGasMediumHeat
 
 
-class MediumTemperatureHeatDiscipline(MediumHeatTechnoDiscipline):
+class NaturalGasBoilerDiscipline(MediumHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Natural Gas Model',
+        'label': 'Natural Gas Boiler Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
