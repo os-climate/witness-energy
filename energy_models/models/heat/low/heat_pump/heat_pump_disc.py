@@ -18,7 +18,7 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.models.heat.low.heatpump.heatpump import HeatPump
+from energy_models.models.heat.low.heat_pump.heat_pump import HeatPump
 
 
 class HeatPumpDiscipline(LowHeatTechnoDiscipline):

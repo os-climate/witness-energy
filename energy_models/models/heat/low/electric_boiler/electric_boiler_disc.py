@@ -5,7 +5,7 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.models.heat.low.electric_boiler.electric_boiler import ElectricBoilerLowHeat
 
 
-class ElectricBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
+class ElectricBoilerDiscipline(LowHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
