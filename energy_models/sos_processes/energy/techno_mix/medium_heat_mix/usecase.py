@@ -22,10 +22,10 @@ from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
-DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump']
-TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler']
+DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
+TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoiler']
-TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump']
+TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
 
 
 class Study(EnergyMixStudyManager):
@@ -59,6 +59,10 @@ class Study(EnergyMixStudyManager):
             invest_medium_heat_mix_dict['HeatPump'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
+        if 'Geothermal' in self.technologies_list:
+            invest_medium_heat_mix_dict['Geothermal'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
         if self.bspline:
             invest_medium_heat_mix_dict['years'] = self.years
 
@@ -84,6 +88,10 @@ class Study(EnergyMixStudyManager):
 
         if 'HeatPump' in self.technologies_list:
             invest_medium_heat_mix_dict['HeatPump'] = np.ones(
+                len(l_ctrl)) * 0.001
+
+        if 'Geothermal' in self.technologies_list:
+            invest_medium_heat_mix_dict['Geothermal'] = np.ones(
                 len(l_ctrl)) * 0.001
 
         if self.bspline:
@@ -139,6 +147,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.NaturalGasBoiler.margin': self.margin,
                        f'{self.study_name}.{energy_name}.ElectricBoiler.margin': self.margin,
                        f'{self.study_name}.{energy_name}.HeatPump.margin': self.margin,
+                       f'{self.study_name}.{energy_name}.Geothermal.margin': self.margin,
                        f'{self.study_name}.{energy_name}.transport_cost': self.transport,
                        f'{self.study_name}.{energy_name}.transport_margin': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
@@ -166,6 +175,13 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
+    import logging
+    import sys
+
+    print("test stderr", file=sys.stderr)
+    for handler in logging.getLogger().handlers:
+        print(handler)
+    logging.info('TEST')
     uc_cls = Study(main_study=True,
                    technologies_list=TECHNOLOGIES_LIST)
     uc_cls.load_data()
