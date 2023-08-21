@@ -21,7 +21,7 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.models.heat.high.geothermal.geothermal import GeothermalHeat
 
 
-class GeothermalHeatDiscipline(HighHeatTechnoDiscipline):
+class GeothermalDiscipline(HighHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {

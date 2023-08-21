@@ -23,7 +23,7 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
-TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump']
+TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoiler']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
 
