@@ -108,7 +108,7 @@ class Study(EnergyMixStudyManager):
     def setup_usecase(self):
         energy_mix_name = 'EnergyMix'
         self.energy_name = hightemperatureheat.name
-        energy_name = f'EnergyMix.{self.energy_name}'
+        energy_name = f'EnergyMix.Heat.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         self.energy_prices = pd.DataFrame({'years': years,
@@ -121,7 +121,7 @@ class Study(EnergyMixStudyManager):
             {'years': years, 'invest': 10.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -131,11 +131,13 @@ class Study(EnergyMixStudyManager):
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 200.0})
+            {'years': years, 'transport': np.ones(len(years)) * 0})
 
-        self.resources_price = pd.DataFrame(columns=['years', 'CO2', 'water'])
+        # self.resources_price = pd.DataFrame(columns=['years', 'CO2', 'water'])
+        self.resources_price = pd.DataFrame(columns=['years', 'water'])
+
         self.resources_price['years'] = years
-        self.resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
+        # self.resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'biomass_dry': - 0.64 / 4.86, 'biogas': - 0.05, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
@@ -177,7 +179,6 @@ class Study(EnergyMixStudyManager):
 if '__main__' == __name__:
     import logging
     import sys
-
     print("test stderr", file=sys.stderr)
     for handler in logging.getLogger().handlers:
         print(handler)
@@ -185,7 +186,7 @@ if '__main__' == __name__:
     uc_cls = Study(main_study=True,
                    technologies_list=TECHNOLOGIES_LIST)
     uc_cls.load_data()
-    print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
+    # print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
     uc_cls.run()
 #     ppf = PostProcessingFactory()
 #     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
