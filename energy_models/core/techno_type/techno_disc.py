@@ -15,6 +15,7 @@ limitations under the License.
 '''
 import logging
 
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 import pandas as pd
@@ -113,6 +114,7 @@ class TechnoDiscipline(SoSWrapp):
                    'dataframe_descriptor': {'years': ('float', None, True),
                                             'margin': ('float', None, True)}
                    },
+        GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
         'resources_price': {'type': 'dataframe', 'unit': '$/t', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
                             'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                      'CO2_tax': ('float', None, True),
