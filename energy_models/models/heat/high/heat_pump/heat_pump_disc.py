@@ -37,7 +37,7 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'HighHeatPump'
+    techno_name = 'HeatPump'
     energy_name = hightemperatureheat.name
 
 

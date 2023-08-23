@@ -108,13 +108,14 @@ class Study(EnergyMixStudyManager):
     def setup_usecase(self):
         energy_mix_name = 'EnergyMix'
         self.energy_name = lowtemperatureheat.name
-        energy_name = f'EnergyMix.{self.energy_name}'
+        energy_name = f'EnergyMix.Heat.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         self.energy_prices = pd.DataFrame({'years': years,
                                            'electricity': 16.0,
                                            'syngas': 80.0,
-                                           'biogas': 70.0})
+                                           'biogas': 70.0,
+                                           'methane': 100})
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(

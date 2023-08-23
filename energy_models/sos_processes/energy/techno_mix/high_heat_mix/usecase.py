@@ -114,7 +114,8 @@ class Study(EnergyMixStudyManager):
         self.energy_prices = pd.DataFrame({'years': years,
                                            'electricity': 16.0,
                                            'syngas': 80.0,
-                                           'biogas': 70.0})
+                                           'biogas': 70.0,
+                                           'methane': 100})
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
@@ -186,7 +187,7 @@ if '__main__' == __name__:
     uc_cls = Study(main_study=True,
                    technologies_list=TECHNOLOGIES_LIST)
     uc_cls.load_data()
-    # print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
+    print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
     uc_cls.run()
 #     ppf = PostProcessingFactory()
 #     for disc in uc_cls.execution_engine.root_process.sos_disciplines:

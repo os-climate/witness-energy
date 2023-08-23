@@ -37,7 +37,7 @@ class GeothermalDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'LowHeatGeothermal'
+    techno_name = 'Geothermal'
     energy_name = lowtemperatureheat.name
 
 

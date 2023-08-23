@@ -22,7 +22,7 @@ class NaturalGasBoilerDiscipline(MediumHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'Medium Heat Natural Gas'
+    techno_name = 'NaturalGasBoiler'
     energy_name = mediumtemperatureheat.name
 
     # Conversions

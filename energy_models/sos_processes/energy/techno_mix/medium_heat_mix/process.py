@@ -50,7 +50,7 @@ class ProcessBuilder(EnergyProcessBuilder):
 
         mods_dict = {}
         mods_dict[f'{energy_mix}.{heat}.{heat_name}'] = self.get_stream_disc_path(
-            'energy_disciplines', 'Heat')
+            'energy_disciplines', 'MediumHeat')
         for techno_name in self.techno_list:
             mods_dict[f'{energy_mix}.{heat}.{heat_name}.{techno_name}'] = self.get_techno_disc_path(
                 'heat', techno_name, sub_dir='medium')

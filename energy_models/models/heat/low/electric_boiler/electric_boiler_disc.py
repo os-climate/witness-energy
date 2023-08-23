@@ -21,7 +21,7 @@ class ElectricBoilerDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'Electric Boiler'
+    techno_name = 'ElectricBoiler'
     energy_name = lowtemperatureheat.name
 
     # Heat Producer [Online]

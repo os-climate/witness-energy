@@ -37,7 +37,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'LowHeatPump'
+    techno_name = 'HeatPump'
     energy_name = lowtemperatureheat.name
 
     lifetime = 25           # years
