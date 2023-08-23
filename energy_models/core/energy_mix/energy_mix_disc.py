@@ -51,6 +51,7 @@ from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDis
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossary import Glossary as GlossaryWitnessCore
 
 
 class Energy_Mix_Discipline(SoSWrapp):
@@ -101,11 +102,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                'normalization_value_demand_constraints': {'type': 'float', 'default': 1000.0, 'unit': 'Twh',
                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                           'namespace': 'ns_ref'},
-               'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                             'namespace': 'ns_energy_study',
-                             'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
-                                                      'CO2_tax': ('float', None, True)},
-                             'dataframe_edition_locked': False},
+               GlossaryWitnessCore.CO2Taxes['var_name']: GlossaryWitnessCore.CO2Taxes,
                'minimum_energy_production': {'type': 'float', 'default': 1e4,
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
                                              'unit': 'TWh'},

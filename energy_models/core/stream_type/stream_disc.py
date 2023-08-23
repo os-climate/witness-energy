@@ -40,6 +40,7 @@ class StreamDiscipline(SoSWrapp):
         'icon': '',
         'version': '',
     }
+
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,

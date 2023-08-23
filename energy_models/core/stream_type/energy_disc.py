@@ -20,6 +20,7 @@ from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+from climateeconomics.glossary import Glossary as GlossaryWitnessCore
 
 
 class EnergyDiscipline(StreamDiscipline):
@@ -37,10 +38,7 @@ class EnergyDiscipline(StreamDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': StreamDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                             'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                      'CO2_tax': ('float',  None, True)},
-                             'dataframe_edition_locked': False},
+    DESC_IN = {GlossaryWitnessCore.CO2Taxes['var_name']: GlossaryWitnessCore.CO2Taxes,
                }
     DESC_IN.update(StreamDiscipline.DESC_IN)
 

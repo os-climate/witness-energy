@@ -113,10 +113,6 @@ class TechnoDiscipline(SoSWrapp):
                    'dataframe_descriptor': {'years': ('float', None, True),
                                             'margin': ('float', None, True)}
                    },
-        'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                      'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                               'CO2_tax': ('float',  None, True)},
-                      'dataframe_edition_locked': False},
         'resources_price': {'type': 'dataframe', 'unit': '$/t', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
                             'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                      'CO2_tax': ('float', None, True),
