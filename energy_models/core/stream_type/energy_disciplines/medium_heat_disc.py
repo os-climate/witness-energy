@@ -15,10 +15,10 @@ limitations under the License.
 '''
 
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 
 
-class HeatDiscipline(EnergyDiscipline):
+class MediumHeatDiscipline(EnergyDiscipline):
     # ontology information
     _ontology_data = {
         'label': ' Heat Energy Model',
@@ -35,21 +35,21 @@ class HeatDiscipline(EnergyDiscipline):
     # -- add specific techno inputs to this
 
     DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': hightemperatureheat.default_techno_list,
-                                     'default': hightemperatureheat.default_techno_list,
+                                     'possible_values': mediumtemperatureheat.default_techno_list,
+                                     'default': mediumtemperatureheat.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_heat',
                                      'structuring': True, 'unit': '-'
                                      },
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'unit': 'defined in dict',
-                                  'namespace': 'ns_heat', 'default': hightemperatureheat.data_energy_dict},
+                                  'namespace': 'ns_heat', 'default': mediumtemperatureheat.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
-    energy_name = hightemperatureheat.name
+    energy_name = mediumtemperatureheat.name
 
     DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.energy_model = hightemperatureheat(self.energy_name)
+        self.energy_model = mediumtemperatureheat(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)

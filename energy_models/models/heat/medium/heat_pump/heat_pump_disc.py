@@ -16,16 +16,16 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
-from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
-from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.models.heat.low.heatpump.heatpump import HeatPump
+from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
+from energy_models.models.heat.medium.heat_pump.heat_pump import HeatPump
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 
 
-class HeatPumpDiscipline(LowHeatTechnoDiscipline):
+class HeatPumpDiscipline(MediumHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Heat Pump Low Heat Model',
+        'label': 'Heat Pump Medium Heat Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -37,11 +37,10 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'LowHeatPump'
-    energy_name = lowtemperatureheat.name
+    techno_name = 'HeatPump'
+    energy_name = mediumtemperatureheat.name
 
-    lifetime = 25           # years
-    # https://www.energy.gov/energysaver/heat-pump-systems
+    lifetime = 25           # years # https://www.energy.gov/energysaver/heat-pump-systems
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.
     # Heat pump can reduce your electricity use for heating by approximately 50% compared to
     # electric resistance heating such as furnaces and baseboard heaters.
@@ -53,7 +52,6 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
     construction_delay = 1  # years
 
     techno_infos_dict_default = {
-
         'Capex_init': 718/(25*8760), #660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
@@ -64,18 +62,25 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
         'efficiency': 1,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
-        'maturity': 5,
-        'learning_rate': 0.1,
+        # 'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
+        # 'elec_demand_unit': 'kWh/kWh',
+        # 'heating_space': 92.9,
+        # 'heating_space_unit': 'm^2',
+        # 'heat_required_per_meter_square': 0.00879, #https://carbonswitch.com/heat-pump-sizing-guide/#:~:text=If%20you%20Google%20%E2%80%9Cheat%20pump,a%2060%2C000%20BTU%20heat%20pump.
+        # 'heat_required_per_meter_square_unit': 'kW/m^2',
+        #'maturity': 5,
+        'learning_rate': 0.00,
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
-        'output_temperature': 60, # Average Low Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
+        'output_temperature': 250, # Average Medium Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
         'mean_temperature': 20,
         'output_temperature_unit': '°C',
         'mean_temperature_unit': '°C',
     }
 
-    # heatpump Heat production
+
+    # heat_pump Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
     # in TWh
     initial_production = 1*8760/3 # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
@@ -87,8 +92,11 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
+
+    # Renewable Fuels Association [online]
+    # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), 'invest': 0 * np.array([1*8760*0.5*0.5/3])}) # Invest before year start is 0
+        {'past years': np.array(-construction_delay), 'invest': 0 * np.array([(1*8760*0.5*0.5/3)])}) # Invest before year start is 0
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -101,9 +109,9 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
-    DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)
+    DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
-    DESC_OUT = LowHeatTechnoDiscipline.DESC_OUT
+    DESC_OUT = MediumHeatTechnoDiscipline.DESC_OUT
     _maturity = 'Research'
 
     def init_execution(self):

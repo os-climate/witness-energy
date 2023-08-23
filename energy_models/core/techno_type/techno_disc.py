@@ -263,9 +263,9 @@ class TechnoDiscipline(SoSWrapp):
                                                                       'hydrogen.liquid_hydrogen': ('float', None, True),
                                                                       'renewable': ('float', None, True),
                                                                       'fossil': ('float', None, True),
-                                                                      'Low heat temperature': ('float', None, True),
-                                                                      'Medium heat temperature': ('float', None, True),
-                                                                      'High heat temperature': ('float', None, True),
+                                                                      'LowHeatTemperature': ('float', None, True),
+                                                                      'MediumHeatTemperature': ('float', None, True),
+                                                                      'HighHeatTemperature': ('float', None, True),
                                                                   }
                                                                   }
                 if self.get_sosdisc_inputs('is_apply_resource_ratio'):

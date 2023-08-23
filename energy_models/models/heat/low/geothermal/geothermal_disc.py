@@ -21,7 +21,7 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.models.heat.low.geothermal.geothermal import GeothermalHeat
 
 
-class GeothermalHeatDiscipline(LowHeatTechnoDiscipline):
+class GeothermalDiscipline(LowHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
@@ -37,7 +37,7 @@ class GeothermalHeatDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'LowHeatGeothermal'
+    techno_name = 'Geothermal'
     energy_name = lowtemperatureheat.name
 
 

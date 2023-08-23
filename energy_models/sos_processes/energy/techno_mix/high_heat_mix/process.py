@@ -40,24 +40,24 @@ class ProcessBuilder(EnergyProcessBuilder):
     def get_builders(self):
 
         ns_study = self.ee.study_name
-
+        heat = 'Heat'
         heat_name = hightemperatureheat.name
         energy_mix = 'EnergyMix'
-        ns_dict = {'ns_heat': f'{ns_study}.{energy_mix}.{heat_name}',
+        ns_dict = {'ns_heat': f'{ns_study}.{energy_mix}.{heat}.{heat_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}', 'ns_resource': f'{ns_study}.{energy_mix}'}
 
         mods_dict = {}
-        mods_dict[f'{energy_mix}.{heat_name}'] = self.get_stream_disc_path(
-            'energy_disciplines', 'Heat')
+        mods_dict[f'{energy_mix}.{heat}.{heat_name}'] = self.get_stream_disc_path(
+            'energy_disciplines', 'HighHeat')
         for techno_name in self.techno_list:
-            mods_dict[f'{energy_mix}.{heat_name}.{techno_name}'] = self.get_techno_disc_path(
+            mods_dict[f'{energy_mix}.{heat}.{heat_name}.{techno_name}'] = self.get_techno_disc_path(
                 'heat', techno_name, sub_dir='high')
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
-            mods_dict_invest = {f'{energy_mix}.{heat_name}': 'energy_models.core.investments.disciplines.techno_invest_disc.InvestTechnoDiscipline',
+            mods_dict_invest = {f'{energy_mix}.{heat}.{heat_name}': 'energy_models.core.investments.disciplines.techno_invest_disc.InvestTechnoDiscipline',
                                 }
 
             builder_list_invest = self.create_builder_list(
