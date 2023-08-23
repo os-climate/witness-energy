@@ -115,7 +115,8 @@ class Study(EnergyMixStudyManager):
                                            'electricity': 16.0,
                                            'syngas': 80.0,
                                            'biogas': 70.0,
-                                           'methane': 100})
+                                           'methane': 100,
+                                           'heat': 1})
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
