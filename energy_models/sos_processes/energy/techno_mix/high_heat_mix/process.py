@@ -1,22 +1,20 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright (c) 2023 Capgemini
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+All rights reserved
 
-    http://www.apache.org/licenses/LICENSE-2.0
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or mother materials provided with the distribution.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND OR ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
-#-- generate coupling between:
-#    - ac_model
-#    - economics_operator
-
 from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
     INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
@@ -51,17 +49,19 @@ class ProcessBuilder(EnergyProcessBuilder):
         mods_dict = {}
         mods_dict[f'{energy_mix}.{heat}.{heat_name}'] = self.get_stream_disc_path(
             'energy_disciplines', 'HighHeat')
+        #to get sub dictionary
         for techno_name in self.techno_list:
             mods_dict[f'{energy_mix}.{heat}.{heat_name}.{techno_name}'] = self.get_techno_disc_path(
                 'heat', techno_name, sub_dir='high')
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
+            # for sub dictionary
             mods_dict_invest = {f'{energy_mix}.{heat}.{heat_name}': 'energy_models.core.investments.disciplines.techno_invest_disc.InvestTechnoDiscipline',
                                 }
 
             builder_list_invest = self.create_builder_list(
-                mods_dict_invest, ns_dict=ns_dict, associate_namespace = self.associate_namespace)
+                mods_dict_invest, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
 
             builder_list.extend(builder_list_invest)
         return builder_list
