@@ -74,37 +74,6 @@ class Study(EnergyMixStudyManager):
 
         return low_heat_mix_invest_df
 
-    def get_investments_old(self):
-        invest_low_heat_mix_dict = {}
-        l_ctrl = np.arange(0, 8)
-
-        if 'NaturalGasBoiler' in self.technologies_list:
-            invest_low_heat_mix_dict['NaturalGasBoiler'] = [
-                max(1e-8, 1.88 - 0.04 * i) for i in l_ctrl]
-
-        if 'ElectricBoiler' in self.technologies_list:
-            invest_low_heat_mix_dict['ElectricBoiler'] = [
-                max(1e-8, 0.02 * (1 + 0.054)**i) for i in l_ctrl]
-
-        if 'HeatPump' in self.technologies_list:
-            invest_low_heat_mix_dict['HeatPump'] = np.ones(
-                len(l_ctrl)) * 0.001
-
-        if 'Geothermal' in self.technologies_list:
-            invest_low_heat_mix_dict['Geothermal'] = np.ones(
-                len(l_ctrl)) * 0.001
-
-        if self.bspline:
-            invest_low_heat_mix_dict['years'] = self.years
-
-            for techno in self.technologies_list:
-                invest_low_heat_mix_dict[techno], _ = self.invest_bspline(
-                    invest_low_heat_mix_dict[techno], len(self.years))
-
-        low_heat_mix_invest_df = pd.DataFrame(invest_low_heat_mix_dict)
-
-        return low_heat_mix_invest_df
-
     def setup_usecase(self):
         energy_mix_name = 'EnergyMix'
         self.energy_name = lowtemperatureheat.name
@@ -112,10 +81,11 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         self.energy_prices = pd.DataFrame({'years': years,
-                                           'electricity': 16.0,
+                                           'electricity': 148.0,
                                            'syngas': 80.0,
                                            'biogas': 70.0,
-                                           'methane': 100})
+                                           'methane': 100,
+                                           'biomass_dry': 45})
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
@@ -139,8 +109,7 @@ class Study(EnergyMixStudyManager):
         self.resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'biomass_dry': - 0.64 / 4.86, 'biogas': - 0.05, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
-
+            {'years': years, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.0, 'water': 0.0})
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
