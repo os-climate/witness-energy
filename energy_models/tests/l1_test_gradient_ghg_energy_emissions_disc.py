@@ -60,7 +60,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
             'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage',
-            'Low heat temperature', 'Medium heat temperature', 'High heat temperature']]
+            'LowHeatTemperature', 'MediumHeatTemperature', 'HighHeatTemperature']]
         self.ccs_list = ['carbon_capture', 'carbon_storage']
 
         pkl_file = open(

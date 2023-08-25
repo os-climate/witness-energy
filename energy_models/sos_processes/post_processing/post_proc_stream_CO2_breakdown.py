@@ -60,6 +60,8 @@ def get_figures_table(table, title):
 
     return new_chart
 
+
+
 def get_comparision_data(execution_engine, namespace, year):
 
     '''
@@ -99,20 +101,15 @@ def get_comparision_data(execution_engine, namespace, year):
     cells.append(opex_list)
     cells.append(CO2tax_list)
     cells.append(energy_costs_List)
-
-
-    # table_data = {'Technology': techno_list}
-    # price_data = {'CAPEX ($/MWh)': capex_list, 'OPEX ($/MWh)': opex_list, 'CO2Tax ($/MWh)':  CO2tax_list, \
-    #               'Price ($/MWh)': energy_costs_List}
-    # table_data.update(price_data)
-    # table = pd.DataFrame(table_data)
-    table = InstanciatedTable('Data Comparison for Year ' + str(year), headers, cells)
+    table = InstanciatedTable('Capex/Opex/CO2Tax Price and Percentage Data Comparison for Year ' + str(year), headers, cells)
     return table
 
 def post_processings(execution_engine, namespace, filters):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
+
+
     instanciated_charts = []
 
     # Overload default value with chart filter
@@ -204,7 +201,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
                 continue
             price_per_kWh += [np.mean(row['price_per_kWh']), ]
             price_per_kWh_wotaxes += [np.mean(row['price_per_kWh_wotaxes']), ]
-            CO2_per_kWh += [np.mean(row['CO2_per_kWh']), ]
+            CO2_per_kWh  += [np.mean(row['CO2_per_kWh']), ]
             label += [i, ]
             production += [np.sum(row['production']), ]
             invest += [np.sum(row['invest']), ]
@@ -385,6 +382,8 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     # columns
     if columns != None and type(columns) == list:
         multilevel_df = pd.DataFrame(multilevel_df[columns])
+
+    print('multilevel_df', multilevel_df.to_string())
 
     return multilevel_df, years
 

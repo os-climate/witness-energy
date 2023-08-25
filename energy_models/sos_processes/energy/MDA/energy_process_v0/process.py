@@ -173,10 +173,24 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             builder_list.extend(energy_builder_list)
 
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_energy_mix'
+
         #if energy_mix == 'EnergyMix':
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             f'ns_energy_mix',
             post_proc_mod)
+
+        post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_technology_mix'
+        # if energy_mix == 'EnergyMix':
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            f'ns_energy_mix',
+            post_proc_mod)
+
+
+        # post_proc_mod = 'energy_models.sos_processes.post_processing.techno_price'
+        # # if energy_mix == 'EnergyMix':
+        # self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+        #     f'ns_public',
+        #     post_proc_mod)
 
 
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown'
@@ -207,6 +221,38 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                     f'ns_ethanol',
                     post_proc_mod)
 
+
+            self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                f'ns_{energy}',
+                post_proc_mod)
+
+        post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_capex_opex'
+        for energy in self.energy_list:
+            if energy == 'hydrogen.gaseous_hydrogen':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_hydrogen',
+                    post_proc_mod)
+            if energy == 'hydrogen.liquid_hydrogen':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_liquid_hydrogen',
+                    post_proc_mod)
+
+            if energy == 'fuel.liquid_fuel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_liquid_fuel',
+                    post_proc_mod)
+            if energy == 'fuel.hydrotreated_oil_fuel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_hydrotreated_oil_fuel',
+                    post_proc_mod)
+            if energy == 'fuel.biodiesel':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_biodiesel',
+                    post_proc_mod)
+            if energy == 'fuel.ethanol':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_ethanol',
+                    post_proc_mod)
 
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 f'ns_{energy}',

@@ -19,8 +19,8 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.low.heatpump.heatpump_disc import HeatPumpDiscipline
-from energy_models.models.heat.low.heatpump.heatpump import HeatPump
+from energy_models.models.heat.low.heat_pump.heat_pump_disc import HeatPumpDiscipline
+from energy_models.models.heat.low.heat_pump.heat_pump import HeatPump
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
@@ -134,7 +134,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.low.heatpump.heatpump_disc.HeatPumpDiscipline'
+        mod_path = 'energy_models.models.heat.low.heat_pump.heat_pump_disc.HeatPumpDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

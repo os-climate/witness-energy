@@ -5,7 +5,7 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.models.heat.high.electric_boiler.electric_boiler import ElectricBoilerHighHeat
 
 
-class ElectricBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
+class ElectricBoilerDiscipline(HighHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
@@ -21,7 +21,7 @@ class ElectricBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'Electric Boiler'
+    techno_name = 'ElectricBoiler'
     energy_name = hightemperatureheat.name
 
     # Heat Producer [Online]

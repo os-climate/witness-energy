@@ -7,7 +7,7 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 import numpy as np
 
 
-class NaturalGasHighHeat(highheattechno):
+class NaturalGasBoilerHighHeat(highheattechno):
 
     def compute_other_primary_energy_costs(self):
         """
@@ -26,8 +26,6 @@ class NaturalGasHighHeat(highheattechno):
         # to do so I need to know how much methane is used to produce 1kwh of heat (i need this information in kwh) : methane_needs is in kwh of methane/kwh of heat
         # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
         # and then we divide by efficiency
-
-
         return self.cost_details[f'{Methane.name}']
 
     def grad_price_vs_energy_price(self):

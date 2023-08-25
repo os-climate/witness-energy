@@ -94,11 +94,16 @@ class IndependentInvest(BaseInvest):
 
         delta_sum_cons = (
                 energy_invest_df['energy_investment'].values - techno_invest_sum)
+        
+        dela_sum_cons_ineq = delta_sum / self.delta_years
         abs_delta_sum = np.sqrt(
             compute_func_with_exp_min(delta_sum ** 2, 1e-15))
 
         abs_delta_sum_cons = (invest_limit_ref - np.sqrt(compute_func_with_exp_min(
             delta_sum_cons ** 2, 1e-15))) / invest_sum_ref / self.delta_years
+        
+
+        
 
         # Get the L1 norm of the delta and apply a scaling to compute the
         # objective
@@ -114,4 +119,4 @@ class IndependentInvest(BaseInvest):
                                                      tolerable_delta=invest_limit_ref, delta_type='normal',
                                                      reference_value=invest_sum_ref * self.delta_years)
 
-        return invest_constraint_df, invest_objective, abs_delta_sum, abs_delta_sum_cons, abs_delta_sum_cons_dc, delta_sum_eq_cons
+        return invest_constraint_df, invest_objective, abs_delta_sum, abs_delta_sum_cons, abs_delta_sum_cons_dc, delta_sum_eq_cons , dela_sum_cons_ineq

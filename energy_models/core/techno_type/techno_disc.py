@@ -15,6 +15,7 @@ limitations under the License.
 '''
 import logging
 
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 import pandas as pd
@@ -113,10 +114,7 @@ class TechnoDiscipline(SoSWrapp):
                    'dataframe_descriptor': {'years': ('float', None, True),
                                             'margin': ('float', None, True)}
                    },
-        'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                      'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                               'CO2_tax': ('float',  None, True)},
-                      'dataframe_edition_locked': False},
+        GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
         'resources_price': {'type': 'dataframe', 'unit': '$/t', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
                             'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                      'CO2_tax': ('float', None, True),
@@ -267,9 +265,9 @@ class TechnoDiscipline(SoSWrapp):
                                                                       'hydrogen.liquid_hydrogen': ('float', None, True),
                                                                       'renewable': ('float', None, True),
                                                                       'fossil': ('float', None, True),
-                                                                      'Low heat temperature': ('float', None, True),
-                                                                      'Medium heat temperature': ('float', None, True),
-                                                                      'High heat temperature': ('float', None, True),
+                                                                      'LowHeatTemperature': ('float', None, True),
+                                                                      'MediumHeatTemperature': ('float', None, True),
+                                                                      'HighHeatTemperature': ('float', None, True),
                                                                   }
                                                                   }
                 if self.get_sosdisc_inputs('is_apply_resource_ratio'):

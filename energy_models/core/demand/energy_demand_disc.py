@@ -24,6 +24,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class EnergyDemandDiscipline(SoSWrapp):
@@ -62,10 +63,7 @@ class EnergyDemandDiscipline(SoSWrapp):
                'initial_electricity_demand': {'type': 'float', 'default': 18000., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': '-'},
                'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness',
-                                 'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
-                                                          'population': ('float', None, True),}
-                                 },
+               GlossaryEnergy.PopulationDF['var_name']: GlossaryEnergy.PopulationDF,
                'transport_demand': {'type': 'dataframe', 'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                                                   'transport_demand': ('float',  None, True)},
                                     'dataframe_edition_locked': False, 'unit': 'TWh'},

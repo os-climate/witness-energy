@@ -16,16 +16,16 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
-from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.models.heat.high.heatpump.heatpump import HeatPump
+from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.models.heat.low.heat_pump.heat_pump import HeatPump
 
 
-class HeatPumpDiscipline(HighHeatTechnoDiscipline):
+class HeatPumpDiscipline(LowHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Heat Pump High Heat Model',
+        'label': 'Heat Pump Low Heat Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -37,11 +37,11 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'HighHeatPump'
-    energy_name = hightemperatureheat.name
+    techno_name = 'HeatPump'
+    energy_name = lowtemperatureheat.name
 
-
-    lifetime = 25           # years # https://www.energy.gov/energysaver/heat-pump-systems
+    lifetime = 25           # years
+    # https://www.energy.gov/energysaver/heat-pump-systems
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.
     # Heat pump can reduce your electricity use for heating by approximately 50% compared to
     # electric resistance heating such as furnaces and baseboard heaters.
@@ -51,61 +51,44 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
     # Heat pumps could satisfy over 80% of global space and water heating needs with a lower carbon
     # footprint than gas-fired condensing boilers: however, in 2021 they only met 10%
     construction_delay = 1  # years
-    #COP = 3.5
 
     techno_infos_dict_default = {
-        'Capex_init': 718/(25*8760),   #660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+
+        'Capex_init': 718/(25*8760), #660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 1.0,    # consumptions and productions already have efficiency included
+        'efficiency': 1,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
-        #'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
-        #'elec_demand_unit': 'kWh/kWh',
-        # 'heating_space': 92.9,
-        # 'heating_space_unit': 'm^2',
-        # 'heat_required_per_meter_square': 0.00879, #https://carbonswitch.com/heat-pump-sizing-guide/#:~:text=If%20you%20Google%20%E2%80%9Cheat%20pump,a%2060%2C000%20BTU%20heat%20pump.
-        # 'heat_required_per_meter_square_unit': 'kW/m^2',
-        #'maturity': 5,
-        'learning_rate': 0.00,
+        'maturity': 5,
+        'learning_rate': 0.1,
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
-        'output_temperature': 500, # High Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
+        'output_temperature': 60, # Average Low Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
         'mean_temperature': 20,
         'output_temperature_unit': '°C',
-        'mean_temperature_unit': '°C'
+        'mean_temperature_unit': '°C',
     }
 
-    # heatpump Heat production
+    # heat_pump Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
     # in TWh
-    initial_production = 1*8760/3  # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
+    initial_production = 1*8760/3 # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
 
-    distrib = [1.0, 1.52688172, 0,
-               1.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
+    distrib = [9.677419355, 7.52688172, 0,
+               5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
                13.97849462, 9.677419355,   7.52688172,   1.075268817,
                2.150537634,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0]
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
-
-    # Globally Heat Generated by Heat Pump
-    # https://www.iea.org/data-and-statistics/charts/heat-pump-capacity-in-buildings-by-country-and-region-in-the-announced-pledges-scenario-2021-2030
-    # Globally Heat Generated in 2021 is 1062 GW
-    # Expected Globally Heat Generated in 2030 is 2592 GW
-    # Yearly Heat Generation increment will be 170 GW
-    # invest_before_year_start = pd.DataFrame(
-    #     {'past years': np.array(-construction_delay), 'invest': 718/(25*8760) * np.array([1*8760*0.5*0.5/3])})
     invest_before_year_start = pd.DataFrame(
         {'past years': np.array(-construction_delay), 'invest': 0 * np.array([1*8760*0.5*0.5/3])}) # Invest before year start is 0
-    # invest_before_year_start = pd.DataFrame(
-    #     {'past years': np.arange(-construction_delay, 0),
-    #      'invest': 718/(25*8760) * np.array([0, 1*8760*0.5/3])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -118,9 +101,9 @@ class HeatPumpDiscipline(HighHeatTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
-    DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)
+    DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
-    DESC_OUT = HighHeatTechnoDiscipline.DESC_OUT
+    DESC_OUT = LowHeatTechnoDiscipline.DESC_OUT
     _maturity = 'Research'
 
     def init_execution(self):

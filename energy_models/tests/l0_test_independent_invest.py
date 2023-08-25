@@ -116,7 +116,7 @@ class TestIndependentInvest(unittest.TestCase):
                        'invest_sum_ref': 2.,
                        'invest_limit_ref': 300.}
         one_invest_model = IndependentInvest()
-        invest_constraint, invest_objective, invest_objective_sum, invest_objective_cons, invest_objective_cons_dc, delta_sum_eq_cons = one_invest_model.compute_invest_constraint_and_objective(
+        invest_constraint, invest_objective, invest_objective_sum, invest_objective_cons, invest_objective_cons_dc, delta_sum_eq_cons, ineq_cons = one_invest_model.compute_invest_constraint_and_objective(
             inputs_dict)
 
         delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment -
@@ -329,7 +329,6 @@ class TestIndependentInvest(unittest.TestCase):
         all_technos_list = [
             f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.technologies_list']]
-
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.energy_investment',
                                                                           f'{self.name}.{self.model_name}.invest_mix',
                                                                           f'{self.name}.forest_investment',
@@ -342,7 +341,7 @@ class TestIndependentInvest(unittest.TestCase):
                                                                        f'{self.name}.invest_objective_sum',
                                                                        f'{self.name}.invest_sum_cons',
                                                                        f'{self.name}.invest_sum_cons_dc',
-                                                                       f'{self.name}.invest_sum_eq_cons'],
+                                                                       f'{self.name}.invest_sum_eq_cons', f'{self.name}.invest_sum_ineq_cons'],
                                       input_data=disc.local_data,
                                       load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                          f'jacobian_independent_invest_disc.pkl'))
@@ -353,4 +352,4 @@ class TestIndependentInvest(unittest.TestCase):
 if '__main__' == __name__:
     cls = TestIndependentInvest()
     cls.setUp()
-    cls.test_01_independent_invest_model()
+    cls.test_04_independent_invest_disc_check_jacobian()
