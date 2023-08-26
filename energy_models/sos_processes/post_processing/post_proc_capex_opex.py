@@ -57,40 +57,40 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
     '''
     Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
     '''
-    namespace_list=['post-processing.EnergyMix.methane','post-processing.EnergyMix.biogas']
-    techno_list_=[]
-    techno_list=[]
-    for namespace in namespace_list:
-        var_f_name = f"{namespace}.technologies_list"
-       # techno_list = execution_engine.dm.get_value(var_f_name)
-        techno_list_.append(execution_engine.dm.get_value(var_f_name))
-    for sublist in techno_list_:
-        techno_list.extend(sublist)
+    # namespace_list=['post-processing.EnergyMix.methane','post-processing.EnergyMix.biogas']
+    # techno_list_=[]
+    # techno_list=[]
+    # for namespace in namespace_list:
+    #     var_f_name = f"{namespace}.technologies_list"
+    #    # techno_list = execution_engine.dm.get_value(var_f_name)
+    #     techno_list_.append(execution_engine.dm.get_value(var_f_name))
+    # for sublist in techno_list_:
+    #     techno_list.extend(sublist)
+
+    var_f_name = f"{namespace}.technologies_list"
+    techno_list = execution_engine.dm.get_value(var_f_name)
 
     techno_price_data = {}
-    #x_data_list = []
-    from plotly import colors
-    i=0
-    for namespace in namespace_list:
-        for techno in techno_list_[i]:
-            techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"    #"energy_detailed_techno_prices" for Hydrogen and Fuel
-            price_details = execution_engine.dm.get_value(techno_prices_f_name)
-            year_list = price_details['years'].tolist()
-            capex_list = price_details['CAPEX_Part'].tolist()
-            opex_list = price_details['OPEX_Part'].tolist()
-            CO2tax_list = price_details['CO2Tax_Part'].tolist()
-            energy_costs_List = price_details[techno].tolist()
+
+    for techno in techno_list:
+        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"    #"energy_detailed_techno_prices" for Hydrogen and Fuel
+        price_details = execution_engine.dm.get_value(techno_prices_f_name)
+        year_list = price_details['years'].tolist()
+        capex_list = price_details['CAPEX_Part'].tolist()
+        opex_list = price_details['OPEX_Part'].tolist()
+        CO2tax_list = price_details['CO2Tax_Part'].tolist()
+        energy_costs_List = price_details[techno].tolist()
 
 
-            if price_name == 'CAPEX_Part':
-                techno_price_data[techno] = capex_list
-            elif price_name == 'OPEX_Part':
-                techno_price_data[techno] = opex_list
-            elif price_name == 'CO2Tax_Part':
-                techno_price_data[techno] = CO2tax_list
-            else:
-                techno_price_data[techno] = energy_costs_List
-        i=i+1
+        if price_name == 'CAPEX_Part':
+            techno_price_data[techno] = capex_list
+        elif price_name == 'OPEX_Part':
+            techno_price_data[techno] = opex_list
+        elif price_name == 'CO2Tax_Part':
+            techno_price_data[techno] = CO2tax_list
+        else:
+            techno_price_data[techno] = energy_costs_List
+
 
 
     key_list = list(techno_price_data.keys())

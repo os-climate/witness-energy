@@ -1,23 +1,24 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright (c) 2023 Capgemini
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+All rights reserved
 
-    http://www.apache.org/licenses/LICENSE-2.0
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer
+in the documentation and/or mother materials provided with the distribution.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND OR ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 '''
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
@@ -44,14 +45,10 @@ class Study(EnergyMixStudyManager):
         l_ctrl = np.arange(0, 8)
 
         if 'NaturalGasBoiler' in self.technologies_list:
-            #             invest_methane_mix_dict['FossilGas'] = [
-            #                 max(1e-8, 1.88 - 0.04 * i) for i in l_ctrl]
             invest_medium_heat_mix_dict['NaturalGasBoiler'] = [
                 0.02, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
 
         if 'ElectricBoiler' in self.technologies_list:
-            #             invest_methane_mix_dict['UpgradingBiogas'] = [
-            #                 max(1e-8, 0.02 * (1 + 0.054)**i) for i in l_ctrl]
             invest_medium_heat_mix_dict['ElectricBoiler'] = [
                 0.02, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
@@ -80,6 +77,7 @@ class Study(EnergyMixStudyManager):
         energy_name = f'EnergyMix.Heat.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
+        # energy_prices data came from test files  of corresponding technologies
         self.energy_prices = pd.DataFrame({'years': years,
                                            'electricity': 148.0,
                                            'syngas': 80.0,
@@ -100,9 +98,8 @@ class Study(EnergyMixStudyManager):
             {'years': years, 'CO2_tax': func(years)})
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
-        # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 200.0})
+            {'years': years, 'transport': np.ones(len(years)) * 0})
 
         self.resources_price = pd.DataFrame(columns=['years', 'CO2', 'water'])
         self.resources_price['years'] = years
