@@ -224,30 +224,30 @@ class Energy_Mix_Discipline(SoSWrapp):
 
                     dynamic_inputs[f'{ns_energy}.energy_consumption'] = {
                         'type': 'dataframe', 'unit': 'PWh',
-                            'dataframe_descriptor': {'years': ('float', None, True),
-                                                     'CO2_resource (Mt)': ('float', None, True),
-                                                      'methane (TWh)': ('float', None, True),
-                                                      'water (Mt)': ('float', None, True),
-                                                      'CO2 (Mt)': ('float', None, True),
-                                                      'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
-                                                      'electricity (TWh)': ('float', None, True),
-                                                      'biogas (TWh)': ('float', None, True),
-                                                      'MEA (Mt)': ('float', None, True),
-                                                      'oil_resource (Mt)': ('float', None, True),
-                                                     }
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'CO2_resource (Mt)': ('float', None, True),
+                                                 'methane (TWh)': ('float', None, True),
+                                                 'water (Mt)': ('float', None, True),
+                                                 'CO2 (Mt)': ('float', None, True),
+                                                 'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
+                                                 'electricity (TWh)': ('float', None, True),
+                                                 'biogas (TWh)': ('float', None, True),
+                                                 'MEA (Mt)': ('float', None, True),
+                                                 'oil_resource (Mt)': ('float', None, True),
+                                                 }
                     }
                     dynamic_inputs[f'{ns_energy}.energy_consumption_woratio'] = {
                         'type': 'dataframe', 'unit': 'PWh',
                         'dataframe_descriptor': {'years': ('float', None, True),
-                                                'CO2_resource (Mt)': ('float', None, True),
-                                                'methane (TWh)': ('float', None, True),
-                                                'water (Mt)': ('float', None, True),
-                                                'CO2 (Mt)': ('float', None, True),
-                                                'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
-                                                'electricity (TWh)': ('float', None, True),
-                                                'biogas (TWh)': ('float', None, True),
-                                                'MEA (Mt)': ('float', None, True),
-                                                'oil_resource (Mt)': ('float', None, True),}}
+                                                 'CO2_resource (Mt)': ('float', None, True),
+                                                 'methane (TWh)': ('float', None, True),
+                                                 'water (Mt)': ('float', None, True),
+                                                 'CO2 (Mt)': ('float', None, True),
+                                                 'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
+                                                 'electricity (TWh)': ('float', None, True),
+                                                 'biogas (TWh)': ('float', None, True),
+                                                 'MEA (Mt)': ('float', None, True),
+                                                 'oil_resource (Mt)': ('float', None, True), }}
                     dynamic_inputs[f'{ns_energy}.energy_production'] = {
                         'type': 'dataframe', 'unit': 'PWh',
                         'dataframe_descriptor': {'years': ('float', None, True),
@@ -270,16 +270,16 @@ class Energy_Mix_Discipline(SoSWrapp):
                     dynamic_inputs[f'{ns_energy}.energy_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
                         'dataframe_descriptor': {'years': ('float', None, True),
-                                                'biomass_dry': ('float', None, True),
-                                                'biomass_dry_wotaxes': ('float', None, True),
-                                                'hydrogen.gaseous_hydrogen': ('float', None, True),
-                                                'hydrogen.gaseous_hydrogen_wotaxes': ('float', None, True),
-                                                'methane': ('float', None, True),
-                                                'methane_wotaxes': ('float', None, True),
+                                                 'biomass_dry': ('float', None, True),
+                                                 'biomass_dry_wotaxes': ('float', None, True),
+                                                 'hydrogen.gaseous_hydrogen': ('float', None, True),
+                                                 'hydrogen.gaseous_hydrogen_wotaxes': ('float', None, True),
+                                                 'methane': ('float', None, True),
+                                                 'methane_wotaxes': ('float', None, True),
                                                  'renewable': ('float', None, True),
                                                  'renewable_wotaxes': ('float', None, True),
                                                  'fossil': ('float', None, True),
-                                                 'fossil_wotaxes': ('float', None, True),}}
+                                                 'fossil_wotaxes': ('float', None, True), }}
                     dynamic_inputs[f'{ns_energy}.land_use_required'] = {
                         'type': 'dataframe', 'unit': 'Gha',
                         'dataframe_descriptor': {'years': ('float', None, True),
@@ -308,18 +308,18 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                      'biomass_dry': ('float', None, True),
                                                      'renewable': ('float', None, True),
                                                      'fossil': ('float', None, True),
-                                                     },}
+                                                     }, }
                         dynamic_inputs[f'{ns_energy}.CO2_per_use'] = {
                             'type': 'dataframe', 'unit': 'kg/kWh',
                             'dataframe_descriptor': {'years': ('float', None, True),
-                                                    'CO2_tax': ('float', None, True),
-                                                    'CO2_per_use': ('float', None, True),
-},}
+                                                     'CO2_tax': ('float', None, True),
+                                                     'CO2_per_use': ('float', None, True),
+                                                     }, }
                         dynamic_inputs[f'{ns_energy}.losses_percentage'] = {
                             'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy],
                             'range': [0., 100.],
                             'dataframe_descriptor': {'years': ('float', None, True),
-                                                     'years7': ('float', None, True),},}
+                                                     'years7': ('float', None, True), }, }
                         # If the name is different than the energy then the namespace is also different
                         # Valid for biomass which is in agriculture node
                         if ns_energy != energy:
@@ -344,21 +344,21 @@ class Energy_Mix_Discipline(SoSWrapp):
                             'dataframe_descriptor': {'years': ('float', None, True),
                                                      'renewable (TWh)': ('float', None, True),
                                                      'fossil (TWh)': ('float', None, True),
-                                                     'carbon_capture (Mt)': ('float', None, True),}}
+                                                     'carbon_capture (Mt)': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.energy_consumption_woratio'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs',
                             'dataframe_descriptor': {'years': ('float', None, True),
                                                      'renewable (TWh)': ('float', None, True),
                                                      'fossil (TWh)': ('float', None, True),
-                                                     'carbon_capture (Mt)': ('float', None, True),}}
+                                                     'carbon_capture (Mt)': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.energy_production'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs',
                             'dataframe_descriptor': {'years': ('float', None, True),
                                                      'carbon_capture': ('float', None, True),
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                     'carbon_storage': ('float', None, True),}}
+                                                     'carbon_storage': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.energy_prices'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs',
@@ -366,7 +366,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                      'carbon_capture': ('float', None, True),
                                                      'carbon_capture_wotaxes': ('float', None, True),
                                                      'carbon_storage': ('float', None, True),
-                                                     'carbon_storage_wotaxes': ('float', None, True),}}
+                                                     'carbon_storage_wotaxes': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.land_use_required'] = {
                             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs',
@@ -374,7 +374,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                      'direct_air_capture': ('float', None, True),
                                                      'flue_gas_capture.FlueGasTechno (Gha)': ('float', None, True),
                                                      'CarbonStorageTechno (Gha)': ('float', None, True),
-                                                     'direct_air_capture.DirectAirCaptureTechno (Gha)': ('float', None, True),}}
+                                                     'direct_air_capture.DirectAirCaptureTechno (Gha)': (
+                                                         'float', None, True), }}
 
         self.update_default_with_years(inputs_dict)
 
@@ -1396,7 +1397,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         if 'Energy mix losses' in charts:
 
-            new_chart = self.get_chart_energy_mix_losses()
+            new_chart = self.get_chart_energy_mix_losses(energy_list)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         return instanciated_charts
@@ -1911,12 +1912,10 @@ class Energy_Mix_Discipline(SoSWrapp):
             fig, chart_name=chart_name, default_title=True)
         return new_chart
 
-    def get_chart_energy_mix_losses(self):
+    def get_chart_energy_mix_losses(self, energy_list):
         '''
         Plot chart on energy mix heat losses 
         '''
-
-        new_chart = None
 
         chart_name = f'Energy mix losses'
 
@@ -1924,10 +1923,9 @@ class Energy_Mix_Discipline(SoSWrapp):
             'energy_production_brut')
         raw_prod_detailed = self.get_sosdisc_outputs(
             'energy_production_brut_detailed')
-        #             losses_percentage = self.get_sosdisc_inputs(
-        #                 'losses_percentage')
-        heat_losses_percentage = self.get_sosdisc_inputs(
-            'heat_losses_percentage')
+
+        inputs_dict = self.get_sosdisc_inputs()
+        heat_losses_percentage = inputs_dict['heat_losses_percentage']
         years = raw_prod['years'].values.tolist()
 
         heat_losses = heat_losses_percentage / \
@@ -1935,13 +1933,16 @@ class Energy_Mix_Discipline(SoSWrapp):
         new_chart = TwoAxesInstanciatedChart('years', 'Energy losses (TWh)',
                                              chart_name=chart_name)
 
-        for energy, percentage in self.energy_model.losses_percentage_dict.items():
-            if percentage != 0.0:
-                losses = percentage / 100.0 * \
-                         raw_prod_detailed[f'production {energy} (TWh)'].values
-                serie = InstanciatedSeries(
-                    years, losses.tolist(), f'Distribution Transmission and Transport losses for {energy}')
-                new_chart.add_series(serie)
+        for energy in energy_list:
+            percentage_loss_name = f'{energy}.losses_percentage'
+            if percentage_loss_name in inputs_dict:
+                percentage = inputs_dict[percentage_loss_name]
+                if percentage != 0.0:
+                    losses = percentage / 100.0 * \
+                             raw_prod_detailed[f'production {energy} (TWh)'].values
+                    serie = InstanciatedSeries(
+                        years, losses.tolist(), f'Distribution Transmission and Transport losses for {energy}')
+                    new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             years, heat_losses.tolist(), f'Global energy losses from heat production')
