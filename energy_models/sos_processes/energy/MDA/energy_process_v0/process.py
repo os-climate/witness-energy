@@ -19,6 +19,8 @@ from energy_models.core.ccus.ccus import CCUS
 
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.core.stream_type.energy_disciplines.fuel_disc import FuelDiscipline
+from energy_models.core.stream_type.energy_disciplines.heat_disc import HeatDiscipline
+# from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -98,6 +100,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                        'ns_energy_study': f'{ns_study}',
                        'ns_emissions': f'{ns_study}',
                        'ns_ccs': f'{ns_study}.{CCS_NAME}',
+                       # 'ns_heat': f'{ns_study}'
                        }
             mods_dict = {
                 energy_mix: 'energy_models.core.investments.disciplines.energy_invest_disc.InvestEnergyDiscipline',
@@ -266,6 +269,22 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
             builder_fuel = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_fuel)
+
+        if len(set(HeatDiscipline.heat_list).intersection(set(self.energy_list))) > 0:
+            # heat = 'Heat'
+            # heat_name = hightemperatureheat.name
+            # ns_dict1 = {'ns_heat': f'{ns_study}.{energy_mix}.{heat}.{heat_name}'}
+            ns_dict = {'ns_heat': f'{ns_study}.{energy_mix}.heat'}
+            # energy_builder_list = self.ee.factory.get_builder_from_process(
+            #     'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
+            #     techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline,
+            #     associate_namespace=False
+            # )
+            mods_dict = {
+                f'{energy_mix}.{HeatDiscipline.name}': 'energy_models.core.stream_type.energy_disciplines.heat_disc.HeatDiscipline',
+            }
+            builder_heat = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
+            builder_list.extend(builder_heat)
 
         # For now only electricity demand constraint is available in the energy
         # demand discipline

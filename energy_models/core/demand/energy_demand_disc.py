@@ -51,7 +51,10 @@ class EnergyDemandDiscipline(SoSWrapp):
                                                                        'production electricity (TWh)': ('float',  None, True),
                                                                        'production hydrogen.liquid_hydrogen (TWh)': ('float', None, True),
                                                                         'production fuel.liquid_fuel (TWh)': ('float', None, True),
-                                                                        'production fuel.biodiesel (TWh)': ('float', None, True),
+                                                                       'production fuel.biodiesel (TWh)': ('float', None, True),
+                                                                       'production HighHeatTemperature (TWh)': ('float', None, True),
+                                                                       'production MediumHeatTemperature (TWh)': ('float', None, True),
+                                                                       'production LowHeatTemperature (TWh)': ('float', None, True),
                                                                         'production methane (TWh)': ('float', None, True),
                                                                         'production biogas (TWh)': ('float', None, True),
                                                                         'production fuel.hydrotreated_oil_fuel (TWh)': ('float', None, True),},
@@ -193,7 +196,7 @@ class EnergyDemandDiscipline(SoSWrapp):
                                              chart_name=chart_name, stacked_bar=True)
 
         note = {
-            'Transport energies': 'Liquid hydrogen, liquid fuel, biodiesel, methane, biogas, HEFA'}
+            'Transport energies': 'Liquid hydrogen, liquid fuel, HighHeatTemperature, MediumHeatTemperature, LowHeatTemperature, biodiesel, methane, biogas, HEFA'}
         new_chart.annotation_upper_left = note
         transport_demand, energy_production_detailed = self.get_sosdisc_inputs(
             ['transport_demand', 'energy_production_detailed'])

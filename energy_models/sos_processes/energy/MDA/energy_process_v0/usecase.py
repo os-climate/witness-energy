@@ -24,6 +24,7 @@ from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_s
 
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.biogas import BioGas
@@ -157,6 +158,15 @@ class Study(EnergyStudyManager):
         list_namespaces = []
 
         if LiquidFuel.name in self.energy_list and GaseousHydrogen.name in self.energy_list and LiquidHydrogen.name in self.energy_list:
+            list_var.append('primary_energies_production')
+            list_parent.append('Energy_constraints')
+            list_ftype.append(INEQ_CONSTRAINT)
+            list_weight.append(0.)
+            list_aggr_type.append(
+                AGGR_TYPE_SMAX)
+            list_namespaces.append('ns_functions')
+
+        if hightemperatureheat.name in self.energy_list and GaseousHydrogen.name in self.energy_list and LiquidHydrogen.name in self.energy_list:
             list_var.append('primary_energies_production')
             list_parent.append('Energy_constraints')
             list_ftype.append(INEQ_CONSTRAINT)
@@ -341,6 +351,8 @@ class Study(EnergyStudyManager):
         # investment on refinery not in oil extraction !
         invest_energy_mix_dict[LiquidFuel.name] = [
             3.15 * (1 - 0.1374) ** i for i in l_ctrl]
+        invest_energy_mix_dict[hightemperatureheat.name] = [
+            3.15 * (1 - 0.1374) ** i for i in l_ctrl]
         invest_energy_mix_dict[SolidFuel.name] = [
                                                      0.00001, 0.0006] + [0.00005] * (len(l_ctrl) - 2)
         invest_energy_mix_dict[BioDiesel.name] = [
@@ -393,6 +405,8 @@ class Study(EnergyStudyManager):
             0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         # investment on refinery not in oil extraction !
         invest_energy_mix_dict[LiquidFuel.name] = [
+            3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        invest_energy_mix_dict[hightemperatureheat.name] = [
             3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         invest_energy_mix_dict[SolidFuel.name] = [
             0.00001, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
@@ -635,6 +649,7 @@ class Study(EnergyStudyManager):
 
         hydrogen_name = GaseousHydrogen.name
         liquid_fuel_name = LiquidFuel.name
+        heat_name = hightemperatureheat.name
         hvo_name = HydrotreatedOilFuel.name
         methane_name = Methane.name
         biogas_name = BioGas.name
@@ -658,6 +673,7 @@ class Study(EnergyStudyManager):
                              solid_fuel_name: 8.6,
                              hydrogen_name: 90.0,
                              liquid_fuel_name: 70.0,
+                             heat_name: 71.0,
                              syngas_name: 40.0,
                              carbon_capture_name: 0.0,
                              carbon_storage_name: 0.0,
@@ -682,6 +698,7 @@ class Study(EnergyStudyManager):
                                         solid_fuel_name: 0.64 / 4.86,
                                         hydrogen_name: 0.0,
                                         liquid_fuel_name: 0.0,
+                                        heat_name: 0.0,
                                         syngas_name: 0.0,
                                         carbon_capture_name: 0.0,
                                         carbon_storage_name: 0.0,
