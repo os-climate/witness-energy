@@ -60,9 +60,18 @@ class OneInvestDiscipline(SoSWrapp):
                                                 'carbon_storage.DeepSalineFormation': ('float', None, True),
                                                 'carbon_storage.GeologicMineralization': ('float', None, True),
                                                 'methane.Methanation': ('float', None, True),
-                                                'heat.high.highheattemperature': ('float', None, True),
-                                                'heat.low.lowheattemperature': ('float', None, True),
-                                                'heat.medium.mediumheattemperature': ('float', None, True),
+                                                'heat.high.highheattemperature.NaturalGasBoiler': ('float', None, True),
+                                                'heat.high.highheattemperature.ElectricBoiler': ('float', None, True),
+                                                'heat.high.highheattemperature.HeatPump': ('float', None, True),
+                                                'heat.high.highheattemperature.Geothermal': ('float', None, True),
+                                                'heat.low.lowheattemperature.NaturalGasBoiler': ('float', None, True),
+                                                'heat.low.lowheattemperature.ElectricBoiler': ('float', None, True),
+                                                'heat.low.lowheattemperature.HeatPump': ('float', None, True),
+                                                'heat.low.lowheattemperature.Geothermal': ('float', None, True),
+                                                'heat.medium.mediumheattemperature.NaturalGasBoiler': ('float', None, True),
+                                                'heat.medium.mediumheattemperature.ElectricBoiler': ('float', None, True),
+                                                'heat.medium.mediumheattemperature.HeatPump': ('float', None, True),
+                                                'heat.medium.mediumheattemperature.Geothermal': ('float', None, True),
                                                 'hydrogen.gaseous_hydrogen.PlasmaCracking': ('float', None, True),
                                                 'hydrogen.gaseous_hydrogen.Electrolysis.SOEC': ('float', None, True),
                                                 'hydrogen.gaseous_hydrogen.Electrolysis.PEM': ('float', None, True),
@@ -183,6 +192,7 @@ class OneInvestDiscipline(SoSWrapp):
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
 
+
     def run(self):
 
         input_dict = self.get_sosdisc_inputs()
@@ -199,6 +209,7 @@ class OneInvestDiscipline(SoSWrapp):
                     output_dict[f'{energy}.{techno}.invest_level'] = pd.DataFrame(
                         {'years': input_dict['energy_investment']['years'].values,
                          'invest': all_invest_df[f'{energy}.{techno}'].values})
+
 
         self.store_sos_outputs_values(output_dict)
 

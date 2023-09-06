@@ -50,7 +50,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         carbon_storage = PureCarbonSS.energy_name
         builder_list = []
         # use energy list to import the builders
-        print(self.energy_list)
         for energy_name in self.energy_list:
             dot_list = energy_name.split('.')
             short_name = dot_list[-1]

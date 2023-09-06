@@ -35,9 +35,9 @@ class HeatPump(lowheattechno):
 
     def grad_price_vs_energy_price(self):
         elec_needs = self.get_theoretical_electricity_needs()
-        heat_generated = self.get_theoretical_heat_generated()
-        mean_temperature = lowtemperatureheat.data_energy_dict['mean_temperature']
-        output_temperature = lowtemperatureheat.data_energy_dict['output_temperature']
+        heat_generated = elec_needs #self.get_theoretical_heat_generated()
+        mean_temperature = self.techno_infos_dict['mean_temperature']
+        output_temperature = self.techno_infos_dict['output_temperature']
         COP = output_temperature / (output_temperature - mean_temperature)
         efficiency = COP
         # efficiency = self.techno_infos_dict['COP']
