@@ -191,17 +191,19 @@ def post_processings(execution_engine, namespace, filters):
         for chart_filter in filters:
             if chart_filter.filter_key == 'Charts':
                 graphs_list.extend(chart_filter.selected_values)
-    # ----
-    energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
-    absolute_value_table = []
-    average_value_table = []
-    if f'{energy} Figures table' in graphs_list: #
-        for year in YEAR_COMPARISON:
-            new_table = get_techno_comparision_data(execution_engine, namespace, year)
-            #new_table = get_figures_table(price_comparision_table_data, str(year))
-            absolute_value_table.append(new_table[0])
-            average_value_table.append(new_table[1])
+    # Sometimes wrapper object is None, TODO Need to find another way to find energy_name
+    wrapper_type = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper
+    if wrapper_type != None:
+        energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
+        absolute_value_table = []
+        average_value_table = []
+        if f'{energy} Figures table' in graphs_list: #
+            for year in YEAR_COMPARISON:
+                new_table = get_techno_comparision_data(execution_engine, namespace, year)
+                #new_table = get_figures_table(price_comparision_table_data, str(year))
+                absolute_value_table.append(new_table[0])
+                average_value_table.append(new_table[1])
 
-    instanciated_charts = absolute_value_table + average_value_table
+        instanciated_charts = absolute_value_table + average_value_table
     return instanciated_charts
 
