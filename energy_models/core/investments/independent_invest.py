@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from .base_invest import BaseInvest
 import pandas as pd
 import numpy as np
@@ -59,41 +59,31 @@ class IndependentInvest(BaseInvest):
         year_end = inputs_dict['year_end']
         years_range = np.arange(year_start, year_end + 1)
         self.delta_years = len(years_range)
-        energy_investment = inputs_dict['energy_investment']
-        self.scaling_factor_energy_investment = inputs_dict['scaling_factor_energy_investment']
+
+        energy_investment_wo_tax = self.compute_energy_investment_wo_tax(inputs_dict)
+
         invest_constraint_ref = inputs_dict['invest_constraint_ref']
         invest_objective_ref = inputs_dict['invest_objective_ref']
         invest_sum_ref = inputs_dict['invest_sum_ref']
-        energy_invest_df = pd.DataFrame({'years': energy_investment['years'].values,
-                                         'energy_investment': energy_investment[
-                                                                  'energy_investment'].values * self.scaling_factor_energy_investment})
+
         invest_limit_ref = inputs_dict['invest_limit_ref']
-        self.compute_distribution_list(inputs_dict)
 
-        techno_invests = inputs_dict['invest_mix'][self.distribution_list]
-        techno_invest_sum = techno_invests.sum(axis=1).values
-
-        techno_invest_sum += inputs_dict['forest_investment']['forest_investment'].values
-        energy_list = inputs_dict['energy_list']
-
-        if BiomassDry.name in energy_list:
-            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                techno_invest_sum += inputs_dict[techno]['investment'].values
+        techno_invest_sum = energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values
 
         # Calculate relative diff
-        delta = (energy_invest_df['energy_investment'].values -
-                 techno_invest_sum) / energy_invest_df['energy_investment'].values
+        delta = (energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values -
+                 techno_invest_sum) / energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values
 
         # Calculate the constraint
         invest_constraint = delta / invest_constraint_ref
-        invest_constraint_df = pd.DataFrame({'years': energy_investment['years'].values,
+        invest_constraint_df = pd.DataFrame({'years': energy_investment_wo_tax['years'].values,
                                              'invest_constraint': invest_constraint})
 
         delta_sum = (
-                            energy_invest_df['energy_investment'].values - techno_invest_sum) / invest_sum_ref
+                            energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values - techno_invest_sum) / invest_sum_ref
 
         delta_sum_cons = (
-                energy_invest_df['energy_investment'].values - techno_invest_sum)
+                energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values - techno_invest_sum)
         
         dela_sum_cons_ineq = delta_sum / self.delta_years
         abs_delta_sum = np.sqrt(
@@ -111,12 +101,34 @@ class IndependentInvest(BaseInvest):
         smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
         invest_objective = smooth_delta / invest_objective_ref
         abs_delta_sum_cons_dc = compute_delta_constraint(value=techno_invest_sum,
-                                                         goal=energy_invest_df['energy_investment'].values,
+                                                         goal=energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values,
                                                          tolerable_delta=invest_limit_ref, delta_type='abs',
                                                          reference_value=invest_sum_ref * self.delta_years)
         delta_sum_eq_cons = compute_delta_constraint(value=techno_invest_sum,
-                                                     goal=energy_invest_df['energy_investment'].values,
+                                                     goal=energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values,
                                                      tolerable_delta=invest_limit_ref, delta_type='normal',
                                                      reference_value=invest_sum_ref * self.delta_years)
 
-        return invest_constraint_df, invest_objective, abs_delta_sum, abs_delta_sum_cons, abs_delta_sum_cons_dc, delta_sum_eq_cons , dela_sum_cons_ineq
+        return energy_investment_wo_tax, invest_constraint_df, invest_objective, abs_delta_sum, abs_delta_sum_cons, abs_delta_sum_cons_dc, delta_sum_eq_cons , dela_sum_cons_ineq
+
+    def compute_energy_investment_wo_tax(self, inputs_dict: dict):
+        """computes investments in the energy sector (without tax)"""
+        self.compute_distribution_list(inputs_dict)
+
+        techno_invests = inputs_dict['invest_mix'][self.distribution_list]
+        techno_invest_sum = techno_invests.sum(axis=1).values
+
+        techno_invest_sum += inputs_dict['forest_investment']['forest_investment'].values
+        energy_list = inputs_dict['energy_list']
+
+        if BiomassDry.name in energy_list:
+            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
+                techno_invest_sum += inputs_dict[techno]['investment'].values
+        energy_investment_wo_tax = pd.DataFrame({GlossaryCore.Years: inputs_dict['invest_mix'][GlossaryCore.Years],
+                                          GlossaryCore.EnergyInvestmentsWoTaxValue: techno_invest_sum})
+
+        return energy_investment_wo_tax
+
+
+
+
