@@ -54,11 +54,11 @@ from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase impor
     TECHNOLOGIES_LIST as LiquidFuel_technos
 from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as LiquidFuel_technos_dev
-from energy_models.sos_processes.energy.techno_mix.high_heat_mix.usecase import \
+from energy_models.sos_processes.energy.techno_mix.highheattemperature_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as hightemperatureheat_technos_dev
-from energy_models.sos_processes.energy.techno_mix.medium_heat_mix.usecase import \
+from energy_models.sos_processes.energy.techno_mix.mediumheattemperature_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as mediumtemperatureheat_technos_dev
-from energy_models.sos_processes.energy.techno_mix.low_heat_mix.usecase import \
+from energy_models.sos_processes.energy.techno_mix.lowheattemperature_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as lowtemperatureheat_technos_dev
 
 from energy_models.sos_processes.energy.techno_mix.hydrotreated_oil_fuel_mix.usecase import \
