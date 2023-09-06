@@ -74,7 +74,7 @@ class Study(EnergyMixStudyManager):
     def setup_usecase(self):
         energy_mix_name = 'EnergyMix'
         self.energy_name = hightemperatureheat.name
-        energy_name = f'EnergyMix.Heat.{self.energy_name}'
+        energy_name = f'EnergyMix.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # energy_prices data came from test files  of corresponding technologies
@@ -108,6 +108,7 @@ class Study(EnergyMixStudyManager):
         self.energy_carbon_emissions = pd.DataFrame({'years': years, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.0, 'water': 0.0})
 
         investment_mix = self.get_investments()
+
         values_dict = {f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
                        f'{self.study_name}.{energy_name}.technologies_list': self.technologies_list,

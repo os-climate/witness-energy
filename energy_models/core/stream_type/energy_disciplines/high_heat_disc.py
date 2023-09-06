@@ -21,7 +21,7 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 class HighHeatDiscipline(EnergyDiscipline):
     # ontology information
     _ontology_data = {
-        'label': ' Heat Energy Model',
+        'label': ' High Heat Energy Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',

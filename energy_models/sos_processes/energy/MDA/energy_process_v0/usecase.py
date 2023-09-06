@@ -439,7 +439,6 @@ class Study(EnergyStudyManager):
         if self.bspline:
             invest_energy_mix_dict['years'] = self.years
 
-            print('invest_energy_mix_dict', invest_energy_mix_dict.keys())
             for energy in self.energy_list:
                 invest_energy_mix_dict[energy], _ = self.invest_bspline(
                     invest_energy_mix_dict[energy], len(self.years))
@@ -660,7 +659,9 @@ class Study(EnergyStudyManager):
 
         hydrogen_name = GaseousHydrogen.name
         liquid_fuel_name = LiquidFuel.name
-        heat_name = hightemperatureheat.name
+        high_heat_name = hightemperatureheat.name
+        medium_heat_name = mediumtemperatureheat.name
+        low_heat_name = lowtemperatureheat.name
         hvo_name = HydrotreatedOilFuel.name
         methane_name = Methane.name
         biogas_name = BioGas.name
@@ -684,7 +685,9 @@ class Study(EnergyStudyManager):
                              solid_fuel_name: 8.6,
                              hydrogen_name: 90.0,
                              liquid_fuel_name: 70.0,
-                             heat_name: 71.0,
+                             high_heat_name: 71.0,
+                             medium_heat_name: 71.0,
+                             low_heat_name: 71.0,
                              syngas_name: 40.0,
                              carbon_capture_name: 0.0,
                              carbon_storage_name: 0.0,
@@ -709,7 +712,9 @@ class Study(EnergyStudyManager):
                                         solid_fuel_name: 0.64 / 4.86,
                                         hydrogen_name: 0.0,
                                         liquid_fuel_name: 0.0,
-                                        heat_name: 0.0,
+                                        high_heat_name: 0.0,
+                                        medium_heat_name: 0.0,
+                                        low_heat_name: 0.0,
                                         syngas_name: 0.0,
                                         carbon_capture_name: 0.0,
                                         carbon_storage_name: 0.0,

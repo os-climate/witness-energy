@@ -1,5 +1,5 @@
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.core.techno_type.base_techno_models.heat_techno import mediumheattechno
+from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 import numpy as np
 

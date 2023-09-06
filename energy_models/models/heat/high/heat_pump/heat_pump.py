@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.techno_type.base_techno_models.heat_techno import highheattechno
+from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 import numpy as np
 

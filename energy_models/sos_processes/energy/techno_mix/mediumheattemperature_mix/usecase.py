@@ -74,7 +74,7 @@ class Study(EnergyMixStudyManager):
     def setup_usecase(self):
         energy_mix_name = 'EnergyMix'
         self.energy_name = mediumtemperatureheat.name
-        energy_name = f'EnergyMix.Heat.{self.energy_name}'
+        energy_name = f'EnergyMix.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # energy_prices data came from test files  of corresponding technologies

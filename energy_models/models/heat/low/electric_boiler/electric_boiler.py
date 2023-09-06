@@ -1,5 +1,5 @@
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.core.techno_type.base_techno_models.heat_techno import lowheattechno
+from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 
 import numpy as np
