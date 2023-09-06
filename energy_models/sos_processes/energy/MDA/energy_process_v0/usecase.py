@@ -673,7 +673,6 @@ class Study(EnergyStudyManager):
         carbon_capture_name = CarbonCapture.name
         carbon_storage_name = CarbonStorage.name
         liquid_hydrogen_name = LiquidHydrogen.name
-
         renewable_name = Renewable.name
         fossil_name = Fossil.name
         energy_mix_name = EnergyMix.name
@@ -884,7 +883,6 @@ class Study(EnergyStudyManager):
         agri_values_dict = {f'{self.study_name}.{agri_mix_name}.N2O_per_use': N2O_per_use,
                             f'{self.study_name}.{agri_mix_name}.CH4_per_use': CH4_per_use,
                             f'{self.study_name}.{agri_mix_name}.CO2_per_use': CO2_per_use,
-
                             f'{self.study_name}.{agri_mix_name}.energy_consumption': energy_consumption,
                             f'{self.study_name}.{agri_mix_name}.energy_consumption_woratio': energy_consumption,
                             f'{self.study_name}.{agri_mix_name}.energy_production': energy_production,
