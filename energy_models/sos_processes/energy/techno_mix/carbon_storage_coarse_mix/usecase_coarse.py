@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
-
+from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['CarbonStorageTechno']
 TECHNOLOGIES_LIST = ['CarbonStorageTechno']
@@ -44,7 +44,7 @@ class Study(EnergyMixStudyManager):
     def get_investments(self):
         invest_carbon_storage_mix_dict = {}
         #invest_carbon_storage_mix_dict['years'] = self.years
-        l_ctrl = np.arange(0, 16) # 09/12 16 pts coarse
+        l_ctrl = np.arange(0, GlossaryEnergy.NB_POLES_COARSE)
 
         if 'CarbonStorageTechno' in self.technologies_list:
             invest_carbon_storage_mix_dict['CarbonStorageTechno'] = [

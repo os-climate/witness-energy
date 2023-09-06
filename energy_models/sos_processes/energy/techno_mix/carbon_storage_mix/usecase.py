@@ -21,7 +21,7 @@ import scipy.interpolate as sc
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
-
+from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['BiomassBuryingFossilization', 'DeepOceanInjection', 'DeepSalineFormation',
                              'DepletedOilGas', 'EnhancedOilRecovery', 'GeologicMineralization',
@@ -83,7 +83,7 @@ class Study(EnergyMixStudyManager):
 
         if 'CarbonStorageTechno' in self.technologies_list:
             invest_carbon_storage_mix_dict['CarbonStorageTechno'] = [
-                10 * (1 + 0.03) ** i for i in np.arange(0, 16)]
+                10 * (1 + 0.03) ** i for i in np.arange(0, GlossaryEnergy.NB_POLES_COARSE)]
         if self.bspline:
             invest_carbon_storage_mix_dict['years'] = self.years
 
