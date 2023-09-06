@@ -232,6 +232,7 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == 'Charts':
                 graphs_list.extend(chart_filter.selected_values)
     # ----
+    # Sometimes wrapper object is None, TODO Need to find another way to find energy_name
     wrapper_type = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper
     if wrapper_type != None:
         energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
