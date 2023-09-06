@@ -757,7 +757,7 @@ class Study(EnergyStudyManager):
                            (np.ones(5) * 1e-4, np.ones(len(self.years) - 5) / 4), axis=None),
                        f'{self.study_name}.{energy_mix_name}.resources_CO2_emissions': self.resources_CO2_emissions,
                        f'{self.study_name}.{energy_mix_name}.resources_price': self.resources_prices,
-                       f'{self.study_name}.population_df': population_df,
+                       f'{self.study_name}.{GlossaryCore.PopulationDfValue}': population_df,
                        f'{self.study_name}.Energy_demand.transport_demand': transport_demand,
                        }
 
