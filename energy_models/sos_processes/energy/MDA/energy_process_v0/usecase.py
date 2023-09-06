@@ -25,6 +25,8 @@ from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_s
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.biogas import BioGas
@@ -353,6 +355,10 @@ class Study(EnergyStudyManager):
             3.15 * (1 - 0.1374) ** i for i in l_ctrl]
         invest_energy_mix_dict[hightemperatureheat.name] = [
             3.15 * (1 - 0.1374) ** i for i in l_ctrl]
+        invest_energy_mix_dict[mediumtemperatureheat.name] = [
+            3.15 * (1 - 0.1374) ** i for i in l_ctrl]
+        invest_energy_mix_dict[lowtemperatureheat.name] = [
+            3.15 * (1 - 0.1374) ** i for i in l_ctrl]
         invest_energy_mix_dict[SolidFuel.name] = [
                                                      0.00001, 0.0006] + [0.00005] * (len(l_ctrl) - 2)
         invest_energy_mix_dict[BioDiesel.name] = [
@@ -408,6 +414,10 @@ class Study(EnergyStudyManager):
             3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         invest_energy_mix_dict[hightemperatureheat.name] = [
             3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        invest_energy_mix_dict[mediumtemperatureheat.name] = [
+            3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        invest_energy_mix_dict[lowtemperatureheat.name] = [
+            3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         invest_energy_mix_dict[SolidFuel.name] = [
             0.00001, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
         invest_energy_mix_dict[BioDiesel.name] = [
@@ -429,6 +439,7 @@ class Study(EnergyStudyManager):
         if self.bspline:
             invest_energy_mix_dict['years'] = self.years
 
+            print('invest_energy_mix_dict', invest_energy_mix_dict.keys())
             for energy in self.energy_list:
                 invest_energy_mix_dict[energy], _ = self.invest_bspline(
                     invest_energy_mix_dict[energy], len(self.years))

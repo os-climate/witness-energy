@@ -18,7 +18,7 @@ from energy_models.core.stream_type.energy_type import EnergyType
 
 
 class lowtemperatureheat(EnergyType):
-    name = 'LowHeatTemperature'
+    name = 'heat' + '.' + 'low' + '.' + 'lowheattemperature'
     short_name = 'low heat'
     default_techno_list = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
     data_energy_dict = {'maturity': 5,
@@ -29,7 +29,7 @@ class lowtemperatureheat(EnergyType):
 
 class mediumtemperatureheat(EnergyType):
 
-    name = 'MediumHeatTemperature'
+    name = 'heat' + '.' + 'medium' + '.' + 'mediumheattemperature'
     short_name = 'medium heat'
     default_techno_list = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
     data_energy_dict = {'maturity': 5,
@@ -41,7 +41,7 @@ class mediumtemperatureheat(EnergyType):
 
 class hightemperatureheat(EnergyType):
 
-    name = 'HighHeatTemperature'
+    name = 'heat' + '.' + 'high' + '.' + 'highheattemperature'
     short_name = 'high heat'
     default_techno_list = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
     data_energy_dict = {'maturity': 5,
