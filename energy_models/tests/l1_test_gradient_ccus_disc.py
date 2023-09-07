@@ -57,7 +57,7 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
             'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage',
-            'LowHeatTemperature', 'MediumHeatTemperature', 'HighHeatTemperature']]
+            'heat.lowheattemperature', 'heat.mediumheattemperature', 'heat.highheattemperature',]]
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)
