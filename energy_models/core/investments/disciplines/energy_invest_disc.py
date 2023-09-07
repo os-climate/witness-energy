@@ -6,6 +6,7 @@ All rights reserved.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.energy_invest import EnergyInvest
@@ -35,15 +36,15 @@ class InvestEnergyDiscipline(SoSWrapp):
                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]',
                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'energy_investment': {'type': 'dataframe',
+        GlossaryCore.EnergyInvestmentsValue: {'type': 'dataframe',
                               'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
-                                                       'energy_investment': ('float', None, True)},
+                                                       GlossaryCore.EnergyInvestmentsValue: ('float', None, True)},
                               'dataframe_edition_locked': False},
         'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
                                              'namespace': 'ns_public'},
         'invest_energy_mix': {'type': 'dataframe',
                               'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
-                                                       'energy_investment': ('float', None, True),
+                                                       GlossaryCore.EnergyInvestmentsValue: ('float', None, True),
                                                        'methane': ('float', None, True),
                                                        'electricity': ('float', None, True),
                                                        'hydrogen.gaseous_hydrogen': ('float', None, True)},
@@ -82,22 +83,22 @@ class InvestEnergyDiscipline(SoSWrapp):
     def run(self):
 
         input_dict = self.get_sosdisc_inputs()
-        energy_invest_df = input_dict['energy_investment'].copy(deep=True)
-        energy_invest_df['energy_investment'] = input_dict['energy_investment']['energy_investment'] * \
+        energy_invest_df = input_dict[GlossaryCore.EnergyInvestmentsValue].copy(deep=True)
+        energy_invest_df[GlossaryCore.EnergyInvestmentsValue] = input_dict[GlossaryCore.EnergyInvestmentsValue][GlossaryCore.EnergyInvestmentsValue] * \
                                                 self.energy_model.rescaling_factor
         self.energy_model.set_energy_list(input_dict['energy_list'])
 
         scaling_factor_energy_investment = input_dict['scaling_factor_energy_investment']
         scaled_energy_investment = pd.DataFrame(
-            {'years': input_dict['energy_investment']['years'], 'energy_investment': input_dict['energy_investment'][
-                                                                                         'energy_investment'] * scaling_factor_energy_investment})
+            {'years': input_dict[GlossaryCore.EnergyInvestmentsValue]['years'], GlossaryCore.EnergyInvestmentsValue: input_dict[GlossaryCore.EnergyInvestmentsValue][
+                                                                                         GlossaryCore.EnergyInvestmentsValue] * scaling_factor_energy_investment})
 
         energy_invest_df, unit = self.energy_model.get_invest_distrib(
             scaled_energy_investment,
             input_dict['invest_energy_mix'],
             input_unit='G$',
             output_unit='G$',
-            column_name='energy_investment'
+            column_name=GlossaryCore.EnergyInvestmentsValue
         )
 
         output_dict = {'energy_invest_df': energy_invest_df}
@@ -121,22 +122,22 @@ class InvestEnergyDiscipline(SoSWrapp):
             grad_energy = inputs_dict['invest_energy_mix'][energy].values / \
                           norm_mix.values
             self.set_partial_derivative_for_other_types(
-                (f'{energy}.invest_level', 'invest'), ('energy_investment', 'energy_investment'),
+                (f'{energy}.invest_level', 'invest'), (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue),
                 scaling_factor_energy_investment * np.identity(len(years)) * grad_energy[:, np.newaxis])
 
-            invest_copy = inputs_dict['energy_investment'].copy(deep=True)
+            invest_copy = inputs_dict[GlossaryCore.EnergyInvestmentsValue].copy(deep=True)
             invest_copy.reset_index(inplace=True)
-            invest_copy['energy_investment'] = inputs_dict['energy_investment']['energy_investment'] * \
+            invest_copy[GlossaryCore.EnergyInvestmentsValue] = inputs_dict[GlossaryCore.EnergyInvestmentsValue][GlossaryCore.EnergyInvestmentsValue] * \
                                                scaling_factor_energy_investment
 
-            grad_energy_mix = invest_copy['energy_investment'].values * (
+            grad_energy_mix = invest_copy[GlossaryCore.EnergyInvestmentsValue].values * (
                     norm_mix.values - inputs_dict['invest_energy_mix'][energy].values) / norm_mix.values ** 2
             self.set_partial_derivative_for_other_types(
                 (f'{energy}.invest_level', 'invest'), ('invest_energy_mix', energy),
                 np.identity(len(years)) * grad_energy_mix[:, np.newaxis])
             for energy_other in inputs_dict['energy_list']:
                 if energy != energy_other:
-                    grad_energy_mix_other = -invest_copy['energy_investment'].values * \
+                    grad_energy_mix_other = -invest_copy[GlossaryCore.EnergyInvestmentsValue].values * \
                                             inputs_dict['invest_energy_mix'][energy].values / \
                                             norm_mix.values ** 2
                     self.set_partial_derivative_for_other_types(

@@ -17,6 +17,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from sostrades_core.tools.base_functions.s_curve import s_curve
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
@@ -71,16 +72,16 @@ class EnergyDemand(object):
         self.transport_demand_df = inputs_dict['transport_demand']
         self.additional_demand_transport = inputs_dict['additional_demand_transport'] / 100.
         self.demand_elec_constraint = pd.DataFrame(
-            {'years': self.years})
+            {GlossaryCore.Years: self.years})
         self.elec_demand = pd.DataFrame(
-            {'years': self.years})
+            {GlossaryCore.Years: self.years})
 
     def configure_parameters_update(self, inputs_dict):
         '''
         Update parameters at each execution
         '''
         self.energy_production_detailed = inputs_dict['energy_production_detailed']
-        self.population_df = inputs_dict['population_df']
+        self.population_df = inputs_dict[GlossaryCore.PopulationDfValue]
 
     def compute(self):
         '''
