@@ -22,7 +22,6 @@ from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 class IndependentInvest(BaseInvest):
     '''
         Model to Distribute Absolute invest from design space to technologies
-        Need to compute a constraint on investment sum 
     '''
 
     def __init__(self, name='Invest'):

@@ -22,8 +22,6 @@ from os.path import join, dirname
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.investments.independent_invest import IndependentInvest
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum
 
 
 class TestIndependentInvest(unittest.TestCase):
@@ -89,8 +87,6 @@ class TestIndependentInvest(unittest.TestCase):
 
     def test_01_independent_invest_model(self):
         scaling_factor_energy_investment = 100
-        invest_constraint_ref = 10.0
-        invest_objective_ref = 0.05
         inputs_dict = {'year_start': self.y_s,
                        'year_end': self.y_e,
                        'energy_list': self.energy_list,
@@ -103,11 +99,7 @@ class TestIndependentInvest(unittest.TestCase):
                        'carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        'invest_mix': self.energy_mix,
                        'forest_investment': self.forest_invest_df,
-                       'scaling_factor_energy_investment': scaling_factor_energy_investment,
-                       'invest_constraint_ref': invest_constraint_ref,
-                       'invest_objective_ref': invest_objective_ref,
-                       'invest_sum_ref': 2.,
-                       'invest_limit_ref': 300.}
+                       'scaling_factor_energy_investment': scaling_factor_energy_investment,}
         one_invest_model = IndependentInvest()
         energy_investment_wo_tax = one_invest_model.compute(inputs_dict)
 

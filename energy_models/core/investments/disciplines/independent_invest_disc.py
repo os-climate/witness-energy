@@ -8,18 +8,12 @@ import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.independent_invest import IndependentInvest
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
-from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
-    compute_func_with_exp_min
-from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum, get_dsmooth_dvariable
-from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.ccus.ccus import CCUS
 
@@ -109,12 +103,6 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                 'carbon_capture.flue_gas_capture.FlueGasTechno': ('float', None, True),
                                                 'carbon_storage.CarbonStorageTechno': ('float', None, True),
                                                 }},
-        'invest_objective_ref': {'type': 'float', 'unit': 'G$', 'default': 1.0, 'user_level': 2, 'visibility': 'Shared',
-                                 'namespace': 'ns_ref'},
-        'invest_sum_ref': {'type': 'float', 'unit': 'G$', 'default': 2., 'user_level': 2, 'visibility': 'Shared',
-                           'namespace': 'ns_ref'},
-        'invest_constraint_ref': {'type': 'float', 'unit': 'G$', 'default': 80.0, 'user_level': 2,
-                                  'visibility': 'Shared', 'namespace': 'ns_ref'},
         'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
@@ -122,8 +110,6 @@ class IndependentInvestDiscipline(SoSWrapp):
         'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True},
-        'invest_limit_ref': {'type': 'float', 'default': 300., 'unit': 'G$', 'user_level': 2, 'visibility': 'Shared',
-                             'namespace': 'ns_ref'},
         'forest_investment': {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
                               'dataframe_descriptor': {'years': ('float', None, False),
                                                        'forest_investment': ('float', None, False)}, 'namespace': 'ns_invest',

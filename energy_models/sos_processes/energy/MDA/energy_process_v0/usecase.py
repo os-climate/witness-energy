@@ -131,13 +131,6 @@ class Study(EnergyStudyManager):
         list_ns.extend(['ns_functions',
                         'ns_functions'])
 
-        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
-            list_var.extend(['invest_objective', 'invest_objective_sum'])
-            list_parent.extend(['objectives', 'objectives'])
-            list_ftype.extend([OBJECTIVE, OBJECTIVE])
-            list_weight.extend([0.0, 0.0])
-            list_aggr_type.extend([AGGR_TYPE_SUM, AGGR_TYPE_SUM])
-            list_ns.extend(['ns_functions', 'ns_functions'])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -237,17 +230,6 @@ class Study(EnergyStudyManager):
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
             list_namespaces.append('ns_functions')
-
-        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
-            list_var.extend(
-                ['invest_constraint', 'invest_sum_cons', 'invest_sum_cons_dc', 'invest_sum_eq_cons'])
-            list_parent.extend(
-                ['invests_constraints', 'invests_constraints', 'invests_constraints', 'invests_constraints'])
-            list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT, EQ_CONSTRAINT])
-            list_weight.extend([0., 0., 0., -1.0])
-            list_aggr_type.extend(
-                [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_DELTA])
-            list_namespaces.extend(['ns_functions', 'ns_functions', 'ns_functions', 'ns_functions'])
 
         if set(EnergyDemandDiscipline.energy_constraint_list).issubset(self.energy_list):
             list_var.extend(
