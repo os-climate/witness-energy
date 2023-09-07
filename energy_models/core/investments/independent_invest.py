@@ -16,11 +16,7 @@ limitations under the License.
 from climateeconomics.glossarycore import GlossaryCore
 from .base_invest import BaseInvest
 import pandas as pd
-import numpy as np
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum
-from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 
 
 class IndependentInvest(BaseInvest):
@@ -37,79 +33,12 @@ class IndependentInvest(BaseInvest):
         # -- default value, can be changed if necessary
 
         self.invest_mix = None
-        self.scaling_factor_energy_investment = 1e2
 
-    def create_year_range(self):
-        '''
-        Create the dataframe and fill it with values at year_start
-        '''
-        self.years_range = np.arange(
-            self.year_start,
-            self.year_end + 1)
-        self.delta_years = len(self.years_range)
-
-    def compute_invest_constraint_and_objective(self, inputs_dict):
-        '''
-        The constraint is satisfied if sum of techno_invests < available_invest.
-        The objective formulation is the minimization of the absolute relative difference of 
-        available invest compared to the sum of techno invest.
-        The objective is scaled by a reference value.
-        '''
-        year_start = inputs_dict['year_start']
-        year_end = inputs_dict['year_end']
-        years_range = np.arange(year_start, year_end + 1)
-        self.delta_years = len(years_range)
-
+    def compute(self, inputs_dict):
+        """compute"""
         energy_investment_wo_tax = self.compute_energy_investment_wo_tax(inputs_dict)
 
-        invest_constraint_ref = inputs_dict['invest_constraint_ref']
-        invest_objective_ref = inputs_dict['invest_objective_ref']
-        invest_sum_ref = inputs_dict['invest_sum_ref']
-
-        invest_limit_ref = inputs_dict['invest_limit_ref']
-
-        techno_invest_sum = energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values
-
-        # Calculate relative diff
-        delta = (energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values -
-                 techno_invest_sum) / energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values
-
-        # Calculate the constraint
-        invest_constraint = delta / invest_constraint_ref
-        invest_constraint_df = pd.DataFrame({'years': energy_investment_wo_tax['years'].values,
-                                             'invest_constraint': invest_constraint})
-
-        delta_sum = (
-                            energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values - techno_invest_sum) / invest_sum_ref
-
-        delta_sum_cons = (
-                energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values - techno_invest_sum)
-        
-        dela_sum_cons_ineq = delta_sum / self.delta_years
-        abs_delta_sum = np.sqrt(
-            compute_func_with_exp_min(delta_sum ** 2, 1e-15))
-
-        abs_delta_sum_cons = (invest_limit_ref - np.sqrt(compute_func_with_exp_min(
-            delta_sum_cons ** 2, 1e-15))) / invest_sum_ref / self.delta_years
-        
-
-        
-
-        # Get the L1 norm of the delta and apply a scaling to compute the
-        # objective
-        abs_delta = np.sqrt(compute_func_with_exp_min(delta ** 2, 1e-15))
-        smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
-        invest_objective = smooth_delta / invest_objective_ref
-        abs_delta_sum_cons_dc = compute_delta_constraint(value=techno_invest_sum,
-                                                         goal=energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values,
-                                                         tolerable_delta=invest_limit_ref, delta_type='abs',
-                                                         reference_value=invest_sum_ref * self.delta_years)
-        delta_sum_eq_cons = compute_delta_constraint(value=techno_invest_sum,
-                                                     goal=energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values,
-                                                     tolerable_delta=invest_limit_ref, delta_type='normal',
-                                                     reference_value=invest_sum_ref * self.delta_years)
-
-        return energy_investment_wo_tax, invest_constraint_df, invest_objective, abs_delta_sum, abs_delta_sum_cons, abs_delta_sum_cons_dc, delta_sum_eq_cons , dela_sum_cons_ineq
+        return energy_investment_wo_tax
 
     def compute_energy_investment_wo_tax(self, inputs_dict: dict):
         """computes investments in the energy sector (without tax)"""
@@ -124,8 +53,9 @@ class IndependentInvest(BaseInvest):
         if BiomassDry.name in energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                 techno_invest_sum += inputs_dict[techno]['investment'].values
-        energy_investment_wo_tax = pd.DataFrame({GlossaryCore.Years: inputs_dict['invest_mix'][GlossaryCore.Years],
-                                          GlossaryCore.EnergyInvestmentsWoTaxValue: techno_invest_sum})
+        energy_investment_wo_tax = pd.DataFrame(
+            {GlossaryCore.Years: inputs_dict['invest_mix'][GlossaryCore.Years],
+             GlossaryCore.EnergyInvestmentsWoTaxValue: techno_invest_sum / 1e3})  # T$
 
         return energy_investment_wo_tax
 
