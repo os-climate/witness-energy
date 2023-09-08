@@ -28,7 +28,6 @@ class lowtemperatureheat(EnergyType):
 
 
 class mediumtemperatureheat(EnergyType):
-
     name = 'heat' + '.' + 'mediumtemperatureheat'
     short_name = 'medium heat'
     default_techno_list = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
@@ -40,7 +39,6 @@ class mediumtemperatureheat(EnergyType):
 
 
 class hightemperatureheat(EnergyType):
-
     name = 'heat' + '.' + 'hightemperatureheat'
     short_name = 'high heat'
     default_techno_list = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']

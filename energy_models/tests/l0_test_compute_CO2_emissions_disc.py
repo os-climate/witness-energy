@@ -40,7 +40,6 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
             'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage', 'heat.lowtemperatureheat', \
             'heat.mediumtemperatureheat', 'heat.hightemperatureheat', 'biomass_dry']]
-
         self.ccs_list = ['carbon_capture', 'carbon_storage']
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')

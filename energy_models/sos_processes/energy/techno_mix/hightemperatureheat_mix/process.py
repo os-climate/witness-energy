@@ -50,11 +50,9 @@ class ProcessBuilder(EnergyProcessBuilder):
             'energy_disciplines', 'HighHeat')
         #to get sub dictionary
         for techno_name in self.techno_list:
-            #print(f'{energy_mix}.{heat_name}.{techno_name}')
             mods_dict[f'{energy_mix}.{heat_name}.{techno_name}'] = self.get_techno_disc_path(
                 'heat', techno_name, sub_dir='high')
-        #print(mods_dict)
-        #print(f'{energy_mix}.{heat_name}')
+
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             # for sub dictionary

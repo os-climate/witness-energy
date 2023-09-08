@@ -20,7 +20,6 @@ from energy_models.core.ccus.ccus import CCUS
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.core.stream_type.energy_disciplines.fuel_disc import FuelDiscipline
 from energy_models.core.stream_type.energy_disciplines.heat_disc import HeatDiscipline
-# from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -98,8 +97,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             ns_dict = {'ns_public': f'{ns_study}',
                        'ns_energy_study': f'{ns_study}',
                        'ns_emissions': f'{ns_study}',
-                       'ns_ccs': f'{ns_study}.{CCS_NAME}',
-                       # 'ns_heat': f'{ns_study}'
+                       'ns_ccs': f'{ns_study}.{CCS_NAME}'
                        }
             mods_dict = {
                 energy_mix: 'energy_models.core.investments.disciplines.energy_invest_disc.InvestEnergyDiscipline',
@@ -186,13 +184,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             f'ns_energy_mix',
             post_proc_mod)
-
-
-        # post_proc_mod = 'energy_models.sos_processes.post_processing.techno_price'
-        # # if energy_mix == 'EnergyMix':
-        # self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-        #     f'ns_public',
-        #     post_proc_mod)
 
 
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown'
@@ -311,6 +302,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             mods_dict = {
                 f'{energy_mix}.{HeatDiscipline.name}': 'energy_models.core.stream_type.energy_disciplines.heat_disc.HeatDiscipline',
             }
+
             builder_heat = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_heat)
 
