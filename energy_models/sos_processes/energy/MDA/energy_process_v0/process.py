@@ -223,6 +223,21 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                     f'ns_ethanol',
                     post_proc_mod)
 
+            if energy == 'heat.hightemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_high',
+                    post_proc_mod)
+
+            if energy == 'heat.lowtemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_low',
+                    post_proc_mod)
+
+            if energy == 'heat.mediumtemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_medium',
+                    post_proc_mod)
+
 
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 f'ns_{energy}',
@@ -255,6 +270,18 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_ethanol',
                     post_proc_mod)
+            if energy == 'heat.hightemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_high',
+                    post_proc_mod)
+            if energy == 'heat.lowtemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_low',
+                    post_proc_mod)
+            if energy == 'heat.mediumtemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_medium',
+                    post_proc_mod)
 
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 f'ns_{energy}',
@@ -273,7 +300,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             # heat = 'Heat'
             # heat_name = hightemperatureheat.name
             # ns_dict1 = {'ns_heat': f'{ns_study}.{energy_mix}.{heat}.{heat_name}'}
-            ns_dict = {'ns_heat': f'{ns_study}.{energy_mix}.heat'}
+            ns_dict = {'ns_heat_high': f'{ns_study}.{energy_mix}.heat.hightemperatureheat',
+                       'ns_heat_low': f'{ns_study}.{energy_mix}.heat.lowtemperatureheat',
+                       'ns_heat_medium': f'{ns_study}.{energy_mix}.heat.mediumtemperatureheat'}
             # energy_builder_list = self.ee.factory.get_builder_from_process(
             #     'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
             #     techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline,

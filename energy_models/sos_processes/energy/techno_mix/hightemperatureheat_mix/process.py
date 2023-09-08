@@ -18,7 +18,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
     INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.sos_processes.energy.techno_mix.highheattemperature_mix.usecase import TECHNOLOGIES_LIST
+from energy_models.sos_processes.energy.techno_mix.hightemperatureheat_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -40,7 +40,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_study = self.ee.study_name
         heat_name = hightemperatureheat.name
         energy_mix = 'EnergyMix'
-        ns_dict = {'ns_heat': f'{ns_study}.{energy_mix}.{heat_name}',
+        ns_dict = {'ns_heat_high': f'{ns_study}.{energy_mix}.{heat_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}', 'ns_resource': f'{ns_study}.{energy_mix}'}

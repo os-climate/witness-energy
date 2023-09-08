@@ -902,12 +902,31 @@ if '__main__' == __name__:
     print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
     uc_cls.run()
 
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-        filters = ppf.get_post_processing_filters_by_discipline(
-            disc)
-        graph_list = ppf.get_post_processing_by_discipline(
-            disc, filters, as_json=False)
-        # if disc.sos_name == 'EnergyMix.fuel':
-        for graph in graph_list:
-            graph.to_plotly()  # .show()
+    # ppf = PostProcessingFactory()
+    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
+    #     filters = ppf.get_post_processing_filters_by_discipline(
+    #         disc)
+    #     graph_list = ppf.get_post_processing_by_discipline(
+    #         disc, filters, as_json=False)
+    #     print('disc.sos_name', disc.sos_name)
+    #     if disc.sos_name == 'EnergyMix':
+    #         for graph in graph_list:
+    #             graph.to_plotly()#.show()
+
+    # ppf = PostProcessingFactory()
+    # filters = ppf.get_post_processing_filters_by_namespace(
+    #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
+    # graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
+    #                                                   filters, as_json=False)
+    # for graph in graph_list:
+    #    graph.to_plotly().show()
+
+    # post_processing_factory = PostProcessingFactory()
+    # post_processing_factory.get_post_processing_by_namespace(
+    #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
+    # all_post_processings = post_processing_factory.get_all_post_processings(
+    #     uc_cls.execution_engine, False, as_json=False, for_test=False)
+
+    # for namespace, post_proc_list in all_post_processings.items():
+    #     for chart in post_proc_list:
+    #         chart.to_plotly()#.show()

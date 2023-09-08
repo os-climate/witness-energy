@@ -37,12 +37,12 @@ class HighHeatDiscipline(EnergyDiscipline):
     DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': hightemperatureheat.default_techno_list,
                                      'default': hightemperatureheat.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_heat',
+                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_heat_high',
                                      'structuring': True, 'unit': '-'
                                      },
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'unit': 'defined in dict',
-                                  'namespace': 'ns_heat', 'default': hightemperatureheat.data_energy_dict},
+                                  'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
     energy_name = hightemperatureheat.name
