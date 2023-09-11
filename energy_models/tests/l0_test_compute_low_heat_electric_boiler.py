@@ -113,7 +113,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_resource': self.name,
-                   'ns_heat': f'{self.name}'
+                   'ns_heat_low': f'{self.name}'
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 

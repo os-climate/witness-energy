@@ -118,7 +118,7 @@ class NaturalGasTestCase(unittest.TestCase):
                    'ns_energy_study': f'{self.name}',
                    'ns_methane': f'{self.name}',
                    'ns_resource': self.name,
-                   'ns_heat': f'{self.name}'
+                   'ns_heat_low': f'{self.name}'
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
