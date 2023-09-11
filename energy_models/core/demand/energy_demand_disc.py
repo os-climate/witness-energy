@@ -64,7 +64,7 @@ class EnergyDemandDiscipline(SoSWrapp):
                'initial_electricity_demand': {'type': 'float', 'default': 18000., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': '-'},
                'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               GlossaryEnergy.PopulationDF['var_name']: GlossaryEnergy.PopulationDF,
+               GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
                'transport_demand': {'type': 'dataframe', 'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
                                                                                   'transport_demand': ('float',  None, True)},
                                     'dataframe_edition_locked': False, 'unit': 'TWh'},
