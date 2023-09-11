@@ -40,32 +40,22 @@ class CHPDiscipline(HighHeatTechnoDiscipline):
 
     techno_infos_dict_default = {
 
-        'Capex_init': 199.8,
-        'Capex_init_unit': '$/kW',
-        'Opex_init': 10.565,
-        'Opex_init_unit': '$/kW',
+        'Capex_init': 2.145,           #file:///C:/Users/KAJBORKA/Downloads/PriyankaChintada_final_thesis%20(5).pdf
+        'Capex_init_unit': '$/kWh',    #https://www.google.com/search?q=eur+to+dollar+conversion&rlz=1C1UEAD_enIN1000IN1000&oq=eur+to+d&aqs=chrome.3.69i57j0i131i433i512l2j0i20i263i512l2j0i10i512j0i512l4.7800j1j7&sourceid=chrome&ie=UTF-8
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
         'efficiency': 0.8,    # consumptions and productions already have efficiency included
-        'chp_calorific_val': 53600,
+                              #https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
+        'chp_calorific_val': 22000, #https://ec.europa.eu/eurostat/documents/38154/42195/Final_CHP_reporting_instructions_reference_year_2016_onwards_30052017.pdf/f114b673-aef3-499b-bf38-f58998b40fe6
         'chp_calorific_val_unit': 'kJ/kg',
-        'chp_flow_rate': 100,
-        'chp_flow_rate_unit': 'kg/h',
-        'chp_temp': 25,
-        'chp_temp_unit': 'c',
-        'stoichiometric_ratio': 10,
-        'gas_fired_boiler': 2.051,
-        'gas_fired_boiler_unit': 'kW/kWh',
-        'wall_temp': 300,
-        'wall_temp_unit': 'c',
-        'methane_demand': 1.35,            #https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
-        'methane_demand_unit': 'kWh/kWh',
-        'co2_captured__production': 0.25,  # per kg kWh
-                                           # https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
-                                           # https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
-                                 'Opex_percentage': 0.024,
+        'elec_demand': 5400,  # https://www.epa.gov/sites/default/files/2015-07/documents/combined_heat_and_power_chp_level_1_feasibility_analysis_ethanol_facility.pdf
+        'elec_demand_unit': 'KW',   #KWh
+        'co2_captured__production': 0.11,  # kg/kWh
+                                           # https://odr.chalmers.se/server/api/core/bitstreams/65470fdd-f00a-4607-8d0f-59152df05ea8/content
+                                           # https://www.unitconverters.net/energy/megajoule-to-kilowatt-hour.htm
+                                 'Opex_percentage': 0.2, #page 28  #https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/961322/Part_5_CHP_Finance_BEIS_v03.pdf
                                  # Fixed 1.9 and recurrent 0.5 %
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
                                  'WACC': 0.058,  # Weighted averaged cost of capital / ATB NREL 2020
@@ -74,16 +64,14 @@ class CHPDiscipline(HighHeatTechnoDiscipline):
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
                                  'capacity_factor': 0.90,
                                  'techno_evo_eff': 'no'
-
-
     }
 
-    # Renewable Methane Association [online]
-    # production in 2020: 561 million gallons
+    # Renewable Association [online]
+    # production in 2020: 2608 million gallons
     # in TWh
-    # initial production i.e. total heat produced by NG is 6236731 TJ = 1683 TWh
+    # initial production i.e. total heat produced by CHP is 2817 TJ = 0.7825 TWh
 
-    initial_production = 561       # https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser?country=WORLD&fuel=Electricity%20and%20heat&indicator=HeatGenByFuel
+    initial_production = 0.2608    # https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser?country=WORLD&fuel=Electricity%20and%20heat&indicator=HeatGenByFuel
                                    # https://www.google.com/search?q=TJ+to+TWh&rlz=1C1UEAD_enIN1000IN1000&oq=TJ+to+TWh&aqs=chrome..69i57.35591j0j7&sourceid=chrome&ie=UTF-8
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
@@ -98,7 +86,7 @@ class CHPDiscipline(HighHeatTechnoDiscipline):
 
     # Renewable Methane Association [online]
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': 199.8/(16 * 8760) * np.array([0, 561])})
+        {'past years': np.arange(-construction_delay, 0), 'invest': 2.145/(16 * 8760) * np.array([0, 0.2608])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,

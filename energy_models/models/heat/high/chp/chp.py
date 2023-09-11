@@ -68,13 +68,19 @@ class CHPHighHeat(highheattechno):
 
         return self.carbon_emissions[f'{Methane.name}']
 
-    def get_theoretical_methane_needs(self):
-        # we need as output kwh/kwh 
-        methane_demand = self.techno_infos_dict['methane_demand']
+    # def get_theoretical_methane_needs(self):
+    #     # we need as output kwh/kwh
+    #     methane_demand = self.techno_infos_dict['methane_demand']
+    #
+    #     methane_needs = methane_demand
+    #
+    #     return methane_needs
 
-        methane_needs = methane_demand
+    def get_theoretical_electricity_needs(self):
+        # we need as output kwh/kwh
+        elec_demand = self.techno_infos_dict['elec_demand']
 
-        return methane_needs
+        return elec_demand
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         co2_captured__production = self.techno_infos_dict['co2_captured__production']
