@@ -67,7 +67,7 @@ class CHPTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'methane.NaturalGas']
+                                                == 'methane.CHP']
 
     def tearDown(self):
         pass
@@ -116,7 +116,7 @@ class CHPTestCase(unittest.TestCase):
                    'ns_energy_study': f'{self.name}',
                    'ns_methane': f'{self.name}',
                    'ns_resource': self.name,
-                   'ns_heat': f'{self.name}'
+                   'ns_heat_high': f'{self.name}'
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
