@@ -18,6 +18,8 @@ import unittest
 import numpy as np
 import pandas as pd
 from pandas.util.testing import assert_frame_equal
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane
@@ -353,8 +355,9 @@ class EnergyMixTestCase(unittest.TestCase):
 
         EM = EnergyMix('EnergyMix')
         EM.configure(inputs_dict)
-        EM.compute_energy_net_and_raw_production()
-        EM.compute_price_after_carbon_tax()
+        EM.compute_raw_production()
+        EM.compute_net_energy_production()
+        EM.compute_price_by_energy()
         EM.compute_CO2_emissions()
 
     def test_02_energy_mix_discipline(self):
@@ -609,6 +612,91 @@ class EnergyMixTestCase(unittest.TestCase):
             all_demand['oil_resource'].values / scaling_factor))  # in (Mt)
         self.assertListEqual(list(zero_line), list(
             all_demand['coal_resource'].values))
+    def test_05_energy_mix_witness_coarse(self):
+        """Test with techno coarse"""
+
+        name = 'Test'
+        model_name = 'EnergyMix'
+        agriculture_mix = 'AgricultureMix'
+        ee = ExecutionEngine(name)
+        ns_dict = {'ns_public': f'{name}',
+                   'ns_hydrogen': f'{name}',
+                   'ns_methane': f'{name}',
+                   'ns_energy_study': f'{name}',
+                   'ns_energy_mix': f'{name}.{model_name}',
+                   'ns_functions': f'{name}.{model_name}',
+                   'ns_resource': f'{name}.{model_name}.resource',
+                   'ns_ccs': f'{name}.{model_name}',
+                   'ns_ref': f'{name}.{model_name}',
+                   'ns_energy': f'{name}.{model_name}',
+                   'ns_witness': f'{name}'}
+        ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline'
+        builder = ee.factory.get_builder_from_module(model_name, mod_path)
+
+        ee.factory.set_builders_to_coupling_builder(builder)
+
+        ee.configure()
+        ee.display_treeview_nodes()
+
+        consumption_coarse = self.consumption_hydro * 0.
+        fossil_production_coarse = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                 })
+        inputs_dict = {f'{name}.year_start': self.year_start,
+                       f'{name}.year_end': self.year_end,
+                       f'{name}.energy_list': ['fossil.FossilSimpleTechno', 'renewable.RenewableSimpleTechno'],
+                       f'{name}.ccs_list': [],
+                       f'{name}.is_dev': True,
+                       f'{name}.{model_name}.energy_prices': pd.DataFrame(
+                           {'fossil.FossilSimpleTechno': [93.] * len(self.years),
+                            'renewable.RenewableSimpleTechno': [120.] * len(self.years)}),
+                       f'{name}.{model_name}.fossil.FossilSimpleTechno.energy_consumption': consumption_coarse,
+                       f'{name}.{model_name}.fossil.FossilSimpleTechno.energy_consumption_woratio': consumption_coarse,
+                       f'{name}.{model_name}.fossil.FossilSimpleTechno.energy_production': self.production_hydro,
+                       f'{name}.{model_name}.fossil.FossilSimpleTechno.energy_production_woratio': self.production_hydro,
+                       f'{name}.{model_name}.fossil.FossilSimpleTechno.energy_prices': self.prices_hydro,
+                       f'{name}.{model_name}.fossil.FossilSimpleTechno.CO2_per_use': pd.DataFrame(
+                           {'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.fossil.FossilSimpleTechno.CO2_emissions': pd.DataFrame(
+                           {'years': self.years, 'fossil.FossilSimpleTechno': 0.0}),
+                       f'{name}.{model_name}.fossil.FossilSimpleTechno.land_use_required': self.land_use_required_mock,
+                       f'{name}.{agriculture_mix}.energy_consumption': self.energy_consumption_biomass,
+                       f'{name}.{agriculture_mix}.energy_consumption_woratio': self.energy_consumption_biomass,
+                       f'{name}.{agriculture_mix}.energy_production': self.energy_production_biomass,
+                       f'{name}.{agriculture_mix}.energy_prices': self.energy_prices_biomass,
+                       f'{name}.{agriculture_mix}.CO2_per_use': self.CO2_per_use_biomass,
+                       f'{name}.{agriculture_mix}.CO2_emissions': self.CO2_emissions_biomass,
+                       f'{name}.{agriculture_mix}.land_use_required': self.land_use_required_mock,
+                       f'{name}.{model_name}.methane.energy_consumption': self.consumption,
+                       f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
+                       f'{name}.{model_name}.methane.energy_production': self.production,
+                       f'{name}.{model_name}.methane.energy_production_woratio': self.production,
+                       f'{name}.{model_name}.methane.energy_prices': self.cost_details,
+                       f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame(
+                           {'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.methane.CO2_emissions': pd.DataFrame(
+                           {'years': self.years, 'methane': 0.0}),
+                       f'{name}.{model_name}.methane.land_use_required': self.land_use_required_mock,
+                       f'{name}.CO2_taxes': self.co2_taxes,
+                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage,
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.loss_percentage': 1.0,
+                       f'{name}.{model_name}.methane.loss_percentage': 2.0,
+                       }
+
+        ee.load_study_from_input_dict(inputs_dict)
+
+        ee.execute()
+
+        disc = ee.dm.get_disciplines_with_name(
+            f'{name}.{model_name}')[0]
+        ppf = PostProcessingFactory()
+        filters = ppf.get_post_processing_filters_by_discipline(disc)
+        graph_list = ppf.get_post_processing_by_discipline(
+            disc, filters, as_json=False)
+
+    #        for graph in graph_list:
+    #            graph.to_plotly().show()
 
 
 if '__main__' == __name__:
