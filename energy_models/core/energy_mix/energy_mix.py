@@ -274,16 +274,20 @@ class EnergyMix(BaseStream):
             raw_production_energy = self.production_raw[column_name_energy]
 
             consumed_energy_by_energy = np.zeros_like(raw_production_energy)
-            for consu in self.sub_consumption_dict.values():
+            for consumption in self.sub_consumption_dict.values():
                 column_name = f'{energy} ({self.stream_class_dict[energy].unit})'
-                if column_name in consu.columns:
-                    consumed_energy_by_energy += consu[f'{energy} ({self.stream_class_dict[energy].unit})'].values
+                if column_name in consumption.columns:
+                    consumed_energy_by_energy += consumption[f'{energy} ({self.stream_class_dict[energy].unit})'].values
 
             self.production[column_name_energy] = raw_production_energy - consumed_energy_by_energy
 
+        ccs_consumption = np.zeros_like(raw_production_energy)
         for ccs in self.ccs_list:
-            pass
-            # TODO : remove energy used by ccs technos
+            column_name = f'{ccs} ({self.stream_class_dict[energy].unit})'
+            if column_name in consumption:
+                ccs_consumption += consumption[column_name]
+
+            self.production[ccs] = - ccs_consumption
 
         columns_to_sum = [column for column in self.production_raw if column.endswith('(TWh)')]
         self.production[GlossaryCore.TotalProductionValue] = self.production[columns_to_sum].sum(axis=1)
