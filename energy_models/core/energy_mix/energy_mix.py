@@ -269,27 +269,33 @@ class EnergyMix(BaseStream):
         """
         Net energy production = Raw energy production - Energy consumed for energy production - Energy used by CCUS
         """
-        for energy in self.energy_list:  # TODO : are CCUS technos included in this list ?
+        for energy in self.energy_list:
+            # starting from raw energy production
             column_name_energy = f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
             raw_production_energy = self.production_raw[column_name_energy]
 
+            # removing consumed energy
             consumed_energy_by_energy = np.zeros_like(raw_production_energy)
+            column_name_consumption = f'{energy} ({self.stream_class_dict[energy].unit})'
             for consumption in self.sub_consumption_dict.values():
-                column_name = f'{energy} ({self.stream_class_dict[energy].unit})'
-                if column_name in consumption.columns:
-                    consumed_energy_by_energy += consumption[f'{energy} ({self.stream_class_dict[energy].unit})'].values
+                if column_name_consumption in consumption.columns:
+                    consumed_energy_by_energy += consumption[column_name_consumption].values
 
+            # obtaining net energy production for the techno
             self.production[column_name_energy] = raw_production_energy - consumed_energy_by_energy
 
-        ccs_consumption = np.zeros_like(raw_production_energy)
+        # taking into account consumption of ccs technos
         for ccs in self.ccs_list:
-            column_name = f'{ccs} ({self.stream_class_dict[energy].unit})'
-            if column_name in consumption:
-                ccs_consumption += consumption[column_name]
+            ccs_energy_consumption_column = f'{ccs} (TWh)'
+            ccs_consumption = np.zeros_like(raw_production_energy)
+            for consumption in self.sub_consumption_dict.values():
+                if ccs_energy_consumption_column in consumption.columns:
+                    ccs_consumption += consumption[ccs_energy_consumption_column].values
 
-            self.production[ccs] = - ccs_consumption
+            self.production[ccs_energy_consumption_column] = - ccs_consumption
 
-        columns_to_sum = [column for column in self.production_raw if column.endswith('(TWh)')]
+        # Net energy production = Raw energy production - Energy consumed for energy production - Energy used by CCUS
+        columns_to_sum = [column for column in self.production if column.endswith('(TWh)')]
         self.production[GlossaryCore.TotalProductionValue] = self.production[columns_to_sum].sum(axis=1)
 
         # substract a percentage of raw production into net production
@@ -430,14 +436,14 @@ class EnergyMix(BaseStream):
         net_positives_energy_productions = {}
         for energy in self.energy_list:
             column_name = f'production {energy} ({self.energy_class_dict[energy].unit})'
-            net_positives_energy_productions[energy] = np.maximum(0.0, self.production[column_name])
+            net_positives_energy_productions[column_name] = np.maximum(0.0, self.production[column_name])
 
-        total_net_positive_production = np.sum(net_positives_energy_productions.values(), axis=1)
+        total_net_positive_production = pd.DataFrame(net_positives_energy_productions).sum(axis=1)
 
-        production_energy_net_pos = pd.DataFrame({**net_positives_energy_productions,
-                                                  GlossaryCore.Years: self.years,
+        production_energy_net_pos = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                  **net_positives_energy_productions,
                                                   GlossaryCore.TotalProductionValue: total_net_positive_production})
-        self.production_energy_net_pos = self.production_energy_net_pos
+        self.production_energy_net_pos = production_energy_net_pos
         return production_energy_net_pos
 
     def compute_mean_price(self, exp_min: bool = True):
@@ -452,8 +458,8 @@ class EnergyMix(BaseStream):
         energy_mean_price[GlossaryCore.Years] = self.production[GlossaryCore.Years]
         energy_mean_price['energy_price'] = 0.0
 
-        element_dict = zip(self.energy_list,
-                           [f'production {energy} ({self.energy_class_dict[energy].unit})' for energy in self.energy_list])
+        element_dict = dict(zip(self.energy_list,
+                           [f'production {energy} ({self.energy_class_dict[energy].unit})' for energy in self.energy_list]))
         if exp_min:
             prod_element, prod_total_for_mix_weight = self.compute_prod_with_exp_min(
                 self.production_energy_net_pos, element_dict, self.production_threshold)
