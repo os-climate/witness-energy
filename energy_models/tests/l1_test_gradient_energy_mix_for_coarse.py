@@ -29,7 +29,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
     Energy mix jacobian test class
     """
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return []
@@ -81,7 +81,9 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.energy_consumption' for energy in self.energy_list if
              energy not in ['carbon_capture', 'carbon_storage']])
-        
+        inputs_names.extend(
+            [f'{self.name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
+
         inputs_names.extend(
             [f'{self.name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend([
@@ -89,9 +91,6 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.CO2_emissions' for energy in self.energy_list if
              energy not in ['carbon_capture', 'carbon_storage']])
-
-        inputs_names.extend(
-            [f'{self.name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energymix_co2_emissions.pkl',
@@ -99,66 +98,14 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                             local_data=self.disc.local_data,
                             inputs=inputs_names,
                             outputs=[f'{self.name}.{self.model_name}.co2_emissions_needed_by_energy_mix',
-                                     f'{self.name}.{self.model_name}.carbon_capture_from_energy_mix'])
+                                     f'{self.name}.{self.model_name}.carbon_capture_from_energy_mix',
+                                     f'{self.name}.{self.model_name}.energy_mean_price',
+                                     f'{self.name}.{self.model_name}.energy_production',
+                                     f'{self.name}.{self.model_name}.land_demand_df',
+                                     f'{self.name}.{self.model_name}.energy_prices_after_tax'
+                                     ])
 
-    def test_02_energy_mix_test_mean_price_grad(self):
-        inputs_names = []
-
-        inputs_names.extend([
-            f'{self.name}.{self.model_name}.{energy}.energy_prices' for energy in self.energy_list if
-            energy not in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend([
-            f'{self.name}.{self.model_name}.{energy}.energy_production' for energy in self.energy_list if
-            energy not in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend(
-            [f'{self.name}.{self.model_name}.{energy}.energy_consumption' for energy in self.energy_list if
-             energy not in ['carbon_capture', 'carbon_storage']])
-
-        inputs_names.extend(
-            [f'{self.name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend([
-            f'{self.name}.CCUS.{energy}.energy_prices' for energy in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend(
-            [f'{self.name}.{self.model_name}.{energy}.CO2_emissions' for energy in self.energy_list if
-             energy not in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend(
-            [f'{self.name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
-        outputs_names = [f'{self.name}.{self.model_name}.energy_mean_price']
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_coarse_energy_mean_price_energy_prices_production.pkl',
-                            discipline=self.disc, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,
-                            local_data=self.disc.local_data,
-                            inputs=inputs_names, outputs=outputs_names)
-
-    def test_03_energy_mix_all_outputs(self):
-        inputs_names = [
-            f'{self.name}.{self.model_name}.{energy}.energy_prices' for energy in self.energy_list if
-            energy not in ['carbon_capture', 'carbon_storage']]
-        inputs_names.extend([
-            f'{self.name}.{self.model_name}.{energy}.energy_production' for energy in self.energy_list if
-            energy not in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend(
-            [f'{self.name}.{self.model_name}.{energy}.energy_consumption' for energy in self.energy_list if
-             energy not in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend(
-            [f'{self.name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend(
-            [f'{self.name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend([
-            f'{self.name}.CCUS.{energy}.energy_prices' for energy in ['carbon_capture', 'carbon_storage']])
-
-        energy_mix_output = [f'{self.name}.{self.model_name}.energy_production',
-                             f'{self.name}.{self.model_name}.energy_mean_price',
-                             f'{self.name}.{self.model_name}.land_demand_df',
-                             f'{self.name}.{self.model_name}.energy_prices_after_tax']
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energy_mix_outputs.pkl',
-                            discipline=self.disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
-                            local_data=self.disc.local_data,
-                            inputs=inputs_names, outputs=energy_mix_output)
-
-    def test_04_energy_mix_co2_tax(self):
+    def test_02_energy_mix_co2_tax(self):
         inputs_names = [
             f'{self.name}.CO2_taxes']
 
