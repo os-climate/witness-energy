@@ -270,7 +270,25 @@ class EnergyMix(BaseStream):
     def compute_net_consumable_energy(self):
         """consumable energy = Raw energy production - Energy consumed for energy production"""
 
+        # for energy in self.subelements_list:
+        #     column_name = f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
+        #     self.production[column_name] = pd.Series(
+        #         self.sub_production_dict[energy][energy].values)
+        #     self.production_raw[column_name] = pd.Series(
+        #         self.sub_production_dict[energy][energy].values)
+        #     for idx, consu in self.sub_consumption_dict.items():
+        #         if f'{energy} ({self.stream_class_dict[energy].unit})' in consu.columns:
+        #             self.production[column_name] -= consu[
+        #                 f'{energy} ({self.stream_class_dict[energy].unit})'].values
+        #         else:
+        #             wrong_columns = [
+        #                 column for column in consu.columns if energy in column]
+        #             if len(wrong_columns) != 0:
+        #                 logging.warning(
+        #                     f'The columns {wrong_columns} in the energy_consumption out of {idx} cannot be taken into account for an error of unity')
+
         self.consumable_energy_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.consumed_energy_by_ccus_sum = {}
         for energy in self.energy_list:
             # starting from raw energy production
             column_name_energy = f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
@@ -278,14 +296,18 @@ class EnergyMix(BaseStream):
 
             # removing consumed energy
             consumed_energy_by_energy_list = []
+            consumed_energy_by_ccus_list = []
             column_name_consumption = f'{energy} ({self.stream_class_dict[energy].unit})'
-            if energy in self.sub_consumption_dict:
-                consumption_energy_df = self.sub_consumption_dict[energy]
-                if column_name_consumption in consumption_energy_df:
-                    consumed_energy_by_energy_list.append(column_name_consumption[column_name_consumption].values)
-
-            consumed_energy_by_energy_sum = np.sum(np.array(consumed_energy_by_energy_list), axis=1) if len(
+            for energy_other, consu in self.sub_consumption_dict.items():
+                if column_name_consumption in consu.columns:
+                    if energy_other in self.energy_list:
+                        consumed_energy_by_energy_list.append(consu[column_name_consumption].values)
+                    else:
+                        consumed_energy_by_ccus_list.append(consu[column_name_consumption].values)
+            consumed_energy_by_energy_sum = np.sum(np.array(consumed_energy_by_energy_list), axis=0) if len(
                 consumed_energy_by_energy_list) else 0.
+            self.consumed_energy_by_ccus_sum[energy] = np.sum(np.array(consumed_energy_by_ccus_list), axis=0) if len(
+                consumed_energy_by_ccus_list) else 0.
             # obtaining net energy production for the techno
             column_name = f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
             prod_raw_to_substract = self.compute_net_prod_of_coarse_energies(energy, column_name)
@@ -308,15 +330,15 @@ class EnergyMix(BaseStream):
         self.production = deepcopy(self.consumable_energy_df)
         # taking into account consumption of ccs technos
         for ccs in self.ccs_list:
-            production_column_name_ccs = f'{self.PRODUCTION} {ccs} (TWh)'
-            if ccs in self.sub_consumption_dict:
-                consumption_ccs_df = self.sub_consumption_dict[ccs]
-                ccs_consumptions_list = []
-                for column in consumption_ccs_df.columns:
-                    if column.endswith('(TWh)'):
-                        ccs_consumptions_list.append(consumption_ccs_df[column].values)
-                self.production[production_column_name_ccs] = - np.sum(np.array(ccs_consumptions_list), axis=0) if len(
-                    ccs_consumptions_list) else 0.
+            # production_column_name_ccs = f'{self.PRODUCTION} {ccs} (TWh)'
+            # if ccs in self.sub_consumption_dict:
+            #     consumption_ccs_df = self.sub_consumption_dict[ccs]
+            #     ccs_consumptions_list = []
+            #     for column in consumption_ccs_df.columns:
+            #         if column.endswith('(TWh)'):
+            #             ccs_consumptions_list.append(consumption_ccs_df[column].values)
+            #     self.production[production_column_name_ccs] = - np.sum(np.array(ccs_consumptions_list), axis=0) if len(
+            #         ccs_consumptions_list) else 0.
 
             production_column_name_ccs = f'{self.PRODUCTION} {ccs} (Mt)'
             if ccs in self.sub_consumption_dict:
@@ -327,6 +349,10 @@ class EnergyMix(BaseStream):
                         ccs_consumptions_list.append(consumption_ccs_df[column].values)
                 self.production[production_column_name_ccs] = - np.sum(np.array(ccs_consumptions_list), axis=0) if len(
                     ccs_consumptions_list) else 0.
+        # Delete energy used by ccs from energy production (and not only from total production)
+        for energy in self.energy_list:
+            production_column_name_energy = f'{self.PRODUCTION} {energy} (TWh)'
+            self.production[production_column_name_energy] -= self.consumed_energy_by_ccus_sum[energy]
 
         # Net energy production = Raw energy production - Energy consumed for energy production - Energy used by CCUS
         columns_to_sum = [column for column in self.production if column.endswith('(TWh)')]
@@ -359,11 +385,9 @@ class EnergyMix(BaseStream):
         '''
         try:
             return self.production_raw[column_name].values * \
-                   (1.0 - self.raw_tonet_dict[energy])
+                (1.0 - self.raw_tonet_dict[energy])
         except KeyError:
             return 0.
-
-
 
     def compute_price_by_energy(self):
         '''
@@ -570,10 +594,10 @@ class EnergyMix(BaseStream):
                     f'{self.PRODUCTION} {energy} ({self.energy_class_dict[energy].unit})'].values
         if f'{self.PRODUCTION} {self.liquidHydrogen_name} ({self.energy_class_dict[self.liquidHydrogen_name].unit})' in self.production.columns:
             self.constraint_liquid_hydrogen['constraint_liquid_hydrogen'] = - (
-                        self.liquid_hydrogen_percentage * self.constraint_liquid_hydrogen[
-                    'constraint_liquid_hydrogen'].values -
-                        self.production[
-                            f'{self.PRODUCTION} {self.liquidHydrogen_name} ({self.energy_class_dict[self.liquidHydrogen_name].unit})'].values) / self.liquid_hydrogen_constraint_ref
+                    self.liquid_hydrogen_percentage * self.constraint_liquid_hydrogen[
+                'constraint_liquid_hydrogen'].values -
+                    self.production[
+                        f'{self.PRODUCTION} {self.liquidHydrogen_name} ({self.energy_class_dict[self.liquidHydrogen_name].unit})'].values) / self.liquid_hydrogen_constraint_ref
 
     def compute_constraint_solid_fuel_elec(self):
         self.constraint_solid_fuel_elec = pd.DataFrame(
