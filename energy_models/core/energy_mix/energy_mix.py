@@ -357,8 +357,13 @@ class EnergyMix(BaseStream):
         We use a raw/net ratio to compute consumed energy production 
         consu = raw-net = raw(1-1/ratio)
         '''
-        return self.production_raw[column_name].values * \
-            (1.0 - self.raw_tonet_dict[energy])
+        try:
+            return self.production_raw[column_name].values * \
+                   (1.0 - self.raw_tonet_dict[energy])
+        except KeyError:
+            return 0.
+
+
 
     def compute_price_by_energy(self):
         '''
