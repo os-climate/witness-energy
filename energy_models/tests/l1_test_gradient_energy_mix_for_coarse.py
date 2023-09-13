@@ -70,16 +70,17 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.energy_list = ['renewable', 'fossil']
 
     def test_01_energy_mix_discipline_co2_emissions_gt(self):
-        inputs_names = [
+        inputs_names = []
+
+        inputs_names.extend([
             f'{self.name}.{self.model_name}.{energy}.energy_prices' for energy in self.energy_list if
-            energy not in ['carbon_capture', 'carbon_storage']]
+            energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend([
             f'{self.name}.{self.model_name}.{energy}.energy_production' for energy in self.energy_list if
             energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.energy_consumption' for energy in self.energy_list if
              energy not in ['carbon_capture', 'carbon_storage']])
-
         inputs_names.extend(
             [f'{self.name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
 
@@ -89,7 +90,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.CCUS.{energy}.energy_prices' for energy in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.CO2_emissions' for energy in self.energy_list if
-             energy not in ['carbon_capture', 'carbon_storage']])
+             energy not in ['carbon_capture', 'carbon_storage']])g
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energymix_co2_emissions.pkl',
