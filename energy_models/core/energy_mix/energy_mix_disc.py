@@ -467,8 +467,9 @@ class Energy_Mix_Discipline(SoSWrapp):
         # energy_production stored in PetaWh for coupling variables scaling
         scaled_energy_production = pd.DataFrame(
             {GlossaryCore.Years: self.energy_model.production[GlossaryCore.Years].values,
-             GlossaryCore.TotalProductionValue: self.energy_model.production[GlossaryCore.TotalProductionValue].values / inputs_dict[
-                 'scaling_factor_energy_production']})
+             GlossaryCore.TotalProductionValue: self.energy_model.production[GlossaryCore.TotalProductionValue].values /
+                                                inputs_dict[
+                                                    'scaling_factor_energy_production']})
         self.energy_model.compute_constraint_h2()
         outputs_dict = {'energy_prices': self.energy_model.energy_prices,
                         'co2_emissions_by_energy': self.energy_model.emissions_by_energy,
@@ -476,7 +477,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                         'energy_CO2_emissions_after_use': self.energy_model.carbon_emissions_after_use,
                         GlossaryCore.EnergyProductionValue: scaled_energy_production,
                         'energy_production_detailed': self.energy_model.production,
-                        'energy_production_brut': self.energy_model.production_raw[[GlossaryCore.Years, GlossaryCore.TotalProductionValue]],
+                        'energy_production_brut': self.energy_model.production_raw[
+                            [GlossaryCore.Years, GlossaryCore.TotalProductionValue]],
                         'energy_production_brut_detailed': self.energy_model.production_raw,
                         'energy_mix': self.energy_model.mix_weights,
                         'energy_prices_after_tax': self.energy_model.price_by_energy,
@@ -605,7 +607,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                 dtotal_prod_denergy_prod = self.compute_dtotal_production_denergy_production(
                     production_detailed_df, minimum_energy_production, loss_percent)
                 dprod_objective_dprod = self.compute_denergy_production_objective_dprod(
-                    dtotal_prod_denergy_prod, inputs_dict['alpha'], outputs_dict[GlossaryCore.EnergyProductionValue], years)
+                    dtotal_prod_denergy_prod, inputs_dict['alpha'], outputs_dict[GlossaryCore.EnergyProductionValue],
+                    years)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryCore.EnergyProductionValue,
                      GlossaryCore.TotalProductionValue), (f'{ns_energy}.energy_production', energy),
@@ -694,7 +697,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                             self.compute_dtotal_production_denergy_production(
                                 production_detailed_df, minimum_energy_production, 0.0)
                         dprod_objective_dcons = self.compute_denergy_production_objective_dprod(
-                            dtotal_prod_denergy_cons, inputs_dict['alpha'], outputs_dict[GlossaryCore.EnergyProductionValue], years)
+                            dtotal_prod_denergy_cons, inputs_dict['alpha'],
+                            outputs_dict[GlossaryCore.EnergyProductionValue], years)
                         self.set_partial_derivative_for_other_types(
                             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue), (
                                 f'{ns_energy_input}.energy_consumption',
@@ -886,6 +890,9 @@ class Energy_Mix_Discipline(SoSWrapp):
                     scaling_factor_energy_production * dmean_price_dprod * (1.0 - loss_percentage))
 
             for energy_input in energy_list:
+                # TO ADD to fix new gradients (and all next lines under the if): 
+                # for mean_price we compute it before deleting energy consumption from CCUS
+                # if energy_input in energies:
                 ns_energy_input = self.get_ns_energy(energy_input)
                 list_columnsenergycons = list(
                     inputs_dict[f'{energy_input}.energy_consumption'].columns)
@@ -1119,8 +1126,10 @@ class Energy_Mix_Discipline(SoSWrapp):
         '''
 
         denergy_mean_prod = (
-                                    energy_price[energy] * 1e6 * production_df[GlossaryCore.TotalProductionValue] - production_df[
-                                'energy_price_pond']) / (1e6 * (production_df[GlossaryCore.TotalProductionValue]) ** 2)
+                                    energy_price[energy] * 1e6 * production_df[GlossaryCore.TotalProductionValue] -
+                                    production_df[
+                                        'energy_price_pond']) / (
+                                    1e6 * (production_df[GlossaryCore.TotalProductionValue]) ** 2)
 
         # derivative of negative prod is 0
         index_l = production_df[production_df[f'production {energy} (TWh)']
@@ -1417,7 +1426,8 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         sum_solid_fuel_elec = energy_production_detailed['production solid_fuel (TWh)'].values + \
                               energy_production_detailed['production electricity (TWh)'].values
-        new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryCore.Years].values), list(sum_solid_fuel_elec),
+        new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryCore.Years].values),
+                                       list(sum_solid_fuel_elec),
                                        'Sum of solid fuel and electricity productions', 'lines')
         new_chart.series.append(new_serie)
 
@@ -1903,8 +1913,9 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         min_objective_energy_loc = all_streams_demand_ratio[streams].min(
         ).idxmin()
-        min_objective_year_loc = all_streams_demand_ratio[GlossaryCore.Years][all_streams_demand_ratio[streams].idxmin()[
-            min_objective_energy_loc]]
+        min_objective_year_loc = all_streams_demand_ratio[GlossaryCore.Years][
+            all_streams_demand_ratio[streams].idxmin()[
+                min_objective_energy_loc]]
         chart_name += f'\n Minimum ratio is at year {min_objective_year_loc} for {min_objective_energy_loc}'
         z = np.asarray(all_streams_demand_ratio[streams].values).T
         fig = go.Figure()
