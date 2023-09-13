@@ -299,7 +299,13 @@ class TestGlobalEnergyValues(unittest.TestCase):
                                                         == 2020].values[0] + \
             h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod['years']
                                                   == 2020].values[0] * 0.75
-
+        print('values', co2_emissions_by_energy['methane'].loc[co2_emissions_by_energy['years'] == 2020].values[0],
+              elec_gt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod['years']
+                                                         == 2020].values[0],
+              elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_cgt_prod['years']
+                                                          == 2020].values[0],
+              h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod['years']
+                                                    == 2020].values[0] * 0.75)
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_methane_co2_emissions,
                              gas_co2_emissions * 1.1)
