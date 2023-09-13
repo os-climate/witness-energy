@@ -356,6 +356,7 @@ class EnergyMixTestCase(unittest.TestCase):
         EM = EnergyMix('EnergyMix')
         EM.configure(inputs_dict)
         EM.compute_raw_production()
+        EM.compute_net_consumable_energy()
         EM.compute_net_energy_production()
         EM.compute_price_by_energy()
         EM.compute_CO2_emissions()

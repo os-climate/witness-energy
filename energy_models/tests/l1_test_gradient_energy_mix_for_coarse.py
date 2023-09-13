@@ -29,7 +29,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
     Energy mix jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return []
@@ -70,17 +70,18 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.energy_list = ['renewable', 'fossil']
 
     def test_01_energy_mix_discipline_co2_emissions_gt(self):
-        inputs_names = [
+        inputs_names = []
+
+        inputs_names.extend([
             f'{self.name}.{self.model_name}.{energy}.energy_prices' for energy in self.energy_list if
-            energy not in ['carbon_capture', 'carbon_storage']]
+            energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend([
             f'{self.name}.{self.model_name}.{energy}.energy_production' for energy in self.energy_list if
             energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.energy_consumption' for energy in self.energy_list if
              energy not in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend(
-            [f'{self.name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
+        
         inputs_names.extend(
             [f'{self.name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend([
@@ -88,6 +89,9 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.CO2_emissions' for energy in self.energy_list if
              energy not in ['carbon_capture', 'carbon_storage']])
+
+        inputs_names.extend(
+            [f'{self.name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energymix_co2_emissions.pkl',
@@ -98,21 +102,27 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.carbon_capture_from_energy_mix'])
 
     def test_02_energy_mix_test_mean_price_grad(self):
-        inputs_names = [
+        inputs_names = []
+
+        inputs_names.extend([
             f'{self.name}.{self.model_name}.{energy}.energy_prices' for energy in self.energy_list if
-            energy not in ['carbon_capture', 'carbon_storage']]
+            energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend([
             f'{self.name}.{self.model_name}.{energy}.energy_production' for energy in self.energy_list if
             energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.energy_consumption' for energy in self.energy_list if
              energy not in ['carbon_capture', 'carbon_storage']])
-        inputs_names.extend(
-            [f'{self.name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
+
         inputs_names.extend(
             [f'{self.name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend([
             f'{self.name}.CCUS.{energy}.energy_prices' for energy in ['carbon_capture', 'carbon_storage']])
+        inputs_names.extend(
+            [f'{self.name}.{self.model_name}.{energy}.CO2_emissions' for energy in self.energy_list if
+             energy not in ['carbon_capture', 'carbon_storage']])
+        inputs_names.extend(
+            [f'{self.name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
         outputs_names = [f'{self.name}.{self.model_name}.energy_mean_price']
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__),

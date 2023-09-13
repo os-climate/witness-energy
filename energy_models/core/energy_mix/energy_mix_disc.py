@@ -430,6 +430,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         # -- compute informations
         self.energy_model.compute_raw_production()
+        self.energy_model.compute_net_consumable_energy()
         self.energy_model.compute_net_energy_production()
         self.energy_model.compute_energy_production_uncut()
         self.energy_model.compute_price_by_energy()
@@ -447,7 +448,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         self.energy_model.compute_all_streams_demand_ratio()
 
-        production_energy_net_positive = self.energy_model.compute_net_positive_energy_production()
+        net_positive_consumable_energy_production = self.energy_model.compute_net_positive_consumable_energy_production()
 
         mean_price_df = self.energy_model.compute_mean_price(
             exp_min=inputs_dict['exp_min'])
@@ -485,7 +486,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                         'energy_production_objective': energy_production_objective,
                         'land_demand_df': self.energy_model.land_use_required,
                         'energy_mean_price': mean_price_df,
-                        'production_energy_net_positive': production_energy_net_positive,
+                        'production_energy_net_positive': net_positive_consumable_energy_production,
                         self.energy_model.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: self.energy_model.total_prod_minus_min_prod_constraint_df,
                         EnergyMix.CONSTRAINT_PROD_H2_LIQUID: self.energy_model.constraint_liquid_hydrogen,
                         EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC: self.energy_model.constraint_solid_fuel_elec,
@@ -689,9 +690,9 @@ class Energy_Mix_Discipline(SoSWrapp):
                 # ---- Loop on energy again to differentiate production and consumption ----#
                 for energy_input in energy_list:
                     ns_energy_input = self.get_ns_energy(energy_input)
-                    list_columnsenergycons = list(
+                    list_columns_energy_consumption = list(
                         inputs_dict[f'{energy_input}.energy_consumption'].columns)
-                    if f'{energy} ({stream_class_dict[energy].unit})' in list_columnsenergycons:
+                    if f'{energy} ({stream_class_dict[energy].unit})' in list_columns_energy_consumption:
                         # ---- Consumption gradients----#
                         dtotal_prod_denergy_cons = - \
                             self.compute_dtotal_production_denergy_production(
@@ -803,9 +804,9 @@ class Energy_Mix_Discipline(SoSWrapp):
                 # ---- Loop on energy again to differentiate production and consumption ----#
                 for energy_input in energy_list:
                     ns_energy_input = self.get_ns_energy(energy_input)
-                    list_columnsenergycons = list(
+                    list_columns_energy_consumption = list(
                         inputs_dict[f'{energy_input}.energy_consumption'].columns)
-                    if f'{energy} ({stream_class_dict[energy].unit})' in list_columnsenergycons:
+                    if f'{energy} ({stream_class_dict[energy].unit})' in list_columns_energy_consumption:
                         self.set_partial_derivative_for_other_types(
                             ('energy_production_detailed',
                              f'production {energy} ({stream_class_dict[energy].unit})'),
@@ -876,8 +877,10 @@ class Energy_Mix_Discipline(SoSWrapp):
                      'energy_price'), (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
                     inputs_dict[GlossaryEnergy.CO2TaxesValue]['CO2_tax'].values *
                     mix_weight_energy * np.identity(len(years)))
-                dmean_price_dprod = self.compute_dmean_price_dprod(energy, energies, mix_weight, energy_price_after_tax,
-                                                                   production_energy_net_pos, production_detailed_df)
+                dmean_price_dprod = self.compute_dmean_price_dprod(
+                    energy, energies,
+                    mix_weight, energy_price_after_tax,
+                    production_energy_net_pos, production_detailed_df)
 
                 loss_percentage = inputs_dict[f'{ns_energy}.losses_percentage'] / 100.0
                 # To model raw to net percentage for witness coarse energies
@@ -885,28 +888,25 @@ class Energy_Mix_Discipline(SoSWrapp):
                     loss_percentage += (1.0 -
                                         self.energy_model.raw_tonet_dict[energy])
                 self.set_partial_derivative_for_other_types(
-                    ('energy_mean_price',
-                     'energy_price'), (f'{ns_energy}.energy_production', energy),
+                    ('energy_mean_price','energy_price'),
+                    (f'{ns_energy}.energy_production', energy),
                     scaling_factor_energy_production * dmean_price_dprod * (1.0 - loss_percentage))
 
             for energy_input in energy_list:
-                # TO ADD to fix new gradients (and all next lines under the if): 
-                # for mean_price we compute it before deleting energy consumption from CCUS
-                # if energy_input in energies:
-                ns_energy_input = self.get_ns_energy(energy_input)
-                list_columnsenergycons = list(
-                    inputs_dict[f'{energy_input}.energy_consumption'].columns)
-                if f'{energy} ({stream_class_dict[energy].unit})' in list_columnsenergycons:
-                    if energy in energies:
-                        dmean_price_dcons = self.compute_dmean_price_dprod(energy, energies, mix_weight,
-                                                                           energy_price_after_tax,
-                                                                           production_energy_net_pos,
-                                                                           production_detailed_df, cons=True)
-                        self.set_partial_derivative_for_other_types(
-                            ('energy_mean_price', 'energy_price'),
-                            (f'{ns_energy_input}.energy_consumption',
-                             f'{energy} ({stream_class_dict[energy].unit})'),
-                            scaling_factor_energy_consumption * dmean_price_dcons)
+                if energy_input in energies:
+                    ns_energy_input = self.get_ns_energy(energy_input)
+                    list_columns_energy_consumption = list(
+                        inputs_dict[f'{energy_input}.energy_consumption'].columns)
+                    if f'{energy} ({stream_class_dict[energy].unit})' in list_columns_energy_consumption:
+                        if energy in energies:
+                            dmean_price_dcons = self.compute_dmean_price_dprod(energy, energies, mix_weight,
+                                                                               energy_price_after_tax,
+                                                                               production_energy_net_pos,
+                                                                               production_detailed_df, cons=True)
+                            self.set_partial_derivative_for_other_types(
+                                ('energy_mean_price', 'energy_price'),
+                                (f'{ns_energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                                scaling_factor_energy_consumption * dmean_price_dcons)
         self.set_partial_derivative_for_other_types(
             ('energy_mean_price', 'energy_price'), (GlossaryEnergy.CO2TaxesValue, 'CO2_tax'),
             dmean_price_dco2_tax * np.identity(len(years)))
@@ -944,11 +944,11 @@ class Energy_Mix_Discipline(SoSWrapp):
                 ns_energy_input = self.get_ns_energy(energy_input)
                 list_columnsenergyprod = list(
                     inputs_dict[f'{energy_input}.energy_production'].columns)
-                list_columnsenergycons = list(
+                list_columns_energy_consumption = list(
                     inputs_dict[f'{energy_input}.energy_consumption'].columns)
                 list_index_prod = [j == energy for j in list_columnsenergyprod]
                 list_index_conso = [
-                    j == f'{energy} ({self.stream_class_dict[energy].unit})' for j in list_columnsenergycons]
+                    j == f'{energy} ({self.stream_class_dict[energy].unit})' for j in list_columns_energy_consumption]
 
                 if True in list_index_prod:
                     loss_percentage = inputs_dict[f'{ns_energy}.losses_percentage'] / 100.0
@@ -978,7 +978,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                     self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
                                                                  EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
                                                                 (f'{ns_energy_input}.energy_consumption',
-                                                                 list_columnsenergycons[list_index_conso.index(True)]),
+                                                                 list_columns_energy_consumption[list_index_conso.index(True)]),
                                                                 -scaling_factor_energy_consumption * np.identity(
                                                                     len(years)) / total_prod_minus_min_prod_constraint_ref)
 
@@ -1011,9 +1011,9 @@ class Energy_Mix_Discipline(SoSWrapp):
             # ---- Loop on energy again to differentiate production and consumption ----#
             for energy_input in energy_list:
                 ns_energy_input = self.get_ns_energy(energy_input)
-                list_columnsenergycons = list(
+                list_columns_energy_consumption = list(
                     inputs_dict[f'{energy_input}.energy_consumption'].columns)
-                if f'{energy} ({stream_class_dict[energy].unit})' in list_columnsenergycons:
+                if f'{energy} ({stream_class_dict[energy].unit})' in list_columns_energy_consumption:
                     self.set_partial_derivative_for_other_types(
                         ('all_streams_demand_ratio', f'{energy}'), (
                             f'{ns_energy_input}.energy_consumption_woratio',
@@ -1230,7 +1230,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         return denergy_prod_limited, ddemand_ratio_denergy_cons
 
     def compute_dmean_price_dprod(self, energy, energies, mix_weight, energy_price_after_tax,
-                                  production_energy_net_pos, production_detailed_df, cons=False):
+                                  production_energy_net_pos_consumable, production_detailed_df, cons=False):
         """
         Function that returns the gradient of mean_price compared to energy_prod
         Params: 
@@ -1238,7 +1238,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             - energies: list of all the energies
             - mix_weight: dataframe of the energies ratio
             - energy_price_after_tax: dataframe with values 
-            - production_energy_net_pos: dataframe with values 
+            - production_energy_net_pos_consumable: dataframe with values
             - production_detailed_df: dataframe with values 
         Output:
             - dmean_price_dprod
@@ -1262,7 +1262,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         # BUT if the prod is zero a gradient in 0+ exists
         # then we check the sign of prod but if zero the gradient
         # should not be zero
-        gradient_sign = np.sign(production_energy_net_pos[energy].values) + (
+        gradient_sign = np.sign(production_energy_net_pos_consumable[energy].values) + (
                 production_detailed_df[f'production {energy} (TWh)'].values == 0.0)
         years = production_detailed_df[GlossaryCore.Years].values
 
@@ -1272,7 +1272,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         if cons:
             dmean_price_dprod = -grad_price_vs_prod * \
                                 np.sign(
-                                    production_energy_net_pos[energy].values) * np.identity(len(years))
+                                    production_energy_net_pos_consumable[energy].values) * np.identity(len(years))
         return dmean_price_dprod
 
     #
