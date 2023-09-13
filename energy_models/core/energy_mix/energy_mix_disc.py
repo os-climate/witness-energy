@@ -888,7 +888,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                     loss_percentage += (1.0 -
                                         self.energy_model.raw_tonet_dict[energy])
                 self.set_partial_derivative_for_other_types(
-                    ('energy_mean_price','energy_price'),
+                    ('energy_mean_price', 'energy_price'),
                     (f'{ns_energy}.energy_production', energy),
                     scaling_factor_energy_production * dmean_price_dprod * (1.0 - loss_percentage))
 
@@ -905,7 +905,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                                                production_detailed_df, cons=True)
                             self.set_partial_derivative_for_other_types(
                                 ('energy_mean_price', 'energy_price'),
-                                (f'{ns_energy_input}.energy_consumption', f'{energy} ({stream_class_dict[energy].unit})'),
+                                (f'{ns_energy_input}.energy_consumption',
+                                 f'{energy} ({stream_class_dict[energy].unit})'),
                                 scaling_factor_energy_consumption * dmean_price_dcons)
         self.set_partial_derivative_for_other_types(
             ('energy_mean_price', 'energy_price'), (GlossaryEnergy.CO2TaxesValue, 'CO2_tax'),
@@ -978,7 +979,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                     self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
                                                                  EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
                                                                 (f'{ns_energy_input}.energy_consumption',
-                                                                 list_columns_energy_consumption[list_index_conso.index(True)]),
+                                                                 list_columns_energy_consumption[
+                                                                     list_index_conso.index(True)]),
                                                                 -scaling_factor_energy_consumption * np.identity(
                                                                     len(years)) / total_prod_minus_min_prod_constraint_ref)
 

@@ -38,7 +38,7 @@ from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import H
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
-from energy_models.core.stream_type.energy_models.syngas import Syngas,\
+from energy_models.core.stream_type.energy_models.syngas import Syngas, \
     compute_calorific_value
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.energy_models.renewable import Renewable
@@ -68,7 +68,7 @@ class EnergyMix(BaseStream):
     SYNGAS_PROD_OBJECTIVE = 'syngas_prod_objective'
     SYNGAS_PROD_CONSTRAINT = 'syngas_prod_constraint'
     RESOURCE_LIST = ['natural_gas_resource', 'uranium_resource',
-                     'coal_resource', 'oil_resource', 'copper_resource']#, 'platinum_resource',]
+                     'coal_resource', 'oil_resource', 'copper_resource']  # , 'platinum_resource',]
     RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
     CARBON_STORAGE_CONSTRAINT = 'carbon_storage_constraint'
     energy_class_dict = {GaseousHydrogen.name: GaseousHydrogen,
@@ -168,8 +168,9 @@ class EnergyMix(BaseStream):
         self.liquid_hydrogen_constraint_ref = inputs_dict['liquid_hydrogen_constraint_ref']
         self.syngas_prod_ref = inputs_dict['syngas_prod_ref']
         self.syngas_prod_limit = inputs_dict['syngas_prod_constraint_limit']
-        self.co2_for_food = pd.DataFrame({GlossaryCore.Years: np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
-                                          f'{CO2.name} for food (Mt)': 0.0})
+        self.co2_for_food = pd.DataFrame(
+            {GlossaryCore.Years: np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
+             f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
 
         self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
@@ -187,7 +188,7 @@ class EnergyMix(BaseStream):
         self.scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
         self.carbon_tax = inputs_dict[GlossaryCore.CO2TaxesValue]
         self.subelements_list = inputs_dict[GlossaryCore.energy_list] + \
-            inputs_dict[GlossaryCore.ccs_list]
+                                inputs_dict[GlossaryCore.ccs_list]
         self.energy_list = inputs_dict[GlossaryCore.energy_list]
         self.total_prod_minus_min_prod_constraint_ref = inputs_dict[
             'total_prod_minus_min_prod_constraint_ref']
@@ -197,11 +198,11 @@ class EnergyMix(BaseStream):
         for energy in self.subelements_list:
             self.sub_prices[energy] = inputs_dict[f'{energy}.energy_prices'][energy]
             self.sub_production_dict[energy] = inputs_dict[f'{energy}.energy_production'] * \
-                self.scaling_factor_energy_production
+                                               self.scaling_factor_energy_production
             self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.energy_consumption'] * \
-                self.scaling_factor_energy_consumption
+                                                self.scaling_factor_energy_consumption
             self.sub_consumption_woratio_dict[energy] = inputs_dict[f'{energy}.energy_consumption_woratio'] * \
-                self.scaling_factor_energy_consumption
+                                                        self.scaling_factor_energy_consumption
             self.sub_land_use_required_dict[energy] = inputs_dict[f'{energy}.land_use_required']
 
             if energy in self.energy_class_dict:
@@ -228,12 +229,13 @@ class EnergyMix(BaseStream):
             for resource in self.resource_list:
                 if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.sub_consumption_dict[energy].columns:
                     self.resources_demand[resource] = self.resources_demand[resource] + \
-                        inputs_dict[f'{energy}.energy_consumption'][f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
-                        self.scaling_factor_energy_consumption
+                                                      inputs_dict[f'{energy}.energy_consumption'][
+                                                          f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
+                                                      self.scaling_factor_energy_consumption
                     self.resources_demand_woratio[resource] = self.resources_demand_woratio[resource] + \
-                        inputs_dict[f'{energy}.energy_consumption_woratio'][
-                        f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
-                        self.scaling_factor_energy_consumption
+                                                              inputs_dict[f'{energy}.energy_consumption_woratio'][
+                                                                  f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
+                                                              self.scaling_factor_energy_consumption
 
         # DataFrame stream demand
         self.all_streams_demand_ratio = pd.DataFrame(
@@ -282,15 +284,21 @@ class EnergyMix(BaseStream):
                 if column_name_consumption in consumption_energy_df:
                     consumed_energy_by_energy_list.append(column_name_consumption[column_name_consumption].values)
 
-            consumed_energy_by_energy_sum = np.sum(np.array(consumed_energy_by_energy_list), axis=1) if len(consumed_energy_by_energy_list) else 0.
+            consumed_energy_by_energy_sum = np.sum(np.array(consumed_energy_by_energy_list), axis=1) if len(
+                consumed_energy_by_energy_list) else 0.
             # obtaining net energy production for the techno
-            self.consumable_energy_df[column_name_energy] = raw_production_energy - consumed_energy_by_energy_sum
+            column_name = f'{self.PRODUCTION} {energy} ({self.stream_class_dict[energy].unit})'
+            prod_raw_to_substract = self.compute_net_prod_of_coarse_energies(energy, column_name)
+            self.consumable_energy_df[
+                column_name_energy] = raw_production_energy - consumed_energy_by_energy_sum - prod_raw_to_substract
 
         columns_to_sum = [column for column in self.consumable_energy_df if column.endswith('(TWh)')]
-        self.consumable_energy_df[GlossaryCore.TotalProductionValue] = self.consumable_energy_df[columns_to_sum].sum(axis=1)
+        self.consumable_energy_df[GlossaryCore.TotalProductionValue] = self.consumable_energy_df[columns_to_sum].sum(
+            axis=1)
 
         # substract a percentage of raw production into net production
-        self.consumable_energy_df[GlossaryCore.TotalProductionValue] -= self.production_raw[GlossaryCore.TotalProductionValue] * \
+        self.consumable_energy_df[GlossaryCore.TotalProductionValue] -= self.production_raw[
+                                                                            GlossaryCore.TotalProductionValue] * \
                                                                         self.heat_losses_percentage / 100.0
 
     def compute_net_energy_production(self):
@@ -307,7 +315,8 @@ class EnergyMix(BaseStream):
                 for column in consumption_ccs_df.columns:
                     if column.endswith('(TWh)'):
                         ccs_consumptions_list.append(consumption_ccs_df[column].values)
-                self.production[production_column_name_ccs] = - np.sum(np.array(ccs_consumptions_list), axis=0) if len(ccs_consumptions_list) else 0.
+                self.production[production_column_name_ccs] = - np.sum(np.array(ccs_consumptions_list), axis=0) if len(
+                    ccs_consumptions_list) else 0.
 
             production_column_name_ccs = f'{self.PRODUCTION} {ccs} (Mt)'
             if ccs in self.sub_consumption_dict:
@@ -324,8 +333,8 @@ class EnergyMix(BaseStream):
         self.production[GlossaryCore.TotalProductionValue] = self.production[columns_to_sum].sum(axis=1)
 
         self.production[GlossaryCore.TotalProductionValue] -= self.production_raw[
-                                                                            GlossaryCore.TotalProductionValue] * \
-                                                                        self.heat_losses_percentage / 100.0
+                                                                  GlossaryCore.TotalProductionValue] * \
+                                                              self.heat_losses_percentage / 100.0
 
     def compute_energy_production_uncut(self):
         """maybe to delete"""
@@ -338,7 +347,9 @@ class EnergyMix(BaseStream):
                 production_year = max(
                     self.production.at[year, GlossaryCore.TotalProductionValue], -200.0 * min_energy)
                 self.production.loc[year, GlossaryCore.TotalProductionValue] = min_energy / 10. * \
-                                                                (9 + np.exp(production_year / min_energy) * np.exp(-1))
+                                                                               (9 + np.exp(
+                                                                                   production_year / min_energy) * np.exp(
+                                                                                   -1))
 
     def compute_net_prod_of_coarse_energies(self, energy, column_name):
         '''
@@ -372,7 +383,7 @@ class EnergyMix(BaseStream):
             if energy in self.energy_class_dict:
                 self.total_carbon_emissions[energy] = self.sub_carbon_emissions[energy]
                 self.carbon_emissions_after_use[energy] = self.total_carbon_emissions[energy] + \
-                    self.co2_emitted_by_energy[energy]['CO2_per_use']
+                                                          self.co2_emitted_by_energy[energy]['CO2_per_use']
 
     def compute_CO2_emissions(self):
         '''
@@ -409,7 +420,8 @@ class EnergyMix(BaseStream):
                 # Compute the CO2 emitted during the use of the net energy
                 # If net energy is negative, CO2 by use is equals to zero
 
-                self.co2_production[f'{energy} CO2 by use (Mt)'] = self.co2_emitted_by_energy[energy]['CO2_per_use'] * np.maximum(
+                self.co2_production[f'{energy} CO2 by use (Mt)'] = self.co2_emitted_by_energy[energy][
+                                                                       'CO2_per_use'] * np.maximum(
                     0.0, self.production[f'production {energy} ({self.energy_class_dict[energy].unit})'].values)
                 self.emissions_by_energy[
                     energy] += self.co2_production[f'{energy} CO2 by use (Mt)'].values
@@ -423,7 +435,8 @@ class EnergyMix(BaseStream):
         energy_needing_carbon_capture_list = [key.replace(
             f' {CarbonCapture.name} (Mt)', '') for key in energy_needing_carbon_capture]
         if len(energy_needing_carbon_capture_list) != 0:
-            self.total_co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'] = energy_needing_carbon_capture.sum(
+            self.total_co2_emissions[
+                f'{CarbonCapture.name} needed by energy mix (Mt)'] = energy_needing_carbon_capture.sum(
                 axis=1).values
         else:
             self.total_co2_emissions[
@@ -432,7 +445,8 @@ class EnergyMix(BaseStream):
         # Put in Gt carbon capture needed by energy mix
         self.co2_emissions_needed_by_energy_mix = pd.DataFrame(
             {GlossaryCore.Years: self.production[GlossaryCore.Years],
-             f'{CarbonCapture.name} needed by energy mix (Gt)': self.total_co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'].values / 1e3})
+             f'{CarbonCapture.name} needed by energy mix (Gt)': self.total_co2_emissions[
+                                                                    f'{CarbonCapture.name} needed by energy mix (Mt)'].values / 1e3})
 
         ''' CARBON CAPTURE from energy mix
         Total carbon capture from energy mix if the technology offers carbon_capture
@@ -445,7 +459,8 @@ class EnergyMix(BaseStream):
         energy_producing_carbon_capture_list = [key.replace(
             f' {CarbonCapture.name} (Mt)', '') for key in energy_producing_carbon_capture]
         if len(energy_producing_carbon_capture_list) != 0:
-            self.total_co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'] = energy_producing_carbon_capture.sum(
+            self.total_co2_emissions[
+                f'{CarbonCapture.name} from energy mix (Mt)'] = energy_producing_carbon_capture.sum(
                 axis=1).values
         else:
             self.total_co2_emissions[
@@ -454,7 +469,8 @@ class EnergyMix(BaseStream):
         # Put in Gt CO2 from energy mix nedded for ccus discipline
         self.carbon_capture_from_energy_mix = pd.DataFrame(
             {GlossaryCore.Years: self.production[GlossaryCore.Years],
-             f'{CarbonCapture.name} from energy mix (Gt)': self.total_co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'].values / 1e3})
+             f'{CarbonCapture.name} from energy mix (Gt)': self.total_co2_emissions[
+                                                               f'{CarbonCapture.name} from energy mix (Mt)'].values / 1e3})
 
     def compute_net_positive_consumable_energy_production(self) -> pd.DataFrame:
         """Takes the positive part of the net consumable energy production for each energy
@@ -462,13 +478,14 @@ class EnergyMix(BaseStream):
         net_positives_consumable_energy_productions = {}
         for energy in self.energy_list:
             column_name = f'production {energy} ({self.energy_class_dict[energy].unit})'
-            net_positives_consumable_energy_productions[energy] = np.maximum(0.0, self.consumable_energy_df[column_name])
+            net_positives_consumable_energy_productions[energy] = np.maximum(0.0,
+                                                                             self.consumable_energy_df[column_name])
 
         total_net_positive_consumable_production = pd.DataFrame(net_positives_consumable_energy_productions).sum(axis=1)
 
         net_positive_consumable_energy_production = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                  **net_positives_consumable_energy_productions,
-                                                  GlossaryCore.TotalProductionValue: total_net_positive_consumable_production})
+                                                                  **net_positives_consumable_energy_productions,
+                                                                  GlossaryCore.TotalProductionValue: total_net_positive_consumable_production})
         self.net_positive_consumable_energy_production = net_positive_consumable_energy_production
         return net_positive_consumable_energy_production
 
@@ -507,18 +524,20 @@ class EnergyMix(BaseStream):
         # placeholder price
         if not exp_min:
             for year in energy_mean_price[GlossaryCore.Years].values:
-                if np.real(energy_mean_price.loc[energy_mean_price[GlossaryCore.Years] == year]['energy_price'].values) == 0.0:
+                if np.real(energy_mean_price.loc[energy_mean_price[GlossaryCore.Years] == year][
+                               'energy_price'].values) == 0.0:
                     year_energy_prices = self.price_by_energy[
                         self.energy_list].loc[energy_mean_price[GlossaryCore.Years] == year]
                     min_energy_price = min(
                         val for val in year_energy_prices.values[0] if val > 0.0)
                     min_energy_name = [
-                        name for name in year_energy_prices.columns if year_energy_prices[name].values == min_energy_price][0]
+                        name for name in year_energy_prices.columns if
+                        year_energy_prices[name].values == min_energy_price][0]
                     energy_mean_price.loc[energy_mean_price[GlossaryCore.Years] ==
                                           year, 'energy_price'] = min_energy_price
                     for energy in self.energy_list:
                         self.mix_weights.loc[self.mix_weights[GlossaryCore.Years] == year,
-                                             energy] = 1. if energy == min_energy_name else 0.0
+                        energy] = 1. if energy == min_energy_name else 0.0
 
         return energy_mean_price
 
@@ -530,7 +549,8 @@ class EnergyMix(BaseStream):
         '''
 
         self.total_prod_minus_min_prod_constraint_df[self.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT] = (
-            self.production['Total production (uncut)'].values - self.minimum_energy_production) / self.total_prod_minus_min_prod_constraint_ref
+                                                                                                          self.production[
+                                                                                                              'Total production (uncut)'].values - self.minimum_energy_production) / self.total_prod_minus_min_prod_constraint_ref
 
     def compute_constraint_h2(self):
         self.constraint_liquid_hydrogen = pd.DataFrame(
@@ -544,8 +564,11 @@ class EnergyMix(BaseStream):
                 self.constraint_liquid_hydrogen['constraint_liquid_hydrogen'] += self.production[
                     f'{self.PRODUCTION} {energy} ({self.energy_class_dict[energy].unit})'].values
         if f'{self.PRODUCTION} {self.liquidHydrogen_name} ({self.energy_class_dict[self.liquidHydrogen_name].unit})' in self.production.columns:
-            self.constraint_liquid_hydrogen['constraint_liquid_hydrogen'] = - (self.liquid_hydrogen_percentage * self.constraint_liquid_hydrogen['constraint_liquid_hydrogen'].values -
-                                                                               self.production[f'{self.PRODUCTION} {self.liquidHydrogen_name} ({self.energy_class_dict[self.liquidHydrogen_name].unit})'].values) / self.liquid_hydrogen_constraint_ref
+            self.constraint_liquid_hydrogen['constraint_liquid_hydrogen'] = - (
+                        self.liquid_hydrogen_percentage * self.constraint_liquid_hydrogen[
+                    'constraint_liquid_hydrogen'].values -
+                        self.production[
+                            f'{self.PRODUCTION} {self.liquidHydrogen_name} ({self.energy_class_dict[self.liquidHydrogen_name].unit})'].values) / self.liquid_hydrogen_constraint_ref
 
     def compute_constraint_solid_fuel_elec(self):
         self.constraint_solid_fuel_elec = pd.DataFrame(
@@ -556,17 +579,21 @@ class EnergyMix(BaseStream):
             if f'{self.PRODUCTION} {energy} ({self.energy_class_dict[energy].unit})' in self.production.columns:
                 self.constraint_solid_fuel_elec['constraint_solid_fuel_elec'] += self.production[
                     f'{self.PRODUCTION} {energy} ({self.energy_class_dict[energy].unit})'].values
-        self.constraint_solid_fuel_elec['constraint_solid_fuel_elec'] = - (self.constraint_solid_fuel_elec['constraint_solid_fuel_elec'].values - self.solid_fuel_elec_percentage *
-                                                                           self.production[GlossaryCore.TotalProductionValue].values) / self.solid_fuel_elec_constraint_ref
+        self.constraint_solid_fuel_elec['constraint_solid_fuel_elec'] = - (self.constraint_solid_fuel_elec[
+                                                                               'constraint_solid_fuel_elec'].values - self.solid_fuel_elec_percentage *
+                                                                           self.production[
+                                                                               GlossaryCore.TotalProductionValue].values) / self.solid_fuel_elec_constraint_ref
 
     def compute_syngas_prod_objective(self):
         '''
         Compute Syngas production objective
         '''
         if f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})' in self.production:
-            self.syngas_prod_objective = np.sign(self.production[f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})'].values) * \
-                self.production[f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})'].values / \
-                self.syngas_prod_ref
+            self.syngas_prod_objective = np.sign(self.production[
+                                                     f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})'].values) * \
+                                         self.production[
+                                             f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})'].values / \
+                                         self.syngas_prod_ref
         else:
             self.syngas_prod_objective = np.zeros(len(self.years))
 
@@ -575,8 +602,9 @@ class EnergyMix(BaseStream):
         Compute Syngas production objective
         '''
         if f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})' in self.production:
-            self.syngas_prod_constraint = (self.syngas_prod_limit - self.production[f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})'].values) / \
-                self.syngas_prod_ref
+            self.syngas_prod_constraint = (self.syngas_prod_limit - self.production[
+                f'{self.PRODUCTION} {self.syngas_name} ({self.energy_class_dict[self.syngas_name].unit})'].values) / \
+                                          self.syngas_prod_ref
         else:
             self.syngas_prod_constraint = np.zeros(len(self.years))
 
@@ -656,27 +684,27 @@ class EnergyMix(BaseStream):
                     if col in self.CO2_list:
                         co2_consumption[f'{energy} {col}'] = consumption.values
 
-#                 # Compute the CO2 emitted during the use of the net energy
-#                 # If net energy is negative, CO2 by use is equals to zero
-#                 net_prod = net_production[
-#                     f'production {energy} ({self.energy_class_dict[energy].unit})'].values
-#
-#                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#co2_per_use'] = np.maximum(
-#                     0, net_prod)
-#
-#                 # Specific case when net prod is equal to zero
-#                 # if we increase the prod of an energy the net prod will react
-#                 # however if we decrease the cons it does nothing
-#                 net_prod_sign = net_prod.copy()
-#                 net_prod_sign[net_prod_sign == 0] = 1
-#                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#prod'] = self.co2_per_use[energy]['CO2_per_use'].values * \
-#                     np.maximum(0, np.sign(net_prod_sign))
-#                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#cons'] = - self.co2_per_use[energy]['CO2_per_use'].values * \
-#                     np.maximum(0, np.sign(net_prod))
-# #                         co2_production[f'{energy} CO2 by use (Mt)'] = self.stream_class_dict[energy].data_energy_dict['CO2_per_use'] / \
-# #                             high_calorific_value * np.maximum(
-# 0.0, self.production[f'production {energy}
-# ({self.energy_class_dict[energy].unit})'].values)
+        #                 # Compute the CO2 emitted during the use of the net energy
+        #                 # If net energy is negative, CO2 by use is equals to zero
+        #                 net_prod = net_production[
+        #                     f'production {energy} ({self.energy_class_dict[energy].unit})'].values
+        #
+        #                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#co2_per_use'] = np.maximum(
+        #                     0, net_prod)
+        #
+        #                 # Specific case when net prod is equal to zero
+        #                 # if we increase the prod of an energy the net prod will react
+        #                 # however if we decrease the cons it does nothing
+        #                 net_prod_sign = net_prod.copy()
+        #                 net_prod_sign[net_prod_sign == 0] = 1
+        #                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#prod'] = self.co2_per_use[energy]['CO2_per_use'].values * \
+        #                     np.maximum(0, np.sign(net_prod_sign))
+        #                 dtot_CO2_emissions[f'Total CO2 by use (Mt) vs {energy}#cons'] = - self.co2_per_use[energy]['CO2_per_use'].values * \
+        #                     np.maximum(0, np.sign(net_prod))
+        # #                         co2_production[f'{energy} CO2 by use (Mt)'] = self.stream_class_dict[energy].data_energy_dict['CO2_per_use'] / \
+        # #                             high_calorific_value * np.maximum(
+        # 0.0, self.production[f'production {energy}
+        # ({self.energy_class_dict[energy].unit})'].values)
 
         ''' CARBON STORAGE 
          Total carbon storage is production of carbon storage
@@ -684,12 +712,13 @@ class EnergyMix(BaseStream):
          solidcarbonstorage technology
         '''
         if CarbonStorage.name in self.sub_production_dict:
-            dtot_CO2_emissions[f'{CarbonStorage.name} (Mt) vs {CarbonStorage.name}#{CarbonStorage.name}#prod'] = np.ones(
+            dtot_CO2_emissions[
+                f'{CarbonStorage.name} (Mt) vs {CarbonStorage.name}#{CarbonStorage.name}#prod'] = np.ones(
                 len_years)
-#             self.total_co2_emissions[f'{CarbonStorage.name} (Mt)'] = self.sub_production_dict[
-#                 CarbonStorage.name][CarbonStorage.name].values
-#         else:
-#             self.total_co2_emissions[f'{CarbonStorage.name} (Mt)'] = 0.0
+        #             self.total_co2_emissions[f'{CarbonStorage.name} (Mt)'] = self.sub_production_dict[
+        #                 CarbonStorage.name][CarbonStorage.name].values
+        #         else:
+        #             self.total_co2_emissions[f'{CarbonStorage.name} (Mt)'] = 0.0
 
         ''' CARBON CAPTURE from CC technos       
          Total carbon capture = carbon captured from carboncapture stream +
@@ -697,12 +726,13 @@ class EnergyMix(BaseStream):
          captured)
         '''
         if CarbonCapture.name in self.sub_production_dict:
-            dtot_CO2_emissions[f'{CarbonCapture.name} (Mt) from CC technos vs {CarbonCapture.name}#{CarbonCapture.name}#prod'] = np.ones(
+            dtot_CO2_emissions[
+                f'{CarbonCapture.name} (Mt) from CC technos vs {CarbonCapture.name}#{CarbonCapture.name}#prod'] = np.ones(
                 len_years)
-#             self.total_co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'] = self.sub_production_dict[
-#                 CarbonCapture.name][CarbonCapture.name].values
-#         else:
-#             self.total_co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'] = 0.0
+        #             self.total_co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'] = self.sub_production_dict[
+        #                 CarbonCapture.name][CarbonCapture.name].values
+        #         else:
+        #             self.total_co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'] = 0.0
 
         ''' CARBON CAPTURE from energy mix
         Total carbon capture from energy mix if the technology offers carbon_capture
@@ -717,12 +747,13 @@ class EnergyMix(BaseStream):
         if len(energy_producing_carbon_capture_list) != 0:
             for energy1 in energy_producing_carbon_capture_list:
                 dtot_CO2_emissions[
-                    f'{CarbonCapture.name} from energy mix (Gt) vs {energy1}#{CarbonCapture.name} (Mt)#prod'] = np.ones(len_years)
-#             self.total_co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'] = energy_producing_carbon_capture.sum(
-#                 axis=1).values
-#         else:
-#             self.total_co2_emissions[
-#                 f'{CarbonCapture.name} from energy mix (Mt)'] = 0.0
+                    f'{CarbonCapture.name} from energy mix (Gt) vs {energy1}#{CarbonCapture.name} (Mt)#prod'] = np.ones(
+                    len_years)
+        #             self.total_co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'] = energy_producing_carbon_capture.sum(
+        #                 axis=1).values
+        #         else:
+        #             self.total_co2_emissions[
+        #                 f'{CarbonCapture.name} from energy mix (Mt)'] = 0.0
 
         ''' CARBON CAPTURE needed by energy mix
         Total carbon capture needed by energy mix if a technology needs carbon_capture
@@ -735,12 +766,13 @@ class EnergyMix(BaseStream):
         if len(energy_needing_carbon_capture_list) != 0:
             for energy1 in energy_needing_carbon_capture_list:
                 dtot_CO2_emissions[
-                    f'{CarbonCapture.name} needed by energy mix (Gt) vs {energy1}#{CarbonCapture.name} (Mt)#cons'] = np.ones(len_years)
-#             self.total_co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'] = energy_needing_carbon_capture.sum(
-#                 axis=1).values
-#         else:
-#             self.total_co2_emissions[
-#                 f'{CarbonCapture.name} needed by energy mix (Mt)'] = 0.0
+                    f'{CarbonCapture.name} needed by energy mix (Gt) vs {energy1}#{CarbonCapture.name} (Mt)#cons'] = np.ones(
+                    len_years)
+        #             self.total_co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'] = energy_needing_carbon_capture.sum(
+        #                 axis=1).values
+        #         else:
+        #             self.total_co2_emissions[
+        #                 f'{CarbonCapture.name} needed by energy mix (Mt)'] = 0.0
 
         ''' CO2 from energy mix       
          CO2 expelled by energy mix technologies during the process 
@@ -755,11 +787,11 @@ class EnergyMix(BaseStream):
                 dtot_CO2_emissions[
                     f'{CO2.name} from energy mix (Mt) vs {energy1}#{CO2.name} (Mt)#prod'] = np.ones(len_years)
 
-#             self.total_co2_emissions[f'{CO2.name} from energy mix (Mt)'] = energy_producing_co2.sum(
-#                 axis=1).values
-#         else:
-#             self.total_co2_emissions[
-#                 f'{CO2.name} from energy mix (Mt)'] = 0.0
+        #             self.total_co2_emissions[f'{CO2.name} from energy mix (Mt)'] = energy_producing_co2.sum(
+        #                 axis=1).values
+        #         else:
+        #             self.total_co2_emissions[
+        #                 f'{CO2.name} from energy mix (Mt)'] = 0.0
 
         ''' CO2 removed by energy mix       
          CO2 removed by energy mix technologies during the process 
@@ -773,34 +805,35 @@ class EnergyMix(BaseStream):
             for energy1 in energy_removing_co2_list:
                 dtot_CO2_emissions[
                     f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} (Mt)#cons'] = np.ones(len_years)
-#             self.total_co2_emissions[f'{CO2.name} removed by energy mix (Mt)'] = energy_removing_co2.sum(
-#                 axis=1).values
-#         else:
-#             self.total_co2_emissions[
-#                 f'{CO2.name} removed energy mix (Mt)'] = 0.0
+        #             self.total_co2_emissions[f'{CO2.name} removed by energy mix (Mt)'] = energy_removing_co2.sum(
+        #                 axis=1).values
+        #         else:
+        #             self.total_co2_emissions[
+        #                 f'{CO2.name} removed energy mix (Mt)'] = 0.0
 
         ''' Total C02 from Flue gas
             sum of all production of flue gas 
             it could be equal to carbon capture from CC technos if enough investment but not sure
         '''
-#         self.total_co2_emissions[f'Total {CarbonCapture.flue_gas_name} (Mt)'] = self.co2_production[[
-# col for col in self.co2_production if
-# col.endswith(f'{CarbonCapture.flue_gas_name} (Mt)')]].sum(axis=1)
+        #         self.total_co2_emissions[f'Total {CarbonCapture.flue_gas_name} (Mt)'] = self.co2_production[[
+        # col for col in self.co2_production if
+        # col.endswith(f'{CarbonCapture.flue_gas_name} (Mt)')]].sum(axis=1)
         for col in co2_production:
             if col.endswith(f'{CarbonCapture.flue_gas_name} (Mt)'):
                 energy1 = col.replace(
                     f' {CarbonCapture.flue_gas_name} (Mt)', '')
-                dtot_CO2_emissions[f'Total {CarbonCapture.flue_gas_name} (Mt) vs {energy1}#{CarbonCapture.flue_gas_name} (Mt)#prod'] = np.ones(
+                dtot_CO2_emissions[
+                    f'Total {CarbonCapture.flue_gas_name} (Mt) vs {energy1}#{CarbonCapture.flue_gas_name} (Mt)#prod'] = np.ones(
                     len_years)
         ''' Carbon captured that needs to be stored
             sum of the one from CC technos and the one directly captured 
             we delete the one needed by energy mix and potentially later the CO2 for food
         '''
 
-#         self.total_co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'] = self.total_co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'] + \
-#             self.total_co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'] - \
-#             self.total_co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'] -\
-#             self.total_co2_emissions[f'{CO2.name} for food (Mt)'
+        #         self.total_co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'] = self.total_co2_emissions[f'{CarbonCapture.name} (Mt) from CC technos'] + \
+        #             self.total_co2_emissions[f'{CarbonCapture.name} from energy mix (Mt)'] - \
+        #             self.total_co2_emissions[f'{CarbonCapture.name} needed by energy mix (Mt)'] -\
+        #             self.total_co2_emissions[f'{CO2.name} for food (Mt)'
 
         new_key = f'{CarbonCapture.name} to be stored (Mt)'
         key_dep_tuple_list = [(f'{CarbonCapture.name} (Mt) from CC technos', 1.0),
@@ -820,12 +853,12 @@ def update_new_gradient(grad_dict, key_dep_tuple_list, new_key):
     for key in grad_dict:
         for old_key, factor in key_dep_tuple_list:
             if key.startswith(old_key):
-                    # the grad of old key is equivalent to the new key because its
-                    # a sum
+                # the grad of old key is equivalent to the new key because its
+                # a sum
                 new_grad_key = key.replace(old_key, new_key)
                 if new_grad_key in new_grad_dict:
                     new_grad_dict[new_grad_key] = new_grad_dict[new_grad_key] + \
-                        grad_dict[key] * factor
+                                                  grad_dict[key] * factor
                 else:
                     new_grad_dict[new_grad_key] = grad_dict[key] * factor
 

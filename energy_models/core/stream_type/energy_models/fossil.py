@@ -52,9 +52,9 @@ class Fossil(EnergyType):
                         'construction_use_part': 0.08
                         }
 
-    net_production = 90717.76  # TWh
-    raw_production = 136917.16  # TWh
-    raw_to_net_production = net_production / raw_production
+    # net_production = 90717.76  # TWh
+    # raw_production = 136917.16  # TWh
+    raw_to_net_production = 1.0  # net_production / raw_production
 
     def compute_ghg_per_use(self, ghg_type):
         '''
