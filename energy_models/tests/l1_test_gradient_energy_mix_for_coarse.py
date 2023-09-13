@@ -29,7 +29,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
     Energy mix jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return []
@@ -90,7 +90,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.CCUS.{energy}.energy_prices' for energy in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.CO2_emissions' for energy in self.energy_list if
-             energy not in ['carbon_capture', 'carbon_storage']])g
+             energy not in ['carbon_capture', 'carbon_storage']])
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energymix_co2_emissions.pkl',
