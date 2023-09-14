@@ -19,7 +19,7 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 
 import numpy as np
-
+import pandas as pd
 class GeothermalHeat(highheattechno):
     #self.Mean_Temperature = 500
     #self.Output_Temperature =400
@@ -77,7 +77,19 @@ class GeothermalHeat(highheattechno):
 
         return electricity_needs
 
+    def configure_input(self, inputs_dict):
+        '''
+        Configure with inputs_dict from the discipline
+        '''
+        self.land_rate = inputs_dict['flux_input_dict']['land_rate']
 
+    def compute_heat_flux(self):
+        land_rate = self.land_rate
+        heat_price = self.compute_other_primary_energy_costs()
+        self.heat_flux = land_rate/heat_price
+        self.heat_flux_distribution = pd.DataFrame({'years': self.cost_details['years'],
+                                               'heat_flux': self.heat_flux})
+        return self.heat_flux_distribution
     @staticmethod
     def get_theoretical_steel_needs(self):
         """

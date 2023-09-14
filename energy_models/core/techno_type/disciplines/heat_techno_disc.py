@@ -136,8 +136,10 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
                                     'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                              'margin': ('float', None, True)},
                                     'dataframe_edition_locked': False},
-                              'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                                 'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
+                'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
+                # 'flux_input_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                #                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 

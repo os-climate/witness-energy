@@ -18,7 +18,7 @@ from energy_models.core.techno_type.base_techno_models.medium_heat_techno import
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 
 import numpy as np
-
+import pandas as pd
 
 class HeatPump(mediumheattechno):
 
@@ -72,5 +72,19 @@ class HeatPump(mediumheattechno):
         electricity_needs = 1 / COP   # (heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs
+
+    def configure_input(self, inputs_dict):
+        '''
+        Configure with inputs_dict from the discipline
+        '''
+        self.land_rate = inputs_dict['flux_input_dict']['land_rate']
+
+    def compute_heat_flux(self):
+        land_rate = self.land_rate
+        heat_price = self.compute_other_primary_energy_costs()
+        self.heat_flux = land_rate/heat_price
+        self.heat_flux_distribution = pd.DataFrame({'years': self.cost_details['years'],
+                                               'heat_flux': self.heat_flux})
+        return self.heat_flux_distribution
 
 

@@ -16,7 +16,9 @@ limitations under the License.
 
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+import numpy as np
+import pandas as pd
 
 class LowHeatDiscipline(EnergyDiscipline):
     # ontology information
@@ -53,3 +55,45 @@ class LowHeatDiscipline(EnergyDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = lowtemperatureheat(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
+
+    # def setup_sos_disciplines(self):
+    #     '''
+    #     Overload SoSDiscipline setup_sos_disciplines
+    #     '''
+    #
+    #     dynamic_inputs = {}
+    #     if 'technologies_list' in self.get_data_in():
+    #         self.techno_list = self.get_sosdisc_inputs('technologies_list')
+    #         if self.techno_list is not None:
+    #             for techno in self.techno_list:
+    #                 #print(techno)
+    #                 dynamic_inputs[f'{techno}.heat_flux'] = {'type': 'dataframe',
+    #                                                              'unit': '$/MWh',
+    #                                                              'visibility': SoSWrapp.SHARED_VISIBILITY,
+    #                                                              'namespace': 'ns_heat_high'
+    #                                                              }
+    #     self.add_inputs(dynamic_inputs)
+    #
+    # def run(self):
+    #     '''
+    #     Overload SoSDiscipline run
+    #     '''
+    #
+    #     # init dataframes
+    #     year_start, year_end = self.get_sosdisc_inputs(
+    #         ['year_start', 'year_end'])
+    #     years = np.arange(year_start, year_end + 1)
+    #     techno_heat_fluxes = pd.DataFrame({'years': years})
+    #
+    #     for techno in self.techno_list:
+    #         techno_heat_flux = self.get_sosdisc_inputs(f'{techno}.heat_flux')
+    #         techno_heat_flux = techno_heat_flux.copy()
+    #
+    #         techno_heat_flux.rename(columns={'heat_flux': f'{techno}.heat_flux'}, inplace=True)
+    #
+    #         techno_heat_fluxes = pd.concat(
+    #             [techno_heat_fluxes, techno_heat_flux.drop('years', axis=1)], axis=1)
+    #     #print('techno_heat_flux', techno_heat_flux)
+    #     outputs_dict = {'energy_heat_flux_detailed': techno_heat_flux
+    #                     }
+    #     self.store_sos_outputs_values(outputs_dict)

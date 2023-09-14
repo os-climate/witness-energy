@@ -108,6 +108,7 @@ class Study(EnergyMixStudyManager):
         self.energy_carbon_emissions = pd.DataFrame({'years': years, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.0, 'water': 0.0})
 
         investment_mix = self.get_investments()
+        #land_rate = {'land_rate': 5000.0, 'land_rate_unit': '$/Gha', }
 
         values_dict = {f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
@@ -119,6 +120,10 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.transport_cost': self.transport,
                        f'{self.study_name}.{energy_name}.transport_margin': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       # f'{self.study_name}.{energy_name}.ElectricBoiler.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.NaturalGasBoiler.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.HeatPump.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.Geothermal.flux_input_dict': land_rate,
                        }
 
         if self.main_study:

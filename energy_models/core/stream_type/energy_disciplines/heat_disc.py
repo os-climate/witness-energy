@@ -79,6 +79,7 @@ class HeatDiscipline(SoSWrapp):
                 'energy_consumption': {'type': 'dataframe', 'unit': 'PWh'},
                 'energy_production': {'type': 'dataframe', 'unit': 'PWh'},
                 'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh'},
+                #'energy_heat_flux_detailed': {'type': 'dataframe', 'unit': 'TWh/Gha'},
                 }
 
     def setup_sos_disciplines(self):
@@ -119,6 +120,11 @@ class HeatDiscipline(SoSWrapp):
                                                                               'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                               'namespace': 'ns_energy_mix'
                                                                               }
+                    # dynamic_inputs[f'{energy}.energy_heat_flux_detailed'] = {'type': 'dataframe',
+                    #                                                           'unit': 'TWh/Gha',
+                    #                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
+                    #                                                           'namespace': 'ns_energy_mix'
+                    #                                                           }
 
         self.add_inputs(dynamic_inputs)
 
@@ -137,6 +143,7 @@ class HeatDiscipline(SoSWrapp):
         energy_production = pd.DataFrame({'years': years})
         energy_consumption = pd.DataFrame({'years': years})
         energy_production_detailed = pd.DataFrame({'years': years})
+        energy_heat_flux_detailed = pd.DataFrame({'years': years})
         energy_prices['heat'] = 0
         energy_prices['heat_production'] = 0
 
@@ -151,6 +158,8 @@ class HeatDiscipline(SoSWrapp):
                 f'{energy}.energy_production')
             energy_techno_prod = self.get_sosdisc_inputs(
                 f'{energy}.energy_production_detailed')
+            # energy_heat_flux = self.get_sosdisc_inputs(
+            #     f'{energy}.energy_heat_flux_detailed')
 
             energy_prices = pd.concat(
                 [energy_prices, energy_price.drop('years', axis=1)], axis=1)
@@ -162,6 +171,8 @@ class HeatDiscipline(SoSWrapp):
                 [energy_consumption, energy_cons.drop('years', axis=1)], axis=1)
             energy_production_detailed = pd.concat(
                 [energy_production_detailed, energy_techno_prod.drop('years', axis=1)], axis=1)
+            # energy_heat_flux_detailed = pd.concat(
+            #     [energy_heat_flux_detailed, energy_heat_flux.drop('years', axis=1)], axis=1)
 
             # mean price weighted with production for each energy
             energy_prices['heat'] += [price * production for price,
@@ -177,12 +188,14 @@ class HeatDiscipline(SoSWrapp):
         energy_consumption = energy_consumption.groupby(level=0, axis=1).sum()
         energy_production_detailed = energy_production_detailed.groupby(
             level=0, axis=1).sum()
+        #energy_heat_flux_detailed = energy_heat_flux_detailed.groupby(level=0, axis=1).sum()
 
         outputs_dict = {'energy_prices': energy_prices,
                         'energy_detailed_techno_prices': energy_detailed_techno_prices,
                         'energy_production': energy_production,
                         'energy_consumption': energy_consumption,
                         'energy_production_detailed': energy_production_detailed,
+                        #'energy_heat_flux_detailed': energy_heat_flux_detailed,
                         }
 
         self.store_sos_outputs_values(outputs_dict)
