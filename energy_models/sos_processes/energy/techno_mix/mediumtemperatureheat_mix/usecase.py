@@ -23,10 +23,10 @@ from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
-DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
-TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
+DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
+TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoiler']
-TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
+TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
 
 
 class Study(EnergyMixStudyManager):
@@ -58,6 +58,10 @@ class Study(EnergyMixStudyManager):
 
         if 'Geothermal' in self.technologies_list:
             invest_medium_heat_mix_dict['Geothermal'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
+        if 'CHP' in self.technologies_list:
+            invest_medium_heat_mix_dict['CHP'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
         if self.bspline:
@@ -116,6 +120,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.ElectricBoiler.margin': self.margin,
                        f'{self.study_name}.{energy_name}.HeatPump.margin': self.margin,
                        f'{self.study_name}.{energy_name}.Geothermal.margin': self.margin,
+                       f'{self.study_name}.{energy_name}.CHP.margin': self.margin,
                        f'{self.study_name}.{energy_name}.transport_cost': self.transport,
                        f'{self.study_name}.{energy_name}.transport_margin': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,

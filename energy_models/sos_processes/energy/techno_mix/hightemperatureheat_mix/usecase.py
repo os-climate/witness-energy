@@ -23,10 +23,10 @@ from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
-DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
-TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
+DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
+TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoiler']
-TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
+TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
 
 
 class Study(EnergyMixStudyManager):
@@ -60,6 +60,10 @@ class Study(EnergyMixStudyManager):
             invest_high_heat_mix_dict['Geothermal'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
+        if 'CHP' in self.technologies_list:
+            invest_high_heat_mix_dict['CHP'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
         if self.bspline:
             invest_high_heat_mix_dict['years'] = self.years
 
@@ -83,7 +87,8 @@ class Study(EnergyMixStudyManager):
                                            'syngas': 80.0,
                                            'biogas': 70.0,
                                            'methane': 100,
-                                           'biomass_dry': 45})
+                                           'biomass_dry': 45
+                                        })
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
@@ -117,6 +122,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.ElectricBoiler.margin': self.margin,
                        f'{self.study_name}.{energy_name}.HeatPump.margin': self.margin,
                        f'{self.study_name}.{energy_name}.Geothermal.margin': self.margin,
+                       f'{self.study_name}.{energy_name}.CHP.margin': self.margin,
                        f'{self.study_name}.{energy_name}.transport_cost': self.transport,
                        f'{self.study_name}.{energy_name}.transport_margin': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
