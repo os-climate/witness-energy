@@ -46,7 +46,7 @@ class CHPDiscipline(MediumHeatTechnoDiscipline):
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 0.8,    # consumptions and productions already have efficiency included
+        'efficiency': 0.52,    # consumptions and productions already have efficiency included
                               #https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
         'chp_calorific_val': 22000,    #https://ec.europa.eu/eurostat/documents/38154/42195/Final_CHP_reporting_instructions_reference_year_2016_onwards_30052017.pdf/f114b673-aef3-499b-bf38-f58998b40fe6
         'chp_calorific_val_unit': 'kJ/kg',

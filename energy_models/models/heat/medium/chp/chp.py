@@ -3,7 +3,7 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-
+from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 import numpy as np
 
 
@@ -14,11 +14,9 @@ class CHPMediumHeat(mediumheattechno):
         Compute primary costs to produce 1kWh of heat
         """
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
-
         self.cost_details[f'{Methane.name}'] = \
             self.prices[f'{Methane.name}'] * \
-            self.cost_details[f'{Methane.name}_needs'] / \
-            self.cost_details['efficiency']
+            self.cost_details[f'{Methane.name}_needs']
 
         # methane_needs
 
@@ -57,6 +55,11 @@ class CHPMediumHeat(mediumheattechno):
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
                                                                                Methane.data_energy_dict['calorific_value'] * \
             self.consumption[f'{Methane.name} ({self.product_energy_unit})']
+
+        self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
+            (self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})']/
+             (1 - self.techno_infos_dict['efficiency'])) - self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})']
+
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

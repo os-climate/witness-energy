@@ -46,11 +46,11 @@ class CHPDiscipline(HighHeatTechnoDiscipline):
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 0.8,    # consumptions and productions already have efficiency included
+        'efficiency': 0.47,    # consumptions and productions already have efficiency included
                               #https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
-        'chp_calorific_val': 22000,    #https://ec.europa.eu/eurostat/documents/38154/42195/Final_CHP_reporting_instructions_reference_year_2016_onwards_30052017.pdf/f114b673-aef3-499b-bf38-f58998b40fe6
-        'chp_calorific_val_unit': 'kJ/kg',
-        'elec_demand': 1.5,            #5400 KW,  # https://www.epa.gov/sites/default/files/2015-07/documents/combined_heat_and_power_chp_level_1_feasibility_analysis_ethanol_facility.pdf
+        'methane_calorific_val': 22000,    #https://ec.europa.eu/eurostat/documents/38154/42195/Final_CHP_reporting_instructions_reference_year_2016_onwards_30052017.pdf/f114b673-aef3-499b-bf38-f58998b40fe6
+        'methane_calorific_val_unit': 'kJ/kg',
+        'elec_demand': 0,            #5400 KW,  # https://www.epa.gov/sites/default/files/2015-07/documents/combined_heat_and_power_chp_level_1_feasibility_analysis_ethanol_facility.pdf
         'elec_demand_unit': 'KWh',     # 5400/3600=1.5
         'methane_demand': 1.35,        #need to update # https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
         'methane_demand_unit': 'kWh/kWh',
@@ -111,3 +111,17 @@ class CHPDiscipline(HighHeatTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = CHPHighHeat(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
+
+
+    def run(self):
+        '''
+        Run for all energy disciplines
+        '''
+
+        inputs_dict = self.get_sosdisc_inputs()
+        self.techno_model.configure_parameters_update(inputs_dict)
+        HighHeatTechnoDiscipline.run(self)
+        Outputs_dict = self.get_sosdisc_outputs()
+
+
+

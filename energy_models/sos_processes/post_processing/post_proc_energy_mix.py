@@ -68,7 +68,6 @@ def get_techno_comparision_data(execution_engine, namespace, year):
     disc = execution_engine.dm.get_disciplines_with_name(namespace)
     disc_input = disc[0].get_sosdisc_inputs()
     energy_list = disc_input['energy_list']
-    #print('energy_list', energy_list)
     techno_list = []
     EnergyDict = {}
     techno_production_dict = {}

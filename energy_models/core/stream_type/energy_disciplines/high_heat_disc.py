@@ -97,7 +97,6 @@ class HighHeatDiscipline(EnergyDiscipline):
     #
     #         techno_heat_fluxes = pd.concat(
     #             [techno_heat_fluxes, techno_heat_flux.drop('years', axis=1)], axis=1)
-    #     #print('techno_heat_flux', techno_heat_flux)
     #     outputs_dict = {'energy_heat_flux_detailed': techno_heat_flux
     #                     }
     #     self.store_sos_outputs_values(outputs_dict)

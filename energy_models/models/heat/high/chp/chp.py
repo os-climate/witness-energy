@@ -3,7 +3,7 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-
+from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 import numpy as np
 
 
@@ -14,18 +14,10 @@ class CHPHighHeat(highheattechno):
         Compute primary costs to produce 1kWh of heat
         """
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
-
         self.cost_details[f'{Methane.name}'] = \
             self.prices[f'{Methane.name}'] * \
-            self.cost_details[f'{Methane.name}_needs'] / \
-            self.cost_details['efficiency']
+            self.cost_details[f'{Methane.name}_needs']
 
-        # methane_needs
-
-        # output needed in this method is in $/kwh of heat
-        # to do so I need to know how much methane is used to produce 1kwh of heat (i need this information in kwh) : methane_needs is in kwh of methane/kwh of heat
-        # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
-        # and then we divide by efficiency
         return self.cost_details[f'{Methane.name}']
 
     def grad_price_vs_energy_price(self):
@@ -43,26 +35,6 @@ class CHPHighHeat(highheattechno):
     def compute_consumption_and_production(self):
         """Compute the consumption and the production of the technology for a given investment"""
         self.compute_primary_energy_production()
-        # name_heat = f'{CarbonCapture.flue_gas_name}_heat ({self.mass_unit})'
-        # name_electricity = f'{CarbonCapture.flue_gas_name}_electricity ({self.mass_unit})'
-        # name_tot = f'{CarbonCapture.flue_gas_name}_tot ({self.mass_unit})'
-
-        # Consumption
-        # self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
-        #     self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
-
-        # CO2 production
-        # self.production_mix[name_heat] = Methane.data_energy_dict['CO2_per_use'] / \
-        #                                  Methane.data_energy_dict['calorific_value'] * \
-        #                                  self.consumption[f'{Methane.name} ({self.product_energy_unit})'] / \
-        #                                  self.cost_details['efficiency']
-        # self.production_mix[name_electricity] = Methane.data_energy_dict['CO2_per_use'] / \
-        #                                         Methane.data_energy_dict['calorific_value'] * \
-        #                                         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] / \
-        #                                         self.cost_details['efficiency']
-        #
-        # self.production_mix[name_tot] = self.production_mix[name_heat] + \
-        #                                 self.production_mix[name_electricity]
 
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
                                                                            self.production[
@@ -74,6 +46,11 @@ class CHPHighHeat(highheattechno):
                                                                                    'calorific_value'] * \
                                                                                self.consumption[
                                                                                    f'{Methane.name} ({self.product_energy_unit})']
+
+        self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
+            (self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']/
+             (1 - self.techno_infos_dict['efficiency'])) - self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
+
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

@@ -94,8 +94,6 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     co2_intensity = {}
     co2_all_years = []
 
-    # print('')
-    # print(var_energyproduction_all_energy_df.to_string())
     # looping energies
     for energyname in EnergyDict.keys():
         energy_name_list.append(energyname)
