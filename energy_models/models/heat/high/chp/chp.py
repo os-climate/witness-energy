@@ -43,26 +43,38 @@ class CHPHighHeat(highheattechno):
     def compute_consumption_and_production(self):
         """Compute the consumption and the production of the technology for a given investment"""
         self.compute_primary_energy_production()
-        name_heat = f'{CarbonCapture.flue_gas_name}_heat ({self.mass_unit})'
-        name_electricity = f'{CarbonCapture.flue_gas_name}_electricity ({self.mass_unit})'
-        name_tot = f'{CarbonCapture.flue_gas_name}_tot ({self.mass_unit})'
+        # name_heat = f'{CarbonCapture.flue_gas_name}_heat ({self.mass_unit})'
+        # name_electricity = f'{CarbonCapture.flue_gas_name}_electricity ({self.mass_unit})'
+        # name_tot = f'{CarbonCapture.flue_gas_name}_tot ({self.mass_unit})'
 
         # Consumption
         # self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
         #     self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
 
         # CO2 production
-        self.production_mix[name_heat] = Methane.data_energy_dict['CO2_per_use'] / \
-                                         Methane.data_energy_dict['calorific_value'] * \
-                                         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] / \
-                                         self.cost_details['efficiency']
-        self.production_mix[name_electricity] = Methane.data_energy_dict['CO2_per_use'] / \
-                                                Methane.data_energy_dict['calorific_value'] * \
-                                                self.consumption[f'{Methane.name} ({self.product_energy_unit})'] / \
-                                                self.cost_details['efficiency']
+        # self.production_mix[name_heat] = Methane.data_energy_dict['CO2_per_use'] / \
+        #                                  Methane.data_energy_dict['calorific_value'] * \
+        #                                  self.consumption[f'{Methane.name} ({self.product_energy_unit})'] / \
+        #                                  self.cost_details['efficiency']
+        # self.production_mix[name_electricity] = Methane.data_energy_dict['CO2_per_use'] / \
+        #                                         Methane.data_energy_dict['calorific_value'] * \
+        #                                         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] / \
+        #                                         self.cost_details['efficiency']
+        #
+        # self.production_mix[name_tot] = self.production_mix[name_heat] + \
+        #                                 self.production_mix[name_electricity]
 
-        self.production_mix[name_tot] = self.production_mix[name_heat] + \
-                                        self.production_mix[name_electricity]
+        self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
+                                                                           self.production[
+                                                                               f'{hightemperatureheat.name} ({self.product_energy_unit})']
+
+        # CO2 production
+        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
+                                                                               Methane.data_energy_dict[
+                                                                                   'calorific_value'] * \
+                                                                               self.consumption[
+                                                                                   f'{Methane.name} ({self.product_energy_unit})']
+
     def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account CO2 from Methane production
