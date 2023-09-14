@@ -63,10 +63,10 @@ class CHPDiscipline(HighHeatTechnoDiscipline):
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
         'WACC': 0.058,  # Weighted averaged cost of capital / ATB NREL 2020
         'learning_rate': 0.00,  # Cost development of low carbon energy technologies
-         'full_load_hours': 8760.0,  # Full year hours
-         # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
-         'capacity_factor': 0.90,
-         'techno_evo_eff': 'no'
+        'full_load_hours': 8760.0,  # Full year hours
+        # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
+        'capacity_factor': 0.90,
+        'techno_evo_eff': 'no'
     }
 
     # Renewable Association [online]
