@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 from pandas.testing import assert_frame_equal
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.demand.energy_demand import EnergyDemand
 from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
@@ -70,7 +71,7 @@ class DemandTestCase(unittest.TestCase):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.energy_production_detailed': self.energy_production_detailed,
-                       f'{self.name}.population_df': self.population,
+                       f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population,
                        f'{self.name}.Demand.transport_demand': self.transport_demand
                        }
 

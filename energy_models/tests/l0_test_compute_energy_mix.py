@@ -18,6 +18,8 @@ import unittest
 import numpy as np
 import pandas as pd
 from pandas.util.testing import assert_frame_equal
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane
@@ -353,8 +355,10 @@ class EnergyMixTestCase(unittest.TestCase):
 
         EM = EnergyMix('EnergyMix')
         EM.configure(inputs_dict)
-        EM.compute_energy_net_and_raw_production()
-        EM.compute_price_after_carbon_tax()
+        EM.compute_raw_production()
+        EM.compute_net_consumable_energy()
+        EM.compute_net_energy_production()
+        EM.compute_price_by_energy()
         EM.compute_CO2_emissions()
 
     def test_02_energy_mix_discipline(self):
@@ -523,13 +527,9 @@ class EnergyMixTestCase(unittest.TestCase):
         filters = ppf.get_post_processing_filters_by_discipline(disc)
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
-
-    #        for graph in graph_list:
-    #            try:
-    #                if graph.chart_name == 'Net Energies Total Production and Limit':
-    #                    graph.to_plotly().show()
-    #            except:
-    #                pass
+        for graph in graph_list:
+            pass
+            #graph.to_plotly().show()
 
     def test_04_energy_mix_resource(self):
         """

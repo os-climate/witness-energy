@@ -21,6 +21,7 @@ import pandas as pd
 from os.path import join, dirname
 import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
@@ -99,7 +100,7 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.energy_production_detailed': self.energy_production_detailed,
-                       f'{self.name}.population_df': self.population,
+                       f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population,
                        f'{self.name}.{self.model_name}.transport_demand': self.transport_demand
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -111,7 +112,7 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.energy_production_detailed',
-                                    f'{self.name}.population_df'],
+                                    f'{self.name}.{GlossaryCore.PopulationDfValue}'],
                             outputs=[f'{self.name}.{self.model_name}.electricity_demand_constraint',
                                      f'{self.name}.{self.model_name}.transport_demand_constraint'
                                      ], )

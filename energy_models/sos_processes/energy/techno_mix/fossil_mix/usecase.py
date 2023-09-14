@@ -21,6 +21,7 @@ import scipy.interpolate as sc
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['FossilSimpleTechno']
 TECHNOLOGIES_LIST = ['FossilSimpleTechno']
@@ -42,7 +43,7 @@ class Study(EnergyMixStudyManager):
 
         if 'FossilSimpleTechno' in self.technologies_list:
 
-            invest_fossil_mix_dict['FossilSimpleTechno'] = np.ones(16)
+            invest_fossil_mix_dict['FossilSimpleTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE)
 
         if self.bspline:
             invest_fossil_mix_dict['years'] = self.years
