@@ -131,7 +131,6 @@ class Study(EnergyStudyManager):
         list_ns.extend(['ns_functions',
                         'ns_functions'])
 
-
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype
@@ -404,7 +403,8 @@ class Study(EnergyStudyManager):
                     invest_energy_mix_dict[energy], len(self.years))
 
         energy_mix_invest_df = pd.DataFrame(
-            {key: value for key, value in invest_energy_mix_dict.items() if key in self.energy_list or key == GlossaryCore.Years})
+            {key: value for key, value in invest_energy_mix_dict.items() if
+             key in self.energy_list or key == GlossaryCore.Years})
 
         return energy_mix_invest_df
 
@@ -717,6 +717,10 @@ class Study(EnergyStudyManager):
             {"years": self.years, "population": np.linspace(7886.69358, 9000., len(self.years))})
         transport_demand = pd.DataFrame({GlossaryCore.Years: self.years,
                                          'transport_demand': np.linspace(33600., 30000., len(self.years))})
+
+        self.forest_invest_df = pd.DataFrame(
+            {"years": self.years, "forest_investment": 5})
+
         values_dict = {f'{self.study_name}.energy_investment': invest_df,
                        f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
@@ -741,6 +745,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.resources_price': self.resources_prices,
                        f'{self.study_name}.{GlossaryCore.PopulationDfValue}': population_df,
                        f'{self.study_name}.Energy_demand.transport_demand': transport_demand,
+                       f'{self.study_name}.InvestmentDistribution.forest_investment': self.forest_invest_df,
                        }
 
         values_dict_list, dspace_list, instanciated_studies = self.setup_usecase_sub_study_list(
