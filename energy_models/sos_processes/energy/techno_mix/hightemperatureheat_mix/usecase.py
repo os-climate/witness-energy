@@ -20,13 +20,13 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
-DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
-TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
+DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
+TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoiler']
-TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
+TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
 
 
 class Study(EnergyMixStudyManager):
@@ -41,40 +41,44 @@ class Study(EnergyMixStudyManager):
         self.bspline = bspline
 
     def get_investments(self):
-        invest_medium_heat_mix_dict = {}
+        invest_high_heat_mix_dict = {}
         l_ctrl = np.arange(0, 8)
 
         if 'NaturalGasBoiler' in self.technologies_list:
-            invest_medium_heat_mix_dict['NaturalGasBoiler'] = [
+            invest_high_heat_mix_dict['NaturalGasBoiler'] = [
                 0.02, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
 
         if 'ElectricBoiler' in self.technologies_list:
-            invest_medium_heat_mix_dict['ElectricBoiler'] = [
+            invest_high_heat_mix_dict['ElectricBoiler'] = [
                 0.02, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
         if 'HeatPump' in self.technologies_list:
-            invest_medium_heat_mix_dict['HeatPump'] = list(np.ones(
+            invest_high_heat_mix_dict['HeatPump'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
         if 'Geothermal' in self.technologies_list:
-            invest_medium_heat_mix_dict['Geothermal'] = list(np.ones(
+            invest_high_heat_mix_dict['Geothermal'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
+        if 'CHP' in self.technologies_list:
+            invest_high_heat_mix_dict['CHP'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
         if self.bspline:
-            invest_medium_heat_mix_dict['years'] = self.years
+            invest_high_heat_mix_dict['years'] = self.years
 
             for techno in self.technologies_list:
-                invest_medium_heat_mix_dict[techno], _ = self.invest_bspline(
-                    invest_medium_heat_mix_dict[techno], len(self.years))
+                invest_high_heat_mix_dict[techno], _ = self.invest_bspline(
+                    invest_high_heat_mix_dict[techno], len(self.years))
 
-        medium_heat_mix_invest_df = pd.DataFrame(invest_medium_heat_mix_dict)
+        high_heat_mix_invest_df = pd.DataFrame(invest_high_heat_mix_dict)
 
-        return medium_heat_mix_invest_df
+        return high_heat_mix_invest_df
 
     def setup_usecase(self):
         energy_mix_name = 'EnergyMix'
-        self.energy_name = mediumtemperatureheat.name
-        energy_name = f'EnergyMix.Heat.{self.energy_name}'
+        self.energy_name = hightemperatureheat.name
+        energy_name = f'EnergyMix.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # energy_prices data came from test files  of corresponding technologies
@@ -83,14 +87,15 @@ class Study(EnergyMixStudyManager):
                                            'syngas': 80.0,
                                            'biogas': 70.0,
                                            'methane': 100,
-                                           'biomass_dry': 45})
+                                           'biomass_dry': 45
+                                        })
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': 10.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -105,9 +110,11 @@ class Study(EnergyMixStudyManager):
         self.resources_price['years'] = years
         self.resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
-        self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.0, 'water': 0.0})
+        self.energy_carbon_emissions = pd.DataFrame({'years': years, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.0, 'water': 0.0})
+
         investment_mix = self.get_investments()
+        #land_rate = {'land_rate': 5000.0, 'land_rate_unit': '$/Gha', }
+
         values_dict = {f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
                        f'{self.study_name}.{energy_name}.technologies_list': self.technologies_list,
@@ -115,9 +122,14 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.ElectricBoiler.margin': self.margin,
                        f'{self.study_name}.{energy_name}.HeatPump.margin': self.margin,
                        f'{self.study_name}.{energy_name}.Geothermal.margin': self.margin,
+                       f'{self.study_name}.{energy_name}.CHP.margin': self.margin,
                        f'{self.study_name}.{energy_name}.transport_cost': self.transport,
                        f'{self.study_name}.{energy_name}.transport_margin': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       # f'{self.study_name}.{energy_name}.ElectricBoiler.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.NaturalGasBoiler.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.HeatPump.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.Geothermal.flux_input_dict': land_rate,
                        }
 
         if self.main_study:
@@ -144,7 +156,6 @@ class Study(EnergyMixStudyManager):
 if '__main__' == __name__:
     import logging
     import sys
-
     print("test stderr", file=sys.stderr)
     for handler in logging.getLogger().handlers:
         print(handler)

@@ -24,6 +24,10 @@ from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
@@ -36,7 +40,8 @@ class EnergyDemand(object):
     name = 'Energy_demand'
     elec_prod_column = f"production electricity ({EnergyMix.stream_class_dict['electricity'].unit})"
     energy_list_transport = [LiquidHydrogen.name,
-                         LiquidFuel.name, BioDiesel.name, Methane.name, BioGas.name , HydrotreatedOilFuel.name]
+                         LiquidFuel.name, hightemperatureheat.name, mediumtemperatureheat.name, lowtemperatureheat.name,
+                             BioDiesel.name, Methane.name, BioGas.name , HydrotreatedOilFuel.name]
     def __init__(self, name):
         '''
         Constructor

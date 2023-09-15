@@ -35,17 +35,17 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
         'version': '',
     }
     DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_heat',
+                                  'namespace': 'ns_heat_low',
                                   'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                            'transport': ('float', None, True)},
                                   'dataframe_edition_locked': False},
                'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                    'namespace': 'ns_heat',
+                                    'namespace': 'ns_heat_low',
                                     'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                              'margin': ('float', None, True)},
                                     'dataframe_edition_locked': False},
                              'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                                'namespace': 'ns_heat', 'default': lowtemperatureheat.data_energy_dict},
+                                                'namespace': 'ns_heat_low', 'default': lowtemperatureheat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 
@@ -81,17 +81,17 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
         'version': '',
     }
     DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_heat',
+                                  'namespace': 'ns_heat_medium',
                                   'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                            'transport': ('float', None, True)},
                                   'dataframe_edition_locked': False},
                'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                    'namespace': 'ns_heat',
+                                    'namespace': 'ns_heat_medium',
                                     'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                              'margin': ('float', None, True)},
                                     'dataframe_edition_locked': False},
                               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                                 'namespace': 'ns_heat', 'default': mediumtemperatureheat.data_energy_dict},
+                                                 'namespace': 'ns_heat_medium', 'default': mediumtemperatureheat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 
@@ -127,17 +127,19 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
         'version': '',
     }
     DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_heat',
+                                  'namespace': 'ns_heat_high',
                                   'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                            'transport': ('float', None, True)},
                                   'dataframe_edition_locked': False},
                'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                    'namespace': 'ns_heat',
+                                    'namespace': 'ns_heat_high',
                                     'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                              'margin': ('float', None, True)},
                                     'dataframe_edition_locked': False},
-                              'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
-                                                 'namespace': 'ns_heat', 'default': hightemperatureheat.data_energy_dict},
+                'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
+                # 'flux_input_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                #                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 

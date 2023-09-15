@@ -3,7 +3,9 @@ import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.models.heat.medium.electric_boiler.electric_boiler import ElectricBoilerMediumHeat
-
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 
 class ElectricBoilerDiscipline(MediumHeatTechnoDiscipline):
 
@@ -70,7 +72,7 @@ class ElectricBoilerDiscipline(MediumHeatTechnoDiscipline):
     # Renewable Association [online]
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': 0})
-
+    flux_input_dict = {'land_rate': 26000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
@@ -82,7 +84,9 @@ class ElectricBoilerDiscipline(MediumHeatTechnoDiscipline):
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+                                        'dataframe_edition_locked': False},
+               'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
+               }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = MediumHeatTechnoDiscipline.DESC_OUT
@@ -91,3 +95,97 @@ class ElectricBoilerDiscipline(MediumHeatTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = ElectricBoilerMediumHeat(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
+        self.techno_model.configure_input(inputs_dict)
+
+    def setup_sos_disciplines(self):
+        MediumHeatTechnoDiscipline.setup_sos_disciplines(self)
+
+        dynamic_outputs = {}
+        dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',
+                                        'dataframe_descriptor': {'years': ('int', [1900, 2100], True),
+                                                                 'heat_flux': ('float', [1.e-8, 1e30], True),
+                                                                 },
+                                        }
+
+        self.add_outputs(dynamic_outputs)
+
+    def run(self):
+        '''
+        Run for all energy disciplines
+        '''
+
+        inputs_dict = self.get_sosdisc_inputs()
+        self.techno_model.configure_parameters_update(inputs_dict)
+        MediumHeatTechnoDiscipline.run(self)
+        self.techno_model.compute_heat_flux()
+
+        outputs_dict = {'heat_flux': self.techno_model.heat_flux_distribution}
+        # -- store outputs
+        self.store_sos_outputs_values(outputs_dict)
+
+    @staticmethod
+    def get_charts(title, x_data, y_data, x_label, y_label, series_name, stacked_bar):
+        """
+        Line graph object for x and y data
+        title = string for graph name
+        x_data = dataframe
+        y_data = dataframe
+        x_label = string for x-axis name
+        y_label = string for y-axis name
+        series_name = string for series name
+        stacked_bar = for bar chart stacking
+        """
+
+        chart_name = title
+        if stacked_bar:
+            new_chart = TwoAxesInstanciatedChart(x_label, y_label,
+                                                 chart_name=chart_name, stacked_bar=True)
+        else:
+            new_chart = TwoAxesInstanciatedChart(x_label, y_label,
+                                                 chart_name=chart_name)
+        serie = InstanciatedSeries(
+            x_data.tolist(),
+            y_data.tolist(), series_name, 'lines')
+        new_chart.series.append(serie)
+
+        return new_chart
+
+    def get_chart_filter_list(self):
+        chart_filters = MediumHeatTechnoDiscipline.get_chart_filter_list(self)
+
+        self.instanciated_charts = MediumHeatTechnoDiscipline.get_post_processing_list(self, chart_filters)
+
+        chart_list = ['heat_flux']
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
+
+        return chart_filters
+
+    def get_post_processing_list(self, filters=None):
+        """
+        Basic post processing method for the model
+        """
+        instanciated_charts = self.instanciated_charts
+        charts = []
+        # for pie charts Title
+        unit_str = '$/MWh'
+        var_str = 'Split up of Opex contributions'
+        # Overload default value with chart filter
+        if filters is not None:
+            for chart_filter in filters:
+                if chart_filter.filter_key == 'charts':
+                    charts = chart_filter.selected_values
+
+        heat_flux = self.get_sosdisc_outputs('heat_flux')
+
+        if 'heat_flux' in charts:
+            x_data = heat_flux['years'].values
+            y_data = heat_flux['heat_flux'].values
+            x_label = 'years'
+            y_label = 'heat_flux'
+            series_name = y_label
+            title = f'Detailed heat_flux over the years'
+            new_chart = self.get_charts(title, x_data, y_data, x_label, y_label, series_name, True)
+            instanciated_charts.append(new_chart)
+
+        return instanciated_charts

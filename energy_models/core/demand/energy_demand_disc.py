@@ -52,7 +52,7 @@ class EnergyDemandDiscipline(SoSWrapp):
                                                                        'production electricity (TWh)': ('float',  None, True),
                                                                        'production hydrogen.liquid_hydrogen (TWh)': ('float', None, True),
                                                                         'production fuel.liquid_fuel (TWh)': ('float', None, True),
-                                                                        'production fuel.biodiesel (TWh)': ('float', None, True),
+                                                                       'production fuel.biodiesel (TWh)': ('float', None, True),
                                                                         'production methane (TWh)': ('float', None, True),
                                                                         'production biogas (TWh)': ('float', None, True),
                                                                         'production fuel.hydrotreated_oil_fuel (TWh)': ('float', None, True),},

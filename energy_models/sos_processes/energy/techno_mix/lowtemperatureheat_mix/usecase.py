@@ -23,10 +23,10 @@ from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
-DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
-TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
+DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
+TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoiler']
-TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal']
+TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
 
 
 class Study(EnergyMixStudyManager):
@@ -60,6 +60,10 @@ class Study(EnergyMixStudyManager):
             invest_low_heat_mix_dict['Geothermal'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
+        if 'CHP' in self.technologies_list:
+            invest_low_heat_mix_dict['CHP'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
         if self.bspline:
             invest_low_heat_mix_dict['years'] = self.years
 
@@ -74,7 +78,7 @@ class Study(EnergyMixStudyManager):
     def setup_usecase(self):
         energy_mix_name = 'EnergyMix'
         self.energy_name = lowtemperatureheat.name
-        energy_name = f'EnergyMix.Heat.{self.energy_name}'
+        energy_name = f'EnergyMix.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # energy_prices data came from test files  of corresponding technologies
@@ -108,6 +112,7 @@ class Study(EnergyMixStudyManager):
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.0, 'water': 0.0})
         investment_mix = self.get_investments()
+        #land_rate = {'land_rate': 5000.0, 'land_rate_unit': '$/Gha', }
         values_dict = {f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
                        f'{self.study_name}.{energy_name}.technologies_list': self.technologies_list,
@@ -115,9 +120,14 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.ElectricBoiler.margin': self.margin,
                        f'{self.study_name}.{energy_name}.HeatPump.margin': self.margin,
                        f'{self.study_name}.{energy_name}.Geothermal.margin': self.margin,
+                       f'{self.study_name}.{energy_name}.CHP.margin': self.margin,
                        f'{self.study_name}.{energy_name}.transport_cost': self.transport,
                        f'{self.study_name}.{energy_name}.transport_margin': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       # f'{self.study_name}.{energy_name}.ElectricBoiler.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.NaturalGasBoiler.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.HeatPump.flux_input_dict': land_rate,
+                       # f'{self.study_name}.{energy_name}.Geothermal.flux_input_dict': land_rate,
                        }
 
         if self.main_study:

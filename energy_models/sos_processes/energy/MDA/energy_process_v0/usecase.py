@@ -26,6 +26,9 @@ from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_s
 
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.biogas import BioGas
@@ -151,6 +154,15 @@ class Study(EnergyStudyManager):
         list_namespaces = []
 
         if LiquidFuel.name in self.energy_list and GaseousHydrogen.name in self.energy_list and LiquidHydrogen.name in self.energy_list:
+            list_var.append('primary_energies_production')
+            list_parent.append('Energy_constraints')
+            list_ftype.append(INEQ_CONSTRAINT)
+            list_weight.append(0.)
+            list_aggr_type.append(
+                AGGR_TYPE_SMAX)
+            list_namespaces.append('ns_functions')
+
+        if hightemperatureheat.name in self.energy_list and GaseousHydrogen.name in self.energy_list and LiquidHydrogen.name in self.energy_list:
             list_var.append('primary_energies_production')
             list_parent.append('Energy_constraints')
             list_ftype.append(INEQ_CONSTRAINT)
@@ -324,6 +336,12 @@ class Study(EnergyStudyManager):
         # investment on refinery not in oil extraction !
         invest_energy_mix_dict[LiquidFuel.name] = [
             3.15 * (1 - 0.1374) ** i for i in l_ctrl]
+        invest_energy_mix_dict[hightemperatureheat.name] = [
+            3.15 * (1 - 0.1374) ** i for i in l_ctrl]
+        invest_energy_mix_dict[mediumtemperatureheat.name] = [
+            3.15 * (1 - 0.1374) ** i for i in l_ctrl]
+        invest_energy_mix_dict[lowtemperatureheat.name] = [
+            3.15 * (1 - 0.1374) ** i for i in l_ctrl]
         invest_energy_mix_dict[SolidFuel.name] = [
                                                      0.00001, 0.0006] + [0.00005] * (len(l_ctrl) - 2)
         invest_energy_mix_dict[BioDiesel.name] = [
@@ -376,6 +394,12 @@ class Study(EnergyStudyManager):
             0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         # investment on refinery not in oil extraction !
         invest_energy_mix_dict[LiquidFuel.name] = [
+            3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        invest_energy_mix_dict[hightemperatureheat.name] = [
+            3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        invest_energy_mix_dict[mediumtemperatureheat.name] = [
+            3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        invest_energy_mix_dict[lowtemperatureheat.name] = [
             3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         invest_energy_mix_dict[SolidFuel.name] = [
             0.00001, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01]
@@ -618,6 +642,9 @@ class Study(EnergyStudyManager):
 
         hydrogen_name = GaseousHydrogen.name
         liquid_fuel_name = LiquidFuel.name
+        high_heat_name = hightemperatureheat.name
+        medium_heat_name = mediumtemperatureheat.name
+        low_heat_name = lowtemperatureheat.name
         hvo_name = HydrotreatedOilFuel.name
         methane_name = Methane.name
         biogas_name = BioGas.name
@@ -629,7 +656,6 @@ class Study(EnergyStudyManager):
         carbon_capture_name = CarbonCapture.name
         carbon_storage_name = CarbonStorage.name
         liquid_hydrogen_name = LiquidHydrogen.name
-
         renewable_name = Renewable.name
         fossil_name = Fossil.name
         energy_mix_name = EnergyMix.name
@@ -641,6 +667,9 @@ class Study(EnergyStudyManager):
                              solid_fuel_name: 8.6,
                              hydrogen_name: 90.0,
                              liquid_fuel_name: 70.0,
+                             high_heat_name: 71.0,
+                             medium_heat_name: 71.0,
+                             low_heat_name: 71.0,
                              syngas_name: 40.0,
                              carbon_capture_name: 0.0,
                              carbon_storage_name: 0.0,
@@ -665,6 +694,9 @@ class Study(EnergyStudyManager):
                                         solid_fuel_name: 0.64 / 4.86,
                                         hydrogen_name: 0.0,
                                         liquid_fuel_name: 0.0,
+                                        high_heat_name: 0.0,
+                                        medium_heat_name: 0.0,
+                                        low_heat_name: 0.0,
                                         syngas_name: 0.0,
                                         carbon_capture_name: 0.0,
                                         carbon_storage_name: 0.0,
@@ -839,7 +871,6 @@ class Study(EnergyStudyManager):
         agri_values_dict = {f'{self.study_name}.{agri_mix_name}.N2O_per_use': N2O_per_use,
                             f'{self.study_name}.{agri_mix_name}.CH4_per_use': CH4_per_use,
                             f'{self.study_name}.{agri_mix_name}.CO2_per_use': CO2_per_use,
-
                             f'{self.study_name}.{agri_mix_name}.energy_consumption': energy_consumption,
                             f'{self.study_name}.{agri_mix_name}.energy_consumption_woratio': energy_consumption,
                             f'{self.study_name}.{agri_mix_name}.energy_production': energy_production,
@@ -857,12 +888,30 @@ if '__main__' == __name__:
     print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
     uc_cls.run()
 
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-        filters = ppf.get_post_processing_filters_by_discipline(
-            disc)
-        graph_list = ppf.get_post_processing_by_discipline(
-            disc, filters, as_json=False)
-        # if disc.sos_name == 'EnergyMix.fuel':
-        for graph in graph_list:
-            graph.to_plotly()  # .show()
+    # ppf = PostProcessingFactory()
+    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
+    #     filters = ppf.get_post_processing_filters_by_discipline(
+    #         disc)
+    #     graph_list = ppf.get_post_processing_by_discipline(
+    #         disc, filters, as_json=False)
+    #     if disc.sos_name == 'EnergyMix':
+    #         for graph in graph_list:
+    #             graph.to_plotly()#.show()
+
+    # ppf = PostProcessingFactory()
+    # filters = ppf.get_post_processing_filters_by_namespace(
+    #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
+    # graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
+    #                                                   filters, as_json=False)
+    # for graph in graph_list:
+    #    graph.to_plotly().show()
+
+    # post_processing_factory = PostProcessingFactory()
+    # post_processing_factory.get_post_processing_by_namespace(
+    #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
+    # all_post_processings = post_processing_factory.get_all_post_processings(
+    #     uc_cls.execution_engine, False, as_json=False, for_test=False)
+
+    # for namespace, post_proc_list in all_post_processings.items():
+    #     for chart in post_proc_list:
+    #         chart.to_plotly()#.show()
