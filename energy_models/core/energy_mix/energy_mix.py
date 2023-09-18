@@ -526,9 +526,9 @@ class EnergyMix(BaseStream):
                 production_energy_pos (years,energies)
         '''
         energy_mean_price = pd.DataFrame(
-            columns=[GlossaryCore.Years, 'energy_price'])
+            columns=[GlossaryCore.Years, GlossaryCore.EnergyPriceValue])
         energy_mean_price[GlossaryCore.Years] = self.production[GlossaryCore.Years]
-        energy_mean_price['energy_price'] = 0.0
+        energy_mean_price[GlossaryCore.EnergyPriceValue] = 0.0
 
         element_dict = dict(zip(self.energy_list, self.energy_list))
         if exp_min:
@@ -545,7 +545,7 @@ class EnergyMix(BaseStream):
             # It is negligible if tol = 0.1%
             tol = 1e-3
             mix_weight[mix_weight < tol] = 0.0
-            energy_mean_price['energy_price'] += self.price_by_energy[energy].values * \
+            energy_mean_price[GlossaryCore.EnergyPriceValue] += self.price_by_energy[energy].values * \
                                                  mix_weight
             self.mix_weights[energy] = mix_weight
 
@@ -554,7 +554,7 @@ class EnergyMix(BaseStream):
         if not exp_min:
             for year in energy_mean_price[GlossaryCore.Years].values:
                 if np.real(energy_mean_price.loc[energy_mean_price[GlossaryCore.Years] == year][
-                               'energy_price'].values) == 0.0:
+                               GlossaryCore.EnergyPriceValue].values) == 0.0:
                     year_energy_prices = self.price_by_energy[
                         self.energy_list].loc[energy_mean_price[GlossaryCore.Years] == year]
                     min_energy_price = min(
@@ -563,7 +563,7 @@ class EnergyMix(BaseStream):
                         name for name in year_energy_prices.columns if
                         year_energy_prices[name].values == min_energy_price][0]
                     energy_mean_price.loc[energy_mean_price[GlossaryCore.Years] ==
-                                          year, 'energy_price'] = min_energy_price
+                                          year, GlossaryCore.EnergyPriceValue] = min_energy_price
                     for energy in self.energy_list:
                         self.mix_weights.loc[self.mix_weights[GlossaryCore.Years] == year,
                         energy] = 1. if energy == min_energy_name else 0.0
