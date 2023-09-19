@@ -17,6 +17,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter

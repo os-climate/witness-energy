@@ -17,6 +17,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.carbon_storage.biomass_burying_fossilization.biomass_burying_fossilization import BiomassBF
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
 

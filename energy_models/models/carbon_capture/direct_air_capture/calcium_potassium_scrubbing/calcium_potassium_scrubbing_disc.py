@@ -16,6 +16,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing import CalciumPotassium
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
 

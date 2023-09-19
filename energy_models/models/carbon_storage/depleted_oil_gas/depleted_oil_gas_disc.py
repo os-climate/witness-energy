@@ -17,6 +17,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.carbon_storage.depleted_oil_gas.depleted_oil_gas import DepletedOilGas
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
 
