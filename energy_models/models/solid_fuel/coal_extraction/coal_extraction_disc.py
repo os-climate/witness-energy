@@ -98,7 +98,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  'enthalpy': 0.0,
                                  'techno_evo_eff': 'no',
                                  'enthalpy_unit': 'kWh/m^3',
-                                 'energy_efficiency': 1.0,
+                                 GlossaryCore.EnergyEfficiency: 1.0,
                                  'construction_delay': construction_delay,
                                  'pourcentage_of_total': 0.09,
                                  'energy_burn': 'no'}

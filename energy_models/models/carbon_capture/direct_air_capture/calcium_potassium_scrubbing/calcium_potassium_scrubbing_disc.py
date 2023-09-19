@@ -79,7 +79,7 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
                                  # 1.51 in practice
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
-                                 'energy_efficiency': 0.78,
+                                 GlossaryCore.EnergyEfficiency: 0.78,
                                  'construction_delay': construction_delay,
                                  'techno_evo_eff': 'no',
                                  'calcium_refound_efficiency': 0.98,

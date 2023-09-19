@@ -75,7 +75,7 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
                                  'density_per_ha_unit': 'kWh/ha',
                                  'transport_cost_unit': '$/kg',  # check if pertient
                                  'techno_evo_eff': 'no',
-                                 'energy_efficiency': 1.0,
+                                 GlossaryCore.EnergyEfficiency: 1.0,
                                  'construction_delay': construction_delay, 
                                  'copper_needs': 2822, #IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }

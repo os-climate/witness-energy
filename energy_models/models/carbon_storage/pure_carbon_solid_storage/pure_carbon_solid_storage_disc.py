@@ -64,7 +64,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                  'transport_cost_unit': '$/kgCO2',
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
-                                 'energy_efficiency': 1,
+                                 GlossaryCore.EnergyEfficiency: 1,
                                  'construction_delay': construction_delay,
                                  'techno_evo_eff': 'no',
                                  }

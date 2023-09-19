@@ -39,12 +39,12 @@ class CalciumPotassium(CCTechno):
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    )
 
-        self.cost_details['potassium_needs'] = self.compute_potassium_need() / self.techno_infos_dict['energy_efficiency']
+        self.cost_details['potassium_needs'] = self.compute_potassium_need() / self.techno_infos_dict[GlossaryCore.EnergyEfficiency]
 
         self.cost_details['potassium'] = list(self.resources_prices[ResourceGlossary.Potassium['name']] * self.cost_details['potassium_needs']
                                               )
 
-        self.cost_details['calcium_needs'] = self.compute_calcium_need() / self.techno_infos_dict['energy_efficiency']
+        self.cost_details['calcium_needs'] = self.compute_calcium_need() / self.techno_infos_dict[GlossaryCore.EnergyEfficiency]
 
         self.cost_details['calcium'] = list(self.resources_prices[ResourceGlossary.Calcium['name']] * self.cost_details['calcium_needs']
                                             )
@@ -94,7 +94,7 @@ class CalciumPotassium(CCTechno):
         '''
         calcium_needs = self.compute_calcium_need()
         potassium_needs = self.compute_potassium_need()
-        efficiency = self.techno_infos_dict['energy_efficiency']
+        efficiency = self.techno_infos_dict[GlossaryCore.EnergyEfficiency]
         return {
             ResourceGlossary.Calcium['name']: np.identity(len(self.years)) * calcium_needs / efficiency,
             ResourceGlossary.Potassium['name']: np.identity(len(self.years)) * potassium_needs / efficiency,
