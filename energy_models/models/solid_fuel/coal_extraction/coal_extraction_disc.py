@@ -18,6 +18,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.solid_fuel.coal_extraction.coal_extraction import CoalExtraction
 from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import SolidFuelTechnoDiscipline
 from energy_models.core.stream_type.energy_models.methane import Methane
