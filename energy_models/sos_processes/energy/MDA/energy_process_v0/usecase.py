@@ -80,7 +80,7 @@ class Study(EnergyStudyManager):
 
         if invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
             self.lower_bound_techno = 1.0e-6
-            self.upper_bound_techno = 1e10
+            self.upper_bound_techno = 3000
 
         else:
             self.lower_bound_techno = lower_bound_techno
