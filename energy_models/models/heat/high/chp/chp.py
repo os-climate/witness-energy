@@ -33,24 +33,23 @@ class CHPHighHeat(highheattechno):
                 }
 
     def compute_consumption_and_production(self):
-        """Compute the consumption and the production of the technology for a given investment"""
+        """
+        Compute the consumption and the production of the technology for a given investment
+        """
+
         self.compute_primary_energy_production()
 
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
-                                                                           self.production[
-                                                                               f'{hightemperatureheat.name} ({self.product_energy_unit})']
+            self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
 
         # CO2 production
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
-                                                                               Methane.data_energy_dict[
-                                                                                   'calorific_value'] * \
-                                                                               self.consumption[
-                                                                                   f'{Methane.name} ({self.product_energy_unit})']
+                                                                               Methane.data_energy_dict['calorific_value'] * \
+                                                                               self.consumption[f'{Methane.name} ({self.product_energy_unit})']
 
         self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
-            (self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']/
+            (self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] /
              (1 - self.techno_infos_dict['efficiency'])) - self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
-
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

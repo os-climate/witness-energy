@@ -15,9 +15,9 @@ CO2 production is in Kg/KWh. That values from methane: CO2 per use(kg/kg) / calo
 
 Combined production of electricity and production of heat are added while calculating the production.
 
-production in 2020 that is total heat produced by CHP is 2817 TJ = 0.7825 TWh
+production in 2021 that is total heat produced by CHP = 117 TWh
 
-initial production for high heat temp = 0.2608 TWh
+initial production for high heat temp = 39 TWh
 
 ## Working:
 CHP can use different fuels in the energy generation process, including fossil fuels and renewable fuels such as biofuels.
