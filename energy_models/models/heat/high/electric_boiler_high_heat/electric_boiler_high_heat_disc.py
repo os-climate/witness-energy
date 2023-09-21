@@ -2,12 +2,12 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.models.heat.high.electric_boiler.electric_boiler import ElectricBoilerHighHeat
+from energy_models.models.heat.high.electric_boiler_high_heat.electric_boiler_high_heat import ElectricBoilerHighHeat
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-class ElectricBoilerDiscipline(HighHeatTechnoDiscipline):
+class ElectricBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
@@ -23,7 +23,7 @@ class ElectricBoilerDiscipline(HighHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'ElectricBoiler'
+    techno_name = 'ElectricBoilerHighHeat'
     energy_name = hightemperatureheat.name
 
     # Heat Producer [Online]

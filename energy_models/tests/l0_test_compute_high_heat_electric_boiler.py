@@ -4,13 +4,13 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.high.electric_boiler.electric_boiler_disc import ElectricBoilerDiscipline
+from energy_models.models.heat.high.electric_boiler_high_heat.electric_boiler_high_heat import ElectricBoilerHighHeat
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.models.heat.high.electric_boiler.electric_boiler import ElectricBoilerHighHeat
+from energy_models.models.heat.high.electric_boiler_high_heat.electric_boiler_high_heat_disc import ElectricBoilerHighHeatDiscipline
 
 
 class ElectricBoilerTestCase(unittest.TestCase):
@@ -86,17 +86,17 @@ class ElectricBoilerTestCase(unittest.TestCase):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
-                       'techno_infos_dict': ElectricBoilerDiscipline.techno_infos_dict_default,
+                       'techno_infos_dict': ElectricBoilerHighHeatDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
                        'resources_price': self.resources_price,
                        'invest_level': self.invest_level,
-                       'invest_before_ystart': ElectricBoilerDiscipline.invest_before_year_start,
+                       'invest_before_ystart': ElectricBoilerHighHeatDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
                        'transport_margin': self.margin,
-                       'initial_production': ElectricBoilerDiscipline.initial_production,
-                       'initial_age_distrib': ElectricBoilerDiscipline.initial_age_distribution,
+                       'initial_production': ElectricBoilerHighHeatDiscipline.initial_production,
+                       'initial_age_distrib': ElectricBoilerHighHeatDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
                        'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
@@ -130,7 +130,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.high.electric_boiler.electric_boiler_disc.ElectricBoilerDiscipline'
+        mod_path = 'energy_models.models.heat.high.electric_boiler_high_heat.electric_boiler_high_heat_disc.ElectricBoilerHighHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

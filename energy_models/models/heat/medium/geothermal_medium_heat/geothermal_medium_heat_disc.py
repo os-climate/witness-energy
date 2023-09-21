@@ -18,12 +18,12 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.models.heat.medium.geothermal.geothermal import GeothermalHeat
+from energy_models.models.heat.medium.geothermal_medium_heat.geothermal_medium_heat import GeothermalHeat
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
-class GeothermalDiscipline(MediumHeatTechnoDiscipline):
+class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
@@ -39,7 +39,7 @@ class GeothermalDiscipline(MediumHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'Geothermal'
+    techno_name = 'GeothermalMediumHeat'
     energy_name = mediumtemperatureheat.name
 
 
@@ -69,7 +69,7 @@ class GeothermalDiscipline(MediumHeatTechnoDiscipline):
         'steel_needs': 968,    # Page:21 #https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
     }
 
-    # geothermal Heat production
+    # geothermal_high_heat Heat production
     # production in 2019 #https://en.wikipedia.org/wiki/Geothermal_power
     # in TWh
     initial_production = 182500/3 # Equally split for High, low and Medium Heat production, #https://www.iea.org/data-and-statistics/charts/direct-use-of-geothermal-energy-world-2012-2024

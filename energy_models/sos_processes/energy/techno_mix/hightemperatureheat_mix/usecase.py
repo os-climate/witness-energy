@@ -23,10 +23,13 @@ from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
-DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
-TECHNOLOGIES_LIST = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
-TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoiler']
-TECHNOLOGIES_LIST_DEV = ['NaturalGasBoiler', 'ElectricBoiler', 'HeatPump', 'Geothermal', 'CHP']
+DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
+                             'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
+TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
+                     'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
+TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerHighHeat']
+TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
+                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -44,24 +47,24 @@ class Study(EnergyMixStudyManager):
         invest_high_heat_mix_dict = {}
         l_ctrl = np.arange(0, 8)
 
-        if 'NaturalGasBoiler' in self.technologies_list:
-            invest_high_heat_mix_dict['NaturalGasBoiler'] = [
+        if 'NaturalGasBoilerHighHeat' in self.technologies_list:
+            invest_high_heat_mix_dict['NaturalGasBoilerHighHeat'] = [
                 0.02, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0]
 
-        if 'ElectricBoiler' in self.technologies_list:
-            invest_high_heat_mix_dict['ElectricBoiler'] = [
+        if 'ElectricBoilerHighHeat' in self.technologies_list:
+            invest_high_heat_mix_dict['ElectricBoilerHighHeat'] = [
                 0.02, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
-        if 'HeatPump' in self.technologies_list:
-            invest_high_heat_mix_dict['HeatPump'] = list(np.ones(
+        if 'HeatPumpHighHeat' in self.technologies_list:
+            invest_high_heat_mix_dict['HeatPumpHighHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
-        if 'Geothermal' in self.technologies_list:
-            invest_high_heat_mix_dict['Geothermal'] = list(np.ones(
+        if 'GeothermalHighHeat' in self.technologies_list:
+            invest_high_heat_mix_dict['GeothermalHighHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
-        if 'CHP' in self.technologies_list:
-            invest_high_heat_mix_dict['CHP'] = list(np.ones(
+        if 'CHPHighHeat' in self.technologies_list:
+            invest_high_heat_mix_dict['CHPHighHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
         if self.bspline:

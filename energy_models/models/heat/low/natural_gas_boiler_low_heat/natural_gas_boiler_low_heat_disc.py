@@ -1,33 +1,18 @@
-'''
-Copyright 2022 Airbus SAS
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
 
 import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.models.heat.low.geothermal.geothermal import GeothermalHeat
+from energy_models.models.heat.low.natural_gas_boiler_low_heat.natural_gas_boiler_low_heat import NaturalGasLowHeat
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
-class GeothermalDiscipline(LowHeatTechnoDiscipline):
+class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Geothermal Low Heat Model',
+        'label': 'Natural Gas Boiler Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -39,59 +24,93 @@ class GeothermalDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'Geothermal'
+    techno_name = 'NaturalGasBoilerLowHeat'
     energy_name = lowtemperatureheat.name
 
+    # Conversions
+    pound_to_kg = 0.45359237
+    gallon_to_m3 = 0.00378541
+    liter_per_gallon = 3.78541178
 
-    lifetime = 25    # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+    # Heat Producer [Online]
+    # https://www.serviceone.com/blog/article/how-long-does-a-home-boiler-last#:~:text=Estimated%20lifespan,most%20parts%20of%20the%20nation.
+    lifetime = 45          # years
+    # Economic and Technical Analysis of Heat Dry Milling: Model Description.
+    # Rhys T.Dale and Wallace E.Tyner Staff Paper
+    # Agricultural Economics Department Purdue University
+    construction_delay = 2  # years
 
-    construction_delay = 1  # in years
     techno_infos_dict_default = {
-        'Capex_init': 3830, # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
+
+        'Capex_init': 199.8,
         'Capex_init_unit': '$/kW',
-        'Opex_percentage': 0.0287, # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
+        'Opex_init': 10.565,
+        'Opex_init_unit': '$/kW',
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 1,    # consumptions and productions already have efficiency included
-        'CO2_from_production': 0.122, # high GHG concentrations in the reservoir fluid # https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf
-        'CO2_from_production_unit': 'kg/kWh',
-        'maturity': 5,
-        'learning_rate': 0.00,
-        'full_load_hours': 8760.0,
-        'WACC': 0.075,
-        'techno_evo_eff': 'no',
-        'output_temperature': 60, # Average Low Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
-        'mean_temperature': 40,
-        'output_temperature_unit': 'K',
-        'mean_temperature_unit': 'K',
-        'steel_needs': 968,    # Page:21 #https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+        'efficiency': 0.8,    # consumptions and productions already have efficiency included
+        'natural_gas_calorific_val': 53600,
+        'natural_gas_calorific_val_unit': 'kJ/kg',
+        'natural_gas_flow_rate': 100,
+        'natural_gas_flow_rate_unit': 'kg/h',
+        'natural_gas_temp': 25,
+        'natural_gas_temp_unit': 'c',
+        'stoichiometric_ratio': 10,
+        'gas_fired_boiler': 2.051,
+        'gas_fired_boiler_unit': 'kW/kWh',
+        'wall_temp': 300,
+        'wall_temp_unit': 'c',
+        'methane_demand': 1.06,            #https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
+        'methane_demand_unit': 'kWh/kWh',
+        'co2_captured__production': 0.20,  # per kg kWh
+                                           # https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
+                                           # https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
+                                 'Opex_percentage': 0.024,
+                                 # Fixed 1.9 and recurrent 0.5 %
+                                 # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
+                                 'WACC': 0.058,  # Weighted averaged cost of capital / ATB NREL 2020
+                                 'learning_rate': 0.00,  # Cost development of low carbon energy technologies
+                                 'full_load_hours': 8760.0,  # Full year hours
+                                 # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
+                                 'capacity_factor': 0.90,
+                                 'techno_evo_eff': 'no'
+
     }
 
-    # geothermal Heat production
-    # production in 2019 #https://en.wikipedia.org/wiki/Geothermal_power
+    # Renewable Methane Association [online]
+    # production in 2020: 561 million gallons
     # in TWh
-    initial_production = 182500/3  # Equally split for High, low and Medium Heat production, #https://www.iea.org/data-and-statistics/charts/direct-use-of-geothermal-energy-world-2012-2024
+    # initial production i.e. total heat produced by NG is 6236731 TJ = 1683 TWh
 
-    distrib = [9.677419355, 7.52688172, 0,
-               5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
-               13.97849462, 9.677419355,   7.52688172,   1.075268817,
-               2.150537634,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0]
+    initial_production = 561            # https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser?country=WORLD&fuel=Electricity%20and%20heat&indicator=HeatGenByFuel
+                                        # https://www.google.com/search?q=TJ+to+TWh&rlz=1C1UEAD_enIN1000IN1000&oq=TJ+to+TWh&aqs=chrome..69i57.35591j0j7&sourceid=chrome&ie=UTF-8
+
+
+    distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
+               8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
+               3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0,
+               2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0,
+               1.0, 1.0, 1.0, 1.0,
+               ]
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
 
+    # Renewable Methane Association [online]
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), 'invest': 3830/(25*8760) * np.array([182500/3])})
-    flux_input_dict = {'land_rate': 18000, 'land_rate_unit': '$/Gha', }
-    DESC_IN = {'techno_infos_dict': {'type': 'dict',
-                                     'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
+        {'past years': np.arange(-construction_delay, 0), 'invest': 199.8/(16 * 8760) * np.array([0, 561])})
+
+    flux_input_dict = {'land_rate': 17000, 'land_rate_unit': '$/Gha', }
+    DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
-                                       'dataframe_edition_locked': False},
+                                       'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                                'age': ('float', None, True),
+                                                                'distrib': ('float', None, True),
+                                                                }
+                                       },
+               'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
@@ -101,11 +120,10 @@ class GeothermalDiscipline(LowHeatTechnoDiscipline):
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = LowHeatTechnoDiscipline.DESC_OUT
-    _maturity = 'Research'
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = GeothermalHeat(self.techno_name)
+        self.techno_model = NaturalGasLowHeat(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
         self.techno_model.configure_input(inputs_dict)
 

@@ -18,16 +18,16 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.models.heat.low.heat_pump.heat_pump import HeatPump
+from energy_models.models.heat.low.geothermal_low_heat.geothermal_low_heat import GeothermalHeat
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
-class HeatPumpDiscipline(LowHeatTechnoDiscipline):
+class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Heat Pump Low Heat Model',
+        'label': 'Geothermal Low Heat Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -39,48 +39,40 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'HeatPump'
+    techno_name = 'GeothermalLowHeat'
     energy_name = lowtemperatureheat.name
 
-    lifetime = 25           # years
-    # https://www.energy.gov/energysaver/heat-pump-systems
-    # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.
-    # Heat pump can reduce your electricity use for heating by approximately 50% compared to
-    # electric resistance heating such as furnaces and baseboard heaters.
 
-    # https://en.wikipedia.org/wiki/Heat_pump
-    # With 1 kWh of electricity, heat pump can transfer 3 to 6 kWh of thermal energy into a building.
-    # Heat pumps could satisfy over 80% of global space and water heating needs with a lower carbon
-    # footprint than gas-fired condensing boilers: however, in 2021 they only met 10%
-    construction_delay = 1  # years
+    lifetime = 25    # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
 
+    construction_delay = 1  # in years
     techno_infos_dict_default = {
-
-        'Capex_init': 718/(25*8760), #660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
-        'Capex_init_unit': '$/kWh',
-        'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        'Capex_init': 3830, # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
+        'Capex_init_unit': '$/kW',
+        'Opex_percentage': 0.0287, # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
         'efficiency': 1,    # consumptions and productions already have efficiency included
-        'CO2_from_production': 0.0,
-        'CO2_from_production_unit': 'kg/kg',
+        'CO2_from_production': 0.122, # high GHG concentrations in the reservoir fluid # https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf
+        'CO2_from_production_unit': 'kg/kWh',
         'maturity': 5,
-        'learning_rate': 0.1,
+        'learning_rate': 0.00,
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
         'output_temperature': 60, # Average Low Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
-        'mean_temperature': 20,
-        'output_temperature_unit': '°C',
-        'mean_temperature_unit': '°C',
+        'mean_temperature': 40,
+        'output_temperature_unit': 'K',
+        'mean_temperature_unit': 'K',
+        'steel_needs': 968,    # Page:21 #https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
     }
 
-    # heat_pump Heat production
-    # production in 2021 #https://www.iea.org/reports/heat-pumps
+    # geothermal_high_heat Heat production
+    # production in 2019 #https://en.wikipedia.org/wiki/Geothermal_power
     # in TWh
-    initial_production = 1*8760/3 # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
+    initial_production = 182500/3  # Equally split for High, low and Medium Heat production, #https://www.iea.org/data-and-statistics/charts/direct-use-of-geothermal-energy-world-2012-2024
 
     distrib = [9.677419355, 7.52688172, 0,
                5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
@@ -89,9 +81,10 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
+
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), 'invest': 0 * np.array([1*8760*0.5*0.5/3])}) # Invest before year start is 0
-    flux_input_dict = {'land_rate': 19000, 'land_rate_unit': '$/Gha', }
+        {'past years': np.array(-construction_delay), 'invest': 3830/(25*8760) * np.array([182500/3])})
+    flux_input_dict = {'land_rate': 18000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -112,7 +105,7 @@ class HeatPumpDiscipline(LowHeatTechnoDiscipline):
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = HeatPump(self.techno_name)
+        self.techno_model = GeothermalHeat(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
         self.techno_model.configure_input(inputs_dict)
 

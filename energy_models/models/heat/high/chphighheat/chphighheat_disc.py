@@ -1,12 +1,12 @@
 
 import pandas as pd
 import numpy as np
-from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
-from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.models.heat.medium.chp.chp import CHPMediumHeat
+from energy_models.core.techno_type.disciplines.heat_techno_disc import HighHeatTechnoDiscipline
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.models.heat.high.chphighheat.chphighheat import CHPHighHeat
 
 
-class CHPDiscipline(MediumHeatTechnoDiscipline):
+class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
@@ -22,8 +22,8 @@ class CHPDiscipline(MediumHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'CHP'
-    energy_name = mediumtemperatureheat.name
+    techno_name = 'CHPHighHeat'
+    energy_name = hightemperatureheat.name
 
     # Conversions
     pound_to_kg = 0.45359237
@@ -46,11 +46,11 @@ class CHPDiscipline(MediumHeatTechnoDiscipline):
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 0.52,    # consumptions and productions already have efficiency included
+        'efficiency': 0.47,    # consumptions and productions already have efficiency included
                               #https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
-        'chp_calorific_val': 22000,    #https://ec.europa.eu/eurostat/documents/38154/42195/Final_CHP_reporting_instructions_reference_year_2016_onwards_30052017.pdf/f114b673-aef3-499b-bf38-f58998b40fe6
-        'chp_calorific_val_unit': 'kJ/kg',
-        'elec_demand': 1.5,            #5400 KW,  # https://www.epa.gov/sites/default/files/2015-07/documents/combined_heat_and_power_chp_level_1_feasibility_analysis_ethanol_facility.pdf
+        'methane_calorific_val': 22000,    #https://ec.europa.eu/eurostat/documents/38154/42195/Final_CHP_reporting_instructions_reference_year_2016_onwards_30052017.pdf/f114b673-aef3-499b-bf38-f58998b40fe6
+        'methane_calorific_val_unit': 'kJ/kg',
+        'elec_demand': 0,            #5400 KW,  # https://www.epa.gov/sites/default/files/2015-07/documents/combined_heat_and_power_chp_level_1_feasibility_analysis_ethanol_facility.pdf
         'elec_demand_unit': 'KWh',     # 5400/3600=1.5
         'methane_demand': 1.35,        #need to update # https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
         'methane_demand_unit': 'kWh/kWh',
@@ -63,10 +63,10 @@ class CHPDiscipline(MediumHeatTechnoDiscipline):
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
         'WACC': 0.058,  # Weighted averaged cost of capital / ATB NREL 2020
         'learning_rate': 0.00,  # Cost development of low carbon energy technologies
-         'full_load_hours': 8760.0,  # Full year hours
-         # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
-         'capacity_factor': 0.90,
-         'techno_evo_eff': 'no'
+        'full_load_hours': 8760.0,  # Full year hours
+        # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
+        'capacity_factor': 0.90,
+        'techno_evo_eff': 'no'
     }
 
     # Renewable Association [online]
@@ -74,8 +74,7 @@ class CHPDiscipline(MediumHeatTechnoDiscipline):
     # in TWh
     # initial production i.e. total heat produced by CHP is 2817 TJ = 0.7825 TWh
 
-    initial_production = 0.2608    # https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser?country=WORLD&fuel=Electricity%20and%20heat&indicator=HeatGenByFuel
-                                   # https://www.google.com/search?q=TJ+to+TWh&rlz=1C1UEAD_enIN1000IN1000&oq=TJ+to+TWh&aqs=chrome..69i57.35591j0j7&sourceid=chrome&ie=UTF-8
+    initial_production = ((117/0.47)/3)*(1-0.47)  # https://www.statista.com/statistics/678192/chp-electricity-generation-germany/
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
@@ -103,11 +102,25 @@ class CHPDiscipline(MediumHeatTechnoDiscipline):
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
-    DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
+    DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
-    DESC_OUT = MediumHeatTechnoDiscipline.DESC_OUT
+    DESC_OUT = HighHeatTechnoDiscipline.DESC_OUT
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.techno_model = CHPMediumHeat(self.techno_name)
+        self.techno_model = CHPHighHeat(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
+
+
+    def run(self):
+        '''
+        Run for all energy disciplines
+        '''
+
+        inputs_dict = self.get_sosdisc_inputs()
+        self.techno_model.configure_parameters_update(inputs_dict)
+        HighHeatTechnoDiscipline.run(self)
+        Outputs_dict = self.get_sosdisc_outputs()
+
+
+

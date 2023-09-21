@@ -258,7 +258,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
     def test_02_geothermal_discipline_analytic_grad(self):
 
         self.name = 'Test'
-        self.model_name = 'geothermal'
+        self.model_name = 'geothermal_high_heat'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',

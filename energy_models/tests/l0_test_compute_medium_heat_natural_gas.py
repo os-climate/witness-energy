@@ -5,8 +5,8 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.medium.natural_gas_boiler.natural_gas_boiler_disc import NaturalGasBoilerDiscipline
-from energy_models.models.heat.medium.natural_gas_boiler.natural_gas_boiler import NaturalGasMediumHeat
+from energy_models.models.heat.medium.natural_gas_boiler_medium_heat.natural_gas_boiler_medium_heat_disc import NaturalGasBoilerMediumHeatDiscipline
+from energy_models.models.heat.medium.natural_gas_boiler_medium_heat.natural_gas_boiler_medium_heat import NaturalGasMediumHeat
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
@@ -76,17 +76,17 @@ class NaturalGasTestCase(unittest.TestCase):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
-                       'techno_infos_dict': NaturalGasBoilerDiscipline.techno_infos_dict_default,
+                       'techno_infos_dict': NaturalGasBoilerMediumHeatDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
                        'resources_price': self.resources_price,
                        'invest_level': self.invest_level,
-                       'invest_before_ystart': NaturalGasBoilerDiscipline.invest_before_year_start,
+                       'invest_before_ystart': NaturalGasBoilerMediumHeatDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
                        'transport_margin': self.margin,
-                       'initial_production': NaturalGasBoilerDiscipline.initial_production,
-                       'initial_age_distrib': NaturalGasBoilerDiscipline.initial_age_distribution,
+                       'initial_production': NaturalGasBoilerMediumHeatDiscipline.initial_production,
+                       'initial_age_distrib': NaturalGasBoilerMediumHeatDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
                        'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
@@ -120,7 +120,7 @@ class NaturalGasTestCase(unittest.TestCase):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.medium.natural_gas_boiler.natural_gas_boiler_disc.NaturalGasBoilerDiscipline'
+        mod_path = 'energy_models.models.heat.medium.natural_gas_boiler_medium_heat.natural_gas_boiler_medium_heat_disc.NaturalGasBoilerMediumHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

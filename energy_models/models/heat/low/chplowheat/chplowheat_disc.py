@@ -3,10 +3,10 @@ import pandas as pd
 import numpy as np
 from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.models.heat.low.chp.chp import CHPLowHeat
+from energy_models.models.heat.low.chplowheat.chplowheat import CHPLowHeat
 
 
-class CHPDiscipline(LowHeatTechnoDiscipline):
+class CHPLowHeatDiscipline(LowHeatTechnoDiscipline):
 
     # ontology information
     _ontology_data = {
@@ -22,7 +22,7 @@ class CHPDiscipline(LowHeatTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'CHP'
+    techno_name = 'CHPLowHeat'
     energy_name = lowtemperatureheat.name
 
     # Conversions
@@ -74,8 +74,7 @@ class CHPDiscipline(LowHeatTechnoDiscipline):
     # in TWh
     # initial production i.e. total heat produced by CHP is 2817 TJ = 0.7825 TWh
 
-    initial_production = 0.2608    # https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser?country=WORLD&fuel=Electricity%20and%20heat&indicator=HeatGenByFuel
-                                   # https://www.google.com/search?q=TJ+to+TWh&rlz=1C1UEAD_enIN1000IN1000&oq=TJ+to+TWh&aqs=chrome..69i57.35591j0j7&sourceid=chrome&ie=UTF-8
+    initial_production = ((117/0.6)/3)*(1-0.6)  # https://www.statista.com/statistics/678192/chp-electricity-generation-germany/
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
