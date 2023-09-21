@@ -40,19 +40,19 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
 
     techno_infos_dict_default = {
 
-        'Capex_init': 2.145,           #file:///C:/Users/KAJBORKA/Downloads/PriyankaChintada_final_thesis%20(5).pdf
-        'Capex_init_unit': '$/kWh',    #https://www.google.com/search?q=eur+to+dollar+conversion&rlz=1C1UEAD_enIN1000IN1000&oq=eur+to+d&aqs=chrome.3.69i57j0i131i433i512l2j0i20i263i512l2j0i10i512j0i512l4.7800j1j7&sourceid=chrome&ie=UTF-8
+        'Capex_init': 2.145,              #file:///C:/Users/KAJBORKA/Downloads/PriyankaChintada_final_thesis%20(5).pdf
+        'Capex_init_unit': '$/kWh',       #https://www.google.com/search?q=eur+to+dollar+conversion&rlz=1C1UEAD_enIN1000IN1000&oq=eur+to+d&aqs=chrome.3.69i57j0i131i433i512l2j0i20i263i512l2j0i10i512j0i512l4.7800j1j7&sourceid=chrome&ie=UTF-8
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
-        'efficiency': 0.47,    # consumptions and productions already have efficiency included
-                              #https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
+        'efficiency': 0.47,                # consumptions and productions already have efficiency included
+                                           #https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
         'methane_calorific_val': 22000,    #https://ec.europa.eu/eurostat/documents/38154/42195/Final_CHP_reporting_instructions_reference_year_2016_onwards_30052017.pdf/f114b673-aef3-499b-bf38-f58998b40fe6
         'methane_calorific_val_unit': 'kJ/kg',
-        'elec_demand': 0,            #5400 KW,  # https://www.epa.gov/sites/default/files/2015-07/documents/combined_heat_and_power_chp_level_1_feasibility_analysis_ethanol_facility.pdf
-        'elec_demand_unit': 'KWh',     # 5400/3600=1.5
-        'methane_demand': 1.35,        #need to update # https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
+        'elec_demand': 1,                  #https://www.carboncommentary.com/blog/2007/10/01/domestic-combined-heat-and-power
+        'elec_demand_unit': 'KWh',
+        'methane_demand': 2.8,             #https://www.nfuenergy.co.uk/news/combined-heat-and-power-could-reduce-your-electricity-costs-half
         'methane_demand_unit': 'kWh/kWh',
         'co2_captured__production': 0.11,  # kg/kWh
                                            # https://odr.chalmers.se/server/api/core/bitstreams/65470fdd-f00a-4607-8d0f-59152df05ea8/content
@@ -70,9 +70,9 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
     }
 
     # Renewable Association [online]
-    # production in 2020: 2608 million gallons
+    # production in 2021: 2608 million gallons
     # in TWh
-    # initial production i.e. total heat produced by CHP is 2817 TJ = 0.7825 TWh
+    # initial production i.e. total heat produced by CHP = 117 TWh    # 117/3 = 39 TWh
 
     initial_production = ((117/0.47)/3)*(1-0.47)  # https://www.statista.com/statistics/678192/chp-electricity-generation-germany/
 
@@ -84,7 +84,7 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
                ]
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
+                                             'distrib': 100 / sum(distrib) * np.array(distrib)})
 
     # Renewable Methane Association [online]
     invest_before_year_start = pd.DataFrame(
@@ -111,12 +111,10 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
         self.techno_model = CHPHighHeat(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
-
     def run(self):
         '''
         Run for all energy disciplines
         '''
-
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model.configure_parameters_update(inputs_dict)
         HighHeatTechnoDiscipline.run(self)

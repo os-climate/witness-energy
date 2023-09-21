@@ -45,9 +45,7 @@ class CHPMediumHeat(mediumheattechno):
 
         self.compute_primary_energy_production()
 
-
         # Consumption
-
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
             self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})']
 
@@ -59,7 +57,6 @@ class CHPMediumHeat(mediumheattechno):
         self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
             (self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})']/
              (1 - self.techno_infos_dict['efficiency'])) - self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})']
-
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
