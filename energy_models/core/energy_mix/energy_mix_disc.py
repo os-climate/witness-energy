@@ -151,7 +151,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         'primary_energies_production': {'type': 'dataframe', 'unit': 'TWh',
                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'land_demand_df': {'type': 'dataframe', 'unit': 'Gha'},
-        'energy_mean_price': {'type': 'dataframe', 'unit': '$/MWh'},
+        GlossaryCore.EnergyMeanPriceValue: GlossaryCore.EnergyMeanPrice,
         'production_energy_net_positive': {'type': 'dataframe', 'unit': 'TWh'},
         EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: {
             'type': 'dataframe', 'unit': 'TWh',
@@ -485,7 +485,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                         'energy_prices_after_tax': self.energy_model.price_by_energy,
                         'energy_production_objective': energy_production_objective,
                         'land_demand_df': self.energy_model.land_use_required,
-                        'energy_mean_price': mean_price_df,
+                        GlossaryCore.EnergyMeanPriceValue: mean_price_df,
                         'production_energy_net_positive': net_positive_consumable_energy_production,
                         self.energy_model.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: self.energy_model.total_prod_minus_min_prod_constraint_df,
                         EnergyMix.CONSTRAINT_PROD_H2_LIQUID: self.energy_model.constraint_liquid_hydrogen,
@@ -869,12 +869,12 @@ class Energy_Mix_Discipline(SoSWrapp):
                 dmean_price_dco2_tax += inputs_dict[f'{energy}.CO2_per_use']['CO2_per_use'].values * \
                                         mix_weight_energy
                 self.set_partial_derivative_for_other_types(
-                    ('energy_mean_price',
-                     'energy_price'), (f'{ns_energy}.energy_prices', energy),
+                    (GlossaryCore.EnergyMeanPriceValue,
+                     GlossaryCore.EnergyPriceValue), (f'{ns_energy}.energy_prices', energy),
                     mix_weight_energy * np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
-                    ('energy_mean_price',
-                     'energy_price'), (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
+                    (GlossaryCore.EnergyMeanPriceValue,
+                     GlossaryCore.EnergyPriceValue), (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
                     inputs_dict[GlossaryEnergy.CO2TaxesValue]['CO2_tax'].values *
                     mix_weight_energy * np.identity(len(years)))
                 dmean_price_dprod = self.compute_dmean_price_dprod(
@@ -888,7 +888,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                     loss_percentage += (1.0 -
                                         self.energy_model.raw_tonet_dict[energy])
                 self.set_partial_derivative_for_other_types(
-                    ('energy_mean_price', 'energy_price'),
+                    (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
                     (f'{ns_energy}.energy_production', energy),
                     scaling_factor_energy_production * dmean_price_dprod * (1.0 - loss_percentage))
 
@@ -904,12 +904,12 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                                                production_energy_net_pos,
                                                                                production_detailed_df, cons=True)
                             self.set_partial_derivative_for_other_types(
-                                ('energy_mean_price', 'energy_price'),
+                                (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
                                 (f'{ns_energy_input}.energy_consumption',
                                  f'{energy} ({stream_class_dict[energy].unit})'),
                                 scaling_factor_energy_consumption * dmean_price_dcons)
         self.set_partial_derivative_for_other_types(
-            ('energy_mean_price', 'energy_price'), (GlossaryEnergy.CO2TaxesValue, 'CO2_tax'),
+            (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue), (GlossaryEnergy.CO2TaxesValue, 'CO2_tax'),
             dmean_price_dco2_tax * np.identity(len(years)))
 
         # --------------------------------#
@@ -1604,7 +1604,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         return new_chart
 
     def get_chart_energy_mean_price_in_dollar_mwh(self):
-        energy_mean_price = self.get_sosdisc_outputs('energy_mean_price')
+        energy_mean_price = self.get_sosdisc_outputs(GlossaryCore.EnergyMeanPriceValue)
 
         chart_name = 'Mean price out of energy mix'
         new_chart = TwoAxesInstanciatedChart(
@@ -1612,7 +1612,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             energy_mean_price[GlossaryCore.Years].values.tolist(),
-            energy_mean_price['energy_price'].values.tolist(), 'mean energy', 'lines')
+            energy_mean_price[GlossaryCore.EnergyPriceValue].values.tolist(), 'mean energy', 'lines')
         new_chart.series.append(serie)
 
         return new_chart

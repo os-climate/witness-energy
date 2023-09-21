@@ -17,6 +17,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.carbon_storage.enhanced_oil_recovery.enhanced_oil_recovery import EnhancedOilRecovery
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
 
@@ -61,7 +62,7 @@ class EnhancedOilRecoveryDiscipline(CSTechnoDiscipline):
                                  'transport_cost_unit': '$/kgCO2',
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
-                                 'energy_efficiency': 1,
+                                 GlossaryCore.EnergyEfficiency: 1,
                                  'construction_delay': construction_delay,
                                  'techno_evo_eff': 'no',
                                  }
