@@ -16,6 +16,8 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.models.electricity.solar_pv.solar_pv import SolarPv
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
@@ -75,7 +77,7 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
                                  'density_per_ha_unit': 'kWh/ha',
                                  'transport_cost_unit': '$/kg',  # check if pertient
                                  'techno_evo_eff': 'no',
-                                 'energy_efficiency': 1.0,
+                                 GlossaryCore.EnergyEfficiency: 1.0,
                                  'construction_delay': construction_delay, 
                                  'copper_needs': 2822, #IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
