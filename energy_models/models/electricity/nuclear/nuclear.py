@@ -16,6 +16,8 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 
@@ -54,6 +56,10 @@ class Nuclear(ElectricityTechno):
         Maybe add efficiency in consumption computation ?
         """
         self.compute_primary_energy_production()
+
+        # self.production[f'{hightemperatureheat.name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
+        #          Methane.data_energy_dict['calorific_value'] * \
+        #           self.consumption[f'{Methane.name} ({self.product_energy_unit})']
 
         self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']

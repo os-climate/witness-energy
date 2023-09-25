@@ -18,6 +18,7 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 
 class CCGasT(ElectricityTechno):
@@ -45,6 +46,8 @@ class CCGasT(ElectricityTechno):
         co2_prod = self.get_theoretical_co2_prod()
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        # self.production[f'{hightemperatureheat.name} ({self.mass_unit})'] = co2_prod * \
+        #     self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
 
         # Consumption
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict['methane_needs'] * \

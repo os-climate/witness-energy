@@ -20,6 +20,7 @@ from energy_models.core.stream_type.resources_models.water import Water
 
 import numpy as np
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 
 class SMR(SyngasTechno):
@@ -151,3 +152,7 @@ class SMR(SyngasTechno):
         self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
+
+        # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details['CH4_needs'] * \
+        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+        #     self.cost_details['efficiency']

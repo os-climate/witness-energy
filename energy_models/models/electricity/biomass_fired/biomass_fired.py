@@ -18,6 +18,7 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 
 class BiomassFired(ElectricityTechno):
@@ -45,6 +46,9 @@ class BiomassFired(ElectricityTechno):
         co2_prod = self.get_theoretical_co2_prod()
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        # self.production[f'{hightemperatureheat.name} ({self.mass_unit})'] = co2_prod * \
+        #      self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
         self.consumption[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.techno_infos_dict['biomass_needs'] * \
