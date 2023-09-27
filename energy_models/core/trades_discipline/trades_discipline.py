@@ -20,6 +20,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
     InstantiatedParetoFrontOptimalChart
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class TradesDiscipline(SoSWrapp):
