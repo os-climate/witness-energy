@@ -17,6 +17,7 @@ import unittest
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
@@ -50,11 +51,11 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
+            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue]['value']
             self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
 
         for i, energy in enumerate(self.ccs_list):
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
+            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue]['value']
 
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0

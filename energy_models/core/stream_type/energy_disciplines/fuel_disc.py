@@ -16,6 +16,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
@@ -79,7 +80,7 @@ class FuelDiscipline(SoSWrapp):
     DESC_OUT = {'energy_prices': {'type': 'dataframe', 'unit': '$/MWh'},
                 'energy_detailed_techno_prices': {'type': 'dataframe', 'unit': '$/MWh'},
                 'energy_consumption': {'type': 'dataframe', 'unit': 'PWh'},
-                'energy_production': {'type': 'dataframe', 'unit': 'PWh'},
+                GlossaryCore.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh'},
                 }
 
@@ -182,7 +183,7 @@ class FuelDiscipline(SoSWrapp):
 
         outputs_dict = {'energy_prices': energy_prices,
                         'energy_detailed_techno_prices': energy_detailed_techno_prices,
-                        'energy_production': energy_production,
+                        GlossaryCore.EnergyProductionValue: energy_production,
                         'energy_consumption': energy_consumption,
                         'energy_production_detailed': energy_production_detailed,
                         }
@@ -296,7 +297,7 @@ class FuelDiscipline(SoSWrapp):
         instanciated_charts = []
         # Charts for consumption and prod
         energy_consumption = self.get_sosdisc_outputs('energy_consumption')
-        energy_production = self.get_sosdisc_outputs('energy_production')
+        energy_production = self.get_sosdisc_outputs(GlossaryCore.EnergyProductionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
         scaling_factor_energy_production = self.get_sosdisc_inputs(

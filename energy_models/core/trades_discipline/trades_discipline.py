@@ -127,7 +127,7 @@ class TradesDiscipline(SoSWrapp):
                 if input.endswith('co2_emissions'):
                     CO2_emissions[input.split('.')[0]] = list(
                         value[value['years'] == year_end]['Total CO2 emissions'].values)[0] * 1.0e6
-                elif input.endswith('energy_production'):
+                elif input.endswith(GlossaryCore.EnergyProductionValue):
                     energy_production[input.split('.')[0]] = list(
                         value[value['years'] == year_end]['Total production'].values)[
                                                                  0] * 1.0e6 * scaling_factor_energy_production

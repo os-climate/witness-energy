@@ -249,7 +249,7 @@ class SyngasDiscipline(EnergyDiscipline):
                           inputs_dict['year_end'] + 1)
         technos_list = inputs_dict['technologies_list']
         list_columns_energyprod = list(
-            outputs_dict['energy_production'].columns)
+            outputs_dict[GlossaryCore.EnergyProductionValue].columns)
         mix_weight = outputs_dict['techno_mix']
         for techno in technos_list:
             mix_weight_techno = mix_weight[techno].values / 100.0

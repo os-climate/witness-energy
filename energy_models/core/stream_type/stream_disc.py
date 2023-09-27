@@ -17,6 +17,7 @@ import logging
 
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -59,7 +60,7 @@ class StreamDiscipline(SoSWrapp):
         # coupling variables scaling
         'energy_consumption': {'type': 'dataframe', 'unit': 'PWh'},
         'energy_consumption_woratio': {'type': 'dataframe', 'unit': 'PWh'},
-        'energy_production': {'type': 'dataframe', 'unit': 'PWh'},
+        GlossaryCore.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
         'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh'},
         'techno_mix': {'type': 'dataframe', 'unit': '%'},
         'land_use_required': {'type': 'dataframe', 'unit': 'Gha'},
@@ -192,7 +193,7 @@ class StreamDiscipline(SoSWrapp):
                         'energy_detailed_techno_prices': cost_details_technos,
                         'energy_consumption': consumption,
                         'energy_consumption_woratio': consumption_woratio,
-                        'energy_production': production,
+                        GlossaryCore.EnergyProductionValue: production,
                         'energy_production_detailed': self.energy_model.production_by_techno,
                         'techno_mix': techno_mix,
                         'land_use_required': self.energy_model.land_use_required}
@@ -207,7 +208,7 @@ class StreamDiscipline(SoSWrapp):
                           inputs_dict['year_end'] + 1)
         technos_list = inputs_dict['technologies_list']
         list_columns_energyprod = list(
-            outputs_dict['energy_production'].columns)
+            outputs_dict[GlossaryCore.EnergyProductionValue].columns)
         list_columns_consumption = list(
             outputs_dict['energy_consumption'].columns)
         mix_weight = outputs_dict['techno_mix']
@@ -233,12 +234,12 @@ class StreamDiscipline(SoSWrapp):
                 if column_name != 'years':
                     if column_name == self.energy_name:
                         self.set_partial_derivative_for_other_types(
-                            ('energy_production', column_name), (f'{techno}.techno_production', techno_prod_name_with_unit),  inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) / scaling_factor_energy_production)
+                            (GlossaryCore.EnergyProductionValue, column_name), (f'{techno}.techno_production', techno_prod_name_with_unit),  inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) / scaling_factor_energy_production)
                     else:
                         for col_technoprod in list_columnstechnoprod:
                             if column_name == col_technoprod:
                                 self.set_partial_derivative_for_other_types(
-                                    ('energy_production', column_name), (f'{techno}.techno_production', col_technoprod), inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) / scaling_factor_energy_production)
+                                    (GlossaryCore.EnergyProductionValue, column_name), (f'{techno}.techno_production', col_technoprod), inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) / scaling_factor_energy_production)
 
             for column_name in list_columns_consumption:
 
@@ -262,9 +263,9 @@ class StreamDiscipline(SoSWrapp):
                 if column_name.startswith(self.energy_name):
                     grad_techno_mix_vs_prod = self.grad_techno_mix_vs_prod_dict[techno]
 #                     grad_techno_mix_vs_prod = (
-#                         outputs_dict['energy_production'][self.energy_name].values -
+#                         outputs_dict[GlossaryCore.EnergyProductionValue][self.energy_name].values -
 #                         inputs_dict[f'{techno}.techno_production'][column_name].values
-#                     ) / outputs_dict['energy_production'][self.energy_name].values**2
+#                     ) / outputs_dict[GlossaryCore.EnergyProductionValue][self.energy_name].values**2
 
                     # The mix_weight_techno is zero means that the techno is negligible else we do nothing
                     # np.sign gives 0 if zero and 1 if value so it suits well
@@ -427,7 +428,7 @@ class StreamDiscipline(SoSWrapp):
         instanciated_charts = []
         # Charts for consumption and prod
         energy_consumption = self.get_sosdisc_outputs('energy_consumption')
-        energy_production = self.get_sosdisc_outputs('energy_production')
+        energy_production = self.get_sosdisc_outputs(GlossaryCore.EnergyProductionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
         scaling_factor_energy_production = self.get_sosdisc_inputs(

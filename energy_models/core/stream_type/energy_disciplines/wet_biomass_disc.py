@@ -67,7 +67,7 @@ class BiomassWetDiscipline(EnergyDiscipline):
 
         outputs_dict = {'energy_prices': cost_details,
                         'energy_consumption': consumption / inputs_dict['scaling_factor_energy_consumption'],
-                        'energy_production': production / inputs_dict['scaling_factor_energy_production'],
+                        GlossaryCore.EnergyProductionValue: production / inputs_dict['scaling_factor_energy_production'],
                         'techno_mix': techno_mix}
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)

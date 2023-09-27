@@ -16,6 +16,7 @@ limitations under the License.
 
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -363,9 +364,9 @@ class EnergyDiscipline(StreamDiscipline):
                     # np.sign gives 0 if zero and 1 if value so it suits well
                     # with our needs
                     #                     grad_techno_mix_vs_prod = (
-                    #                         outputs_dict['energy_production'][self.energy_name].values -
+                    #                         outputs_dict[GlossaryCore.EnergyProductionValue][self.energy_name].values -
                     #                         inputs_dict[f'{techno}.techno_production'][column_name].values
-                    #                     ) / outputs_dict['energy_production'][self.energy_name].values**2
+                    #                     ) / outputs_dict[GlossaryCore.EnergyProductionValue][self.energy_name].values**2
                     grad_techno_mix_vs_prod = self.grad_techno_mix_vs_prod_dict[techno]
                     grad_techno_mix_vs_prod = grad_techno_mix_vs_prod * \
                         np.sign(mix_weight_techno)
@@ -378,7 +379,7 @@ class EnergyDiscipline(StreamDiscipline):
                             mix_weight_techno_other = mix_weight[techno_other].values / 100.0
 #                             grad_co2_vs_prod += -inputs_dict[f'{techno_other}.CO2_emissions'][techno_other].values * \
 #                                 mix_weight_techno_other / \
-#                                 outputs_dict['energy_production'][self.energy_name].values
+#                                 outputs_dict[GlossaryCore.EnergyProductionValue][self.energy_name].values
                             grad_techno_mix_vs_prod = self.grad_techno_mix_vs_prod_dict[
                                 f'{techno} {techno_other}']
                             grad_techno_mix_vs_prod = grad_techno_mix_vs_prod * \
@@ -481,7 +482,7 @@ class EnergyDiscipline(StreamDiscipline):
         co2_per_use = self.get_sosdisc_outputs(
             'CO2_per_use')
 
-        energy_production = self.get_sosdisc_outputs('energy_production')
+        energy_production = self.get_sosdisc_outputs(GlossaryCore.EnergyProductionValue)
         scaling_factor_energy_production = self.get_sosdisc_inputs(
             'scaling_factor_energy_production')
         for technology in technology_list:

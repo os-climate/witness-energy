@@ -147,7 +147,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
         instanciated_charts = []
         # Charts for consumption and prod
         energy_consumption = self.get_sosdisc_outputs('energy_consumption')
-        energy_production = self.get_sosdisc_outputs('energy_production')
+        energy_production = self.get_sosdisc_outputs(GlossaryCore.EnergyProductionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
         scaling_factor_energy_production = self.get_sosdisc_inputs(
