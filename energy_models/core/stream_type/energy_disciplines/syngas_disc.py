@@ -15,7 +15,7 @@ limitations under the License.
 '''
 
 import numpy as np
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.syngas import Syngas, \
     compute_calorific_value, compute_molar_mass, compute_high_calorific_value, compute_dcal_val_dsyngas_ratio
@@ -83,38 +83,38 @@ class SyngasDiscipline(EnergyDiscipline):
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {'years': ('float', None, True),
                                                  'wood (Mt)': ('float', None, True),
-                                                'syngas (TWh)': ('float', None, True),
-                                                'production': ('float', None, True),
+                                                 'syngas (TWh)': ('float', None, True),
+                                                 'production': ('float', None, True),
                                                  'methane': ('float', None, True),
                                                  'methane (TWh)': ('float', None, True),
-                                                'electricity': ('float', None, True),
-                                                'dioxygen (Mt)': ('float', None, True),
+                                                 'electricity': ('float', None, True),
+                                                 'dioxygen (Mt)': ('float', None, True),
                                                  'SMR': ('float', None, True),
                                                  'SMR_wotaxes': ('float', None, True),
                                                  'electricity (TWh)': ('float', None, True),
-                                                'biomass_dry (TWh)': ('float', None, True),
-                                                'solid_fuel (TWh)': ('float', None, True),
-                                                'carbon_capture (Mt)': ('float', None, True),
-                                                'water (Mt)': ('float', None, True),
+                                                 'biomass_dry (TWh)': ('float', None, True),
+                                                 'solid_fuel (TWh)': ('float', None, True),
+                                                 'carbon_capture (Mt)': ('float', None, True),
+                                                 'water (Mt)': ('float', None, True),
                                                  'water_resource (Mt)': ('float', None, True),
-                                                 'dioxygen_resource (Mt)': ('float', None, True),}}
+                                                 'dioxygen_resource (Mt)': ('float', None, True), }}
                     dynamic_inputs[f'{techno}.techno_consumption_woratio'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {'years': ('float', None, True),
                                                  'wood (Mt)': ('float', None, True),
-                                                'syngas (TWh)': ('float', None, True),
-                                                'SMR': ('float', None, True),
-                                                'SMR_wotaxes': ('float', None, True),
-                                                'production': ('float', None, True),
+                                                 'syngas (TWh)': ('float', None, True),
+                                                 'SMR': ('float', None, True),
+                                                 'SMR_wotaxes': ('float', None, True),
+                                                 'production': ('float', None, True),
                                                  'methane': ('float', None, True),
                                                  'methane (TWh)': ('float', None, True),
-                                                'electricity': ('float', None, True),
-                                                'dioxygen (Mt)': ('float', None, True),
-                                                'electricity (TWh)': ('float', None, True),
-                                                'biomass_dry (TWh)': ('float', None, True),
-                                                'solid_fuel (TWh)': ('float', None, True),
-                                                'carbon_capture (Mt)': ('float', None, True),
-                                                'water (Mt)': ('float', None, True),
+                                                 'electricity': ('float', None, True),
+                                                 'dioxygen (Mt)': ('float', None, True),
+                                                 'electricity (TWh)': ('float', None, True),
+                                                 'biomass_dry (TWh)': ('float', None, True),
+                                                 'solid_fuel (TWh)': ('float', None, True),
+                                                 'carbon_capture (Mt)': ('float', None, True),
+                                                 'water (Mt)': ('float', None, True),
                                                  'water_resource (Mt)': ('float', None, True),
                                                  'dioxygen_resource (Mt)': ('float', None, True),
                                                  }}
@@ -122,78 +122,78 @@ class SyngasDiscipline(EnergyDiscipline):
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {'years': ('float', None, True),
                                                  'syngas (TWh)': ('float', None, True),
-                                                'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                'char (Mt)': ('float', None, True),
-                                                'bio_oil (Mt)': ('float', None, True),
-                                                'SMR': ('float', None, True),
-                                                'SMR_wotaxes': ('float', None, True),
-                                                'production': ('float', None, True),
-                                                'methane': ('float', None, True),
+                                                 'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                 'char (Mt)': ('float', None, True),
+                                                 'bio_oil (Mt)': ('float', None, True),
+                                                 'SMR': ('float', None, True),
+                                                 'SMR_wotaxes': ('float', None, True),
+                                                 'production': ('float', None, True),
+                                                 'methane': ('float', None, True),
                                                  'methane (TWh)': ('float', None, True),
-                                                'electricity': ('float', None, True),
-                                                'carbon_capture (Mt)': ('float', None, True),
+                                                 'electricity': ('float', None, True),
+                                                 'carbon_capture (Mt)': ('float', None, True),
                                                  'water (Mt)': ('float', None, True),
                                                  'dioxygen (Mt)': ('float', None, True),
                                                  'CH4 (Mt)': ('float', None, True),
                                                  'water_resource (Mt)': ('float', None, True),
-                                                 'dioxygen_resource (Mt)': ('float', None, True),}}
+                                                 'dioxygen_resource (Mt)': ('float', None, True), }}
                     dynamic_inputs[f'{techno}.techno_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
                         'dataframe_descriptor': {'years': ('float', None, True),
                                                  'Pyrolysis': ('float', None, True),
-                                                    'Pyrolysis_wotaxes': ('float', None, True),
-                                                    'methane (TWh)': ('float', None, True),
-                                                    'water (Mt)': ('float', None, True),
-                                                    'syngas (TWh)': ('float', None, True),
-                                                    'SMR': ('float', None, True),
-                                                    'SMR_wotaxes': ('float', None, True),
-                                                    'production': ('float', None, True),
-                                                    'methane': ('float', None, True),
-                                                    'electricity': ('float', None, True),
-                                                    'carbon_capture (Mt)': ('float', None, True),
-                                                    'dioxygen (Mt)': ('float', None, True),
-                                                    'AutothermalReforming': ('float', None, True),
-                                                    'AutothermalReforming_wotaxes': ('float', None, True),
-                                                    'BiomassGasification': ('float', None, True),
-                                                    'BiomassGasification_wotaxes': ('float', None, True),
-                                                    'CoalGasification': ('float', None, True),
-                                                    'CoalGasification_wotaxes': ('float', None, True),
-                                                    'CoElectrolysis': ('float', None, True),
-                                                    'CoElectrolysis_wotaxes': ('float', None, True),}}
+                                                 'Pyrolysis_wotaxes': ('float', None, True),
+                                                 'methane (TWh)': ('float', None, True),
+                                                 'water (Mt)': ('float', None, True),
+                                                 'syngas (TWh)': ('float', None, True),
+                                                 'SMR': ('float', None, True),
+                                                 'SMR_wotaxes': ('float', None, True),
+                                                 'production': ('float', None, True),
+                                                 'methane': ('float', None, True),
+                                                 'electricity': ('float', None, True),
+                                                 'carbon_capture (Mt)': ('float', None, True),
+                                                 'dioxygen (Mt)': ('float', None, True),
+                                                 'AutothermalReforming': ('float', None, True),
+                                                 'AutothermalReforming_wotaxes': ('float', None, True),
+                                                 'BiomassGasification': ('float', None, True),
+                                                 'BiomassGasification_wotaxes': ('float', None, True),
+                                                 'CoalGasification': ('float', None, True),
+                                                 'CoalGasification_wotaxes': ('float', None, True),
+                                                 'CoElectrolysis': ('float', None, True),
+                                                 'CoElectrolysis_wotaxes': ('float', None, True), }}
                     dynamic_inputs[f'{techno}.CO2_emissions'] = {
                         'type': 'dataframe', 'unit': 'kg/kWh',
                         'dataframe_descriptor': {'years': ('float', None, True),
-                                                'wood': ('float', None, True),
-                                                'Pyrolysis': ('float', None, True),
-                                                'methane (TWh)': ('float', None, True),
-                                                'water (Mt)': ('float', None, True),
-                                                'syngas (TWh)': ('float', None, True),
-                                                'SMR': ('float', None, True),
-                                                'SMR_wotaxes': ('float', None, True),
-                                                'methane': ('float', None, True),
-                                                'carbon_capture (Mt)': ('float', None, True),
-                                                'dioxygen (Mt)': ('float', None, True),
-                                                'AutothermalReforming': ('float', None, True),
-                                                'AutothermalReforming_wotaxes': ('float', None, True),
-                                                'CO2': ('float', None, True),
-                                                'production': ('float', None, True),
-                                                'electricity': ('float', None, True),
-                                                'biomass_dry': ('float', None, True),
-                                                'BiomassGasification': ('float', None, True),
-                                                'solid_fuel': ('float', None, True),
-                                                'CoalGasification': ('float', None, True),
-                                                'CoElectrolysis': ('float', None, True),}}
+                                                 'wood': ('float', None, True),
+                                                 'Pyrolysis': ('float', None, True),
+                                                 'methane (TWh)': ('float', None, True),
+                                                 'water (Mt)': ('float', None, True),
+                                                 'syngas (TWh)': ('float', None, True),
+                                                 'SMR': ('float', None, True),
+                                                 'SMR_wotaxes': ('float', None, True),
+                                                 'methane': ('float', None, True),
+                                                 'carbon_capture (Mt)': ('float', None, True),
+                                                 'dioxygen (Mt)': ('float', None, True),
+                                                 'AutothermalReforming': ('float', None, True),
+                                                 'AutothermalReforming_wotaxes': ('float', None, True),
+                                                 'CO2': ('float', None, True),
+                                                 'production': ('float', None, True),
+                                                 'electricity': ('float', None, True),
+                                                 'biomass_dry': ('float', None, True),
+                                                 'BiomassGasification': ('float', None, True),
+                                                 'solid_fuel': ('float', None, True),
+                                                 'CoalGasification': ('float', None, True),
+                                                 'CoElectrolysis': ('float', None, True), }}
                     dynamic_inputs[f'{techno}.syngas_ratio'] = {
                         'type': 'array', 'unit': '%'}
                     dynamic_inputs[f'{techno}.land_use_required'] = {
                         'type': 'dataframe', 'unit': 'Gha',
                         'dataframe_descriptor': {'years': ('float', None, True),
                                                  'Pyrolysis (Gha)': ('float', None, True),
-                                                'SMR (Gha)': ('float', None, True),
-                                                'AutothermalReforming (Gha)': ('float', None, True),
-                                                'BiomassGasification (Gha)': ('float', None, True),
-                                                'CoalGasification (Gha)': ('float', None, True),
-                                                'CoElectrolysis (Gha)': ('float', None, True),}}
+                                                 'SMR (Gha)': ('float', None, True),
+                                                 'AutothermalReforming (Gha)': ('float', None, True),
+                                                 'BiomassGasification (Gha)': ('float', None, True),
+                                                 'CoalGasification (Gha)': ('float', None, True),
+                                                 'CoElectrolysis (Gha)': ('float', None, True), }}
 
         self.add_inputs(dynamic_inputs)
 
@@ -292,8 +292,8 @@ class SyngasDiscipline(EnergyDiscipline):
                 'data_fuel_dict')['CO2_per_use'])
             if co2_per_use != 0:
                 grad_carbon_tax_vs_prod = -grad_syngas_prod * fprimesgx * \
-                    outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
-                    co2_per_use / 100.0
+                                          outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
+                                          co2_per_use / 100.0
             else:
                 grad_carbon_tax_vs_prod = [0] * len(grad_syngas_prod)
 
@@ -304,8 +304,8 @@ class SyngasDiscipline(EnergyDiscipline):
 
             if co2_per_use != 0:
                 grad_carbon_tax_vs_syngas_ratio = -mix_weight_techno * fprimesgx * \
-                    outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
-                    co2_per_use / 100.0
+                                                  outputs_dict['CO2_per_use']['CO2_per_use'].values ** 2 / \
+                                                  co2_per_use / 100.0
             else:
                 grad_carbon_tax_vs_syngas_ratio = [0] * len(mix_weight_techno)
             self.set_partial_derivative_for_other_types(

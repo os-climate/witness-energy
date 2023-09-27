@@ -17,7 +17,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from os.path import join, dirname
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -69,11 +69,13 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue]['value']
+            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue][
+                'value']
             self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
 
         for i, ccs_name in enumerate(self.ccs_list):
-            self.energy_production[f'{ccs_name}'] = streams_outputs_dict[f'{ccs_name}'][GlossaryCore.EnergyProductionValue]['value']
+            self.energy_production[f'{ccs_name}'] = \
+            streams_outputs_dict[f'{ccs_name}'][GlossaryCore.EnergyProductionValue]['value']
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
         self.energy_production_detailed = streams_outputs_dict['energy_production_detailed']
