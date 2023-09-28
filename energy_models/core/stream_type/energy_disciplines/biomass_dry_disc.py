@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -78,7 +79,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
                 f'{technology}.techno_production')
             year_list = techno_emissions['years'].values.tolist()
             emission_list = techno_emissions[technology].values * \
-                techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
+                            techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
             serie = InstanciatedSeries(
                 year_list, emission_list.tolist(), technology, 'bar')
             new_chart.series.append(serie)
@@ -86,7 +87,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
             # emissions
             if technology == 'UnmanagedWood':
                 co2_per_use = co2_per_use['CO2_per_use'].values * \
-                    techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
+                              techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
         serie = InstanciatedSeries(
             year_list, co2_per_use.tolist(), 'CO2 from use of brut production', 'bar')
         new_chart.series.append(serie)
