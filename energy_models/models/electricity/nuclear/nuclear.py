@@ -56,8 +56,8 @@ class Nuclear(ElectricityTechno):
         """
         self.compute_primary_energy_production()
 
-        # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] - \
-        #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] - \
+            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']

@@ -73,8 +73,8 @@ class CoalGen(ElectricityTechno):
             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-        # self.production[f'{hightemperatureheat.name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
-        #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{SolidFuel.name}({self.product_energy_unit})'] - \
+            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         self.compute_ghg_emissions(N2O.name, related_to=SolidFuel.name)
 
