@@ -71,6 +71,9 @@ class TechnoDiscipline(SoSWrapp):
                                                    'hydrogen.gaseous_hydrogen': ('float', None, True),
                                                    'methane': ('float', None, True),
                                                    'fuel.liquid_fuel': ('float', None, True),
+                                                   'heat.hightemperatureheat': ('float', None, True),
+                                                   'heat.lowtemperatureheat': ('float', None, True),
+                                                   'heat.mediumtemperatureheat': ('float', None, True),
                                                    'renewable': ('float', None, True),
                                                    'fossil': ('float', None, True),
                                                    'amine': ('float', None, True),
@@ -97,6 +100,9 @@ class TechnoDiscipline(SoSWrapp):
                                                           'syngas': ('float', None, True),
                                                           'methane': ('float', None, True),
                                                           'fuel.liquid_fuel': ('float', None, True),
+                                                          'heat.hightemperatureheat': ('float', None, True),
+                                                          'heat.lowtemperatureheat': ('float', None, True),
+                                                          'heat.mediumtemperatureheat': ('float', None, True),
                                                           'renewable': ('float', None, True),
                                                           'fossil': ('float', None, True),
                                                           'CO2': ('float', None, True),
@@ -252,8 +258,10 @@ class TechnoDiscipline(SoSWrapp):
                                                                       'hydrogen.gaseous_hydrogen': (
                                                                       'float', None, True),
                                                                       'fuel.liquid_fuel': ('float', None, True),
-                                                                      'fuel.hydrotreated_oil_fuel': (
-                                                                      'float', None, True),
+                                                                      'fuel.hydrotreated_oil_fuel': ('float', None, True),
+                                                                      'heat.hightemperatureheat': ('float', None, True),
+                                                                      'heat.lowtemperatureheat': ('float', None, True),
+                                                                      'heat.mediumtemperatureheat': ('float', None, True),
                                                                       'electricity': ('float', None, True),
                                                                       'methane': ('float', None, True),
                                                                       'biogas': ('float', None, True),
@@ -264,10 +272,7 @@ class TechnoDiscipline(SoSWrapp):
                                                                       'biomass_dry': ('float', None, True),
                                                                       'hydrogen.liquid_hydrogen': ('float', None, True),
                                                                       'renewable': ('float', None, True),
-                                                                      'fossil': ('float', None, True),
-                                                                      'LowHeatTemperature': ('float', None, True),
-                                                                      'MediumHeatTemperature': ('float', None, True),
-                                                                      'HighHeatTemperature': ('float', None, True),
+                                                                      'fossil': ('float', None, True)
                                                                   }
                                                                   }
                 if self.get_sosdisc_inputs('is_apply_resource_ratio'):

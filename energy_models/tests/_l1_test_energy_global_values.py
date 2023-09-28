@@ -434,7 +434,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         coal_used_by_energy = energy_production[
                                   'production solid_fuel (TWh)'][0] - net_energy_production[
                                   'production solid_fuel (TWh)'][0]
-        # chp plants and heat plantstechnology not implemented
+        # chphighheat plants and heat plantstechnology not implemented
         chp_plants = 8222.22 + 289  # TWh
 
         print('CHP and heat plants not implemented corresponds to ',

@@ -82,11 +82,11 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
             if y_incre == 0:
                 var_energyproduction_all_energy_df = var_energyproduction_df.copy()
                 var_energyproduction_all_energy_df.columns = var_energyproduction_all_energy_df.columns.str.replace(
-                    energ + " ", "").str.replace("(TWh)", "")
+                    energ + " ", energ+ ".").str.replace("(TWh)", "")
             else:
                 var_energyproduction_all_energy_df = var_energyproduction_all_energy_df.merge(var_energyproduction_df)
                 var_energyproduction_all_energy_df.columns = var_energyproduction_all_energy_df.columns.str.replace(
-                    energ + " ", "").str.replace(r" \(.*\)", "")
+                    energ + " ", energ+ ".").str.replace(r" \(.*\)", "")
             y_incre += 1
 
     techno_name_list = []
@@ -112,9 +112,9 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
 
             # based on price name we are extracting price data
             if price_name == 'CAPEX_Part':
-                techno_price_filter_data[techno] = capex_list
+                techno_price_filter_data[energyname + '.' + techno] = capex_list
             else:
-                techno_price_filter_data[techno] = energy_costs_List
+                techno_price_filter_data[energyname + '.' + techno] = energy_costs_List
 
             # Calculate total CO2 intensity
             data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
@@ -135,9 +135,9 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
                                              carbon_emissions[techno].values
             CO2_per_kWh_techno = total_carbon_emissions
             # Getting data for particular year
-            co2_intensity[techno] = CO2_per_kWh_techno.tolist()
+            co2_intensity[energyname + '.' + techno] = CO2_per_kWh_techno.tolist()
             # Getting the co2 data for all the years
-            co2_all_years.extend(co2_intensity[techno])
+            co2_all_years.extend(co2_intensity[energyname + '.' + techno])
 
     # Gathering trace for all the years
     fig = go.Figure()

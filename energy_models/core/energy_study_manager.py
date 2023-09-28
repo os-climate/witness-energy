@@ -19,6 +19,9 @@ from sostrades_core.tools.bspline.bspline_methods import bspline_method
 
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.biogas import BioGas
@@ -51,6 +54,12 @@ from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase impor
     TECHNOLOGIES_LIST as LiquidFuel_technos
 from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as LiquidFuel_technos_dev
+from energy_models.sos_processes.energy.techno_mix.hightemperatureheat_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as hightemperatureheat_technos_dev
+from energy_models.sos_processes.energy.techno_mix.mediumtemperatureheat_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as mediumtemperatureheat_technos_dev
+from energy_models.sos_processes.energy.techno_mix.lowtemperatureheat_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as lowtemperatureheat_technos_dev
 
 from energy_models.sos_processes.energy.techno_mix.hydrotreated_oil_fuel_mix.usecase import \
     TECHNOLOGIES_LIST as HydrotreatedOilFuel_technos
@@ -104,6 +113,9 @@ DEFAULT_TECHNO_DICT = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_tech
                        BioGas.name: {'type': ENERGY_TYPE, 'value': BioGas_technos_dev},
                        Syngas.name: {'type': ENERGY_TYPE, 'value': Syngas_technos_dev},
                        LiquidFuel.name: {'type': ENERGY_TYPE, 'value': LiquidFuel_technos_dev},
+                       # hightemperatureheat.name: {'type': ENERGY_TYPE, 'value': hightemperatureheat_technos_dev},
+                       # mediumtemperatureheat.name: {'type': ENERGY_TYPE, 'value': mediumtemperatureheat_technos_dev},
+                       # lowtemperatureheat.name: {'type': ENERGY_TYPE, 'value': lowtemperatureheat_technos_dev},
                        HydrotreatedOilFuel.name: {'type': ENERGY_TYPE, 'value': HydrotreatedOilFuel_technos_dev},
                        SolidFuel.name: {'type': ENERGY_TYPE, 'value': SolidFuel_technos_dev},
                        BiomassDry.name: {'type': AGRI_TYPE, 'value': BiomassDry_technos_dev},
@@ -119,6 +131,10 @@ DEFAULT_TECHNO_DICT_DEV = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_
                            BioGas.name: {'type': ENERGY_TYPE, 'value': BioGas_technos_dev},
                            Syngas.name: {'type': ENERGY_TYPE, 'value': Syngas_technos_dev},
                            LiquidFuel.name: {'type': ENERGY_TYPE, 'value': LiquidFuel_technos_dev},
+                           hightemperatureheat.name: {'type': ENERGY_TYPE, 'value': hightemperatureheat_technos_dev},
+                           mediumtemperatureheat.name: {'type': ENERGY_TYPE,
+                                                        'value': mediumtemperatureheat_technos_dev},
+                           lowtemperatureheat.name: {'type': ENERGY_TYPE, 'value': lowtemperatureheat_technos_dev},
                            HydrotreatedOilFuel.name: {'type': ENERGY_TYPE, 'value': HydrotreatedOilFuel_technos_dev},
                            SolidFuel.name: {'type': ENERGY_TYPE, 'value': SolidFuel_technos_dev},
                            BiomassDry.name: {'type': AGRI_TYPE, 'value': BiomassDry_technos_dev},

@@ -4,13 +4,13 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.high.electric_boiler.electric_boiler_disc import ElectricBoilerDiscipline
+from energy_models.models.heat.high.electric_boiler_high_heat.electric_boiler_high_heat import ElectricBoilerHighHeat
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.models.heat.high.electric_boiler.electric_boiler import ElectricBoilerHighHeat
+from energy_models.models.heat.high.electric_boiler_high_heat.electric_boiler_high_heat_disc import ElectricBoilerHighHeatDiscipline
 
 
 class ElectricBoilerTestCase(unittest.TestCase):
@@ -39,7 +39,18 @@ class ElectricBoilerTestCase(unittest.TestCase):
         self.resources_price = pd.DataFrame({'years': years, 'water_resource': 2.0})
         self.resources_CO2_emissions = pd.DataFrame({'years': years, 'water': 0.0})
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 10.0})
+            {'years': years, 'invest': np.array([4435750000.0, 4522000000.0, 4608250000.0,
+                                                 4694500000.0, 4780750000.0, 4867000000.0,
+                                                 4969400000.0, 5071800000.0, 5174200000.0,
+                                                 5276600000.0, 5379000000.0, 5364700000.0,
+                                                 5350400000.0, 5336100000.0, 5321800000.0,
+                                                 5307500000.0, 5293200000.0, 5278900000.0,
+                                                 5264600000.0, 5250300000.0, 5236000000.0,
+                                                 5221700000.0, 5207400000.0, 5193100000.0,
+                                                 5178800000.0, 5164500000.0, 5150200000.0,
+                                                 5135900000.0, 5121600000.0, 5107300000.0,
+                                                 5093000000.0]) / 5.0e9})
+
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01, 34.05, 39.08, 44.69,   50.29]
@@ -75,17 +86,17 @@ class ElectricBoilerTestCase(unittest.TestCase):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
-                       'techno_infos_dict': ElectricBoilerDiscipline.techno_infos_dict_default,
+                       'techno_infos_dict': ElectricBoilerHighHeatDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
                        'resources_price': self.resources_price,
                        'invest_level': self.invest_level,
-                       'invest_before_ystart': ElectricBoilerDiscipline.invest_before_year_start,
+                       'invest_before_ystart': ElectricBoilerHighHeatDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
                        'transport_margin': self.margin,
-                       'initial_production': ElectricBoilerDiscipline.initial_production,
-                       'initial_age_distrib': ElectricBoilerDiscipline.initial_age_distribution,
+                       'initial_production': ElectricBoilerHighHeatDiscipline.initial_production,
+                       'initial_age_distrib': ElectricBoilerHighHeatDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
                        'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
@@ -105,19 +116,21 @@ class ElectricBoilerTestCase(unittest.TestCase):
         price_details = ng_model.compute_price()
         ng_model.compute_consumption_and_production()
 
+        #print('price_details', price_details)
+
     def test_02_electric_boiler_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'Electric Boiler'
+        self.model_name = 'ElectricBoiler'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_resource': self.name,
-                   'ns_heat': f'{self.name}'
+                   'ns_heat_high': f'{self.name}'
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.high.electric_boiler.electric_boiler_disc.ElectricBoilerDiscipline'
+        mod_path = 'energy_models.models.heat.high.electric_boiler_high_heat.electric_boiler_high_heat_disc.ElectricBoilerHighHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -128,13 +141,16 @@ class ElectricBoilerTestCase(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.year_end': 2050,
                        f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.resources_price': self.resources_price,
+                       #f'{self.name}.resources_price': self.resources_price,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.invest_level': self.invest_level,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin
+                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       # f'{self.name}.{self.model_name}.flux_input_dict':  {'land_rate': 5000.0,
+                       #                                  'land_rate_unit': '$/Gha',
+                       #                                  }
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

@@ -68,7 +68,7 @@ def get_techno_comparision_data(execution_engine, namespace, year):
     disc = execution_engine.dm.get_disciplines_with_name(namespace)
     disc_input = disc[0].get_sosdisc_inputs()
     energy_list = disc_input['energy_list']
-    #print('energy_list', energy_list)
+
     techno_list = []
     EnergyDict = {}
     techno_production_dict = {}
@@ -84,14 +84,11 @@ def get_techno_comparision_data(execution_engine, namespace, year):
             EnergyDict[f"{energ}"]['TechnoName'] = loc_techno_list
             loc_energyproduction_df= execution_engine.dm.get_value(var_energyproduction_name)
             production_filtereddata = loc_energyproduction_df[loc_energyproduction_df['years'] == year]
-            #print(list(loc_energyproduction_df.columns))
-            #print(production_filtereddata.to_string())
             for col in production_filtereddata.columns:
                 if col != 'years':
                     production_techno_name = col.replace(energ, '').replace('(TWh)', '').strip()
                     prod_value = production_filtereddata[col].iloc[0]
                     techno_production_dict[production_techno_name] = prod_value
-    #print(techno_production_dict)
 
     capex_list = []
     opex_list = []
