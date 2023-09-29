@@ -15,6 +15,7 @@ limitations under the License.
 '''
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -109,7 +110,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
                     instanciated_charts.append(new_chart)
 
         if 'Technology mix' in charts:
-            new_charts = self.get_chart_technology_mix( years_list)
+            new_charts = self.get_chart_technology_mix(years_list)
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
@@ -147,7 +148,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
         instanciated_charts = []
         # Charts for consumption and prod
         energy_consumption = self.get_sosdisc_outputs('energy_consumption')
-        energy_production = self.get_sosdisc_outputs('energy_production')
+        energy_production = self.get_sosdisc_outputs(GlossaryCore.EnergyProductionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
         scaling_factor_energy_production = self.get_sosdisc_inputs(
@@ -160,8 +161,8 @@ class CarbonStorageDiscipline(StreamDiscipline):
         for reactant in energy_consumption.columns:
             if reactant != 'years' and reactant.endswith('(Mt)'):
                 energy_twh = - \
-                    energy_consumption[reactant].values * \
-                    scaling_factor_energy_consumption
+                                 energy_consumption[reactant].values * \
+                             scaling_factor_energy_consumption
                 legend_title = f'{reactant}'.replace(
                     "(Mt)", "")
                 serie = InstanciatedSeries(
@@ -176,7 +177,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
             # technologies
             if products != 'years' and products.endswith('(Mt)') and self.energy_name not in products:
                 energy_twh = energy_production[products].values * \
-                    scaling_factor_energy_production
+                             scaling_factor_energy_production
                 legend_title = f'{products}'.replace(
                     "(Mt)", "")
                 serie = InstanciatedSeries(
