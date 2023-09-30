@@ -42,7 +42,7 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
     }
     techno_name = 'RenewableSimpleTechno'
     lifetime = 30
-    construction_delay = 3
+    construction_delay = 0
     # net production = 25385.78 TWh
     initial_production = 31552.17  # TWh
     # from witness full study
@@ -67,8 +67,11 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
 
+    #invest_before_year_start = pd.DataFrame(
+    #    {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 635.0, 638.0]})
+
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 635.0, 638.0]})
+        {'past years': [], 'invest': []})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [4.14634146, 6.2195122, 2.77439024, 6.92073171, 6.92073171,
