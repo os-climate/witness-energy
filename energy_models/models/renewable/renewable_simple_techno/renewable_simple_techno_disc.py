@@ -90,7 +90,7 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
                'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
+                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], True),
                                                                  'invest': ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
