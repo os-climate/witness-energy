@@ -45,7 +45,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     }
     techno_name = 'FossilSimpleTechno'
     lifetime = 25
-    construction_delay = 0
+    construction_delay = 3
 
     prod_solid_fuel = 45000.  # TWh
     prod_liquid_fuel = 53000.  # TWh
@@ -86,11 +86,9 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     # net production = 90717.76   TWh
     initial_production = 136917.16  # TWh
 
-    #invest_before_year_start = pd.DataFrame(
-    #    {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 1483.79, 1489.95]})
-
     invest_before_year_start = pd.DataFrame(
-        {'past years': [], 'invest': []})
+        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 1483.79, 1489.95]})
+
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [5.12627214, 7.68940822, 3.43007916, 8.5563513, 8.5563513,

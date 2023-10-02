@@ -116,6 +116,25 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+        techno_infos_dict = {'maturity': 0,
+                                     'Opex_percentage': 0.12,
+                                     'WACC': 0.058,
+                                     'learning_rate': 0.00,
+                                     'lifetime': 25,
+                                     'lifetime_unit': 'years',
+                                     'Capex_init': 230.0,
+                                     'Capex_init_unit': '$/MWh',
+                                     'techno_evo_eff': 'no',
+                                     'efficiency': 1.0,
+                                     'CO2_from_production': 0.0,
+                                     'CO2_from_production_unit': 'kg/kg',
+                                     'construction_delay': 3,
+                                     'resource_price': 70.0,
+                                     'resource_price_unit': '$/MWh'}
+
+        invest_before_ystart = pd.DataFrame(
+            {'past years': np.arange(-3, 0), 'invest': [0.0, 635.0, 638.0]})
+
         inputs_dict = {f'{self.name}.year_end': self.year_end,
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -125,13 +144,87 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.transport_cost': self.transport,
                        f'{self.name}.{self.model_name}.margin':  self.margin,
                        f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, self.year_end + 1)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, self.year_end + 1))
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, self.year_end + 1)),
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
+                       f'{self.name}.invest_before_ystart': invest_before_ystart,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
+                            discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', local_data=disc_techno.local_data,
+                            inputs=[f'{self.name}.{self.model_name}.invest_level',
+                                    f'{self.name}.energy_prices',
+                                    f'{self.name}.energy_CO2_emissions',
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
+                                    ],
+                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                                     f'{self.name}.{self.model_name}.techno_consumption',
+                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
+                                     f'{self.name}.{self.model_name}.techno_production',
+                                     ], )
+
+    def test_02_discipline_analytic_grad_construction_delay_0(self):
+
+        self.name = 'Test'
+        self.model_name = 'RenewableSimpleTechno'
+        self.ee = ExecutionEngine(self.name)
+        ns_dict = {'ns_public': self.name,
+                   'ns_energy': self.name,
+                   'ns_energy_study': f'{self.name}',
+                   'ns_renewable': self.name,
+                   'ns_resource': self.name}
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc.RenewableSimpleTechnoDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+        techno_infos_dict = {'maturity': 0,
+                                     'Opex_percentage': 0.12,
+                                     'WACC': 0.058,
+                                     'learning_rate': 0.00,
+                                     'lifetime': 30,
+                                     'lifetime_unit': 'years',
+                                     'Capex_init': 230.0,
+                                     'Capex_init_unit': '$/MWh',
+                                     'techno_evo_eff': 'no',
+                                     'efficiency': 1.0,
+                                     'CO2_from_production': 0.0,
+                                     'CO2_from_production_unit': 'kg/kg',
+                                     'construction_delay': 0,
+                                     'resource_price': 70.0,
+                                     'resource_price_unit': '$/MWh'}
+
+        invest_before_ystart = pd.DataFrame(
+            {'past years': [], 'invest': []})
+
+        inputs_dict = {f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, self.year_end + 1)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, self.year_end + 1)),
+                       f'{self.name}.techno_infos_dict': techno_infos_dict,
+                       f'{self.name}.invest_before_ystart': invest_before_ystart,
+                       }
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+        self.ee.execute()
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}_construction_delay_0.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     f'{self.name}.energy_prices',

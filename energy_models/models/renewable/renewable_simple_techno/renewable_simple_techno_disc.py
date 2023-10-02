@@ -42,20 +42,19 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
     }
     techno_name = 'RenewableSimpleTechno'
     lifetime = 30
-    construction_delay = 0
+    construction_delay = 3
     # net production = 25385.78 TWh
     initial_production = 31552.17  # TWh
     # from witness full study
     renewable_energy_capital = 12.414  # trillion dollars
 
-    capex_renewable = 230.0
     techno_infos_dict_default = {'maturity': 0,
                                  'Opex_percentage': 0.12,
                                  'WACC': 0.058,
                                  'learning_rate': 0.00,
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
-                                 'Capex_init': capex_renewable,
+                                 'Capex_init': 230.0,
                                  'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1.0,
@@ -67,11 +66,8 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
 
-    #invest_before_year_start = pd.DataFrame(
-    #    {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 635.0, 638.0]})
-
     invest_before_year_start = pd.DataFrame(
-        {'past years': [], 'invest': []})
+        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 635.0, 638.0]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [4.14634146, 6.2195122, 2.77439024, 6.92073171, 6.92073171,
