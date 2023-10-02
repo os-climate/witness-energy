@@ -16,6 +16,8 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.renewable_techno_disc import RenewableTechnoDiscipline
 from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno import RenewableSimpleTechno
 
@@ -78,6 +80,8 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                                          6.2195122, 4.14634140, 2.77439024, 2.5304878],
                                              })
 
+    invest_before_year_start_var = GlossaryCore.InvestmentBeforeYearStartDf
+    invest_before_year_start_var['default'] = invest_before_year_start
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -85,10 +89,8 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], True),
-                                                                 'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryCore.InvestmentBeforeYearStartValue: invest_before_year_start_var
+               }
     # -- add specific techno outputs to this
     DESC_IN.update(RenewableTechnoDiscipline.DESC_IN)
 
