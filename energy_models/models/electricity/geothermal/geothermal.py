@@ -27,6 +27,14 @@ class Geothermal(ElectricityTechno):
     def compute_other_primary_energy_costs(self):
         return 0
 
+    def compute_consumption_and_production(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        """
+        self.production[f'{hightemperatureheat.name}({self.product_energy_unit})'] = (self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                      (1 - self.techno_infos_dict['efficiency'])) / \
+                                                                                     self.techno_infos_dict['efficiency']
+
     def compute_consumption_and_power_production(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment
@@ -34,10 +42,6 @@ class Geothermal(ElectricityTechno):
         self.compute_primary_power_production()
 
         # FOR ALL_RESOURCES DISCIPLINE
-        self.production[f'{hightemperatureheat.name}({self.product_energy_unit})'] = (self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * \
-                                                                                     (1 - self.techno_infos_dict['efficiency'])) / \
-                                                                                     self.techno_infos_dict['efficiency']
-
         copper_needs = self.get_theoretical_copper_needs(self)
         self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
 
