@@ -16,6 +16,8 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+
 
 
 class Geothermal(ElectricityTechno):
@@ -32,6 +34,9 @@ class Geothermal(ElectricityTechno):
         self.compute_primary_power_production()
 
         # FOR ALL_RESOURCES DISCIPLINE
+        self.production[f'{hightemperatureheat.name}({self.product_energy_unit})'] = (self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                     (1 - self.techno_infos_dict['efficiency'])) / \
+                                                                                     self.techno_infos_dict['efficiency']
 
         copper_needs = self.get_theoretical_copper_needs(self)
         self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
