@@ -47,8 +47,8 @@ class CCGasT(ElectricityTechno):
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
-        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{Methane.name} ({self.product_energy_unit})'] - \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{Methane.name} ({self.product_energy_unit})'] - \
+        #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict['methane_needs'] * \
