@@ -79,6 +79,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'capacity_factor': 0.85,  # World bank
                                  'kwh_methane/kwh': methane_needs,
                                  'efficiency': 1,
+                                 # 'efficiency': 0.55,       #https://www.ipieca.org/resources/energy-efficiency-solutions/combined-cycle-gas-turbines-2022#:~:text=The%20overall%20efficiency%20of%20an,drops%20significantly%20at%20partial%20load.
                                  'techno_evo_eff': 'no',  # yes or no
                                  'construction_delay': construction_delay,
                                  'full_load_hours': 8760,

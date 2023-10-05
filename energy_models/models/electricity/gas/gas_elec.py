@@ -47,18 +47,19 @@ class GasElec(ElectricityTechno):
         self.compute_primary_energy_production()
 
         co2_prod = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-
-        # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{Methane.name} ({self.product_energy_unit})'] - \
-        #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict['kwh_methane/kwh'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
-        self.compute_ghg_emissions(
-            Methane.emission_name, related_to=Methane.name)
+        # Production
+        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
+            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{Methane.name} ({self.product_energy_unit})'] - \
+        #      self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        self.compute_ghg_emissions(Methane.emission_name, related_to=Methane.name)
         self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
 
     def compute_consumption_and_power_production(self):
