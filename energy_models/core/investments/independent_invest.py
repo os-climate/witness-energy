@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
 from climateeconomics.glossarycore import GlossaryCore
 from .base_invest import BaseInvest
 import pandas as pd
@@ -36,8 +37,12 @@ class IndependentInvest(BaseInvest):
     def compute(self, inputs_dict):
         """compute"""
         energy_investment_wo_tax = self.compute_energy_investment_wo_tax(inputs_dict)
+        energy_invest_objective = self.compute_energy_invest_objective(energy_investment_wo_tax)
+        return energy_investment_wo_tax, energy_invest_objective
 
-        return energy_investment_wo_tax
+    def compute_energy_invest_objective(self, energy_investment_wo_tax):
+        energy_invest_objective = energy_investment_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values.sum()
+        return np.array([energy_invest_objective])
 
     def compute_energy_investment_wo_tax(self, inputs_dict: dict):
         """computes investments in the energy sector (without tax)"""
