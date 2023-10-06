@@ -56,7 +56,7 @@ class Nuclear(ElectricityTechno):
         """
         self.compute_primary_energy_production()
 
-        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_loss'] * \
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
               self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
               self.techno_infos_dict['efficiency']
 

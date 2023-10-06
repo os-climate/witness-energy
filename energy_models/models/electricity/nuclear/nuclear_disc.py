@@ -66,7 +66,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'capacity_factor': 0.90,
                                  'techno_evo_eff': 'no',
                                  'efficiency': 0.35,
-                                 'heat_loss': 0.6,
+                                 'heat_recovery_factor': 0.6,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'construction_delay': construction_delay,
