@@ -306,7 +306,7 @@ class TestIndependentInvest(unittest.TestCase):
                                                   f'{self.name}.{techno}.invest_level' for techno in
                                                   all_technos_list] +
                                               [f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
-                                               f'{self.name}.{GlossaryCore.EnergyInvestmentsObjective}'],
+                                               f'{self.name}.{GlossaryCore.EnergyInvestmentsMinimizationObjective}'],
                                       input_data=disc.local_data,
                                       load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                          f'jacobian_independent_invest_disc.pkl'),
