@@ -50,10 +50,6 @@ class CCGasT(ElectricityTechno):
         self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{Methane.name} ({self.product_energy_unit})'] - \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
-        # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
-        #                                                                               self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
-        #                                                                               self.techno_infos_dict['efficiency']
-
         # Consumption
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict['methane_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
