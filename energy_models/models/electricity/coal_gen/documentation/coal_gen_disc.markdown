@@ -5,6 +5,8 @@ A coal-fired power station is a thermal power station that burns coal to generat
 
 -The usage of CCUS (Carbon Capture Use & Storage) by an integrated suite of technologies. These technologies can achieve a 90% capture rate of the carbon dioxyde produced from the plants.
 
+Production of high heat is calculated in TWh. Where, consumption of solid fuel(TWh) is more than production of electricity(TWh).
+
 ![](Coal_fired_power_plant_diagram.png) 
 (Image Credit: Tennessee Valley Authority, taken from [^1])
 

@@ -12,7 +12,7 @@ Unlike the other green energy such as wind and solar, the biogas can be quickly 
 The global warming potential can also be greatly reduced when using biogas as the fuel 
 instead of fossil fuel.[^1]
 
-Production of high heat is calculated in TWh.
+Production of high heat is calculated in TWh. Where, consumption of biogas(TWh) is more than production of electricity(TWh).
 
 ## Combined Heat and Power (CHP)
 

@@ -16,6 +16,7 @@ A wind farm is not producing electricity full time, in order to model yearly pro
 
 **Capacity factor[^3] :** Generally defined as the ratio of actual annual output to output at rated capacity for an entire year.  
 
+Wind offshore energy production, like wind onshore energy production, does not directly produce heat in the form of thermal energy. Instead, it generates electricity from the kinetic energy of moving air (wind). 
 ## Data     
 Most of the data used for this model is extracted from International Energy Agency (IEA)[^4], 
 International Renewable Energy Agency (IRENA)[^5], Global Wind Energy Council (GWEC)[^6] and National Renewable Energy Laboratory (NREL)[^7]. 
