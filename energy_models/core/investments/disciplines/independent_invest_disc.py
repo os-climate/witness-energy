@@ -135,7 +135,7 @@ class IndependentInvestDiscipline(SoSWrapp):
 
     DESC_OUT = {
         GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
-        GlossaryCore.EnergyInvestmentsObjective: {'type': 'array', 'unit': '-',
+        GlossaryCore.EnergyInvestmentsMinimizationObjective: {'type': 'array', 'unit': '-',
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                   'namespace': 'ns_functions'},
     }
@@ -217,7 +217,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             input_dict)
 
         output_dict = {GlossaryCore.EnergyInvestmentsWoTaxValue: energy_investment_wo_tax,
-                       GlossaryCore.EnergyInvestmentsObjective: energy_invest_objective,}
+                       GlossaryCore.EnergyInvestmentsMinimizationObjective: energy_invest_objective, }
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
             if energy == BiomassDry.name:
@@ -247,7 +247,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                 identity * 1e-3)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.EnergyInvestmentsObjective,),
+                (GlossaryCore.EnergyInvestmentsMinimizationObjective,),
                 ('invest_mix', techno),
                 ones * 1e-3)
 
@@ -262,7 +262,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             identity * 1e-3)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EnergyInvestmentsObjective,),
+            (GlossaryCore.EnergyInvestmentsMinimizationObjective,),
             ('forest_investment', 'forest_investment'),
             ones * 1e-3)
 
@@ -275,7 +275,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                     identity * 1e-3)
 
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryCore.EnergyInvestmentsObjective,),
+                    (GlossaryCore.EnergyInvestmentsMinimizationObjective,),
                     (techno, 'investment'),
                     ones * 1e-3)
 
