@@ -16,6 +16,8 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+
 
 
 class SolarThermal(ElectricityTechno):
@@ -59,3 +61,13 @@ class SolarThermal(ElectricityTechno):
         self.techno_land_use[f'{self.name} (Gha)'] = \
             self.production[f'{self.energy_name} ({self.product_energy_unit})'] / \
             density_per_ha
+
+    def compute_consumption_and_production(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        Maybe add efficiency in consumption computation ?
+        """
+        self.compute_primary_energy_production()
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
+             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
+             self.techno_infos_dict['efficiency']

@@ -17,6 +17,8 @@ limitations under the License.
 from energy_models.core.techno_type.base_techno_models.liquid_hydrogen_techno import LiquidHydrogenTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+
 
 import numpy as np
 
@@ -89,3 +91,7 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
 
         self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details['hydrogen_needs'] * \
             self.production[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+
+        self.consumption[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = (1 - self.techno_infos_dict['efficiency']) * \
+            self.production[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']/\
+            self.techno_infos_dict['efficiency']

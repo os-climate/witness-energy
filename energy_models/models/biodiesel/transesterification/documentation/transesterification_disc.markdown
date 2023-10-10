@@ -6,7 +6,8 @@ For obtaining biodiesel, the vegetable oil or animal fat is subjected to a chemi
 Biodiesel can be produced from a great variety of feedstocks. These feedstocks include most common vegetable oils (soybean, cottonseed, palm, peanut, rapeseed /canola, sunfl ower, saffl ower, coconut, etc.) and animal fats (usually tallow) as well as waste oils (used frying oils, etc.). Which feedstock is used depends largely on geography.
 Biodiesel is miscible with petrodiesel in all ratios. This has led to the use of blends of biodiesel with petrodiesel instead of neat biodiesel in many countries. It is important to note that blending with petrodiesel is not biodiesel. Often blends with petrodiesel are denoted by acronyms such as B20 which is a blend of 20% biodiesel with petrodiesel.[^1]
 
-
+Transesterification is a multiple-step reaction, including three reversible steps in series, where triglycerides are transformed into diglycerides. Diglycerides are converted to monoglycerides and then converted to esters (biodiesel) and glycerol (by-product).
+Transesterification is a chemical reaction used in biodiesel production. It is not primarily intended as a heat production process.
 
 ![](biodiesel.jpg)
 (Image Credit: VTT Studio/Shutterstock.com)

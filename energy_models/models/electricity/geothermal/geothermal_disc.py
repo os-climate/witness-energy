@@ -69,8 +69,7 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies
                                  'capacity_factor': 0.85,
                                  'techno_evo_eff': 'no',
-                                 'efficiency': 1,
-                                 # 'efficiency': 0.73, #https://sites.lafayette.edu/egrs352-sp14-geothermal/general-information/efficiency/
+                                 'efficiency': 0.16, # https://www.sciencedirect.com/science/article/abs/pii/S0375650513001120
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'construction_delay': construction_delay, 

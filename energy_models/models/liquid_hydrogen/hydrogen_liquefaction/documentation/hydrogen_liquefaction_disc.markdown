@@ -9,6 +9,8 @@ The data used here are taken from a model based on a four steps process:
 - re-expanded to low pressure
 The part of the hydrogen stream that isn't liquified is sent back to the beginning of the cycle.
 
+hydrogen liquefaction is a cooling process that requires the removal of heat to convert gaseous hydrogen into a cryogenic liquid. It does not produce heat as a primary output; instead, it consumes energy to achieve low temperatures.
+
 ![liquefaction cycle](./Liquefaction_cycle.PNG)
 (Image Credit: [^3])
 

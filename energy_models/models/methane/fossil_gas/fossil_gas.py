@@ -17,6 +17,7 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.techno_type.base_techno_models.methane_techno import MethaneTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 
@@ -76,6 +77,10 @@ class FossilGas(MethaneTechno):
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+
+        self.production[f'{hightemperatureheat.name}] ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
+             self.production[f'{Methane.name} ({self.product_energy_unit})']) / \
+              self.techno_infos_dict['efficiency']
 
         self.compute_ghg_emissions(Methane.emission_name)
 

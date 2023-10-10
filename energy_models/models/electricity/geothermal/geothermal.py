@@ -16,7 +16,7 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-# from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 
 
 
@@ -27,13 +27,7 @@ class Geothermal(ElectricityTechno):
     def compute_other_primary_energy_costs(self):
         return 0
 
-    # def compute_consumption_and_production(self):
-    #     """
-    #     Compute the consumption and the production of the technology for a given investment
-    #     """
-    #     self.production[f'{hightemperatureheat.name}({self.product_energy_unit})'] = (self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * \
-    #                                                                                   (1 - self.techno_infos_dict['efficiency'])) / \
-    #                                                                                  self.techno_infos_dict['efficiency']
+
 
     def compute_consumption_and_power_production(self):
         """
@@ -55,3 +49,12 @@ class Geothermal(ElectricityTechno):
         copper_need = self.techno_infos_dict['copper_needs'] / 1000 / 1000 / 1000
 
         return copper_need
+
+    def compute_consumption_and_production(self):
+        """
+        Compute the consumption and the production of the technology for a given investment
+        """
+        self.compute_primary_energy_production()
+        self.production[f'{mediumtemperatureheat.name}({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
+             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
+             self.techno_infos_dict['efficiency']
