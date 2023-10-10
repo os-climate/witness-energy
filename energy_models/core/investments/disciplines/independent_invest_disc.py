@@ -135,6 +135,9 @@ class IndependentInvestDiscipline(SoSWrapp):
 
     DESC_OUT = {
         GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
+        GlossaryCore.EnergyInvestmentsMinimizationObjective: {'type': 'array', 'unit': '-',
+                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                  'namespace': 'ns_functions'},
     }
     _maturity = 'Research'
 
@@ -210,10 +213,11 @@ class IndependentInvestDiscipline(SoSWrapp):
 
         input_dict = self.get_sosdisc_inputs()
 
-        energy_investment_wo_tax = self.independent_invest_model.compute(
+        energy_investment_wo_tax, energy_invest_objective = self.independent_invest_model.compute(
             input_dict)
 
-        output_dict = {GlossaryCore.EnergyInvestmentsWoTaxValue: energy_investment_wo_tax}
+        output_dict = {GlossaryCore.EnergyInvestmentsWoTaxValue: energy_investment_wo_tax,
+                       GlossaryCore.EnergyInvestmentsMinimizationObjective: energy_invest_objective, }
 
         for energy in input_dict['energy_list'] + input_dict['ccs_list']:
             if energy == BiomassDry.name:
@@ -234,19 +238,33 @@ class IndependentInvestDiscipline(SoSWrapp):
 
         delta_years = len(years)
         identity = np.identity(delta_years)
+        ones = np.ones(delta_years)
 
         for techno in self.independent_invest_model.distribution_list:
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.EnergyInvestmentsWoTaxValue),
                 ('invest_mix', techno),
                 identity * 1e-3)
+
             self.set_partial_derivative_for_other_types(
-                (f'{techno}.invest_level', 'invest'), ('invest_mix', techno), np.identity(len(years)))
+                (GlossaryCore.EnergyInvestmentsMinimizationObjective,),
+                ('invest_mix', techno),
+                ones * 1e-3)
+
+            self.set_partial_derivative_for_other_types(
+                (f'{techno}.invest_level', 'invest'),
+                ('invest_mix', techno),
+                np.identity(len(years)))
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.EnergyInvestmentsWoTaxValue),
             ('forest_investment', 'forest_investment'),
             identity * 1e-3)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EnergyInvestmentsMinimizationObjective,),
+            ('forest_investment', 'forest_investment'),
+            ones * 1e-3)
 
         energy_list = inputs_dict['energy_list']
         if BiomassDry.name in energy_list:
@@ -255,6 +273,11 @@ class IndependentInvestDiscipline(SoSWrapp):
                     (GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.EnergyInvestmentsWoTaxValue),
                     (techno, 'investment'),
                     identity * 1e-3)
+
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryCore.EnergyInvestmentsMinimizationObjective,),
+                    (techno, 'investment'),
+                    ones * 1e-3)
 
     def get_chart_filter_list(self):
 

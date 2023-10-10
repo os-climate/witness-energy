@@ -76,7 +76,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
         for i, ccs_name in enumerate(self.ccs_list):
             self.energy_production[f'{ccs_name}'] = \
-            streams_outputs_dict[f'{ccs_name}'][GlossaryCore.EnergyProductionValue]['value']
+                streams_outputs_dict[f'{ccs_name}'][GlossaryCore.EnergyProductionValue]['value']
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
         self.energy_production_detailed = streams_outputs_dict['energy_production_detailed']

@@ -16,6 +16,8 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.fossil_techno_disc import FossilTechnoDiscipline
 from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno import FossilSimpleTechno
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
@@ -89,6 +91,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 1483.79, 1489.95]})
 
+
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [5.12627214, 7.68940822, 3.43007916, 8.5563513, 8.5563513,
                                                          4.25932906, 3.43007916, 2.56313607, 5.99321523, 4.25932906,
@@ -98,6 +101,9 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                              })
     FLUE_GAS_RATIO = np.array([0.12])
 
+    invest_before_year_start_var = GlossaryCore.InvestmentBeforeYearStartDf
+    invest_before_year_start_var['default'] = invest_before_year_start
+
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
@@ -105,10 +111,8 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryCore.InvestmentBeforeYearStartValue: invest_before_year_start_var,
+               }
 
     # -- add specific techno outputs to this
     DESC_IN.update(FossilTechnoDiscipline.DESC_IN)
