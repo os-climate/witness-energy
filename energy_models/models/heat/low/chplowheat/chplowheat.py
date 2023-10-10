@@ -24,6 +24,7 @@ class CHPLowHeat(lowheattechno):
         # to do so I need to know how much methane is used to produce 1kwh of heat (i need this information in kwh) : methane_needs is in kwh of methane/kwh of heat
         # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
         # and then we divide by efficiency
+        print(self.cost_details.to_string())
         return self.cost_details[f'{Methane.name}']
 
     def grad_price_vs_energy_price(self):

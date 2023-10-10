@@ -47,6 +47,11 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                  'elec_demand': 0.23,
                                  'elec_demand_unit': 'kWh/kg',
                                  'Opex_percentage': 0.05,
+                                 'high_heat_production':  (206 / (28.01 + 3*2.016)) * 1000 * 2.77778e-13,
+                                 # CH4 + H2O → CO + 3H2  ΔH°= 206 kJ/mol
+                                 # Total power demand of 0.1 kWh/kg H2
+                                 # https://www.sciencedirect.com/science/article/pii/S2666790822001574
+                                 'high_heat_production_unit': 'TWh/kg',
                                  # Diglio, G., Hanak, D.P., Bareschino, P., Mancusi, E., Pepe, F., Montagnaro, F. and Manovic, V., 2017.
                                  # Techno-economic analysis of sorption-enhanced steam methane reforming in a fixed bed reactor network integrated with fuel cell.
                                  # Journal of Power Sources, 364, pp.41-51.
@@ -61,7 +66,6 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                  'full_load_hours': 8000.0,
                                  'WACC': 0.0878,
                                  'techno_evo_eff': 'no',
-                                 'efficiency': 0.8,
                                  'construction_delay': construction_delay  # in kWh/kg
                                  }
 

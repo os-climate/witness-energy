@@ -54,6 +54,8 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
                                  'efficiency': 0.83,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
+                                 'low_heat_production': (663.2 * 3600) / 2.393, # https://www.sciencedirect.com/science/article/abs/pii/S0957582021002469
+                                 'low_heat_production_unit': 'TWh/kg',
                                  # biogas demand represent needed biogas to obtain 1 m^3 of methane here 6201 t of biogas for 3.44
                                  #p25 in graphs
                                  'biogas_demand': 6.46 / 3.44,

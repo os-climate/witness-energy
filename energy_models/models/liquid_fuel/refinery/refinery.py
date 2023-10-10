@@ -24,7 +24,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 import pandas as pd
 import numpy as np
 from energy_models.core.stream_type.energy_models.methane import Methane
-
+from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 
 class Refinery(LiquidFuelTechno):
 
@@ -114,6 +114,9 @@ class Refinery(LiquidFuelTechno):
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
         self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] *  \
+            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
+
+        self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['medium_heat_production'] *  \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
 
     def compute_ch4_emissions(self):

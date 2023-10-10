@@ -54,6 +54,10 @@ Calorific value = 12.47 kWh/kg
 CO2 emission per kg burnt = 2.82 kgCO2 / kg of heating oil burnt
 Density = 740 kg/m^3
 
+Heating the oil to 121°C will require about 30,000 Btu/bbl.[^13]
+1BTU = 0.0002930kWh
+bbl= 136kg
+
 **Liquefied Petroleum Gas (~6%)[^6]**
 
 In short, LPG, is a mix of hydrocarbon gas. It is made up of propane (48%), butane (50%) and pentane (2%). It can be used as fuel, refrigerator gas and also domestic gas.LPG can also be converted into a high quality gasoline.
@@ -107,3 +111,5 @@ Argonne National Laboratory, https://publications.anl.gov/anlpubs/2011/01/69026.
 [^11]: https://capterio.com/insights/why-flare-capture-projects-make-sound-esg-investments
 
 [^12]:IEA Methane Tracker 2021, (https://www.iea.org/articles/methane-tracker-data-explorer), License: CC BY 4.0. 
+
+[^13]: https://www.osti.gov/servlets/purl/7261027, Page No 41

@@ -95,6 +95,8 @@ All technical and economical datas are extracted from [^5]. The paper details th
 ![](fasihi2016.PNG)
 (Image Credit: [^5])
 
+## Heat
+The Fischer-Tropsch reaction is carried out over supported cobalt-based catalysts at 20–30 bar and at temperatures below 240 °C. The FTS is a highly exothermic reaction due to a standard reaction enthalpy of −165kJ/molCO.[^8]
 
 [^1]: [De Klerk , A. (2013) FischerTropsch Process. Kirk Othmer Encyclopedia of Chemical Technology. Weinheim: Wiley-VCH](https://onlinelibrary.wiley.com/doi/abs/10.1002/0471238961.fiscdekl.a01) 
 
@@ -108,3 +110,4 @@ All technical and economical datas are extracted from [^5]. The paper details th
 
 [^6]: https://en.wikipedia.org/wiki/Fischer%E2%80%93Tropsch_process#Commercialization
 [^7]: http://www.synfuelschina.com.cn/en/about/
+[^8]: https://www.sciencedirect.com/science/article/pii/S1385894718309215

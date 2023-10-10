@@ -14,6 +14,9 @@ $$ H_2O + CO_2 -> H2 + CO +  O_2 $$
 
 Economic and technical datas was taken from Becker et Al. [^1]
 
+## Heat
+Heat production/consumption is neglected in coal-gasification process.
+ 
 
 
 [^1]: Becker et Al. (2012) Production of FischereTropsch liquid fuels from high temperature solid oxide co-electrolysis units

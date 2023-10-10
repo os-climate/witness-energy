@@ -37,6 +37,7 @@ from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
 from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
 
 
+
 class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
     # ontology information
@@ -75,6 +76,9 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'maximum_learning_capex_ratio': 0.5,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': 'years',
+                                 'medium_heat_production': (165/28.01)*1000*2.77778e-13,
+                                 # https://www.sciencedirect.com/science/article/pii/S1385894718309215, reaction enthalpy of −165 kJ/molCO
+                                 'medium_heat_production_unit': 'TWh/kg',
                                  # 60000 euro/bpd : 1 barrel = 1553,41kwh of
                                  # liquid_fuel per 24 hours
                                  # Capex initial at year 2020
