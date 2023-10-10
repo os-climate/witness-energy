@@ -60,6 +60,8 @@ def get_figures_table(table, title):
 
     return new_chart
 
+
+
 def get_comparision_data(execution_engine, namespace, year):
 
     '''
@@ -106,6 +108,8 @@ def post_processings(execution_engine, namespace, filters):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
+
+
     instanciated_charts = []
 
     # Overload default value with chart filter

@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.resources_models.potassium_hydroxide import PotassiumHydroxide
@@ -39,12 +39,12 @@ class CalciumPotassium(CCTechno):
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    )
 
-        self.cost_details['potassium_needs'] = self.compute_potassium_need() / self.techno_infos_dict['energy_efficiency']
+        self.cost_details['potassium_needs'] = self.compute_potassium_need() / self.techno_infos_dict[GlossaryCore.EnergyEfficiency]
 
         self.cost_details['potassium'] = list(self.resources_prices[ResourceGlossary.Potassium['name']] * self.cost_details['potassium_needs']
                                               )
 
-        self.cost_details['calcium_needs'] = self.compute_calcium_need() / self.techno_infos_dict['energy_efficiency']
+        self.cost_details['calcium_needs'] = self.compute_calcium_need() / self.techno_infos_dict[GlossaryCore.EnergyEfficiency]
 
         self.cost_details['calcium'] = list(self.resources_prices[ResourceGlossary.Calcium['name']] * self.cost_details['calcium_needs']
                                             )
@@ -94,7 +94,7 @@ class CalciumPotassium(CCTechno):
         '''
         calcium_needs = self.compute_calcium_need()
         potassium_needs = self.compute_potassium_need()
-        efficiency = self.techno_infos_dict['energy_efficiency']
+        efficiency = self.techno_infos_dict[GlossaryCore.EnergyEfficiency]
         return {
             ResourceGlossary.Calcium['name']: np.identity(len(self.years)) * calcium_needs / efficiency,
             ResourceGlossary.Potassium['name']: np.identity(len(self.years)) * potassium_needs / efficiency,

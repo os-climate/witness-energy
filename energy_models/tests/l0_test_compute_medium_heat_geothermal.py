@@ -19,8 +19,8 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.medium.geothermal.geothermal_disc import GeothermalHeatDiscipline
-from energy_models.models.heat.medium.geothermal.geothermal import GeothermalHeat
+from energy_models.models.heat.medium.geothermal_medium_heat.geothermal_medium_heat_disc import GeothermalMediumHeatDiscipline
+from energy_models.models.heat.medium.geothermal_medium_heat.geothermal_medium_heat import GeothermalHeat
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
@@ -92,17 +92,17 @@ class GeothermalHeatLowTemperatureTestCase(unittest.TestCase):
 
         inputs_dict = {'year_start': 2020,
                        'year_end': 2050,
-                       'techno_infos_dict': GeothermalHeatDiscipline.techno_infos_dict_default,
+                       'techno_infos_dict': GeothermalMediumHeatDiscipline.techno_infos_dict_default,
                        'energy_prices': self.energy_prices,
                        'resources_price': self.resources_price,
                        'invest_level': self.invest_level,
-                       'invest_before_ystart': GeothermalHeatDiscipline.invest_before_year_start,
+                       'invest_before_ystart': GeothermalMediumHeatDiscipline.invest_before_year_start,
                        'CO2_taxes': self.co2_taxes,
                        'margin':  self.margin,
                        'transport_cost': self.transport,
                        'transport_margin': self.margin,
-                       'initial_production': GeothermalHeatDiscipline.initial_production,
-                       'initial_age_distrib': GeothermalHeatDiscipline.initial_age_distribution,
+                       'initial_production': GeothermalMediumHeatDiscipline.initial_production,
+                       'initial_age_distrib': GeothermalMediumHeatDiscipline.initial_age_distribution,
                        'energy_CO2_emissions': self.energy_carbon_emissions,
                        'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
@@ -130,12 +130,12 @@ class GeothermalHeatLowTemperatureTestCase(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
-                   'ns_heat': f'{self.name}',
+                   'ns_heat_medium': f'{self.name}',
                    'ns_resource': self.name
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.medium.geothermal.geothermal_disc.GeothermalHeatDiscipline'
+        mod_path = 'energy_models.models.heat.medium.geothermal_medium_heat.geothermal_medium_heat_disc.GeothermalMediumHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

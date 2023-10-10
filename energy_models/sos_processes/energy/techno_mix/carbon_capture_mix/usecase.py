@@ -22,7 +22,7 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
-
+from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
                              'flue_gas_capture.CalciumLooping','flue_gas_capture.ChilledAmmoniaProcess',
@@ -98,12 +98,11 @@ class Study(EnergyMixStudyManager):
                 10 * (1 + 0.0) ** i for i in l_ctrl]
 
         if 'direct_air_capture.DirectAirCaptureTechno' in self.technologies_list:
-            invest_carbon_capture_mix_dict['direct_air_capture.DirectAirCaptureTechno'] = np.array(
-                [0.5, 0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]) # 09/12 16 pts coarse
+            invest_carbon_capture_mix_dict['direct_air_capture.DirectAirCaptureTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE)
 
         if 'flue_gas_capture.FlueGasTechno' in self.technologies_list:
             invest_carbon_capture_mix_dict['flue_gas_capture.FlueGasTechno'] = [
-                10 * (1 - 0.04) ** i for i in np.arange(0, 16)] # 09/12 16 pts coarse
+                10 * (1 - 0.04) ** i for i in np.arange(0, GlossaryEnergy.NB_POLES_COARSE)]
 
         if self.bspline:
             invest_carbon_capture_mix_dict['years'] = self.years

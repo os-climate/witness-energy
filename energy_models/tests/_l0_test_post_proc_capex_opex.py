@@ -15,7 +15,7 @@ limitations under the License.
 '''
 import unittest
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness_wo_damage_gdp_input import Study as Study
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as Study
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
@@ -53,7 +53,11 @@ class PostProcessEnergy(unittest.TestCase):
         """
         All energy list with study name for post processing
         """
+<<<<<<< HEAD
         energylist = ['methane']
+=======
+        energylist = ['heat.hightemperatureheat']
+>>>>>>> 49ec17115dbe326978261a7ed95ce43bbac50d24
         for energy in energylist:
             self.namespace_list.append(f'{self.study_name}.EnergyMix.{energy}')
 

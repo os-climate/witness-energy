@@ -18,9 +18,10 @@ from energy_models.core.stream_type.energy_type import EnergyType
 
 
 class lowtemperatureheat(EnergyType):
-    name = 'Low heat temperature'
+    name = 'heat' + '.' + 'lowtemperatureheat'
     short_name = 'low heat'
-    default_techno_list = ['HeatPump']
+    default_techno_list = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
+                           'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
     data_energy_dict = {'maturity': 5,
                         'Highest_Temperature': 100,
                         'Temperature_unit': 'c',
@@ -28,10 +29,10 @@ class lowtemperatureheat(EnergyType):
 
 
 class mediumtemperatureheat(EnergyType):
-
-    name = 'Medium heat temperature'
+    name = 'heat' + '.' + 'mediumtemperatureheat'
     short_name = 'medium heat'
-    default_techno_list = ['HeatPump']
+    default_techno_list = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
+                           'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
     data_energy_dict = {'maturity': 5,
                         'Highest_Temperature': 400,
                         'Lowest_Temperature': 100,
@@ -40,10 +41,10 @@ class mediumtemperatureheat(EnergyType):
 
 
 class hightemperatureheat(EnergyType):
-
-    name = 'High heat temperature'
+    name = 'heat' + '.' + 'hightemperatureheat'
     short_name = 'high heat'
-    default_techno_list = ['HeatPump']
+    default_techno_list = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
+                           'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
     data_energy_dict = {'maturity': 5,
                         'density': 100,
                         'Lowest_Temperature': 400,

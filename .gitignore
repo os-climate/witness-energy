@@ -13,4 +13,3 @@ energy_models.egg-info/
 /CH_energy_price.png
 /Makefile
 pytest.ini
-__init__.py

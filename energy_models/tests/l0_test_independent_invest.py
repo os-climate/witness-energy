@@ -18,10 +18,10 @@ import unittest
 import numpy as np
 import pandas as pd
 from os.path import join, dirname
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.investments.independent_invest import IndependentInvest
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum
 
 
 class TestIndependentInvest(unittest.TestCase):
@@ -45,34 +45,26 @@ class TestIndependentInvest(unittest.TestCase):
             'carbon_capture', 'carbon_storage']
         self.years = np.arange(self.y_s, self.y_e + 1)
         year_range = self.y_e - self.y_s + 1
-        dict2 = {}
-        dict2['years'] = self.years
-        dict2['electricity.SolarPv'] = np.ones(len(self.years)) * 10.0
-        dict2['electricity.WindOnshore'] = np.ones(len(self.years)) * 20.0
-        dict2['electricity.CoalGen'] = np.ones(len(self.years)) * 30.0
-        dict2['methane.FossilGas'] = np.ones(len(self.years)) * 40.0
-        dict2['methane.UpgradingBiogas'] = np.ones(len(self.years)) * 50.0
-        dict2['hydrogen.gaseous_hydrogen.WaterGasShift'] = np.ones(
+        energy_mix_invest_dic = {}
+        energy_mix_invest_dic['years'] = self.years
+        energy_mix_invest_dic['electricity.SolarPv'] = np.ones(len(self.years)) * 10.0
+        energy_mix_invest_dic['electricity.WindOnshore'] = np.ones(len(self.years)) * 20.0
+        energy_mix_invest_dic['electricity.CoalGen'] = np.ones(len(self.years)) * 30.0
+        energy_mix_invest_dic['methane.FossilGas'] = np.ones(len(self.years)) * 40.0
+        energy_mix_invest_dic['methane.UpgradingBiogas'] = np.ones(len(self.years)) * 50.0
+        energy_mix_invest_dic['hydrogen.gaseous_hydrogen.WaterGasShift'] = np.ones(
             len(self.years)) * 60.0
-        dict2['hydrogen.gaseous_hydrogen.Electrolysis.AWE'] = np.ones(
+        energy_mix_invest_dic['hydrogen.gaseous_hydrogen.Electrolysis.AWE'] = np.ones(
             len(self.years)) * 70.0
-        dict2['carbon_capture.direct_air_capture.AmineScrubbing'] = np.ones(
+        energy_mix_invest_dic['carbon_capture.direct_air_capture.AmineScrubbing'] = np.ones(
             len(self.years)) * 80.0
-        dict2['carbon_capture.flue_gas_capture.CalciumLooping'] = np.ones(
+        energy_mix_invest_dic['carbon_capture.flue_gas_capture.CalciumLooping'] = np.ones(
             len(self.years)) * 90.0
-        dict2['carbon_storage.DeepSalineFormation'] = np.ones(
+        energy_mix_invest_dic['carbon_storage.DeepSalineFormation'] = np.ones(
             len(self.years)) * 100.0
-        dict2['carbon_storage.GeologicMineralization'] = np.ones(
+        energy_mix_invest_dic['carbon_storage.GeologicMineralization'] = np.ones(
             len(self.years)) * 110.0
-        self.energy_mix = pd.DataFrame(dict2)
-
-        invest_ref = 5.0  # 100G$ means 1 milliard of dollars
-        invest = np.zeros(len(self.years))
-        invest[0] = invest_ref
-        for i in range(1, len(self.years)):
-            invest[i] = 1.02 * invest[i - 1]
-        self.energy_investment = pd.DataFrame(
-            {'years': self.years, 'energy_investment': invest})
+        self.energy_mix = pd.DataFrame(energy_mix_invest_dic)
 
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
@@ -95,8 +87,6 @@ class TestIndependentInvest(unittest.TestCase):
 
     def test_01_independent_invest_model(self):
         scaling_factor_energy_investment = 100
-        invest_constraint_ref = 10.0
-        invest_objective_ref = 0.05
         inputs_dict = {'year_start': self.y_s,
                        'year_end': self.y_e,
                        'energy_list': self.energy_list,
@@ -108,32 +98,10 @@ class TestIndependentInvest(unittest.TestCase):
                                                             'flue_gas_capture.CalciumLooping'],
                        'carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        'invest_mix': self.energy_mix,
-                       'energy_investment': self.energy_investment,
                        'forest_investment': self.forest_invest_df,
-                       'scaling_factor_energy_investment': scaling_factor_energy_investment,
-                       'invest_constraint_ref': invest_constraint_ref,
-                       'invest_objective_ref': invest_objective_ref,
-                       'invest_sum_ref': 2.,
-                       'invest_limit_ref': 300.}
+                       'scaling_factor_energy_investment': scaling_factor_energy_investment,}
         one_invest_model = IndependentInvest()
-        invest_constraint, invest_objective, invest_objective_sum, invest_objective_cons, invest_objective_cons_dc, delta_sum_eq_cons, ineq_cons = one_invest_model.compute_invest_constraint_and_objective(
-            inputs_dict)
-
-        delta = (self.energy_investment['energy_investment'].values * scaling_factor_energy_investment -
-                 self.energy_mix[one_invest_model.distribution_list].sum(
-                     axis=1).values - self.forest_invest_df['forest_investment'].values) / (
-                            self.energy_investment['energy_investment'].values * scaling_factor_energy_investment)
-        abs_delta = np.sqrt(compute_func_with_exp_min(delta ** 2, 1e-15))
-        smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
-
-        invest_constraint_th = delta / invest_constraint_ref
-        invest_objective_th = smooth_delta / invest_objective_ref
-
-        self.assertListEqual(np.round(invest_constraint_th, 8).tolist(
-        ), np.round(invest_constraint['invest_constraint'].values, 8).tolist())
-
-        self.assertListEqual(np.round(invest_objective_th, 8).tolist(
-        ), np.round(invest_objective, 8).tolist())
+        energy_investment_wo_tax = one_invest_model.compute(inputs_dict)
 
     def test_02_independent_invest_disc(self):
 
@@ -174,7 +142,6 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation',
                                                                               'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
-                       f'{self.name}.energy_investment': self.energy_investment,
                        f'{self.name}.{self.model_name}.forest_investment': self.forest_invest_df,
                        }
 
@@ -200,8 +167,9 @@ class TestIndependentInvest(unittest.TestCase):
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
 
-    #         for graph in graph_list:
-    #             graph.to_plotly().show()
+        for graph in graph_list:
+            pass
+            #graph.to_plotly().show()
 
     def test_03_independent_invest_with_forest_disc(self):
 
@@ -244,7 +212,6 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation',
                                                                               'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
-                       f'{self.name}.energy_investment': self.energy_investment,
                        f'{self.name}.forest_investment': self.forest_invest_df,
                        f'{self.name}.Forest.managed_wood_investment': self.managed_wood_invest_df,
                        f'{self.name}.Forest.deforestation_investment': self.deforestation_invest_df,
@@ -272,8 +239,10 @@ class TestIndependentInvest(unittest.TestCase):
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
 
-    #         for graph in graph_list:
-    #             graph.to_plotly().show()
+        for graph in graph_list:
+            pass
+            #graph.to_plotly().show()
+
 
     def test_04_independent_invest_disc_check_jacobian(self):
 
@@ -317,7 +286,6 @@ class TestIndependentInvest(unittest.TestCase):
                        f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation',
                                                                          'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
-                       f'{self.name}.energy_investment': self.energy_investment,
                        f'{self.name}.forest_investment': self.forest_invest_df,
                        f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,
                        f'{self.name}.deforestation_investment': self.deforestation_invest_df,
@@ -329,22 +297,20 @@ class TestIndependentInvest(unittest.TestCase):
         all_technos_list = [
             f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.technologies_list']]
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.energy_investment',
-                                                                          f'{self.name}.{self.model_name}.invest_mix',
+        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.invest_mix',
                                                                           f'{self.name}.forest_investment',
                                                                           f'{self.name}.managed_wood_investment',
                                                                           f'{self.name}.deforestation_investment',
                                                                           f'{self.name}.crop_investment'],
                                       outputs=[
                                                   f'{self.name}.{techno}.invest_level' for techno in
-                                                  all_technos_list] + [f'{self.name}.invest_objective',
-                                                                       f'{self.name}.invest_objective_sum',
-                                                                       f'{self.name}.invest_sum_cons',
-                                                                       f'{self.name}.invest_sum_cons_dc',
-                                                                       f'{self.name}.invest_sum_eq_cons', f'{self.name}.invest_sum_ineq_cons'],
+                                                  all_technos_list] +
+                                              [f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
+                                               f'{self.name}.{GlossaryCore.EnergyInvestmentsMinimizationObjective}'],
                                       input_data=disc.local_data,
                                       load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                         f'jacobian_independent_invest_disc.pkl'))
+                                                         f'jacobian_independent_invest_disc.pkl'),
+                                      dump_jac_path=None)
         self.assertTrue(
             succeed, msg=f"Wrong gradient")
 

@@ -17,6 +17,7 @@ import unittest
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
@@ -36,9 +37,10 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.year_start = 2020
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
+        print(EnergyMix.energy_list)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage', 'Low heat temperature', \
-            'Medium heat temperature', 'High heat temperature', 'biomass_dry']]
+            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage', 'heat.lowtemperatureheat', \
+            'heat.mediumtemperatureheat', 'heat.hightemperatureheat', 'biomass_dry']]
         self.ccs_list = ['carbon_capture', 'carbon_storage']
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
@@ -49,11 +51,11 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
+            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue]['value']
             self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
 
         for i, energy in enumerate(self.ccs_list):
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
+            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue]['value']
 
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0

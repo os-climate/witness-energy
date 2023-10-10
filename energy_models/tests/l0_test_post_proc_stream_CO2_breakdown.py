@@ -15,7 +15,7 @@ limitations under the License.
 '''
 import unittest
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness_wo_damage_gdp_input import Study as Study
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as Study
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
@@ -71,7 +71,6 @@ class PostProcessEnergy(unittest.TestCase):
             filters = ppf.get_post_processing_filters_by_namespace(self.ee, itm)
             graph_list = ppf.get_post_processing_by_namespace(self.ee, itm, filters,
                                                               as_json=False)
-
 
             # for graph in graph_list:
             #     if 'InstanciatedTable' in str(graph.__class__):  # Plotting only  capex, opex, CO2 tax and prices Tables

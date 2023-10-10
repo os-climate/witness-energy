@@ -4,13 +4,13 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from energy_models.models.heat.medium.electric_boiler.electric_boiler_disc import ElectricBoilerMediumHeatDiscipline
+from energy_models.models.heat.medium.electric_boiler_medium_heat.electric_boiler_medium_heat_disc import ElectricBoilerMediumHeatDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.models.heat.medium.electric_boiler.electric_boiler import ElectricBoilerMediumHeat
+from energy_models.models.heat.medium.electric_boiler_medium_heat.electric_boiler_medium_heat import ElectricBoilerMediumHeat
 
 
 class ElectricBoilerTestCase(unittest.TestCase):
@@ -113,11 +113,11 @@ class ElectricBoilerTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_resource': self.name,
-                   'ns_heat': f'{self.name}'
+                   'ns_heat_medium': f'{self.name}'
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.heat.medium.electric_boiler.electric_boiler_disc.ElectricBoilerMediumHeatDiscipline'
+        mod_path = 'energy_models.models.heat.medium.electric_boiler_medium_heat.electric_boiler_medium_heat_disc.ElectricBoilerMediumHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

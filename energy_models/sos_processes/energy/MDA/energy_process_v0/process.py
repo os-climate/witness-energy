@@ -19,6 +19,7 @@ from energy_models.core.ccus.ccus import CCUS
 
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.core.stream_type.energy_disciplines.fuel_disc import FuelDiscipline
+from energy_models.core.stream_type.energy_disciplines.heat_disc import HeatDiscipline
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -48,7 +49,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         carbon_storage = PureCarbonSS.energy_name
         builder_list = []
         # use energy list to import the builders
-
         for energy_name in self.energy_list:
             dot_list = energy_name.split('.')
             short_name = dot_list[-1]
@@ -97,7 +97,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             ns_dict = {'ns_public': f'{ns_study}',
                        'ns_energy_study': f'{ns_study}',
                        'ns_emissions': f'{ns_study}',
-                       'ns_ccs': f'{ns_study}.{CCS_NAME}',
+                       'ns_ccs': f'{ns_study}.{CCS_NAME}'
                        }
             mods_dict = {
                 energy_mix: 'energy_models.core.investments.disciplines.energy_invest_disc.InvestEnergyDiscipline',
@@ -179,12 +179,16 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             f'ns_energy_mix',
             post_proc_mod)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 49ec17115dbe326978261a7ed95ce43bbac50d24
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_technology_mix'
         # if energy_mix == 'EnergyMix':
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             f'ns_energy_mix',
             post_proc_mod)
+<<<<<<< HEAD
 
 
         # post_proc_mod = 'energy_models.sos_processes.post_processing.techno_price'
@@ -192,6 +196,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # self.ee.post_processing_manager.add_post_processing_module_to_namespace(
         #     f'ns_public',
         #     post_proc_mod)
+=======
+>>>>>>> 49ec17115dbe326978261a7ed95ce43bbac50d24
 
 
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown'
@@ -220,6 +226,21 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             if energy == 'fuel.ethanol':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_ethanol',
+                    post_proc_mod)
+
+            if energy == 'heat.hightemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_high',
+                    post_proc_mod)
+
+            if energy == 'heat.lowtemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_low',
+                    post_proc_mod)
+
+            if energy == 'heat.mediumtemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_medium',
                     post_proc_mod)
 
 
@@ -254,6 +275,18 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_ethanol',
                     post_proc_mod)
+            if energy == 'heat.hightemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_high',
+                    post_proc_mod)
+            if energy == 'heat.lowtemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_low',
+                    post_proc_mod)
+            if energy == 'heat.mediumtemperatureheat':
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    f'ns_heat_medium',
+                    post_proc_mod)
 
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 f'ns_{energy}',
@@ -267,6 +300,25 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
             builder_fuel = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
             builder_list.extend(builder_fuel)
+
+        if len(set(HeatDiscipline.heat_list).intersection(set(self.energy_list))) > 0:
+            # heat = 'Heat'
+            # heat_name = hightemperatureheat.name
+            # ns_dict1 = {'ns_heat': f'{ns_study}.{energy_mix}.{heat}.{heat_name}'}
+            ns_dict = {'ns_heat_high': f'{ns_study}.{energy_mix}.heat.hightemperatureheat',
+                       'ns_heat_low': f'{ns_study}.{energy_mix}.heat.lowtemperatureheat',
+                       'ns_heat_medium': f'{ns_study}.{energy_mix}.heat.mediumtemperatureheat'}
+            # energy_builder_list = self.ee.factory.get_builder_from_process(
+            #     'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
+            #     techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline,
+            #     associate_namespace=False
+            # )
+            mods_dict = {
+                f'{energy_mix}.{HeatDiscipline.name}': 'energy_models.core.stream_type.energy_disciplines.heat_disc.HeatDiscipline',
+            }
+
+            builder_heat = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
+            builder_list.extend(builder_heat)
 
         # For now only electricity demand constraint is available in the energy
         # demand discipline
