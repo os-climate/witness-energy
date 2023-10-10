@@ -38,7 +38,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.name = 'Test'
+        self.name = 'TestAntoine'
         self.ee = ExecutionEngine(self.name)
         self.model_name = 'EnergyMix'
 
@@ -117,8 +117,3 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                             local_data=self.disc.local_data,
                             inputs=inputs_names, outputs=energy_mix_output)
 
-
-if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    cls = EnergyMixCoarseJacobianTestCase()
-    cls.setUp()

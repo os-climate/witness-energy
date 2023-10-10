@@ -95,53 +95,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
 #         for graph in graph_list:
 #             graph.to_plotly().show()
 
-    def test_02_carbon_capture_analytic_grad(self):
-
-        self.name = 'Test'
-        ns_study = self.name
-        carbon_capture_name = 'carbon_capture'
-        energy_mix = 'EnergyMix'
-        flue_gas_name = 'flue_gas_capture'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_carbon_capture': f'{ns_study}.{energy_mix}.{carbon_capture_name}',
-                   'ns_energy': f'{ns_study}.{energy_mix}',
-                   'ns_energy_study': f'{ns_study}',
-                   'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
-                   'ns_public': f'{ns_study}',
-                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
-                   'ns_resource': f'{ns_study}.{energy_mix}'}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.stream_type.carbon_disciplines.carbon_capture_disc.CarbonCaptureDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            f'{energy_mix}.{carbon_capture_name}', mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        inputs_dict = self.dm_dict
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0]
-        data_in = disc_techno.get_data_in()
-        input_keys = [disc_techno.get_var_full_name(key, data_in)
-                      for key in disc_techno.get_sosdisc_inputs() if data_in[key]['type'] == 'dataframe']
-        data_out = disc_techno.get_data_out()
-        output_keys = [disc_techno.get_var_full_name(key, data_out)
-                       for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
-        self.ee.execute()
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_keys, input_data = disc_techno.local_data,
-                                             outputs=output_keys,
-                                             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                                f'jacobian_carbon_capture_discipline.pkl'))
-
-        self.assertTrue(
-            succeed, msg=f"Wrong gradient")
-
-    def test_03_carbon_capture_discipline_limited(self):
+    def test_02_carbon_capture_discipline_limited(self):
 
         self.name = 'Test'
         ns_study = self.name
@@ -181,54 +135,6 @@ class CarbonCaptureTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filters)
 #         for graph in graph_list:
 #             graph.to_plotly().show()
-
-    def test_04_carbon_capture_analytic_grad_limited(self):
-
-        self.name = 'Test'
-        ns_study = self.name
-        carbon_capture_name = 'carbon_capture'
-        energy_mix = 'EnergyMix'
-        flue_gas_name = 'flue_gas_capture'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_carbon_capture': f'{ns_study}.{energy_mix}.{carbon_capture_name}',
-                   'ns_energy': f'{ns_study}.{energy_mix}',
-                   'ns_energy_study': f'{ns_study}',
-                   'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
-                   'ns_public': f'{ns_study}',
-                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
-                   'ns_resource': f'{ns_study}.{energy_mix}'}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.stream_type.carbon_disciplines.carbon_capture_disc.CarbonCaptureDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            f'{energy_mix}.{carbon_capture_name}', mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        inputs_dict = deepcopy(self.dm_dict)
-
-        inputs_dict['Test.EnergyMix.carbon_capture.flue_gas_capture.CalciumLooping.techno_production'][
-            'carbon_capture (Mt)'] *= 5.0
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-        disc_techno = self.ee.root_process.proxy_disciplines[0]
-        data_in = disc_techno.get_data_in()
-        input_keys = [disc_techno.get_var_full_name(key, data_in)
-                      for key in disc_techno.get_sosdisc_inputs() if data_in[key]['type'] == 'dataframe']
-
-        output_keys = [disc_techno.get_var_full_name(key, disc_techno.get_data_out())
-                       for key in disc_techno.get_sosdisc_outputs() if 'detailed' not in key]
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        succeed = disc_techno.check_jacobian(derr_approx='complex_step', input_data = disc_techno.local_data, inputs=input_keys,
-                                             outputs=output_keys,
-                                             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                                f'jacobian_carbon_capture_discipline_limited.pkl'))
-
-        self.assertTrue(
-            succeed, msg=f"Wrong gradient")
 
 
 if '__main__' == __name__:

@@ -76,6 +76,7 @@ class CoalGen(ElectricityTechno):
         self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{SolidFuel.name} ({self.product_energy_unit})'] - \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
+
         self.compute_ghg_emissions(N2O.name, related_to=SolidFuel.name)
 
     def compute_consumption_and_power_production(self):

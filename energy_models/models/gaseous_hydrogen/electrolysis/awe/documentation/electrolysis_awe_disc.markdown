@@ -35,6 +35,9 @@ As alkaline electrolysers are the most mature electrolysis technology, they domi
 
 Alkakine electrolysers is the lowest efficient electrolysis technology we assume that no investments have been made during the past years.
 
+## Heat
+In Electrolysis, heat production assumed the net difference between total electricity consumption and total hydrogen production.
+
 
 [^1]: Flexible combined production of power, heat and transport fuels from renewable energy sources,FLEXCHX, deliverable report of European Union Horizon 2020 research (2018).
 

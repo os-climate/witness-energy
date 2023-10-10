@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -75,11 +76,13 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
             self.CH4_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CH4_per_use']['value']
             self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_production']['value']
+            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue][
+                'value']
             self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
 
         for i, ccs_name in enumerate(self.ccs_list):
-            self.energy_production[f'{ccs_name}'] = streams_outputs_dict[f'{ccs_name}']['energy_production']['value']
+            self.energy_production[f'{ccs_name}'] = \
+                streams_outputs_dict[f'{ccs_name}'][GlossaryCore.EnergyProductionValue]['value']
 
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
@@ -132,7 +135,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.energy_production'] = self.energy_production[
                     energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.energy_consumption'] = \
-                self.energy_consumption[energy]
+                    self.energy_consumption[energy]
             else:
 
                 inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]

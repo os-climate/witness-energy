@@ -55,6 +55,10 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  # cost, 20 years lifetime, 70% syngas yield
                                  'Capex_init': 0.012,
                                  'Capex_init_unit': '$/kWh',
+                                 'medium_heat_production': (131/(28.01 + 2.016)) * 1000 * 2.77778e-13,
+                                 # C+H2O→H2+CO   ΔH =+131kJ/mol  # Co(28.01 g/mol),H2(2.016 g/mol)
+                                 # https://www.sciencedirect.com/topics/earth-and-planetary-sciences/pyrolysis#:~:text=For%20slow%20pyrolysis%2C%20the%20heating,respectively%20%5B15%2C21%5D.
+                                 'medium_heat_production_unit': 'TWh/kg',
                                  'efficiency': 1.0,  # No need of efficiency here
                                  'construction_delay': construction_delay,
                                  'learning_rate': 0.0,
