@@ -37,3 +37,5 @@ The GAINS model also predicts N2O fugitive emissions from oil energy. The emissi
 
 [^7]: Winiwarter, W., 2005. The GAINS model for greenhouse gases-version 1.0: nitrous oxide (N2O).https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
 
+[^8]: https://www.eia.gov/energyexplained/oil-and-petroleum-products/refining-crude-oil-the-refining-process.php
+

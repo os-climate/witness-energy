@@ -44,5 +44,4 @@ Global Trends in hydropower Energy Investment (small plant less than 10 MW) [^9]
 [^7]: [IEA 2022, Hydropower generation in the Sustainable Development Scenario, 2000-2030, IEA, Paris](https://www.iea.org/data-and-statistics/charts/hydropower-generation-in-the-sustainable-development-scenario-2000-2030), License: CC BY 4.0.
 [^8]: [Power generation cost 2019](https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2020/Jun/IRENA_Power_Generation_Costs_2019.pdf)
 [^9]: [Global Trends in renewable Energy Investment](https://www.irena.org/Statistics/View-Data-by-Topic/Finance-and-Investment/Investment-Trends)
-
-
+[^10]: Working principle: https://www.energy.gov/eere/water/how-hydropower-works#:~:text=Hydropower%20utilizes%20turbines%20and%20generators,homes%2C%20businesses%2C%20and%20industries.

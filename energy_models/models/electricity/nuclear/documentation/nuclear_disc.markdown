@@ -46,3 +46,6 @@ IEA Nuclear power generation prediction[^4]
 [^9]: WNA, https://www.world-nuclear.org/information-library/economic-aspects/economics-of-nuclear-power.aspx
 [^10]: World Nuclear Waste Report (2019), https://worldnuclearwastereport.org/
 [^10]: Nuclear waste heat recovery system and efficiency, https://www.sciencedirect.com/science/article/abs/pii/S0306261921001975
+[^11]: Data - uranium used per kg, https://www.euronuclear.org/glossary/fuel-comparison/
+[^12]: Data - efficiency and heat recovery factor, https://www.sciencedirect.com/science/article/abs/pii/S0306261921001975
+[^13]: Working: https://www.eia.gov/energyexplained/nuclear/nuclear-power-plants.php#:~:text=Nuclear%20power%20comes%20from%20nuclear,magnetic%20generators%20to%20produce%20electricity.

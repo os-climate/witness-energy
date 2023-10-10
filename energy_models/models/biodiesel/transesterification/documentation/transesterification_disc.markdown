@@ -83,4 +83,5 @@ Fuel properties (calorific values, density) are coming from [Engineering Toolbox
 Technico-economic information (Capex, Opex) are coming from [Biodiesel production through sulfuric acid catalyzed transesterification of acidic oil: Techno economic feasibility of different process alternatives](https://nmbu.brage.unit.no/nmbu-xmlui/bitstream/handle/11250/2690185/Article69327.pdf?sequence=2)
 
 [^1]: Biodiesel Handbook (2010), AOCS Press
-
+[^2]: https://www.sciencedirect.com/topics/chemical-engineering/transesterification
+[^3]: https://www.sciencedirect.com/topics/engineering/transesterification#:~:text=Transesterification%20is%20the%20conversion%20of,presence%20of%20an%20acid%20catalyst.

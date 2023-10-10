@@ -47,3 +47,7 @@ The GAINS model also predicts N2O fugitive emissions from coal energy. The emiss
 [^6]: IEA 2022, [Coal-Fired report, IEA 2020](https://www.iea.org/reports/coal-fired-power), License: CC BY 4.0.
 
 [^7]: Winiwarter, W., 2005. The GAINS model for greenhouse gases-version 1.0: nitrous oxide (N2O).https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+
+[^8]: https://en.wikipedia.org/wiki/Coal-fired_power_station
+
+[^9]: https://www.tva.com/energy/our-power-system/coal/how-a-coal-plant-works#:~:text=Coal%2Dfired%20plants%20produce%20electricity,to%20start%20the%20process%20over.
