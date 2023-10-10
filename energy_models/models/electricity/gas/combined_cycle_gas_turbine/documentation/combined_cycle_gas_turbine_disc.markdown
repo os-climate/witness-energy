@@ -12,7 +12,9 @@ There are two types of natural gas power plants: **Simple cycle gas plants** and
 ## Combined Cycle Gas Plant
 "Combined cycle plants are more efficient because it makes use of the hot exhaust gases that would otherwise be dispelled from the system. These exhaust gases are used to boil water into steam which can then spin another turbine and generate more electricity. The thermal efficiency of the combined cycle can get up to 60%. Moreover, these plants produce one third of the waste heat of a plant with a 33% efficiency (like a typical nuclear power plant or an older coal power plant). The cost of a combined cycle plants is generally higher since they cost more to build and run."[^1]
  
-## Data     
+## Data    
+Production of high heat is calculated in TWh. Where, consumption of methane(TWh) is more than production of electricity(TWh).
+
 The data used for this model is extracted from World Bank[^2], the International Energy Agency[^3], the Energy Information Administration[^4], Lazard[^5] and Fraunhofer[^6].  
 In its document[^2], the World Bank gather data from several sources to compute the Levelized Cost of Energy and compare the different results. 
 

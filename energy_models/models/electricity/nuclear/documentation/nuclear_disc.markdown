@@ -14,6 +14,8 @@ A nuclear power plant is not producing electricity full time, in order to model 
 Most of the data used for this model is extracted from Internation Atomic Energy Agency (IAEA) [^3]
 World Nuclear Association (WNA) [^5], National Renewable Energy Laboratory (NREL)[^6]. 
 
+Production of high heat in TWh is calculated as waste heat of its electricity production to the efficiency generation.
+
 Water Consumption[^7]
 ![](nuclear_water.png) 
 
@@ -43,3 +45,4 @@ IEA Nuclear power generation prediction[^4]
 [^8]: WNA, https://www.world-nuclear.org/information-library/nuclear-fuel-cycle/conversion-enrichment-and-fabrication/uranium-enrichment.aspx
 [^9]: WNA, https://www.world-nuclear.org/information-library/economic-aspects/economics-of-nuclear-power.aspx
 [^10]: World Nuclear Waste Report (2019), https://worldnuclearwastereport.org/
+[^10]: Nuclear waste heat recovery system and efficiency, https://www.sciencedirect.com/science/article/abs/pii/S0306261921001975

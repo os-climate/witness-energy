@@ -44,16 +44,18 @@ class BiomassFired(ElectricityTechno):
         self.compute_primary_energy_production()
 
         co2_prod = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-
-        # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{BiomassDry.name} ({self.product_energy_unit})'] - \
-        #      self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']   #TWh
 
         # Consumption
         self.consumption[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.techno_infos_dict['biomass_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-        
+
+        # Production
+        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
+            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{BiomassDry.name} ({self.product_energy_unit})'] - \
+            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # TWh
+
     def compute_consumption_and_power_production(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment

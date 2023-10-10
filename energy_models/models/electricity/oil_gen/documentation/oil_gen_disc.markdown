@@ -10,6 +10,7 @@ isolated communities not interconnected to a grid. Liquid fuels may also be used
 especially for peaking or emergency service. Of the three fossil fuel sources, oil has the advantages of easier 
 transportation and handling than solid coal, and easier on-site storage than natural gas.[^1]
 
+Production of high heat is calculated in TWh. Where, consumption of liquid fuel(TWh) is more than production of electricity(TWh).
 
 ## Data
 

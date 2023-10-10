@@ -5,6 +5,7 @@
 Coal extraction is the process to extract coal from natural ressources. After this extraction, coal can be used in different way.
 The main process to extract coal is mining. As every industrial process, coal mining has energy demand and wastes, which lead to the cost of the coal. Moreover, as coal is a fossil ressource, the amount is limited.
 
+No any heat production in coal extraction process.
 
 **Price:**
 

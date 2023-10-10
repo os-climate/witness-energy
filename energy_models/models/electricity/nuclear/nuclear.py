@@ -56,8 +56,13 @@ class Nuclear(ElectricityTechno):
         """
         self.compute_primary_energy_production()
 
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
+              self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
+              self.techno_infos_dict['efficiency']
+
         self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
         '''
         One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel
         => 1 kg of fuel => 8.33 kg of ore

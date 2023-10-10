@@ -7,6 +7,8 @@ Biomass comes from organic feedstocks as wood, plants or wastes.
 - herbaceous biomass comes from crops residues or energy crops (providing biomass for energy purpose and not feeding). Algae can also be used as biomass source.
 - Wastes biomass comes from municipal or industrial wastes.
 
+The heat generated during pelletizing can come from several sources, depending on the type of materials being pelletized and the equipment used. 
+
 It can be converted into heat, electricity, gases or liquid biofuels throught diverse technologies as combustion, gasification, anaerobic fermentation and others.
 Biomass in SosTrades has been divided following its use.
 

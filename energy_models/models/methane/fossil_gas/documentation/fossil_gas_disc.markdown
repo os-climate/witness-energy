@@ -2,6 +2,9 @@
 
 Natural gas is a fossil energy source that formed deep beneath the earth's surface. Natural gas contains many different compounds. The largest component of natural gas is methane, a compound with one carbon atom and four hydrogen atoms (CH4). Natural gas also contains smaller amounts of natural gas liquids (NGL, which are also hydrocarbon gas liquids), and nonhydrocarbon gases, such as carbon dioxide and water vapor. We use natural gas as a fuel and to make materials and chemicals. [^2]
 
+It is most commonly used to produce heat or electricity for buildings or industrial processes.
+
+Where, production of high temp heat is calculated in TWh as production of methane of the remaining efficiency to the actual efficiency.
 ![](Industry_gaz.png)
 (Image Credit EIA: taken from [^2]) 
 
@@ -24,3 +27,4 @@ Economic and technical datas is taken from Environmental performance indicators 
 Technology Conference (CCT2015). 2015, Kraków, Poland: IEA Clean Coal
 Center](https://eprint.ncl.ac.uk/file_store/production/219105/A20E5895-2DAF-4D6F-91DF-79776D756247.pdf)
 [^4]: https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+[^5]https://www.sciencedirect.com/topics/earth-and-planetary-sciences/combustion-temperature

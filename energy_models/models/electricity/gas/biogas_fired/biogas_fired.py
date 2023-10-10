@@ -44,15 +44,17 @@ class BiogasFired(ElectricityTechno):
         self.compute_primary_energy_production()
 
         co2_prod = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-
-        # self.production[f'{hightemperatureheat.name} ({self.mass_unit})'] = co2_prod * \
-        #      self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
         self.consumption[f'{BioGas.name} ({self.product_energy_unit})'] = self.techno_infos_dict['biogas_needs'] * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        # Production
+        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
+             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{BioGas.name} ({self.product_energy_unit})'] - \
+             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
         
     def compute_consumption_and_power_production(self):
         """
