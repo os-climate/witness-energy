@@ -57,37 +57,9 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
     '''
     Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
     '''
-<<<<<<< HEAD
-
-    namespace_list=['post-processing.EnergyMix.hydrogen.liquid_hydrogen',
-        'post-processing.EnergyMix.hydrogen.gaseous_hydrogen','post-processing.EnergyMix.methane',
-        'post-processing.EnergyMix.fuel.liquid_fuel'
-        ,'post-processing.EnergyMix.fuel.hydrotreated_oil_fuel']
-    # 'post-processing.EnergyMix.solid_fuel','post-processing.EnergyMix.electricity',
-    #  'post-processing.EnergyMix.fuel.biodiesel','post-processing.EnergyMix.biogas','post-processing.EnergyMix.syngas'
-    #   'post-processing.EnergyMix.fuel.ethanol','post-processing.EnergyMix.hydrogen.liquid_hydrogen']
-    techno_list_=[]
-    techno_list=[]
-    for namespace in namespace_list:
-        var_f_name = f"{namespace}.technologies_list"
-       # techno_list = execution_engine.dm.get_value(var_f_name)
-        techno_list_.append(execution_engine.dm.get_value(var_f_name))
-    for sublist in techno_list_:
-        techno_list.extend(sublist)
-=======
-    # namespace_list=['post-processing.EnergyMix.methane','post-processing.EnergyMix.biogas']
-    # techno_list_=[]
-    # techno_list=[]
-    # for namespace in namespace_list:
-    #     var_f_name = f"{namespace}.technologies_list"
-    #    # techno_list = execution_engine.dm.get_value(var_f_name)
-    #     techno_list_.append(execution_engine.dm.get_value(var_f_name))
-    # for sublist in techno_list_:
-    #     techno_list.extend(sublist)
 
     var_f_name = f"{namespace}.technologies_list"
     techno_list = execution_engine.dm.get_value(var_f_name)
->>>>>>> 49ec17115dbe326978261a7ed95ce43bbac50d24
 
     techno_price_data = {}
 
@@ -99,7 +71,6 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
         opex_list = price_details['OPEX_Part'].tolist()
         CO2tax_list = price_details['CO2Tax_Part'].tolist()
         energy_costs_List = price_details[techno].tolist()
-
 
         if price_name == 'CAPEX_Part':
             techno_price_data[techno] = capex_list
