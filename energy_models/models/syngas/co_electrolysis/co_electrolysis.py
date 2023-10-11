@@ -173,6 +173,10 @@ class CoElectrolysis(SyngasTechno):
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
+        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = \
+            self.cost_details['elec_needs'] * \
+            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+
         # self.consumption[f'{hightemperatureheat.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
         #      self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
         #      self.cost_details['efficiency']

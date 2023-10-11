@@ -36,6 +36,11 @@ Decommissioning costs are integrated to the Factory Capex and is consequently sp
 IEA Nuclear power generation prediction[^4]
 ![](nuclear_capacity_forecast.PNG) 
 
+## Fuel comparison
+With a complete combustion or fission, approx. 8 kWh of heat can be generated from 1 kg of coal, approx. 12 kWh from 1 kg of mineral oil and around 24,000,000 kWh from 1 kg of uranium-235.[^11]
+
+
+
 [^1]: https://en.wikipedia.org/wiki/Nuclear_power
 [^2]: Capacity factor. NRC.gov, https://www.nrc.gov/reading-rm/basic-ref/glossary/capacity-factor-net.html
 [^3]: IAEA, Operating Experience, https://www.iaea.org/publications/13392/operating-experience-with-nuclear-power-stations-in-member-states
@@ -46,3 +51,4 @@ IEA Nuclear power generation prediction[^4]
 [^9]: WNA, https://www.world-nuclear.org/information-library/economic-aspects/economics-of-nuclear-power.aspx
 [^10]: World Nuclear Waste Report (2019), https://worldnuclearwastereport.org/
 [^10]: Nuclear waste heat recovery system and efficiency, https://www.sciencedirect.com/science/article/abs/pii/S0306261921001975
+[^11]: https://www.euronuclear.org/glossary/fuel-comparison/
