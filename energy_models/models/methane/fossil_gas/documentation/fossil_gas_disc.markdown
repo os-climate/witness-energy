@@ -4,7 +4,7 @@ Natural gas is a fossil energy source that formed deep beneath the earth's surfa
 
 It is most commonly used to produce heat or electricity for buildings or industrial processes.
 
-Where, production of high temp heat is calculated in TWh as production of methane of the remaining efficiency to the actual efficiency.
+Where, production of high temp heat is calculated in TWh. Its production is depends on production of methane in TWh and efficiency.
 ![](Industry_gaz.png)
 (Image Credit EIA: taken from [^2]) 
 

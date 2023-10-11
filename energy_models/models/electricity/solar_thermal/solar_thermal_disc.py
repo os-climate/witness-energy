@@ -62,7 +62,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
                                  'Capex_init': 5000,
                                  'Capex_init_unit': '$/kW',
                                  'techno_evo_eff': 'no',
-                                 'efficiency': 1.0,
+                                 'efficiency': 0.25, # considered average   # https://www.volker-quaschning.de/articles/fundamentals2/index.php#:~:text=The%20efficiency%20of%20a%20solar,losses%20are%20usually%20below%2010%25.
                                  'full_load_hours': 8760,  # max value
                                  # capacity factor actual mean JRC / ATC NREL
                                  # and reverse calculation from IRENA values

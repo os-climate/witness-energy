@@ -57,3 +57,5 @@ by scenario, 2019-2040[^3]
 
 [^7]: Winiwarter, W., 2005. The GAINS model for greenhouse gases-version 1.0: nitrous oxide (N2O).https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
 [^8]: Hoglund-Isaksson, L. and Mechler, R., 2005. The GAINS Model for Greenhouse gases–Version 1.0: Methane (CH4), IIASA Interim Report IR-05-054. International Institute for Applied Systems Analysis, Laxenburg. https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
+
+[^9]: https://www.energy.gov/fecm/how-gas-turbine-power-plants-work

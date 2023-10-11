@@ -34,3 +34,5 @@ IEA Offshore power generation prediction
 [^5]: IRENA (2020), Future of wind 2019, International Renewable Energy Agency, Abu Dhabi. https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2019/Oct/IRENA_Future_of_wind_2019.pdf
 [^6]: Global Wind Energy Council (GWEC), Global wind report 2019, https://gwec.net/global-wind-report-2019/
 [^7]: National Renewable Energy Laboratory USA (NREL), Annual Technology Baseline 2020, https://atb.nrel.gov/electricity/2020/data.php
+[^8]: https://www.sciencedirect.com/topics/engineering/offshore-wind-energy
+[^9]: https://en.wikipedia.org/wiki/Offshore_wind_power

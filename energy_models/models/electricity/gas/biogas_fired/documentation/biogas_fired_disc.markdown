@@ -35,3 +35,7 @@ generation capacity, 2010-2018[^3] and partly from an IRENA Report[^4].
 [^4][IRENA Power Generation Costs, 2019, (p110-119)](https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2020/Jun/IRENA_Power_Generation_Costs_2019.pdf)
 
 [^5][Biogas World, biogas plant development handbook](https://www.biogasworld.com/biogas-plant-development-handbook/)
+
+[^6]https://www.sciencedirect.com/science/article/abs/pii/S0306261911008348
+
+[^7]https://en.wikipedia.org/wiki/Biogas#Biogas_generated_heat/electricity

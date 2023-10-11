@@ -28,3 +28,5 @@ These co-products eventually become distillers grains, as well as corn distiller
 [^1] [Ethanol Fuel on Wikipedia](https://en.wikipedia.org/wiki/Ethanol_fuel)
 
 [^2] [Renewable Fuels Association, How is Ethanol Made ?](https://ethanolrfa.org/ethanol-101/how-is-ethanol-made)
+
+[^3] https://www.eia.gov/energyexplained/biomass/

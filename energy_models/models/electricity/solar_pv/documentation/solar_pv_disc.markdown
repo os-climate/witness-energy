@@ -33,3 +33,4 @@ International Renewable Energy Agency, Abu Dhabi. https://www.irena.org/publicat
 [^5]: Scientific report (2021), https://www.nature.com/articles/s41598-021-82042-5
 [^6]: greenCoast, 2019, Solar Farm Land Requirements: How Much Land Do You Need?, https://greencoast.org/solar-farm-land-requirements/
 [^7]: IEA 2022, Solar PV power generation in the Sustainable Development Scenario, 2000-2030, IEA, Paris https://www.iea.org/data-and-statistics/charts/solar-pv-power-generation-in-the-sustainable-development-scenario-2000-2030, License: CC BY 4.0.
+[^8]: https://www.eia.gov/energyexplained/solar/photovoltaics-and-electricity.php#:~:text=A%20photovoltaic%20(PV)%20cell%2C,convert%20artificial%20light%20into%20electricity
