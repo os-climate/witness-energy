@@ -72,12 +72,10 @@ class Nuclear(ElectricityTechno):
         => 1 kg of fuel => 8.33 kg of ore
         '''
         # FOR ALL_RESOURCES DISCIPLINE
+        
         self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = \
             (self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] / \
              self.techno_infos_dict['efficiency']) / (24000000.00)
-
-        # self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
-        #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * 8.33
 
         water_needs = self.get_theoretical_water_needs()
         self.consumption[f'{Water.name} ({self.mass_unit})'] = water_needs * \
