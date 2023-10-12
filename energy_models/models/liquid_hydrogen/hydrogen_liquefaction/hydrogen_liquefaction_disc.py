@@ -48,7 +48,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'CO2_from_production_unit': 'kg/kg',
                                  'elec_demand': 8,
                                  'elec_demand_unit': 'kWh/kg',
-                                 'efficiency': 0.98,
+                                 'efficiency': 0.33, # https://www.sciencedirect.com/topics/engineering/hydrogen-liquefaction#:~:text=Current%20hydrogen%20liquefaction%20plants%20operate,efficiency%20of%2030%20to%2035%25.
                                  'techno_evo_eff': 'no',
 
                                  'WACC': 0.1,
