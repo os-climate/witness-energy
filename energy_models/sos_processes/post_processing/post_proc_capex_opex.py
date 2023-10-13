@@ -57,15 +57,6 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
     '''
     Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
     '''
-    # namespace_list=['post-processing.EnergyMix.methane','post-processing.EnergyMix.biogas']
-    # techno_list_=[]
-    # techno_list=[]
-    # for namespace in namespace_list:
-    #     var_f_name = f"{namespace}.technologies_list"
-    #    # techno_list = execution_engine.dm.get_value(var_f_name)
-    #     techno_list_.append(execution_engine.dm.get_value(var_f_name))
-    # for sublist in techno_list_:
-    #     techno_list.extend(sublist)
 
     var_f_name = f"{namespace}.technologies_list"
     techno_list = execution_engine.dm.get_value(var_f_name)
@@ -81,7 +72,6 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
         CO2tax_list = price_details['CO2Tax_Part'].tolist()
         energy_costs_List = price_details[techno].tolist()
 
-
         if price_name == 'CAPEX_Part':
             techno_price_data[techno] = capex_list
         elif price_name == 'OPEX_Part':
@@ -92,6 +82,10 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
             techno_price_data[techno] = energy_costs_List
 
 
+    moyennes_capex = [np.mean(capex) for capex in capex_list]
+    moyennes_opex = [np.mean(opex) for opex in opex_list]
+    moyennes_energy_costs = [np.mean(energy_costs) for energy_costs in energy_costs_List]
+    #indices_tries = sorted(range(len(moyennes)), key=lambda k: moyennes[k], reverse=True)
 
     key_list = list(techno_price_data.keys())
     initial_y_values = []
