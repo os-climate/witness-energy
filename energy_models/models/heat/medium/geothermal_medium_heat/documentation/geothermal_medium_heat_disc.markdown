@@ -17,3 +17,17 @@ Most of the data used for this model is extracted from  and International Renewa
 
 [^2]: [Geothermal heating in 2005](https://en.wikipedia.org/wiki/Geothermal_heating)
 
+[^3]: https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+
+[^4]: Capex, https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
+
+[^5]: Opex, https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
+
+[^6]: co2 from production, https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf
+
+[^7]: Output temp, https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
+
+[^8]: Steel needs, https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power  Page:21
+
+[^9]: Initial production, https://www.iea.org/data-and-statistics/charts/direct-use-of-geothermal-energy-world-2012-2024
+

@@ -27,4 +27,6 @@ Economic and technical datas is taken from Environmental performance indicators 
 Technology Conference (CCT2015). 2015, Kraków, Poland: IEA Clean Coal
 Center](https://eprint.ncl.ac.uk/file_store/production/219105/A20E5895-2DAF-4D6F-91DF-79776D756247.pdf)
 [^4]: https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
-[^5]https://www.sciencedirect.com/topics/earth-and-planetary-sciences/combustion-temperature
+[^5]: https://www.sciencedirect.com/topics/earth-and-planetary-sciences/combustion-temperature
+[^6]: Efficiency, https://geospatial.blogs.com/geospatial/2010/01/energy-efficiency-of-fossil-fuel-power-generation.html#:~:text=The%20average%20efficiencies%20of%20power,up%20the%20stack%22%20as%20heat.
+                                 

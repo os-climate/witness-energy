@@ -63,3 +63,4 @@ https://www.ieabioenergy.com/wp-content/uploads/2019/06/Fritsche-et-al-2019-IEA-
 [^5]: https://www.kobelco.co.jp/english/ktr/pdf/ktr_29/058-068.pdf
 
 [^6]: https://bioenergyinternational.com/pellets-remain-a-competitive-renewable-alternative/
+[^7]: Efficiency, https://www.cell.com/heliyon/pdf/S2405-8440(19)35644-0.pdf
