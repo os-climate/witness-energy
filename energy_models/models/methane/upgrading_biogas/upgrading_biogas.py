@@ -85,7 +85,7 @@ class UpgradingBiogas(MethaneTechno):
         biogas_data = BioGas.data_energy_dict
         mol_biogas = 1.0
         mol_CH4 = biogas_data['CH4_per_energy']
-        biogas_needs = mol_biogas * biogas_data['molar_mass'] / \
+        biogas_needs = mol_biogas * biogas_data['molar_mass'] * biogas_data['calorific_value'] / \
             (mol_CH4 * self.data_energy_dict['molar_mass'] *
              self.data_energy_dict['calorific_value'])
         return biogas_needs / self.techno_infos_dict['efficiency']
