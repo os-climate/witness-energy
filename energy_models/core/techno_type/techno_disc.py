@@ -782,15 +782,10 @@ class TechnoDiscipline(SoSWrapp):
 
         techno_detailed_prices = self.get_sosdisc_outputs(
             'techno_detailed_prices')
-        chart_name = f'Detailed prices of {self.techno_name} technology over the years'
-        year_start = min(techno_detailed_prices['years'].values.tolist())
-        year_end = max(techno_detailed_prices['years'].values.tolist())
-        minimum = 0.0
-        maximum = max(
-            techno_detailed_prices[self.techno_name].values.tolist()) * 1.2
+        chart_name = f'Detailed prices of {self.techno_name}'
 
-        new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/MWh]', [year_start, year_end], [minimum, maximum],
-                                             chart_name=chart_name)
+        new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/MWh]',
+                                             chart_name=chart_name, stacked_bar=True)
 
         if 'percentage_resource' in self.get_data_in():
             percentage_resource = self.get_sosdisc_inputs(
@@ -815,7 +810,7 @@ class TechnoDiscipline(SoSWrapp):
         # Factory price
         serie = InstanciatedSeries(
             techno_detailed_prices['years'].values.tolist(),
-            factory_price_mwh.tolist(), 'Factory', 'lines')
+            factory_price_mwh.tolist(), 'Factory', 'bar')
 
         new_chart.series.append(serie)
 
@@ -824,7 +819,7 @@ class TechnoDiscipline(SoSWrapp):
             ec_price_mwh = techno_detailed_prices['energy_costs'].values
             serie = InstanciatedSeries(
                 techno_detailed_prices['years'].values.tolist(),
-                ec_price_mwh.tolist(), 'Energy costs', 'lines')
+                ec_price_mwh.tolist(), 'Energy costs', 'bar')
 
             new_chart.series.append(serie)
 
@@ -832,14 +827,19 @@ class TechnoDiscipline(SoSWrapp):
         # Transport price
         serie = InstanciatedSeries(
             techno_detailed_prices['years'].values.tolist(),
-            transport_price_mwh.tolist(), 'Transport', 'lines')
+            transport_price_mwh.tolist(), 'Transport', 'bar')
 
         new_chart.series.append(serie)
         # CO2 taxes
         co2_price_mwh = techno_detailed_prices['CO2_taxes_factory'].values
         serie = InstanciatedSeries(
             techno_detailed_prices['years'].values.tolist(),
-            co2_price_mwh.tolist(), 'CO2 taxes due to production', 'lines')
+            co2_price_mwh.tolist(), 'CO2 taxes due to production', 'bar')
+        new_chart.series.append(serie)
+
+        serie = InstanciatedSeries(
+            techno_detailed_prices['years'].values.tolist(),
+            techno_detailed_prices['margin'].values.tolist(), 'Margin', 'bar')
         new_chart.series.append(serie)
 
         return new_chart
@@ -849,16 +849,10 @@ class TechnoDiscipline(SoSWrapp):
         techno_detailed_prices = self.get_sosdisc_outputs(
             'techno_detailed_prices')
 
-        chart_name = f'Detailed prices of {self.techno_name} technology over the years'
-        year_start = min(techno_detailed_prices['years'].values.tolist())
-        year_end = max(techno_detailed_prices['years'].values.tolist())
+        chart_name = f'Detailed prices of {self.techno_name}'
         data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
-        minimum = 0
-        maximum = max(
-            techno_detailed_prices[self.techno_name].values.tolist()) * 1.2 * data_fuel_dict['calorific_value']
 
-        new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/t]', [year_start, year_end], [minimum, maximum],
-                                             chart_name=chart_name)
+        new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/t]', stacked_bar=True, chart_name=chart_name)
 
         if 'percentage_resource' in self.get_data_in():
             percentage_resource = self.get_sosdisc_inputs(
@@ -887,7 +881,7 @@ class TechnoDiscipline(SoSWrapp):
             data_fuel_dict['calorific_value']
         serie = InstanciatedSeries(
             techno_detailed_prices['years'].values.tolist(),
-            techno_kg_price.tolist(), 'Factory', 'lines')
+            techno_kg_price.tolist(), 'Factory', 'bar')
 
         new_chart.series.append(serie)
         if 'energy_costs' in techno_detailed_prices:
@@ -896,7 +890,7 @@ class TechnoDiscipline(SoSWrapp):
                 data_fuel_dict['calorific_value']
             serie = InstanciatedSeries(
                 techno_detailed_prices['years'].values.tolist(),
-                techno_kg_price.tolist(), 'Energy costs', 'lines')
+                techno_kg_price.tolist(), 'Energy costs', 'bar')
 
             new_chart.series.append(serie)
         # Transport price
@@ -904,7 +898,7 @@ class TechnoDiscipline(SoSWrapp):
             data_fuel_dict['calorific_value']
         serie = InstanciatedSeries(
             techno_detailed_prices['years'].values.tolist(),
-            techno_kg_price.tolist(), 'Transport', 'lines')
+            techno_kg_price.tolist(), 'Transport', 'bar')
 
         new_chart.series.append(serie)
         # CO2 taxes
@@ -912,7 +906,15 @@ class TechnoDiscipline(SoSWrapp):
             data_fuel_dict['calorific_value']
         serie = InstanciatedSeries(
             techno_detailed_prices['years'].values.tolist(),
-            techno_kg_price.tolist(), 'CO2 taxes due to production', 'lines')
+            techno_kg_price.tolist(), 'CO2 taxes due to production', 'bar')
+        new_chart.series.append(serie)
+
+        # margin
+        techno_kg_price = techno_detailed_prices['margin'].values * \
+                          data_fuel_dict['calorific_value']
+        serie = InstanciatedSeries(
+            techno_detailed_prices['years'].values.tolist(),
+            techno_kg_price.tolist(), 'Margin', 'bar')
         new_chart.series.append(serie)
 
         return new_chart
@@ -923,7 +925,7 @@ class TechnoDiscipline(SoSWrapp):
         scaling_factor_invest_level = self.get_sosdisc_inputs(
             'scaling_factor_invest_level')
 
-        chart_name = f'Input investments over the years'
+        chart_name = f'Investments in {self.techno_name}'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Investments [M$]',
                                              chart_name=chart_name, stacked_bar=True)
@@ -1112,15 +1114,9 @@ class TechnoDiscipline(SoSWrapp):
             'mean_age_production')
 
         if 'years' in age_distrib_production.columns:
-            chart_name = f'{self.techno_name} factories average age over years'
+            chart_name = f'{self.techno_name} factories average age'
 
-            year_start = min(age_distrib_production['years'].values.tolist())
-            year_end = max(age_distrib_production['years'].values.tolist())
-            minimum = 0
-            maximum = max(age_distrib_production['mean age'].values.tolist())
-
-            new_chart = TwoAxesInstanciatedChart('years', 'Mean age', [year_start, year_end],
-                                                 [minimum, maximum + 5],
+            new_chart = TwoAxesInstanciatedChart('years', 'Mean age',
                                                  chart_name=chart_name.capitalize())
 
             serie = InstanciatedSeries(
@@ -1234,7 +1230,7 @@ class TechnoDiscipline(SoSWrapp):
 
         new_chart = None
         if not (land_use_required[f'{self.techno_name} (Gha)'].all() == 0):
-            chart_name = f'Land use required of {self.techno_name} technology over the years'
+            chart_name = f'Land use required of {self.techno_name}'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Land use required [Gha]',
                                                  chart_name=chart_name)
@@ -1251,7 +1247,7 @@ class TechnoDiscipline(SoSWrapp):
             'non_use_capital')
         techno_capital = self.get_sosdisc_outputs(
             'techno_capital')
-        chart_name = f'Non-use capital per year due to unused {self.techno_name} factories vs total capital'
+        chart_name = f'Non-use capital due to unused {self.techno_name} factories vs total capital'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
                                              chart_name=chart_name)

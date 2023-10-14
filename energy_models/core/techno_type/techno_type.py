@@ -432,8 +432,15 @@ class TechnoType:
             self.cost_details['energy_costs']
 
         # Add margin in %
-        self.cost_details[self.name] *= self.margin.loc[self.margin['years']
+        #self.cost_details['margin'] = self.cost_details[self.name] * self.margin.loc[self.margin['years']<= self.cost_details['years'].max()]['margin'].values / 100.0
+        #self.cost_details[self.name] += self.cost_details['margin']
+
+        price_with_margin = self.cost_details[self.name] * self.margin.loc[self.margin['years']
                                                         <= self.cost_details['years'].max()]['margin'].values / 100.0
+        self.cost_details['margin'] = price_with_margin - self.cost_details[self.name]
+        self.cost_details[self.name] = price_with_margin
+
+
 
         # Compute and add CO2 taxes
         self.cost_details['CO2_taxes_factory'] = self.compute_co2_tax()

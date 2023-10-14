@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import os
 from os.path import dirname
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -38,7 +38,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.name = 'Test'
+        self.name = 'TestAntoine'
         self.ee = ExecutionEngine(self.name)
         self.model_name = 'EnergyMix'
 
@@ -68,8 +68,16 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.EnergyMix')[0].mdo_discipline_wrapp.mdo_discipline
         self.energy_list = ['renewable', 'fossil']
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
+    def TearDown(self):
+        '''
+        To execute after tests
+        '''
+        # desactivate dump
+        AbstractJacobianUnittest.DUMP_JACOBIAN = False
     def test_01_energy_mix_discipline_co2_emissions_gt(self):
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
         inputs_names = []
 
         inputs_names.extend([
@@ -104,8 +112,12 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.land_demand_df',
                                      f'{self.name}.{self.model_name}.energy_prices_after_tax'
                                      ])
+        AbstractJacobianUnittest.DUMP_JACOBIAN = False
+        path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls', 'jacobian_coarse_energymix_co2_emissions.pkl')
+        os.remove(path_pickle)
 
     def test_02_energy_mix_co2_tax(self):
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
         inputs_names = [
             f'{self.name}.CO2_taxes']
 
@@ -116,9 +128,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                             discipline=self.disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
                             local_data=self.disc.local_data,
                             inputs=inputs_names, outputs=energy_mix_output)
-
-
-if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    cls = EnergyMixCoarseJacobianTestCase()
-    cls.setUp()
+        AbstractJacobianUnittest.DUMP_JACOBIAN = False
+        path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls',  'jacobian_coarse_energy_mix_co2_tax.pkl')
+        os.remove(path_pickle)
+        

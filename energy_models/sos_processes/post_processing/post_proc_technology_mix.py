@@ -57,6 +57,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     price_name = string
     y_label = string
     '''
+
     filtered_production_technology = 15
     disc = execution_engine.dm.get_disciplines_with_name(namespace)
     disc_input = disc[0].get_sosdisc_inputs()
@@ -70,7 +71,6 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     for energ in energy_list:
         var_f_name = f"{namespace}.{energ}.technologies_list"
         var_energyproduction_name = f"{namespace}.{energ}.energy_production_detailed"
-
         # biomass_dry not having techno list and other than biomass we are extracting energy list
         if 'biomass_dry' not in var_f_name:
             EnergyDict[f"{energ}"] = {}
@@ -248,4 +248,3 @@ def post_processings(execution_engine, namespace, filters):
             instanciated_charts.append(total_price_bar_slider_graph)
 
     return instanciated_charts
-
