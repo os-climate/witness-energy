@@ -70,7 +70,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                  'euro_dollar': 1.08,
                                  'available_power': 400000000,  # 400000 ton/year
                                  'available_power_unit': 'kg/year',
-                                 'efficiency': 0.90,  # https://www.cell.com/heliyon/pdf/S2405-8440(19)35644-0.pdf
+                                 'efficiency': 0.85,  # boiler efficiency
                                  'techno_evo_eff': 'no',  # yes or no
                                  'construction_delay': construction_delay}
     # We do not invest on biomass gasification yet
