@@ -140,7 +140,6 @@ class SMR(SyngasTechno):
         """
 
         self.compute_primary_energy_production()
-
         # Consumption
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['CH4_needs'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
@@ -153,7 +152,7 @@ class SMR(SyngasTechno):
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
-        self.production[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
-            self.techno_infos_dict['high_heat_production'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        # self.production[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['high_heat_production'] * \
+        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 

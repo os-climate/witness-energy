@@ -22,8 +22,8 @@ from energy_models.models.electricity.gas.gas_elec import GasElec
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-
-
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.methane import Methane
 class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
 
     # ontology information
@@ -150,3 +150,21 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
         
         return instanciated_chart
 
+    def compute_sos_jacobian(self):
+        ElectricityTechnoDiscipline.compute_sos_jacobian(self)
+
+        # the generic gradient for production column is not working because of
+        # abandoned mines not proportional to production
+
+        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+        applied_ratio = self.get_sosdisc_outputs(
+            'applied_ratio')['applied_ratio'].values
+
+        dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+        consumption_gradient = self.techno_consumption_derivative[f'{Methane.name} ({self.techno_model.product_energy_unit})']
+        #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
+        self.set_partial_derivative_for_other_types(
+            ('techno_production',
+             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
+            (consumption_gradient- dprod_name_dinvest))

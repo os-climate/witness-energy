@@ -127,6 +127,6 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
             self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
         # production
-        self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-            self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] \
-            - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] \
+        #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH

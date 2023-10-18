@@ -78,9 +78,9 @@ class FossilGas(MethaneTechno):
             self.data_energy_dict['calorific_value'] * \
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
-        self.production[f'{hightemperatureheat.name}] ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
-             self.production[f'{Methane.name} ({self.product_energy_unit})']) / \
-              self.techno_infos_dict['efficiency']
+        # self.production[f'{hightemperatureheat.name}] ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
+        #      self.production[f'{Methane.name} ({self.product_energy_unit})']) / \
+        #       self.techno_infos_dict['efficiency']
 
         self.compute_ghg_emissions(Methane.emission_name)
 

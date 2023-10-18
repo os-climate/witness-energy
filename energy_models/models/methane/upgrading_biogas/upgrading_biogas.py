@@ -80,9 +80,9 @@ class UpgradingBiogas(MethaneTechno):
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
         # production
-        self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-            self.techno_infos_dict['low_heat_production'] * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['low_heat_production'] * \
+        #     self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 
     def get_biogas_needs(self):
         '''

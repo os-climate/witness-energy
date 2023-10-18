@@ -653,9 +653,9 @@ class WGS(GaseousHydrogenTechno):
             self.cost_details['efficiency']  # in kg
 
         # production
-        self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-            self.techno_infos_dict['low_heat_production'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['low_heat_production'] * \
+        #     self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 
 
 

@@ -70,9 +70,9 @@ class Pyrolysis(SyngasTechno):
         self.consumption[f'wood ({self.mass_unit})'] = self.cost_details['wood_needs'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
-        self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = \
-            self.techno_infos_dict['medium_heat_production'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+        # self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['medium_heat_production'] * \
+        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 
 
     def compute_CO2_emissions_from_input_resources(self):

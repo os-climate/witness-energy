@@ -56,9 +56,13 @@ class Nuclear(ElectricityTechno):
         """
         self.compute_primary_energy_production()
 
-        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
-              self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
-              self.techno_infos_dict['efficiency']
+        # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
+        #       self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
+        #       self.techno_infos_dict['efficiency']
+
+
+
+
 
         # self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
         #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
@@ -80,7 +84,10 @@ class Nuclear(ElectricityTechno):
         water_needs = self.get_theoretical_water_needs()
         self.consumption[f'{Water.name} ({self.mass_unit})'] = water_needs * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
-        
+
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
+                                                                                      self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
+
 
     def compute_consumption_and_power_production(self):
         """

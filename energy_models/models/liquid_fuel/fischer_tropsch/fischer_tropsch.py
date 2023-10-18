@@ -513,9 +513,9 @@ class FischerTropsch(LiquidFuelTechno):
         self.production[f'{Water.name} ({self.mass_unit})'] = water_prod * \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']
 
-        self.production[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = \
-            self.techno_infos_dict['medium_heat_production'] * \
-            self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] * 1000000000
+        # self.production[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['medium_heat_production'] * \
+        #     self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] * 1000000000
 
         self.consumption = self.consumption.fillna(0.0)
         self.production = self.production.fillna(0.0)

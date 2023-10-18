@@ -19,7 +19,11 @@ import numpy as np
 
 from energy_models.core.techno_type.disciplines.liquid_hydrogen_techno_disc import LiquidHydrogenTechnoDiscipline
 from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction import HydrogenLiquefaction
-
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.techno_type.base_techno_models.liquid_hydrogen_techno import LiquidHydrogenTechno
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.electricity import Electricity
 
 class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
     """
@@ -48,10 +52,10 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'CO2_from_production_unit': 'kg/kg',
                                  'elec_demand': 8,
                                  'elec_demand_unit': 'kWh/kg',
-                                 'efficiency': 0.33, # https://www.sciencedirect.com/topics/engineering/hydrogen-liquefaction#:~:text=Current%20hydrogen%20liquefaction%20plants%20operate,efficiency%20of%2030%20to%2035%25.
+                                 'efficiency': 0.98, # https://www.sciencedirect.com/topics/engineering/hydrogen-liquefaction#:~:text=Current%20hydrogen%20liquefaction%20plants%20operate,efficiency%20of%2030%20to%2035%25.
                                  'techno_evo_eff': 'no',
-
                                  'WACC': 0.1,
+                                 #'heat_recovery_factor': 0.8,
                                  'learning_rate':  0.2,
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
@@ -98,3 +102,24 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = HydrogenLiquefaction(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
+
+    # def compute_sos_jacobian(self):
+    #     inputs_dict = self.get_sosdisc_inputs()
+    #     self.techno_model.configure_parameters(inputs_dict)
+    #     LiquidHydrogenTechnoDiscipline.compute_sos_jacobian(self)
+
+        # # the generic gradient for production column is not working because of
+        # # abandoned mines not proportional to production
+        #
+        # scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+        #     ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+        # applied_ratio = self.get_sosdisc_outputs(
+        #     'applied_ratio')['applied_ratio'].values
+        #
+        # dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+        # production_gradient = self.techno_consumption_derivative[f'{Electricity.name} ({self.techno_model.product_energy_unit})']
+        # m = self.set_partial_derivative_for_other_types(
+        #     ('techno_production',
+        #      f'{lowtemperatureheat.name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
+        #     (production_gradient - dprod_name_dinvest))
+
