@@ -51,3 +51,19 @@ The data used for this model is extracted from the EPA, IEA Data, ScienceDirect 
 
 [^4]: [CHP(Data study and comparison) - IEA(International Energy Agency)](https://iea.blob.core.windows.net/assets/d459f7d5-1ba7-49d9-ad56-915fba22f267/chp_report.pdf)
 
+[^5]: Capex, https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1 # average between 900$/kW to 1500$/kW  
+
+[^6]: Efficiency, https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
+
+[^7]: Methane cal value, https://ec.europa.eu/eurostat/documents/38154/42195/Final_CHP_reporting_instructions_reference_year_2016_onwards_30052017.pdf/f114b673-aef3-499b-bf38-f58998b40fe6
+
+[^8]: Methane demand, https://www.nfuenergy.co.uk/news/combined-heat-and-power-could-reduce-your-electricity-costs-half
+
+[^9]: co2 captured production, https://odr.chalmers.se/server/api/core/bitstreams/65470fdd-f00a-4607-8d0f-59152df05ea8/content
+
+[^10]: Opex percentage, https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1, 40$/kW for 1000$/kW capex 
+
+[^11]: Electric demand, https://www.carboncommentary.com/blog/2007/10/01/domestic-combined-heat-and-power
+      
+[^12]: Initial production, https://www.statista.com/statistics/678192/chp-electricity-generation-germany/
+

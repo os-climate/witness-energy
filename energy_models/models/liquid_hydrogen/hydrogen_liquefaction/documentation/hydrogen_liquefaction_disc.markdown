@@ -37,3 +37,5 @@ the model is based on a liquifier with a capacity of 200000 kg/day.
 [^4]: [Large-scale liquid hydrogen production methods and approaches: A review, M Asadnia and M Mehrpooya (2017)](https://www.researchgate.net/publication/321686488_Large-scale_liquid_hydrogen_production_methods_and_approaches_A_review)
 
 [^5]: [Hydrogen liquefaction and liquid hydrogen storage, G Valenti (2016)](https://www.sciencedirect.com/science/article/pii/B978178242362100002X)
+[^6]: https://www.idealhy.eu/uploads/documents/IDEALHY_Cryogenics_2012_Precooling.pdf
+                                

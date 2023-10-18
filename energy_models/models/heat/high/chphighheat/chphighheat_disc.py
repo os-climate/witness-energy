@@ -39,26 +39,26 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
     construction_delay = 2  # years
 
     techno_infos_dict_default = {
-        'Capex_init': 1300,              #https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1 # average between 900$/kW to 1500$/kW
-        'Capex_init_unit': '$/kW',       #https://www.google.com/search?q=eur+to+dollar+conversion&rlz=1C1UEAD_enIN1000IN1000&oq=eur+to+d&aqs=chrome.3.69i57j0i131i433i512l2j0i20i263i512l2j0i10i512j0i512l4.7800j1j7&sourceid=chrome&ie=UTF-8
+        'Capex_init': 1300,              # https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1 # average between 900$/kW to 1500$/kW
+        'Capex_init_unit': '$/kW',       # https://www.google.com/search?q=eur+to+dollar+conversion&rlz=1C1UEAD_enIN1000IN1000&oq=eur+to+d&aqs=chrome.3.69i57j0i131i433i512l2j0i20i263i512l2j0i10i512j0i512l4.7800j1j7&sourceid=chrome&ie=UTF-8
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
         'construction_delay_unit': 'years',
         'efficiency': 0.47,                # consumptions and productions already have efficiency included
-                                           #https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
-        'methane_calorific_val': 22000,    #https://ec.europa.eu/eurostat/documents/38154/42195/Final_CHP_reporting_instructions_reference_year_2016_onwards_30052017.pdf/f114b673-aef3-499b-bf38-f58998b40fe6
+                                           # https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
+        'methane_calorific_val': 22000,    # https://ec.europa.eu/eurostat/documents/38154/42195/Final_CHP_reporting_instructions_reference_year_2016_onwards_30052017.pdf/f114b673-aef3-499b-bf38-f58998b40fe6
         'methane_calorific_val_unit': 'kJ/kg',
-        'elec_demand': 1,                  #https://www.carboncommentary.com/blog/2007/10/01/domestic-combined-heat-and-power
+        'elec_demand': 1,                  # https://www.carboncommentary.com/blog/2007/10/01/domestic-combined-heat-and-power
         'elec_demand_unit': 'KWh',
-        'methane_demand': 2.8,             #https://www.nfuenergy.co.uk/news/combined-heat-and-power-could-reduce-your-electricity-costs-half
+        'methane_demand': 2.8,             # https://www.nfuenergy.co.uk/news/combined-heat-and-power-could-reduce-your-electricity-costs-half
         'methane_demand_unit': 'kWh/kWh',
         'co2_captured__production': 0.11,  # kg/kWh
                                            # https://odr.chalmers.se/server/api/core/bitstreams/65470fdd-f00a-4607-8d0f-59152df05ea8/content
                                            # https://www.unitconverters.net/energy/megajoule-to-kilowatt-hour.htm
 
         'co2_captured__production_unit': 'kg/kWh',
-        'Opex_percentage': 0.04,  #https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1, 40$/kW for 1000$/kW capex
+        'Opex_percentage': 0.04,  # https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1, 40$/kW for 1000$/kW capex
 
         'WACC': 0.058,  # Weighted averaged cost of capital / ATB NREL 2020
         'learning_rate': 0.00,  # Cost development of low carbon energy technologies
