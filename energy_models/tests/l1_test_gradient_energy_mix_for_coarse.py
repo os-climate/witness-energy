@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import os
 from os.path import dirname
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -113,6 +113,8 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.energy_prices_after_tax'
                                      ])
         AbstractJacobianUnittest.DUMP_JACOBIAN = False
+        path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls', 'jacobian_coarse_energymix_co2_emissions.pkl')
+        os.remove(path_pickle)
 
     def test_02_energy_mix_co2_tax(self):
         AbstractJacobianUnittest.DUMP_JACOBIAN = True
@@ -127,3 +129,6 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                             local_data=self.disc.local_data,
                             inputs=inputs_names, outputs=energy_mix_output)
         AbstractJacobianUnittest.DUMP_JACOBIAN = False
+        path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls',  'jacobian_coarse_energy_mix_co2_tax.pkl')
+        os.remove(path_pickle)
+        
