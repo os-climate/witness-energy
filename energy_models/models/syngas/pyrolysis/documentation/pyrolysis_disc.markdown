@@ -9,8 +9,14 @@ Economic-data and technical one was taken from Salman et Al. [^1] & Wei et Al. [
 
 ![](pyrolysis_out.png) 
 
+## Heat
+Pyrolysis is typically defined as the thermochemical decomposition of biomass feedstock at medium (300–800°C) to high temperatures (800–1300°C) in an inert atmosphere.
+The overall reaction of biomass feedstock is..
 
+Biofuel +  heat  →  liquid + syngas + solid
 
+C + H<sub>2</sub>O → CO + H<sub>2</sub> .... ΔH°= +131 kJ/mol
+ 
 [^1]: Salman, & Salman, Chaudhary Awais. (2014). Techno-economic analysis of wood pyrolysis in Sweden.
 
 [^2]: Wei, Lin & Pordesimo, L.O. & To, Filip & Herndon, Cary & Batchelor, William. (2009). Evaluation of Micro-Scale Syngas Production Costs through Modeling.

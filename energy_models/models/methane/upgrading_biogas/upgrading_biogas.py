@@ -20,6 +20,7 @@ from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.monotethanolamine import Monotethanolamine
+from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
 
 import numpy as np
 
@@ -69,6 +70,7 @@ class UpgradingBiogas(MethaneTechno):
         self.production[f'{CarbonCapture.name} ({self.mass_unit})'] = co2_prod * \
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
+
         # Consumption
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
@@ -76,6 +78,11 @@ class UpgradingBiogas(MethaneTechno):
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption[f'{Monotethanolamine.name} ({self.mass_unit})'] = self.get_MEA_loss() * \
             self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+
+        # production
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['low_heat_production'] * \
+        #     self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 
     def get_biogas_needs(self):
         '''
@@ -85,7 +92,7 @@ class UpgradingBiogas(MethaneTechno):
         biogas_data = BioGas.data_energy_dict
         mol_biogas = 1.0
         mol_CH4 = biogas_data['CH4_per_energy']
-        biogas_needs = mol_biogas * biogas_data['molar_mass'] / \
+        biogas_needs = mol_biogas * biogas_data['molar_mass'] * biogas_data['calorific_value'] / \
             (mol_CH4 * self.data_energy_dict['molar_mass'] *
              self.data_energy_dict['calorific_value'])
         return biogas_needs / self.techno_infos_dict['efficiency']

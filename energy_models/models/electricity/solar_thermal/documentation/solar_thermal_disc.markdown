@@ -12,6 +12,8 @@ STE systems comprise the following main elements:
 - thermal storage system
 - power conversion unit (heat to electricity) and balance of plant.
 
+Solar thermal technology directly produces heat energy from sunlight, making it a renewable and sustainable source of thermal energy.
+Production of heat for high temperature is calculated in TWh. It depends on production of electricity and efficiency.
 
  ![](solar_thermal_type.png)
  (Image Credit: IEA [^1b])
@@ -42,3 +44,5 @@ The power by hectare value has been computed on the base of 357 MWh/acre[^6] for
 International Renewable Energy Agency, Abu Dhabi. https://www.irena.org/publications/2020/Jun/Renewable-Power-Costs-in-2019
 [^5]: Scientific report (2021), https://www.nature.com/articles/s41598-021-82042-5
 [^6]: greenCoast, 2019, Solar Farm Land Requirements: How Much Land Do You Need?, https://greencoast.org/solar-farm-land-requirements/
+[^7]: Working principle: https://www.bmwk.de/Redaktion/EN/Artikel/Energy/research-priorities-solar-thermal-power-plants.html#:~:text=In%20solar%20thermal%20power%20plants,transforms%20this%20energy%20into%20electricity.
+[^8]: Efficiency: https://www.volker-quaschning.de/articles/fundamentals2/index.php#:~:text=The%20efficiency%20of%20a%20solar,losses%20are%20usually%20below%2010%25.

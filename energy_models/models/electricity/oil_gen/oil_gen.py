@@ -22,6 +22,7 @@ from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 
 
@@ -72,6 +73,8 @@ class OilGen(ElectricityTechno):
         self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = self.production[
             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
+            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{LiquidFuel.name} ({self.product_energy_unit})'] - \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         self.compute_ghg_emissions(N2O.name, related_to=LiquidFuel.name)

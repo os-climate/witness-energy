@@ -469,6 +469,7 @@ class TechnoDiscipline(SoSWrapp):
         # Compute jacobian for other energy production/consumption
         self.dprod_column_dinvest = {}
         self.dprod_column_dratio = {}
+        self.techno_production_derivative = {}
         for column in production:
             dprod_column_dinvest = self.dprod_dinvest.copy()
             if column not in ['years', f'{self.energy_name} ({self.techno_model.product_energy_unit})']:
@@ -488,6 +489,7 @@ class TechnoDiscipline(SoSWrapp):
                 self.set_partial_derivative_for_other_types(
                     ('techno_production', column), ('invest_level', 'invest'),
                     (dprod_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production)
+                self.techno_production_derivative[column] = (dprod_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
 
                 #---Gradient other techno prods vs each ratio
                 self.dprod_column_dratio[column] = {}
@@ -514,7 +516,7 @@ class TechnoDiscipline(SoSWrapp):
                                 ('techno_production',
                                  column), ('all_resource_ratio_usable_demand', ratio_name),
                                 self.dprod_column_dratio[column][ratio_name] / 100.)
-
+        self.techno_consumption_derivative = {}
         for column in consumption:
             
             if column not in ['years']:
@@ -546,10 +548,13 @@ class TechnoDiscipline(SoSWrapp):
                     self.set_partial_derivative_for_other_types(
                         ('techno_consumption', column), ('invest_level', 'invest'),
                         (self.dcons_column_dinvest.T * applied_ratio_construction).T * scaling_factor_invest_level / scaling_factor_techno_production)
+                    self.techno_consumption_derivative[column] = (self.dcons_column_dinvest.T * applied_ratio_construction).T * scaling_factor_invest_level / scaling_factor_techno_production
+
                 else : 
                     self.set_partial_derivative_for_other_types(
                         ('techno_consumption', column), ('invest_level', 'invest'),
                         (self.dcons_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production)
+                    self.techno_consumption_derivative[column] = (self.dcons_column_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
                 self.set_partial_derivative_for_other_types(
                     ('techno_consumption_woratio',
                      column), ('invest_level', 'invest'),

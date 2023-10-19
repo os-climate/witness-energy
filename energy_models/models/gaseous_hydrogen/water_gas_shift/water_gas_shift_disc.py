@@ -65,6 +65,8 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # Capex initial at year 2020
                                  'Capex_init_vs_CO_conversion': [5.0e6, 9.2e6],
                                  'Capex_init_vs_CO_conversion_unit': 'euro',
+                                 'low_heat_production': (41 / 46.016)*1000*2.77778e-13,  # CO+H2O→CO2+H2ΔH°=−41kJ/mol, Co2(44g/mol),H2(2.016g/mol)
+                                 'low_heat_production_unit': 'TWh/kg',
                                  # Capex initial at year 2020
                                  'CO_conversion': [36.0, 100.0],
                                  'CO_conversion_unit': '%',

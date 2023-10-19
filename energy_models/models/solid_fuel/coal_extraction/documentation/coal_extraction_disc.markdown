@@ -2,8 +2,11 @@
 
 **Definition:**
 
-Coal extraction is the process to extract coal from natural ressources. After this extraction, coal can be used in different way.
+Coal extraction is the process to extract coal from natural resources. After this extraction, coal can be used in different way.
 The main process to extract coal is mining. As every industrial process, coal mining has energy demand and wastes, which lead to the cost of the coal. Moreover, as coal is a fossil ressource, the amount is limited.
+
+No heat production in coal extraction process.
+As mining of coal depends on the depth and quality of the coal seams, different techniques are used to dig the deposits. Surface mining and deep underground mining are the two main methods of mining coal.
 
 
 **Price:**
@@ -59,3 +62,5 @@ In 2020, the MC2M model estimates that around 70 Mt of CH4 emissions are coming 
 [^7]:https://gem.wiki/File:Gas_content_by_coal_rank_and_mining_depth.jpg
 [^8]: Wikipedia page : https://en.wikipedia.org/wiki/Coal_mining
 [^9]: https://globalenergymonitor.org/wp-content/uploads/2021/03/Coal-Mine-Methane-On-the-Brink.pdf
+[^10]: https://www.eia.gov/energyexplained/coal/mining-and-transportation.php
+[^11]: https://www.sciencedirect.com/science/article/abs/pii/S0360544221003376

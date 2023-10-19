@@ -10,6 +10,7 @@ isolated communities not interconnected to a grid. Liquid fuels may also be used
 especially for peaking or emergency service. Of the three fossil fuel sources, oil has the advantages of easier 
 transportation and handling than solid coal, and easier on-site storage than natural gas.[^1]
 
+Production of high heat is calculated in TWh. Where, consumption of liquid fuel(TWh) is more than production of electricity(TWh).
 
 ## Data
 
@@ -35,4 +36,6 @@ The GAINS model also predicts N2O fugitive emissions from oil energy. The emissi
 
 
 [^7]: Winiwarter, W., 2005. The GAINS model for greenhouse gases-version 1.0: nitrous oxide (N2O).https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+
+[^8]: https://www.eia.gov/energyexplained/oil-and-petroleum-products/refining-crude-oil-the-refining-process.php
 

@@ -16,6 +16,7 @@ limitations under the License.
 
 from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 
@@ -55,20 +56,38 @@ class Nuclear(ElectricityTechno):
         """
         self.compute_primary_energy_production()
 
-        self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
+        #       self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
+        #       self.techno_infos_dict['efficiency']
+
+
+
+
+
+        # self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
+        #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+
+        # Uranium resource consumption, total (electricity production/ efficiency) / (calorific value of Uranium per Mega Ton)
+        # https://www.euronuclear.org/glossary/fuel-comparison/
+
+
         '''
         One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel
         => 1 kg of fuel => 8.33 kg of ore
         '''
         # FOR ALL_RESOURCES DISCIPLINE
-        self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * 8.33
+
+        self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = \
+            (self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] / \
+             self.techno_infos_dict['efficiency']) / (24000000.00)
 
         water_needs = self.get_theoretical_water_needs()
         self.consumption[f'{Water.name} ({self.mass_unit})'] = water_needs * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
-        
+
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
+                                                                                      self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
+
 
     def compute_consumption_and_power_production(self):
         """
@@ -94,8 +113,8 @@ class Nuclear(ElectricityTechno):
 
         return self.carbon_emissions[self.URANIUM_RESOURCE_NAME] + self.carbon_emissions[Water.name]
 
-    @staticmethod
-    def get_theoretical_uranium_fuel_needs():
+    #@staticmethod
+    def get_theoretical_uranium_fuel_needs(self):
         """
         Get Uranium fuel needs in kg Uranium fuel /kWh electricty
         World Nuclear Association
@@ -105,8 +124,9 @@ class Nuclear(ElectricityTechno):
 
         One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel
         => 1 kg of fuel => 8.33 kg of ore
+        With a complete  fission, approx around 24,000,000 kWh of heat can be generated from 1 kg of uranium-235
         """
-        uranium_fuel_needs = 1.0 / 360000  # kg of uranium_fuel needed for 1 kWh of electric
+        uranium_fuel_needs = 1.0 / (24000000.00 * self.techno_infos_dict['efficiency']) # kg of uranium_fuel needed for 1 kWh of electric
 
         return uranium_fuel_needs
 

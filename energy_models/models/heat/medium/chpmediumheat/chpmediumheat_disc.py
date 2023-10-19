@@ -39,8 +39,8 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     construction_delay = 2  # years
 
     techno_infos_dict_default = {
-        'Capex_init': 2.145,              #file:///C:/Users/KAJBORKA/Downloads/PriyankaChintada_final_thesis%20(5).pdf
-        'Capex_init_unit': '$/kWh',       #https://www.google.com/search?q=eur+to+dollar+conversion&rlz=1C1UEAD_enIN1000IN1000&oq=eur+to+d&aqs=chrome.3.69i57j0i131i433i512l2j0i20i263i512l2j0i10i512j0i512l4.7800j1j7&sourceid=chrome&ie=UTF-8
+        'Capex_init': 1300,              #https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1 # average between 900$/kW to 1500$/kW
+        'Capex_init_unit': '$/kW',
         'lifetime': lifetime,
         'lifetime_unit': 'years',
         'construction_delay': construction_delay,
@@ -57,9 +57,8 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                                            # https://odr.chalmers.se/server/api/core/bitstreams/65470fdd-f00a-4607-8d0f-59152df05ea8/content
                                            # https://www.unitconverters.net/energy/megajoule-to-kilowatt-hour.htm
         'co2_captured__production_unit': 'kg/kWh',
-        'Opex_percentage': 0.2,            #page 28  #https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/961322/Part_5_CHP_Finance_BEIS_v03.pdf
-                                           # Fixed 1.9 and recurrent 0.5 %
-                                           # Demystifying-the-Costs-of-Electricity-Generation-Technologies, average
+        'Opex_percentage': 0.04,  #https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1, 40$/kW for 1000$/kW capex
+
         'WACC': 0.058,  # Weighted averaged cost of capital / ATB NREL 2020
         'learning_rate': 0.00,  # Cost development of low carbon energy technologies
         'full_load_hours': 8760.0,  # Full year hours
@@ -73,16 +72,12 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     # in TWh
     # initial production i.e. total heat produced by CHP = 117 TWh    # 117/3 = 39 TWh
 
-    initial_production = 39  # https://www.umweltbundesamt.de/en/data/environmental-indicators/indicator-combined-heat-power-chp#at-a-glance
-
     initial_production = ((117/0.52)/3)*(1-0.52)  # https://www.statista.com/statistics/678192/chp-electricity-generation-germany/
 
-    distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
-                   8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
-                   3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0,
-                   2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0,
-                   1.0, 1.0, 1.0, 1.0,
-                   ]
+    distrib = [2.8, 2.4, 4.3, 2, 1.5, 1.3, 0.9, 1.3, 4.8, 7.1, 14.6, 14.2,
+               6.7, 4.9, 2.9, 2, 1.8, 2, 1.8, 2.9, 2.7, 1.5, 2.3, 1.4, 1.3,
+               2.1, 3.6, 1.3, 1.6, 3.0, 1.1, 1.3, 1.5, 1.4, 1.2, 1.1, 1.1,
+               1.1, 1.1, 1.1, 1.0, 1.0, 1.0, 1.0]
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})

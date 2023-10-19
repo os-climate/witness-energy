@@ -28,6 +28,7 @@ from energy_models.core.stream_type.energy_models.syngas import compute_calorifi
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
+from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
 
 
 class WGS(GaseousHydrogenTechno):
@@ -650,6 +651,13 @@ class WGS(GaseousHydrogenTechno):
         self.consumption[f'{Water.name} ({self.mass_unit})'] = th_water_needs * \
             self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']  # in kg
+
+        # production
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['low_heat_production'] * \
+        #     self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+
+
 
     def compute_CO2_emissions_from_input_resources(self):
         ''' 

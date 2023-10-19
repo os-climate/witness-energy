@@ -9,6 +9,8 @@ Because water evaporates into clouds and recycles back to Earth as precipitation
 
 Hydropower is mainly associated with the Hoover Dam a huge facility harnessing the power of an entire river behind its walls but hydropower facilities come in all sizes. Some may be very large, but they can be tiny too, taking advantage of water flows in municipal water facilities or irrigation ditches. They can even be dam-less, with diversions or run-of-river facilities that channel part of a stream through a powerhouse before the water rejoins the main river. Whatever the method, hydroelectric power is quite easier to obtain [^2].
 
+Hydropower itself does not produce heat as a primary output. Instead, it generates electricity through the kinetic energy of flowing water. any heat generated in these incidental ways is relatively small compared to the electrical energy produced by the hydropower system. Overall, hydropower is considered an efficient and low-heat-producing method of electricity generation.
+
 ## Data    
 
 Most of the data used for this model is extracted from International Energy Agency (IEA)[^4] and International Renewable Energy Agency (IRENA)[^5].
@@ -42,5 +44,4 @@ Global Trends in hydropower Energy Investment (small plant less than 10 MW) [^9]
 [^7]: [IEA 2022, Hydropower generation in the Sustainable Development Scenario, 2000-2030, IEA, Paris](https://www.iea.org/data-and-statistics/charts/hydropower-generation-in-the-sustainable-development-scenario-2000-2030), License: CC BY 4.0.
 [^8]: [Power generation cost 2019](https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2020/Jun/IRENA_Power_Generation_Costs_2019.pdf)
 [^9]: [Global Trends in renewable Energy Investment](https://www.irena.org/Statistics/View-Data-by-Topic/Finance-and-Investment/Investment-Trends)
-
-
+[^10]: Working principle: https://www.energy.gov/eere/water/how-hydropower-works#:~:text=Hydropower%20utilizes%20turbines%20and%20generators,homes%2C%20businesses%2C%20and%20industries.

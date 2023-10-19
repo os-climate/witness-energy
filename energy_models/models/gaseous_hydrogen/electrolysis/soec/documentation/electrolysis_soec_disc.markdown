@@ -24,6 +24,9 @@ SOEC is in a pre-commercial and fundamental research stage although Sunfire is a
 container. Other companies investigating the SOEC technologies are Haldor Topsoe (incooperation with Riso DTU), Cermatec (in cooperation with the
 Idaho National Laboratory), FuelCell Energy and Toshiba. The initial production of the technology is assumed negligible. 
 
+## Heat
+In Electrolysis, heat production assumed the net difference between total electricity consumption and total hydrogen production.
+
 [^1]: Hydrogen production by PEM water electrolysis - A review, S. Shiva Kumar, V. Himabindu,Materials Science for Energy Technologies (2019).
 
 [^2]: SUNFIRE-HYLINK SOEC, https://www.sunfire.de/en/hydrogen

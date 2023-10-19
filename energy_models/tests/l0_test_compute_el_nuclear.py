@@ -237,7 +237,7 @@ class NuclearTestCase(unittest.TestCase):
         nuclear_model.compute_consumption_and_production()
         nuclear_model.compute_consumption_and_power_production()
 
-        print(nuclear_model.power_production)
+        #print(nuclear_model.power_production)
 
         self.assertLessEqual(list(nuclear_model.production[f'electricity ({nuclear_model.product_energy_unit})'].values),
                             list(nuclear_model.power_production['total_installed_power'] * nuclear_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001) )

@@ -10,7 +10,9 @@ Economic and technical datas was taken from  Ayodele et Al. [^1] & Cormos et Al.
 
 ![](atr.png) 
 
-
+## Heat
+Heat production/consumption is neglected in coal-gasification process.
+ 
 
 [^1]: Freida Ozavize Ayodele , Siti Indati Mustapa , Bamidele Victor Ayodele  and Norsyahida Mohammad (2020) An Overview of Economic Analysis and Environmental Impacts of Natural Gas Conversion Technologies
 

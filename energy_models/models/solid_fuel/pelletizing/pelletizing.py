@@ -18,6 +18,8 @@ from energy_models.core.techno_type.base_techno_models.solid_fuel_techno import 
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+
 
 import numpy as np
 
@@ -69,6 +71,9 @@ class Pelletizing(SolidFuelTechno):
         self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
             self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
             self.data_energy_dict['calorific_value']
+        # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
+        #      self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']) / \
+        #       self.techno_infos_dict['efficiency']
 
         # Consumption
         self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \

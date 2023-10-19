@@ -19,6 +19,7 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 import numpy as np
 
@@ -171,6 +172,14 @@ class CoElectrolysis(SyngasTechno):
         self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
+
+        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = \
+            self.cost_details['elec_needs'] * \
+            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+
+        # self.consumption[f'{hightemperatureheat.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
+        #      self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+        #      self.cost_details['efficiency']
 
     def get_h2o_production(self):
         """

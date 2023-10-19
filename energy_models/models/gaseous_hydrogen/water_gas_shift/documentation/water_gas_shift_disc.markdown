@@ -41,8 +41,21 @@ Theoretical datas about production and consumption have been computed with coeff
 
 The initial world production has
 
+## Heat
+[^4] WGSR is the reaction of an equimolar mixture of steam and carbon monoxide and the process is moderately exothermic. 
+It is an important step in the reforming process.
+
+CO + O<sub>(a)</sub> → CO<sub>2</sub> + ∗  ....   ΔH°= −283kJ/mol
+
+H<sub>2</sub>O + ∗ → H<sub>2</sub> + O<sub>(a)</sub> .... ΔH°= 242kJ/mol.
+
+Combining the above two reactions gives WGSR.
+
+CO + H<sub>2</sub>O → CO<sub>2</sub> + H<sub>2</sub>  .... ΔH°=−41kJ/mol
+
 
 [^1]: Pal, D.B., Chand, R., Upadhyay, S.N. and Mishra, P.K., 2018. Performance of water gas shift reaction catalysts: A review. Renewable and Sustainable Energy Reviews, 93, pp.549-565.available at https://www.sciencedirect.com/science/article/pii/S1364032118303411
 
 [^2]: Giuliano, A., Freda, C. and Catizzone, E., 2020. Techno-economic assessment of bio-syngas production for methanol synthesis: A focus on the water–gas shift and carbon capture sections. Bioengineering, 7(3), p.70. available at https://www.mdpi.com/2306-5354/7/3/70
 [^3]: Wang, Y., Li, G., Liu, Z., Cui, P., Zhu, Z. and Yang, S., 2019. Techno-economic analysis of biomass-to-hydrogen process in comparison with coal-to-hydrogen process. Energy, 185, pp.1063-1075.
+[^4]: https://www.sciencedirect.com/topics/engineering/water-gas-shift-reaction#:~:text=The%20water%E2%80%93gas%20shift%20reaction,the%20process%20is%20moderately%20exothermic.

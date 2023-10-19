@@ -12,6 +12,8 @@ Unlike the other green energy such as wind and solar, the biogas can be quickly 
 The global warming potential can also be greatly reduced when using biogas as the fuel 
 instead of fossil fuel.[^1]
 
+Production of high heat is calculated in TWh. Where, consumption of biogas(TWh) is more than production of electricity(TWh).
+
 ## Combined Heat and Power (CHP)
 
 The biogas is fed into a combustion engine that turns an electrical generator producing electricity that is injected 
@@ -33,3 +35,7 @@ generation capacity, 2010-2018[^3] and partly from an IRENA Report[^4].
 [^4][IRENA Power Generation Costs, 2019, (p110-119)](https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2020/Jun/IRENA_Power_Generation_Costs_2019.pdf)
 
 [^5][Biogas World, biogas plant development handbook](https://www.biogasworld.com/biogas-plant-development-handbook/)
+
+[^6]https://www.sciencedirect.com/science/article/abs/pii/S0306261911008348
+
+[^7]https://en.wikipedia.org/wiki/Biogas#Biogas_generated_heat/electricity

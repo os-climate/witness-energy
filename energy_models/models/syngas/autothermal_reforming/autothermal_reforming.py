@@ -20,6 +20,8 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.resources_models.oxygen import Oxygen
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+
 
 import numpy as np
 
@@ -184,6 +186,10 @@ class AuthothermalReforming(SyngasTechno):
         self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['methane_needs'] * \
             self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
+
+        # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details['methane_needs'] * \
+        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+        #     self.cost_details['efficiency']
 
     def get_h2o_production(self):
         """
