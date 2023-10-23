@@ -1,11 +1,19 @@
 # Hydrogen Boiler
 
 
-A gas-fired boiler provides hot water to taps throughout the home and also to radiators in the central heating system.
+What is a hydrogen boiler?
 
+it is a boiler that burns hydrogen as opposed to natural gas (or methane). These appliances work in a very similar way to natural gas boilers, by burning the gas via combustion, which in turn creates hot flue gases that can be used to heat water. This hot water can be stored for later use and pumped around your radiators to warm up your home.
 
-High temperature heat in natural gas technology, the temperature range is above 400 degree C.
+As hydrogen is a thinner gas than methane, some parts of the boiler may differ slightly, including the flame detector and the burner (which we look at in more detail further down the page) but they work in much the same way as your current boiler.
 
+Working:
+
+The hydrogen and oxygen gases are mixed together before being ignited in a catalytic burner. Hydrogen is more flammable than natural gas and so the burners on hydrogen boilers are specially designed so that the flames can be limited if too much gas is flowing through. A flame detection component is also required in a hydrogen-only boiler as hydrogen flames are invisible.
+
+Replacing natural gas boilers with hydrogen gas may be the simplest solution to the nation’s heating problems. Hydrogen is a carbon-free fuel source and can fit into a current boiler’s physical space without much disruption.
+
+High temperature heat in Hydrogen boiler technology, the temperature range is above 400 degree C.
 
 In Methane demand calculation, Methane is used to produce 1kwh of heat (this information in kwh) : methane_needs is in
 
@@ -18,68 +26,38 @@ price of methane is in $/kWh of heat.
 CO2 production is in Kg/KWh. That values from methane: CO2 per use(kg/kg) / calorific value(KWh/kg)
 
 
-production in 2020 that is total heat produced by Natural gas is 6236761 TJ = 1683 TWh
+production in 2021 that is total heat produced by Natural gas is 13 million metric tons (Mt)= 57.2 million TWh = 57200000 TWh
 
 
-initial production for high heat temp = 561 TWh
+initial production for high heat temp = 19066666 TWh
 
 
-Gas boilers work by releasing the fuel through a gas valve into a sealed combustion chamber in the boiler through small
 
-jets. With an electrical ignition, the gas is combusted to create heat. This heat is absorbed by a connected pipe
-
-carrying cold water.
-
-
-Working:
-
-Hot gases are produced by burning fuel in the furnace. These hot gases are made to come in contact with the water vessel
-
-where the heat transfer takes place between the water and the steam. Therefore, the basic principle of the boiler is to
-
-convert water into steam by using heat energy.
-
-
-Natural gas consists mostly methane (typical >85%) with the balance being varying amounts of ethane, propane, butane and
-
-some inert components (nitrogen, carbon dioxide and helium).
-
-
-![img_1.png](img_1.png)
+![img.png](img.png)
 
 
 ## Data
 
 
-The data used for this model is extracted from the IEA Data, ScienceDirect & MET
+The data used for this model is extracted from the IEA Data, ScienceDirect, Precision
 
 
-[^1]: [How Does a Gas Boiler Work – always70wade & IEA](https://always70wade.com/b/what-is-a-boiler-how-does-it-work#:~:text=Gas%20boilers%20work%20by%20releasing,connected%20pipe%20carrying%20cold%20water)
+[^1]: [Capex value – IEA](https://iea.blob.core.windows.net/assets/2ceb17b8-474f-4154-aab5-4d898f735c17/IEAGHRassumptions_final.pdf)
 
+[^2]: [Lifespan ](https://heatable.co.uk/boiler-advice/hydrogen-boilers)
 
-[^2]: [Natural Gas Boiler Overview - ScienceDirect](https://www.sciencedirect.com/topics/engineering/natural-gas-boiler)
+[^3]: [Efficiency - IEA ](https://iea.blob.core.windows.net/assets/2ceb17b8-474f-4154-aab5-4d898f735c17/IEAGHRassumptions_final.pdf)
 
+[^4]: [Hydrogen calorific value ](https://www.google.com/search?q=hydrogen+calorific+value+kj%2Fkg&rlz=1C1UEAD_enIN1000IN1000&oq=hydrogen+colorific+value+&gs_lcrp=EgZjaHJvbWUqCQgCEAAYDRiABDIGCAAQRRg5MgkIARAAGA0YgAQyCQgCEAAYDRiABDIJCAMQABgNGIAEMgkIBBAAGA0YgAQyCQgFEAAYDRiABDIJCAYQABgNGIAEMgkIBxAAGA0YgAQyCAgIEAAYFhgeMgoICRAAGA8YFhge0gEJMTI3MDhqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8)
 
-[^3]: [About Natural Gas Process](https://www.innovativecombustion.com/natural-gas-fired-boilers/)
+[^5]: Methane demand, https://livinglaudatosi.com/hydrogen-vs-heat-pumps-educational-resource/
 
-
-[^4]: [Natural Gas Model - ScienceDirect](https://www.sciencedirect.com/topics/engineering/natural-gas)
-
-
-[^5]: Methane demand, https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
-
-      
-[^6]: https://www.google.com/search?q=co2+captured+production+to+produce+heat+in+natural+gas+boiler&rlz=1C1UEAD_enIN1000IN1000&oq=co2+captured+production+to+produce+heat+in+natural+gas+boiler&aqs=chrome..69i57.37619j0j7&sourceid=chrome&ie=UTF-8
-
+[^6]: [co2 captured prodiction - ScienceDirect](https://pdf.sciencedirectassets.com/277910/1-s2.0-S1876610211X00036/1-s2.0-S1876610211001068/main.pdf?X-Amz-Security-Token=IQoJb3JpZ2luX2VjEAUaCXVzLWVhc3QtMSJIMEYCIQCUi66H3VrBTb6xyGLn18jpCIItw65A6P1%2FkW%2FjVrE7zAIhAK0ywvPnEvVgX1fbRA8OcbqHqL0TYWrGtQ5PUD8eyROZKrMFCC4QBRoMMDU5MDAzNTQ2ODY1IgzkIfP0pfgKA52ndc0qkAUzGiakLN40DPDwey%2FU%2FfWQ1qBWce%2Ba%2BkdL4d7oxyhY4IdiOH%2BA2c4gLSLfvSOQwVL8z19cLYOOQ36D3v%2FVyj62GQdbBqHOerFwcg6wJ4GCidql%2B9mygUP9Llq5rEWZn4%2F5bUDCQnDHdOqOrTKnFcNpjYYBkiGd%2FD0e3cF%2Bg%2BIg9jWPZc4HE6W3EwJDZz00hzQ%2FOh4%2FPYuBu6FfsAV1wsj%2BE6LNpq%2FSkx0D1K3CVRKByrnbpjBngzEHQKCpLS1gRMezfJtOovZu5nQQj7Ly88QkGbI8DtwVwxI%2BlG2HzI2%2B%2BggZ37crUByCCbJ8Fe1WKQC7%2BEf8hc1t3inUBO7c957aCB%2BkMGBQqWCjhm3J2yFesHiT%2BLccZkgHFBrA6UZLxpnBmwSM%2F6Iz7%2BvT%2FicUw1K0d6amvrdh4SIMHkg%2Bb3UiqWe31FsMGFh%2BMbz8GfGV%2FKqmKSx%2FBrxG4DbF%2Bhh4lwigjrKdqM3doWz8cnMQgO3hYSBWpSTlbJ9hscZcFJVv7sK0p84KMNKjry6DYZo9jwpGlHhFcG%2FU2wfatdAczaWfjhyH46Vh2p%2FXQeJaTHsnzcuKQu%2BWscUFf1iPc3XnNOFLThKAQZ2Xm6zJTIO6veNBUs48yg2KiCRLwYjHfKfl9zpx2dZrD4VaqlBI6eAnDRXqOjpp3hillYc3u9%2BF1UxIIRl12oHYCwEK0ZEwWyJNBv00YuAJcgsBfdo8%2BM3zudWft0KdxXBuEPn8RF6xPtTJFv89vM5NflsTg6%2BejzBjL6XLNwA854IOnZ3eyDvCWwpcaUkdBm%2F8jtTXVJTpwAll85FnVQg5xGd6RV%2BSMwLAgLDMnG%2FvHH%2BdlU7sxekyqVeFA88BrmTJRUlBozqJbVcITzDyytmpBjqwAXB5dkkY1eZbEeSNj67F9GfFLb7hbT7tqYWZ5Szot4u0K5IQH393LiZqbg1O9uaGvtAskvMZIfu%2FdS5mdt%2FYPgf4hpYazTo5dSAI67fCNvBQyj6UeGVKVH5U41crl5GSALufhDs6yf9TsEXMNW6DgU7DUGw7vnscz79S93FnxJhonhood4LIHefhZFLd%2BgSJ7IaKvSxkKF4UkBA%2F8EQEAaIfYk89gJu29YqCQVy36mNn&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20231023T131231Z&X-Amz-SignedHeaders=host&X-Amz-Expires=300&X-Amz-Credential=ASIAQ3PHCVTYSWNP35JB%2F20231023%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=0cb9cbc9090430e18f013f76a7ca55a07307408b9c2793ee047c2331082b80c1&hash=d533087c739f70b2638246e53a35b75f3f322b72886f09435b3b3a39371e9e77&host=68042c943591013ac2b2430a89b270f6af2c76d8dfd086a07176afe7c76c2c61&pii=S1876610211001068&tid=spdf-aea0f009-0421-4850-ac55-309a65cf06c0&sid=bf477a3b6856d342ee2be2c696267d6598edgxrqb&type=client&tsoh=d3d3LnNjaWVuY2VkaXJlY3QuY29t&ua=13085c5407045402520208&rr=81aa3b6bfdbb3c0c&cc=in)
    
-[^7]: co2 captured production, https://www.google.com/search?q=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat&rlz=1C1UEAD_enIN1000IN1000&oq=how+much+KWh+of+methane+required+in+natural+gas+boiler+to+produce+1KWh+of+heat+&aqs=chrome..69i57.90503j0j7&sourceid=chrome&ie=UTF-8
+[^7]: Initial production, https://www2.deloitte.com/content/dam/Deloitte/us/Documents/Advisory/us-advisory-assessment-of-green-hydrogen-for-industrial-heat.pdf
 
+[^8]: About Hydrogen boiler, https://www.worcester-bosch.co.uk/hydrogen
 
-[^8]: Initial production, https://www.iea.org/data-and-statistics/data-tools/energy-statistics-data-browser?country=WORLD&fuel=Electricity%20and%20heat&indicator=HeatGenByFuel
-
-
-[^9]: https://www.google.com/search?q=TJ+to+TWh&rlz=1C1UEAD_enIN1000IN1000&oq=TJ+to+TWh&aqs=chrome..69i57.35591j0j7&sourceid=chrome&ie=UTF-8
-
-
+[^9]: About Hydrogen boiler & its working, https://precisionheating.ie/hydrogen-boilers/hydrogen-boilers-how-they-work-and-whether-you-need-one/#:~:text=What%20is%20a%20hydrogen%20boiler,be%20used%20to%20heat%20water.
                                
 
