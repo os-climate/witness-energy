@@ -20,7 +20,6 @@ from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_study_manager import AGRI_TYPE, EnergyStudyManager, \
     DEFAULT_TECHNO_DICT, CCUS_TYPE, ENERGY_TYPE
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 
@@ -868,12 +867,15 @@ class Study(EnergyStudyManager):
         CO2_emissions = pd.DataFrame({GlossaryCore.Years: self.years,
                                       'biomass_dry': -0.277})
 
+        energy_type_capital = pd.DataFrame(
+            {'years': self.years, GlossaryCore.Capital: 0.0})
         agri_values_dict = {f'{self.study_name}.{agri_mix_name}.N2O_per_use': N2O_per_use,
                             f'{self.study_name}.{agri_mix_name}.CH4_per_use': CH4_per_use,
                             f'{self.study_name}.{agri_mix_name}.CO2_per_use': CO2_per_use,
                             f'{self.study_name}.{agri_mix_name}.energy_consumption': energy_consumption,
                             f'{self.study_name}.{agri_mix_name}.energy_consumption_woratio': energy_consumption,
                             f'{self.study_name}.{agri_mix_name}.energy_production': energy_production,
+                            f'{self.study_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': energy_type_capital,
                             f'{self.study_name}.{agri_mix_name}.energy_prices': energy_prices,
                             f'{self.study_name}.{agri_mix_name}.land_use_required': land_use_required,
                             f'{self.study_name}.{agri_mix_name}.CO2_emissions': CO2_emissions, }
@@ -883,36 +885,4 @@ class Study(EnergyStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
-    uc_cls.run()
-
-    # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
-    #     if disc.sos_name == 'EnergyMix':
-    #         for graph in graph_list:
-    #             graph.to_plotly()#.show()
-
-    # ppf = PostProcessingFactory()
-    # filters = ppf.get_post_processing_filters_by_namespace(
-    #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
-    # graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
-    #                                                   filters, as_json=False)
-    # for graph in graph_list:
-    #    graph.to_plotly().show()
-
-    # post_processing_factory = PostProcessingFactory()
-    # post_processing_factory.get_post_processing_by_namespace(
-    #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
-    # all_post_processings = post_processing_factory.get_all_post_processings(
-    #     uc_cls.execution_engine, False, as_json=False, for_test=False)
-    #
-    # for namespace, post_proc_list in all_post_processings.items():
-    #     for chart in post_proc_list:
-    #         pass
-    #         chart.to_plotly()#.show()
+    uc_cls.test()

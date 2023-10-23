@@ -52,7 +52,7 @@ class FlueGas(BaseStream):
             self.production[
                 f'{self.name}'] += self.production[f'{self.name} {element} ({self.unit})']
 
-    def compute(self):
+    def compute(self, inputs, exp_min=True):
         '''
         Compute function which compute flue gas production and flue gas mean ratio
         '''

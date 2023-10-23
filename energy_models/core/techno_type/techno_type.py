@@ -20,6 +20,7 @@ from abc import abstractmethod
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect, get_dsmooth_dvariable_vect
@@ -349,11 +350,11 @@ class TechnoType:
 
         We divide by scaling_factor_invest_level to put non_use_capital in G$
         '''
-        self.techno_capital[self.name] = self.cost_details[f'Capex_{self.name}'].values \
+        self.techno_capital[GlossaryCore.Capital] = self.cost_details[f'Capex_{self.name}'].values \
             * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values \
             / self.scaling_factor_invest_level
 
-        self.non_use_capital[self.name] = self.techno_capital[self.name].values * (
+        self.non_use_capital[self.name] = self.techno_capital[GlossaryCore.Capital].values * (
             1.0 - self.applied_ratio['applied_ratio'].values)
 
     def compute_dnon_usecapital_dinvest(self, dcapex_dinvest, dprod_dinvest):

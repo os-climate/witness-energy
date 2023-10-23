@@ -18,6 +18,7 @@ import logging
 import numpy as np
 
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -64,6 +65,7 @@ class StreamDiscipline(SoSWrapp):
         'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh'},
         'techno_mix': {'type': 'dataframe', 'unit': '%'},
         'land_use_required': {'type': 'dataframe', 'unit': 'Gha'},
+        GlossaryEnergy.EnergyTypeCapitalDfValue: GlossaryEnergy.EnergyTypeCapitalDf
     }
 
     _maturity = 'Research'
@@ -80,6 +82,8 @@ class StreamDiscipline(SoSWrapp):
             techno_list = self.get_sosdisc_inputs('technologies_list')
             if techno_list is not None:
                 for techno in techno_list:
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = \
+                        GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.techno_consumption'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {'years': ('float', None, True),
@@ -175,8 +179,7 @@ class StreamDiscipline(SoSWrapp):
         # -- configure class with inputs
         self.energy_model.configure(inputs_dict)
         # -- compute informations
-        cost_details, production, consumption, consumption_woratio, techno_mix = self.energy_model.compute(
-            exp_min=inputs_dict['exp_min'])
+        cost_details, production, consumption, consumption_woratio, techno_mix = self.energy_model.compute(inputs_dict, exp_min=inputs_dict['exp_min'])
 
         cost_details_technos = self.energy_model.sub_prices
 
@@ -196,7 +199,9 @@ class StreamDiscipline(SoSWrapp):
                         GlossaryCore.EnergyProductionValue: production,
                         'energy_production_detailed': self.energy_model.production_by_techno,
                         'techno_mix': techno_mix,
-                        'land_use_required': self.energy_model.land_use_required}
+                        'land_use_required': self.energy_model.land_use_required,
+                        GlossaryEnergy.EnergyTypeCapitalDfValue: self.energy_model.energy_type_capital
+                        }
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
@@ -206,6 +211,7 @@ class StreamDiscipline(SoSWrapp):
         outputs_dict = self.get_sosdisc_outputs()
         years = np.arange(inputs_dict['year_start'],
                           inputs_dict['year_end'] + 1)
+        identity = np.eye(len(years))
         technos_list = inputs_dict['technologies_list']
         list_columns_energyprod = list(
             outputs_dict[GlossaryCore.EnergyProductionValue].columns)
@@ -310,11 +316,20 @@ class StreamDiscipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 ('land_use_required', f'{techno} (Gha)'), (f'{techno}.land_use_required', f'{techno} (Gha)'), np.identity(len(years)))
 
+        for techno in technos_list:
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyTypeCapitalDfValue, GlossaryEnergy.Capital),
+                (f"{techno}.{GlossaryEnergy.TechnoCapitalDfValue}", GlossaryEnergy.Capital),
+                identity,
+            )
+
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Energy price', 'Technology mix',
-                      'Consumption and production']
+        chart_list = ['Energy price',
+                      'Technology mix',
+                      'Consumption and production',
+                      GlossaryEnergy.Capital]
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -371,6 +386,34 @@ class StreamDiscipline(SoSWrapp):
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
+
+        if GlossaryCore.Capital in charts:
+            energy_type_capital = self.get_sosdisc_outputs(GlossaryEnergy.EnergyTypeCapitalDfValue)
+            techno_list = self.get_sosdisc_inputs('technologies_list')
+
+            years = list(energy_type_capital[GlossaryEnergy.Years].values)
+            chart_name = 'Breakdown of energy capital'
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'G$',
+                                                 chart_name=chart_name, stacked_bar=True)
+
+            for techno in techno_list:
+
+                ordonate_data = list(
+                    self.get_sosdisc_inputs(f"{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")[GlossaryEnergy.Capital].values)
+
+                new_series = InstanciatedSeries(
+                    years, ordonate_data, techno, 'bar', True)
+
+                new_chart.series.append(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(energy_type_capital[GlossaryCore.Capital].values), 'Total', 'lines', True)
+
+            new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_kwh(self):

@@ -209,7 +209,7 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
         self.techno_model.configure_parameters(inputs_dict)
 
     def run(self):
-        BiomassDryTechnoDiscipline.run(self)
+        super().run()
         self.specific_run()
 
     def specific_run(self):

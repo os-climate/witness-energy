@@ -71,7 +71,6 @@ class BiomassDryDiscipline(EnergyDiscipline):
         co2_per_use = self.get_sosdisc_outputs(
             'CO2_per_use')
 
-        energy_production = self.get_sosdisc_outputs(GlossaryCore.EnergyProductionValue)
         for technology in technology_list:
             techno_emissions = self.get_sosdisc_inputs(
                 f'{technology}.CO2_emissions')

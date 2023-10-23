@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
@@ -200,10 +201,13 @@ class Study(EnergyMixStudyManager):
         techno_margin_dict = {
             f'{self.study_name}.{ccs_name}.{techno}.margin': self.margin for techno in self.technologies_list}
         values_dict.update(techno_margin_dict)
+
+        self.techno_capital = pd.DataFrame(
+            {'years': years, GlossaryCore.Capital: 0.0})
+
         if self.main_study:
             values_dict.update(
                 {
-
                     f'{self.study_name}.CO2_taxes': self.co2_taxes,
                     f'{self.study_name}.{energy_mix_name}.energy_prices': self.energy_prices,
                     f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -233,7 +237,21 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.techno_production': refinery_prod,
                     f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.CalciumPotassiumScrubbing.techno_production': CAKOH_production,
                     f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.techno_production': aminescrubbing_production,
-                    f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.techno_production': directaircapturetechno_prod,})
+                    f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.techno_production': directaircapturetechno_prod,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.electricity.CoalGen.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.electricity.GasTurbine.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.electricity.CombinedCycleGasTurbine.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.liquid_fuel.FischerTropsch.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.liquid_fuel.Refinery.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.methane.FossilGas.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.solid_fuel.Pelletizing.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.syngas.CoalGasification.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.fossil.FossilSimpleTechno.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.carbon_capture.direct_air_capture.AmineScrubbing.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.carbon_capture.direct_air_capture.CalciumPotassiumScrubbing.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.carbon_capture.direct_air_capture.DirectAirCaptureTechno.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                })
 
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
@@ -253,14 +271,4 @@ class Study(EnergyMixStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(main_study=True,
                    technologies_list=DEFAULT_TECHNOLOGIES_LIST)
-    uc_cls.load_data()
-    uc_cls.run()
-#     ppf = PostProcessingFactory()
-#     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-#         filters = ppf.get_post_processing_filters_by_discipline(
-#             disc)
-#         graph_list = ppf.get_post_processing_by_discipline(
-#             disc, filters, as_json=False)
-#
-#         for graph in graph_list:
-#             graph.to_plotly()
+    uc_cls.test()

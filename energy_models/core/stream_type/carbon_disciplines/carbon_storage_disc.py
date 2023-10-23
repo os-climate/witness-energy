@@ -40,10 +40,10 @@ class CarbonStorageDiscipline(StreamDiscipline):
 
     DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': CarbonStorage.default_techno_list,
-                                     'visibility': StreamDiscipline.SHARED_VISIBILITY,
+                                     'visibility': 'Shared',
                                      'unit': '-',
                                      'namespace': 'ns_carbon_storage', 'structuring': True},
-               'data_fuel_dict': {'type': 'dict', 'visibility': StreamDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'visibility': 'Shared',
                                   'namespace': 'ns_carbon_storage', 'default': CarbonStorage.data_energy_dict,
                                   'unit': 'defined in dict'},
                }

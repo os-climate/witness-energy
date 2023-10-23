@@ -125,7 +125,7 @@ class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         self.techno_model.configure_input(inputs_dict)
 
     def setup_sos_disciplines(self):
-        MediumHeatTechnoDiscipline.setup_sos_disciplines(self)
+        super().setup_sos_disciplines()
 
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',

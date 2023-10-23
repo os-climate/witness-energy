@@ -76,6 +76,8 @@ class ElectricityDiscipline(EnergyDiscipline):
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
 
     def setup_sos_disciplines(self):
+        super().setup_sos_disciplines()
+
         dynamic_outputs = {}
         if 'technologies_list' in self.get_data_in():
             techno_list = self.get_sosdisc_inputs('technologies_list')
@@ -87,8 +89,6 @@ class ElectricityDiscipline(EnergyDiscipline):
                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                      'namespace': 'ns_functions'}
         self.add_outputs(dynamic_outputs)
-
-        EnergyDiscipline.setup_sos_disciplines(self)
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()

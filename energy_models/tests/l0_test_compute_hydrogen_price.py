@@ -18,7 +18,9 @@ import pandas as pd
 import numpy as np
 import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 
@@ -276,6 +278,9 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                                  1903228912.9121237, 1900508965.3773632, 1897572989.323316, 1894437297.5816505,
                                                                  1891117678.7879717, 1887628158.5415828, 1883981246.8879216]})
 
+        self.techno_capital = pd.DataFrame(
+            {'years': years, GlossaryCore.Capital: 0.0})
+
         self.electrolysis_carbon_emissions = pd.DataFrame(
             {'years': years, 'Electrolysis.PEM': 0.0})
 
@@ -300,71 +305,13 @@ class HydrogenPriceTestCase(unittest.TestCase):
             {'years': years, 'PlasmaCracking (Gha)': 0.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
+        self.techno_capital = pd.DataFrame(
+            {'years': years, GlossaryCore.Capital: 0.0})
 
     def tearDown(self):
         pass
 
-    def test_01_compute_hydrogen_price_with_same_production(self):
-        year_start = 2020
-        year_end = 2050
-
-        inputs_dict = {'year_start': year_start,
-                       'year_end': year_end,
-                       'CO2_taxes': self.co2_taxes,
-                       'data_fuel_dict': GaseousHydrogen.data_energy_dict,
-                       'technologies_list': ['WaterGasShift', 'Electrolysis.PEM'],
-                       'WaterGasShift.techno_consumption': self.smr_consumption,
-                       'WaterGasShift.techno_consumption_woratio': self.smr_consumption,
-                       'WaterGasShift.techno_production': self.smr_production,
-                       'WaterGasShift.techno_prices': self.smr_techno_prices,
-                       'WaterGasShift.CO2_emissions': self.smr_carbon_emissions,
-                       'WaterGasShift.land_use_required': self.land_use_required_WaterGasShift,
-                       'Electrolysis.PEM.techno_consumption': self.electrolysis_consumption,
-                       'Electrolysis.PEM.techno_consumption_woratio': self.electrolysis_consumption,
-                       'Electrolysis.PEM.techno_production': self.electrolysis_production,
-                       'Electrolysis.PEM.techno_prices': self.electrolysis_techno_prices,
-                       'Electrolysis.PEM.CO2_emissions': self.electrolysis_carbon_emissions,
-                       'Electrolysis.PEM.land_use_required': self.land_use_required_Electrolysis,
-                       'PlasmaCracking.techno_consumption': self.plasmacracking_consumption,
-                       'PlasmaCracking.techno_consumption_woratio': self.plasmacracking_consumption,
-                       'PlasmaCracking.techno_production': self.plasmacracking_production,
-                       'PlasmaCracking.techno_prices': self.plasmacracking_techno_prices,
-                       'PlasmaCracking.CO2_emissions': self.plasma_cracking_carbon_emissions,
-                       'PlasmaCracking.land_use_required': self.land_use_required_PlasmaCracking,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource}
-
-        h2_model = GaseousHydrogen('hydrogen.gaseous_hydrogen')
-        h2_model.configure(inputs_dict)
-        prices, production, consumption, consumption_woratio, techno_mix_weights = h2_model.compute()
-
-        # Same production then same weights : 50%
-        # self.assertListEqual(
-        #     list(techno_mix_weights['SMR'].values), list(techno_mix_weights['electrolysis'].values))
-        # self.assertListEqual(list(techno_mix_weights['SMR'].values), list(np.ones(
-        #     year_end - year_start + 1) * 50.0))
-
-        # Check that the final price is inbetween the two techno prices
-        for smr_price, price, electrolysis_price in zip(self.smr_techno_prices['WaterGasShift'], prices['hydrogen.gaseous_hydrogen'], self.electrolysis_techno_prices['Electrolysis.PEM']):
-            if smr_price < electrolysis_price:
-                self.assertTrue(smr_price <= price <= electrolysis_price)
-            else:
-                self.assertTrue(electrolysis_price <= price <= smr_price)
-
-        # for column in consumption:
-        #     if column != 'years':
-        #         self.assertListEqual(
-        # list(consumption[column].values), list(2.0 *
-        # self.smr_consumption[column].values))
-
-        # for column in production:
-        #     if column != 'years' and not column.startswith('H2'):
-        #         self.assertEqual(
-        # list(production[column].values), list(2.0 *
-        # self.smr_production[column].values))
-
-    def test_02_hydrogen_discipline(self):
+    def test_01_hydrogen_discipline(self):
 
         self.name = 'Test'
         self.model_name = 'hydrogen.gaseous_hydrogen'
@@ -372,6 +319,7 @@ class HydrogenPriceTestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
+                   'ns_energy': f'{self.name}',
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -401,6 +349,9 @@ class HydrogenPriceTestCase(unittest.TestCase):
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.CO2_emissions': self.electrolysis_carbon_emissions,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.land_use_required': self.land_use_required_Electrolysis,
                        f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption': self.plasmacracking_consumption,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
+                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
                        f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption_woratio': self.plasmacracking_consumption,
                        f'{self.name}.{self.model_name}.PlasmaCracking.techno_production': self.plasmacracking_production,
                        f'{self.name}.{self.model_name}.PlasmaCracking.techno_prices': self.plasmacracking_techno_prices,

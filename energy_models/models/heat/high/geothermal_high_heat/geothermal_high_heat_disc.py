@@ -111,7 +111,7 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
         self.techno_model.configure_input(inputs_dict)
 
     def setup_sos_disciplines(self):
-        HighHeatTechnoDiscipline.setup_sos_disciplines(self)
+        super().setup_sos_disciplines()
 
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',
@@ -129,7 +129,7 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
 
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model.configure_parameters_update(inputs_dict)
-        HighHeatTechnoDiscipline.run(self)
+        super().run()
         self.techno_model.compute_heat_flux()
 
         outputs_dict = {'heat_flux': self.techno_model.heat_flux_distribution}

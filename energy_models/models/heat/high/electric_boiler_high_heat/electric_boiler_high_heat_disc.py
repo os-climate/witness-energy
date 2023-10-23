@@ -99,7 +99,7 @@ class ElectricBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
         self.techno_model.configure_input(inputs_dict)
 
     def setup_sos_disciplines(self):
-        HighHeatTechnoDiscipline.setup_sos_disciplines(self)
+        super().setup_sos_disciplines()
         # dynamic_inputs = self.get_inst_desc_in()
         # #self.get_data_in()
         # #print(self.get_sosdisc_inputs())
@@ -137,7 +137,7 @@ class ElectricBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
 
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model.configure_parameters_update(inputs_dict)
-        HighHeatTechnoDiscipline.run(self)
+        super().run()
         self.techno_model.compute_heat_flux()
 
         outputs_dict = {'heat_flux': self.techno_model.heat_flux_distribution}

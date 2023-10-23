@@ -18,6 +18,8 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -779,6 +781,18 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         for key in mda_data_output_dict[self.energy_name].keys():
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
+
+        technos = inputs_dict[f"{self.name}.technologies_list"]
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
+        for techno in technos:
+            inputs_dict[
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.year_end'] = 2050
