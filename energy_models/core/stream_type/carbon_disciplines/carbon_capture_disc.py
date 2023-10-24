@@ -80,10 +80,12 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
     energy_name = CarbonCapture.name
 
-    DESC_OUT = {'carbon_captured_type': {'type': 'dataframe', 'unit': 'Mt'},
-                'carbon_captured_type_woratio': {'type': 'dataframe', 'unit': 'Mt'}}
+    DESC_OUT = StreamDiscipline.DESC_OUT
 
-    DESC_OUT.update(StreamDiscipline.DESC_OUT)
+    DESC_OUT.update({'carbon_captured_type': {'type': 'dataframe', 'unit': 'Mt'},
+                'carbon_captured_type_woratio': {'type': 'dataframe', 'unit': 'Mt'}})
+
+    #DESC_OUT.update(StreamDiscipline.DESC_OUT)
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -95,12 +97,11 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         Overwrite run to limit flue gas carbon capture 
         '''
 
-        StreamDiscipline.run(self)
+        super().run()
 
         outputs_dict = {
             'carbon_captured_type': self.energy_model.carbon_captured_type,
             'carbon_captured_type_woratio': self.energy_model.carbon_captured_type_woratio,
-            GlossaryEnergy.EnergyTypeCapitalDfValue: self.energy_model.energy_type_capital
         }
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)

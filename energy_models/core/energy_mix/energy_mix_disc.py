@@ -282,6 +282,11 @@ class Energy_Mix_Discipline(SoSWrapp):
                 ccs_list = inputs_dict['ccs_list']
                 if ccs_list is not None:
                     for ccs_name in ccs_list:
+                        etcp = GlossaryCore.get_dynamic_variable(GlossaryEnergy.EnergyTypeCapitalDf)
+                        etcp.update({"namespace": "ns_ccs",
+                                     "visibility": "Shared"})
+                        dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}'] = etcp
+
                         dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_ccs',
@@ -515,11 +520,12 @@ class Energy_Mix_Discipline(SoSWrapp):
         # -------------------------------------------#
         # ---- Production / Consumption gradients----#
         # -------------------------------------------#
-        for energy in inputs_dict['energy_list']:
+        for energy in inputs_dict['energy_list'] + inputs_dict['ccs_list']:
+            ns_energy = self.get_ns_energy(energy)
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.EnergyCapitalDfValue, GlossaryCore.Capital),
-                (f'{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryCore.Capital),
-                identity
+                (f'{ns_energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryCore.Capital),
+                identity / 1e3
             )
 
         for energy in energy_list:

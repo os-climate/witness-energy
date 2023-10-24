@@ -270,7 +270,11 @@ class EnergyMix(BaseStream):
                 energy_ = AgricultureMixDiscipline.name
             energy_type_capitals.append(self.inputs[f"{energy_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryCore.Capital].values)
 
-        energy_capital = np.sum(energy_type_capitals, axis=0)
+        for ccs in self.ccs_list:
+            energy_type_capitals.append(
+                self.inputs[f"{ccs}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryCore.Capital].values)
+
+        energy_capital = np.sum(energy_type_capitals, axis=0) / 1e3
 
         self.energy_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,

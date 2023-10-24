@@ -885,4 +885,7 @@ class Study(EnergyStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.ee.display_treeview_nodes()
+    #uc_cls.test()
+
