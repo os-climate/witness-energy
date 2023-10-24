@@ -270,7 +270,7 @@ class EnergyMix(BaseStream):
                 energy_ = AgricultureMixDiscipline.name
             energy_type_capitals.append(self.inputs[f"{energy_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryCore.Capital].values)
 
-        for ccs in self.ccs_list:
+        for ccs in self.inputs['ccs_list']:
             energy_type_capitals.append(
                 self.inputs[f"{ccs}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryCore.Capital].values)
 

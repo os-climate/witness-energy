@@ -22,10 +22,13 @@ Economic and technical datas is taken from Vo & al [^1].
 Currently around 3.5 Mtoe of biomethane are produced worldwide and 92.3% are from upgrading biogas[^4].
 The initial age distribution has been computed with biomethane plant lists from [^5] since most of biogas is converted into biomethane.
 
-
+## Cooling
+[^6] Biogas upgrading process by receiving 2.393 kg/s biogas, 663.2 kW cooling energy, and 1650 kW power produces 0.5533 kg/s biomethane.
  
+
 [^1]: Vo, T. T.; Wall, D. M.; Ring, D.; Rajendran, K.; Murphy, J. D. (2018). Techno-economic analysis of biogas upgrading via amine scrubber, carbon capture and ex-situ methanation. Applied Energy, 212, pp. 1191-1202.
 [^2]:https://anaerobic-digestion.com/biogas-upgrading-technologies/
 [^3]:https://biomass.ucdavis.edu/files/2015/10/Biogas-Cleanup-Report_FinalDraftv3_12Nov2014-2.pdf
 [^4]:Abanades, S., Abbaspour, H., Ahmadi, A., Das, B., Ehyaei, M.A., Esmaeilion, F., Assad, M.E.H., Hajilounezhad, T., Jamali, D.H., Hmida, A. and Ozgoli, H.A., 2021. A critical review of biogas production and usage with legislations framework across the globe. International Journal of Environmental Science and Technology, pp.1-24.
 [^5]:http://task37.ieabioenergy.com/plant-list.html
+[^6]:https://www.sciencedirect.com/science/article/abs/pii/S0957582021002469

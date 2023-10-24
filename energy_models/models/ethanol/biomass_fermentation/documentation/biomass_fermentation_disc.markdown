@@ -5,6 +5,9 @@ It can be made from very common crops such as hemp, sugarcane, potato, cassava a
 There has been considerable debate about how useful bioethanol is in replacing gasoline. 
 Concerns about its production and use relate to increased food prices due to the large amount of arable land required for crops, as well as the energy and pollution balance of the whole cycle of ethanol production, especially from corn.[^1]
 
+What does fermentation of biomass produce? 
+
+Fermentation is an anaerobic process that breaks down the glucose within organic materials. It is a series of chemical reactions that convert sugars to alcohol or acid. Yeast or bacteria are added to the biomass material, which feed on the sugars to produce ethanol and carbon dioxide.
 ## Dry Milling Process
 
 Over 90 percent of the grain ethanol produced today comes from the dry milling process, with the remaining coming from wet mills. The main difference between the two is in the initial treatment of the grain.
@@ -25,3 +28,5 @@ These co-products eventually become distillers grains, as well as corn distiller
 [^1] [Ethanol Fuel on Wikipedia](https://en.wikipedia.org/wiki/Ethanol_fuel)
 
 [^2] [Renewable Fuels Association, How is Ethanol Made ?](https://ethanolrfa.org/ethanol-101/how-is-ethanol-made)
+
+[^3] https://www.eia.gov/energyexplained/biomass/

@@ -10,6 +10,8 @@ Geothermal energy technologies are distinguished into three main subtechnologies
 
 A geothermal power plant is not producing electricity full time, in order to model yearly production a variable is set : **Capacity Factor (%)**.
 
+Consumption of heat is calculated in TWh for medium range temperature. It depends on production of electricity(TWh) and efficiency.
+
 **Capacity factor[^3] :** Generally defined as the ratio of actual annual output to output at rated capacity for an entire year.  
 
 ## Data     
@@ -30,3 +32,6 @@ IEA Geothermal electricity power generation prediction[^7]
 [^5]: [Cole, W.J., Gates, N., Mai, T.T., Greer, D. and Das, P., 2020. 2019 standard scenarios report: a US electric sector outlook (No. NREL/PR-6A20-75798). National Renewable Energy Lab.(NREL), Golden, CO (United States).]
 [^6]: [National Renewable Energy Laboratory USA (NREL), Annual Technology Baseline 2020](https://atb.nrel.gov/electricity/2020/data.php)
 [^7]: [IEA 2022, Tracking Geothermal 2020, License: CC BY 4.0.](https://www.iea.org/reports/tracking-geothermal-2020)
+[^8]: https://www.nrel.gov/research/re-geo-elec-production.html#:~:text=Geothermal%20power%20plants%20use%20steam,more%20below%20the%20earth's%20surface.&text=The%20steam%20rotates%20a%20turbine,a%20generator%2C%20which%20produces%20electricity.
+[^9]: Temperature range: https://www.eia.gov/energyexplained/geothermal/geothermal-power-plants.php
+[^10]: Efficiency: https://www.sciencedirect.com/science/article/abs/pii/S0375650513001120

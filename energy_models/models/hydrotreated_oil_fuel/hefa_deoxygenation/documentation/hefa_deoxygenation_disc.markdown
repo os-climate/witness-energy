@@ -31,6 +31,10 @@ Physical Data regarding HVO Fuel are from [F3](https://f3centre.se/en/fact-sheet
 
 Technico-economic information (Capex, Opex, Production levels, past investments, ...) are coming from:
 
+## Heat
+Heat production/consumption is neglected in coal-gasification process.
+ 
+
 - [Tao, L., Milbrandt, A., Zhang, Y. et al. Techno-economic and resource analysis of hydroprocessed renewable jet fuel. Biotechnol Biofuels 10, 261 (2017).](https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3)
 - [Noah, Matthew. A Techno-Economic and Environmental Assessment of Hydroprocessed Renewable Distillate Fuels. (2011)](https://dspace.mit.edu/bitstream/handle/1721.1/65508/746766700-MIT.pdf?sequence=2&isAllowed=y)
 - [Diederichs, G.W. Techno-Economic Assessment of Processes that Produce Jet Fuel from Plant-Derived Sources. (2015)](https://core.ac.uk/download/pdf/37440495.pdf)

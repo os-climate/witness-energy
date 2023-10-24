@@ -7,6 +7,13 @@ Biomass comes from organic feedstocks as wood, plants or wastes.
 - herbaceous biomass comes from crops residues or energy crops (providing biomass for energy purpose and not feeding). Algae can also be used as biomass source.
 - Wastes biomass comes from municipal or industrial wastes.
 
+The heat generated during pelletizing can come from several sources, depending on the type of materials being pelletized and the equipment used. 
+
+Consumption of heat is calculated in TWh for high temperature. It depends on production of solid fuel(TWh) and efficiency value.
+
+Different steps involved in the pelletization process include biomass drying, size reduction, pretreatment, pellet formulation, pelletization and pellet cooling, collection and storage.
+![img.png](img.png)
+
 It can be converted into heat, electricity, gases or liquid biofuels throught diverse technologies as combustion, gasification, anaerobic fermentation and others.
 Biomass in SosTrades has been divided following its use.
 
@@ -50,5 +57,9 @@ The data used for this model are extracted from the IEA bioenergy file from 2019
 
 [^4]: Globenewswire (2020). Outlook on the Wood Pellet Global Market to 2025. Available at : https://www.globenewswire.com/news-release/2020/11/24/2132562/0/en/Outlook-on-the-Wood-Pellet-Global-Market-to-2025-Europe-is-the-Largest-Consumer-as-Well-as-Producer-of-Wood-Pellets.html
 
-[^5]:IEA bioenergy (2019). Margin potential for a long-term sustainable wood pellet supply chain - Annexes Available at :
+[^5]: IEA bioenergy (2019). Margin potential for a long-term sustainable wood pellet supply chain - Annexes Available at :
 https://www.ieabioenergy.com/wp-content/uploads/2019/06/Fritsche-et-al-2019-IEA-Bio-T40-Margin-Pellet-Study-Annexes.pdf, License: CC BY 4.0.
+
+[^5]: https://www.kobelco.co.jp/english/ktr/pdf/ktr_29/058-068.pdf
+
+[^6]: https://bioenergyinternational.com/pellets-remain-a-competitive-renewable-alternative/

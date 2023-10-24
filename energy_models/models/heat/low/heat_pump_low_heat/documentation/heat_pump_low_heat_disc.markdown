@@ -24,3 +24,13 @@ COP is defined as the relationship between the power (kWh) that is drawn out of 
 
 [^4]: [Heat Model Assumptions](https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx)
 
+[^5]: https://www.energy.gov/energysaver/heat-pump-systems
+
+[^6]: https://en.wikipedia.org/wiki/Heat_pump
+
+[^7]: Capex, https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+
+[^8]: Opex, https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+
+[^9]: Initial production, https://www.iea.org/reports/heat-pumps
+

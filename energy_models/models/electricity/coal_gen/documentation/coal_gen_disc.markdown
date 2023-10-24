@@ -5,6 +5,8 @@ A coal-fired power station is a thermal power station that burns coal to generat
 
 -The usage of CCUS (Carbon Capture Use & Storage) by an integrated suite of technologies. These technologies can achieve a 90% capture rate of the carbon dioxyde produced from the plants.
 
+Production of high heat is calculated in TWh. Where, consumption of solid fuel(TWh) is more than production of electricity(TWh).
+
 ![](Coal_fired_power_plant_diagram.png) 
 (Image Credit: Tennessee Valley Authority, taken from [^1])
 
@@ -45,3 +47,7 @@ The GAINS model also predicts N2O fugitive emissions from coal energy. The emiss
 [^6]: IEA 2022, [Coal-Fired report, IEA 2020](https://www.iea.org/reports/coal-fired-power), License: CC BY 4.0.
 
 [^7]: Winiwarter, W., 2005. The GAINS model for greenhouse gases-version 1.0: nitrous oxide (N2O).https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
+
+[^8]: https://en.wikipedia.org/wiki/Coal-fired_power_station
+
+[^9]: https://www.tva.com/energy/our-power-system/coal/how-a-coal-plant-works#:~:text=Coal%2Dfired%20plants%20produce%20electricity,to%20start%20the%20process%20over.

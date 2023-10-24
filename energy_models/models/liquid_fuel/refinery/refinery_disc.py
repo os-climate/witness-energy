@@ -77,6 +77,10 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
                                  'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
                                  'CH4_emission_factor_unit': 'Mt/TWh',
+                                 # 'medium_heat_production': (30000/136) * 0.000293 * 1.00E-09 / (1.13E-08),  # 30000  Btu/bbl, https://www.osti.gov/servlets/purl/7261027, Page No 41
+                                 # 'medium_heat_production_unit': 'TWh/TWh',
+                                 # a barrel of oil weighs around 300 pounds or about 136 kilograms.
+                                 #1 BTU = 0.000293 kWh
                                  # https://www.e-education.psu.edu/eme801/node/470
                                  # 1 kg of crude oil is 11.3 kWh
                                  # 0.137 * 11.9 kero

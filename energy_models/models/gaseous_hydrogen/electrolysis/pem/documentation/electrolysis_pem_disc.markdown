@@ -34,6 +34,10 @@ Public investment in Europe for electrolysers is handled by the Fuel Cell and Hy
 
 $$\frac{190*100}{2*36}= 263.88 \ MDollars$$ 
 
+## Heat
+In Electrolysis, heat production assumed the net difference between total electricity consumption and total hydrogen production.
+
+
 
 [^1]: Flexible combined production of power, heat and transport fuels from renewable energy sources,FLEXCHX, deliverable report of European Union Horizon 2020 research (2018).
 

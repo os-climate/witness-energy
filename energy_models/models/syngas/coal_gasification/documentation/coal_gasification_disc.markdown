@@ -27,6 +27,8 @@ Technical and economic datas were taken from Wang et Al. [^1] and ETSAP [^2]
 
 The Chapter 4 of the IPCC report predicts methane fugitive emissions from biomass gasification.  Emission factor is provided based on the volume of CH4 emissions released during the production and treatment of syngas and has a value of 6.1 kgCH4/TJ [^4]. 
 
+## Heat
+Heat production/consumption is neglected in coal-gasification process.
  
 [^1]: Wang, Y., Li, G., Liu, Z. , Cui, P., Zhu, Z.  (2019). Techno-economic analysis of biomass-to-hydrogen process in comparison with coal-to-hydrogen process. Energy, 185(2019), 1063-1075.
 

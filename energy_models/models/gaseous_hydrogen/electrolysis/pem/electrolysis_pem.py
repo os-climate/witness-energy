@@ -19,7 +19,7 @@ from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-
+from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
 import numpy as np
 
 
@@ -162,3 +162,8 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         
         self.consumption[f'{self.PLATINUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'] * \
             self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] # in Mt
+
+        # Production
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] \
+        #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
