@@ -29,11 +29,6 @@ def preprocess_json(data):
     else:
         return data
 
-def preprocess_data_and_save_json(data, output_file_path):
-    processed_data = preprocess_json(data)
-    with open(output_file_path, 'w') as output_file:
-        json.dump(processed_data, output_file, indent=4)
-
 def preprocess_and_save_json(input_file_path, output_file_path):
     """
     Reads a JSON file, preprocesses it by replacing all occurrences of . in the keys with #,
