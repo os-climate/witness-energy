@@ -483,6 +483,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         stream_class_dict = EnergyMix.stream_class_dict
         years = np.arange(inputs_dict['year_start'],
                           inputs_dict['year_end'] + 1)
+        identity = np.eye(len(years))
 
         heat_losses_percentage = inputs_dict['heat_losses_percentage'] / 100.0
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
@@ -514,6 +515,13 @@ class Energy_Mix_Discipline(SoSWrapp):
         # -------------------------------------------#
         # ---- Production / Consumption gradients----#
         # -------------------------------------------#
+        for energy in inputs_dict['energy_list']:
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.EnergyCapitalDfValue, GlossaryCore.Capital),
+                (f'{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}', GlossaryCore.Capital),
+                identity
+            )
+
         for energy in energy_list:
             ns_energy = self.get_ns_energy(energy)
 
