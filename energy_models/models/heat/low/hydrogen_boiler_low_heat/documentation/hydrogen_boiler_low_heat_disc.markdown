@@ -19,7 +19,7 @@ The hydrogen and oxygen gases are mixed together before being ignited in a catal
 
 Replacing natural gas boilers with hydrogen gas may be the simplest solution to the nation’s heating problems. Hydrogen is a carbon-free fuel source and can fit into a current boiler’s physical space without much disruption.
 
-High temperature heat in Hydrogen boiler technology, the temperature range is above 400 degree C.
+Low temperature heat in Hydrogen boiler technology, the temperature range is above 400 degree C.
 
 In Hydrogen demand calculation, Hydrogen is used to produce 1kwh of heat (this information in kwh) : hydrogen_needs is in
 
@@ -33,7 +33,7 @@ price of hydrogen is in $/kWh of heat.
 production in 2021 that is total heat produced by Hydrogen boiler is 13 million metric tons (Mt)= 541.6666667 TWh
 
 
-initial production for high heat temp = 180.55 TWh
+initial production for low heat temp = 180.55 TWh
 
 
 

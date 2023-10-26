@@ -66,6 +66,8 @@ class OneInvestDiscipline(SoSWrapp):
                                                 'heat.hightemperatureheat.GeothermalHighHeat': ('float', None, True),
                                                 'heat.hightemperatureheat.CHPHighHeat': ('float', None, True),
                                                 'heat.hightemperatureheat.HydrogenBoilerHighHeat': ('float', None, True),
+                                                'heat.mediumtemperatureheat.HydrogenBoilerMediumHeat': ('float', None, True),
+                                                'heat.lowtemperatureheat.HydrogenBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.NaturalGasBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.ElectricBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.HeatPumpLowHeat': ('float', None, True),
