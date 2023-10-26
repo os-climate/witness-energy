@@ -72,7 +72,7 @@ class HydrogenBoilerHighHeatDiscipline(HighHeatTechnoDiscipline):
     # initial production i.e. total heat produced by Hydrogen Boiler is 13 million metric tons (Mt)= 57.2 million TWh = 57200000 TWh
 
     initial_production = 19066666       # https://www2.deloitte.com/content/dam/Deloitte/us/Documents/Advisory/us-advisory-assessment-of-green-hydrogen-for-industrial-heat.pdf
-                                        # page 17
+                                        # page 17  13000000000 kg
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0,
                ]
