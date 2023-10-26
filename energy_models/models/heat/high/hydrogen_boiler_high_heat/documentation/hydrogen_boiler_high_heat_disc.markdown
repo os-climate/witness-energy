@@ -7,6 +7,12 @@ it is a boiler that burns hydrogen as opposed to natural gas (or methane). These
 
 As hydrogen is a thinner gas than methane, some parts of the boiler may differ slightly, including the flame detector and the burner (which we look at in more detail further down the page) but they work in much the same way as your current boiler.
 
+Hydrogen boilers are considered to be a more environmentally friendly alternative to traditional boilers, as burning hydrogen gas produces only water vapour as a byproduct, without releasing harmful greenhouse gases like carbon dioxide or methane. 
+
+Hydrogen does not produce carbon dioxide when it burns; it only produces water vapour.
+
+When the hydrogen molecule is burned (hydrogen combustion) with oxygen gas, the bonds between two hydrogen atoms are broken as well as those between oxygen atoms to make up bonds between hydrogen and oxygen atoms. In layman's terms, burning hydrogen results in water: H2 + 1 2 O2 −→ H2O + 286, 000 joules.
+
 Working:
 
 The hydrogen and oxygen gases are mixed together before being ignited in a catalytic burner. Hydrogen is more flammable than natural gas and so the burners on hydrogen boilers are specially designed so that the flames can be limited if too much gas is flowing through. A flame detection component is also required in a hydrogen-only boiler as hydrogen flames are invisible.
@@ -59,5 +65,8 @@ The data used for this model is extracted from the IEA Data, ScienceDirect, Prec
 [^8]: About Hydrogen boiler, https://www.worcester-bosch.co.uk/hydrogen
 
 [^9]: About Hydrogen boiler & its working, https://precisionheating.ie/hydrogen-boilers/hydrogen-boilers-how-they-work-and-whether-you-need-one/#:~:text=What%20is%20a%20hydrogen%20boiler,be%20used%20to%20heat%20water.
-                               
+
+[^10]: About Hydrogen boiler, results https://www.google.com/search?q=co2+emission+in+hydrogen+boiler&sca_esv=576745885&rlz=1C1UEAD_enIN1000IN1000&sxsrf=AM9HkKnG6z7z945EE7G-nx-TVufdXr14qw%3A1698304528613&ei=EBI6Zd2HJZDQ-QbCh6s4&ved=0ahUKEwjdz5exlZOCAxUQaN4KHcLDCgcQ4dUDCBA&uact=5&oq=co2+emission+in+hydrogen+boiler&gs_lp=Egxnd3Mtd2l6LXNlcnAiH2NvMiBlbWlzc2lvbiBpbiBoeWRyb2dlbiBib2lsZXIyBRAAGKIEMgUQABiiBDIFEAAYogRI5k1QlwZYsTlwAXgAkAEAmAG8AaABzAuqAQMwLjm4AQPIAQD4AQHCAgsQABiKBRiGAxiwA8ICChAhGKABGMMEGAriAwQYASBBiAYBkAYD&sclient=gws-wiz-serp
+
+[^11]: combustion reaction: https://www.google.com/search?q=combusion+of+which+of+the+following+gas+in+hydrogen+boiler&sca_esv=576723421&rlz=1C1UEAD_enIN1000IN1000&sxsrf=AM9HkKm034-D8bGKbFhIznUgWAa2D3zjBQ%3A1698294629056&ei=Zes5ZamLA9rOseMP57WguAw&oq=combusion+of++which+gas+in+hydrogen+boiler&gs_lp=Egxnd3Mtd2l6LXNlcnAiKmNvbWJ1c2lvbiBvZiAgd2hpY2ggZ2FzIGluIGh5ZHJvZ2VuIGJvaWxlcioCCAAyChAhGKABGMMEGAoyChAhGKABGMMEGApIjkJQnA1Y0yRwAXgBkAEAmAGvAaABygiqAQMwLje4AQHIAQD4AQHCAgoQABhHGNYEGLADwgIFEAAYogTCAggQABiJBRiiBOIDBBgAIEGIBgGQBgg&sclient=gws-wiz-serp                             
 
