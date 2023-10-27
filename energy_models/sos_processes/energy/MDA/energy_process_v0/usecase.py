@@ -304,7 +304,7 @@ class Study(EnergyStudyManager):
             self.update_dspace_dict_with(
                 f'{column}.{techno_wo_dot}_array_mix', np.minimum(np.maximum(
                     self.lower_bound_techno, invest_mix_df_wo_years[column].values), self.upper_bound_techno),
-                self.lower_bound_techno, self.upper_bound_techno, activated_elem = [False] + [True]*5)
+                self.lower_bound_techno, self.upper_bound_techno, activated_elem = [False] + [True]*(GlossaryEnergy.NB_POLES_COARSE - 1))
 
     def get_investments_mix(self):
 

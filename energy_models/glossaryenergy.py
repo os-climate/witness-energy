@@ -7,7 +7,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CO2Taxes = GlossaryWitnessCore.CO2Taxes
     CO2Taxes["namespace"] = "ns_energy_study"
 
-    NB_POLES_COARSE: int = 6
+    NB_POLES_COARSE: int = 20
 
     CCSTechnoInvest = {
         "type": "dataframe",
