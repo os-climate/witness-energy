@@ -304,7 +304,7 @@ class Study(EnergyStudyManager):
             self.update_dspace_dict_with(
                 f'{column}.{techno_wo_dot}_array_mix', np.minimum(np.maximum(
                     self.lower_bound_techno, invest_mix_df_wo_years[column].values), self.upper_bound_techno),
-                self.lower_bound_techno, self.upper_bound_techno)
+                self.lower_bound_techno, self.upper_bound_techno, activated_elem = [False] + [True]*5)
 
     def get_investments_mix(self):
 
@@ -410,9 +410,9 @@ class Study(EnergyStudyManager):
             0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
         invest_energy_mix_dict[Renewable.name] = np.linspace(
-            1.0, 15.625, len(years))
+            1000.0, 15.625, len(years))
         invest_energy_mix_dict[Fossil.name] = np.linspace(
-            100, 77.5, len(years))
+            1500.0, 77.5, len(years))
         invest_energy_mix_dict[HydrotreatedOilFuel.name] = [
             3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         invest_energy_mix_dict[Ethanol.name] = [
@@ -535,8 +535,8 @@ class Study(EnergyStudyManager):
                     raise Exception(f'{energy} not in investment_mixes')
                 for techno in invest_techno.columns:
                     if techno != GlossaryCore.Years:
-                        invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values * \
-                                                              mix_energy / norm_techno_mix
+                        invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values
+                                                              #  * mix_energy / norm_techno_mix
 
         return invest_mix_df
 
@@ -557,9 +557,10 @@ class Study(EnergyStudyManager):
         for column in invest_mix_df.columns:
             if column != GlossaryCore.Years:
                 if len(invest_mix_df[GlossaryCore.Years].values) == len(energy_invest_poles):
-                    indep_invest_df[column] = invest_mix_df[column].values * \
-                                              energy_invest_poles * \
-                                              energy_invest_factor
+                    indep_invest_df[column] = invest_mix_df[column].values
+                                              #energy_invest_factor
+                                              #energy_invest_poles * \
+
                 else:
                     indep_invest_df[column] = invest_mix_df[column].values * \
                                               energy_invest['energy_investment'].values * \
