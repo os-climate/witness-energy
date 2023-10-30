@@ -51,8 +51,8 @@ class Study(EnergyMixStudyManager):
             invest_renewable_mix_dict['years'] = self.years
 
             for techno in self.technologies_list:
-                invest_renewable_mix_dict[techno], _ = self.invest_bspline(
-                    invest_renewable_mix_dict[techno], len(self.years))
+                invest_ren_2020 = DatabaseWitnessEnergy.InvestCleanEnergy2020.value
+                invest_renewable_mix_dict[techno] = np.linspace(invest_ren_2020, invest_ren_2020*2, len(self.years))
 
         renewable_mix_invest_df = pd.DataFrame(invest_renewable_mix_dict)
 

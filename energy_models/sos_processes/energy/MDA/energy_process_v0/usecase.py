@@ -568,9 +568,9 @@ class Study(EnergyStudyManager):
                                               #energy_invest_poles * \
 
                 else:
-                    indep_invest_df[column] = invest_mix_df[column].values * \
-                                              energy_invest['energy_investment'].values * \
-                                              energy_invest_factor
+                    indep_invest_df[column] = invest_mix_df[column].values
+                                              #energy_invest['energy_investment'].values * \
+                                              #energy_invest_factor
 
         return indep_invest_df
 
