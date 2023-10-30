@@ -299,12 +299,18 @@ class Study(EnergyStudyManager):
         """
         invest_mix_df_wo_years = invest_mix_df.drop(
             GlossaryCore.Years, axis=1)
+
+        # check if we are in coarse usecase, in this case we deactivate first point of optim
+        if 'fossil' in self.energy_list:
+            activated_elem = [False] + [True]*(GlossaryEnergy.NB_POLES_COARSE - 1)
+        else:
+            activated_elem = None
         for column in invest_mix_df_wo_years.columns:
             techno_wo_dot = column.replace('.', '_')
             self.update_dspace_dict_with(
                 f'{column}.{techno_wo_dot}_array_mix', np.minimum(np.maximum(
                     self.lower_bound_techno, invest_mix_df_wo_years[column].values), self.upper_bound_techno),
-                self.lower_bound_techno, self.upper_bound_techno, activated_elem = [False] + [True]*(GlossaryEnergy.NB_POLES_COARSE - 1))
+                self.lower_bound_techno, self.upper_bound_techno, activated_elem = activated_elem )
 
     def get_investments_mix(self):
 
