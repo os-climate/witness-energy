@@ -98,7 +98,11 @@ class SyngasDiscipline(EnergyDiscipline):
                                                  'carbon_capture (Mt)': ('float', None, True),
                                                  'water (Mt)': ('float', None, True),
                                                  'water_resource (Mt)': ('float', None, True),
-                                                 'dioxygen_resource (Mt)': ('float', None, True), }}
+                                                 'dioxygen_resource (Mt)': ('float', None, True),
+                                                 'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                 }}
                     dynamic_inputs[f'{techno}.techno_consumption_woratio'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {'years': ('float', None, True),
@@ -118,6 +122,9 @@ class SyngasDiscipline(EnergyDiscipline):
                                                  'water (Mt)': ('float', None, True),
                                                  'water_resource (Mt)': ('float', None, True),
                                                  'dioxygen_resource (Mt)': ('float', None, True),
+                                                 'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  }}
                     dynamic_inputs[f'{techno}.techno_production'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
@@ -137,7 +144,11 @@ class SyngasDiscipline(EnergyDiscipline):
                                                  'dioxygen (Mt)': ('float', None, True),
                                                  'CH4 (Mt)': ('float', None, True),
                                                  'water_resource (Mt)': ('float', None, True),
-                                                 'dioxygen_resource (Mt)': ('float', None, True), }}
+                                                 'dioxygen_resource (Mt)': ('float', None, True),
+                                                 'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                 }}
                     dynamic_inputs[f'{techno}.techno_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
                         'dataframe_descriptor': {'years': ('float', None, True),

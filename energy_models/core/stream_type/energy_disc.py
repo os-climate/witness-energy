@@ -143,6 +143,9 @@ class EnergyDiscipline(StreamDiscipline):
                                                  'fuel.methanol (TWh)': ('float', None, True),
                                                  'solid_fuel (TWh)': ('float', None, True),
                                                  'hydrogen.liquid_hydrogen (TWh)': ('float', None, True),
+                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                  }}
                     dynamic_inputs[f'{techno}.techno_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh',

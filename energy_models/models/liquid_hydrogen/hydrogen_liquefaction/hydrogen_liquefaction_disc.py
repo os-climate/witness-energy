@@ -55,7 +55,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'efficiency': 0.98,
                                  'techno_evo_eff': 'no',
                                  'WACC': 0.1,
-                                 #'heat_recovery_factor': 0.8,
+                                 'useful_heat_recovery_factor': 0.8,
                                  'learning_rate':  0.2,
                                  'lifetime': lifetime,
                                  'lifetime_unit': 'years',
@@ -104,22 +104,24 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
         self.techno_model.configure_parameters(inputs_dict)
 
     # def compute_sos_jacobian(self):
-    #     inputs_dict = self.get_sosdisc_inputs()
-    #     self.techno_model.configure_parameters(inputs_dict)
+    #     #inputs_dict = self.get_sosdisc_outputs()
+    #     #print(inputs_dict)
     #     LiquidHydrogenTechnoDiscipline.compute_sos_jacobian(self)
-
-        # # the generic gradient for production column is not working because of
-        # # abandoned mines not proportional to production
-        #
-        # scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-        #     ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-        # applied_ratio = self.get_sosdisc_outputs(
-        #     'applied_ratio')['applied_ratio'].values
-        #
-        # dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-        # production_gradient = self.techno_consumption_derivative[f'{Electricity.name} ({self.techno_model.product_energy_unit})']
-        # m = self.set_partial_derivative_for_other_types(
-        #     ('techno_production',
-        #      f'{lowtemperatureheat.name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
-        #     (production_gradient - dprod_name_dinvest))
-
+    #
+    #     # the generic gradient for production column is not working because of
+    #     # abandoned mines not proportional to production
+    #
+    #     scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+    #         ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+    #     applied_ratio = self.get_sosdisc_outputs(
+    #         'applied_ratio')['applied_ratio'].values
+    #
+    #
+    #     dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+    #     production_gradient = self.techno_consumption_derivative[f'{GaseousHydrogen.name} ({self.techno_model.product_energy_unit})']
+    #     print(production_gradient - dprod_name_dinvest)
+    #     m = self.set_partial_derivative_for_other_types(
+    #         ('techno_production',
+    #          f'{lowtemperatureheat.name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
+    #         (production_gradient - dprod_name_dinvest))
+    #

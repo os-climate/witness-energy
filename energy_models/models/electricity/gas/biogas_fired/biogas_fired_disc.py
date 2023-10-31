@@ -151,21 +151,21 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
         return instanciated_chart
 
 
-    def compute_sos_jacobian(self):
-        ElectricityTechnoDiscipline.compute_sos_jacobian(self)
-
-        # the generic gradient for production column is not working because of
-        # abandoned mines not proportional to production
-
-        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-        applied_ratio = self.get_sosdisc_outputs(
-            'applied_ratio')['applied_ratio'].values
-
-        dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-        consumption_gradient = self.techno_consumption_derivative[f'{BioGas.name} ({self.techno_model.product_energy_unit})']
-        #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
-        self.set_partial_derivative_for_other_types(
-            ('techno_production',
-             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
-            (consumption_gradient- dprod_name_dinvest))
+    # def compute_sos_jacobian(self):
+    #     ElectricityTechnoDiscipline.compute_sos_jacobian(self)
+    #
+    #     # the generic gradient for production column is not working because of
+    #     # abandoned mines not proportional to production
+    #
+    #     scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+    #         ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+    #     applied_ratio = self.get_sosdisc_outputs(
+    #         'applied_ratio')['applied_ratio'].values
+    #
+    #     dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+    #     consumption_gradient = self.techno_consumption_derivative[f'{BioGas.name} ({self.techno_model.product_energy_unit})']
+    #     #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
+    #     self.set_partial_derivative_for_other_types(
+    #         ('techno_production',
+    #          f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
+    #         (consumption_gradient- dprod_name_dinvest))

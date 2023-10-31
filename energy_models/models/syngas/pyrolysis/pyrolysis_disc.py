@@ -59,6 +59,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  # C+H2O→H2+CO   ΔH =+131kJ/mol  # Co(28.01 g/mol),H2(2.016 g/mol)
                                  # https://www.sciencedirect.com/topics/earth-and-planetary-sciences/pyrolysis#:~:text=For%20slow%20pyrolysis%2C%20the%20heating,respectively%20%5B15%2C21%5D.
                                  'medium_heat_production_unit': 'TWh/kg',
+                                 'useful_heat_recovery_factor': 0.8,
                                  'efficiency': 1.0,  # No need of efficiency here
                                  'construction_delay': construction_delay,
                                  'learning_rate': 0.0,

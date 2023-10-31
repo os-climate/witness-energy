@@ -28,8 +28,8 @@ from energy_models.core.stream_type.energy_models.gasoline import Gasoline
 from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
 from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
 from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
-
-
+from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
     implementing the computation of Energy Models outputs."""
@@ -77,8 +77,9 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
                                  'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
                                  'CH4_emission_factor_unit': 'Mt/TWh',
-                                 # 'medium_heat_production': (30000/136) * 0.000293 * 1.00E-09 / (1.13E-08),  # 30000  Btu/bbl, https://www.osti.gov/servlets/purl/7261027, Page No 41
-                                 # 'medium_heat_production_unit': 'TWh/TWh',
+                                 'medium_heat_production': (30000/136) * 0.000293 * 1.00E-09 / (1.13E-08),  # 30000  Btu/bbl, https://www.osti.gov/servlets/purl/7261027, Page No 41
+                                 'medium_heat_production_unit': 'TWh/TWh',
+                                 'useful_heat_recovery_factor': 0.8,
                                  # a barrel of oil weighs around 300 pounds or about 136 kilograms.
                                  #1 BTU = 0.000293 kWh
                                  # https://www.e-education.psu.edu/eme801/node/470
@@ -189,6 +190,19 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
+
+        # Grad of heatproduction vs investment
+        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+        applied_ratio = self.get_sosdisc_outputs(
+            'applied_ratio')['applied_ratio'].values
+        print('***** ', self.techno_production_derivative.keys())
+        dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+        consumption_gradient = self.techno_production_derivative[f'{Gasoline.name} ({self.techno_model.product_energy_unit})']
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption',
+             f'{mediumheattechno.energy_name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
+            (consumption_gradient - dprod_name_dinvest))
 
     def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}):
         """

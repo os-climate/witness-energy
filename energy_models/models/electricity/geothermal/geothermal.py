@@ -55,6 +55,6 @@ class Geothermal(ElectricityTechno):
         Compute the consumption and the production of the technology for a given investment
         """
         self.compute_primary_energy_production()
-        self.consumption[f'{mediumtemperatureheat.name}({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
+        self.consumption[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
              self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
              self.techno_infos_dict['efficiency']

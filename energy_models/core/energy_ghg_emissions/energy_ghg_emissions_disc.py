@@ -73,6 +73,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                                 'production hydrogen.gaseous_hydrogen (TWh)': (
                                                                 'float', None, True),
                                                                 'production biogas (TWh)': ('float', None, True),
+                                                                'production fuel.ethanol (TWh)': ('float', None, True),
                                                                 'production syngas (TWh)': ('float', None, True),
                                                                 'production fuel.liquid_fuel (TWh)': (
                                                                 'float', None, True),
@@ -89,6 +90,10 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                                 'production carbon_storage (Mt)': ('float', None, True),
                                                                 'Total production': ('float', None, True),
                                                                 'Total production (uncut)': ('float', None, True),
+                                                                'production heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                                'production heat.mediumtemperatureheat (TWh)': (
+                                                                'float', None, True),
+                                                                'production heat.hightemperatureheat (TWh)': ('float', None, True),
                                                                 },
               },
         'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt',
@@ -215,6 +220,9 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'electricity (TWh)': ('float', None, True),
                                                      'water_resource (Mt)': ('float', None, True),
                                                      'dioxygen_resource (Mt)': ('float', None, True),
+                                                     'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                     'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                     'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                      }
                         }
                         dynamic_inputs[f'{energy}.energy_production'] = {
@@ -267,6 +275,9 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                      'water_resource (Mt)': ('float', None, True),
                                                      'dioxygen_resource (Mt)': ('float', None, True),
+                                                     'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                     'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                     'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                      }
                         }
             if 'ccs_list' in self.get_data_in():

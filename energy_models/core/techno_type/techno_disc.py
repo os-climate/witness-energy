@@ -71,6 +71,7 @@ class TechnoDiscipline(SoSWrapp):
                                                    'hydrogen.gaseous_hydrogen': ('float', None, True),
                                                    'methane': ('float', None, True),
                                                    'fuel.liquid_fuel': ('float', None, True),
+                                                   'fuel.ethanol': ('float', None, True),
                                                    'heat.hightemperatureheat': ('float', None, True),
                                                    'heat.lowtemperatureheat': ('float', None, True),
                                                    'heat.mediumtemperatureheat': ('float', None, True),
@@ -113,6 +114,7 @@ class TechnoDiscipline(SoSWrapp):
                                                           'crude oil': ('float', None, True),
                                                           'fuel.hydrotreated_oil_fuel': ('float', None, True),
                                                           'fuel.biodiesel': ('float', None, True),
+                                                          'fuel.ethanol': ('float', None, True),
                                                           'hydrogen.liquid_hydrogen': ('float', None, True),
                                                           }
                                  },
@@ -142,6 +144,9 @@ class TechnoDiscipline(SoSWrapp):
                                                      'dioxygen_resource': ('float', None, True),
                                                      'crude_oil_resource': ('float', None, True),
                                                      'solid_fuel_resource': ('float', None, True),
+                                                     'heat.hightemperatureheat': ('float', None, True),
+                                                     'heat.lowtemperatureheat': ('float', None, True),
+                                                     'heat.mediumtemperatureheat': ('float', None, True),
                                                      'calcium_resource': ('float', None, True),
                                                      'calcium_oxyde_resource': ('float', None, True),
                                                      'potassium_resource': ('float', None, True),
@@ -168,6 +173,9 @@ class TechnoDiscipline(SoSWrapp):
                                                              'water_resource': ('float', None, True),
                                                              'sea_water_resource': ('float', None, True),
                                                              'biomass_dry_resource': ('float', None, True),
+                                                             'heat.hightemperatureheat': ('float', None, True),
+                                                             'heat.lowtemperatureheat': ('float', None, True),
+                                                             'heat.mediumtemperatureheat': ('float', None, True),
                                                              'wet_biomass_resource': ('float', None, True),
                                                              'natural_oil_resource': ('float', None, True),
                                                              'methanol_resource': ('float', None, True),
@@ -471,6 +479,7 @@ class TechnoDiscipline(SoSWrapp):
         self.dprod_column_dratio = {}
         self.techno_production_derivative = {}
         for column in production:
+            print(column)
             dprod_column_dinvest = self.dprod_dinvest.copy()
             if column not in ['years', f'{self.energy_name} ({self.techno_model.product_energy_unit})']:
                 var_prod = (production[column] /
