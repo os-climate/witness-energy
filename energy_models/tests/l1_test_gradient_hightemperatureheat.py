@@ -117,12 +117,11 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     def test_01_hydrogen_boiler_discipline_analytic_grad(self):
 
         self.name = 'Test'
-        self.model_name = 'HydrogenBoiler'
+        self.model_name = 'HydrogenBoilerHighHeat'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_heat_high': f'{self.name}',
-                   # 'ns_biogas': f'{self.name}',
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
