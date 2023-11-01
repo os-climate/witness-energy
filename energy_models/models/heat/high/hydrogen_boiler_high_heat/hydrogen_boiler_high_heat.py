@@ -28,18 +28,6 @@ class HydrogenBoilerHighHeat(highheattechno):
         # and then we divide by efficiency
         return self.cost_details[f'{GaseousHydrogen.name}']
 
-    def grad_price_vs_energy_price(self):
-        '''
-        Compute the gradient of global price vs energy prices
-        Work also for total CO2_emissions vs energy CO2 emissions
-        '''
-        hydrogen_needs = self.get_theoretical_hydrogen_needs()
-        efficiency = self.techno_infos_dict['efficiency']
-
-        return {
-                GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency
-                }
-
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
@@ -52,7 +40,12 @@ class HydrogenBoilerHighHeat(highheattechno):
 
         self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[f'{GaseousHydrogen.name}_needs'] * \
             self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
+        #self.carbon_emissions
+        # print('')
+        # print(self.carbon_emissions.to_string())
 
+        # print('')
+        # print(self.energy_CO2_emissions.to_string())
         # CO2 production
         # self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = GaseousHydrogen.data_energy_dict['CO2_per_use'] / \
         #                                                                        GaseousHydrogen.data_energy_dict['calorific_value'] * \
@@ -99,3 +92,21 @@ class HydrogenBoilerHighHeat(highheattechno):
         self.heat_flux_distribution = pd.DataFrame({'years': self.cost_details['years'],
                                                'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
+
+
+
+    def grad_price_vs_energy_price_calc(self):
+        '''
+        Compute the gradient of global price vs energy prices
+        Work also for total CO2_emissions vs energy CO2 emissions
+        '''
+        hydrogen_needs = self.get_theoretical_hydrogen_needs()
+        efficiency = self.techno_infos_dict['efficiency']
+        # print('hydrogen_needs')
+        # print(hydrogen_needs)
+        # print(efficiency)
+        # m = {GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency}
+        #print(m)
+        return {'natural_gas_resource': np.identity(len(self.years)) * hydrogen_needs / efficiency}
+
+

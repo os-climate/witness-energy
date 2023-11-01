@@ -479,7 +479,6 @@ class TechnoDiscipline(SoSWrapp):
         self.dprod_column_dratio = {}
         self.techno_production_derivative = {}
         for column in production:
-            print(column)
             dprod_column_dinvest = self.dprod_dinvest.copy()
             if column not in ['years', f'{self.energy_name} ({self.techno_model.product_energy_unit})']:
                 var_prod = (production[column] /
