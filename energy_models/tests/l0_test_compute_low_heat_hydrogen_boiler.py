@@ -114,7 +114,6 @@ class HydrogenTestCase(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
-                   'ns_methane': f'{self.name}',
                    'ns_resource': self.name,
                    'ns_heat_low': f'{self.name}'
                    }
