@@ -57,14 +57,14 @@ class BiomassWetDiscipline(EnergyDiscipline):
         self.energy_model.configure_parameters(inputs_dict)
 
     def run(self):
-        EnergyDiscipline.run(self)
+        super().run()
 
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
         # -- instantiate specific class
 
         # -- compute informations
-        cost_details, production, consumption, techno_mix = self.energy_model.compute()
+        cost_details, production, consumption, techno_mix = self.energy_model.compute(inputs_dict)
 
         outputs_dict = {'energy_prices': cost_details,
                         'energy_consumption': consumption / inputs_dict['scaling_factor_energy_consumption'],

@@ -126,7 +126,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
     def setup_sos_disciplines(self):
 
-        CSTechnoDiscipline.setup_sos_disciplines(self)
+        super().setup_sos_disciplines()
 
         if self.get_data_in() is not None:
             if 'year_start' in self.get_data_in():

@@ -142,6 +142,7 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
                 #                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
+    #DESC_OUT = TechnoDiscipline.DESC_OUT
 
     _maturity = 'Research'
 

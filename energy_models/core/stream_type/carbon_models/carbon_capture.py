@@ -58,7 +58,7 @@ class CarbonCapture(BaseStream):
         self.flue_gas_production = inputs_dict['flue_gas_production'][self.flue_gas_name].values
         self.flue_gas_prod_ratio = inputs_dict['flue_gas_prod_ratio']
 
-    def compute(self, exp_min=True):
+    def compute(self, inputs, exp_min=True):
         '''
         Specific compute to handle the number of values in the return out of compute_production
         '''
@@ -72,6 +72,8 @@ class CarbonCapture(BaseStream):
         self.compute_price(exp_min=exp_min)
 
         self.aggregate_land_use_required()
+
+        self.compute_energy_type_capital(inputs)
 
         return self.total_prices, self.production, self.consumption, self.consumption_woratio, self.mix_weights
 

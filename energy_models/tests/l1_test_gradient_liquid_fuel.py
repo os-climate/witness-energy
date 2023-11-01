@@ -20,6 +20,8 @@ import numpy as np
 from os.path import join, dirname
 import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
@@ -53,6 +55,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         years = np.arange(2020, 2051)
+        self.years = years
         self.energy_name = 'liquid_fuel'
         # crude oil price : 1.3$/gallon
         self.energy_prices = pd.DataFrame(
@@ -460,6 +463,17 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling'] and key not in not_coupled_ouputs:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
+        technos = inputs_dict[f"{self.name}.technologies_list"]
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
+        for techno in technos:
+            inputs_dict[
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()

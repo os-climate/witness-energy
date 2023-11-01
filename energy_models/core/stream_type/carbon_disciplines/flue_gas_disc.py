@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
@@ -129,6 +130,8 @@ class FlueGasDiscipline(SoSWrapp):
                                                  'CO2 from Flue Gas (Mt)': ('float', None, False),
                                                  }
                     }
+
+                    #dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
                                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                       'namespace': ns_variable, 'unit': '',
@@ -142,7 +145,7 @@ class FlueGasDiscipline(SoSWrapp):
         # -- configure class with inputs
         self.energy_model.configure_parameters_update(inputs_dict)
         # -- compute informations
-        flue_gas_mean = self.energy_model.compute()
+        flue_gas_mean = self.energy_model.compute(inputs_dict)
 
         outputs_dict = {
             'flue_gas_mean': flue_gas_mean,

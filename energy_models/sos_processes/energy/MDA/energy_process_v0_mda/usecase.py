@@ -100,29 +100,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    #     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
-    #         "reduced.pdf")
-    profil = cProfile.Profile()
-    profil.enable()
-    uc_cls.run()
-    profil.disable()
-    result = StringIO()
-
-    ps = pstats.Stats(profil, stream=result)
-    ps.sort_stats('cumulative')
-    ps.print_stats(200)
-    result = result.getvalue()
-    print(result)
-    # Always check if post procs are OK
-    ppf = PostProcessingFactory()
-
-    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-
-    #         disc)
-
-    graph_list = ppf.get_all_post_processings(uc_cls.ee, filters_only=False)
-    for graph in graph_list:
-        graph.to_plotly().show()
+    uc_cls.test()

@@ -18,6 +18,9 @@ import pandas as pd
 import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
+
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 import logging
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
@@ -57,6 +60,9 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         self.gasturbine_consumption = pd.DataFrame({'years': years,
                                                     'methane (TWh)': [4.192699] * len(years)
                                                     })
+
+        self.techno_capital = pd.DataFrame(
+            {'years': years, GlossaryCore.Capital: 0.0})
 
         self.hydropower_carbon_emissions = pd.DataFrame(
             {'years': years, 'Hydropower': 0.0})
@@ -127,6 +133,8 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.Hydropower.CO2_emissions': self.hydropower_carbon_emissions,
                        f'{self.name}.{self.model_name}.Hydropower.land_use_required': self.land_use_required_Hydropower,
                        f'{self.name}.{self.model_name}.GasTurbine.techno_consumption': self.gasturbine_consumption,
+                       f'{self.name}.{self.model_name}.Hydropower.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
+                       f'{self.name}.{self.model_name}.GasTurbine.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
                        f'{self.name}.{self.model_name}.GasTurbine.techno_consumption_woratio': self.gasturbine_consumption,
                        f'{self.name}.{self.model_name}.GasTurbine.techno_production': gasturbine_production,
                        f'{self.name}.{self.model_name}.GasTurbine.techno_prices': self.gasturbine_techno_prices,

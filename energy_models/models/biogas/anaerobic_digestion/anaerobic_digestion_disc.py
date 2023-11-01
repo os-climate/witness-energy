@@ -120,7 +120,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
 
-        BiogasTechnoDiscipline.compute_sos_jacobian(self)
+        super().compute_sos_jacobian()
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
