@@ -82,7 +82,7 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'heat.HeatPump']
+                                                == 'electricity.HeatPump']
 
 
     def tearDown(self):

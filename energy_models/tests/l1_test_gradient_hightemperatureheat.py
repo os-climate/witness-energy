@@ -438,8 +438,10 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                                     # f'{self.name}.resources_price',
                                     # f'{self.name}.resources_CO2_emissions',
                                     ],
-                            outputs=[#f'{self.name}.{self.model_name}.techno_prices',
-                                     #f'{self.name}.{self.model_name}.CO2_emissions',
+
+                            outputs=[
+                                     f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      #f'{self.name}.{self.model_name}.techno_production',
@@ -451,8 +453,10 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
         self.energy_name = 'heat.hightemperatureheat'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_methane': f'{self.name}',
+                   'ns_electricity': f'{self.name}',
+                   'ns_ref': f'{self.name}',
                    'ns_heat_high': f'{self.name}',
+                   'ns_functions': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_resource': f'{self.name}'}
 
@@ -504,19 +508,16 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs, )
 
-
-
-
 if '__main__' == __name__:
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = HighTemperatureHeatJacobianTestCase()
     cls.setUp()
     cls.test_07_hightemperatureheat_discipline_jacobian()

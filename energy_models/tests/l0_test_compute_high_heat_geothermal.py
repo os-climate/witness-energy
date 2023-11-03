@@ -25,12 +25,11 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-
+from energy_models.core.stream_type.energy_models.electricity import Electricity
 
 class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
     """
-    HeatPump prices test class
+    Geothermal prices test class
     """
 
     def setUp(self):
@@ -82,7 +81,7 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'heat.GeothermalHeat']
+                                                == 'electricity.GeothermalHeat']
 
 
     def tearDown(self):
@@ -113,7 +112,7 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
-                       'data_fuel_dict': hightemperatureheat.data_energy_dict,
+                       'data_fuel_dict': Electricity.data_energy_dict,
                        }
 
 
