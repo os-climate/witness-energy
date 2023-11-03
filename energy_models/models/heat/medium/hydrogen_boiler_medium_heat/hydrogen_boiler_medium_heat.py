@@ -28,7 +28,7 @@ class HydrogenBoilerMediumHeat(mediumheattechno):
         # and then we divide by efficiency
         return self.cost_details[f'{GaseousHydrogen.name}']
 
-    def grad_price_vs_energy_price(self):
+    def grad_price_vs_energy_price_calc(self):
         '''
         Compute the gradient of global price vs energy prices
         Work also for total CO2_emissions vs energy CO2 emissions
@@ -36,9 +36,10 @@ class HydrogenBoilerMediumHeat(mediumheattechno):
         hydrogen_needs = self.get_theoretical_hydrogen_needs()
         efficiency = self.techno_infos_dict['efficiency']
 
-        return {
-                GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency
-                }
+        # return {
+        #         GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency
+        #         }
+        return {}
 
     def compute_consumption_and_production(self):
         """

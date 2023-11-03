@@ -88,6 +88,9 @@ class EnergyDiscipline(StreamDiscipline):
                                                  'mono_ethanol_amine_resource (Mt)': ('float', None, True),
                                                  'coal_resource (Mt)': ('float', None, True),
                                                  'carbon_capture (TWh)': ('float', None, True),
+                                                 'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  }}
                     dynamic_inputs[f'{techno}.techno_consumption_woratio'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
@@ -113,6 +116,9 @@ class EnergyDiscipline(StreamDiscipline):
                                                  'mono_ethanol_amine_resource (Mt)': ('float', None, True),
                                                  'coal_resource (Mt)': ('float', None, True),
                                                  'carbon_capture (TWh)': ('float', None, True),
+                                                 'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  }}
                     dynamic_inputs[f'{techno}.techno_production'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
