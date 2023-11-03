@@ -51,6 +51,7 @@ def launch_data_pickle_generation(directory=''):
     ############
     # Energies #
     ############
+    energy_list.remove("biomass_dry")
     for energy in energy_list:
         # Loop on energies
         energy_disc = ee.dm.get_disciplines_with_name(
