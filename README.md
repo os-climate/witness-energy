@@ -6,11 +6,11 @@ EnergyModels is the Python package containing models for energy production techn
 
 ## Prerequisite
 In order to satisfy dependencies, following prerequisites need to be satisfied:
-* deployment of sos\_trade\_core\_package and its requirements (see requirements.txt of sos\_trade\_core\_package package)
-* libraries in requirements.txt
+* deployment of sostrades\_core\_package and its requirements (see requirements.in of sostrades\_core\_package package)
+* libraries in requirements.in
 
-The following command can be used to install the package listed in requirements.txt
-$$pip install -r requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org$$
+The following command can be used to install the package listed in requirements.in
+$$pip install -r requirements.in --trusted-host pypi.org --trusted-host files.pythonhosted.org$$
 
 
 ## Overview
