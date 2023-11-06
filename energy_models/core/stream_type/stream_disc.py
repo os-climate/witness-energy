@@ -389,32 +389,8 @@ class StreamDiscipline(SoSWrapp):
                     instanciated_charts.append(new_chart)
 
         if GlossaryCore.Capital in charts:
-            energy_type_capital = self.get_sosdisc_outputs(GlossaryEnergy.EnergyTypeCapitalDfValue)
-            techno_list = self.get_sosdisc_inputs('technologies_list')
-
-            years = list(energy_type_capital[GlossaryEnergy.Years].values)
-            chart_name = 'Breakdown of energy capital'
-
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'G$',
-                                                 chart_name=chart_name, stacked_bar=True)
-
-            for techno in techno_list:
-
-                ordonate_data = list(
-                    self.get_sosdisc_inputs(f"{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")[GlossaryEnergy.Capital].values)
-
-                new_series = InstanciatedSeries(
-                    years, ordonate_data, techno, 'bar', True)
-
-                new_chart.series.append(new_series)
-
-            new_series = InstanciatedSeries(
-                years, list(energy_type_capital[GlossaryCore.Capital].values), 'Total', 'lines', True)
-
-            new_chart.series.append(new_series)
-
-            instanciated_charts.append(new_chart)
-
+            chart = self.get_capital_breakdown_by_technos()
+            instanciated_charts.append(chart)
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_kwh(self):
@@ -629,3 +605,30 @@ class StreamDiscipline(SoSWrapp):
                 instanciated_charts.append(pie_chart)
 
         return instanciated_charts
+
+    def get_capital_breakdown_by_technos(self):
+        energy_type_capital = self.get_sosdisc_outputs(GlossaryEnergy.EnergyTypeCapitalDfValue)
+        techno_list = self.get_sosdisc_inputs('technologies_list')
+
+        years = list(energy_type_capital[GlossaryEnergy.Years].values)
+        chart_name = 'Breakdown of capital by technos'
+
+        chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'G$',
+                                             chart_name=chart_name, stacked_bar=True)
+
+        for techno in techno_list:
+            ordonate_data = list(
+                self.get_sosdisc_inputs(f"{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")[
+                    GlossaryEnergy.Capital].values)
+
+            new_series = InstanciatedSeries(
+                years, ordonate_data, techno, 'bar', True)
+
+            chart.series.append(new_series)
+
+        new_series = InstanciatedSeries(
+            years, list(energy_type_capital[GlossaryCore.Capital].values), 'Total', 'lines', True)
+
+        chart.series.append(new_series)
+
+        return chart

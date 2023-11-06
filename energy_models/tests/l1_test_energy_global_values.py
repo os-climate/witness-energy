@@ -39,28 +39,29 @@ class TestGlobalEnergyValues(unittest.TestCase):
         License: CC BY 4.0.
     """
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         '''
         Initialize third data needed for testing
         '''
-        self.dirs_to_del = []
+        cls.dirs_to_del = []
         chain_builders = []
-        self.namespace = 'MyCase'
-        self.study_name = f'{self.namespace}'
-        self.name = 'Test'
-        self.energymixname = 'EnergyMix'
-        self.agrimixname = 'AgricultureMix'
+        cls.namespace = 'MyCase'
+        cls.study_name = f'{cls.namespace}'
+        cls.name = 'Test'
+        cls.energymixname = 'EnergyMix'
+        cls.agrimixname = 'AgricultureMix'
         ns_crop = 'Crop'
         ns_forest = 'Forest'
 
-        self.ee = ExecutionEngine(self.name)
+        cls.ee = ExecutionEngine(cls.name)
         repo_agri = 'climateeconomics.sos_processes.iam.witness'
-        builder_agri = self.ee.factory.get_builder_from_process(
+        builder_agri = cls.ee.factory.get_builder_from_process(
             repo_agri, 'agriculture_mix_process')
         chain_builders.extend(builder_agri)
 
         repo = 'energy_models.sos_processes.energy.MDA'
-        builder = self.ee.factory.get_builder_from_process(
+        builder = cls.ee.factory.get_builder_from_process(
             repo, 'energy_process_v0_mda', techno_dict=DEFAULT_TECHNO_DICT)
 
         for i, disc in enumerate(builder):
@@ -69,38 +70,42 @@ class TestGlobalEnergyValues(unittest.TestCase):
         builder.pop(i_disc_to_pop)
         chain_builders.extend(builder)
 
-        ns_dict = {'ns_crop': f'{self.name}.{self.agrimixname}.{ns_crop}',
-                   'ns_forest': f'{self.name}.{self.agrimixname}.{ns_forest}',
-                   'ns_agriculture': f'{self.name}.{self.agrimixname}',
+        ns_dict = {'ns_crop': f'{cls.name}.{cls.agrimixname}.{ns_crop}',
+                   'ns_forest': f'{cls.name}.{cls.agrimixname}.{ns_forest}',
+                   'ns_agriculture': f'{cls.name}.{cls.agrimixname}',
                    }
 
-        self.ee.ns_manager.add_ns_def(ns_dict)
+        cls.ee.ns_manager.add_ns_def(ns_dict)
 
-        self.ee.factory.set_builders_to_coupling_builder(chain_builders)
-        self.ee.configure()
-        usecase = Study_open(execution_engine=self.ee,
+        cls.ee.factory.set_builders_to_coupling_builder(chain_builders)
+        cls.ee.configure()
+        usecase = Study_open(execution_engine=cls.ee,
                              techno_dict=DEFAULT_TECHNO_DICT)
-        usecase.study_name = self.name
+        usecase.study_name = cls.name
         values_dict = usecase.setup_usecase()
 
-        self.ee.display_treeview_nodes()
+        cls.ee.display_treeview_nodes()
         full_values_dict = {}
         for dict_v in values_dict:
             full_values_dict.update(dict_v)
 
-        # full_values_dict[f'{self.name}.is_dev'] = True
+        # full_values_dict[f'{cls.name}.is_dev'] = True
 
-        full_values_dict[f'{self.name}.CO2_taxes'] = pd.DataFrame({'years': np.arange(2020, 2051),
+        full_values_dict[f'{cls.name}.CO2_taxes'] = pd.DataFrame({'years': np.arange(2020, 2051),
                                                                    'CO2_tax': 20.0}, index=np.arange(2020, 2051))
 
-        usecase_agri = agri_study_open(execution_engine=self.ee, year_start=2020, year_end=2050, time_step=1)
-        usecase_agri.study_name = self.name
+        usecase_agri = agri_study_open(execution_engine=cls.ee, year_start=2020, year_end=2050, time_step=1)
+        usecase_agri.study_name = cls.name
         usecase_agri.additional_ns = '.InvestmentDistribution'
         values_dict_agri = usecase_agri.setup_usecase()
         for dict_v in values_dict_agri:
             full_values_dict.update(dict_v)
 
-        self.ee.load_study_from_input_dict(full_values_dict)
+        cls.ee.load_study_from_input_dict(full_values_dict)
+
+        cls.ee.execute()
+
+
 
     def test_01_check_global_production_values(self):
         '''
@@ -108,7 +113,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         https://ourworldindata.org/energy-mix?country=
 
         '''
-        self.ee.execute()
+
 
         # These emissions are in Gt
         energy_production = self.ee.dm.get_value(
@@ -282,7 +287,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         https://ourworldindata.org/emissions-by-fuel
 
         '''
-        self.ee.execute()
+
 
         # These emissions are in Gt
 
@@ -394,7 +399,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019, License: CC BY 4.0.
 
         '''
-        self.ee.execute()
+
 
         # These emissions are in Gt
         net_energy_production = self.ee.dm.get_value(
@@ -954,7 +959,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Test order of magnitude of prices
 
         '''
-        self.ee.execute()
+
 
         # These emissions are in Gt
         energy_prices = self.ee.dm.get_value(

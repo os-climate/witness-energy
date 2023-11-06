@@ -182,7 +182,10 @@ class EnergyDiscipline(StreamDiscipline):
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Energy price', 'Technology mix', 'CO2 emissions',
+        chart_list = ['Energy price',
+                      GlossaryCore.Capital,
+                      'Technology mix',
+                      'CO2 emissions',
                       'Consumption and production']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
