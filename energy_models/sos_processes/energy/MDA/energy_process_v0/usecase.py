@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/04/21-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -299,12 +300,18 @@ class Study(EnergyStudyManager):
         """
         invest_mix_df_wo_years = invest_mix_df.drop(
             GlossaryCore.Years, axis=1)
+
+        # check if we are in coarse usecase, in this case we deactivate first point of optim
+        if 'fossil' in self.energy_list:
+            activated_elem = [False] + [True]*(GlossaryEnergy.NB_POLES_COARSE - 1)
+        else:
+            activated_elem = None
         for column in invest_mix_df_wo_years.columns:
             techno_wo_dot = column.replace('.', '_')
             self.update_dspace_dict_with(
                 f'{column}.{techno_wo_dot}_array_mix', np.minimum(np.maximum(
                     self.lower_bound_techno, invest_mix_df_wo_years[column].values), self.upper_bound_techno),
-                self.lower_bound_techno, self.upper_bound_techno)
+                self.lower_bound_techno, self.upper_bound_techno, activated_elem = activated_elem )
 
     def get_investments_mix(self):
 
@@ -410,9 +417,9 @@ class Study(EnergyStudyManager):
             0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
         invest_energy_mix_dict[Renewable.name] = np.linspace(
-            1.0, 15.625, len(years))
+            1000.0, 15.625, len(years))
         invest_energy_mix_dict[Fossil.name] = np.linspace(
-            100, 77.5, len(years))
+            1500.0, 77.5, len(years))
         invest_energy_mix_dict[HydrotreatedOilFuel.name] = [
             3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         invest_energy_mix_dict[Ethanol.name] = [
@@ -535,8 +542,8 @@ class Study(EnergyStudyManager):
                     raise Exception(f'{energy} not in investment_mixes')
                 for techno in invest_techno.columns:
                     if techno != GlossaryCore.Years:
-                        invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values * \
-                                                              mix_energy / norm_techno_mix
+                        invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values
+                                                              #  * mix_energy / norm_techno_mix
 
         return invest_mix_df
 
@@ -557,13 +564,14 @@ class Study(EnergyStudyManager):
         for column in invest_mix_df.columns:
             if column != GlossaryCore.Years:
                 if len(invest_mix_df[GlossaryCore.Years].values) == len(energy_invest_poles):
-                    indep_invest_df[column] = invest_mix_df[column].values * \
-                                              energy_invest_poles * \
-                                              energy_invest_factor
+                    indep_invest_df[column] = invest_mix_df[column].values
+                                              #energy_invest_factor
+                                              #energy_invest_poles * \
+
                 else:
-                    indep_invest_df[column] = invest_mix_df[column].values * \
-                                              energy_invest['energy_investment'].values * \
-                                              energy_invest_factor
+                    indep_invest_df[column] = invest_mix_df[column].values
+                                              #energy_invest['energy_investment'].values * \
+                                              #energy_invest_factor
 
         return indep_invest_df
 

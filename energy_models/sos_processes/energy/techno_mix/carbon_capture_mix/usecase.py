@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,6 +24,7 @@ from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCa
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
@@ -99,11 +101,14 @@ class Study(EnergyMixStudyManager):
                 10 * (1 + 0.0) ** i for i in l_ctrl]
 
         if 'direct_air_capture.DirectAirCaptureTechno' in self.technologies_list:
-            invest_carbon_capture_mix_dict['direct_air_capture.DirectAirCaptureTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE)
+            invest_carbon_capture_mix_dict['direct_air_capture.DirectAirCaptureTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1e-6
+            invest_2020_ccus = DatabaseWitnessEnergy.InvestCCUS2020.value
+            invest_carbon_capture_mix_dict['direct_air_capture.DirectAirCaptureTechno'][0] = invest_2020_ccus/3
 
         if 'flue_gas_capture.FlueGasTechno' in self.technologies_list:
-            invest_carbon_capture_mix_dict['flue_gas_capture.FlueGasTechno'] = [
-                10 * (1 - 0.04) ** i for i in np.arange(0, GlossaryEnergy.NB_POLES_COARSE)]
+            invest_carbon_capture_mix_dict['flue_gas_capture.FlueGasTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1e-6
+            invest_2020_ccus = DatabaseWitnessEnergy.InvestCCUS2020.value
+            invest_carbon_capture_mix_dict['flue_gas_capture.FlueGasTechno'][0] = invest_2020_ccus / 3
 
         if self.bspline:
             invest_carbon_capture_mix_dict['years'] = self.years
