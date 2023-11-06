@@ -33,7 +33,7 @@ def launch_data_pickle_generation(directory=''):
     full_values_dict[f'{name}.epsilon0'] = 1.0
     full_values_dict[f'{name}.tolerance'] = 1.0e-8
     full_values_dict[f'{name}.sub_mda_class'] = 'MDAGaussSeidel'
-    full_values_dict[f'{name}.max_mda_iter'] = 200
+    full_values_dict[f'{name}.max_mda_iter'] = 2
 
     ee.load_study_from_input_dict(full_values_dict)
 
@@ -51,7 +51,7 @@ def launch_data_pickle_generation(directory=''):
     ############
     # Energies #
     ############
-    energy_list.remove("biomass_dry")
+    #energy_list.remove("biomass_dry")
     for energy in energy_list:
         # Loop on energies
         energy_disc = ee.dm.get_disciplines_with_name(

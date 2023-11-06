@@ -22,7 +22,8 @@ from energy_models.models.electricity.nuclear.nuclear import Nuclear
 from energy_models.core.stream_type.resources_models.water import Water
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
-
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 class NuclearDiscipline(ElectricityTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
@@ -123,7 +124,26 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         self.techno_model = Nuclear(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
-    
+    def compute_sos_jacobian(self):
+        ElectricityTechnoDiscipline.compute_sos_jacobian(self)
+
+        # the generic gradient for production column is not working because of
+        # abandoned mines not proportional to production
+
+        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+        applied_ratio = self.get_sosdisc_outputs(
+            'applied_ratio')['applied_ratio'].values
+
+        URANIUM_RESOURCE_NAME = ResourceGlossary.Uranium['name']
+        dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+        consumption_gradient = self.techno_consumption_derivative[f'{URANIUM_RESOURCE_NAME} ({self.techno_model.mass_unit})']
+        #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
+        self.set_partial_derivative_for_other_types(
+            ('techno_production',
+             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
+            (consumption_gradient- dprod_name_dinvest))
+
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
         instanciated_chart = super().get_charts_consumption_and_production()
