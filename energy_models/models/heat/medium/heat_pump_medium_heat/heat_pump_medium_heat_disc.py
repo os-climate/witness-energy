@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -125,7 +125,7 @@ class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         self.techno_model.configure_input(inputs_dict)
 
     def setup_sos_disciplines(self):
-        MediumHeatTechnoDiscipline.setup_sos_disciplines(self)
+        super().setup_sos_disciplines()
 
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',

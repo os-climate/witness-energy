@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/09/13-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +17,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from copy import deepcopy
+
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BaseStream:
@@ -108,7 +111,7 @@ class BaseStream:
                     inputs_dict['scaling_factor_techno_consumption']
             self.sub_land_use_required_dict[element] = inputs_dict[f'{element}.land_use_required']
 
-    def compute(self, exp_min=True):
+    def compute(self, inputs, exp_min=True):
         '''
         Compute all energy variables with its own technologies 
         '''
@@ -122,6 +125,8 @@ class BaseStream:
         self.compute_price(exp_min=exp_min)
 
         self.aggregate_land_use_required()
+
+        self.compute_energy_type_capital(inputs)
 
         return self.total_prices, self.production, self.consumption, self.consumption_woratio, self.mix_weights
 
@@ -172,6 +177,18 @@ class BaseStream:
                     consumption[elem] = cons.values * factor
 
         return production, consumption
+
+    def compute_energy_type_capital(self, inputs):
+        technos = inputs['technologies_list']
+        capitals = [
+            inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"][GlossaryEnergy.Capital].values for techno in technos
+        ]
+        sum_technos_capital = np.sum(capitals, axis=0)
+
+        self.energy_type_capital = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.Capital: sum_technos_capital,
+        })
 
     def compute_price(self, exp_min=True):
         '''

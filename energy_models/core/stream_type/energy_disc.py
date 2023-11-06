@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/14-2023/11/06 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -64,6 +65,7 @@ class EnergyDiscipline(StreamDiscipline):
             if techno_list is not None:
                 techno_list = self.get_sosdisc_inputs('technologies_list')
                 for techno in techno_list:
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.techno_consumption'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {'years': ('float', None, True),
@@ -328,6 +330,22 @@ class EnergyDiscipline(StreamDiscipline):
                                                  'Pelletizing (Gha)': ('float', None, True),
                                                  'HydrogenLiquefaction (Gha)': ('float', None, True),
                                                  }}
+                        #"dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{techno}.techno_consumption_woratio'] = {
+                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        "dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{techno}.techno_production'] = {
+                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        "dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{techno}.techno_prices'] = {
+                        'type': 'dataframe', 'unit': '$/MWh',
+                        "dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{techno}.CO2_emissions'] = {
+                        'type': 'dataframe', 'unit': 'kg/kWh',
+                        "dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{techno}.land_use_required'] = {
+                        'type': 'dataframe', 'unit': 'Gha',
+                        "dynamic_dataframe_columns": True}
 
         self.add_inputs(dynamic_inputs)
 
@@ -426,7 +444,10 @@ class EnergyDiscipline(StreamDiscipline):
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Energy price', 'Technology mix', 'CO2 emissions',
+        chart_list = ['Energy price',
+                      GlossaryCore.Capital,
+                      'Technology mix',
+                      'CO2 emissions',
                       'Consumption and production']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))

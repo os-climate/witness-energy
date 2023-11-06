@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@ limitations under the License.
 '''
 import os
 from os.path import dirname
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
@@ -38,7 +40,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.name = 'TestAntoine'
+        self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.model_name = 'EnergyMix'
 
@@ -110,6 +112,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.energy_mean_price',
                                      f'{self.name}.{self.model_name}.energy_production',
                                      f'{self.name}.{self.model_name}.land_demand_df',
+                                     f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}',
                                      f'{self.name}.{self.model_name}.energy_prices_after_tax'
                                      ])
         AbstractJacobianUnittest.DUMP_JACOBIAN = False

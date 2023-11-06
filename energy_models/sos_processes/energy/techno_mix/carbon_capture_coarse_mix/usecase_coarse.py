@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/10/23-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,10 +18,12 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = [
     'direct_air_capture.DirectAirCaptureTechno', 'flue_gas_capture.FlueGasTechno']
@@ -119,6 +122,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
                        }
 
+        techno_capital = pd.DataFrame({'years': years, GlossaryCore.Capital: 0.0})
         if self.main_study:
             values_dict.update(
                 {
@@ -127,8 +131,8 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{energy_mix_name}.energy_prices': self.energy_prices,
                     f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
                     f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.flue_gas_co2_ratio': np.array([0.13]),
-
-                    f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.techno_production': fossil_simple_techno_prod, })
+                    f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.techno_production': fossil_simple_techno_prod,
+                    f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,})
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
                     columns=['years']).sum(axis=1)
@@ -136,6 +140,7 @@ class Study(EnergyMixStudyManager):
                     invest_level_techno = pd.DataFrame({'years': self.invest_level['years'].values,
                                                         'invest': self.invest_level['invest'].values * investment_mix[techno].values / investment_mix_sum})
                     values_dict[f'{self.study_name}.{ccs_name}.{techno}.invest_level'] = invest_level_techno
+                    values_dict[f'{self.study_name}.{ccs_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = techno_capital
             else:
                 values_dict[f'{self.study_name}.{ccs_name}.invest_level'] = self.invest_level
         else:
@@ -147,14 +152,4 @@ class Study(EnergyMixStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(main_study=True,
                    technologies_list=DEFAULT_TECHNOLOGIES_LIST)
-    uc_cls.load_data()
-    uc_cls.run()
-#     ppf = PostProcessingFactory()
-#     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-#         filters = ppf.get_post_processing_filters_by_discipline(
-#             disc)
-#         graph_list = ppf.get_post_processing_by_discipline(
-#             disc, filters, as_json=False)
-#
-#         for graph in graph_list:
-#             graph.to_plotly()
+    uc_cls.test()

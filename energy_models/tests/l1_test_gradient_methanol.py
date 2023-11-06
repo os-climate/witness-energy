@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,6 +22,7 @@ from os.path import join, dirname
 import scipy.interpolate as sc
 import pickle
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
@@ -210,11 +212,17 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
+
         inputs_dict = {f'{self.name}.year_start': 2020,
                        f'{self.name}.year_end': 2050,
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.technologies_list': ['CO2Hydrogenation'],
                        f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_consumption': self.co2_hydrogenation_consumption,
+                       f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_capital': techno_capital,
                        f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_consumption_woratio': self.co2_hydrogenation_consumption,
                        f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_production': self.co2_hydrogenation_production,
                        f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_prices': self.co2_hydrogenation_techno_prices,

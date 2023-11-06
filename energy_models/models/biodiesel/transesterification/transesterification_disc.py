@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -73,7 +74,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
         '''
         Compute techno_infos_dict with updated data_fuel_dict
         '''
-        BioDieselTechnoDiscipline.setup_sos_disciplines(self)
+        super().setup_sos_disciplines()
         dynamic_inputs = self.get_inst_desc_in()
         if self.get_data_in() is not None:
             if 'data_fuel_dict' in self.get_data_in():

@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/03/27-2023/11/06 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,6 +16,7 @@ limitations under the License.
 '''
 import logging
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
@@ -116,7 +118,12 @@ class TechnoDiscipline(SoSWrapp):
                                                           'fuel.biodiesel': ('float', None, True),
                                                           'fuel.ethanol': ('float', None, True),
                                                           'hydrogen.liquid_hydrogen': ('float', None, True),
-                                                          }
+                                                          },
+                          "dynamic_dataframe_columns": True
+                          },
+        'energy_CO2_emissions': {'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
+                                 "dynamic_dataframe_columns": True
+
                                  },
         'margin': {'type': 'dataframe', 'unit': '%',
                    'dataframe_descriptor': {'years': ('float', None, True),
@@ -124,6 +131,7 @@ class TechnoDiscipline(SoSWrapp):
                    },
         GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
         'resources_price': {'type': 'dataframe', 'unit': '$/t', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
+
                             'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                      'CO2_tax': ('float', None, True),
                                                      'CO2_resource': ('float', None, True),
@@ -202,6 +210,12 @@ class TechnoDiscipline(SoSWrapp):
                                                              'platinum_resource': ('float', None, True),
                                                              'index': ('float', None, True),
                                                              }},
+                            #
+                            # "dynamic_dataframe_columns": True
+                            # },
+        'resources_CO2_emissions': {'type': 'dataframe', 'unit': 'kgCO2/kg', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
+                                    'dataframe_descriptor': {}, "dynamic_dataframe_columns": True},
+
         'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
@@ -227,8 +241,8 @@ class TechnoDiscipline(SoSWrapp):
         'land_use_required': {'type': 'dataframe', 'unit': 'Gha'},
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
         'non_use_capital': {'type': 'dataframe', 'unit': 'G$'},
-        'techno_capital': {'type': 'dataframe', 'unit': 'G$'},
-        'power_production' : {'type': 'dataframe', 'unit': 'MW'}
+        'power_production': {'type': 'dataframe', 'unit': 'MW'},
+        GlossaryEnergy.TechnoCapitalDfValue: GlossaryEnergy.TechnoCapitalDf
     }
     _maturity = 'Research'
 
@@ -241,8 +255,8 @@ class TechnoDiscipline(SoSWrapp):
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
+        dynamic_outputs = {}
         if self.get_data_in() is not None:
-
             self.update_default_dataframes_with_years()
 
             if 'is_apply_ratio' in self.get_data_in():
@@ -259,29 +273,7 @@ class TechnoDiscipline(SoSWrapp):
                                                                   'default': all_streams_demand_ratio_default,
                                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                   'namespace': 'ns_energy',
-                                                                  'dataframe_descriptor':{
-                                                                      'years':('float', None, True),
-                                                                      'carbon_capture': ('float', None, True),
-                                                                      'carbon_storage': ('float', None, True),
-                                                                      'hydrogen.gaseous_hydrogen': (
-                                                                      'float', None, True),
-                                                                      'fuel.liquid_fuel': ('float', None, True),
-                                                                      'fuel.hydrotreated_oil_fuel': ('float', None, True),
-                                                                      'heat.hightemperatureheat': ('float', None, True),
-                                                                      'heat.lowtemperatureheat': ('float', None, True),
-                                                                      'heat.mediumtemperatureheat': ('float', None, True),
-                                                                      'electricity': ('float', None, True),
-                                                                      'methane': ('float', None, True),
-                                                                      'biogas': ('float', None, True),
-                                                                      'fuel.biodiesel': ('float', None, True),
-                                                                      'fuel.ethanol': ('float', None, True),
-                                                                      'solid_fuel': ('float', None, True),
-                                                                      'syngas': ('float', None, True),
-                                                                      'biomass_dry': ('float', None, True),
-                                                                      'hydrogen.liquid_hydrogen': ('float', None, True),
-                                                                      'renewable': ('float', None, True),
-                                                                      'fossil': ('float', None, True)
-                                                                  }
+                                                                  "dynamic_dataframe_columns": True
                                                                   }
                 if self.get_sosdisc_inputs('is_apply_resource_ratio'):
                     resource_ratio_dict = dict(
@@ -293,14 +285,9 @@ class TechnoDiscipline(SoSWrapp):
                                                                             'default': all_resource_ratio_usable_demand_default,
                                                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                             'namespace': 'ns_resource',
-                                                                            'dataframe_descriptor': {'years': ('float', None, True),
-                                                                                                     'oil_resource': ('float', None, True),
-                                                                                                     'natural_gas_resource': ('float', None, True),
-                                                                                                     'uranium_resource': ('float', None, True),
-                                                                                                     'coal_resource': ('float', None, True),
-                                                                                                     'copper_resource': ('float', None, True),
-                                                                                                     'platinum_resource': ('float', None, True),}}
-            self.add_inputs(dynamic_inputs)
+                                                                            "dynamic_dataframe_columns": True}
+        self.add_inputs(dynamic_inputs)
+        self.add_outputs(dynamic_outputs)
 
     def update_default_dataframes_with_years(self):
         '''
@@ -378,7 +365,7 @@ class TechnoDiscipline(SoSWrapp):
                         'land_use_required': self.techno_model.techno_land_use,
                         'applied_ratio': self.techno_model.applied_ratio,
                         'non_use_capital': self.techno_model.non_use_capital,
-                        'techno_capital': self.techno_model.techno_capital,
+                        GlossaryEnergy.TechnoCapitalDfValue: self.techno_model.techno_capital,
                         'power_production': self.techno_model.power_production,
                         }
         # -- store outputs
@@ -615,7 +602,8 @@ class TechnoDiscipline(SoSWrapp):
             ('non_use_capital', self.techno_model.name), ('invest_level', 'invest'), dnon_use_capital_dinvest)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_capital', self.techno_model.name), ('invest_level', 'invest'), dtechnocapital_dinvest)
+            (GlossaryEnergy.TechnoCapitalDfValue, GlossaryCore.Capital),
+            ('invest_level', 'invest'), dtechnocapital_dinvest)
 
         dapplied_ratio_dratio = self.techno_model.compute_dapplied_ratio_dratios()
         for ratio_name in ratio_df.columns:
@@ -701,7 +689,11 @@ class TechnoDiscipline(SoSWrapp):
         chart_filters = []
         chart_list = ['Detailed prices',
                       'Consumption and production',
-                      'Initial Production', 'Factory Mean Age', 'CO2 emissions', 'Non-Use Capital', 'Power production']
+                      'Initial Production',
+                      'Factory Mean Age',
+                      'CO2 emissions',
+                      'Non-Use Capital',
+                      'Power production']
         if self.get_sosdisc_inputs('is_apply_ratio'):
             chart_list.extend(['Applied Ratio'])
         chart_filters.append(ChartFilter(
@@ -1258,8 +1250,7 @@ class TechnoDiscipline(SoSWrapp):
     def get_chart_non_use_capital(self):
         non_use_capital = self.get_sosdisc_outputs(
             'non_use_capital')
-        techno_capital = self.get_sosdisc_outputs(
-            'techno_capital')
+        techno_capital = self.get_sosdisc_outputs(GlossaryEnergy.TechnoCapitalDfValue)
         chart_name = f'Non-use capital due to unused {self.techno_name} factories vs total capital'
 
         new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
@@ -1267,7 +1258,7 @@ class TechnoDiscipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             techno_capital['years'].values.tolist(),
-            techno_capital[self.techno_name].values.tolist(), 'Total capital', 'lines')
+            techno_capital[GlossaryCore.Capital].values.tolist(), 'Total capital', 'lines')
 
         new_chart.series.append(serie)
 

@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -142,6 +142,7 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
                 #                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
+    #DESC_OUT = TechnoDiscipline.DESC_OUT
 
     _maturity = 'Research'
 

@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/04/21-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -23,6 +24,7 @@ from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
@@ -43,6 +45,8 @@ class EnergyMixTestCase(unittest.TestCase):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start + 1
         self.energy_list = ['hydrogen.gaseous_hydrogen', 'methane']
+        self.energy_type_capital = pd.DataFrame(
+            {'years': self.years, GlossaryCore.Capital: 0.0})
         self.consumption_hydro = pd.DataFrame(
             {'electricity (TWh)': np.array([5.79262302e+09, 5.96550630e+09, 6.13351314e+09, 6.29771389e+09,
                                             6.45887954e+09, 6.61758183e+09, 6.81571547e+09, 7.00833095e+09,
@@ -409,6 +413,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_production': self.production_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_production_woratio': self.production_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_prices': self.prices_hydro,
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_per_use': pd.DataFrame(
                            {'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_emissions': pd.DataFrame(
@@ -417,6 +422,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{agriculture_mix}.energy_consumption': self.energy_consumption_biomass,
                        f'{name}.{agriculture_mix}.energy_consumption_woratio': self.energy_consumption_biomass,
                        f'{name}.{agriculture_mix}.energy_production': self.energy_production_biomass,
+                       f'{name}.{model_name}.{agriculture_mix}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
                        f'{name}.{agriculture_mix}.energy_prices': self.energy_prices_biomass,
                        f'{name}.{agriculture_mix}.CO2_per_use': self.CO2_per_use_biomass,
                        f'{name}.{agriculture_mix}.CO2_emissions': self.CO2_emissions_biomass,
@@ -426,6 +432,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.energy_production': self.production,
                        f'{name}.{model_name}.methane.energy_production_woratio': self.production,
                        f'{name}.{model_name}.methane.energy_prices': self.cost_details,
+                       f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
                        f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame(
                            {'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.methane.CO2_emissions': pd.DataFrame(
@@ -466,6 +473,7 @@ class EnergyMixTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_hydrogen': f'{name}',
+                   'ns_witness': f'{name}',
                    'ns_methane': f'{name}',
                    'ns_energy_study': f'{name}',
                    'ns_energy_mix': f'{name}.{model_name}',
@@ -504,6 +512,8 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.land_use_required': self.land_use_required_mock,
                        f'{name}.{model_name}.methane.energy_consumption': self.consumption,
                        f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
+                       f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
                        f'{name}.{model_name}.methane.energy_production': self.production,
                        f'{name}.{model_name}.methane.energy_production_woratio': self.production,
                        f'{name}.{model_name}.methane.energy_prices': self.cost_details,
@@ -546,6 +556,7 @@ class EnergyMixTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_hydrogen': f'{name}',
+                   'ns_witness': f'{name}',
                    'ns_methane': f'{name}',
                    'ns_energy_study': f'{name}',
                    'ns_energy_mix': f'{name}.{model_name}',
@@ -582,6 +593,8 @@ class EnergyMixTestCase(unittest.TestCase):
                            {'years': self.years, 'hydrogen.gaseous_hydrogen': 0.0}),
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.land_use_required': self.land_use_required_mock,
                        f'{name}.{model_name}.methane.energy_consumption': self.consumption,
+                       f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
                        f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
                        f'{name}.{model_name}.methane.energy_production': self.production,
                        f'{name}.{model_name}.methane.energy_production_woratio': self.production,

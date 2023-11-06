@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +19,7 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
@@ -111,29 +113,11 @@ class CCUS_Discipline(SoSWrapp):
                     dynamic_inputs[f'{ccs_name}.energy_consumption'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs',
-                        'dataframe_descriptor': {'years': ('float', None, True),
-                                                 'carbon_capture from energy mix (Gt)': ('float', None, True),
-                                                 'electricity (TWh)': ('float', None, True),
-                                                 'methane (TWh)': ('float', None, True),
-                                                 'amine (Mt)': ('float', None, True),
-                                                 'calcium (Mt)': ('float', None, True),
-                                                 'potassium (Mt)': ('float', None, True),
-                                                 'biomass_dry (TWh)': ('float', None, True),
-                                                 'carbon_capture (Mt)': ('float', None, True),
-                                                 'carbon_resource (Mt)': ('float', None, True),
-                                                 }}
+                        "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{ccs_name}.energy_consumption_woratio'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs',
-                        'dataframe_descriptor': {'years': ('float', None, True),
-                                                 'electricity (TWh)': ('float', None, True),
-                                                'methane (TWh)': ('float', None, True),
-                                                'amine (Mt)': ('float', None, True),
-                                                'calcium (Mt)': ('float', None, True),
-                                                'potassium (Mt)': ('float', None, True),
-                                                'biomass_dry (TWh)': ('float', None, True),
-                                                'carbon_capture (Mt)': ('float', None, True),
-                                                'carbon_resource (Mt)': ('float', None, True),}}
+                        "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{ccs_name}.energy_production'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs',
@@ -152,25 +136,7 @@ class CCUS_Discipline(SoSWrapp):
                     dynamic_inputs[f'{ccs_name}.land_use_required'] = {
                         'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs',
-                        'dataframe_descriptor': {'years': ('float', None, True),
-                                                 'direct_air_capture.AmineScrubbing (Gha)': ('float', None, True),
-                                                 'direct_air_capture.CalciumPotassiumScrubbing (Gha)': (
-                                                 'float', None, True),
-                                                 'flue_gas_capture.CalciumLooping (Gha)': ('float', None, True),
-                                                 'flue_gas_capture.ChilledAmmoniaProcess (Gha)': ('float', None, True),
-                                                 'flue_gas_capture.CO2Membranes (Gha)': ('float', None, True),
-                                                 'flue_gas_capture.MonoEthanolAmine (Gha)': ('float', None, True),
-                                                 'flue_gas_capture.PiperazineProcess (Gha)': ('float', None, True),
-                                                 'flue_gas_capture.PressureSwingAdsorption (Gha)': (
-                                                 'float', None, True),
-                                                 'BiomassBuryingFossilization (Gha)': ('float', None, True),
-                                                 'DeepOceanInjection (Gha)': ('float', None, True),
-                                                 'DeepSalineFormation (Gha)': ('float', None, True),
-                                                 'DepletedOilGas (Gha)': ('float', None, True),
-                                                 'EnhancedOilRecovery (Gha)': ('float', None, True),
-                                                 'GeologicMineralization (Gha)': ('float', None, True),
-                                                 'PureCarbonSolidStorage (Gha)': ('float', None, True),
-                                                 }}
+                        "dynamic_dataframe_columns": True}
 
         if 'year_start' in self.get_data_in() and 'year_end' in self.get_data_in():
             year_start = self.get_sosdisc_inputs('year_start')

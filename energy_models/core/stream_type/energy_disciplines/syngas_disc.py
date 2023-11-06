@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/15-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,6 +21,7 @@ from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.syngas import Syngas, \
     compute_calorific_value, compute_molar_mass, compute_high_calorific_value, compute_dcal_val_dsyngas_ratio
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
@@ -149,63 +151,26 @@ class SyngasDiscipline(EnergyDiscipline):
                                                  'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  }}
+                        #"dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{techno}.techno_consumption_woratio'] = {
+                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        "dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{techno}.techno_production'] = {
+                        'type': 'dataframe', 'unit': 'TWh or Mt',
+                        "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{techno}.techno_prices'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
-                        'dataframe_descriptor': {'years': ('float', None, True),
-                                                 'Pyrolysis': ('float', None, True),
-                                                 'Pyrolysis_wotaxes': ('float', None, True),
-                                                 'methane (TWh)': ('float', None, True),
-                                                 'water (Mt)': ('float', None, True),
-                                                 'syngas (TWh)': ('float', None, True),
-                                                 'SMR': ('float', None, True),
-                                                 'SMR_wotaxes': ('float', None, True),
-                                                 'production': ('float', None, True),
-                                                 'methane': ('float', None, True),
-                                                 'electricity': ('float', None, True),
-                                                 'carbon_capture (Mt)': ('float', None, True),
-                                                 'dioxygen (Mt)': ('float', None, True),
-                                                 'AutothermalReforming': ('float', None, True),
-                                                 'AutothermalReforming_wotaxes': ('float', None, True),
-                                                 'BiomassGasification': ('float', None, True),
-                                                 'BiomassGasification_wotaxes': ('float', None, True),
-                                                 'CoalGasification': ('float', None, True),
-                                                 'CoalGasification_wotaxes': ('float', None, True),
-                                                 'CoElectrolysis': ('float', None, True),
-                                                 'CoElectrolysis_wotaxes': ('float', None, True), }}
+                        "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{techno}.CO2_emissions'] = {
                         'type': 'dataframe', 'unit': 'kg/kWh',
-                        'dataframe_descriptor': {'years': ('float', None, True),
-                                                 'wood': ('float', None, True),
-                                                 'Pyrolysis': ('float', None, True),
-                                                 'methane (TWh)': ('float', None, True),
-                                                 'water (Mt)': ('float', None, True),
-                                                 'syngas (TWh)': ('float', None, True),
-                                                 'SMR': ('float', None, True),
-                                                 'SMR_wotaxes': ('float', None, True),
-                                                 'methane': ('float', None, True),
-                                                 'carbon_capture (Mt)': ('float', None, True),
-                                                 'dioxygen (Mt)': ('float', None, True),
-                                                 'AutothermalReforming': ('float', None, True),
-                                                 'AutothermalReforming_wotaxes': ('float', None, True),
-                                                 'CO2': ('float', None, True),
-                                                 'production': ('float', None, True),
-                                                 'electricity': ('float', None, True),
-                                                 'biomass_dry': ('float', None, True),
-                                                 'BiomassGasification': ('float', None, True),
-                                                 'solid_fuel': ('float', None, True),
-                                                 'CoalGasification': ('float', None, True),
-                                                 'CoElectrolysis': ('float', None, True), }}
+                        "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{techno}.syngas_ratio'] = {
                         'type': 'array', 'unit': '%'}
                     dynamic_inputs[f'{techno}.land_use_required'] = {
                         'type': 'dataframe', 'unit': 'Gha',
-                        'dataframe_descriptor': {'years': ('float', None, True),
-                                                 'Pyrolysis (Gha)': ('float', None, True),
-                                                 'SMR (Gha)': ('float', None, True),
-                                                 'AutothermalReforming (Gha)': ('float', None, True),
-                                                 'BiomassGasification (Gha)': ('float', None, True),
-                                                 'CoalGasification (Gha)': ('float', None, True),
-                                                 'CoElectrolysis (Gha)': ('float', None, True), }}
+                        "dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] =\
+                        GlossaryCore.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
 
         self.add_inputs(dynamic_inputs)
 

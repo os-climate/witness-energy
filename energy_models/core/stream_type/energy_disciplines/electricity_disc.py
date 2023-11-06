@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/04/21-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -76,6 +77,8 @@ class ElectricityDiscipline(EnergyDiscipline):
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
 
     def setup_sos_disciplines(self):
+        super().setup_sos_disciplines()
+
         dynamic_outputs = {}
         if 'technologies_list' in self.get_data_in():
             techno_list = self.get_sosdisc_inputs('technologies_list')
@@ -87,8 +90,6 @@ class ElectricityDiscipline(EnergyDiscipline):
                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                      'namespace': 'ns_functions'}
         self.add_outputs(dynamic_outputs)
-
-        EnergyDiscipline.setup_sos_disciplines(self)
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()

@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/10/23-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -63,7 +64,7 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
 
     def run(self):
 
-        TechnoDiscipline.run(self)
+        super().run()
 
         outputs_dict = {'syngas_ratio': np.array([self.syngas_ratio])}
         # -- store outputs

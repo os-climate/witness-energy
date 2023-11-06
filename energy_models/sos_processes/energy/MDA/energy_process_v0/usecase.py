@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/04/21-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +21,6 @@ from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_study_manager import AGRI_TYPE, EnergyStudyManager, \
     DEFAULT_TECHNO_DICT, CCUS_TYPE, ENERGY_TYPE
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 
@@ -300,12 +300,18 @@ class Study(EnergyStudyManager):
         """
         invest_mix_df_wo_years = invest_mix_df.drop(
             GlossaryCore.Years, axis=1)
+
+        # check if we are in coarse usecase, in this case we deactivate first point of optim
+        if 'fossil' in self.energy_list:
+            activated_elem = [False] + [True]*(GlossaryEnergy.NB_POLES_COARSE - 1)
+        else:
+            activated_elem = None
         for column in invest_mix_df_wo_years.columns:
             techno_wo_dot = column.replace('.', '_')
             self.update_dspace_dict_with(
                 f'{column}.{techno_wo_dot}_array_mix', np.minimum(np.maximum(
                     self.lower_bound_techno, invest_mix_df_wo_years[column].values), self.upper_bound_techno),
-                self.lower_bound_techno, self.upper_bound_techno)
+                self.lower_bound_techno, self.upper_bound_techno, activated_elem = activated_elem )
 
     def get_investments_mix(self):
 
@@ -411,9 +417,9 @@ class Study(EnergyStudyManager):
             0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
         invest_energy_mix_dict[Renewable.name] = np.linspace(
-            1.0, 15.625, len(years))
+            1000.0, 15.625, len(years))
         invest_energy_mix_dict[Fossil.name] = np.linspace(
-            100, 77.5, len(years))
+            1500.0, 77.5, len(years))
         invest_energy_mix_dict[HydrotreatedOilFuel.name] = [
             3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         invest_energy_mix_dict[Ethanol.name] = [
@@ -536,8 +542,8 @@ class Study(EnergyStudyManager):
                     raise Exception(f'{energy} not in investment_mixes')
                 for techno in invest_techno.columns:
                     if techno != GlossaryCore.Years:
-                        invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values * \
-                                                              mix_energy / norm_techno_mix
+                        invest_mix_df[f'{energy}.{techno}'] = invest_techno[techno].values
+                                                              #  * mix_energy / norm_techno_mix
 
         return invest_mix_df
 
@@ -558,13 +564,14 @@ class Study(EnergyStudyManager):
         for column in invest_mix_df.columns:
             if column != GlossaryCore.Years:
                 if len(invest_mix_df[GlossaryCore.Years].values) == len(energy_invest_poles):
-                    indep_invest_df[column] = invest_mix_df[column].values * \
-                                              energy_invest_poles * \
-                                              energy_invest_factor
+                    indep_invest_df[column] = invest_mix_df[column].values
+                                              #energy_invest_factor
+                                              #energy_invest_poles * \
+
                 else:
-                    indep_invest_df[column] = invest_mix_df[column].values * \
-                                              energy_invest['energy_investment'].values * \
-                                              energy_invest_factor
+                    indep_invest_df[column] = invest_mix_df[column].values
+                                              #energy_invest['energy_investment'].values * \
+                                              #energy_invest_factor
 
         return indep_invest_df
 
@@ -868,12 +875,15 @@ class Study(EnergyStudyManager):
         CO2_emissions = pd.DataFrame({GlossaryCore.Years: self.years,
                                       'biomass_dry': -0.277})
 
+        energy_type_capital = pd.DataFrame(
+            {'years': self.years, GlossaryCore.Capital: 0.0})
         agri_values_dict = {f'{self.study_name}.{agri_mix_name}.N2O_per_use': N2O_per_use,
                             f'{self.study_name}.{agri_mix_name}.CH4_per_use': CH4_per_use,
                             f'{self.study_name}.{agri_mix_name}.CO2_per_use': CO2_per_use,
                             f'{self.study_name}.{agri_mix_name}.energy_consumption': energy_consumption,
                             f'{self.study_name}.{agri_mix_name}.energy_consumption_woratio': energy_consumption,
                             f'{self.study_name}.{agri_mix_name}.energy_production': energy_production,
+                            f'{self.study_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': energy_type_capital,
                             f'{self.study_name}.{agri_mix_name}.energy_prices': energy_prices,
                             f'{self.study_name}.{agri_mix_name}.land_use_required': land_use_required,
                             f'{self.study_name}.{agri_mix_name}.CO2_emissions': CO2_emissions, }
@@ -884,35 +894,6 @@ class Study(EnergyStudyManager):
 if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
-    # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
-    uc_cls.run()
+    uc_cls.ee.display_treeview_nodes()
+    #uc_cls.test()
 
-    # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
-    #     if disc.sos_name == 'EnergyMix':
-    #         for graph in graph_list:
-    #             graph.to_plotly()#.show()
-
-    # ppf = PostProcessingFactory()
-    # filters = ppf.get_post_processing_filters_by_namespace(
-    #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
-    # graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
-    #                                                   filters, as_json=False)
-    # for graph in graph_list:
-    #    graph.to_plotly().show()
-
-    # post_processing_factory = PostProcessingFactory()
-    # post_processing_factory.get_post_processing_by_namespace(
-    #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
-    # all_post_processings = post_processing_factory.get_all_post_processings(
-    #     uc_cls.execution_engine, False, as_json=False, for_test=False)
-    #
-    # for namespace, post_proc_list in all_post_processings.items():
-    #     for chart in post_proc_list:
-    #         pass
-    #         chart.to_plotly()#.show()
