@@ -549,7 +549,11 @@ class TechnoDiscipline(SoSWrapp):
         chart_filters = []
         chart_list = ['Detailed prices',
                       'Consumption and production',
-                      'Initial Production', 'Factory Mean Age', 'CO2 emissions', 'Non-Use Capital', 'Power production']
+                      'Initial Production',
+                      'Factory Mean Age',
+                      'CO2 emissions',
+                      'Non-Use Capital',
+                      'Power production']
         if self.get_sosdisc_inputs('is_apply_ratio'):
             chart_list.extend(['Applied Ratio'])
         chart_filters.append(ChartFilter(

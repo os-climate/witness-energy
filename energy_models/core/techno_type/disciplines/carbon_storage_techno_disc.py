@@ -66,22 +66,6 @@ class CSTechnoDiscipline(TechnoDiscipline):
         self.set_partial_derivatives_techno(
             grad_dict, None)
 
-    def get_chart_filter_list(self):
-
-        chart_filters = []
-        chart_list = ['Detailed prices',
-                      'Consumption and production',
-                      'Initial Production', 'Factory Mean Age', 'CO2 emissions']
-        if self.get_sosdisc_inputs('is_apply_ratio'):
-            chart_list.extend(['Applied Ratio'])
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
-
-        price_unit_list = ['$/tCO2']
-        chart_filters.append(ChartFilter(
-            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
-        return chart_filters
-
     def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
@@ -123,6 +107,11 @@ class CSTechnoDiscipline(TechnoDiscipline):
                 new_chart = self.get_chart_initial_production()
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
+
+        if 'Non-Use Capital' in charts:
+            new_chart = self.get_chart_non_use_capital()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
