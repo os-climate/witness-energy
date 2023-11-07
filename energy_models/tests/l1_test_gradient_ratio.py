@@ -1320,7 +1320,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         )
         coupled_outputs.append(
             f'{namespace}.{self.techno_name}.non_use_capital')
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
@@ -1410,7 +1409,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
         coupled_outputs.append(
             f'{namespace}.{self.techno_name}.non_use_capital')
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
@@ -1500,8 +1498,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
         coupled_outputs.append(
             f'{namespace}.{self.techno_name}.non_use_capital')
-
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
@@ -1603,7 +1599,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                             outputs=coupled_outputs,)
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = RatioJacobianTestCase()
     cls.setUp()
     np.set_printoptions(threshold = 10000)
