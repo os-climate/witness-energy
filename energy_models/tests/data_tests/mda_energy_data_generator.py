@@ -5,7 +5,8 @@ Created on Monday Nov 29 17:21:18 2021
 """
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as MDA_Energy
+#from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as MDA_Energy
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as MDA_witness
 import pickle
 
 
@@ -15,13 +16,13 @@ def launch_data_pickle_generation(directory=''):
     ee = ExecutionEngine(name)
     model_name = 'EnergyMix'
 
-    repo = 'energy_models.sos_processes.energy.MDA'
+    repo = 'climateeconomics.sos_processes.iam.witness'
     builder = ee.factory.get_builder_from_process(
-        repo, 'energy_process_v0')
+        repo, 'witness')
 
     ee.factory.set_builders_to_coupling_builder(builder)
     ee.configure()
-    usecase = MDA_Energy(execution_engine=ee)
+    usecase = MDA_witness(execution_engine=ee)
     usecase.study_name = name
     values_dict = usecase.setup_usecase()
 
@@ -33,7 +34,7 @@ def launch_data_pickle_generation(directory=''):
     full_values_dict[f'{name}.epsilon0'] = 1.0
     full_values_dict[f'{name}.tolerance'] = 1.0e-8
     full_values_dict[f'{name}.sub_mda_class'] = 'MDAGaussSeidel'
-    full_values_dict[f'{name}.max_mda_iter'] = 200
+    full_values_dict[f'{name}.max_mda_iter'] = 2
 
     ee.load_study_from_input_dict(full_values_dict)
 
@@ -51,11 +52,14 @@ def launch_data_pickle_generation(directory=''):
     ############
     # Energies #
     ############
-    energy_list.remove("biomass_dry")
+    #energy_list.remove("biomass_dry")
     for energy in energy_list:
+        if energy != "biomass_dry":
         # Loop on energies
-        energy_disc = ee.dm.get_disciplines_with_name(
-            f'{name}.{model_name}.{energy}')[0]
+            energy_disc = ee.dm.get_disciplines_with_name(
+                f'{name}.{model_name}.{energy}')[0]
+        else:
+            energy_disc = ee.dm.get_disciplines_with_name(f'{name}.AgricultureMix')[0]
         # Inputs
         mda_energy_data_streams_input_dict[energy] = {}
         # Check if the input is a coupling
@@ -97,9 +101,12 @@ def launch_data_pickle_generation(directory=''):
         ################
         technologies_list = energy_disc.get_sosdisc_inputs('technologies_list')
         for techno in technologies_list:
-            # Loop on technologies
-            techno_disc = ee.dm.get_disciplines_with_name(
-                f'{name}.{model_name}.{energy}.{techno}')[0]
+            if energy != "biomass_dry":
+                # Loop on technologies
+                techno_disc = ee.dm.get_disciplines_with_name(
+                    f'{name}.{model_name}.{energy}.{techno}')[0]
+            else:
+                techno_disc = ee.dm.get_disciplines_with_name(f'{name}.AgricultureMix.{techno}')[0]
             # Inputs
             mda_energy_data_technologies_input_dict[techno] = {}
             full_inputs = techno_disc.get_input_data_names()
