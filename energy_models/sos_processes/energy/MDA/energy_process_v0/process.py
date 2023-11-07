@@ -53,12 +53,12 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         for energy_name in self.energy_list:
             dot_list = energy_name.split('.')
             short_name = dot_list[-1]
-            #if self.techno_dict[energy_name]['type'] != AGRI_TYPE:
-            energy_builder_list = self.ee.factory.get_builder_from_process(
-                'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
-                techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline,
-                associate_namespace=False
-            )
+            if self.techno_dict[energy_name]['type'] != AGRI_TYPE:
+                energy_builder_list = self.ee.factory.get_builder_from_process(
+                    'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
+                    techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline,
+                    associate_namespace=False
+                )
 
             builder_list.extend(energy_builder_list)
 
