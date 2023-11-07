@@ -19,6 +19,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.electricity.solar_thermal.solar_thermal import SolarThermal
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
 
@@ -58,7 +59,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
                                  'WACC': 0.062,
                                  'learning_rate':  0.07,  # JRC
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # Capex : mean of JRC / IRENA /ATB NREL / ...
                                  'Capex_init': 5000,
                                  'Capex_init_unit': '$/kW',
@@ -84,7 +85,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
     # from
     # https://www.irena.org/Statistics/View-Data-by-Topic/Finance-and-Investment/Investment-Trends
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [1.41, 14.0, 14.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [1.41, 14.0, 14.0]})
 
     # from database https://solarpaces.nrel.gov/
     # Nb plants 'Operational' and not pilot/demo/proto
@@ -103,9 +104,9 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
@@ -123,16 +124,16 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
         "Adds the chart specific for resources needed for construction"
         instanciated_chart = super().get_charts_consumption_and_production()
         techno_consumption = self.get_sosdisc_outputs(
-            'techno_detailed_consumption')
+            GlossaryCore.TechnoDetailedConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:
 
-            if product != 'years' and product.endswith(f'(Mt)'):
+            if product != GlossaryCore.Years and product.endswith(f'(Mt)'):
                 if ResourceGlossary.Copper['name'] in product :
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
-                        'years', 'Mass [t]', chart_name=chart_name, stacked_bar=True)
+                        GlossaryCore.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
             if ResourceGlossary.Copper['name'] in reactant:
@@ -140,7 +141,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
-                    techno_consumption['years'].values.tolist(),
+                    techno_consumption[GlossaryCore.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)

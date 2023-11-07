@@ -21,6 +21,8 @@ from pathlib import Path
 import numpy as np
 
 from os.path import join, dirname
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
@@ -81,7 +83,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.ee.execute()
 
         energy_prices_nr = self.ee.dm.get_value(
-            f'{usecase.study_name}.EnergyMix.energy_prices')
+            f'{usecase.study_name}.EnergyMix.{GlossaryCore.EnergyPricesValue}')
 
         ####################
         self.name = 'Test2'
@@ -104,7 +106,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.ee2.display_treeview_nodes()
         self.ee2.execute()
         energy_prices_jac = self.ee2.dm.get_value(
-            f'{usecase.study_name}.EnergyMix.energy_prices')
+            f'{usecase.study_name}.EnergyMix.{GlossaryCore.EnergyPricesValue}')
 
         diff = energy_prices_jac - energy_prices_nr
 

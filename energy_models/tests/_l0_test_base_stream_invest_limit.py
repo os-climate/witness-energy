@@ -16,6 +16,8 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 import scipy.interpolate as sc
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -46,26 +48,26 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
                                                'WaterGasShift_wotaxes': np.linspace(10, 10 + len(years) - 1, len(years))
                                                })
 
-        self.wgs_consumption = pd.DataFrame({'years': years,
+        self.wgs_consumption = pd.DataFrame({GlossaryCore.Years: years,
                                              'hydrogen.gaseous_hydrogen (TWh)': [230.779470] * len(years),
                                              'electricity (TWh)': [82.649011] * len(years),
                                              'syngas (TWh)': [3579.828092] * len(years),
                                              'water (Mt)': [381.294427] * len(years)})
 
-        self.electrolysis_consumption = pd.DataFrame({'years': years,
+        self.electrolysis_consumption = pd.DataFrame({GlossaryCore.Years: years,
                                                       'electricity (TWh)': [4.192699] * len(years),
                                                       'water (Mt)': [0.021638] * len(years)})
 
         self.electrolysis_carbon_emissions = pd.DataFrame(
-            {'years': years, 'Electrolysis.PEM': 0.0, 'electricity': 0.0, 'production': 0.0})
+            {GlossaryCore.Years: years, 'Electrolysis.PEM': 0.0, 'electricity': 0.0, 'production': 0.0})
 
         self.wgs_carbon_emissions = pd.DataFrame(
-            {'years': years, 'WaterGasShift': 0.366208, 'syngas': 0.0, 'electricity': 0.0, 'production': 0.366208})
+            {GlossaryCore.Years: years, 'WaterGasShift': 0.366208, 'syngas': 0.0, 'electricity': 0.0, 'production': 0.366208})
 
         self.land_use_required_WaterGasShift = pd.DataFrame(
-            {'years': years, 'WaterGasShift (Gha)': 0.0})
+            {GlossaryCore.Years: years, 'WaterGasShift (Gha)': 0.0})
         self.land_use_required_Electrolysis = pd.DataFrame(
-            {'years': years, 'Electrolysis.PEM (Gha)': 0.0})
+            {GlossaryCore.Years: years, 'Electrolysis.PEM (Gha)': 0.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
                      0.02901,  0.03405,   0.03908,  0.04469,   0.05029]
@@ -73,7 +75,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
 
     def tearDown(self):
         pass
@@ -105,38 +107,38 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         low_prod = 1.e-2
         years_low_prod = 10
-        wgs_production = pd.DataFrame({'years': self.years,
+        wgs_production = pd.DataFrame({GlossaryCore.Years: self.years,
                                        'hydrogen.gaseous_hydrogen (TWh)': np.linspace(100, 100, len(self.years)),
                                        'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
-        electrolysis_production = pd.DataFrame({'years': self.years,
+        electrolysis_production = pd.DataFrame({GlossaryCore.Years: self.years,
                                                 'hydrogen.gaseous_hydrogen (TWh)': [low_prod] * years_low_prod + [100] * (len(self.years) - years_low_prod),
                                                 'O2 (Mt)': [0.019217] * len(self.years)})
-        inputs_dict = {f'{self.name}.{self.model_name}.year_start': 2020,
-                       f'{self.name}.{self.model_name}.year_end': 2050,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.technologies_list': ['WaterGasShift', 'Electrolysis.PEM'],
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.techno_list}': ['WaterGasShift', 'Electrolysis.PEM'],
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption': self.wgs_consumption,
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption_woratio': self.wgs_consumption,
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_production': wgs_production,
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_prices': self.wgs_techno_prices,
-                       f'{self.name}.{self.model_name}.WaterGasShift.CO2_emissions': self.wgs_carbon_emissions,
-                       f'{self.name}.{self.model_name}.WaterGasShift.land_use_required': self.land_use_required_WaterGasShift,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.CO2EmissionsValue}': self.wgs_carbon_emissions,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_consumption': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_consumption_woratio': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_production': electrolysis_production,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_prices': self.electrolysis_techno_prices,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.CO2_emissions': self.electrolysis_carbon_emissions,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.land_use_required': self.land_use_required_Electrolysis}
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.CO2EmissionsValue}': self.electrolysis_carbon_emissions,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_Electrolysis}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.energy_prices')
+            f'{self.name}.{self.model_name}.{GlossaryCore.EnergyPricesValue}')
         co2_emissions = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.CO2_emissions')
+            f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}')
         # Check if for the first year_low_prod values the price value of hydrogen is equal to the price value of WGS
         # We erase the influence of low prod to the price BUT the mix weight is
         # not 100% for the other techno
@@ -178,38 +180,38 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         low_prod = 1.e-5
         years_low_prod = 10
-        wgs_production = pd.DataFrame({'years': self.years,
+        wgs_production = pd.DataFrame({GlossaryCore.Years: self.years,
                                        'hydrogen.gaseous_hydrogen (TWh)': np.linspace(1e-6, 1e-6, len(self.years)),
                                        'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
-        electrolysis_production = pd.DataFrame({'years': self.years,
+        electrolysis_production = pd.DataFrame({GlossaryCore.Years: self.years,
                                                 'hydrogen.gaseous_hydrogen (TWh)': [low_prod] * years_low_prod + [100] * (len(self.years) - years_low_prod),
                                                 'O2 (Mt)': [0.019217] * len(self.years)})
-        inputs_dict = {f'{self.name}.{self.model_name}.year_start': 2020,
-                       f'{self.name}.{self.model_name}.year_end': 2050,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.technologies_list': ['WaterGasShift', 'Electrolysis.PEM'],
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.techno_list}': ['WaterGasShift', 'Electrolysis.PEM'],
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption': self.wgs_consumption,
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption_woratio': self.wgs_consumption,
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_production': wgs_production,
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_prices': self.wgs_techno_prices,
-                       f'{self.name}.{self.model_name}.WaterGasShift.CO2_emissions': self.wgs_carbon_emissions,
-                       f'{self.name}.{self.model_name}.WaterGasShift.land_use_required': self.land_use_required_WaterGasShift,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.CO2EmissionsValue}': self.wgs_carbon_emissions,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_consumption': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_consumption_woratio': self.electrolysis_consumption,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_production': electrolysis_production,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_prices': self.electrolysis_techno_prices,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.CO2_emissions': self.electrolysis_carbon_emissions,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.land_use_required': self.land_use_required_Electrolysis}
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.CO2EmissionsValue}': self.electrolysis_carbon_emissions,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_Electrolysis}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.energy_prices')
+            f'{self.name}.{self.model_name}.{GlossaryCore.EnergyPricesValue}')
         co2_emissions = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.CO2_emissions')
+            f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}')
 
         # Twe two low prods are reduced to 1e-3 and they have both  almost same effect
         # on price and CO2 emissions ( the exponential is here to smooth the

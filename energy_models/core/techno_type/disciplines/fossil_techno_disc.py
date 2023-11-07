@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 
@@ -33,15 +33,15 @@ class FossilTechnoDiscipline(TechnoDiscipline):
         'icon': 'fas fa-smog fa-fw',
         'version': '',
     }
-    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/MWh', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+    DESC_IN = {GlossaryCore.TransportCostValue: {'type': 'dataframe', 'unit': '$/MWh', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_fossil',
-                                  'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
+                                  'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
                                                            'transport': ('float',  None, True)},
                                   'dataframe_edition_locked': False},
-               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               GlossaryCore.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                     'namespace': 'ns_fossil',
-                                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                             'margin': ('float',  None, True)},
+                                    'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
+                                                             GlossaryCore.MarginValue: ('float',  None, True)},
                                     'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
@@ -62,7 +62,7 @@ class FossilTechnoDiscipline(TechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
 
-        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions)

@@ -557,10 +557,10 @@ class Study(EnergyStudyManager):
 
         if 'renewable' in self.energy_list and 'fossil' in self.energy_list:
             sub_indexes = np.linspace(0, len(energy_invest) - 1, GlossaryEnergy.NB_POLES_COARSE).astype(int)
-            energy_invest_poles = energy_invest['energy_investment'].values[sub_indexes]
+            energy_invest_poles = energy_invest[GlossaryCore.EnergyInvestmentsValue].values[sub_indexes]
         else:
-            energy_invest_poles = energy_invest['energy_investment'].values[[i for i in range(
-                len(energy_invest['energy_investment'].values)) if i % 10 == 0]][0:-1]
+            energy_invest_poles = energy_invest[GlossaryCore.EnergyInvestmentsValue].values[[i for i in range(
+                len(energy_invest[GlossaryCore.EnergyInvestmentsValue].values)) if i % 10 == 0]][0:-1]
         for column in invest_mix_df.columns:
             if column != GlossaryCore.Years:
                 if len(invest_mix_df[GlossaryCore.Years].values) == len(energy_invest_poles):
@@ -570,7 +570,7 @@ class Study(EnergyStudyManager):
 
                 else:
                     indep_invest_df[column] = invest_mix_df[column].values
-                                              #energy_invest['energy_investment'].values * \
+                                              #energy_invest[GlossaryCore.EnergyInvestmentsValue].values * \
                                               #energy_invest_factor
 
         return indep_invest_df
@@ -579,7 +579,7 @@ class Study(EnergyStudyManager):
 
         co2_taxes = np.asarray([50.] * len(self.years))
         co2_taxes_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'CO2_tax': co2_taxes}, index=self.years)
+            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: co2_taxes}, index=self.years)
 
         return co2_taxes_df
 
@@ -587,7 +587,7 @@ class Study(EnergyStudyManager):
 
         co2_taxes = np.linspace(750, 750, len(self.years))
         co2_taxes_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'CO2_tax': co2_taxes}, index=self.years)
+            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: co2_taxes}, index=self.years)
 
         return co2_taxes_df
 
@@ -740,7 +740,7 @@ class Study(EnergyStudyManager):
         for i in range(1, len(self.years)):
             invest[i] = (1.0 - 0.0253) * invest[i - 1]
         invest_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'energy_investment': invest})
+            {GlossaryCore.Years: self.years, GlossaryCore.EnergyInvestmentsValue: invest})
         invest_df.index = self.years
         scaling_factor_energy_investment = 100.0
         # init land surface for food for biomass dry crop energy
@@ -753,26 +753,26 @@ class Study(EnergyStudyManager):
             {GlossaryCore.Years: self.years, 'carbon_capture from energy mix (Mt)': 25.0})
 
         population_df = pd.DataFrame(
-            {"years": self.years, "population": np.linspace(7886.69358, 9000., len(self.years))})
+            {GlossaryCore.Years: self.years, GlossaryCore.PopulationValue: np.linspace(7886.69358, 9000., len(self.years))})
         transport_demand = pd.DataFrame({GlossaryCore.Years: self.years,
-                                         'transport_demand': np.linspace(33600., 30000., len(self.years))})
+                                         GlossaryCore.TransportDemandValue: np.linspace(33600., 30000., len(self.years))})
 
         self.forest_invest_df = pd.DataFrame(
-            {"years": self.years, "forest_investment": 5})
+            {GlossaryCore.Years: self.years, GlossaryCore.ForestInvestmentValue: 5})
 
-        values_dict = {f'{self.study_name}.energy_investment': invest_df,
-                       f'{self.study_name}.year_start': self.year_start,
-                       f'{self.study_name}.year_end': self.year_end,
-                       f'{self.study_name}.energy_list': self.energy_list,
-                       f'{self.study_name}.ccs_list': self.ccs_list,
-                       f'{self.study_name}.energy_prices': self.energy_prices,
-                       f'{self.study_name}.{energy_mix_name}.energy_prices': self.energy_prices,
+        values_dict = {f'{self.study_name}.{GlossaryCore.EnergyInvestmentsValue}': invest_df,
+                       f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.study_name}.{GlossaryCore.energy_list}': self.energy_list,
+                       f'{self.study_name}.{GlossaryCore.ccs_list}': self.ccs_list,
+                       f'{self.study_name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
                        f'{self.study_name}.land_surface_for_food_df': land_surface_for_food,
-                       f'{self.study_name}.CO2_taxes': self.co2_taxes,
-                       f'{self.study_name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.study_name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.study_name}.scaling_factor_energy_investment': scaling_factor_energy_investment,
-                       f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.study_name}.{energy_mix_name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.study_name}.{energy_mix_name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.study_name}.{energy_mix_name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
                        f'{self.study_name}.is_stream_demand': True,
@@ -780,11 +780,11 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
                        f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.concatenate(
                            (np.ones(5) * 1e-4, np.ones(len(self.years) - 5) / 4), axis=None),
-                       f'{self.study_name}.{energy_mix_name}.resources_CO2_emissions': self.resources_CO2_emissions,
-                       f'{self.study_name}.{energy_mix_name}.resources_price': self.resources_prices,
+                       f'{self.study_name}.{energy_mix_name}.{GlossaryCore.RessourcesCO2EmissionsValue}': self.resources_CO2_emissions,
+                       f'{self.study_name}.{energy_mix_name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
                        f'{self.study_name}.{GlossaryCore.PopulationDfValue}': population_df,
-                       f'{self.study_name}.Energy_demand.transport_demand': transport_demand,
-                       f'{self.study_name}.InvestmentDistribution.forest_investment': self.forest_invest_df,
+                       f'{self.study_name}.Energy_demand.{GlossaryCore.TransportDemandValue}': transport_demand,
+                       f'{self.study_name}.InvestmentDistribution.{GlossaryCore.ForestInvestmentValue}': self.forest_invest_df,
                        }
 
         values_dict_list, dspace_list, instanciated_studies = self.setup_usecase_sub_study_list(
@@ -799,7 +799,7 @@ class Study(EnergyStudyManager):
 
         if CarbonCapture.name in DEFAULT_TECHNO_DICT:
             values_dict[
-                f'{self.study_name}.{CCS_NAME}.{CarbonCapture.name}.{FlueGas.node_name}.technologies_list'] = flue_gas_list
+                f'{self.study_name}.{CCS_NAME}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryCore.techno_list}'] = flue_gas_list
 
         # IF coarse process no need of heat loss percentage (raw prod is net prod)
         # IF renewable and fossil in energy_list then coarse process
@@ -820,14 +820,14 @@ class Study(EnergyStudyManager):
             invest_mix_df = self.get_total_mix(
                 instanciated_studies, ccs_percentage)
             values_dict.update(
-                {f'{self.study_name}.{INVEST_DISC_NAME}.invest_mix': invest_mix_df})
+                {f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryCore.invest_mix}': invest_mix_df})
             self.update_dv_arrays_technos(invest_mix_df)
         elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
 
             invest_mix_df = self.get_absolute_total_mix(
                 instanciated_studies, ccs_percentage, invest_df, scaling_factor_energy_investment)
             values_dict.update(
-                {f'{self.study_name}.{INVEST_DISC_NAME}.invest_mix': invest_mix_df})
+                {f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryCore.invest_mix}': invest_mix_df})
             self.update_dv_arrays_technos(invest_mix_df)
 
         values_dict_list.append(values_dict)
@@ -876,17 +876,17 @@ class Study(EnergyStudyManager):
                                       'biomass_dry': -0.277})
 
         energy_type_capital = pd.DataFrame(
-            {'years': self.years, GlossaryCore.Capital: 0.0})
+            {GlossaryCore.Years: self.years, GlossaryCore.Capital: 0.0})
         agri_values_dict = {f'{self.study_name}.{agri_mix_name}.N2O_per_use': N2O_per_use,
                             f'{self.study_name}.{agri_mix_name}.CH4_per_use': CH4_per_use,
                             f'{self.study_name}.{agri_mix_name}.CO2_per_use': CO2_per_use,
-                            f'{self.study_name}.{agri_mix_name}.energy_consumption': energy_consumption,
-                            f'{self.study_name}.{agri_mix_name}.energy_consumption_woratio': energy_consumption,
-                            f'{self.study_name}.{agri_mix_name}.energy_production': energy_production,
+                            f'{self.study_name}.{agri_mix_name}.{GlossaryCore.EnergyConsumptionValue}': energy_consumption,
+                            f'{self.study_name}.{agri_mix_name}.{GlossaryCore.EnergyConsumptionWithoutRatioValue}': energy_consumption,
+                            f'{self.study_name}.{agri_mix_name}.{GlossaryCore.EnergyProductionValue}': energy_production,
                             f'{self.study_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': energy_type_capital,
-                            f'{self.study_name}.{agri_mix_name}.energy_prices': energy_prices,
-                            f'{self.study_name}.{agri_mix_name}.land_use_required': land_use_required,
-                            f'{self.study_name}.{agri_mix_name}.CO2_emissions': CO2_emissions, }
+                            f'{self.study_name}.{agri_mix_name}.{GlossaryCore.EnergyPricesValue}': energy_prices,
+                            f'{self.study_name}.{agri_mix_name}.{GlossaryCore.LandUseRequiredValue}': land_use_required,
+                            f'{self.study_name}.{agri_mix_name}.{GlossaryCore.CO2EmissionsValue}': CO2_emissions, }
 
         return agri_values_dict
 

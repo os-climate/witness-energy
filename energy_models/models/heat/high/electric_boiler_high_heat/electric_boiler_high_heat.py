@@ -49,7 +49,7 @@ class ElectricBoilerHighHeat(highheattechno):
         land_rate = self.land_rate
         heat_price = self.compute_other_primary_energy_costs()
         self.heat_flux = land_rate/heat_price
-        self.heat_flux_distribution = pd.DataFrame({'years': self.cost_details['years'],
+        self.heat_flux_distribution = pd.DataFrame({GlossaryCore.Years: self.cost_details[GlossaryCore.Years],
                                                'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
 

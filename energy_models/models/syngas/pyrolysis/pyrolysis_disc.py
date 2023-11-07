@@ -18,6 +18,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.syngas.pyrolysis.pyrolysis import Pyrolysis
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
 
@@ -51,7 +52,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  'CO2_from_production_unit': 'kg/kg',
                                  'WACC': 0.075,  # Weighted averaged cost of capital for the carbon capture plant
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # 1600T/day of wood capacity, 180M$ of Capital
                                  # cost, 20 years lifetime, 70% syngas yield
                                  'Capex_init': 0.012,
@@ -75,7 +76,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 0.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 0.0]})
     # From Future of hydrogen : accounting for around three quarters of the
     # annual global dedicated hydrogen production of around 70 million tonnes.
     initial_production = 1e-12  # in TWh at year_start MT*kWh/kg = TWh
@@ -93,9 +94,9 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}
                }
     # -- add specific techno outputs to this

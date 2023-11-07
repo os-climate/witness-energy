@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from copy import deepcopy
 
@@ -42,7 +43,7 @@ class BaseInvest:
         self.check_unit(unit)
         self.invest_unit = unit
 
-    def set_invest_level(self, invest_df, unit='$', column_name='invest'):
+    def set_invest_level(self, invest_df, unit='$', column_name=GlossaryCore.InvestValue):
         self.column_name = column_name
         self.set_invest_unit(unit)
         if isinstance(invest_df, pd.DataFrame):
@@ -76,28 +77,28 @@ class BaseInvest:
         norm_mix = compute_norm_mix(self.mix_df, base_list)
 
         converted_invest_df = self.get_invest_level(output_unit)
-        converted_invest_df['years'] = converted_invest_df['years'].values.real.astype(
+        converted_invest_df[GlossaryCore.Years] = converted_invest_df[GlossaryCore.Years].values.real.astype(
             int)
-        self.mix_df['years'] = self.mix_df['years'].values.real.astype(
+        self.mix_df[GlossaryCore.Years] = self.mix_df[GlossaryCore.Years].values.real.astype(
             int)
-        invest_distrib = pd.merge(self.mix_df, converted_invest_df, on='years')
+        invest_distrib = pd.merge(self.mix_df, converted_invest_df, on=GlossaryCore.Years)
 
         for energy in base_list:
             invest_distrib[energy] *= invest_distrib[self.column_name].values / \
                                       norm_mix.values
 
-        return invest_distrib[self.energy_list + ['years']], output_unit
+        return invest_distrib[self.energy_list + [GlossaryCore.Years]], output_unit
 
     def compute_distribution_list(self, input_dict):
         self.distribution_list = []
-        for energy in input_dict['energy_list']:
+        for energy in input_dict[GlossaryCore.energy_list]:
             if energy == BiomassDry.name:
                 pass
             else:
-                for techno in input_dict[f'{energy}.technologies_list']:
+                for techno in input_dict[f'{energy}.{GlossaryCore.techno_list}']:
                     self.distribution_list.append(f'{energy}.{techno}')
-        for ccs in input_dict['ccs_list']:
-            for techno in input_dict[f'{ccs}.technologies_list']:
+        for ccs in input_dict[GlossaryCore.ccs_list]:
+            for techno in input_dict[f'{ccs}.{GlossaryCore.techno_list}']:
                 self.distribution_list.append(f'{ccs}.{techno}')
 
 

@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -75,7 +77,7 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
                                  'WACC': 0.075,
                                  'learning_rate': 0,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # IRENA (value from Figure 7.1, page 111)
                                  'Capex_init': 3000,
                                  'Capex_init_unit': '$/kW',
@@ -94,7 +96,7 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
     # setup = region: all, techno: bioenergy, sub-techno: biomass, flow: installed_capacity
     # (15.414-9.598)/5 = 1.1632 MW per year increase
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [1.1632 * 3000 / 1000, 1.1632 * 3000 / 1000]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [1.1632 * 3000 / 1000, 1.1632 * 3000 / 1000]})
     # In G$
 
     # From IRENA Data
@@ -116,9 +118,9 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False},
                }
     # -- add specific techno inputs to this
@@ -133,16 +135,16 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
         "Adds the chart specific for resources needed for construction"
         instanciated_chart = super().get_charts_consumption_and_production()
         techno_consumption = self.get_sosdisc_outputs(
-            'techno_detailed_consumption')
+            GlossaryCore.TechnoDetailedConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:
 
-            if product != 'years' and product.endswith(f'(Mt)'):
+            if product != GlossaryCore.Years and product.endswith(f'(Mt)'):
                 if ResourceGlossary.Copper['name'] in product :
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
-                        'years', 'Mass [t]', chart_name=chart_name, stacked_bar=True)
+                        GlossaryCore.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
             if ResourceGlossary.Copper['name'] in reactant:
@@ -150,7 +152,7 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
-                    techno_consumption['years'].values.tolist(),
+                    techno_consumption[GlossaryCore.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)
@@ -172,6 +174,6 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
         consumption_gradient = self.techno_consumption_derivative[f'{BiomassDry.name} ({self.techno_model.product_energy_unit})']
         #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
         self.set_partial_derivative_for_other_types(
-            ('techno_production',
-             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
+            (GlossaryCore.TechnoProductionValue,
+             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
             (consumption_gradient- dprod_name_dinvest))

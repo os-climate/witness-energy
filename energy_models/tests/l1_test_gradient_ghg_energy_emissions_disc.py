@@ -79,7 +79,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
             self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue][
                 'value']
-            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
+            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyConsumptionValue]['value']
 
         for i, ccs_name in enumerate(self.ccs_list):
             self.energy_production[f'{ccs_name}'] = \
@@ -87,13 +87,13 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
 
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
-        self.energy_production_detailed = streams_outputs_dict['energy_production_detailed']
+        self.energy_production_detailed = streams_outputs_dict[GlossaryCore.EnergyProductionDetailedValue]
 
-        self.co2_emissions_ccus_Gt = pd.DataFrame({'years': self.years,
+        self.co2_emissions_ccus_Gt = pd.DataFrame({GlossaryCore.Years: self.years,
                                                    'carbon_storage Limited by capture (Gt)': np.linspace(1, 6,
                                                                                                          len(self.years))
                                                    })
-        self.co2_emissions_needed_by_energy_mix = pd.DataFrame({'years': self.years,
+        self.co2_emissions_needed_by_energy_mix = pd.DataFrame({GlossaryCore.Years: self.years,
                                                                 'carbon_capture needed by energy mix (Gt)': np.linspace(
                                                                     0.001, 0.3, len(self.years))
                                                                 })
@@ -118,35 +118,35 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {
-            f'{self.name}.year_start': self.year_start,
-            f'{self.name}.year_end': self.year_end,
-            f'{self.name}.energy_list': self.energy_list,
+            f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+            f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+            f'{self.name}.{GlossaryCore.energy_list}': self.energy_list,
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
-            f'{self.name}.energy_production_detailed': self.energy_production_detailed,
+            f'{self.name}.{GlossaryCore.EnergyProductionDetailedValue}': self.energy_production_detailed,
             f'{self.name}.co2_emissions_ccus_Gt': self.co2_emissions_ccus_Gt,
             f'{self.name}.co2_emissions_needed_by_energy_mix': self.co2_emissions_needed_by_energy_mix,
-            f'{self.name}.ccs_list': self.ccs_list
+            f'{self.name}.{GlossaryCore.ccs_list}': self.ccs_list
         }
         for energy in self.energy_list:
             if energy == 'biomass_dry':
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CO2_per_use'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CH4_per_use'] = self.CH4_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.N2O_per_use'] = self.N2O_per_use[energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.energy_production'] = self.energy_production[
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryCore.EnergyProductionValue}'] = self.energy_production[
                     energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.energy_consumption'] = \
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryCore.EnergyConsumptionValue}'] = \
                     self.energy_consumption[energy]
             else:
 
                 inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.CH4_per_use'] = self.CH4_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.N2O_per_use'] = self.N2O_per_use[energy]
-                inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
-                inputs_dict[f'{self.name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
+                inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyProductionValue}'] = self.energy_production[energy]
+                inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyConsumptionValue}'] = self.energy_consumption[energy]
 
         for energy in self.ccs_list:
-            inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyProductionValue}'] = self.energy_production[energy]
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -199,14 +199,14 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         energy_list_wobiomass_dry = [
             energy for energy in self.energy_list if energy != 'biomass_dry']
         coupled_inputs = [
-            f'{self.name}.{energy}.energy_production' for energy in energy_list_wobiomass_dry]
+            f'{self.name}.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in energy_list_wobiomass_dry]
         coupled_inputs.extend([
-            f'{self.name}.{energy}.energy_production' for energy in self.ccs_list])
+            f'{self.name}.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in self.ccs_list])
         coupled_inputs.extend(
-            [f'{self.name}.{energy}.energy_consumption' for energy in energy_list_wobiomass_dry])
+            [f'{self.name}.{energy}.{GlossaryCore.EnergyConsumptionValue}' for energy in energy_list_wobiomass_dry])
 
-        coupled_inputs.extend([f'{self.name}.{AgricultureMixDiscipline.name}.energy_production',
-                               f'{self.name}.{AgricultureMixDiscipline.name}.energy_consumption'])
+        coupled_inputs.extend([f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryCore.EnergyProductionValue}',
+                               f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryCore.EnergyConsumptionValue}'])
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
@@ -250,7 +250,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
         coupled_inputs = [
-            f'{self.name}.energy_production_detailed']
+            f'{self.name}.{GlossaryCore.EnergyProductionDetailedValue}']
 
         coupled_outputs = [f'{self.name}.GHG_total_energy_emissions']
 

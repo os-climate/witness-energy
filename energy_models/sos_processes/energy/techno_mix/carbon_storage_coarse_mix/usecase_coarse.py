@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
@@ -44,7 +45,7 @@ class Study(EnergyMixStudyManager):
 
     def get_investments(self):
         invest_carbon_storage_mix_dict = {}
-        #invest_carbon_storage_mix_dict['years'] = self.years
+        #invest_carbon_storage_mix_dict[GlossaryCore.Years] = self.years
         l_ctrl = np.arange(0, GlossaryEnergy.NB_POLES_COARSE)
 
         if 'CarbonStorageTechno' in self.technologies_list:
@@ -52,7 +53,7 @@ class Study(EnergyMixStudyManager):
                 10 * (1 + 0.03) ** i for i in l_ctrl]
 
         if self.bspline:
-            invest_carbon_storage_mix_dict['years'] = self.years
+            invest_carbon_storage_mix_dict[GlossaryCore.Years] = self.years
 
             for techno in self.technologies_list:
                 invest_carbon_storage_mix_dict[techno], _ = self.invest_bspline(
@@ -70,11 +71,11 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
-        self.energy_prices = pd.DataFrame({'years': years, })
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, })
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': 10.0})
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: 10.0})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
@@ -83,40 +84,40 @@ class Study(EnergyMixStudyManager):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 0.0})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 0.0})
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, })
+            {GlossaryCore.Years: years, })
         investment_mix = self.get_investments()
 
-        values_dict = {f'{self.study_name}.year_start': self.year_start,
-                       f'{self.study_name}.year_end': self.year_end,
-                       f'{self.study_name}.{ccs_name}.technologies_list': self.technologies_list,
-                       f'{self.study_name}.{ccs_name}.CarbonStorageTechno.margin': self.margin,
-                       f'{self.study_name}.{ccs_name}.transport_cost': self.transport,
-                       f'{self.study_name}.{ccs_name}.transport_margin': self.margin,
+        values_dict = {f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.study_name}.{ccs_name}.{GlossaryCore.techno_list}': self.technologies_list,
+                       f'{self.study_name}.{ccs_name}.CarbonStorageTechno.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{ccs_name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.study_name}.{ccs_name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
                        }
 
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                    f'{self.study_name}.{energy_mix_name}.energy_prices': self.energy_prices,
-                    f'{self.study_name}.CO2_taxes': self.co2_taxes,
+                {f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                    f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
-                    columns=['years']).sum(axis=1)
+                    columns=[GlossaryCore.Years]).sum(axis=1)
                 for techno in self.technologies_list:
-                    invest_level_techno = pd.DataFrame({'years': self.invest_level['years'].values,
-                                                        'invest': self.invest_level['invest'].values * investment_mix[techno].values / investment_mix_sum})
-                    values_dict[f'{self.study_name}.{ccs_name}.{techno}.invest_level'] = invest_level_techno
+                    invest_level_techno = pd.DataFrame({GlossaryCore.Years: self.invest_level[GlossaryCore.Years].values,
+                                                        GlossaryCore.InvestValue: self.invest_level[GlossaryCore.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
+                    values_dict[f'{self.study_name}.{ccs_name}.{techno}.{GlossaryCore.InvestLevelValue}'] = invest_level_techno
             else:
-                values_dict[f'{self.study_name}.{ccs_name}.invest_level'] = self.invest_level
+                values_dict[f'{self.study_name}.{ccs_name}.{GlossaryCore.InvestLevelValue}'] = self.invest_level
         else:
 
             self.update_dv_arrays()
