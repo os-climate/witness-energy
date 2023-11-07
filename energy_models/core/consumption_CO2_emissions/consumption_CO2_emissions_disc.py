@@ -187,6 +187,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                     'methane': ('float', None, True),
                                                     'carbon_capture (Mt)': ('float', None, True),
                                                     'biogas': ('float', None, True),
+                                                    'biomass_dry': ('float', None, True),
                                                     'fuel.biodiesel': ('float', None, True),
                                                     'glycerol_resource (Mt)': ('float', None, True),
                                                     'solid_fuel': ('float', None, True),
