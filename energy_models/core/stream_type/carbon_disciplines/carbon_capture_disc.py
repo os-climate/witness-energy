@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/29-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/03/29-2023/11/06 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -413,8 +413,11 @@ class CarbonCaptureDiscipline(StreamDiscipline):
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Energy price', 'Technology mix',
-                      'Consumption and production', 'Flue gas or DAC capture']
+        chart_list = ['Energy price',
+                      'Technology mix',
+                      GlossaryCore.Capital,
+                      'Consumption and production',
+                      'Flue gas or DAC capture']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -454,6 +457,10 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             new_chart = self.get_chart_energy_price_in_dollar_kg()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
+
+        if GlossaryCore.Capital in charts:
+            chart = self.get_capital_breakdown_by_technos()
+            instanciated_charts.append(chart)
 
         if 'Consumption and production' in charts:
             new_charts = self.get_charts_consumption_and_production_mass_CO2()
