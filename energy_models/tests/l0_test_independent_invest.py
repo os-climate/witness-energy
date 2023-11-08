@@ -47,7 +47,7 @@ class TestIndependentInvest(unittest.TestCase):
         self.years = np.arange(self.y_s, self.y_e + 1)
         year_range = self.y_e - self.y_s + 1
         energy_mix_invest_dic = {}
-        energy_mix_invest_dic['years'] = self.years
+        energy_mix_invest_dic[GlossaryCore.Years] = self.years
         energy_mix_invest_dic['electricity.SolarPv'] = np.ones(len(self.years)) * 10.0
         energy_mix_invest_dic['electricity.WindOnshore'] = np.ones(len(self.years)) * 20.0
         energy_mix_invest_dic['electricity.CoalGen'] = np.ones(len(self.years)) * 30.0
@@ -72,34 +72,34 @@ class TestIndependentInvest(unittest.TestCase):
 
         forest_invest = np.linspace(5, 8, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {"years": self.years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: self.years, GlossaryCore.ForestInvestmentValue: forest_invest})
         managed_wood_invest = np.linspace(0.5, 2, year_range)
         self.managed_wood_invest_df = pd.DataFrame(
-            {"years": self.years, "investment": managed_wood_invest})
+            {GlossaryCore.Years: self.years, "investment": managed_wood_invest})
         unmanaged_wood_invest = np.linspace(2, 3, year_range)
         self.unmanaged_wood_invest_df = pd.DataFrame(
-            {"years": self.years, "investment": unmanaged_wood_invest})
+            {GlossaryCore.Years: self.years, "investment": unmanaged_wood_invest})
         deforestation_invest = np.linspace(1.0, 0.1, year_range)
         self.deforestation_invest_df = pd.DataFrame(
-            {"years": self.years, "investment": deforestation_invest})
+            {GlossaryCore.Years: self.years, "investment": deforestation_invest})
         crop_invest = np.linspace(0.5, 0.25, year_range)
         self.crop_invest_df = pd.DataFrame(
-            {"years": self.years, "investment": crop_invest})
+            {GlossaryCore.Years: self.years, "investment": crop_invest})
 
     def test_01_independent_invest_model(self):
         scaling_factor_energy_investment = 100
-        inputs_dict = {'year_start': self.y_s,
-                       'year_end': self.y_e,
-                       'energy_list': self.energy_list,
-                       'ccs_list': self.ccs_list,
+        inputs_dict = {GlossaryCore.YearStart: self.y_s,
+                       GlossaryCore.YearEnd: self.y_e,
+                       GlossaryCore.energy_list: self.energy_list,
+                       GlossaryCore.ccs_list: self.ccs_list,
                        'electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        'methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        'hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
                        'carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing',
                                                             'flue_gas_capture.CalciumLooping'],
                        'carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
-                       'invest_mix': self.energy_mix,
-                       'forest_investment': self.forest_invest_df,
+                       GlossaryCore.invest_mix: self.energy_mix,
+                       GlossaryCore.ForestInvestmentValue: self.forest_invest_df,
                        'scaling_factor_energy_investment': scaling_factor_energy_investment,}
         one_invest_model = IndependentInvest()
         energy_investment_wo_tax = one_invest_model.compute(inputs_dict)
@@ -130,10 +130,10 @@ class TestIndependentInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.y_s,
-                       f'{self.name}.year_end': self.y_e,
-                       f'{self.name}.energy_list': self.energy_list,
-                       f'{self.name}.ccs_list': self.ccs_list,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.y_s,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.y_e,
+                       f'{self.name}.{GlossaryCore.energy_list}': self.energy_list,
+                       f'{self.name}.{GlossaryCore.ccs_list}': self.ccs_list,
                        f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift',
@@ -142,8 +142,8 @@ class TestIndependentInvest(unittest.TestCase):
                                                                               'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation',
                                                                               'GeologicMineralization'],
-                       f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
-                       f'{self.name}.{self.model_name}.forest_investment': self.forest_invest_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.invest_mix}': self.energy_mix,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.ForestInvestmentValue}': self.forest_invest_df,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -151,15 +151,15 @@ class TestIndependentInvest(unittest.TestCase):
         self.ee.execute()
 
         for column in self.energy_mix.columns:
-            if column != 'years':
+            if column != GlossaryCore.Years:
                 invest_techno_in = self.energy_mix[column].values
 
                 if 'carbon_capture' in column or 'carbon_storage' in column:
                     invest_techno_out = self.ee.dm.get_value(
-                        f'{self.name}.CCUS.{column}.invest_level')['invest'].values
+                        f'{self.name}.CCUS.{column}.{GlossaryCore.InvestLevelValue}')[GlossaryCore.InvestValue].values
                 else:
                     invest_techno_out = self.ee.dm.get_value(
-                        f'{self.name}.{column}.invest_level')['invest'].values
+                        f'{self.name}.{column}.{GlossaryCore.InvestLevelValue}')[GlossaryCore.InvestValue].values
 
                 self.assertListEqual(
                     invest_techno_in.tolist(), invest_techno_out.tolist())
@@ -200,10 +200,10 @@ class TestIndependentInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.y_s,
-                       f'{self.name}.year_end': self.y_e,
-                       f'{self.name}.energy_list': self.energy_list_bis,
-                       f'{self.name}.ccs_list': self.ccs_list,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.y_s,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.y_e,
+                       f'{self.name}.{GlossaryCore.energy_list}': self.energy_list_bis,
+                       f'{self.name}.{GlossaryCore.ccs_list}': self.ccs_list,
                        f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift',
@@ -212,8 +212,8 @@ class TestIndependentInvest(unittest.TestCase):
                                                                               'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation',
                                                                               'GeologicMineralization'],
-                       f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
-                       f'{self.name}.forest_investment': self.forest_invest_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.invest_mix}': self.energy_mix,
+                       f'{self.name}.{GlossaryCore.ForestInvestmentValue}': self.forest_invest_df,
                        f'{self.name}.Forest.managed_wood_investment': self.managed_wood_invest_df,
                        f'{self.name}.Forest.deforestation_investment': self.deforestation_invest_df,
                        f'{self.name}.Crop.crop_investment': self.crop_invest_df}
@@ -223,15 +223,15 @@ class TestIndependentInvest(unittest.TestCase):
         self.ee.execute()
 
         for column in self.energy_mix.columns:
-            if column != 'years':
+            if column != GlossaryCore.Years:
                 invest_techno_in = self.energy_mix[column].values
 
                 if 'carbon_capture' in column or 'carbon_storage' in column:
                     invest_techno_out = self.ee.dm.get_value(
-                        f'{self.name}.CCUS.{column}.invest_level')['invest'].values
+                        f'{self.name}.CCUS.{column}.{GlossaryCore.InvestLevelValue}')[GlossaryCore.InvestValue].values
                 else:
                     invest_techno_out = self.ee.dm.get_value(
-                        f'{self.name}.{column}.invest_level')['invest'].values
+                        f'{self.name}.{column}.{GlossaryCore.InvestLevelValue}')[GlossaryCore.InvestValue].values
 
                 self.assertListEqual(
                     invest_techno_in.tolist(), invest_techno_out.tolist())
@@ -273,10 +273,10 @@ class TestIndependentInvest(unittest.TestCase):
         self.ee.display_treeview_nodes()
         energy_list = ['electricity', 'methane',
                        'hydrogen.gaseous_hydrogen', 'biomass_dry']
-        inputs_dict = {f'{self.name}.year_start': self.y_s,
-                       f'{self.name}.year_end': self.y_e,
-                       f'{self.name}.energy_list': energy_list,
-                       f'{self.name}.ccs_list': self.ccs_list,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.y_s,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.y_e,
+                       f'{self.name}.{GlossaryCore.energy_list}': energy_list,
+                       f'{self.name}.{GlossaryCore.ccs_list}': self.ccs_list,
                        f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.biomass_dry.technologies_list': [],
@@ -286,8 +286,8 @@ class TestIndependentInvest(unittest.TestCase):
                                                                          'flue_gas_capture.CalciumLooping'],
                        f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation',
                                                                          'GeologicMineralization'],
-                       f'{self.name}.{self.model_name}.invest_mix': self.energy_mix,
-                       f'{self.name}.forest_investment': self.forest_invest_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.invest_mix}': self.energy_mix,
+                       f'{self.name}.{GlossaryCore.ForestInvestmentValue}': self.forest_invest_df,
                        f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,
                        f'{self.name}.deforestation_investment': self.deforestation_invest_df,
                        f'{self.name}.crop_investment': self.crop_invest_df}
@@ -297,14 +297,14 @@ class TestIndependentInvest(unittest.TestCase):
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         all_technos_list = [
             f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in
-            inputs_dict[f'{self.name}.{energy}.technologies_list']]
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.invest_mix',
-                                                                          f'{self.name}.forest_investment',
+            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.techno_list}']]
+        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.invest_mix}',
+                                                                          f'{self.name}.{GlossaryCore.ForestInvestmentValue}',
                                                                           f'{self.name}.managed_wood_investment',
                                                                           f'{self.name}.deforestation_investment',
                                                                           f'{self.name}.crop_investment'],
                                       outputs=[
-                                                  f'{self.name}.{techno}.invest_level' for techno in
+                                                  f'{self.name}.{techno}.{GlossaryCore.InvestLevelValue}' for techno in
                                                   all_technos_list] +
                                               [f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                                f'{self.name}.{GlossaryCore.EnergyInvestmentsMinimizationObjective}'],

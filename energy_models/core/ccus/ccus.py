@@ -17,6 +17,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.base_stream import BaseStream
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
@@ -71,40 +72,40 @@ class CCUS(BaseStream):
         '''
         COnfigure parameters (variables that does not change during the run
         '''
-        self.subelements_list = inputs_dict['ccs_list']
+        self.subelements_list = inputs_dict[GlossaryCore.ccs_list]
         BaseStream.configure_parameters(self, inputs_dict)
 
         self.co2_for_food = pd.DataFrame(
-            {'years': self.production['years'], f'{CO2.name} for food (Mt)': 0.0})
+            {GlossaryCore.Years: self.production[GlossaryCore.Years], f'{CO2.name} for food (Mt)': 0.0})
         self.CCS_price = pd.DataFrame(
-            {'years': np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1)})
+            {GlossaryCore.Years: np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1)})
         self.carbonstorage_limit = inputs_dict['carbonstorage_limit']
         self.carbonstorage_constraint_ref = inputs_dict['carbonstorage_constraint_ref']
-        self.total_carbon_storage_by_invest = np.zeros(len(self.production['years']))
+        self.total_carbon_storage_by_invest = np.zeros(len(self.production[GlossaryCore.Years]))
 
     def configure_parameters_update(self, inputs_dict):
         '''
         COnfigure parameters with possible update (variables that does change during the run)
         '''
-        self.subelements_list = inputs_dict['ccs_list']
+        self.subelements_list = inputs_dict[GlossaryCore.ccs_list]
 
         # Specific configure for energy mix
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
         for energy in self.subelements_list:
-            self.sub_prices[energy] = inputs_dict[f'{energy}.energy_prices'][energy]
-            self.sub_production_dict[energy] = inputs_dict[f'{energy}.energy_production'] * \
+            self.sub_prices[energy] = inputs_dict[f'{energy}.{GlossaryCore.EnergyPricesValue}'][energy]
+            self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryCore.EnergyProductionValue}'] * \
                 self.scaling_factor_energy_production
-            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.energy_consumption'] * \
+            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryCore.EnergyConsumptionValue}'] * \
                 self.scaling_factor_energy_consumption
-            self.sub_consumption_woratio_dict[energy] = inputs_dict[f'{energy}.energy_consumption_woratio'] * \
+            self.sub_consumption_woratio_dict[energy] = inputs_dict[f'{energy}.{GlossaryCore.EnergyConsumptionWithoutRatioValue}'] * \
                 self.scaling_factor_energy_consumption
 
         self.energy_prices = self.sub_prices.copy(deep=True)
 
         # dataframe resource demand
         self.all_resource_demand = pd.DataFrame(
-            {'years': self.energy_prices['years'].values})
+            {GlossaryCore.Years: self.energy_prices[GlossaryCore.Years].values})
         for elements in self.resource_list:
             if elements in self.resource_list:
                 self.all_resource_demand[elements] = np.linspace(
@@ -113,7 +114,7 @@ class CCUS(BaseStream):
             for elements in self.sub_consumption_dict[energy]:
                 if elements in self.resource_list:
                     self.all_resource_demand[elements] = self.all_resource_demand[elements] + \
-                        inputs_dict[f'{energy}.energy_consumption'][elements].values * \
+                        inputs_dict[f'{energy}.{GlossaryCore.EnergyConsumptionValue}'][elements].values * \
                         self.scaling_factor_energy_consumption
 
         self.co2_emissions_needed_by_energy_mix = inputs_dict['co2_emissions_needed_by_energy_mix']
@@ -126,12 +127,12 @@ class CCUS(BaseStream):
         '''
         # Initialize dataframes
 
-        self.co2_production = pd.DataFrame({'years': self.production['years']})
-        self.total_co2_emissions['years'] = self.production['years']
+        self.co2_production = pd.DataFrame({GlossaryCore.Years: self.production[GlossaryCore.Years]})
+        self.total_co2_emissions[GlossaryCore.Years] = self.production[GlossaryCore.Years]
         self.co2_consumption = pd.DataFrame(
-            {'years': self.production['years']})
+            {GlossaryCore.Years: self.production[GlossaryCore.Years]})
         self.emissions_by_energy = pd.DataFrame(
-            {'years': self.production['years']})
+            {GlossaryCore.Years: self.production[GlossaryCore.Years]})
         # Do not loop over carbon capture and carbon storage which will be
         # handled differently
 
@@ -208,7 +209,7 @@ class CCUS(BaseStream):
             self.total_co2_emissions[f'Solid {Carbon.name} storage (Mt)'].values) * Carbon.data_energy_dict['CO2_per_use']
 
         self.total_co2_emissions_Gt = pd.DataFrame(
-            {'years': self.production['years'],
+            {GlossaryCore.Years: self.production[GlossaryCore.Years],
              f'{CarbonStorage.name} Limited by capture (Gt)': self.total_co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1e3})
 
     def compute_CCS_price(self):
@@ -234,11 +235,11 @@ class CCUS(BaseStream):
         Compute CO2 total emissions
         '''
         # Initialize dataframes
-        len_years = len(self.production['years'])
+        len_years = len(self.production[GlossaryCore.Years])
 
-        co2_production = pd.DataFrame({'years': self.production['years']})
+        co2_production = pd.DataFrame({GlossaryCore.Years: self.production[GlossaryCore.Years]})
         co2_consumption = pd.DataFrame(
-            {'years': self.production['years']})
+            {GlossaryCore.Years: self.production[GlossaryCore.Years]})
 
         dtot_CO2_emissions = {}
         # Do not loop over carbon capture and carbon storage which will be

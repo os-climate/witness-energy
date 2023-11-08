@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -142,14 +143,14 @@ class Refinery(LiquidFuelTechno):
         Compute the detail price of the technology
         """
 
-        self.cost_details['invest'] = self.invest_level.loc[self.invest_level['years']
-                                                            <= self.cost_details['years'].max()]['invest'].values
+        self.cost_details[GlossaryCore.InvestValue] = self.invest_level.loc[self.invest_level[GlossaryCore.Years]
+                                                            <= self.cost_details[GlossaryCore.Years].max()][GlossaryCore.InvestValue].values
         # Maximize with smooth exponential
-        self.cost_details['invest'] = compute_func_with_exp_min(
-            self.cost_details['invest'].values, 1.0e-12)
+        self.cost_details[GlossaryCore.InvestValue] = compute_func_with_exp_min(
+            self.cost_details[GlossaryCore.InvestValue].values, 1.0e-12)
 
         self.cost_details[f'Capex_{self.name}'] = self.compute_capex(
-            self.cost_details['invest'].values, self.techno_infos_dict)
+            self.cost_details[GlossaryCore.InvestValue].values, self.techno_infos_dict)
 
         crf = self.compute_crf(self.techno_infos_dict)
 
@@ -159,8 +160,8 @@ class Refinery(LiquidFuelTechno):
         else:
             self.cost_details['efficiency'] = self.techno_infos_dict['efficiency']
 
-        self.prices = self.prices.loc[self.prices['years']
-                                      <= self.cost_details['years'].max()]
+        self.prices = self.prices.loc[self.prices[GlossaryCore.Years]
+                                      <= self.cost_details[GlossaryCore.Years].max()]
         self.cost_details['energy_costs'] = self.compute_other_primary_energy_costs(
         )
 
@@ -179,17 +180,17 @@ class Refinery(LiquidFuelTechno):
             self.cost_details['energy_costs']
 
         # Add margin in %
-        price_with_margin = self.cost_details[self.name] * self.margin.loc[self.margin['years']
-                                                        <= self.cost_details['years'].max()]['margin'].values / 100.0
+        price_with_margin = self.cost_details[self.name] * self.margin.loc[self.margin[GlossaryCore.Years]
+                                                        <= self.cost_details[GlossaryCore.Years].max()][GlossaryCore.MarginValue].values / 100.0
 
-        self.cost_details['margin'] = price_with_margin - self.cost_details[self.name]
+        self.cost_details[GlossaryCore.MarginValue] = price_with_margin - self.cost_details[self.name]
         self.cost_details[self.name] = price_with_margin
 
         if 'CO2_taxes_factory' in self.cost_details:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name] - \
                 self.cost_details['CO2_taxes_factory'] * \
-                self.margin.loc[self.margin['years']
-                                <= self.cost_details['years'].max()]['margin'].values / 100.0
+                self.margin.loc[self.margin[GlossaryCore.Years]
+                                <= self.cost_details[GlossaryCore.Years].max()][GlossaryCore.MarginValue].values / 100.0
 
         else:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
@@ -221,21 +222,21 @@ class Refinery(LiquidFuelTechno):
         '''
 
         # Reverse the array of invest before year start with [::-1]
-        prod_before_ystart = pd.DataFrame({'years': np.arange(self.year_start - construction_delay, self.year_start),
-                                           'invest': self.invest_before_ystart['invest'].values[::1],
-                                           f'Capex_{self.name}': self.cost_details.loc[self.cost_details['years'] == self.year_start, f'Capex_{self.name}'].values[0]})
+        prod_before_ystart = pd.DataFrame({GlossaryCore.Years: np.arange(self.year_start - construction_delay, self.year_start),
+                                           GlossaryCore.InvestValue: self.invest_before_ystart[GlossaryCore.InvestValue].values[::1],
+                                           f'Capex_{self.name}': self.cost_details.loc[self.cost_details[GlossaryCore.Years] == self.year_start, f'Capex_{self.name}'].values[0]})
 
         production_from_invest = pd.concat(
-            [self.cost_details[['years', 'invest', f'Capex_{self.name}']], prod_before_ystart], ignore_index=True)
-        production_from_invest.sort_values(by=['years'], inplace=True)
+            [self.cost_details[[GlossaryCore.Years, GlossaryCore.InvestValue, f'Capex_{self.name}']], prod_before_ystart], ignore_index=True)
+        production_from_invest.sort_values(by=[GlossaryCore.Years], inplace=True)
         # invest from G$ to M$
         # Added a cost of 44.0$/TWh / 0.89 (efficiency) to account for the price of oil extraction
         # (until an extraction model is connected)
-        production_from_invest['prod_from_invest'] = production_from_invest['invest'] / \
+        production_from_invest['prod_from_invest'] = production_from_invest[GlossaryCore.InvestValue] / \
             (production_from_invest[f'Capex_{self.name}'] +
              self.oil_extraction_capex)
-        production_from_invest['years'] += construction_delay
-        production_from_invest = production_from_invest[production_from_invest['years']
+        production_from_invest[GlossaryCore.Years] += construction_delay
+        production_from_invest = production_from_invest[production_from_invest[GlossaryCore.Years]
                                                         <= self.year_end]
 
         return production_from_invest

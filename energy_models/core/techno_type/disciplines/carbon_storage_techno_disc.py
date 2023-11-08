@@ -40,13 +40,13 @@ class CSTechnoDiscipline(TechnoDiscipline):
         'icon': 'fas fa-truck-loading fa-fw',
         'version': '',
     }
-    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_carbon_storage',
-                                  'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
+    DESC_IN = {GlossaryCore.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_carbon_storage',
+                                  'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
                                                            'transport': ('float',  None, True)},
                                   'dataframe_edition_locked': False},
-               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_carbon_storage',
-                                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                             'margin': ('float',  None, True)},
+               GlossaryCore.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_carbon_storage',
+                                    'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
+                                                             GlossaryCore.MarginValue: ('float',  None, True)},
                                     'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_carbon_storage', 'default': CarbonStorage.data_energy_dict,
@@ -120,15 +120,15 @@ class CSTechnoDiscipline(TechnoDiscipline):
     def get_chart_detailed_price_in_dollar_ton(self):
 
         techno_detailed_prices = self.get_sosdisc_outputs(
-            'techno_detailed_prices')
+            GlossaryCore.TechnoDetailedPricesValue)
         chart_name = f'Detailed prices of {self.techno_name} technology over the years'
-        year_start = min(techno_detailed_prices['years'].values.tolist())
-        year_end = max(techno_detailed_prices['years'].values.tolist())
+        year_start = min(techno_detailed_prices[GlossaryCore.Years].values.tolist())
+        year_end = max(techno_detailed_prices[GlossaryCore.Years].values.tolist())
         minimum = 0
         maximum = max(
             (techno_detailed_prices[self.techno_name].values).tolist()) * 1.2
 
-        new_chart = TwoAxesInstanciatedChart('years', 'Prices [$/tCO2]', [year_start, year_end], [minimum, maximum],
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Prices [$/tCO2]', [year_start, year_end], [minimum, maximum],
                                              chart_name=chart_name)
 
         if 'percentage_resource' in self.get_data_in():
@@ -139,19 +139,19 @@ class CSTechnoDiscipline(TechnoDiscipline):
             tot_price = (techno_detailed_prices[self.techno_name].values) / \
                 (percentage_resource[self.energy_name] / 100.)
             serie = InstanciatedSeries(
-                techno_detailed_prices['years'].values.tolist(),
+                techno_detailed_prices[GlossaryCore.Years].values.tolist(),
                 tot_price.tolist(), 'Total price without percentage', 'lines')
             new_chart.series.append(serie)
         # Add total price
         serie = InstanciatedSeries(
-            techno_detailed_prices['years'].values.tolist(),
+            techno_detailed_prices[GlossaryCore.Years].values.tolist(),
             (techno_detailed_prices[self.techno_name].values).tolist(), 'Total price with margin', 'lines')
 
         new_chart.series.append(serie)
 
         # Factory price
         serie = InstanciatedSeries(
-            techno_detailed_prices['years'].values.tolist(),
+            techno_detailed_prices[GlossaryCore.Years].values.tolist(),
             (techno_detailed_prices[f'{self.techno_name}_factory'].values).tolist(), 'Factory', 'lines')
 
         new_chart.series.append(serie)
@@ -159,20 +159,20 @@ class CSTechnoDiscipline(TechnoDiscipline):
         if 'energy_costs' in techno_detailed_prices:
             # energy_costs
             serie = InstanciatedSeries(
-                techno_detailed_prices['years'].values.tolist(),
+                techno_detailed_prices[GlossaryCore.Years].values.tolist(),
                 (techno_detailed_prices['energy_costs'].values).tolist(), 'Energy costs', 'lines')
 
             new_chart.series.append(serie)
 
         # Transport price
         serie = InstanciatedSeries(
-            techno_detailed_prices['years'].values.tolist(),
+            techno_detailed_prices[GlossaryCore.Years].values.tolist(),
             (techno_detailed_prices['transport'].values).tolist(), 'Transport', 'lines')
 
         new_chart.series.append(serie)
         # CO2 taxes
         serie = InstanciatedSeries(
-            techno_detailed_prices['years'].values.tolist(),
+            techno_detailed_prices[GlossaryCore.Years].values.tolist(),
             (techno_detailed_prices['CO2_taxes_factory'].values).tolist(), 'CO2 taxes due to production', 'lines')
         new_chart.series.append(serie)
 
@@ -180,15 +180,15 @@ class CSTechnoDiscipline(TechnoDiscipline):
 
     def get_chart_investments(self):
         # Chart for input investments
-        input_investments = self.get_sosdisc_inputs('invest_level')
+        input_investments = self.get_sosdisc_inputs(GlossaryCore.InvestLevelValue)
 
         chart_name = f'Input investments over the years'
 
-        new_chart = TwoAxesInstanciatedChart('years', 'Investments [G$]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Investments [G$]',
                                              chart_name=chart_name, stacked_bar=True)
-        invest = input_investments['invest'].values
+        invest = input_investments[GlossaryCore.InvestValue].values
         serie = InstanciatedSeries(
-            input_investments['years'].values.tolist(),
+            input_investments[GlossaryCore.Years].values.tolist(),
             invest.tolist(), '', 'bar')
 
         new_chart.series.append(serie)
@@ -199,32 +199,32 @@ class CSTechnoDiscipline(TechnoDiscipline):
         instanciated_charts = []
         # Charts for consumption and prod
         techno_consumption = self.get_sosdisc_outputs(
-            'techno_detailed_consumption')
+            GlossaryCore.TechnoDetailedConsumptionValue)
         techno_production = self.get_sosdisc_outputs(
-            'techno_detailed_production')
+            GlossaryCore.TechnoDetailedProductionValue)
         chart_name = f'{self.techno_name} technology energy Capture & consumption<br>with input investments'
 
-        new_chart = TwoAxesInstanciatedChart('years', 'Mass [Mt]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Mass [Mt]',
                                              chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if reactant != 'years' and reactant.endswith('(Mt)'):
+            if reactant != GlossaryCore.Years and reactant.endswith('(Mt)'):
                 energy_twh = -techno_consumption[reactant].values
                 legend_title = f'{reactant} consumption'.replace(
                     "(Mt)", "")
                 serie = InstanciatedSeries(
-                    techno_consumption['years'].values.tolist(),
+                    techno_consumption[GlossaryCore.Years].values.tolist(),
                     energy_twh.tolist(), legend_title, 'bar')
 
                 new_chart.series.append(serie)
 
         for products in techno_production.columns:
-            if products != 'years' and products.endswith('(Mt)'):
+            if products != GlossaryCore.Years and products.endswith('(Mt)'):
                 energy_twh = techno_production[products].values
                 legend_title = f'{products}'.replace(
                     "(Mt)", "")
                 serie = InstanciatedSeries(
-                    techno_production['years'].values.tolist(),
+                    techno_production[GlossaryCore.Years].values.tolist(),
                     energy_twh.tolist(), legend_title, 'bar')
 
                 new_chart.series.append(serie)
@@ -235,7 +235,7 @@ class CSTechnoDiscipline(TechnoDiscipline):
     def get_chart_initial_production(self):
 
         year_start = self.get_sosdisc_inputs(
-            'year_start')
+            GlossaryCore.YearStart)
         initial_production = self.get_sosdisc_inputs(
             'initial_production')
         initial_age_distrib = self.get_sosdisc_inputs(
@@ -244,23 +244,23 @@ class CSTechnoDiscipline(TechnoDiscipline):
                                      'distrib': initial_age_distrib['distrib'].values, })
         initial_prod['CO2 (Mt)'] = initial_prod['distrib'] / \
             100.0 * initial_production
-        initial_prod['years'] = year_start - initial_prod['age']
-        initial_prod.sort_values('years', inplace=True)
+        initial_prod[GlossaryCore.Years] = year_start - initial_prod['age']
+        initial_prod.sort_values(GlossaryCore.Years, inplace=True)
         initial_prod['cum CO2 (Mt)'] = initial_prod['CO2 (Mt)'].cumsum()
 
         study_production = self.get_sosdisc_outputs(
-            'techno_detailed_production')
+            GlossaryCore.TechnoDetailedProductionValue)
         chart_name = f'World {self.energy_name} capture via {self.techno_name}<br>with 2020 factories distribution'
 
-        new_chart = TwoAxesInstanciatedChart('years', f'{self.energy_name} capture (Mt)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'{self.energy_name} capture (Mt)',
                                              chart_name=chart_name)
 
         serie = InstanciatedSeries(
-            initial_prod['years'].values.tolist(),
+            initial_prod[GlossaryCore.Years].values.tolist(),
             initial_prod[f'cum CO2 (Mt)'].values.tolist(), 'Initial carbon capture by 2020 factories', 'lines')
         study_prod = study_production[f'{self.energy_name} (Mt)'].values
         new_chart.series.append(serie)
-        years_study = study_production['years'].values.tolist()
+        years_study = study_production[GlossaryCore.Years].values.tolist()
         years_study.insert(0, year_start - 1)
         study_prod_l = study_prod.tolist()
         study_prod_l.insert(

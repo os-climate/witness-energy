@@ -17,6 +17,8 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.electricity.coal_gen.coal_gen import CoalGen
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
@@ -92,7 +94,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                  # https://www.cmu.edu/epp/iecm/rubin/PDF%20files/2015/A%20review%20of%20learning%20rates%20for%20electricity%20supply%20technologies.pdf
                                  'learning_rate': 0.083,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # IEA 2022, World Energy Outlook 2014,
                                  # https://www.iea.org/reports/world-energy-outlook-2014
                                  # License: CC BY 4.0.
@@ -123,7 +125,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
     initial_production = 9914.45  # in TWh at year_start
     # Invest before year start in $
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 87.0, 76.5, 90.0, 67.5]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 87.0, 76.5, 90.0, 67.5]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [2.6, 2.6, 2.6, 2.6, 2.6, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
@@ -141,9 +143,9 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
@@ -159,16 +161,16 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
         "Adds the chart specific for resources needed for construction"
         instanciated_chart = super().get_charts_consumption_and_production()
         techno_consumption = self.get_sosdisc_outputs(
-            'techno_detailed_consumption')
+            GlossaryCore.TechnoDetailedConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:
 
-            if product != 'years' and product.endswith(f'(Mt)'):
+            if product != GlossaryCore.Years and product.endswith(f'(Mt)'):
                 if ResourceGlossary.Copper['name'] in product :
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
-                        'years', 'Mass [t]', chart_name=chart_name, stacked_bar=True)
+                        GlossaryCore.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
             if ResourceGlossary.Copper['name'] in reactant:
@@ -176,7 +178,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
-                    techno_consumption['years'].values.tolist(),
+                    techno_consumption[GlossaryCore.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)
@@ -198,7 +200,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
         consumption_gradient = self.techno_consumption_derivative[f'{SolidFuel.name} ({self.techno_model.product_energy_unit})']
         #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
         self.set_partial_derivative_for_other_types(
-            ('techno_production',
-             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
+            (GlossaryCore.TechnoProductionValue,
+             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
             (consumption_gradient- dprod_name_dinvest))
 

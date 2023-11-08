@@ -18,6 +18,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.syngas.autothermal_reforming.autothermal_reforming import AuthothermalReforming
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
 from energy_models.core.stream_type.energy_models.syngas import compute_calorific_value
@@ -48,7 +49,7 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
                                  'CO2_from_production_unit': 'kg/kg',
                                  'Opex_percentage': 0.02,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # Cormos, A.M., Szima, S., Fogarasi, S. and Cormos, C.C., 2018.
                                  # Economic assessments of hydrogen production processes based on natural gas reforming with carbon capture.
                                  # Chem. Eng. Trans, 70, pp.1231-1236.
@@ -73,7 +74,7 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
     syngas_ratio = AuthothermalReforming.syngas_COH2_ratio
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 0.0, 0.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 0.0, 0.0]})
     # From Future of hydrogen : accounting for around three quarters of the
     # annual global dedicated hydrogen production of around 70 million tonnes.
     initial_production = 0.0
@@ -83,13 +84,13 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)

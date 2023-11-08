@@ -16,6 +16,8 @@ limitations under the License.
 '''
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
 from energy_models.models.carbon_capture.flue_gas_capture.flue_gas_techno.flue_gas_techno import FlueGasTechno
 
@@ -51,7 +53,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
     carbon_capture_efficiency = 0.90
 
     techno_infos_dict_default = {'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'capacity_factor': 0.85,
                                  'maturity': 0,
                                  'Opex_percentage': 0,
@@ -84,7 +86,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
     initial_capture = 5  # Mt
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.2]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.2]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
@@ -103,14 +105,14 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'flue_gas_mean': {'type': 'dataframe', 'namespace': 'ns_flue_gas',
+               GlossaryCore.FlueGasMean: {'type': 'dataframe', 'namespace': 'ns_flue_gas',
                                  'visibility': CCTechnoDiscipline.SHARED_VISIBILITY, 'unit': '',
-                                 'dataframe_descriptor': {'years': ('float', None, True),
-                                                          'flue_gas_mean': ('float', None, True), }
+                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                                                          GlossaryCore.FlueGasMean: ('float', None, True), }
                                  },
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)

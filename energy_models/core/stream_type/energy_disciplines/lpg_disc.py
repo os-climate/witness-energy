@@ -34,7 +34,7 @@ class LiquefiedGasPetroleumDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {
-        'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': ['Refinery'],
+        GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': ['Refinery'],
                               'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                               'namespace': 'ns_kerosene',
                               'structuring': True, 'unit': '-'},

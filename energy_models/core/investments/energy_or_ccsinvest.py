@@ -50,9 +50,9 @@ class EnergyOrCCSInvest():
             self.invest_ccs_percentage['ccs_percentage'].values / 100.0
 
         energy_conversion_invest = self.global_invest[GlossaryCore.EnergyInvestmentsValue].values - ccs_invest
-        self.invest_ccs = pd.DataFrame({'years': self.global_invest['years'].values,
+        self.invest_ccs = pd.DataFrame({GlossaryCore.Years: self.global_invest[GlossaryCore.Years].values,
                                         GlossaryCore.EnergyInvestmentsValue: ccs_invest})
-        self.invest_energy_conversion = pd.DataFrame({'years': self.global_invest['years'].values,
+        self.invest_energy_conversion = pd.DataFrame({GlossaryCore.Years: self.global_invest[GlossaryCore.Years].values,
                                                       GlossaryCore.EnergyInvestmentsValue: energy_conversion_invest})
 
     def get_ccs_investment(self, rescaling_factor):

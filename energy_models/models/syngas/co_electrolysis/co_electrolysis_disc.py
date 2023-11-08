@@ -18,7 +18,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
 from energy_models.models.syngas.co_electrolysis.co_electrolysis import CoElectrolysis
@@ -53,7 +53,7 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                  'elec_demand_unit': 'kWh/kg',
                                  'Opex_percentage': 0.07,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'Capex_init': 600,
                                  'Capex_init_unit': '$/kW',
                                  'efficiency': 0.8,
@@ -72,7 +72,7 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
     syngas_ratio = CoElectrolysis.syngas_COH2_ratio
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 0.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 0.0]})
     # From Future of hydrogen : accounting for around three quarters of the
     # annual global dedicated hydrogen production of around 70 million tonnes.
     initial_production = 0.0
@@ -83,13 +83,13 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)

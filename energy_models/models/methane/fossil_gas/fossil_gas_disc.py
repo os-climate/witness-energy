@@ -18,6 +18,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.methane_techno_disc import MethaneTechnoDiscipline
 from energy_models.models.methane.fossil_gas.fossil_gas import FossilGas
 
@@ -58,7 +59,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'fuel_demand_unit': 'kWh/kWh',
                                  'elec_demand': 0.00735,
                                  'elec_demand_unit': 'kWh/kWh',
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'Capex_init': 3641780,  # Capex initial
                                  # Sarhosis, V., Jaya, A.A., Hosking, L., Koj, A. and Thomas, H.R., 2015.
                                  # Techno-economics for coalbed methane production in the South Wales coalfield.
@@ -89,20 +90,20 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                              'distrib': distrib_our_world_indata * 100.0 / distrib_our_world_indata.sum()})  # to do
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 31.2, 31.2]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 31.2, 31.2]})
     FLUE_GAS_RATIO = np.array([0.085])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)

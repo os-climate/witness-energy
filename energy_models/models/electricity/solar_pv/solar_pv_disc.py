@@ -64,7 +64,7 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
                                  'WACC': 0.075,  # Weighted averaged cost of capital. Source IRENA
                                  'learning_rate':  0.18,  # IEA 2011
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'Capex_init': 1077,  # IEA 2019 Mean of regional value
                                  'Capex_init_unit': '$/kW',
                                  'efficiency': 1.0,  # No need of efficiency here
@@ -87,7 +87,7 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
     initial_production = 700  # in TWh at year_start source IEA 2019
     # Invest before year start in $ source IEA 2019
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [108.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [108.0]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [20.4, 18.8, 15.2, 10.1, 8.0, 7.6, 5.9, 6, 3.4, 1.5, 1.3, 0.25, 0.19, 0.18,
@@ -101,9 +101,9 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
@@ -121,16 +121,16 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
         "Adds the chart specific for resources needed for construction"
         instanciated_chart = super().get_charts_consumption_and_production()
         techno_consumption = self.get_sosdisc_outputs(
-            'techno_detailed_consumption')
+            GlossaryCore.TechnoDetailedConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:
 
-            if product != 'years' and product.endswith(f'(Mt)'):
+            if product != GlossaryCore.Years and product.endswith(f'(Mt)'):
                 if ResourceGlossary.Copper['name'] in product :
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
-                        'years', 'Mass [t]', chart_name=chart_name, stacked_bar=True)
+                        GlossaryCore.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
             if ResourceGlossary.Copper['name'] in reactant:
@@ -138,7 +138,7 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
-                    techno_consumption['years'].values.tolist(),
+                    techno_consumption[GlossaryCore.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)

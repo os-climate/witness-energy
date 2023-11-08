@@ -19,6 +19,7 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.electricity.oil_gen.oil_gen_disc import OilGenDiscipline
 from energy_models.models.electricity.oil_gen.oil_gen import OilGen
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -45,11 +46,11 @@ class OilGenPriceTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({'years': years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                                     0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                                                                     0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
                                                                                     0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
@@ -64,11 +65,11 @@ class OilGenPriceTestCase(unittest.TestCase):
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'fuel.liquid_fuel': 0.64 / 4.86, 'electricity': 0.0})
+            {GlossaryCore.Years: years, 'fuel.liquid_fuel': 0.64 / 4.86, 'electricity': 0.0})
         #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
 
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 50.0})
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.ones(len(years)) * 50.0})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -77,9 +78,9 @@ class OilGenPriceTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': 0.0})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: 0.0})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
 
         transport_cost = 0
         # It is noteworthy that the cost of transmission has generally been held (and can
@@ -88,12 +89,12 @@ class OilGenPriceTestCase(unittest.TestCase):
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * transport_cost})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * transport_cost})
         self.resources_price = pd.DataFrame()
 
         self.resources_price = pd.DataFrame(
-            columns=['years', ResourceGlossary.Water['name']])
-        self.resources_price['years'] = years
+            columns=[GlossaryCore.Years, ResourceGlossary.Water['name']])
+        self.resources_price[GlossaryCore.Years] = years
         self.resources_price[ResourceGlossary.Water['name']
                              ] = Water.data_energy_dict['cost_now']
 
@@ -106,7 +107,7 @@ class OilGenPriceTestCase(unittest.TestCase):
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict['years'] = years
+        demand_ratio_dict[GlossaryCore.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -116,26 +117,26 @@ class OilGenPriceTestCase(unittest.TestCase):
 
     def test_01_compute_oil_gen_price(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': OilGenDiscipline.techno_infos_dict_default,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': OilGenDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: OilGenDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': OilGenDiscipline.initial_production,
                        'initial_age_distrib': OilGenDiscipline.initial_age_distribution,
-                       'resources_price': self.resources_price,
-                       'energy_prices': self.energy_prices,
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.ResourcesPriceValue: self.resources_price,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -149,26 +150,26 @@ class OilGenPriceTestCase(unittest.TestCase):
 
     def test_02_compute_oil_gen_price_prod_consumption(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': OilGenDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': OilGenDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'resources_price': self.resources_price,
-                       'transport_margin': self.margin,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: OilGenDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.ResourcesPriceValue: self.resources_price,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': OilGenDiscipline.initial_production,
                        'initial_age_distrib': OilGenDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -185,26 +186,26 @@ class OilGenPriceTestCase(unittest.TestCase):
 
     def test_04_compute_oil_gen_power(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': OilGenDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': OilGenDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'resources_price': self.resources_price,
-                       'transport_margin': self.margin,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: OilGenDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.ResourcesPriceValue: self.resources_price,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': OilGenDiscipline.initial_production,
                        'initial_age_distrib': OilGenDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -255,15 +256,15 @@ class OilGenPriceTestCase(unittest.TestCase):
             traceback.print_exc()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.{self.model_name}.margin':  self.margin}
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

@@ -18,6 +18,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.methane_techno_disc import MethaneTechnoDiscipline
 from energy_models.models.methane.methanation.methanation import Methanation
 from energy_models.core.stream_type.energy_models.methane import Methane
@@ -51,7 +52,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
     techno_infos_dict_default = {'reaction': 'CO2 + 4H2 = CH4 + 2 H20',
                                  'Opex_percentage': 0.02,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # Rosenfeld, D.C., B�hm, H., Lindorfer, J. and Lehner, M., 2020.
                                  # Scenario analysis of implementing a power-to-gas and biomass gasification system in an integrated steel plant:
                                  # A techno-economic and environmental study.
@@ -86,18 +87,18 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
                                                          0.0, 0.0, 0.0, 0.0]})  # to review
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 0.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 0.0]})
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)

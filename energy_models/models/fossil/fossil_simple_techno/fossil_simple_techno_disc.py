@@ -69,7 +69,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                  'WACC': 0.058,
                                  'learning_rate': 0.00,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'Capex_init': 100.,
                                  'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',
@@ -90,7 +90,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     initial_production = 136917.16  # TWh
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 1483.79, 1489.95]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 1483.79, 1489.95]})
 
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),

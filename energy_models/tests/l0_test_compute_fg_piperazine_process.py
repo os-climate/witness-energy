@@ -20,6 +20,8 @@ from os.path import join, dirname
 
 import scipy.interpolate as sc
 import matplotlib.pyplot as plt
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 
 from energy_models.models.carbon_capture.flue_gas_capture.piperazine_process.piperazine_process_disc \
@@ -46,18 +48,18 @@ class FGPiperazineProcessTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.flue_gas_mean = pd.DataFrame(
-            {'years': years, 'flue_gas_mean': 0.2})
+            {GlossaryCore.Years: years, GlossaryCore.FlueGasMean: 0.2})
 
         self.energy_prices = pd.DataFrame(
-            {'years': years, 'electricity': np.ones(len(np.arange(2020, 2051))) * 80.0, 'methane': np.ones(len(np.arange(2020, 2051))) * 80.0})
+            {GlossaryCore.Years: years, 'electricity': np.ones(len(np.arange(2020, 2051))) * 80.0, 'methane': np.ones(len(np.arange(2020, 2051))) * 80.0})
 
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.array([22000.00, 22000.00, 22000.00, 22000.00,
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
                                                  22000.00, 22000.00, 22000.00, 22000.00,
                                                  22000.00, 22000.00, 31000.00, 31000.00,
                                                  31000.00, 31000.00, 31000.00, 31000.00,
@@ -72,25 +74,25 @@ class FGPiperazineProcessTestCase(unittest.TestCase):
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
 
         self.margin = pd.DataFrame(
-            {'years': np.arange(2020, 2051), 'margin': np.ones(len(np.arange(2020, 2051))) * 100})
+            {GlossaryCore.Years: np.arange(2020, 2051), GlossaryCore.MarginValue: np.ones(len(np.arange(2020, 2051))) * 100})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.0})
+            {GlossaryCore.Years: years, 'electricity': 0.0})
 
         transport_cost = 0,
 
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * transport_cost})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * transport_cost})
 
-        self.resources_price = pd.DataFrame({'years': years})
+        self.resources_price = pd.DataFrame({GlossaryCore.Years: years})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict['years'] = years
+        demand_ratio_dict[GlossaryCore.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -100,27 +102,27 @@ class FGPiperazineProcessTestCase(unittest.TestCase):
 
     def test_01_compute_piperazine_process_price(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': PiperazineProcessDiscipline.techno_infos_dict_default,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': PiperazineProcessDiscipline.invest_before_year_start,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'resources_price': self.resources_price,
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'energy_prices': self.energy_prices,
-                       'flue_gas_mean': self.flue_gas_mean,
-                       'CO2_taxes': self.co2_taxes,
-                       'transport_margin': self.margin,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: PiperazineProcessDiscipline.invest_before_year_start,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.ResourcesPriceValue: self.resources_price,
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.FlueGasMean: self.flue_gas_mean,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': PiperazineProcessDiscipline.initial_capture,
                        'initial_age_distrib': PiperazineProcessDiscipline.initial_age_distribution,
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -134,42 +136,42 @@ class FGPiperazineProcessTestCase(unittest.TestCase):
 
         # Comparison in $/kWH
         plt.figure()
-        plt.xlabel('years')
+        plt.xlabel(GlossaryCore.Years)
 
-        plt.plot(price_details['years'],
+        plt.plot(price_details[GlossaryCore.Years],
                  price_details['Flue_gas_capture.PiperazineProcess'], label='SoSTrades Total')
 
-        plt.plot(price_details['years'], price_details['transport'],
+        plt.plot(price_details[GlossaryCore.Years], price_details['transport'],
                  label='SoSTrades Transport')
 
-        plt.plot(price_details['years'], price_details['Flue_gas_capture.PiperazineProcess_factory'],
+        plt.plot(price_details[GlossaryCore.Years], price_details['Flue_gas_capture.PiperazineProcess_factory'],
                  label='SoSTrades Factory')
         plt.legend()
         plt.ylabel('Price ($/kWh)')
 
     def test_02_compute_piperazine_process_price_prod_consumption(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': PiperazineProcessDiscipline.techno_infos_dict_default,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': PiperazineProcessDiscipline.invest_before_year_start,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'resources_price': self.resources_price,
-                       'energy_prices': self.energy_prices,
-                       'flue_gas_mean': self.flue_gas_mean,
-                       'CO2_taxes': self.co2_taxes,
-                       'transport_margin': self.margin,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: PiperazineProcessDiscipline.invest_before_year_start,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.ResourcesPriceValue: self.resources_price,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.FlueGasMean: self.flue_gas_mean,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': PiperazineProcessDiscipline.initial_capture,
                        'initial_age_distrib': PiperazineProcessDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -207,16 +209,16 @@ class FGPiperazineProcessTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.flue_gas_mean': self.flue_gas_mean,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.{self.model_name}.margin': self.margin}
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.FlueGasMean}': self.flue_gas_mean,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

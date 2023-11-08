@@ -52,14 +52,14 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         for i, energy in enumerate(self.energy_list):
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
             self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue]['value']
-            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}']['energy_consumption']['value']
+            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyConsumptionValue]['value']
 
         for i, energy in enumerate(self.ccs_list):
             self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue]['value']
 
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
-        self.energy_production_detailed = streams_outputs_dict['energy_production_detailed']
+        self.energy_production_detailed = streams_outputs_dict[GlossaryCore.EnergyProductionDetailedValue]
 
     def tearDown(self):
         pass
@@ -85,21 +85,21 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {
-            f'{self.name}.year_start': self.year_start,
-            f'{self.name}.year_end': self.year_end,
-            f'{self.name}.energy_list': self.energy_list,
+            f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+            f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+            f'{self.name}.{GlossaryCore.energy_list}': self.energy_list,
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
-            f'{self.name}.energy_production_detailed': self.energy_production_detailed,
-            f'{self.name}.ccs_list': self.ccs_list
+            f'{self.name}.{GlossaryCore.EnergyProductionDetailedValue}': self.energy_production_detailed,
+            f'{self.name}.{GlossaryCore.ccs_list}': self.ccs_list
         }
         for energy in self.energy_list:
             inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
-            inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.energy_consumption'] = self.energy_consumption[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyProductionValue}'] = self.energy_production[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyConsumptionValue}'] = self.energy_consumption[energy]
 
         for energy in self.ccs_list:
-            inputs_dict[f'{self.name}.{energy}.energy_production'] = self.energy_production[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyProductionValue}'] = self.energy_production[energy]
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

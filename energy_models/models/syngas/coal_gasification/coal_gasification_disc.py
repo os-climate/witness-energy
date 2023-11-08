@@ -18,6 +18,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
 from energy_models.models.syngas.coal_gasification.coal_gasification import CoalGasification
 from energy_models.core.stream_type.energy_models.syngas import compute_calorific_value
@@ -60,7 +61,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  'WACC': 0.07,
                                  'learning_rate': 0.2,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'Capex_init': 0.05,
                                  'Capex_init_unit': '$/kWh',
                                  'euro_dollar': 1.12,
@@ -69,7 +70,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  'construction_delay': construction_delay}
     # We do not invest on coal gasification yet
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [2.636, 2.636, 2.636, 2.636]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [2.636, 2.636, 2.636, 2.636]})
 
     syngas_ratio = CoalGasification.syngas_COH2_ratio
 
@@ -99,13 +100,13 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)

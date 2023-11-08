@@ -37,7 +37,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': BiomassDry.default_techno_list,
                                      'default': BiomassDry.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
@@ -65,19 +65,19 @@ class BiomassDryDiscipline(EnergyDiscipline):
         new_charts = []
         chart_name = f'Comparison of CO2 emissions due to production and use of {self.energy_name} technologies'
         new_chart = TwoAxesInstanciatedChart(
-            'years', 'CO2 emissions (Gt)', chart_name=chart_name, stacked_bar=True)
+            GlossaryCore.Years, 'CO2 emissions (Gt)', chart_name=chart_name, stacked_bar=True)
 
-        technology_list = self.get_sosdisc_inputs('technologies_list')
+        technology_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
 
         co2_per_use = self.get_sosdisc_outputs(
             'CO2_per_use')
 
         for technology in technology_list:
             techno_emissions = self.get_sosdisc_inputs(
-                f'{technology}.CO2_emissions')
+                f'{technology}.{GlossaryCore.CO2EmissionsValue}')
             techno_production = self.get_sosdisc_inputs(
-                f'{technology}.techno_production')
-            year_list = techno_emissions['years'].values.tolist()
+                f'{technology}.{GlossaryCore.TechnoProductionValue}')
+            year_list = techno_emissions[GlossaryCore.Years].values.tolist()
             emission_list = techno_emissions[technology].values * \
                             techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
             serie = InstanciatedSeries(

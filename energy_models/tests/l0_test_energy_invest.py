@@ -19,6 +19,8 @@ import unittest
 import numpy as np
 import pandas as pd
 from os.path import join, dirname
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.investments.energy_invest import EnergyInvest
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -42,14 +44,14 @@ class TestEnergyInvest(unittest.TestCase):
 
         self.years = np.arange(self.y_s, self.y_e + 1)
         dict2 = {}
-        dict2['years'] = self.years
+        dict2[GlossaryCore.Years] = self.years
         dict2['electricity'] = np.ones(len(self.years))
         dict2['methane'] = np.ones(len(self.years)) * 0.5
         dict2['hydrogen.gaseous_hydrogen'] = np.ones(len(self.years)) * 0.5
         self.energy_mix = pd.DataFrame(dict2)
 
         dict3 = {}
-        dict3['years'] = self.years
+        dict3[GlossaryCore.Years] = self.years
         dict3['SMR'] = np.ones(len(self.years))
         dict3['Electrolysis'] = np.ones(len(self.years)) * 0.5
         dict3['CoalGasification'] = np.ones(len(self.years)) * 0.5
@@ -60,16 +62,16 @@ class TestEnergyInvest(unittest.TestCase):
         for i in range(1, len(self.years)):
             invest[i] = 1.02 * invest[i - 1]
         self.invest_df = pd.DataFrame(
-            {'years': self.years, 'energy_investment': invest})
+            {GlossaryCore.Years: self.years, GlossaryCore.EnergyInvestmentsValue: invest})
         self.invest_df_techno = pd.DataFrame(
-            {'years': self.years, 'invest': invest})
+            {GlossaryCore.Years: self.years, GlossaryCore.InvestValue: invest})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
 
     def test_01_set_invest_mix(self):
 
         dict1 = {}
-        dict1['years'] = self.years
+        dict1[GlossaryCore.Years] = self.years
         dict1['electricity'] = np.ones(len(self.years))
         mix_df1 = pd.DataFrame(dict1)
 
@@ -105,7 +107,7 @@ class TestEnergyInvest(unittest.TestCase):
             self.invest_df_techno, self.energy_mix, input_unit=unit, output_unit=unit)
         expected_output = pd.DataFrame()
         for energy in self.energy_list:
-            expected_output[energy] = self.energy_mix[energy] * self.invest_df_techno['invest'] / \
+            expected_output[energy] = self.energy_mix[energy] * self.invest_df_techno[GlossaryCore.InvestValue] / \
                 np.linalg.norm(
                     self.energy_mix[self.energy_list], ord=1, axis=1)
         diff = np.linalg.norm(
@@ -125,9 +127,9 @@ class TestEnergyInvest(unittest.TestCase):
 
         invest_dict, runit = self.energy_invest.get_invest_dict(
             self.invest_df_techno, self.energy_mix, input_unit='M$', output_unit='$')
-        expected_output = {'years': list(self.years)}
+        expected_output = {GlossaryCore.Years: list(self.years)}
         for energy in self.energy_list:
-            expected_output[energy] = list(self.energy_mix[energy].values * self.invest_df_techno['invest'].values /
+            expected_output[energy] = list(self.energy_mix[energy].values * self.invest_df_techno[GlossaryCore.InvestValue].values /
                                            np.linalg.norm(self.energy_mix[self.energy_list], ord=1, axis=1) * 1.0e6)
         self.maxDiff = None
         self.assertEqual(invest_dict, expected_output)
@@ -153,11 +155,11 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{self.model_name}.year_start': self.y_s,
-                       f'{self.name}.{self.model_name}.year_end': self.y_e,
-                       f'{self.name}.energy_list': ['electricity', 'methane', 'hydrogen.gaseous_hydrogen'],
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryCore.YearStart}': self.y_s,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.YearEnd}': self.y_e,
+                       f'{self.name}.{GlossaryCore.energy_list}': ['electricity', 'methane', 'hydrogen.gaseous_hydrogen'],
                        f'{self.name}.{self.model_name}.invest_energy_mix': self.energy_mix,
-                       f'{self.name}.{self.model_name}.energy_investment': self.invest_df}
+                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyInvestmentsValue}': self.invest_df}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -187,11 +189,11 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{self.model_name}.year_start': self.y_s,
-                       f'{self.name}.{self.model_name}.year_end': self.y_e,
-                       f'{self.name}.{self.model_name}.technologies_list': ['SMR', 'Electrolysis', 'CoalGasification'],
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryCore.YearStart}': self.y_s,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.YearEnd}': self.y_e,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.techno_list}': ['SMR', 'Electrolysis', 'CoalGasification'],
                        f'{self.name}.{self.model_name}.invest_techno_mix': self.techno_mix,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_df_techno}
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_df_techno}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -221,20 +223,20 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         technology_list = ['SMR', 'Electrolysis', 'CoalGasification']
-        inputs_dict = {f'{self.name}.{self.model_name}.year_start': self.y_s,
-                       f'{self.name}.{self.model_name}.year_end': self.y_e,
-                       f'{self.name}.{self.model_name}.technologies_list': technology_list,
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryCore.YearStart}': self.y_s,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.YearEnd}': self.y_e,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.techno_list}': technology_list,
                        f'{self.name}.{self.model_name}.invest_techno_mix': self.techno_mix,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_df_techno}
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_df_techno}
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.invest_level',
+        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
                                                                           f'{self.name}.{self.model_name}.invest_techno_mix'],
                                       outputs=[
-            f'{self.name}.{self.model_name}.{techno}.invest_level' for techno in technology_list],
+            f'{self.name}.{self.model_name}.{techno}.{GlossaryCore.InvestLevelValue}' for techno in technology_list],
                                       input_data = disc.local_data,
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_techno_invest_disc.pkl'))
@@ -261,19 +263,19 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         energy_list = ['electricity', 'methane', 'hydrogen.gaseous_hydrogen']
-        inputs_dict = {f'{self.name}.{self.model_name}.year_start': self.y_s,
-                       f'{self.name}.{self.model_name}.year_end': self.y_e,
-                       f'{self.name}.energy_list': energy_list,
+        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryCore.YearStart}': self.y_s,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.YearEnd}': self.y_e,
+                       f'{self.name}.{GlossaryCore.energy_list}': energy_list,
                        f'{self.name}.{self.model_name}.invest_energy_mix': self.energy_mix,
-                       f'{self.name}.{self.model_name}.energy_investment': self.invest_df}
+                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyInvestmentsValue}': self.invest_df}
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.energy_investment',
+        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.EnergyInvestmentsValue}',
                                                                           f'{self.name}.{self.model_name}.invest_energy_mix'],
                                       outputs=[
-            f'{self.name}.{self.model_name}.{energy}.invest_level' for energy in energy_list],
+            f'{self.name}.{self.model_name}.{energy}.{GlossaryCore.InvestLevelValue}' for energy in energy_list],
             input_data = disc.local_data,
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_energy_invest_disc.pkl'))

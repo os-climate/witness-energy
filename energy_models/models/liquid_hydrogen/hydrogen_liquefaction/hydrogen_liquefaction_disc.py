@@ -18,6 +18,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.liquid_hydrogen_techno_disc import LiquidHydrogenTechnoDiscipline
 from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction import HydrogenLiquefaction
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
@@ -59,7 +60,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'useful_heat_recovery_factor': 0.8,
                                  'learning_rate':  0.2,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'stack_lifetime': 100000,
                                  'stack_lifetime_unit': 'hours',
                                  'Capex_init': 500000000,
@@ -75,7 +76,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                              'distrib': np.asarray([0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 1, 0, 1, 1, 4, 3, 1, 2, 2, 1, 1, 0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 2]) * 100.0 / 30.0})
 
     invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
-                                             'invest': [0.0443575, 0.0443575]})
+                                             GlossaryCore.InvestValue: [0.0443575, 0.0443575]})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -83,16 +84,16 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                       'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe',
                                        'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               'invest_before_ystart': {'type': 'dataframe',
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe',
                                         'unit': 'G$',
                                         'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'years': ('float', None, True),
+                                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                  'past years': ('float', None, True),
-                                                                 'invest': ('float', None, True)}
+                                                                 GlossaryCore.InvestValue: ('float', None, True)}
                                         }}
     DESC_IN.update(LiquidHydrogenTechnoDiscipline.DESC_IN)
 
@@ -108,21 +109,19 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
     #     #inputs_dict = self.get_sosdisc_outputs()
     #     #print(inputs_dict)
     #     LiquidHydrogenTechnoDiscipline.compute_sos_jacobian(self)
-    #
-    #     # the generic gradient for production column is not working because of
-    #     # abandoned mines not proportional to production
-    #
-    #     scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-    #         ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-    #     applied_ratio = self.get_sosdisc_outputs(
-    #         'applied_ratio')['applied_ratio'].values
-    #
-    #
-    #     dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-    #     production_gradient = self.techno_consumption_derivative[f'{GaseousHydrogen.name} ({self.techno_model.product_energy_unit})']
-    #     print(production_gradient - dprod_name_dinvest)
-    #     m = self.set_partial_derivative_for_other_types(
-    #         ('techno_production',
-    #          f'{lowtemperatureheat.name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
-    #         (production_gradient - dprod_name_dinvest))
-    #
+
+        # # the generic gradient for production column is not working because of
+        # # abandoned mines not proportional to production
+        #
+        # scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+        #     ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+        # applied_ratio = self.get_sosdisc_outputs(
+        #     'applied_ratio')['applied_ratio'].values
+        #
+        # dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+        # production_gradient = self.techno_consumption_derivative[f'{Electricity.name} ({self.techno_model.product_energy_unit})']
+        # m = self.set_partial_derivative_for_other_types(
+        #     (GlossaryCore.TechnoProductionValue,
+        #      f'{lowtemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
+        #     (production_gradient - dprod_name_dinvest))
+
