@@ -198,7 +198,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
             ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
         applied_ratio = self.get_sosdisc_outputs(
             'applied_ratio')['applied_ratio'].values
-        print('***** ', self.techno_production_derivative.keys())
+        # print('***** ', self.techno_production_derivative.keys())
         dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
         consumption_gradient = self.techno_production_derivative[f'{Gasoline.name} ({self.techno_model.product_energy_unit})']
         self.set_partial_derivative_for_other_types(

@@ -93,7 +93,8 @@ class Study(EnergyMixStudyManager):
                                            'syngas': 80.0,
                                            'biogas': 70.0,
                                            'methane': 100,
-                                           'biomass_dry': 45})
+                                           'biomass_dry': 45,
+                                           'hydrogen.gaseous_hydrogen': 10.0})
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
@@ -127,6 +128,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.HeatPump.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.Geothermal.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.CHP.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.HydrogenBoiler.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.study_name}.{energy_name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
