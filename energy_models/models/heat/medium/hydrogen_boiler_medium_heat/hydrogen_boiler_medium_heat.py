@@ -14,7 +14,6 @@ class HydrogenBoilerMediumHeat(mediumheattechno):
         Compute primary costs to produce 1kWh of heat
         """
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs()
-        print(self.prices.to_string())
         self.cost_details[f'{GaseousHydrogen.name}'] = \
             self.prices[f'{GaseousHydrogen.name}'] * \
             self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
