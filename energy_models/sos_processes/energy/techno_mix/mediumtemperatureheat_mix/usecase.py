@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                             'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
+                             'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerHighHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                     'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
+                     'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerHighHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerMediumHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
+                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerHighHeat']
 
 
 class Study(EnergyMixStudyManager):

@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                             'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                             'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerHighHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                     'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                     'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerHighHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerLowHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerHighHeat']
 
 
 class Study(EnergyMixStudyManager):
