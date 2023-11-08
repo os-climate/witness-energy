@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,6 +22,8 @@ import pandas as pd
 import scipy.interpolate as sc
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
@@ -57,7 +60,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.energy_name = 'syngas'
         years = np.arange(2020, 2051)
         self.years = years
-        self.energy_prices = pd.DataFrame({'years': years,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years,
                                            'methane': 0.034,
                                            'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                     0.089236536471781, 0.08899046935409588,
@@ -84,7 +87,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                            'biomass_dry': np.ones(len(years)) * 6812 / 3.36
                                            })
 
-        self.resources_prices = pd.DataFrame({'years': years,
+        self.resources_prices = pd.DataFrame({GlossaryCore.Years: years,
                                               ResourceGlossary.Oxygen['name']: len(years) * [60.0],
                                               ResourceGlossary.CO2['name']: np.array(
                                                   [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464,
@@ -95,13 +98,13 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                               ResourceGlossary.Water['name']: 1.4
                                               })
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'methane': 0.123 / 15.4, 'electricity': 0.03, 'syngas': 0.2, 'solid_fuel': 0.02,
+            {GlossaryCore.Years: years, 'methane': 0.123 / 15.4, 'electricity': 0.03, 'syngas': 0.2, 'solid_fuel': 0.02,
              'biomass_dry': - 0.425 * 44.01 / 12.0})
 
         self.invest_level_rwgs = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 0.1715})
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.ones(len(years)) * 0.1715})
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': [0.0] + (len(years) - 1) * [1.0]})
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: [0.0] + (len(years) - 1) * [1.0]})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01, 34.05, 39.08, 44.69, 50.29]
@@ -110,34 +113,34 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 100.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 100.0})
 
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 0})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 0})
 
         self.land_use_required_Pyrolysis = pd.DataFrame(
-            {'years': self.years, 'Pyrolysis (Gha)': 0.0})
+            {GlossaryCore.Years: self.years, 'Pyrolysis (Gha)': 0.0})
         self.land_use_required_SMR = pd.DataFrame(
-            {'years': self.years, 'SMR (Gha)': 0.0})
+            {GlossaryCore.Years: self.years, 'SMR (Gha)': 0.0})
         self.land_use_required_AutothermalReforming = pd.DataFrame(
-            {'years': self.years, 'AutothermalReforming (Gha)': 0.0})
+            {GlossaryCore.Years: self.years, 'AutothermalReforming (Gha)': 0.0})
         self.land_use_required_BiomassGasification = pd.DataFrame(
-            {'years': self.years, 'BiomassGasification (Gha)': 0.0})
+            {GlossaryCore.Years: self.years, 'BiomassGasification (Gha)': 0.0})
         self.land_use_required_CoalGasification = pd.DataFrame(
-            {'years': self.years, 'CoalGasification (Gha)': 0.0})
+            {GlossaryCore.Years: self.years, 'CoalGasification (Gha)': 0.0})
         self.land_use_required_CoElectrolysis = pd.DataFrame(
-            {'years': self.years, 'CoElectrolysis (Gha)': 0.0})
+            {GlossaryCore.Years: self.years, 'CoElectrolysis (Gha)': 0.0})
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
-        demand_ratio_dict['years'] = years
+        demand_ratio_dict[GlossaryCore.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         resource_ratio_dict = dict(
             zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(years))))
-        resource_ratio_dict['years'] = years
+        resource_ratio_dict[GlossaryCore.Years] = years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
@@ -164,18 +167,17 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin': self.margin,
-                       f'{self.name}.resources_price': self.resources_prices,
-                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
+                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -189,19 +191,19 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.resources_price',
-                                    f'{self.name}.resources_CO2_emissions',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
+                                    f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}',
                                     ],
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.syngas_ratio',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      ], )
 
     def test_02_coelectrolysis_discipline_jacobian(self):
@@ -224,18 +226,17 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin': self.margin,
-                       f'{self.name}.resources_price': self.resources_prices,
-                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
+                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -248,19 +249,19 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.resources_price',
-                                    f'{self.name}.resources_CO2_emissions',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
+                                    f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}',
                                     ],
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.syngas_ratio',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      ], )
 
     def test_03_smr_discipline_jac(self):
@@ -283,18 +284,17 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin': self.margin,
-                       f'{self.name}.resources_price': self.resources_prices,
-                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
+                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -307,16 +307,16 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.syngas_ratio',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      ], )
 
     def test_04_rwgs_discipline_jacobian(self):
@@ -339,19 +339,18 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level_rwgs,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin': self.margin,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level_rwgs,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{self.model_name}.syngas_ratio': np.ones(len(years)) * 33,
                        f'{self.name}.{self.model_name}.needed_syngas_ratio': 100.0,
-                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -361,20 +360,20 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        # 'invest', 'Capex_ReversedWaterGasShift', 'CO2_needs', 'syngas_needs','electricity',
+        # GlossaryCore.InvestValue, 'Capex_ReversedWaterGasShift', 'CO2_needs', 'syngas_needs','electricity',
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      ], )
 
     def test_05_coal_gasification_discipline_jacobian(self):
@@ -398,17 +397,16 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin': self.margin,
-                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -421,16 +419,16 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.syngas_ratio',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      ], )
 
     def test_06_biomass_gas_discipline_jacobian(self):
@@ -454,17 +452,16 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin': self.margin,
-                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -477,16 +474,16 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes'],
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.syngas_ratio',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      ], )
 
     def test_07_pyrolysis_discipline_jacobian(self):
@@ -510,17 +507,16 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin': self.margin,
-                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -535,24 +531,24 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.resources_price',
-                                    f'{self.name}.resources_CO2_emissions',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
+                                    f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}',
                                     ],
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.syngas_ratio',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      ], )
 
     def test_08_syngas_discipline_jacobian(self):
 
-        self.pyrolysis_consumption = pd.DataFrame({'years': self.years,
+        self.pyrolysis_consumption = pd.DataFrame({GlossaryCore.Years: self.years,
                                                    'wood (Mt)': [1.090599945663164e-13, 1.0097898717328532e-13,
                                                                  9.579124389341809e-14, 9.088332882344123,
                                                                  18.17666576468815, 27.26499864703218,
@@ -569,7 +565,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                  181.76665764688062, 181.76665764688062,
                                                                  181.76665764688062, 181.76665764688062,
                                                                  181.76665764688062]})
-        self.pyrolysis_production = pd.DataFrame({'years': self.years,
+        self.pyrolysis_production = pd.DataFrame({GlossaryCore.Years: self.years,
                                                   'syngas (TWh)': [9.999999998e-13, 9.259031009e-13, 8.783353076e-13,
                                                                    83.33333333333415, 166.66666666666742,
                                                                    250.0000000000007, 333.33333333333405,
@@ -633,7 +629,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                    357.1428571428571, 357.1428571428571,
                                                                    357.1428571428571]
                                                   })
-        self.pyrolysis_techno_prices = pd.DataFrame({'years': self.years,
+        self.pyrolysis_techno_prices = pd.DataFrame({GlossaryCore.Years: self.years,
                                                      'Pyrolysis': [18.59009081523392, 18.71782188089554,
                                                                    18.845552946557156, 18.97328401221877,
                                                                    19.101015077880387, 19.228746143542004,
@@ -657,7 +653,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                 14.984305650163387, 14.984305650163385, 14.984305650163385, 14.984305650163385, 14.984305650163385,
                 14.984305650163385, 14.984305650163387, 14.984305650163387, 14.984305650163385, 14.984305650163385,
                 14.984305650163385]})
-        self.pyrolysis_carbon_emissions = pd.DataFrame({'years': self.years,
+        self.pyrolysis_carbon_emissions = pd.DataFrame({GlossaryCore.Years: self.years,
                                                         'production': [0.015268399242337975, 0.015268399242337975,
                                                                        0.015268399242337975, 0.015268399242337975,
                                                                        0.015268399242337975, 0.015268399242337975,
@@ -706,7 +702,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                       0.20939518960920653, 0.20939518960920653,
                                                                       0.20939518960920653, 0.20939518960920653,
                                                                       0.20939518960920653]})
-        self.smr_consumption = pd.DataFrame({'years': self.years,
+        self.smr_consumption = pd.DataFrame({GlossaryCore.Years: self.years,
                                              'methane (TWh)': [2136.893073963169, 2172.719258968549, 2136.845263236073,
                                                                2124.2442018929078, 2070.3842437060734,
                                                                1995.4167284233306, 1972.7661968641671,
@@ -731,7 +727,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                  44.188973531749575, 34.44122193901366, 24.685256535727856,
                                                  25.737263796125664, 25.784796056968197, 25.832144162586452,
                                                  25.87930987158567]})
-        self.smr_production = pd.DataFrame({'years': self.years,
+        self.smr_production = pd.DataFrame({GlossaryCore.Years: self.years,
                                             'methane (TWh)': [2136.893073963169, 2172.719258968549, 2136.845263236073,
                                                               2124.2442018929078, 2070.3842437060734,
                                                               1995.4167284233306, 1972.7661968641671, 1909.520797917822,
@@ -765,7 +761,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                              782.2267354764349, 609.6734648931626, 436.97479463891517,
                                                              455.5972730363196, 456.4386821539574, 457.27683138279497,
                                                              458.11175185340477]})
-        self.smr_techno_prices = pd.DataFrame({'years': self.years,
+        self.smr_techno_prices = pd.DataFrame({GlossaryCore.Years: self.years,
                                                'methane (TWh)': [2136.893073963169, 2172.719258968549,
                                                                  2136.845263236073, 2124.2442018929078,
                                                                  2070.3842437060734, 1995.4167284233306,
@@ -830,7 +826,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                9.519393588464839, 9.50858448377355, 9.49791930903078,
                                                                9.487398029190208, 9.477020676792742, 9.466787353852922,
                                                                9.456698233912531]})
-        self.smr_carbon_emissions = pd.DataFrame({'years': self.years,
+        self.smr_carbon_emissions = pd.DataFrame({GlossaryCore.Years: self.years,
                                                   'methane (TWh)': [2136.893073963169, 2172.719258968549,
                                                                     2136.845263236073, 2124.2442018929078,
                                                                     2070.3842437060734, 1995.4167284233306,
@@ -944,7 +940,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                   0.00044200542212837873, 0.00044200542212837873,
                                                                   0.00044200542212837873, 0.00044200542212837873,
                                                                   0.00044200542212837873]})
-        self.AutothermalReforming_consumption = pd.DataFrame({'years': self.years,
+        self.AutothermalReforming_consumption = pd.DataFrame({GlossaryCore.Years: self.years,
                                                               'methane (TWh)': [1.2472228306010904e-12,
                                                                                 1.2472228306010904e-12,
                                                                                 1.2472228306010904e-12,
@@ -1127,7 +1123,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                                 4468599.939449005, 4561286.277724083,
                                                                                 4649888.650564819, 4734851.684387889,
                                                                                 4816543.783355949]})
-        self.AutothermalReforming_production = pd.DataFrame({'years': self.years,
+        self.AutothermalReforming_production = pd.DataFrame({GlossaryCore.Years: self.years,
                                                              'methane (TWh)': [1.2472228306010904e-12,
                                                                                1.2472228306010904e-12,
                                                                                1.2472228306010904e-12,
@@ -1309,7 +1305,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                                4468599.939449005, 4561286.277724083,
                                                                                4649888.650564819, 4734851.684387889,
                                                                                4816543.783355949]})
-        self.AutothermalReforming_techno_prices = pd.DataFrame({'years': self.years,
+        self.AutothermalReforming_techno_prices = pd.DataFrame({GlossaryCore.Years: self.years,
                                                                 'methane (TWh)': [1.2472228306010904e-12,
                                                                                   1.2472228306010904e-12,
                                                                                   1.2472228306010904e-12,
@@ -1557,7 +1553,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                                                  18.593079928586995,
                                                                                                  19.159324180191653,
                                                                                                  19.725568448434398]})
-        self.AutothermalReforming_carbon_emissions = pd.DataFrame({'years': self.years,
+        self.AutothermalReforming_carbon_emissions = pd.DataFrame({GlossaryCore.Years: self.years,
                                                                    'methane (TWh)': [1.2472228306010904e-12,
                                                                                      1.2472228306010904e-12,
                                                                                      1.2472228306010904e-12,
@@ -1854,7 +1850,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                            -0.12309665757986775, -0.12309665757986775,
                                                                            -0.12309665757986775]})
 
-        self.BiomassGasification_consumption = pd.DataFrame({'years': self.years,
+        self.BiomassGasification_consumption = pd.DataFrame({GlossaryCore.Years: self.years,
                                                              'electricity (TWh)': [1.1179522967999008e-13,
                                                                                    1.063312543802752e-13,
                                                                                    1.0432926795430603e-13,
@@ -1924,7 +1920,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                             1086085.8867253812, 1150745.7600594803,
                                                                             1216297.643909754, 1282716.6794922561,
                                                                             1326415.2542416998, 1365044.9365296653]})
-        self.BiomassGasification_production = pd.DataFrame({'years': self.years, 'syngas (TWh)': [9.999999999999998e-13,
+        self.BiomassGasification_production = pd.DataFrame({GlossaryCore.Years: self.years, 'syngas (TWh)': [9.999999999999998e-13,
                                                                                                   9.511251480465191e-13,
                                                                                                   9.332175286275173e-13,
                                                                                                   9.207106198275578e-13,
@@ -1955,7 +1951,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                                                   2870363.3650998743,
                                                                                                   2968148.6282630004,
                                                                                                   3054591.1191244386]})
-        self.BiomassGasification_techno_prices = pd.DataFrame({'years': self.years,
+        self.BiomassGasification_techno_prices = pd.DataFrame({GlossaryCore.Years: self.years,
                                                                'BiomassGasification': [3134.6106061511327,
                                                                                        3112.0020261822406,
                                                                                        3111.973198301283,
@@ -2004,7 +2000,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                    3112.2443751223313, 3112.2690990006568,
                                                                    3112.294183367779, 3112.319637919537,
                                                                    3112.345472742165]})
-        self.BiomassGasification_carbon_emissions = pd.DataFrame({'years': self.years,
+        self.BiomassGasification_carbon_emissions = pd.DataFrame({GlossaryCore.Years: self.years,
                                                                   'production': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                                                                  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                                                                  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -2089,7 +2085,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                                           -2.3814953892347]}
                                                                  )
 
-        self.CoalGasification_consumption = pd.DataFrame({'years': self.years,
+        self.CoalGasification_consumption = pd.DataFrame({GlossaryCore.Years: self.years,
                                                           'solid_fuel (TWh)': [1108.4101094769846, 1144.1954062664238,
                                                                                1158.7782627156437, 1148.146067463056,
                                                                                1048.5382266534239, 997.2268053902488,
@@ -2106,7 +2102,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                                512.3840762429093, 515.3632988882629,
                                                                                518.3063025702833, 521.2141687189784,
                                                                                524.0879276420483, 526.9285618162111]})
-        self.CoalGasification_production = pd.DataFrame({'years': self.years,
+        self.CoalGasification_production = pd.DataFrame({GlossaryCore.Years: self.years,
                                                          'syngas (TWh)': [931.4370667873822, 961.5087447617007,
                                                                           973.7632459795325, 964.8286281202151,
                                                                           881.1245602129613, 838.0057188153352,
@@ -2135,7 +2131,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                              66.47829146806814, 66.87198940801001, 67.26081207916918,
                                                              67.64490776085954, 68.02441759208088, 68.39947603978642,
                                                              68.7702113284385]})
-        self.CoalGasification_techno_prices = pd.DataFrame({'years': self.years,
+        self.CoalGasification_techno_prices = pd.DataFrame({GlossaryCore.Years: self.years,
                                                             'CoalGasification': [72.42389684469369, 72.4449406302368,
                                                                                  72.46854200700315, 72.49457351844165,
                                                                                  72.52291660457976, 72.5534608107061,
@@ -2164,7 +2160,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                 67.7399896925627, 67.6901487877926, 67.64125459145778,
                                                                 67.59327596514183, 67.5461832152499, 67.49994800698862,
                                                                 67.45454328456687]})
-        self.CoalGasification_carbon_emissions = pd.DataFrame({'years': self.years,
+        self.CoalGasification_carbon_emissions = pd.DataFrame({GlossaryCore.Years: self.years,
                                                                'production': [0.1553086270343148, 0.1553086270343148,
                                                                               0.1553086270343148, 0.1553086270343148,
                                                                               0.1553086270343148, 0.1553086270343148,
@@ -2243,7 +2239,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                                                     0.1791086270343148,
                                                                                     0.1791086270343148,
                                                                                     0.1791086270343148]})
-        self.CoElectrolysis_consumption = pd.DataFrame({'years': self.years,
+        self.CoElectrolysis_consumption = pd.DataFrame({GlossaryCore.Years: self.years,
                                                         'carbon_capture (Mt)': [2.769674795547024e-13,
                                                                                 2.769674795547024e-13,
                                                                                 2.769674795547024e-13,
@@ -2273,7 +2269,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                             585113.7137087042, 623403.9578051764, 662271.9558788653,
                                                             701700.1643688645, 741672.3018026346, 782173.2098251451,
                                                             823188.7344177703, 864705.6237174736, 906711.4395931421]})
-        self.CoElectrolysis_production = pd.DataFrame({'years': self.years,
+        self.CoElectrolysis_production = pd.DataFrame({GlossaryCore.Years: self.years,
                                                        'syngas (TWh)': [1e-12, 1e-12, 1e-12, 126738.96890494916,
                                                                         285162.68003613263, 465675.85551630636,
                                                                         663705.4944302839, 876484.2435534036,
@@ -2296,7 +2292,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                 50882.3863447856, 54794.48629024235, 58775.27535775681, 62822.343932584416, 66933.4813534529,
                 71106.65091989371, 75339.96901921536, 79631.68754631691, 83980.17898269917, 88383.9236432047,
                 92841.4987050934, 97351.56871419222]})
-        self.CoElectrolysis_techno_prices = pd.DataFrame({'years': self.years,
+        self.CoElectrolysis_techno_prices = pd.DataFrame({GlossaryCore.Years: self.years,
                                                           'CoElectrolysis': [89.78635550136332, 71.3222182617535,
                                                                              71.42936229722763, 71.5394697955606,
                                                                              71.65237094910471, 71.76796094231511,
@@ -2325,7 +2321,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                                               86.49940860227397, 87.8613637994138, 89.28074993827151,
                                                               90.70222720544805, 92.12585137109714, 93.55168040000196,
                                                               94.97977456559525]})
-        self.CoElectrolysis_carbon_emissions = pd.DataFrame({'years': self.years,
+        self.CoElectrolysis_carbon_emissions = pd.DataFrame({GlossaryCore.Years: self.years,
                                                              'production': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                                                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                                                                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -2414,54 +2410,65 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2050,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.technologies_list': ['Pyrolysis', 'SMR', 'AutothermalReforming',
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
+
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.techno_list}': ['Pyrolysis', 'SMR', 'AutothermalReforming',
                                                           'BiomassGasification', 'CoalGasification', 'CoElectrolysis'],
                        f'{self.name}.{self.model_name}.Pyrolysis.techno_consumption': self.pyrolysis_consumption,
                        f'{self.name}.{self.model_name}.Pyrolysis.techno_consumption_woratio': self.pyrolysis_consumption,
                        f'{self.name}.{self.model_name}.Pyrolysis.techno_production': self.pyrolysis_production,
                        f'{self.name}.{self.model_name}.Pyrolysis.techno_prices': self.pyrolysis_techno_prices,
-                       f'{self.name}.{self.model_name}.Pyrolysis.CO2_emissions': self.pyrolysis_carbon_emissions,
+                       f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryCore.CO2EmissionsValue}': self.pyrolysis_carbon_emissions,
                        f'{self.name}.{self.model_name}.Pyrolysis.syngas_ratio': np.array([111.111111]),
-                       f'{self.name}.{self.model_name}.Pyrolysis.land_use_required': self.land_use_required_Pyrolysis,
+                       f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_Pyrolysis,
                        f'{self.name}.{self.model_name}.SMR.techno_consumption': self.smr_consumption,
                        f'{self.name}.{self.model_name}.SMR.techno_consumption_woratio': self.smr_consumption,
                        f'{self.name}.{self.model_name}.SMR.techno_production': self.smr_production,
                        f'{self.name}.{self.model_name}.SMR.techno_prices': self.smr_techno_prices,
-                       f'{self.name}.{self.model_name}.SMR.CO2_emissions': self.smr_carbon_emissions,
+                       f'{self.name}.{self.model_name}.SMR.{GlossaryCore.CO2EmissionsValue}': self.smr_carbon_emissions,
                        f'{self.name}.{self.model_name}.SMR.syngas_ratio': np.array([33.333333]),
-                       f'{self.name}.{self.model_name}.SMR.land_use_required': self.land_use_required_SMR,
+                       f'{self.name}.{self.model_name}.SMR.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_SMR,
                        f'{self.name}.{self.model_name}.AutothermalReforming.techno_consumption': self.AutothermalReforming_consumption,
                        f'{self.name}.{self.model_name}.AutothermalReforming.techno_consumption_woratio': self.AutothermalReforming_consumption,
                        f'{self.name}.{self.model_name}.AutothermalReforming.techno_production': self.AutothermalReforming_production,
                        f'{self.name}.{self.model_name}.AutothermalReforming.techno_prices': self.AutothermalReforming_techno_prices,
-                       f'{self.name}.{self.model_name}.AutothermalReforming.CO2_emissions': self.AutothermalReforming_carbon_emissions,
+                       f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryCore.CO2EmissionsValue}': self.AutothermalReforming_carbon_emissions,
                        f'{self.name}.{self.model_name}.AutothermalReforming.syngas_ratio': np.array([100.]),
-                       f'{self.name}.{self.model_name}.AutothermalReforming.land_use_required': self.land_use_required_AutothermalReforming,
+                       f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_AutothermalReforming,
                        f'{self.name}.{self.model_name}.BiomassGasification.techno_consumption': self.BiomassGasification_consumption,
                        f'{self.name}.{self.model_name}.BiomassGasification.techno_consumption_woratio': self.BiomassGasification_consumption,
                        f'{self.name}.{self.model_name}.BiomassGasification.techno_production': self.BiomassGasification_production,
                        f'{self.name}.{self.model_name}.BiomassGasification.techno_prices': self.BiomassGasification_techno_prices,
-                       f'{self.name}.{self.model_name}.BiomassGasification.CO2_emissions': self.BiomassGasification_carbon_emissions,
+                       f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryCore.CO2EmissionsValue}': self.BiomassGasification_carbon_emissions,
                        f'{self.name}.{self.model_name}.BiomassGasification.syngas_ratio': np.array([83.870968]),
-                       f'{self.name}.{self.model_name}.BiomassGasification.land_use_required': self.land_use_required_BiomassGasification,
+                       f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_BiomassGasification,
                        f'{self.name}.{self.model_name}.CoalGasification.techno_consumption': self.CoalGasification_consumption,
                        f'{self.name}.{self.model_name}.CoalGasification.techno_consumption_woratio': self.CoalGasification_consumption,
                        f'{self.name}.{self.model_name}.CoalGasification.techno_production': self.CoalGasification_production,
                        f'{self.name}.{self.model_name}.CoalGasification.techno_prices': self.CoalGasification_techno_prices,
-                       f'{self.name}.{self.model_name}.CoalGasification.CO2_emissions': self.CoalGasification_carbon_emissions,
+                       f'{self.name}.{self.model_name}.CoalGasification.{GlossaryCore.CO2EmissionsValue}': self.CoalGasification_carbon_emissions,
                        f'{self.name}.{self.model_name}.CoalGasification.syngas_ratio': np.array([213.636364]),
-                       f'{self.name}.{self.model_name}.CoalGasification.land_use_required': self.land_use_required_CoalGasification,
+                       f'{self.name}.{self.model_name}.CoalGasification.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_CoalGasification,
                        f'{self.name}.{self.model_name}.CoElectrolysis.techno_consumption': self.CoElectrolysis_consumption,
                        f'{self.name}.{self.model_name}.CoElectrolysis.techno_consumption_woratio': self.CoElectrolysis_consumption,
                        f'{self.name}.{self.model_name}.CoElectrolysis.techno_production': self.CoElectrolysis_production,
                        f'{self.name}.{self.model_name}.CoElectrolysis.techno_prices': self.CoElectrolysis_techno_prices,
-                       f'{self.name}.{self.model_name}.CoElectrolysis.CO2_emissions': self.CoElectrolysis_carbon_emissions,
+                       f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryCore.CO2EmissionsValue}': self.CoElectrolysis_carbon_emissions,
                        f'{self.name}.{self.model_name}.CoElectrolysis.syngas_ratio': np.array([100.]),
-                       f'{self.name}.{self.model_name}.CoElectrolysis.land_use_required': self.land_use_required_CoElectrolysis,
-                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_CoElectrolysis,
+                       f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.CoalGasification.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.SMR.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
+                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -2486,13 +2493,13 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                                     f'{self.name}.{self.model_name}.CoalGasification.syngas_ratio',
                                     f'{self.name}.{self.model_name}.CoElectrolysis.techno_production',
                                     f'{self.name}.{self.model_name}.CoElectrolysis.syngas_ratio',
-                                    f'{self.name}.CO2_taxes'],
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.syngas_ratio',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.CO2_per_use',
-                                     f'{self.name}.{self.model_name}.energy_prices',
-                                     f'{self.name}.{self.model_name}.energy_consumption',
-                                     f'{self.name}.{self.model_name}.energy_production'], )
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.EnergyPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.EnergyConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}'], )
 
     def test_09_generic_syngas_discipline_jacobian(self):
 
@@ -2523,7 +2530,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in ['technologies_list', 'CO2_taxes', 'year_start', 'year_end',
+            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production',
                        'syngas_ratio', 'data_fuel_dict']:
@@ -2550,13 +2557,25 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                     coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
+        technos = inputs_dict[f"{self.name}.technologies_list"]
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
+        for techno in technos:
+            inputs_dict[
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
+
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_generic_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,

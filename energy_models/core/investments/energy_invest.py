@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from .base_invest import BaseInvest
 
 
@@ -39,7 +39,7 @@ class EnergyInvest(BaseInvest):
             raise TypeError('energy_list must be defined as a list')
         head_list = list(mix_df.columns)
         try:
-            head_list.remove('years')
+            head_list.remove(GlossaryCore.Years)
         except:
             print('years not in dataframe')
         if sorted(head_list) == sorted(self.energy_list):
@@ -48,7 +48,7 @@ class EnergyInvest(BaseInvest):
             raise ValueError(str(sorted(head_list)) +
                              ' should be equal to ' + str(sorted(self.energy_list)))
 
-    def get_invest_distrib(self, invest_level, invest_mix, input_unit, output_unit, column_name='invest'):
+    def get_invest_distrib(self, invest_level, invest_mix, input_unit, output_unit, column_name=GlossaryCore.InvestValue):
         self.set_invest_level(invest_level, input_unit, column_name)
         self.set_invest_mix(invest_mix)
         invest_distrib, unit = self.get_distributed_invest(

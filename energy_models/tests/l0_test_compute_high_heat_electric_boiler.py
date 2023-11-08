@@ -1,9 +1,25 @@
+'''
+Copyright 2023 Capgemini
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
 import unittest
 import pandas as pd
 import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.heat.high.electric_boiler_high_heat.electric_boiler_high_heat import ElectricBoilerHighHeat
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
@@ -24,22 +40,23 @@ class ElectricBoilerTestCase(unittest.TestCase):
         years = np.arange(2020, 2051)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
+        from climateeconomics.glossarycore import GlossaryCore
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame({'years': years,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years,
                                            'electricity': np.ones(len(years)) * 181.0,  #$/MWh
                                                                                         #https://tradingeconomics.com/france/electricity-price
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({'years': years, 'electricity': 0.0, 'water': 0.0})
-        self.resources_price = pd.DataFrame({'years': years, 'water_resource': 2.0})
-        self.resources_CO2_emissions = pd.DataFrame({'years': years, 'water': 0.0})
+        self.energy_carbon_emissions = pd.DataFrame({GlossaryCore.Years: years, 'electricity': 0.0, 'water': 0.0})
+        self.resources_price = pd.DataFrame({GlossaryCore.Years: years, 'water_resource': 2.0})
+        self.resources_CO2_emissions = pd.DataFrame({GlossaryCore.Years: years, 'water': 0.0})
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.array([4435750000.0, 4522000000.0, 4608250000.0,
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
                                                  4694500000.0, 4780750000.0, 4867000000.0,
                                                  4969400000.0, 5071800000.0, 5174200000.0,
                                                  5276600000.0, 5379000000.0, 5364700000.0,
@@ -58,17 +75,17 @@ class ElectricBoilerTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 0.0})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 0.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict['years'] = years
+        demand_ratio_dict[GlossaryCore.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -84,26 +101,26 @@ class ElectricBoilerTestCase(unittest.TestCase):
 
     def test_01_compute_electric_boiler_price_prod_consumption(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': ElectricBoilerHighHeatDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'resources_price': self.resources_price,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': ElectricBoilerHighHeatDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.ResourcesPriceValue: self.resources_price,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: ElectricBoilerHighHeatDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': ElectricBoilerHighHeatDiscipline.initial_production,
                        'initial_age_distrib': ElectricBoilerHighHeatDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -139,15 +156,15 @@ class ElectricBoilerTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       #f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       #f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin,
                        # f'{self.name}.{self.model_name}.flux_input_dict':  {'land_rate': 5000.0,
                        #                                  'land_rate_unit': '$/Gha',
                        #                                  }

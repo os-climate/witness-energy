@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +18,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
 from energy_models.models.syngas.biomass_gasification.biomass_gasification import BiomassGasification
 from energy_models.core.stream_type.energy_models.syngas import compute_calorific_value
@@ -78,7 +80,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  'WACC': 0.07,  # WACC Saraa2016
                                  'learning_rate': 0.2,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # Capex in kEuro in Sara2016 we divide by 2
                                  # for the PPS cost reduction aimed in the
                                  # paper
@@ -103,7 +105,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  'construction_delay': construction_delay}
     # We do not invest on biomass gasification yet
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 0.0, 0.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 0.0, 0.0]})
 
     syngas_ratio = BiomassGasification.syngas_COH2_ratio
 
@@ -131,13 +133,13 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno inputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)

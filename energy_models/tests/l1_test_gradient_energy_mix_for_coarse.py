@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@ limitations under the License.
 '''
 import os
 from os.path import dirname
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
@@ -38,7 +40,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.name = 'TestAntoine'
+        self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.model_name = 'EnergyMix'
 
@@ -81,23 +83,23 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_names = []
 
         inputs_names.extend([
-            f'{self.name}.{self.model_name}.{energy}.energy_prices' for energy in self.energy_list if
+            f'{self.name}.{self.model_name}.{energy}.{GlossaryCore.EnergyPricesValue}' for energy in self.energy_list if
             energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend([
-            f'{self.name}.{self.model_name}.{energy}.energy_production' for energy in self.energy_list if
+            f'{self.name}.{self.model_name}.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in self.energy_list if
             energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
-            [f'{self.name}.{self.model_name}.{energy}.energy_consumption' for energy in self.energy_list if
+            [f'{self.name}.{self.model_name}.{energy}.{GlossaryCore.EnergyConsumptionValue}' for energy in self.energy_list if
              energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
-            [f'{self.name}.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
+            [f'{self.name}.CCUS.{energy}.{GlossaryCore.EnergyConsumptionValue}' for energy in ['carbon_capture', 'carbon_storage']])
 
         inputs_names.extend(
-            [f'{self.name}.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
+            [f'{self.name}.CCUS.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend([
-            f'{self.name}.CCUS.{energy}.energy_prices' for energy in ['carbon_capture', 'carbon_storage']])
+            f'{self.name}.CCUS.{energy}.{GlossaryCore.EnergyPricesValue}' for energy in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
-            [f'{self.name}.{self.model_name}.{energy}.CO2_emissions' for energy in self.energy_list if
+            [f'{self.name}.{self.model_name}.{energy}.{GlossaryCore.CO2EmissionsValue}' for energy in self.energy_list if
              energy not in ['carbon_capture', 'carbon_storage']])
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
@@ -108,8 +110,9 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.{self.model_name}.co2_emissions_needed_by_energy_mix',
                                      f'{self.name}.{self.model_name}.carbon_capture_from_energy_mix',
                                      f'{self.name}.{self.model_name}.energy_mean_price',
-                                     f'{self.name}.{self.model_name}.energy_production',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}',
                                      f'{self.name}.{self.model_name}.land_demand_df',
+                                     f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}',
                                      f'{self.name}.{self.model_name}.energy_prices_after_tax'
                                      ])
         AbstractJacobianUnittest.DUMP_JACOBIAN = False
@@ -119,7 +122,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
     def test_02_energy_mix_co2_tax(self):
         AbstractJacobianUnittest.DUMP_JACOBIAN = True
         inputs_names = [
-            f'{self.name}.CO2_taxes']
+            f'{self.name}.{GlossaryCore.CO2TaxesValue}']
 
         energy_mix_output = [f'{self.name}.{self.model_name}.energy_mean_price',
                              f'{self.name}.{self.model_name}.energy_prices_after_tax']

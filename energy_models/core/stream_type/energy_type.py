@@ -15,6 +15,7 @@ limitations under the License.
 '''
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.base_stream import BaseStream
 
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
@@ -43,7 +44,7 @@ class EnergyType(BaseStream):
         '''
         Configure at init
         '''
-        self.subelements_list = inputs_dict['technologies_list']
+        self.subelements_list = inputs_dict[GlossaryCore.techno_list]
 
         BaseStream.configure_parameters(self, inputs_dict)
 
@@ -51,11 +52,11 @@ class EnergyType(BaseStream):
         '''
         Configure before each run
         '''
-        self.carbon_tax = inputs_dict['CO2_taxes']
+        self.carbon_tax = inputs_dict[GlossaryCore.CO2TaxesValue]
         BaseStream.configure_parameters_update(self, inputs_dict)
         self.data_energy_dict_input = inputs_dict['data_fuel_dict']
         for element in self.subelements_list:
-            self.sub_carbon_emissions[element] = inputs_dict[f'{element}.CO2_emissions'][element]
+            self.sub_carbon_emissions[element] = inputs_dict[f'{element}.{GlossaryCore.CO2EmissionsValue}'][element]
 
     def compute_carbon_emissions(self):
         '''
@@ -73,7 +74,7 @@ class EnergyType(BaseStream):
         ghg_dict = {}
         for ghg_type in GHGEmissions.GHG_TYPE_LIST:
             ghg_dict[f'{ghg_type}_per_use'] = pd.DataFrame(
-                {'years': self.years})
+                {GlossaryCore.Years: self.years})
             ghg_dict[f'{ghg_type}_per_use'][f'{ghg_type}_per_use'] = 0.0
             if f'{ghg_type}_per_use' in self.data_energy_dict:
                 ghg_dict[f'{ghg_type}_per_use'][f'{ghg_type}_per_use'] = self.compute_ghg_per_use(

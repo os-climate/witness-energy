@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.renewable import Renewable
@@ -47,7 +47,7 @@ class FlueGasTechno(CCTechno):
     def configure_parameters_update(self, inputs_dict):
 
         CCTechno.configure_parameters_update(self, inputs_dict)
-        self.flue_gas_ratio = inputs_dict['flue_gas_mean'].loc[inputs_dict['flue_gas_mean']['years']
+        self.flue_gas_ratio = inputs_dict[GlossaryCore.FlueGasMean].loc[inputs_dict[GlossaryCore.FlueGasMean][GlossaryCore.Years]
                                                                <= self.year_end]
         # To deal quickly with l0 test
         if 'fg_ratio_effect' in inputs_dict:
@@ -64,7 +64,7 @@ class FlueGasTechno(CCTechno):
                                                  / self.cost_details['efficiency'])
 
         self.cost_details[Renewable.name] *= self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect)
+            self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect)
 
         return self.cost_details[Renewable.name]
 
@@ -77,7 +77,7 @@ class FlueGasTechno(CCTechno):
         efficency = self.configure_efficiency()
 
         return {Renewable.name: np.identity(len(self.years)) * elec_needs / efficency * self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect),
+            self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect),
                 }
 
     def compute_consumption_and_production(self):
@@ -93,6 +93,6 @@ class FlueGasTechno(CCTechno):
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)
         capex_calc_list *= self.compute_capex_variation_from_fg_ratio(
-            self.flue_gas_ratio['flue_gas_mean'].values, self.fg_ratio_effect)
+            self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect)
 
         return capex_calc_list

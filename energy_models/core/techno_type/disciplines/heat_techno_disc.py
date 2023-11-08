@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
@@ -34,15 +34,15 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+    DESC_IN = {GlossaryCore.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_heat_low',
-                                  'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                  'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
                                                            'transport': ('float', None, True)},
                                   'dataframe_edition_locked': False},
-               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               GlossaryCore.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                     'namespace': 'ns_heat_low',
-                                    'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
-                                                             'margin': ('float', None, True)},
+                                    'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                                                             GlossaryCore.MarginValue: ('float', None, True)},
                                     'dataframe_edition_locked': False},
                              'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                                 'namespace': 'ns_heat_low', 'default': lowtemperatureheat.data_energy_dict},
@@ -59,8 +59,8 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
         TechnoDiscipline.compute_sos_jacobian(self)
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
-        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
-        grad_dict_resources = self.techno_model.grad_price_vs_energy_price_calc()
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
@@ -80,15 +80,15 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+    DESC_IN = {GlossaryCore.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_heat_medium',
-                                  'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                  'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
                                                            'transport': ('float', None, True)},
                                   'dataframe_edition_locked': False},
-               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               GlossaryCore.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                     'namespace': 'ns_heat_medium',
-                                    'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
-                                                             'margin': ('float', None, True)},
+                                    'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                                                             GlossaryCore.MarginValue: ('float', None, True)},
                                     'dataframe_edition_locked': False},
                               'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                                  'namespace': 'ns_heat_medium', 'default': mediumtemperatureheat.data_energy_dict},
@@ -105,8 +105,8 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
         TechnoDiscipline.compute_sos_jacobian(self)
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
-        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
-        grad_dict_resources = self.techno_model.grad_price_vs_energy_price_calc()
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
@@ -126,15 +126,15 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+    DESC_IN = {GlossaryCore.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_heat_high',
-                                  'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                  'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
                                                            'transport': ('float', None, True)},
                                   'dataframe_edition_locked': False},
-               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               GlossaryCore.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                     'namespace': 'ns_heat_high',
-                                    'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
-                                                             'margin': ('float', None, True)},
+                                    'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                                                             GlossaryCore.MarginValue: ('float', None, True)},
                                     'dataframe_edition_locked': False},
                 'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                    'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
@@ -142,6 +142,7 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
                 #                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
+    #DESC_OUT = TechnoDiscipline.DESC_OUT
 
     _maturity = 'Research'
 
@@ -152,7 +153,8 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
 
         TechnoDiscipline.compute_sos_jacobian(self)
         grad_dict = self.techno_model.grad_price_vs_energy_price()
-        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
-        grad_dict_resources = self.techno_model.grad_price_vs_energy_price_calc()
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
+
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)

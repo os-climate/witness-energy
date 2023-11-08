@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 
@@ -33,13 +33,13 @@ class HydrotreatedOilFuelTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_hydrotreated_oil_fuel',
-                                  'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
+    DESC_IN = {GlossaryCore.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_hydrotreated_oil_fuel',
+                                  'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
                                                            'transport': ('float',  None, True)},
                                   'dataframe_edition_locked': False},
-               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_hydrotreated_oil_fuel',
-                                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                             'margin': ('float',  None, True)},
+               GlossaryCore.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_hydrotreated_oil_fuel',
+                                    'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
+                                                             GlossaryCore.MarginValue: ('float',  None, True)},
                                     'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
@@ -57,7 +57,7 @@ class HydrotreatedOilFuelTechnoDiscipline(TechnoDiscipline):
 
         TechnoDiscipline.compute_sos_jacobian(self)
         grad_dict = self.techno_model.grad_price_vs_energy_price()
-        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         self.set_partial_derivatives_techno(

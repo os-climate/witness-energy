@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -84,7 +85,7 @@ class HeatPump(mediumheattechno):
         land_rate = self.land_rate
         heat_price = self.compute_other_primary_energy_costs()
         self.heat_flux = land_rate/heat_price
-        self.heat_flux_distribution = pd.DataFrame({'years': self.cost_details['years'],
+        self.heat_flux_distribution = pd.DataFrame({GlossaryCore.Years: self.cost_details[GlossaryCore.Years],
                                                'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
 

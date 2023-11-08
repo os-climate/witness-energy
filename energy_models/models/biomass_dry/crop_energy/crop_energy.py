@@ -17,6 +17,8 @@ limitations under the License.
 from copy import deepcopy
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.base_techno_models.biomass_dry_techno import BiomassDryTechno
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 
@@ -61,7 +63,7 @@ class CropEnergy(BiomassDryTechno):
 
         self.compute_primary_energy_production()
 
-        self.production_mix = pd.DataFrame({'years': self.years})
+        self.production_mix = pd.DataFrame({GlossaryCore.Years: self.years})
 
         # This model compute the production of crop and residue for energy
         crop_residue_energy_production = deepcopy(
@@ -139,7 +141,7 @@ class CropEnergy(BiomassDryTechno):
         # Price_residue = crop_residue_ratio * Price_crop
 
         #=> Price_crop = Price_tot / ((1-ratio_prices)*crop_residue_ratio + ratio_prices)
-        self.price_mix = pd.DataFrame({'years': self.years})
+        self.price_mix = pd.DataFrame({GlossaryCore.Years: self.years})
         self.price_mix[f'{BiomassDryTechno.energy_name}_crop'] = price_crop
         self.price_mix[f'{BiomassDryTechno.energy_name}_residue'] = price_residue
 

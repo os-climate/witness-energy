@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 
@@ -34,7 +34,7 @@ class LiquidFuelDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': LiquidFuel.default_techno_list,
+    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': LiquidFuel.default_techno_list,
                                      'default': LiquidFuel.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_liquid_fuel',

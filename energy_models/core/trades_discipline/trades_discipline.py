@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/09/27-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -46,7 +47,7 @@ class TradesDiscipline(SoSWrapp):
                                  SoSWrapp.VISIBILITY:
                                      SoSWrapp.SHARED_VISIBILITY, SoSWrapp.NAMESPACE: 'ns_scatter_scenario',
                                  'structuring': True},
-               'year_end': {'type': 'int', 'default': 2050, 'unit': '[-]',
+               GlossaryCore.YearEnd: {'type': 'int', 'default': 2050, 'unit': '[-]',
                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2,
                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -67,7 +68,7 @@ class TradesDiscipline(SoSWrapp):
                 for scenario in scenario_list:
                     inputs[f'{scenario}{ns_value_long.split(ns_value_short)[1]}.co2_emissions'] = {
                         'type': 'dataframe', 'unit': 'Mt', 'visibility': 'Shared', 'namespace': 'ns_scatter_scenario'}
-                    inputs[f'{scenario}{ns_value_long.split(ns_value_short)[1]}.energy_production'] = {
+                    inputs[f'{scenario}{ns_value_long.split(ns_value_short)[1]}.{GlossaryCore.EnergyProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'MWh', 'visibility': 'Shared', 'namespace': 'ns_scatter_scenario'}
 
                 self.add_inputs(inputs)
@@ -106,7 +107,7 @@ class TradesDiscipline(SoSWrapp):
         dynamic_inputs = self.get_sosdisc_inputs(
             list(self.inst_desc_in.keys()), in_dict=True)
 
-        year_end = self.get_sosdisc_inputs('year_end')
+        year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
         scaling_factor_energy_production = self.get_sosdisc_inputs(
             'scaling_factor_energy_production')
 
@@ -127,10 +128,10 @@ class TradesDiscipline(SoSWrapp):
             for input, value in dynamic_inputs.items():
                 if input.endswith('co2_emissions'):
                     CO2_emissions[input.split('.')[0]] = list(
-                        value[value['years'] == year_end]['Total CO2 emissions'].values)[0] * 1.0e6
+                        value[value[GlossaryCore.Years] == year_end]['Total CO2 emissions'].values)[0] * 1.0e6
                 elif input.endswith(GlossaryCore.EnergyProductionValue):
                     energy_production[input.split('.')[0]] = list(
-                        value[value['years'] == year_end]['Total production'].values)[
+                        value[value[GlossaryCore.Years] == year_end]['Total production'].values)[
                                                                  0] * 1.0e6 * scaling_factor_energy_production
 
             min_energy = min(list(energy_production.values()))

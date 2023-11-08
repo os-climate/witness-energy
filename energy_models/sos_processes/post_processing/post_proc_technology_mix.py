@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -61,12 +61,12 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
     filtered_production_technology = 15
     disc = execution_engine.dm.get_disciplines_with_name(namespace)
     disc_input = disc[0].get_sosdisc_inputs()
-    energy_list = disc_input['energy_list']
+    energy_list = disc_input[GlossaryCore.energy_list]
     techno_list = []
     EnergyDict = {}
     year_list = []
     energy_name_list = []
-    var_energyproduction_all_energy_df = pd.DataFrame(columns=["years"])
+    var_energyproduction_all_energy_df = pd.DataFrame(columns=[GlossaryCore.Years])
     y_incre = 0
     for energ in energy_list:
         var_f_name = f"{namespace}.{energ}.technologies_list"
@@ -106,7 +106,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
             price_details = execution_engine.dm.get_value(techno_prices_f_name)
 
             techno_name_list.append(techno)
-            year_list = price_details['years'].tolist()
+            year_list = price_details[GlossaryCore.Years].tolist()
             capex_list = price_details['CAPEX_Part'].tolist()
             energy_costs_List = price_details[techno].tolist()
 

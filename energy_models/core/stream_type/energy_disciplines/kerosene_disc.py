@@ -33,7 +33,7 @@ class KeroseneDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': ['AlcoholToFuel', 'BioFuel', 'EOR',
                                                          'Refinery', 'HEFA', 'FischerTropsch'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,

@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,10 +19,12 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
@@ -98,14 +101,17 @@ class Study(EnergyMixStudyManager):
                 10 * (1 + 0.0) ** i for i in l_ctrl]
 
         if 'direct_air_capture.DirectAirCaptureTechno' in self.technologies_list:
-            invest_carbon_capture_mix_dict['direct_air_capture.DirectAirCaptureTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE)
+            invest_carbon_capture_mix_dict['direct_air_capture.DirectAirCaptureTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1e-6
+            invest_2020_ccus = DatabaseWitnessEnergy.InvestCCUS2020.value
+            invest_carbon_capture_mix_dict['direct_air_capture.DirectAirCaptureTechno'][0] = invest_2020_ccus/3
 
         if 'flue_gas_capture.FlueGasTechno' in self.technologies_list:
-            invest_carbon_capture_mix_dict['flue_gas_capture.FlueGasTechno'] = [
-                10 * (1 - 0.04) ** i for i in np.arange(0, GlossaryEnergy.NB_POLES_COARSE)]
+            invest_carbon_capture_mix_dict['flue_gas_capture.FlueGasTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1e-6
+            invest_2020_ccus = DatabaseWitnessEnergy.InvestCCUS2020.value
+            invest_carbon_capture_mix_dict['flue_gas_capture.FlueGasTechno'][0] = invest_2020_ccus / 3
 
         if self.bspline:
-            invest_carbon_capture_mix_dict['years'] = self.years
+            invest_carbon_capture_mix_dict[GlossaryCore.Years] = self.years
 
             for techno in self.technologies_list:
                 invest_carbon_capture_mix_dict[techno], _ = self.invest_bspline(
@@ -124,7 +130,7 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
-        self.energy_prices = pd.DataFrame({'years': years,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years,
                                            'electricity': 10.0,
                                            'amine': 1300.0,
                                            'potassium':  50.0,
@@ -134,9 +140,9 @@ class Study(EnergyMixStudyManager):
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': 10.0})
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: 10.0})
         self.flue_gas_mean = pd.DataFrame(
-            {'years': years, 'flue_gas_mean': 0.13})
+            {GlossaryCore.Years: years, GlossaryCore.FlueGasMean: 0.13})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
@@ -145,68 +151,71 @@ class Study(EnergyMixStudyManager):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 7.0})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 7.0})
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'amine': 0.0, 'potassium': 0.0, 'electricity': 0.0, 'calcium': 0.0, 'methane':0.2})
+            {GlossaryCore.Years: years, 'amine': 0.0, 'potassium': 0.0, 'electricity': 0.0, 'calcium': 0.0, 'methane':0.2})
 
-        coal_gen_prod = pd.DataFrame({'years': years,
+        coal_gen_prod = pd.DataFrame({GlossaryCore.Years: years,
                                       f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        gas_turbine_prod = pd.DataFrame({'years': years,
+        gas_turbine_prod = pd.DataFrame({GlossaryCore.Years: years,
                                          f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        cc_gas_turbine_prod = pd.DataFrame({'years': years,
+        cc_gas_turbine_prod = pd.DataFrame({GlossaryCore.Years: years,
                                             f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        wgs_prod = pd.DataFrame({'years': years,
+        wgs_prod = pd.DataFrame({GlossaryCore.Years: years,
                                  f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        ft_prod = pd.DataFrame({'years': years,
+        ft_prod = pd.DataFrame({GlossaryCore.Years: years,
                                 f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        refinery_prod = pd.DataFrame({'years': years,
+        refinery_prod = pd.DataFrame({GlossaryCore.Years: years,
                                       f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        CAKOH_production = pd.DataFrame({'years': years,
+        CAKOH_production = pd.DataFrame({GlossaryCore.Years: years,
                                       f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        aminescrubbing_production = pd.DataFrame({'years': years,
+        aminescrubbing_production = pd.DataFrame({GlossaryCore.Years: years,
                                       f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        fossil_gas_prod = pd.DataFrame({'years': years,
+        fossil_gas_prod = pd.DataFrame({GlossaryCore.Years: years,
                                         f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        pelletizing_prod = pd.DataFrame({'years': years,
+        pelletizing_prod = pd.DataFrame({GlossaryCore.Years: years,
                                          f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        coal_gas_prod = pd.DataFrame({'years': years,
+        coal_gas_prod = pd.DataFrame({GlossaryCore.Years: years,
                                       f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        pyrolysis_prod = pd.DataFrame({'years': years,
+        pyrolysis_prod = pd.DataFrame({GlossaryCore.Years: years,
                                        f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        pyrolysis_prod = pd.DataFrame({'years': years,
+        pyrolysis_prod = pd.DataFrame({GlossaryCore.Years: years,
                                        f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
-        directaircapturetechno_prod = pd.DataFrame({'years': years,
+        directaircapturetechno_prod = pd.DataFrame({GlossaryCore.Years: years,
                                        f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
 
         investment_mix = self.get_investments()
-        values_dict = {f'{self.study_name}.year_start': self.year_start,
-                       f'{self.study_name}.year_end': self.year_end,
-                       f'{self.study_name}.{ccs_name}.{flue_gas_name}.technologies_list': DEFAULT_FLUE_GAS_LIST,
-                       f'{self.study_name}.{ccs_name}.technologies_list': self.technologies_list,
+        values_dict = {f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryCore.techno_list}': DEFAULT_FLUE_GAS_LIST,
+                       f'{self.study_name}.{ccs_name}.{GlossaryCore.techno_list}': self.technologies_list,
                        f'{self.study_name}.{ccs_name}.flue_gas_capture.flue_gas_mean': self.flue_gas_mean,
-                       f'{self.study_name}.{ccs_name}.transport_cost': self.transport,
-                       f'{self.study_name}.{ccs_name}.transport_margin': self.margin,
+                       f'{self.study_name}.{ccs_name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.study_name}.{ccs_name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
-                       f'{self.study_name}.ccs_list' : ['carbon_capture', 'carbon_storage']
+                       f'{self.study_name}.{GlossaryCore.ccs_list}' : ['carbon_capture', 'carbon_storage']
 
 
                        }
 
         techno_margin_dict = {
-            f'{self.study_name}.{ccs_name}.{techno}.margin': self.margin for techno in self.technologies_list}
+            f'{self.study_name}.{ccs_name}.{techno}.{GlossaryCore.MarginValue}': self.margin for techno in self.technologies_list}
         values_dict.update(techno_margin_dict)
+
+        self.techno_capital = pd.DataFrame(
+            {GlossaryCore.Years: years, GlossaryCore.Capital: 0.0})
+
         if self.main_study:
             values_dict.update(
                 {
-
-                    f'{self.study_name}.CO2_taxes': self.co2_taxes,
-                    f'{self.study_name}.{energy_mix_name}.energy_prices': self.energy_prices,
-                    f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                    f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                     f'{self.study_name}.{energy_mix_name}.electricity.CoalGen.flue_gas_co2_ratio': np.array([0.13]),
                     f'{self.study_name}.{energy_mix_name}.electricity.GasTurbine.flue_gas_co2_ratio': np.array([0.035]),
                     f'{self.study_name}.{energy_mix_name}.electricity.CombinedCycleGasTurbine.flue_gas_co2_ratio': np.array([0.035]),
@@ -233,17 +242,31 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.techno_production': refinery_prod,
                     f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.CalciumPotassiumScrubbing.techno_production': CAKOH_production,
                     f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.techno_production': aminescrubbing_production,
-                    f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.techno_production': directaircapturetechno_prod,})
+                    f'{self.study_name}.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.techno_production': directaircapturetechno_prod,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.electricity.CoalGen.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.electricity.GasTurbine.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.electricity.CombinedCycleGasTurbine.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.liquid_fuel.FischerTropsch.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.liquid_fuel.Refinery.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.methane.FossilGas.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.solid_fuel.Pelletizing.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.syngas.CoalGasification.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.fossil.FossilSimpleTechno.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.carbon_capture.direct_air_capture.AmineScrubbing.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.carbon_capture.direct_air_capture.CalciumPotassiumScrubbing.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                    f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.carbon_capture.direct_air_capture.DirectAirCaptureTechno.{GlossaryEnergy.TechnoCapitalDfValue}": self.techno_capital,
+                })
 
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
-                    columns=['years']).sum(axis=1)
+                    columns=[GlossaryCore.Years]).sum(axis=1)
                 for techno in self.technologies_list:
-                    invest_level_techno = pd.DataFrame({'years': self.invest_level['years'].values,
-                                                        'invest': self.invest_level['invest'].values * investment_mix[techno].values / investment_mix_sum})
-                    values_dict[f'{self.study_name}.{ccs_name}.{techno}.invest_level'] = invest_level_techno
+                    invest_level_techno = pd.DataFrame({GlossaryCore.Years: self.invest_level[GlossaryCore.Years].values,
+                                                        GlossaryCore.InvestValue: self.invest_level[GlossaryCore.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
+                    values_dict[f'{self.study_name}.{ccs_name}.{techno}.{GlossaryCore.InvestLevelValue}'] = invest_level_techno
             else:
-                values_dict[f'{self.study_name}.{ccs_name}.invest_level'] = self.invest_level
+                values_dict[f'{self.study_name}.{ccs_name}.{GlossaryCore.InvestLevelValue}'] = self.invest_level
         else:
             self.update_dv_arrays()
 
@@ -253,14 +276,4 @@ class Study(EnergyMixStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(main_study=True,
                    technologies_list=DEFAULT_TECHNOLOGIES_LIST)
-    uc_cls.load_data()
-    uc_cls.run()
-#     ppf = PostProcessingFactory()
-#     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-#         filters = ppf.get_post_processing_filters_by_discipline(
-#             disc)
-#         graph_list = ppf.get_post_processing_by_discipline(
-#             disc, filters, as_json=False)
-#
-#         for graph in graph_list:
-#             graph.to_plotly()
+    uc_cls.test()

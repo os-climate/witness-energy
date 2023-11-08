@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +18,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
 from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec import ElectrolysisSOEC
 
@@ -54,7 +56,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'learning_rate':  0.2,
                                  'maximum_learning_capex_ratio': 500.0 / 2800,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'Capex_init': 2800,
                                  'Capex_init_unit': '$/kW',
                                  'euro_dollar': 1.114,
@@ -78,7 +80,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
 # Worldwide the investment of europe for PEM is 36%   190/2*100/32 = 297 M$
 # https://www.euractiv.com/section/energy/news/europe-china-battle-for-global-supremacy-on-electrolyser-manufacturing/
     invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
-                                             'invest': [0.297]})
+                                             GlossaryCore.InvestValue: [0.297]})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -86,15 +88,15 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                       'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe',
                                        'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               'invest_before_ystart': {'type': 'dataframe',
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe',
                                         'unit': 'G$',
                                         'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 

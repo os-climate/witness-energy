@@ -22,6 +22,7 @@ import scipy.interpolate as sc
 import csv
 import matplotlib.pyplot as plt
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.models.liquid_fuel.refinery.refinery import Refinery
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
@@ -51,11 +52,11 @@ class RefineryPriceTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({'years': years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                                                                     0.159236536471781, 0.15899046935409588, 0.15874840310033885,
                                                                                     0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
                                                                                     0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
@@ -71,7 +72,7 @@ class RefineryPriceTestCase(unittest.TestCase):
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.0, 'hydrogen.gaseous_hydrogen': 0.0})
+            {GlossaryCore.Years: years, 'electricity': 0.0, 'hydrogen.gaseous_hydrogen': 0.0})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -84,7 +85,7 @@ class RefineryPriceTestCase(unittest.TestCase):
                            3894500000.0, 3780750000.0, 3567000000.0,
                            ]) * 0.8e-9
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: invest})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -92,11 +93,11 @@ class RefineryPriceTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 200.0})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 200.0})
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
@@ -107,7 +108,7 @@ class RefineryPriceTestCase(unittest.TestCase):
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict['years'] = years
+        demand_ratio_dict[GlossaryCore.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -124,26 +125,26 @@ class RefineryPriceTestCase(unittest.TestCase):
 
     def test_02_compute_refinery_price_prod_consumption(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': RefineryDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'resources_price': get_static_prices(np.arange(2020, 2051)),
-                       'invest_level': self.invest_level,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'invest_before_ystart': RefineryDiscipline.invest_before_year_start,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.ResourcesPriceValue: get_static_prices(np.arange(2020, 2051)),
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.InvestmentBeforeYearStartValue: RefineryDiscipline.invest_before_year_start,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': RefineryDiscipline.initial_production,
                        'initial_age_distrib': RefineryDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -179,15 +180,15 @@ class RefineryPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.{self.model_name}.invest_before_ystart':
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestmentBeforeYearStartValue}':
                        RefineryDiscipline.invest_before_year_start, }
 
         self.ee.load_study_from_input_dict(inputs_dict)

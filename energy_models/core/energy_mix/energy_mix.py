@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/05/31-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -47,6 +48,8 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from copy import deepcopy
+
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
@@ -135,6 +138,7 @@ class EnergyMix(BaseStream):
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
         self.losses_percentage_dict = {}
+        self.inputs = {}
 
     def configure(self, inputs_dict):
         '''
@@ -153,11 +157,11 @@ class EnergyMix(BaseStream):
         # Specific configure for energy mix
         self.co2_emitted_by_energy = {}
         self.CCS_price = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1)})
+            {GlossaryCore.Years: np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1)})
         self.CO2_tax_minus_CCS_constraint = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1)})
+            {GlossaryCore.Years: np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1)})
         self.total_prod_minus_min_prod_constraint_df = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1)})
+            {GlossaryCore.Years: np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1)})
         self.minimum_energy_production = inputs_dict['minimum_energy_production']
         self.production_threshold = inputs_dict['production_threshold']
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
@@ -169,7 +173,7 @@ class EnergyMix(BaseStream):
         self.syngas_prod_ref = inputs_dict['syngas_prod_ref']
         self.syngas_prod_limit = inputs_dict['syngas_prod_constraint_limit']
         self.co2_for_food = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1),
+            {GlossaryCore.Years: np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1),
              f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
 
@@ -184,6 +188,7 @@ class EnergyMix(BaseStream):
         '''
         Configure parameters with possible update (variables that does change during the run)
         '''
+        self.inputs = inputs_dict
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
         self.carbon_tax = inputs_dict[GlossaryCore.CO2TaxesValue]
@@ -196,17 +201,17 @@ class EnergyMix(BaseStream):
         self.co2_emitted_by_energy = {}
 
         for energy in self.subelements_list:
-            self.sub_prices[energy] = inputs_dict[f'{energy}.energy_prices'][energy]
-            self.sub_production_dict[energy] = inputs_dict[f'{energy}.energy_production'] * \
+            self.sub_prices[energy] = inputs_dict[f'{energy}.{GlossaryCore.EnergyPricesValue}'][energy]
+            self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryCore.EnergyProductionValue}'] * \
                                                self.scaling_factor_energy_production
-            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.energy_consumption'] * \
+            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryCore.EnergyConsumptionValue}'] * \
                                                 self.scaling_factor_energy_consumption
-            self.sub_consumption_woratio_dict[energy] = inputs_dict[f'{energy}.energy_consumption_woratio'] * \
+            self.sub_consumption_woratio_dict[energy] = inputs_dict[f'{energy}.{GlossaryCore.EnergyConsumptionWithoutRatioValue}'] * \
                                                         self.scaling_factor_energy_consumption
-            self.sub_land_use_required_dict[energy] = inputs_dict[f'{energy}.land_use_required']
+            self.sub_land_use_required_dict[energy] = inputs_dict[f'{energy}.{GlossaryCore.LandUseRequiredValue}']
 
             if energy in self.energy_class_dict:
-                self.sub_carbon_emissions[energy] = inputs_dict[f'{energy}.CO2_emissions'][energy]
+                self.sub_carbon_emissions[energy] = inputs_dict[f'{energy}.{GlossaryCore.CO2EmissionsValue}'][energy]
                 self.co2_emitted_by_energy[energy] = inputs_dict[f'{energy}.CO2_per_use']
 
         self.co2_emissions = self.sub_carbon_emissions.copy(deep=True)
@@ -229,11 +234,11 @@ class EnergyMix(BaseStream):
             for resource in self.resource_list:
                 if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.sub_consumption_dict[energy].columns:
                     self.resources_demand[resource] = self.resources_demand[resource] + \
-                                                      inputs_dict[f'{energy}.energy_consumption'][
+                                                      inputs_dict[f'{energy}.{GlossaryCore.EnergyConsumptionValue}'][
                                                           f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                                                       self.scaling_factor_energy_consumption
                     self.resources_demand_woratio[resource] = self.resources_demand_woratio[resource] + \
-                                                              inputs_dict[f'{energy}.energy_consumption_woratio'][
+                                                              inputs_dict[f'{energy}.{GlossaryCore.EnergyConsumptionWithoutRatioValue}'][
                                                                   f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                                                               self.scaling_factor_energy_consumption
 
@@ -255,6 +260,27 @@ class EnergyMix(BaseStream):
         Setter method
         '''
         self.co2_emissions_in = co2_emissions
+
+    def compute_energy_capital(self):
+        """sum of positive energy production --> raw total production"""
+
+        energy_type_capitals = []
+        for energy in self.energy_list:
+            energy_ = energy
+            if energy == BiomassDry.name:
+                energy_ = AgricultureMixDiscipline.name
+            energy_type_capitals.append(self.inputs[f"{energy_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryCore.Capital].values)
+
+        for ccs in self.inputs[GlossaryCore.ccs_list]:
+            energy_type_capitals.append(
+                self.inputs[f"{ccs}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryCore.Capital].values)
+
+        energy_capital = np.sum(energy_type_capitals, axis=0) / 1e3
+
+        self.energy_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: energy_capital
+        })
 
     def compute_raw_production(self):
         """sum of positive energy production --> raw total production"""
@@ -400,7 +426,7 @@ class EnergyMix(BaseStream):
             if energy in self.energy_class_dict:
                 self.price_by_energy[energy] = self.sub_prices[energy].values + \
                                                self.co2_emitted_by_energy[energy]['CO2_per_use'].values * \
-                                               self.carbon_tax['CO2_tax'].values
+                                               self.carbon_tax[GlossaryCore.CO2Tax].values
 
     def compute_CO2_emissions_ratio(self):
         '''
@@ -568,6 +594,7 @@ class EnergyMix(BaseStream):
                         self.mix_weights.loc[self.mix_weights[GlossaryCore.Years] == year,
                         energy] = 1. if energy == min_energy_name else 0.0
 
+        self.energy_mean_price = energy_mean_price
         return energy_mean_price
 
     def compute_total_prod_minus_min_prod_constraint(self):
@@ -872,6 +899,29 @@ class EnergyMix(BaseStream):
             dtot_CO2_emissions, key_dep_tuple_list, new_key)
 
         return dtot_CO2_emissions
+
+    def compute(self, inputs: dict, exp_min=True):
+        self.configure_parameters_update(inputs)
+
+        self.compute_raw_production()
+        self.compute_net_consumable_energy()
+        self.compute_net_energy_production()
+        self.compute_energy_production_uncut()
+        self.compute_price_by_energy()
+        self.compute_CO2_emissions()
+        self.compute_CO2_emissions_ratio()
+        self.aggregate_land_use_required()
+        self.compute_energy_capital()
+        self.compute_total_prod_minus_min_prod_constraint()
+        self.compute_constraint_solid_fuel_elec()
+        self.compute_constraint_h2()
+        self.compute_syngas_prod_objective()
+        self.compute_syngas_prod_constraint()
+
+        self.compute_all_streams_demand_ratio()
+        self.compute_net_positive_consumable_energy_production()
+        self.compute_mean_price(exp_min=inputs['exp_min'])
+        self.compute_constraint_h2()
 
 
 def update_new_gradient(grad_dict, key_dep_tuple_list, new_key):
