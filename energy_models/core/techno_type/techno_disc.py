@@ -218,6 +218,7 @@ class TechnoDiscipline(SoSWrapp):
                         GlossaryCore.TechnoConsumptionWithoutRatioValue: self.techno_model.consumption_woratio,
                         GlossaryCore.TechnoDetailedProductionValue: production_detailed,
                         GlossaryCore.TechnoProductionValue: self.techno_model.production,
+
                         'age_distrib_production': age_distribution,
                         'mean_age_production': mean_age_production,
                         GlossaryCore.CO2EmissionsValue: self.techno_model.carbon_emissions[[GlossaryCore.Years, self.techno_name]],
