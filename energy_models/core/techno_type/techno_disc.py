@@ -177,8 +177,7 @@ class TechnoDiscipline(SoSWrapp):
         # -- configure class with inputs
         self.techno_model.configure_parameters_update(inputs_dict)
         # -- compute informations
-        cost_details = self.techno_model.compute_price()
-
+        self.techno_model.compute_price()
         self.techno_model.compute_consumption_and_production()
         self.techno_model.compute_consumption_and_power_production()
 
@@ -212,8 +211,8 @@ class TechnoDiscipline(SoSWrapp):
             self.techno_model.production_woratio[column] = self.techno_model.production_woratio[column].values / \
                 inputs_dict['scaling_factor_techno_production']
 
-        outputs_dict = {GlossaryCore.TechnoDetailedPricesValue: cost_details,
-                        GlossaryCore.TechnoPricesValue: cost_details[[GlossaryCore.Years, self.techno_name, f'{self.techno_name}_wotaxes']],
+        outputs_dict = {GlossaryCore.TechnoDetailedPricesValue: self.techno_model.cost_details,
+                        GlossaryCore.TechnoPricesValue: self.techno_model.cost_details[[GlossaryCore.Years, self.techno_name, f'{self.techno_name}_wotaxes']],
                         GlossaryCore.TechnoDetailedConsumptionValue: consumption_detailed,
                         GlossaryCore.TechnoConsumptionValue: self.techno_model.consumption,
                         GlossaryCore.TechnoConsumptionWithoutRatioValue: self.techno_model.consumption_woratio,
