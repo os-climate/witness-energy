@@ -93,7 +93,8 @@ class Study(EnergyMixStudyManager):
                                            'syngas': 80.0,
                                            'biogas': 70.0,
                                            'methane': 100,
-                                           'biomass_dry': 45})
+                                           'biomass_dry': 45,
+                                           'hydrogen.gaseous_hydrogen': 40})
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
