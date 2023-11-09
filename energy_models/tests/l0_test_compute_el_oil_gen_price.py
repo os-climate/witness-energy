@@ -223,12 +223,12 @@ class OilGenPriceTestCase(unittest.TestCase):
 
         print(oilgen_model.power_production * oilgen_model.techno_infos_dict['full_load_hours'] / 1000)
 
-        print(oilgen_model.production[f'electricity ({oilgen_model.product_energy_unit})'])
+        print(oilgen_model.production_detailed[f'electricity ({oilgen_model.product_energy_unit})'])
 
-        self.assertLessEqual(list(oilgen_model.production[f'electricity ({oilgen_model.product_energy_unit})'].values),
-                            list(oilgen_model.power_production['total_installed_power'] * oilgen_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001) )
-        self.assertGreaterEqual(list(oilgen_model.production[f'electricity ({oilgen_model.product_energy_unit})'].values),
-                            list(oilgen_model.power_production['total_installed_power'] * oilgen_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999) )
+        self.assertLessEqual(list(oilgen_model.production_detailed[f'electricity ({oilgen_model.product_energy_unit})'].values),
+                             list(oilgen_model.power_production['total_installed_power'] * oilgen_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001))
+        self.assertGreaterEqual(list(oilgen_model.production_detailed[f'electricity ({oilgen_model.product_energy_unit})'].values),
+                                list(oilgen_model.power_production['total_installed_power'] * oilgen_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999))
 
     def test_03_oil_gen_discipline(self):
 

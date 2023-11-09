@@ -36,5 +36,5 @@ class EnhancedOilRecovery(CSTechno):
 
         # Consumption
 
-        self.consumption[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production[
+        self.consumption_detailed[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production_detailed[
             f'{CSTechno.energy_name} ({self.product_energy_unit})']

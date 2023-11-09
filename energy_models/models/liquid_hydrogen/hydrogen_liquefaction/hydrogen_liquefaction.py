@@ -87,11 +87,11 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         self.compute_primary_energy_production()
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details['hydrogen_needs'] * \
-            self.production[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details['hydrogen_needs'] * \
+                                                                                            self.production_detailed[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = (1 - self.techno_infos_dict['efficiency']) * \
         #     self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})']/\

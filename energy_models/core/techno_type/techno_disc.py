@@ -71,6 +71,7 @@ class TechnoDiscipline(SoSWrapp):
                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                             GlossaryCore.MarginValue: ('float', None, True)}
                    },
+        GlossaryEnergy.UtilisationRatioValue: GlossaryEnergy.UtilisationRatioDf,
         GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
         GlossaryCore.ResourcesPriceValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
                             "dynamic_dataframe_columns": True
@@ -161,9 +162,13 @@ class TechnoDiscipline(SoSWrapp):
             default_margin = pd.DataFrame({GlossaryCore.Years: years,
                                            GlossaryCore.MarginValue: 110.0})
 
+            default_utilisation_ratio = pd.DataFrame({GlossaryCore.Years: years,
+                                                      GlossaryCore.UtilisationRatioValue: 100.0 * np.ones_like(years)})
+
             self.set_dynamic_default_values({GlossaryCore.ResourcesPriceValue: get_static_prices(years),
                                              GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(years),
                                              GlossaryCore.MarginValue: default_margin,
+                                             GlossaryEnergy.UtilisationRatioValue: default_utilisation_ratio,
                                              GlossaryCore.TransportCostValue: pd.DataFrame({GlossaryCore.Years: years,
                                                                              'transport': 0.0}),
                                              GlossaryCore.TransportMarginValue: default_margin})
@@ -175,52 +180,17 @@ class TechnoDiscipline(SoSWrapp):
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
         # -- configure class with inputs
-        self.techno_model.configure_parameters_update(inputs_dict)
-        # -- compute informations
-        self.techno_model.compute_price()
-        self.techno_model.compute_consumption_and_production()
-        self.techno_model.compute_consumption_and_power_production()
-
-        # Create a datafarame containing all the ratios
-        self.techno_model.select_ratios()
-
-        # Apply the ratios, if a relevant one (resource consumed by the techno)
-        # is inferior to one
-        self.techno_model.apply_ratios_on_consumption_and_production(
-            inputs_dict['is_apply_ratio'])
-
-        self.techno_model.compute_non_use_capital()
-        age_distribution = self.techno_model.get_all_age_distribution()
-        mean_age_production = self.techno_model.get_mean_age_over_years()
-
-        # Scale production and consumption
-        consumption_detailed = deepcopy(self.techno_model.consumption)
-        production_detailed = deepcopy(self.techno_model.production)
-        for column in self.techno_model.consumption.columns:
-            if column == GlossaryCore.Years:
-                continue
-            self.techno_model.consumption[column] = self.techno_model.consumption[column].values / \
-                inputs_dict['scaling_factor_techno_consumption']
-            self.techno_model.consumption_woratio[column] = self.techno_model.consumption_woratio[column].values / \
-                inputs_dict['scaling_factor_techno_consumption']
-        for column in self.techno_model.production.columns:
-            if column == GlossaryCore.Years:
-                continue
-            self.techno_model.production[column] = self.techno_model.production[column].values / \
-                inputs_dict['scaling_factor_techno_production']
-            self.techno_model.production_woratio[column] = self.techno_model.production_woratio[column].values / \
-                inputs_dict['scaling_factor_techno_production']
+        self.techno_model.compute(inputs_dict)
 
         outputs_dict = {GlossaryCore.TechnoDetailedPricesValue: self.techno_model.cost_details,
                         GlossaryCore.TechnoPricesValue: self.techno_model.cost_details[[GlossaryCore.Years, self.techno_name, f'{self.techno_name}_wotaxes']],
-                        GlossaryCore.TechnoDetailedConsumptionValue: consumption_detailed,
+                        GlossaryCore.TechnoDetailedConsumptionValue: self.techno_model.consumption_detailed,
                         GlossaryCore.TechnoConsumptionValue: self.techno_model.consumption,
                         GlossaryCore.TechnoConsumptionWithoutRatioValue: self.techno_model.consumption_woratio,
-                        GlossaryCore.TechnoDetailedProductionValue: production_detailed,
+                        GlossaryCore.TechnoDetailedProductionValue: self.techno_model.production_detailed,
                         GlossaryCore.TechnoProductionValue: self.techno_model.production,
-
-                        'age_distrib_production': age_distribution,
-                        'mean_age_production': mean_age_production,
+                        'age_distrib_production': self.techno_model.age_distrib_prod_df,
+                        'mean_age_production': self.techno_model.mean_age_df,
                         GlossaryCore.CO2EmissionsValue: self.techno_model.carbon_emissions[[GlossaryCore.Years, self.techno_name]],
                         'CO2_emissions_detailed': self.techno_model.carbon_emissions,
                         GlossaryCore.LandUseRequiredValue: self.techno_model.techno_land_use,

@@ -142,16 +142,16 @@ class SMR(SyngasTechno):
 
         self.compute_primary_energy_production()
         # Consumption
-        self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['CH4_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['CH4_needs'] * \
+                                                                                    self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                    self.cost_details['efficiency']
 
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
+                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                        self.cost_details['efficiency']
 
         # self.production[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
         #     self.techno_infos_dict['high_heat_production'] * \

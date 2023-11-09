@@ -223,12 +223,12 @@ class CCGasTPriceTestCase(unittest.TestCase):
 
         print(ccgast_model.power_production * ccgast_model.techno_infos_dict['full_load_hours'] / 1000)
 
-        print(ccgast_model.production[f'electricity ({ccgast_model.product_energy_unit})'])
+        print(ccgast_model.production_detailed[f'electricity ({ccgast_model.product_energy_unit})'])
 
-        self.assertLessEqual(list(ccgast_model.production[f'electricity ({ccgast_model.product_energy_unit})'].values),
-                            list(ccgast_model.power_production['total_installed_power'] * ccgast_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001) )
-        self.assertGreaterEqual(list(ccgast_model.production[f'electricity ({ccgast_model.product_energy_unit})'].values),
-                            list(ccgast_model.power_production['total_installed_power'] * ccgast_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999) )
+        self.assertLessEqual(list(ccgast_model.production_detailed[f'electricity ({ccgast_model.product_energy_unit})'].values),
+                             list(ccgast_model.power_production['total_installed_power'] * ccgast_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001))
+        self.assertGreaterEqual(list(ccgast_model.production_detailed[f'electricity ({ccgast_model.product_energy_unit})'].values),
+                                list(ccgast_model.power_production['total_installed_power'] * ccgast_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999))
 
 
     def test_03_ccgast_discipline(self):

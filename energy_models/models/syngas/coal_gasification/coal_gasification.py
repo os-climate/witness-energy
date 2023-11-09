@@ -69,12 +69,12 @@ class CoalGasification(SyngasTechno):
 
         self.compute_primary_energy_production()
 
-        self.consumption[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
+                                                                                      self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
         #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
+                                                                                        self.data_energy_dict['calorific_value'] * \
+                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']

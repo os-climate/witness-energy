@@ -172,21 +172,21 @@ class AuthothermalReforming(SyngasTechno):
         H2Oprod = self.get_h2o_production()
 
         # total H2O production
-        self.production[f'{Water.name} ({self.mass_unit})'] = self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
-            H2Oprod
+        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                       H2Oprod
 
         # Consumption
-        self.consumption[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
+                                                                                self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                self.cost_details['efficiency']
 
-        self.consumption[f'{Dioxygen.name} ({self.mass_unit})'] = self.cost_details['oxygen_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Dioxygen.name} ({self.mass_unit})'] = self.cost_details['oxygen_needs'] * \
+                                                                           self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                           self.cost_details['efficiency']
 
-        self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['methane_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['methane_needs'] * \
+                                                                                    self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                    self.cost_details['efficiency']
 
         # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details['methane_needs'] * \
         #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \

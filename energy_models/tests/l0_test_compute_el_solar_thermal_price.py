@@ -180,12 +180,12 @@ class SolarThermalPriceTestCase(unittest.TestCase):
 
         print(solar_model.power_production * solar_model.techno_infos_dict['full_load_hours'] / 1000)
 
-        print(solar_model.production[f'electricity ({solar_model.product_energy_unit})'])
+        print(solar_model.production_detailed[f'electricity ({solar_model.product_energy_unit})'])
 
-        self.assertLessEqual(list(solar_model.production[f'electricity ({solar_model.product_energy_unit})'].values),
-                            list(solar_model.power_production['total_installed_power'] * solar_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001) )
-        self.assertGreaterEqual(list(solar_model.production[f'electricity ({solar_model.product_energy_unit})'].values),
-                            list(solar_model.power_production['total_installed_power'] * solar_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999) )
+        self.assertLessEqual(list(solar_model.production_detailed[f'electricity ({solar_model.product_energy_unit})'].values),
+                             list(solar_model.power_production['total_installed_power'] * solar_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001))
+        self.assertGreaterEqual(list(solar_model.production_detailed[f'electricity ({solar_model.product_energy_unit})'].values),
+                                list(solar_model.power_production['total_installed_power'] * solar_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999))
 
     def test_03_solar_Thermal_discipline(self):
 

@@ -228,12 +228,12 @@ class WindOnshoreTestCase(unittest.TestCase):
 
         print(wind_onshore_model.power_production * wind_onshore_model.techno_infos_dict['full_load_hours'] / 1000)
 
-        print(wind_onshore_model.production[f'electricity ({wind_onshore_model.product_energy_unit})'])
+        print(wind_onshore_model.production_detailed[f'electricity ({wind_onshore_model.product_energy_unit})'])
 
-        self.assertLessEqual(list(wind_onshore_model.production[f'electricity ({wind_onshore_model.product_energy_unit})'].values),
-                            list(wind_onshore_model.power_production['total_installed_power'] * wind_onshore_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001) )
-        self.assertGreaterEqual(list(wind_onshore_model.production[f'electricity ({wind_onshore_model.product_energy_unit})'].values),
-                            list(wind_onshore_model.power_production['total_installed_power'] * wind_onshore_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999) )
+        self.assertLessEqual(list(wind_onshore_model.production_detailed[f'electricity ({wind_onshore_model.product_energy_unit})'].values),
+                             list(wind_onshore_model.power_production['total_installed_power'] * wind_onshore_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001))
+        self.assertGreaterEqual(list(wind_onshore_model.production_detailed[f'electricity ({wind_onshore_model.product_energy_unit})'].values),
+                                list(wind_onshore_model.power_production['total_installed_power'] * wind_onshore_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999))
 
     def test_03_wind_on_shore_discipline(self):
 

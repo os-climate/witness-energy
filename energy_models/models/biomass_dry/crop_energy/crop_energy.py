@@ -67,7 +67,7 @@ class CropEnergy(BiomassDryTechno):
 
         # This model compute the production of crop and residue for energy
         crop_residue_energy_production = deepcopy(
-            self.production[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'])
+            self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'])
 
         # production of residue is the production from food surface and from
         # crop energy
@@ -95,12 +95,12 @@ class CropEnergy(BiomassDryTechno):
             self.production_mix[name_crop] + self.production_mix[name_residue]
 
         # compute output production dedicated to energy
-        self.production[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'] = self.production_mix[name_residue] +\
-            self.production_mix[name_crop]
+        self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'] = self.production_mix[name_residue] + \
+                                                                                                   self.production_mix[name_crop]
 
-        self.consumption[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
-            self.data_energy_dict['high_calorific_value'] * \
-            self.production[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
+                                                                      self.data_energy_dict['high_calorific_value'] * \
+                                                                      self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_land_use(self):
         """
@@ -109,7 +109,7 @@ class CropEnergy(BiomassDryTechno):
         density_per_ha = self.techno_infos_dict['density_per_ha']
 
         self.techno_land_use[f'{self.name} (Gha)'] = \
-            self.production[f'{self.energy_name} ({self.product_energy_unit})'] *\
+            self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] * \
             (1 - self.techno_infos_dict['residue_density_percentage']) / \
             self.data_energy_dict['calorific_value'] / \
             density_per_ha

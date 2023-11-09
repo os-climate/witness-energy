@@ -73,17 +73,17 @@ class DirectAirCaptureTechno(CCTechno):
         self.compute_primary_energy_production()
         # Consumption
 
-        self.consumption[f'{Renewable.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Renewable.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                              self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'{Fossil.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Fossil.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
+                                                                           self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
-                                                                               self.production[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
+                                                                                        self.production_detailed[
                                                                                    f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
-                                                                               Fossil.data_energy_dict['CO2_per_use'] / \
-                                                                               Fossil.data_energy_dict[
+                                                                                        Fossil.data_energy_dict['CO2_per_use'] / \
+                                                                                        Fossil.data_energy_dict[
                                                                                    'calorific_value']
 
 

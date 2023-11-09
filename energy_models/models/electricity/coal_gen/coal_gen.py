@@ -65,18 +65,18 @@ class CoalGen(ElectricityTechno):
         elec_needs = self.get_electricity_needs()
 
         # Consumption
-        self.consumption[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
+        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
+                                                                                      self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
+                                                                        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
-        self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = self.production[
+        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = self.production_detailed[
             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
-            self.consumption[f'{SolidFuel.name} ({self.product_energy_unit})'] - \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
+                                                                                        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
+            self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] - \
+            self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
 
         self.compute_ghg_emissions(N2O.name, related_to=SolidFuel.name)
@@ -90,7 +90,7 @@ class CoalGen(ElectricityTechno):
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
     
     @staticmethod
     def get_theoretical_copper_needs(self):

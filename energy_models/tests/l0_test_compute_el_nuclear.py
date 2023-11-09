@@ -197,8 +197,8 @@ class NuclearTestCase(unittest.TestCase):
         nuclear_model.configure_parameters_update(inputs_dict)
         price_details = nuclear_model.compute_price()
         nuclear_model.compute_consumption_and_production()
-        consumption_without_ratio = nuclear_model.consumption['uranium_resource (Mt)'].values * \
-            self.ratio_available_resource['uranium_resource'].values
+        consumption_without_ratio = nuclear_model.consumption_detailed['uranium_resource (Mt)'].values * \
+                                    self.ratio_available_resource['uranium_resource'].values
         nuclear_model.select_ratios()
         nuclear_model.apply_ratios_on_consumption_and_production(True)
         # self.assertListEqual(list(nuclear_model.consumption['uranium_resource'].values),list(consumption_without_ratio))
@@ -241,10 +241,10 @@ class NuclearTestCase(unittest.TestCase):
 
         #print(nuclear_model.power_production)
 
-        self.assertLessEqual(list(nuclear_model.production[f'electricity ({nuclear_model.product_energy_unit})'].values),
-                            list(nuclear_model.power_production['total_installed_power'] * nuclear_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001) )
-        self.assertGreaterEqual(list(nuclear_model.production[f'electricity ({nuclear_model.product_energy_unit})'].values),
-                            list(nuclear_model.power_production['total_installed_power'] * nuclear_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999) )
+        self.assertLessEqual(list(nuclear_model.production_detailed[f'electricity ({nuclear_model.product_energy_unit})'].values),
+                             list(nuclear_model.power_production['total_installed_power'] * nuclear_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001))
+        self.assertGreaterEqual(list(nuclear_model.production_detailed[f'electricity ({nuclear_model.product_energy_unit})'].values),
+                                list(nuclear_model.power_production['total_installed_power'] * nuclear_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999))
 
     def test_03_nuclear_discipline(self):
 

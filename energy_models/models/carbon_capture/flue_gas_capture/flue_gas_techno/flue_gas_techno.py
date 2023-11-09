@@ -87,8 +87,8 @@ class FlueGasTechno(CCTechno):
         self.compute_primary_energy_production()
 
         # Consumption
-        self.consumption[f'{Renewable.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Renewable.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                              self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)

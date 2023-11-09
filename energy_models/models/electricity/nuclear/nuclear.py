@@ -78,16 +78,16 @@ class Nuclear(ElectricityTechno):
         '''
         # FOR ALL_RESOURCES DISCIPLINE
 
-        self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = \
-            (self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] / \
+        self.consumption_detailed[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = \
+            (self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] / \
              self.techno_infos_dict['efficiency']) / (24000000.00)
 
         water_needs = self.get_theoretical_water_needs()
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = water_needs * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = water_needs * \
+                                                                        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
-        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
-                                                                                      self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
+                                                                                               self.consumption_detailed[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
 
 
     def compute_consumption_and_power_production(self):
@@ -99,7 +99,7 @@ class Nuclear(ElectricityTechno):
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
         
 
     def compute_CO2_emissions_from_input_resources(self):

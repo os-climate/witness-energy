@@ -45,15 +45,15 @@ class CCGasT(ElectricityTechno):
         self.compute_primary_energy_production()
 
         co2_prod = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
+                                                                                        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
-        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption[f'{Methane.name} ({self.product_energy_unit})'] - \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] - \
+                                                                                               self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
-        self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict['methane_needs'] * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.techno_infos_dict['methane_needs'] * \
+                                                                                    self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         self.compute_ch4_emissions()
         self.compute_ghg_emissions(N2O.name, related_to=Methane.name)
@@ -67,7 +67,7 @@ class CCGasT(ElectricityTechno):
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
 
     @staticmethod
     def get_theoretical_copper_needs(self):
@@ -106,5 +106,5 @@ class CCGasT(ElectricityTechno):
         ghg_type = Methane.emission_name
         emission_factor = self.techno_infos_dict[f'{ghg_type}_emission_factor']
 
-        self.production[f'{ghg_type} ({self.mass_unit})'] = emission_factor * \
-            self.consumption[f'{Methane.name} ({self.product_energy_unit})']
+        self.production_detailed[f'{ghg_type} ({self.mass_unit})'] = emission_factor * \
+                                                                     self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})']

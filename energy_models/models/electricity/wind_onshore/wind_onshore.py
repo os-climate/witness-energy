@@ -43,7 +43,7 @@ class WindOnshore(ElectricityTechno):
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
 
     @staticmethod
     def get_theoretical_copper_needs(self):

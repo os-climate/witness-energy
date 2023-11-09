@@ -221,12 +221,12 @@ class CoalGenPriceTestCase(unittest.TestCase):
 
         print(coal_gen_model.power_production * coal_gen_model.techno_infos_dict['full_load_hours'] / 1000)
 
-        print(coal_gen_model.production[f'electricity ({coal_gen_model.product_energy_unit})'])
+        print(coal_gen_model.production_detailed[f'electricity ({coal_gen_model.product_energy_unit})'])
 
-        self.assertLessEqual(list(coal_gen_model.production[f'electricity ({coal_gen_model.product_energy_unit})'].values),
-                            list(coal_gen_model.power_production['total_installed_power'] * coal_gen_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001) )
-        self.assertGreaterEqual(list(coal_gen_model.production[f'electricity ({coal_gen_model.product_energy_unit})'].values),
-                            list(coal_gen_model.power_production['total_installed_power'] * coal_gen_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999) )
+        self.assertLessEqual(list(coal_gen_model.production_detailed[f'electricity ({coal_gen_model.product_energy_unit})'].values),
+                             list(coal_gen_model.power_production['total_installed_power'] * coal_gen_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001))
+        self.assertGreaterEqual(list(coal_gen_model.production_detailed[f'electricity ({coal_gen_model.product_energy_unit})'].values),
+                                list(coal_gen_model.power_production['total_installed_power'] * coal_gen_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999))
 
     def test_03_coal_gen_discipline(self):
 

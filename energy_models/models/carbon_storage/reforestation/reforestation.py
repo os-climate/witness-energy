@@ -37,7 +37,7 @@ class Reforestation(CSTechno):
 
         # Consumption
 
-        self.consumption[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production[
+        self.consumption_detailed[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production_detailed[
             f'{CSTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_land_use(self):
@@ -46,8 +46,8 @@ class Reforestation(CSTechno):
             to be overloaded in sub class
         '''
 
-        self.techno_land_use[f'{self.name} (Gha)'] = self.production[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
-            (0.0067621) / 1.0e9
+        self.techno_land_use[f'{self.name} (Gha)'] = self.production_detailed[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                     (0.0067621) / 1.0e9
 
     def compute_dlanduse_dinvest(self):
         """

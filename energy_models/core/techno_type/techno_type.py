@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from copy import copy
 import math as m
 from abc import abstractmethod
 
@@ -100,7 +100,7 @@ class TechnoType:
                 f'Price {price} {price_unit} is outside the biblio price range {min_price} - {max_price} for {self.name}')
         # Init prod check
         product = biblio_data['sos_name'].item().split('.')[0]
-        production = self.production[f'{product} (TWh)'][0]
+        production = self.production_detailed[f'{product} (TWh)'][0]
         biblio_init_prod = float(biblio_data['init_prod'])
         tolerance = float(biblio_data['prod_tolerance'])
         prod_unit = biblio_data['prod_unit'].item()
@@ -127,8 +127,8 @@ class TechnoType:
         '''
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.cost_details = pd.DataFrame({GlossaryCore.Years: self.years})
-        self.production = pd.DataFrame({GlossaryCore.Years: self.years})
-        self.consumption = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.production_detailed = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.consumption_detailed = pd.DataFrame({GlossaryCore.Years: self.years})
 
         self.aging_distribution = pd.DataFrame({GlossaryCore.Years: self.years})
 
@@ -210,7 +210,7 @@ class TechnoType:
         self.scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
         self.resources_CO2_emissions = inputs_dict[GlossaryCore.RessourcesCO2EmissionsValue]
         self.energy_CO2_emissions = inputs_dict[GlossaryCore.EnergyCO2EmissionsValue]
-        self.production = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.production_detailed = pd.DataFrame({GlossaryCore.Years: self.years})
         self.power_production = pd.DataFrame({GlossaryCore.Years: self.years})
         self.ratio_df = pd.DataFrame({GlossaryCore.Years: self.years})
         self.is_stream_demand = inputs_dict['is_stream_demand']
@@ -278,7 +278,7 @@ class TechnoType:
         if is_apply_ratio:
             elements = []
             for element in self.ratio_df.columns:
-                for col in self.consumption.columns:
+                for col in self.consumption_detailed.columns:
                     if element in col and element not in [GlossaryCore.Years]:
                         # Check for a match between ratio_df and the
                         # consumptions by the techno
@@ -311,22 +311,22 @@ class TechnoType:
         # there may be special cases that need to be handled differently
         # (quadratic correlation or other)
         self.production_woratio = pd.DataFrame({GlossaryCore.Years: self.years})
-        for col in self.production.columns:
+        for col in self.production_detailed.columns:
             if col not in [GlossaryCore.Years]:
-                self.production_woratio[col] = self.production[col].values
-                self.production[col] = self.production[col].values * \
-                    ratio_values
+                self.production_woratio[col] = self.production_detailed[col].values
+                self.production_detailed[col] = self.production_detailed[col].values * \
+                                                ratio_values
         self.consumption_woratio = pd.DataFrame({GlossaryCore.Years: self.years})
-        for col in self.consumption.columns:
+        for col in self.consumption_detailed.columns:
             if col not in [GlossaryCore.Years] + [f'{resource} (Mt)' for resource in self.construction_resource_list]:
-                self.consumption_woratio[col] = self.consumption[col].values
-                self.consumption[col] = self.consumption[col].values * \
-                    ratio_values
+                self.consumption_woratio[col] = self.consumption_detailed[col].values
+                self.consumption_detailed[col] = self.consumption_detailed[col].values * \
+                                                 ratio_values
             elif col in [f'{resource} (Mt)' for resource in self.construction_resource_list] :
                 ratio_construction_values = 1
-                self.consumption_woratio[col] = self.consumption[col].values
-                self.consumption[col] = self.consumption[col].values * \
-                    ratio_construction_values
+                self.consumption_woratio[col] = self.consumption_detailed[col].values
+                self.consumption_detailed[col] = self.consumption_detailed[col].values * \
+                                                 ratio_construction_values
         self.techno_land_use_woratio = pd.DataFrame({GlossaryCore.Years: self.years})
         for col in self.techno_land_use.columns:
             if col not in [GlossaryCore.Years]:
@@ -1037,10 +1037,10 @@ class TechnoType:
 
         age_distrib_prod_sum = self.age_distrib_prod_df.groupby([GlossaryCore.Years], as_index=False).agg({f'distrib_prod ({self.product_energy_unit})': 'sum'}
                                                                                                )
-        if f'{self.energy_name} ({self.product_energy_unit})' in self.production:
-            del self.production[f'{self.energy_name} ({self.product_energy_unit})']
+        if f'{self.energy_name} ({self.product_energy_unit})' in self.production_detailed:
+            del self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})']
 
-        self.production = pd.merge(self.production, age_distrib_prod_sum, how='left', on=GlossaryCore.Years).rename(
+        self.production_detailed = pd.merge(self.production_detailed, age_distrib_prod_sum, how='left', on=GlossaryCore.Years).rename(
             columns={f'distrib_prod ({self.product_energy_unit})': f'{self.energy_name} ({self.product_energy_unit})'}).fillna(0.0)
 
         self.compute_land_use()
@@ -1067,7 +1067,7 @@ class TechnoType:
         
         #Conversion from TWh to MW
         self.power_production['new_power_production'] = production_from_invest.loc[production_from_invest[GlossaryCore.Years] == self.years, 'prod_from_invest'].values / full_load_hours * 1000
-        self.power_production['total_installed_power'] = self.production[f'{self.energy_name} ({self.product_energy_unit})'] / full_load_hours * 1000
+        self.power_production['total_installed_power'] = self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] / full_load_hours * 1000
         self.power_production['removed_power_production'] = np.zeros(len(self.years))
 
         power_production_dict = self.power_production.to_dict()
@@ -1221,7 +1221,7 @@ class TechnoType:
 
         if ratio_name:
             # Check that the ratio corresponds to something consumed
-            for col in self.consumption.columns:
+            for col in self.consumption_detailed.columns:
                 if ratio_name in col and ratio_name not in [GlossaryCore.Years]:
                     dprod_dratio = (np.identity(len(self.years)) * prod.values) *\
                         dapplied_ratio_dratio[ratio_name]
@@ -1241,7 +1241,7 @@ class TechnoType:
             # Same as for the main function, search for matches between
             # ratio_df and consumptions
             if is_apply_ratio:
-                for col in self.consumption.columns:
+                for col in self.consumption_detailed.columns:
                     if element in col and element not in [GlossaryCore.Years]:
                         elements += [element, ]
         if is_apply_ratio:
@@ -1384,12 +1384,6 @@ class TechnoType:
 
         return production_from_invest
 
-    def get_all_age_distribution(self):
-        '''
-        Get the concatenation of the initial production distribution and the computed one during years of study
-        '''
-        return self.age_distrib_prod_df
-
     def get_mean_age_over_years(self):
 
         mean_age_df = pd.DataFrame({GlossaryCore.Years: self.years})
@@ -1403,6 +1397,7 @@ class TechnoType:
         mean_age_df.replace([np.inf, -np.inf], np.nan, inplace=True)
         mean_age_df.fillna(0.0, inplace=True)
 
+        self.mean_age_df = mean_age_df
         return mean_age_df
 
     def compute_land_use(self):
@@ -1431,8 +1426,44 @@ class TechnoType:
         emission_factor = self.techno_infos_dict[f'{GHG_type}_emission_factor']
 
         if related_to == 'prod':
-            self.production[f'{GHG_type} ({self.mass_unit})'] = emission_factor * \
-                self.production[f'{self.energy_name} ({self.product_energy_unit})'].values
+            self.production_detailed[f'{GHG_type} ({self.mass_unit})'] = emission_factor * \
+                                                                         self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'].values
         else:
-            self.production[f'{GHG_type} ({self.mass_unit})'] = emission_factor * \
-                self.consumption[f'{related_to} ({self.product_energy_unit})'].values
+            self.production_detailed[f'{GHG_type} ({self.mass_unit})'] = emission_factor * \
+                                                                         self.consumption_detailed[f'{related_to} ({self.product_energy_unit})'].values
+
+    def compute(self, inputs_dict):
+        self.configure_parameters_update(inputs_dict)
+        # -- compute informations
+        self.compute_price()
+        self.compute_consumption_and_production()
+        self.compute_consumption_and_power_production()
+
+        # Create a datafarame containing all the ratios
+        self.select_ratios()
+
+        # Apply the ratios, if a relevant one (resource consumed by the techno)
+        # is inferior to one
+        self.apply_ratios_on_consumption_and_production(
+            inputs_dict['is_apply_ratio'])
+
+        self.compute_non_use_capital()
+        self.get_mean_age_over_years()
+
+        self.rescale_outputs()
+
+    def rescale_outputs(self):
+        self.production = copy(self.production_detailed)
+        self.consumption = copy(self.consumption_detailed)
+
+        for column in self.consumption_detailed.columns:
+            if column == GlossaryCore.Years:
+                continue
+            self.consumption[column] = self.consumption[column].values / self.scaling_factor_techno_consumption
+            self.consumption_woratio[column] = self.consumption_woratio[column].values / self.scaling_factor_techno_consumption
+        for column in self.production_detailed.columns:
+            if column == GlossaryCore.Years:
+                continue
+            self.production[column] = self.production[column].values / self.scaling_factor_techno_production
+            self.production_woratio[column] = self.production_woratio[column].values / self.scaling_factor_techno_production
+

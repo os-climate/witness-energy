@@ -100,23 +100,23 @@ class Refinery(LiquidFuelTechno):
 
         for energy in self.other_energy_dict:
             # if it s a dict, so it is a data_energy_dict
-            self.production[f'{energy} ({self.product_energy_unit})'] = self.production[
+            self.production_detailed[f'{energy} ({self.product_energy_unit})'] = self.production_detailed[
                 f'{self.energy_name} ({self.product_energy_unit})'] * self.techno_infos_dict['product_break_down'][energy] / 11.66 * self.other_energy_dict[energy]['calorific_value']
 
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
+                                                                                        self.data_energy_dict['calorific_value'] * \
+                                                                                        self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']
         self.compute_ch4_emissions()
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # oil consumption: prod [TWh] * needs [kg/kWh] = [Mt]
-        self.consumption[f'{self.OIL_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] * \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in Mt
+        self.consumption_detailed[f'{self.OIL_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] * \
+                                                                                    self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
-        self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] *  \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
+        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] * \
+                                                                                            self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
 
         # self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['medium_heat_production'] *  \
         #     self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
@@ -134,8 +134,8 @@ class Refinery(LiquidFuelTechno):
             self.techno_infos_dict['CH4_venting_emission_factor'] + \
             self.techno_infos_dict['CH4_unintended_leakage_emission_factor']
 
-        self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
+        self.production_detailed[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
+                                                                                  self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
 
     def compute_price(self):
         """

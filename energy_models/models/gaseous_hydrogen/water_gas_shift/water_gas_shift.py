@@ -640,19 +640,19 @@ class WGS(GaseousHydrogenTechno):
         self.compute_primary_energy_production()
 
         co2_prod = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
+                                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
+                                                                                   self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                   self.cost_details['efficiency']  # in kWH
         th_water_needs = self.get_theoretical_water_needs()
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = th_water_needs * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']  # in kg
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = th_water_needs * \
+                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                        self.cost_details['efficiency']  # in kg
 
         # production
         # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \

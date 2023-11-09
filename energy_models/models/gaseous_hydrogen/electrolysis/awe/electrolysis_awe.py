@@ -126,18 +126,18 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         self.compute_primary_energy_production()
 
         o2_needs = self.get_oxygen_produced()
-        self.production[f'O2 ({self.mass_unit})'] = o2_needs / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'O2 ({self.mass_unit})'] = o2_needs / \
+                                                             self.data_energy_dict['calorific_value'] * \
+                                                             self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
 
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kg
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] / \
+                                                                        self.data_energy_dict['calorific_value'] * \
+                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
         # production
         # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \

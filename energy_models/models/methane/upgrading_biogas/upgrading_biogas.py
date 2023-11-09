@@ -68,17 +68,17 @@ class UpgradingBiogas(MethaneTechno):
         self.compute_primary_energy_production()
         # kg/kWh corresponds to Mt/TWh
         co2_prod = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.name} ({self.mass_unit})'] = co2_prod * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = co2_prod * \
+                                                                               self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{BioGas.name} ({self.product_energy_unit})'] = self.cost_details['biogas_needs'] * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{Monotethanolamine.name} ({self.mass_unit})'] = self.get_MEA_loss() * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{BioGas.name} ({self.product_energy_unit})'] = self.cost_details['biogas_needs'] * \
+                                                                                   self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Monotethanolamine.name} ({self.mass_unit})'] = self.get_MEA_loss() * \
+                                                                                    self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
         # production
         # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \

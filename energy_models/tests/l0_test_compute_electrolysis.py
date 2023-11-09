@@ -122,7 +122,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         price_details = pem.compute_price()
         pem.compute_consumption_and_production()
 
-        print(pem.consumption)
+        print(pem.consumption_detailed)
 
     def test_02_compute_pem_ratio_prod_consumption(self):
 
@@ -157,13 +157,13 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         pem.configure_parameters_update(inputs_dict)
         price_details = pem.compute_price()
         pem.compute_consumption_and_production()
-        consumption_with_ratio = pem.consumption['platinum_resource (Mt)'].values * \
-            self.ratio_available_resource['platinum_resource'].values /100
+        consumption_with_ratio = pem.consumption_detailed['platinum_resource (Mt)'].values * \
+                                 self.ratio_available_resource['platinum_resource'].values / 100
         pem.select_ratios()
         pem.apply_ratios_on_consumption_and_production(True)
         #self.assertListEqual(list(pem.consumption['platinum_resource (Mt)'].values),list(consumption_with_ratio))
         print("Calculated consumption w ratio")
-        print(list(pem.consumption['platinum_resource (Mt)'].values))
+        print(list(pem.consumption_detailed['platinum_resource (Mt)'].values))
         print('theoretical consumption w ratio')
         print(list(consumption_with_ratio))
         

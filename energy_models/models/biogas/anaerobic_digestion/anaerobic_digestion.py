@@ -74,10 +74,10 @@ class AnaerobicDigestion(BioGasTechno):
         self.compute_primary_energy_production()
 
         # Consumption
-        self.consumption[f'{WetBiomass.name} ({self.mass_unit})'] = self.cost_details['wet_biomass_needs'] * \
-            self.production[f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{WetBiomass.name} ({self.mass_unit})'] = self.cost_details['wet_biomass_needs'] * \
+                                                                             self.production_detailed[f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

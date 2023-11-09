@@ -114,7 +114,7 @@ class UnmanagedWood(BiomassDryTechno):
 
         self.production_mix = pd.DataFrame({GlossaryCore.Years: self.years})
         unmanaged_production = deepcopy(
-            self.production[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'])
+            self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'])
 
         # compute production for non energy at year start with percentages
         residue_year_start_production = unmanaged_production[0] * self.techno_infos_dict['residue_density_percentage'] * \
@@ -148,15 +148,15 @@ class UnmanagedWood(BiomassDryTechno):
         self.production_mix[name_tot] = unmanaged_production
 
         # compute output production dedicated to energy
-        self.production[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'] = self.production_mix[name_residue] +\
-            self.production_mix[name_wood]
+        self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'] = self.production_mix[name_residue] + \
+                                                                                                   self.production_mix[name_wood]
 
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production[f'{CO2.name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
-            self.data_energy_dict['high_calorific_value'] * \
-            self.production[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CO2.name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
+                                                                     self.data_energy_dict['high_calorific_value'] * \
+                                                                     self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
@@ -207,5 +207,5 @@ class UnmanagedWood(BiomassDryTechno):
             (production + residue_year_start_production + wood_year_start_production)
         mean_age_df.replace([np.inf, -np.inf], np.nan, inplace=True)
         mean_age_df.fillna(0.0, inplace=True)
-
+        self.mean_age_df = mean_age_df
         return mean_age_df

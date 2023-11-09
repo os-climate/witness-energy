@@ -61,14 +61,14 @@ class GeothermalHeat(mediumheattechno):
 
         # Production
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
-            self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
+                                                                               self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
+                                                                               self.cost_details['efficiency']
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-            self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
+                                                                                        self.cost_details['efficiency']
 
     def get_theoretical_electricity_needs(self):
         mean_temperature = self.techno_infos_dict['mean_temperature']

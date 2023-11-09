@@ -61,17 +61,17 @@ class CHPLowHeat(lowheattechno):
         self.compute_primary_energy_production()
 
         # Consumption
-        self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
-            self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
+                                                                                    self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})']
 
         # CO2 production
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
-                                                                               Methane.data_energy_dict['calorific_value'] * \
-            self.consumption[f'{Methane.name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
+                                                                                        Methane.data_energy_dict['calorific_value'] * \
+                                                                                        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})']
 
-        self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
-            (self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] /
-             (1 - self.techno_infos_dict['efficiency'])) - self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})']
+        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
+            (self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] /
+             (1 - self.techno_infos_dict['efficiency'])) - self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
