@@ -95,8 +95,15 @@ class SolarPvPriceTestCase(unittest.TestCase):
 
     def test_01_compute_solarpv_price(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': SolarPvDiscipline.techno_infos_dict_default,
                        GlossaryCore.InvestLevelValue: self.invest_level_2,
                        GlossaryCore.InvestmentBeforeYearStartValue: SolarPvDiscipline.invest_before_year_start,
@@ -143,8 +150,15 @@ class SolarPvPriceTestCase(unittest.TestCase):
 
     def test_02_compute_solar_pv_price_prod_consumption(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': SolarPvDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: self.energy_prices,
                        GlossaryCore.InvestLevelValue: self.invest_level_2,
@@ -179,8 +193,15 @@ class SolarPvPriceTestCase(unittest.TestCase):
 
     def test_04_compute_solar_pv_power(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': SolarPvDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: self.energy_prices,
                        GlossaryCore.InvestLevelValue: self.invest_level_2,
@@ -260,7 +281,8 @@ class SolarPvPriceTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass
 # if __name__ == "__main__":
 #     unittest.main()

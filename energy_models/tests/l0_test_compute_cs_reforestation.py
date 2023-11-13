@@ -86,8 +86,15 @@ class ReforestationPriceTestCase(unittest.TestCase):
 
     def test_01_compute_reforestation_price(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': ReforestationDiscipline.techno_infos_dict_default,
                        GlossaryCore.InvestLevelValue: self.invest_level_2,
                        GlossaryCore.InvestmentBeforeYearStartValue: ReforestationDiscipline.invest_before_year_start,
@@ -134,8 +141,15 @@ class ReforestationPriceTestCase(unittest.TestCase):
 
     def test_02_compute_geologic_mineralization_price_prod_consumption(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': ReforestationDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051)}),
                        GlossaryCore.InvestLevelValue: self.invest_level_2,

@@ -102,8 +102,15 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
 
     def test_02_compute_direct_air_capture_techno_price_prod_consumption(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': DirectAirCaptureTechnoDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: self.energy_prices,
                        GlossaryCore.InvestLevelValue: self.invest_level,

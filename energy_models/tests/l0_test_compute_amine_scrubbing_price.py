@@ -120,9 +120,21 @@ class AmineScrubbingTestCase(unittest.TestCase):
         pass
 
     def test_02_compute_amine_price_prod_consumption(self):
+        years = np.arange(2020, self.year_end + 1)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+
+        years = np.arange(2020, self.year_end + 1)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
 
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: self.year_end,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': AmineScrubbingDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: self.energy_prices,
                        GlossaryCore.InvestLevelValue: self.invest_level,

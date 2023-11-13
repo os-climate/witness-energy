@@ -115,8 +115,15 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
 
     def test_01_compute_upgrading_biogas_price(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': UpgradingBiogasDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: self.energy_prices,
                        GlossaryCore.InvestLevelValue: self.invest_level,

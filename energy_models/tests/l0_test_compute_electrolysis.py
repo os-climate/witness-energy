@@ -90,8 +90,22 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
 
     def _test_01_compute_pemel(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio, 
                        'techno_infos_dict': ElectrolysisPEMDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: self.energy_prices,
                        GlossaryCore.ResourcesPriceValue: self.resources_prices,
@@ -126,8 +140,15 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
 
     def test_02_compute_pem_ratio_prod_consumption(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': ElectrolysisPEMDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: self.energy_prices,
                        GlossaryCore.ResourcesPriceValue: self.resources_prices,
@@ -215,8 +236,15 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
 
     def _test_04_compute_soec(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': ElectrolysisSOECDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: self.energy_prices,
                        GlossaryCore.ResourcesPriceValue: self.resources_prices,
@@ -293,8 +321,15 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
 
     def _test_06_compute_awe(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': ElectrolysisAWEDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: self.energy_prices,
                        GlossaryCore.ResourcesPriceValue: self.resources_prices,

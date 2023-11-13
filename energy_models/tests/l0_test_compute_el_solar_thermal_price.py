@@ -90,8 +90,14 @@ class SolarThermalPriceTestCase(unittest.TestCase):
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
 
+        years = np.arange(2020, 2050 + 1)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
         self.inputs_dict = {GlossaryCore.YearStart: 2020,
                             GlossaryCore.YearEnd: 2050,
+                            GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                             'techno_infos_dict': SolarThermalDiscipline.techno_infos_dict_default,
                             GlossaryCore.InvestLevelValue: self.invest_level_2,
                             GlossaryCore.InvestmentBeforeYearStartValue: SolarThermalDiscipline.invest_before_year_start,
@@ -142,9 +148,15 @@ class SolarThermalPriceTestCase(unittest.TestCase):
 #         print(consumption)
 
     def test_04_compute_solar_pv_power(self):
+        years = np.arange(2020, 2050 + 1)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
 
         self.inputs_dict = {GlossaryCore.YearStart: 2020,
                             GlossaryCore.YearEnd: 2050,
+                            GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                             'techno_infos_dict': SolarThermalDiscipline.techno_infos_dict_default,
                             GlossaryCore.InvestLevelValue: self.invest_level_2,
                             GlossaryCore.InvestmentBeforeYearStartValue: SolarThermalDiscipline.invest_before_year_start,
