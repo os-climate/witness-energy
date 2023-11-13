@@ -17,6 +17,7 @@ limitations under the License.
 
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class HeatingOilDiscipline(EnergyDiscipline):

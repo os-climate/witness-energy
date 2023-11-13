@@ -28,6 +28,7 @@ from plotly import figure_factory as ff
 from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
 import pandas as pd
 from plotly.express.colors import qualitative
+from climateeconomics.glossarycore import GlossaryCore
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
