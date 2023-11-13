@@ -73,6 +73,8 @@ class TechnoType:
         self.non_use_capital = None
         self.techno_capital = None
         self.applied_ratio = None
+        self.power_production = None
+        self.utilisation_ratio = None
         self.construction_resource_list = ['copper_resource']
 
     def check_outputs_dict(self, biblio_data):
@@ -189,6 +191,8 @@ class TechnoType:
         if self.is_apply_resource_ratio:
             self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
 
+        self.utilisation_ratio = inputs_dict[GlossaryCore.UtilisationRatioValue][GlossaryCore.UtilisationRatioValue].values
+
     def configure_parameters_update(self, inputs_dict):
         '''
         Configure with inputs_dict from the discipline
@@ -221,6 +225,9 @@ class TechnoType:
                                                                                         <= self.year_end]
         if self.is_apply_resource_ratio:
             self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
+
+        self.utilisation_ratio = inputs_dict[GlossaryCore.UtilisationRatioValue][
+            GlossaryCore.UtilisationRatioValue].values
 
     def configure_energy_data(self, inputs_dict):
         '''

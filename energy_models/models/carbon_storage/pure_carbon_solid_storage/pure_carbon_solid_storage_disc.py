@@ -217,11 +217,8 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
     def get_chart_filter_list(self):
 
-        chart_filters = CSTechnoDiscipline.get_chart_filter_list(self)
-        chart_list = chart_filters[0].filter_values
-        chart_list.append('Constraint')
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters = super().get_chart_filter_list()
+        chart_filters[0].extend('Constraint')
 
         return chart_filters
 

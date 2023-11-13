@@ -25,6 +25,7 @@ from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
+
 class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
 
     # ontology information
@@ -164,22 +165,11 @@ class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
 
         return new_chart
 
-    def get_chart_filter_list(self):
-        chart_filters = LowHeatTechnoDiscipline.get_chart_filter_list(self)
-
-        self.instanciated_charts = LowHeatTechnoDiscipline.get_post_processing_list(self, chart_filters)
-
-        chart_list = ['heat_flux']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
-
-        return chart_filters
-
     def get_post_processing_list(self, filters=None):
         """
         Basic post processing method for the model
         """
-        instanciated_charts = self.instanciated_charts
+        instanciated_charts = super().get_post_processing_list(filters)
         charts = []
         # for pie charts Title
         unit_str = '$/MWh'

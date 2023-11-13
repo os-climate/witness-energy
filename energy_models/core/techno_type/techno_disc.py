@@ -523,6 +523,7 @@ class TechnoDiscipline(SoSWrapp):
                       'Initial Production',
                       'Factory Mean Age',
                       'CO2 emissions',
+                      GlossaryCore.UtilisationRatioValue,
                       'Non-Use Capital',
                       'Power production']
         if self.get_sosdisc_inputs('is_apply_ratio'):
@@ -585,6 +586,10 @@ class TechnoDiscipline(SoSWrapp):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
+        if GlossaryCore.UtilisationRatioValue in charts:
+            new_chart = self.get_utilisation_ratio_chart()
+            instanciated_charts.append(new_chart)
+
         if 'Initial Production' in charts:
             if 'initial_production' in self.get_data_in():
                 new_chart = self.get_chart_initial_production()
@@ -613,6 +618,22 @@ class TechnoDiscipline(SoSWrapp):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
         return instanciated_charts
+
+    def get_utilisation_ratio_chart(self):
+        utilisation_ratio_df = self.get_sosdisc_inputs(GlossaryCore.UtilisationRatioValue)
+        years = list(utilisation_ratio_df[GlossaryCore.Years].values)
+        utilisation_ratio = list(utilisation_ratio_df[GlossaryCore.UtilisationRatioValue].values)
+
+        chart_name = GlossaryCore.UtilisationRatioValue
+
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '%', [years[0], years[-1]], [0, 100],
+                                             chart_name=chart_name, stacked_bar=True)
+
+        new_series = InstanciatedSeries(
+            years, utilisation_ratio, GlossaryCore.UtilisationRatioValue, InstanciatedSeries.BAR_DISPLAY, True)
+
+        new_chart.series.append(new_series)
+        return new_chart
 
     def get_chart_detailed_price_in_dollar_kwh(self):
 

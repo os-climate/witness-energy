@@ -171,6 +171,10 @@ class CCTechnoDiscipline(TechnoDiscipline):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
+        if GlossaryCore.UtilisationRatioValue in charts:
+            new_chart = self.get_utilisation_ratio_chart()
+            instanciated_charts.append(new_chart)
+
         if 'Consumption and production' in charts:
             new_chart = self.get_chart_investments()
             if new_chart is not None:

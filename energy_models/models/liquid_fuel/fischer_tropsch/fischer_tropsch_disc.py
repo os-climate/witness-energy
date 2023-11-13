@@ -328,16 +328,10 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
     def get_chart_filter_list(self):
 
-        chart_filters = []
-        chart_list = ['Detailed prices',
-                      'Consumption and production', 'Age Distribution Production',
-                      'Initial Production', 'Factory Mean Age', 'CO2 emissions', 'X to Liquid technologies']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters = super().get_chart_filter_list()
+        chart_filters[0].extend(['Age Distribution Production', 'X to Liquid technologies'])
+        chart_filters[1].extend(['$/USgallon'])
 
-        price_unit_list = ['$/MWh', '$/t', '$/USgallon']
-        chart_filters.append(ChartFilter(
-            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):

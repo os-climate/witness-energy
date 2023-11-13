@@ -257,16 +257,10 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     def get_chart_filter_list(self):
 
-        chart_filters = []
-        chart_list = ['Detailed prices', 'Prices per flow',
-                      'Consumption and production', 'Age Distribution Production',
-                      'Initial Production', 'Factory Mean Age', 'CO2 emissions']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters = super().get_chart_filter_list()
+        chart_filters[0].extend(['Prices per flow', 'Age Distribution Production'])
+        chart_filters[1].extend(['$/USgallon'])
 
-        price_unit_list = ['$/MWh', '$/t', '$/USgallon']
-        chart_filters.append(ChartFilter(
-            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
