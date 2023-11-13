@@ -350,8 +350,11 @@ class FischerTropsch(LiquidFuelTechno):
 
     def compute_rwgs_contribution(self, sg_ratio):
         years = np.arange(self.year_start, self.year_end + 1)
+        utlisation_ratio = pd.DataFrame({GlossaryCore.Years: years,
+                                        GlossaryCore.UtilisationRatioValue: self.utilisation_ratio})
         inputs_dict = {GlossaryCore.YearStart: self.year_start,
                        GlossaryCore.YearEnd: self.year_end,
+                       GlossaryCore.UtilisationRatioValue: utlisation_ratio,
                        'techno_infos_dict': RWGSDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: self.prices,
                        GlossaryCore.EnergyCO2EmissionsValue: self.energy_CO2_emissions,
@@ -395,8 +398,13 @@ class FischerTropsch(LiquidFuelTechno):
 
     def compute_wgs_contribution(self, sg_ratio):
         years = np.arange(self.year_start, self.year_end + 1)
+        utlisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: self.utilisation_ratio
+        })
         inputs_dict = {GlossaryCore.YearStart: self.year_start,
                        GlossaryCore.YearEnd: self.year_end,
+                       GlossaryCore.UtilisationRatioValue: utlisation_ratio,
                        'techno_infos_dict': WaterGasShiftDiscipline.techno_infos_dict_default,
                        GlossaryCore.EnergyPricesValue: self.prices,
                        GlossaryCore.EnergyCO2EmissionsValue: self.energy_CO2_emissions,
