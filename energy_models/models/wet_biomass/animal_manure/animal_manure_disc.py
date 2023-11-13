@@ -18,7 +18,6 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.wet_biomass_techno_disc import WetBiomassTechnoDiscipline
 from energy_models.models.wet_biomass.animal_manure.animal_manure import AnimalManure
 

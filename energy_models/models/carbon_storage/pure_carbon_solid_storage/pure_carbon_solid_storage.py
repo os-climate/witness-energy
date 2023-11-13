@@ -29,7 +29,8 @@ class PureCarbonSS(CSTechno):
     def compute_crf(self, data_config):
         return 1
 
-    
+    def compute_other_primary_energy_costs(self):
+        return 0
 
     def compute_consumption_and_production(self):
         """
