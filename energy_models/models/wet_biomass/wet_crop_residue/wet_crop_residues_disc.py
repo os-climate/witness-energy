@@ -20,6 +20,7 @@ import numpy as np
 
 from energy_models.core.techno_type.disciplines.wet_biomass_techno_disc import WetBiomassTechnoDiscipline
 from energy_models.models.wet_biomass.wet_crop_residue.wet_crop_residues import WetCropResidues
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):

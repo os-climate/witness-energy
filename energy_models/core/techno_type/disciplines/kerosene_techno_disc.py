@@ -17,6 +17,7 @@ limitations under the License.
 
 from energy_models.core.stream_type.energy_models.kerosene import Kerosene
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class KeroseneTechnoDiscipline(TechnoDiscipline):

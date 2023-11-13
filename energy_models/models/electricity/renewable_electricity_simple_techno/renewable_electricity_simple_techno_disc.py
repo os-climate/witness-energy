@@ -25,6 +25,7 @@ from energy_models.models.electricity.renewable_electricity_simple_techno.renewa
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from climateeconomics.glossarycore import GlossaryCore
 
 class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
