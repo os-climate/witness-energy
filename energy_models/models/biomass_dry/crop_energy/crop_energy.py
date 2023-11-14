@@ -109,7 +109,7 @@ class CropEnergy(BiomassDryTechno):
         """
         density_per_ha = self.techno_infos_dict['density_per_ha']
 
-        self.techno_land_use[f'{self.name} (Gha)'] = \
+        self.land_use[f'{self.name} (Gha)'] = \
             self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] * \
             (1 - self.techno_infos_dict['residue_density_percentage']) / \
             self.data_energy_dict['calorific_value'] / \
@@ -205,9 +205,9 @@ class CropEnergy(BiomassDryTechno):
         """
 
         dlanduse_dinvest = np.identity(len(self.years)) * 0
-        for key in self.techno_land_use:
+        for key in self.land_use:
             if key.startswith(self.name):
-                if not (self.techno_land_use[key] == np.array([0] * len(self.years))).all():
+                if not (self.land_use[key] == np.array([0] * len(self.years))).all():
                     dlanduse_dinvest = self.dprod_dinvest *\
                         (1 - self.techno_infos_dict['residue_density_percentage']) / \
                         self.data_energy_dict['calorific_value'] / \

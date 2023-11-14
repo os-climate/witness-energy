@@ -113,7 +113,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
             [GlossaryCore.TechnoProductionValue, GlossaryCore.TechnoConsumptionValue])
         for column in consumption:
             dprod_column_dfluegas = dprod_dfluegas.copy()
-            if column not in [GlossaryCore.Years]:
+            if column != GlossaryCore.Years:
                 var_cons = (consumption[column] /
                             production[f'{self.energy_name} ({self.techno_model.product_energy_unit})']).fillna(
                     0)

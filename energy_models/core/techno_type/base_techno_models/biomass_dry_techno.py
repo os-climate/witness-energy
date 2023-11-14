@@ -30,17 +30,17 @@ class BiomassDryTechno(TechnoType):
         if self.techno_infos_dict['density_per_ha_unit'] == 'm^3/ha':
             density_per_ha = density_per_ha * self.techno_infos_dict['density']
 
-        self.techno_land_use[f'{self.name} (Gha)'] = \
+        self.land_use[f'{self.name} (Gha)'] = \
             self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] / \
             self.data_energy_dict['calorific_value'] / \
             density_per_ha
 
         # if the techno has a percentage for production
         if 'years_between_harvest' in self.techno_infos_dict:
-            self.techno_land_use[f'{self.name} (Gha)'] *= self.techno_infos_dict['years_between_harvest']
+            self.land_use[f'{self.name} (Gha)'] *= self.techno_infos_dict['years_between_harvest']
 
         if 'recyle_part' in self.techno_infos_dict:
-            self.techno_land_use[f'{self.name} (Gha)'] *= (
+            self.land_use[f'{self.name} (Gha)'] *= (
                 1 - self.techno_infos_dict['recyle_part'])
 
     @abstractmethod

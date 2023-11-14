@@ -193,7 +193,7 @@ class TechnoDiscipline(SoSWrapp):
                         'mean_age_production': self.techno_model.mean_age_df,
                         GlossaryCore.CO2EmissionsValue: self.techno_model.carbon_emissions[[GlossaryCore.Years, self.techno_name]],
                         'CO2_emissions_detailed': self.techno_model.carbon_emissions,
-                        GlossaryCore.LandUseRequiredValue: self.techno_model.techno_land_use,
+                        GlossaryCore.LandUseRequiredValue: self.techno_model.land_use,
                         'applied_ratio': self.techno_model.applied_ratio,
                         'non_use_capital': self.techno_model.non_use_capital,
                         GlossaryEnergy.TechnoCapitalDfValue: self.techno_model.techno_capital,
@@ -257,7 +257,7 @@ class TechnoDiscipline(SoSWrapp):
         self.dprod_dratio = {}
         if GlossaryCore.AllStreamsDemandRatioValue in inputs_dict.keys():
             for ratio_name in inputs_dict[GlossaryCore.AllStreamsDemandRatioValue].columns:
-                if ratio_name not in [GlossaryCore.Years]:
+                if ratio_name != GlossaryCore.Years:
                     production_woratio = self.techno_model.production_woratio[
                         f'{self.energy_name} ({self.techno_model.product_energy_unit})']
                     self.dprod_dratio[ratio_name] = self.techno_model.compute_dprod_dratio(
@@ -268,14 +268,14 @@ class TechnoDiscipline(SoSWrapp):
                          f'{self.energy_name} ({self.techno_model.product_energy_unit})'), (GlossaryCore.AllStreamsDemandRatioValue, ratio_name),
                         self.dprod_dratio[ratio_name] / 100.)
                     dland_use_dratio = self.techno_model.compute_dprod_dratio(
-                        self.techno_model.techno_land_use_woratio[
+                        self.techno_model.land_use_woratio[
                             f'{self.techno_model.name} (Gha)'], ratio_name=ratio_name,
                         dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
                         (GlossaryCore.LandUseRequiredValue, f'{self.techno_model.name} (Gha)'), (GlossaryCore.AllStreamsDemandRatioValue, ratio_name),  dland_use_dratio / 100.)
         if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
             for ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns:
-                if ratio_name not in [GlossaryCore.Years]:
+                if ratio_name != GlossaryCore.Years:
                     production_woratio = self.techno_model.production_woratio[
                         f'{self.energy_name} ({self.techno_model.product_energy_unit})']
                     self.dprod_dratio[ratio_name] = self.techno_model.compute_dprod_dratio(
@@ -286,7 +286,7 @@ class TechnoDiscipline(SoSWrapp):
                          f'{self.energy_name} ({self.techno_model.product_energy_unit})'), ('all_resource_ratio_usable_demand', ratio_name),
                         self.dprod_dratio[ratio_name] / 100.)
                     dland_use_dratio = self.techno_model.compute_dprod_dratio(
-                        self.techno_model.techno_land_use_woratio[
+                        self.techno_model.land_use_woratio[
                             f'{self.techno_model.name} (Gha)'], ratio_name=ratio_name,
                         dapplied_ratio_dratio=dapplied_ratio_dratio)
                     self.set_partial_derivative_for_other_types(
@@ -321,7 +321,7 @@ class TechnoDiscipline(SoSWrapp):
                 self.dprod_column_dratio[column] = {}
                 for ratio_name in ratio_df.columns:
                     if GlossaryCore.AllStreamsDemandRatioValue in inputs_dict.keys():
-                        if ratio_name in inputs_dict[GlossaryCore.AllStreamsDemandRatioValue].columns and ratio_name not in [GlossaryCore.Years]:
+                        if ratio_name in inputs_dict[GlossaryCore.AllStreamsDemandRatioValue].columns and ratio_name != GlossaryCore.Years:
                             production_woratio = self.techno_model.production_woratio[
                                 column]
                             self.dprod_column_dratio[column][ratio_name] = self.techno_model.compute_dprod_dratio(
@@ -332,7 +332,7 @@ class TechnoDiscipline(SoSWrapp):
                                  column), (GlossaryCore.AllStreamsDemandRatioValue, ratio_name),
                                 self.dprod_column_dratio[column][ratio_name] / 100.)
                     if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
-                        if ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns and ratio_name not in [GlossaryCore.Years]:
+                        if ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns and ratio_name != GlossaryCore.Years:
                             production_woratio = self.techno_model.production_woratio[
                                 column]
                             self.dprod_column_dratio[column][ratio_name] = self.techno_model.compute_dprod_dratio(
@@ -345,7 +345,7 @@ class TechnoDiscipline(SoSWrapp):
         self.techno_consumption_derivative = {}
         for column in consumption:
             
-            if column not in [GlossaryCore.Years]:
+            if column != GlossaryCore.Years:
                 
                 if column in [f'{resource} (Mt)' for resource in self.techno_model.construction_resource_list]: 
                     var_cons = (consumption[column] /
@@ -388,7 +388,7 @@ class TechnoDiscipline(SoSWrapp):
                 #---Gradient techno cons vs each ratio
                 for ratio_name in ratio_df.columns:
                     if GlossaryCore.AllStreamsDemandRatioValue in inputs_dict.keys():
-                        if ratio_name in inputs_dict[GlossaryCore.AllStreamsDemandRatioValue].columns and ratio_name not in [GlossaryCore.Years]:
+                        if ratio_name in inputs_dict[GlossaryCore.AllStreamsDemandRatioValue].columns and ratio_name != GlossaryCore.Years:
                             if column in [f'{resource} (Mt)' for resource in
                                           self.techno_model.construction_resource_list]:
                                 pass
@@ -403,7 +403,7 @@ class TechnoDiscipline(SoSWrapp):
                                      column), (GlossaryCore.AllStreamsDemandRatioValue, ratio_name),
                                     dprod_dratio / 100.)
                     if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
-                        if ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns and ratio_name not in [GlossaryCore.Years]:
+                        if ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns and ratio_name != GlossaryCore.Years:
                             if column in [f'{resource} (Mt)' for resource in
                                           self.techno_model.construction_resource_list]:
                                 pass
@@ -439,14 +439,14 @@ class TechnoDiscipline(SoSWrapp):
         dapplied_ratio_dratio = self.techno_model.compute_dapplied_ratio_dratios()
         for ratio_name in ratio_df.columns:
             if GlossaryCore.AllStreamsDemandRatioValue in inputs_dict.keys():
-                if ratio_name in inputs_dict[GlossaryCore.AllStreamsDemandRatioValue].columns and ratio_name not in [GlossaryCore.Years]:
+                if ratio_name in inputs_dict[GlossaryCore.AllStreamsDemandRatioValue].columns and ratio_name != GlossaryCore.Years:
                     dnon_use_capital_dratio = self.techno_model.compute_dnon_usecapital_dratio(
                         dapplied_ratio_dratio[ratio_name])
                     self.set_partial_derivative_for_other_types(
                         ('non_use_capital', self.techno_model.name),
                         (GlossaryCore.AllStreamsDemandRatioValue, ratio_name), np.identity(len(years)) * dnon_use_capital_dratio / 100.0)
             if 'all_resource_ratio_usable_demand' in inputs_dict.keys():
-                if ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns and ratio_name not in [GlossaryCore.Years]:
+                if ratio_name in inputs_dict['all_resource_ratio_usable_demand'].columns and ratio_name != GlossaryCore.Years:
                     dnon_use_capital_dratio = self.techno_model.compute_dnon_usecapital_dratio(
                         dapplied_ratio_dratio[ratio_name])
                     self.set_partial_derivative_for_other_types(

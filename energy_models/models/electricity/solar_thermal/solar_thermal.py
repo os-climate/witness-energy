@@ -58,7 +58,7 @@ class SolarThermal(ElectricityTechno):
         '''
         density_per_ha = self.techno_infos_dict['density_per_ha']
 
-        self.techno_land_use[f'{self.name} (Gha)'] = \
+        self.land_use[f'{self.name} (Gha)'] = \
             self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] / \
             density_per_ha
 

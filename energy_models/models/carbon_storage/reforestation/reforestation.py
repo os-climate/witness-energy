@@ -46,8 +46,8 @@ class Reforestation(CSTechno):
             to be overloaded in sub class
         '''
 
-        self.techno_land_use[f'{self.name} (Gha)'] = self.production_detailed[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                     (0.0067621) / 1.0e9
+        self.land_use[f'{self.name} (Gha)'] = self.production_detailed[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
+                                              (0.0067621) / 1.0e9
 
     def compute_dlanduse_dinvest(self):
         """
@@ -55,9 +55,9 @@ class Reforestation(CSTechno):
         """
 
         dlanduse_dinvest = np.identity(len(self.years)) * 0
-        for key in self.techno_land_use:
+        for key in self.land_use:
             if key.startswith(self.name):
-                if not (self.techno_land_use[key] == np.array([0] * len(self.years))).all():
+                if not (self.land_use[key] == np.array([0] * len(self.years))).all():
                     dlanduse_dinvest = self.dprod_dinvest / self.data_energy_dict['calorific_value'] / \
                         (0.0067621) / 1.0e9
 

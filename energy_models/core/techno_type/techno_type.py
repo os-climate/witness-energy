@@ -76,6 +76,10 @@ class TechnoType:
         self.applied_ratio = None
         self.installed_power = None
         self.utilisation_ratio = None
+
+        self.production_woratio = None
+        self.consumption_woratio = None
+        self.land_use_woratio = None
         self.construction_resource_list = ['copper_resource']
 
     def check_outputs_dict(self, biblio_data):
@@ -137,7 +141,7 @@ class TechnoType:
 
         self.carbon_emissions = pd.DataFrame({GlossaryCore.Years: self.years})
 
-        self.techno_land_use = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.land_use = pd.DataFrame({GlossaryCore.Years: self.years})
 
         self.all_streams_demand_ratio = pd.DataFrame({GlossaryCore.Years: self.years})
 
@@ -281,7 +285,7 @@ class TechnoType:
             elements = []
             for element in self.ratio_df.columns:
                 for col in self.consumption_detailed.columns:
-                    if element in col and element not in [GlossaryCore.Years]:
+                    if element in col and element != GlossaryCore.Years:
                         # Check for a match between ratio_df and the
                         # consumptions by the techno
                         elements += [element, ]
@@ -312,37 +316,30 @@ class TechnoType:
         # assumption that a linear correlation is at work (ratio on prod == ratio on col)
         # there may be special cases that need to be handled differently
         # (quadratic correlation or other)
-        self.production_woratio = pd.DataFrame({GlossaryCore.Years: self.years})
         for col in self.production_detailed.columns:
             if col != GlossaryCore.Years:
-                self.production_woratio[col] = self.production_detailed[col].values
                 self.production_detailed[col] = self.production_detailed[col].values * \
                                                 ratio_values
-        self.consumption_woratio = pd.DataFrame({GlossaryCore.Years: self.years})
         for col in self.consumption_detailed.columns:
             if col not in [GlossaryCore.Years] + [f'{resource} (Mt)' for resource in self.construction_resource_list]:
-                self.consumption_woratio[col] = self.consumption_detailed[col].values
                 self.consumption_detailed[col] = self.consumption_detailed[col].values * \
                                                  ratio_values
             elif col in [f'{resource} (Mt)' for resource in self.construction_resource_list] :
                 ratio_construction_values = 1
-                self.consumption_woratio[col] = self.consumption_detailed[col].values
                 self.consumption_detailed[col] = self.consumption_detailed[col].values * \
                                                  ratio_construction_values
-        self.techno_land_use_woratio = pd.DataFrame({GlossaryCore.Years: self.years})
-        for col in self.techno_land_use.columns:
-            if col not in [GlossaryCore.Years]:
-                self.techno_land_use_woratio[col] = self.techno_land_use[col].values
-                self.techno_land_use[col] = self.techno_land_use[col].values * \
+        for col in self.land_use.columns:
+            if col != GlossaryCore.Years:
+                self.land_use[col] = self.land_use[col].values * \
                     ratio_values
         # Pass this dataframe as model variable
         self.applied_ratio = pd.DataFrame({GlossaryCore.Years: self.years,
                                            'min_ratio_name': min_ratio_name,
                                            'applied_ratio': ratio_values})
 
-    def compute_non_use_capital(self):
+    def compute_capital(self):
         '''
-        Compute the loss of capital because of the unusability of the technology. 
+        Compute Capital & loss of capital because of the unusability of the technology.
         When the applied ratio is below 1, the technology does not produce all the energy possible.
         Investments on this technology is consequently non_use. 
         This method computes the non_use of capital 
@@ -358,7 +355,7 @@ class TechnoType:
             / self.scaling_factor_invest_level
 
         self.non_use_capital[self.name] = self.techno_capital[GlossaryCore.Capital].values * (
-            1.0 - self.applied_ratio['applied_ratio'].values)
+            1.0 - self.applied_ratio['applied_ratio'].values * self.utilisation_ratio / 100.)
 
     def compute_dnon_usecapital_dinvest(self, dcapex_dinvest, dprod_dinvest):
         '''
@@ -1223,7 +1220,7 @@ class TechnoType:
         if ratio_name:
             # Check that the ratio corresponds to something consumed
             for col in self.consumption_detailed.columns:
-                if ratio_name in col and ratio_name not in [GlossaryCore.Years]:
+                if ratio_name in col and ratio_name != GlossaryCore.Years:
                     dprod_dratio = (np.identity(len(self.years)) * prod.values) *\
                         dapplied_ratio_dratio[ratio_name]
         return dprod_dratio
@@ -1243,7 +1240,7 @@ class TechnoType:
             # ratio_df and consumptions
             if is_apply_ratio:
                 for col in self.consumption_detailed.columns:
-                    if element in col and element not in [GlossaryCore.Years]:
+                    if element in col and element != GlossaryCore.Years:
                         elements += [element, ]
         if is_apply_ratio:
             if len(elements) > 0:
@@ -1338,9 +1335,9 @@ class TechnoType:
         """
 
         dlanduse_dinvest = np.identity(len(self.years)) * 0
-        for key in self.techno_land_use:
+        for key in self.land_use:
             if key.startswith(self.name):
-                if not (self.techno_land_use[key] == np.array([0] * len(self.years))).all():
+                if not (self.land_use[key] == np.array([0] * len(self.years))).all():
                     density_per_ha = self.techno_infos_dict['density_per_ha']
                     if self.techno_infos_dict['density_per_ha_unit'] == 'm^3/ha':
                         density_per_ha = density_per_ha * \
@@ -1407,7 +1404,7 @@ class TechnoType:
             to be overloaded in sub class
         '''
 
-        self.techno_land_use[f'{self.name} (Gha)'] = 0.0
+        self.land_use[f'{self.name} (Gha)'] = 0.0
 
     def compute_ghg_emissions(self, GHG_type, related_to='prod'):
         '''
@@ -1441,16 +1438,14 @@ class TechnoType:
         self.compute_consumption_and_production()
         self.compute_primary_installed_power()
         self.compute_consumption_and_installed_power()
+
+        # ratios : utilisation & resources
+        self.store_consumption_and_production_and_landuse_wo_ratios()
         self.apply_utilisation_ratio()
-
-        # Create a datafarame containing all the ratios
         self.select_resources_ratios()
-
-        # Apply the ratios, if a relevant one (resource consumed by the techno)
-        # is inferior to one
         self.apply_resources_ratios(inputs_dict['is_apply_ratio'])
 
-        self.compute_non_use_capital()
+        self.compute_capital()
         self.get_mean_age_over_years()
 
         self.rescale_outputs()
@@ -1463,11 +1458,18 @@ class TechnoType:
             if column == GlossaryCore.Years:
                 continue
             self.consumption[column] = self.consumption[column].values / self.scaling_factor_techno_consumption
-            self.consumption_woratio[column] = self.consumption_woratio[column].values / self.scaling_factor_techno_consumption
         for column in self.production_detailed.columns:
             if column == GlossaryCore.Years:
                 continue
             self.production[column] = self.production[column].values / self.scaling_factor_techno_production
+
+        for column in self.consumption_woratio.columns:
+            if column == GlossaryCore.Years:
+                continue
+            self.consumption_woratio[column] = self.consumption_woratio[column].values / self.scaling_factor_techno_consumption
+        for column in self.production_woratio.columns:
+            if column == GlossaryCore.Years:
+                continue
             self.production_woratio[column] = self.production_woratio[column].values / self.scaling_factor_techno_production
 
     def apply_utilisation_ratio(self):
@@ -1491,3 +1493,14 @@ class TechnoType:
             if column == GlossaryCore.Years:
                 continue
             self.carbon_emissions[column] = self.carbon_emissions[column].values * self.utilisation_ratio / 100.
+
+    def store_consumption_and_production_and_landuse_wo_ratios(self):
+        """
+        Store following dataframe values before applying any ratios (utilisation ratio or resources ratios)
+        - production
+        - consumption
+        - land use
+        """
+        self.production_woratio = copy(self.production_detailed)
+        self.consumption_woratio = copy(self.consumption_detailed)
+        self.land_use_woratio = copy(self.land_use)
