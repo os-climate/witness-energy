@@ -85,7 +85,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # perfectly efficient
                                  'input_power_unit': 'mol/h',
                                  'techno_evo_eff': 'no',  # yes or no
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
 
     # Fake investments (not found in the litterature...)
     invest_before_year_start = pd.DataFrame(

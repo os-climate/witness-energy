@@ -74,7 +74,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                  'available_power_unit': 'kg/year',
                                  'efficiency': 0.85,  # boiler efficiency
                                  'techno_evo_eff': 'no',  # yes or no
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
     # We do not invest on biomass gasification yet
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [7.6745661, 8.9729523, 104.91]})

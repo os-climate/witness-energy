@@ -62,7 +62,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  # https://www.sciencedirect.com/topics/earth-and-planetary-sciences/pyrolysis#:~:text=For%20slow%20pyrolysis%2C%20the%20heating,respectively%20%5B15%2C21%5D.
                                  'medium_heat_production_unit': 'TWh/kg',
                                  'efficiency': 1.0,  # No need of efficiency here
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'learning_rate': 0.0,
                                  'techno_evo_eff': 'no',
                                  'syngas_yield': 0.7,  # with 1kg of wood

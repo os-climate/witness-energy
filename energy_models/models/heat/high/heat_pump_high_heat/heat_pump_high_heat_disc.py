@@ -63,7 +63,7 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
         'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
         'efficiency': 1.0,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,

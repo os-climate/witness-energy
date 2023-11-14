@@ -83,7 +83,7 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
                                  'efficiency': 0.0,
                                  'techno_evo_eff': 'no',  # yes or no
 
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
     # To be defined
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 0.0, 0.0]})

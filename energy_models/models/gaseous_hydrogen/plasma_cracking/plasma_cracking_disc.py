@@ -69,7 +69,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency': 0.15,
                                  'efficiency_max': 0.6,
                                  'nb_years_amort_capex': 10.,
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
 
     initial_production = 1e-12
     initial_age_distribution = pd.DataFrame({'age': np.arange(0, lifetime),

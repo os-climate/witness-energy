@@ -68,12 +68,13 @@ class TechnoType:
         self.all_streams_demand_ratio = None
         self.is_stream_demand = False
         self.is_resource_ratio = False
+        self.is_applied_resource_ratios = None
         self.smooth_type = None
         self.ratio_df = None
         self.non_use_capital = None
         self.techno_capital = None
         self.applied_ratio = None
-        self.power_production = None
+        self.installed_power = None
         self.utilisation_ratio = None
         self.construction_resource_list = ['copper_resource']
 
@@ -143,7 +144,7 @@ class TechnoType:
         self.non_use_capital = pd.DataFrame({GlossaryCore.Years: self.years})
         self.techno_capital = pd.DataFrame({GlossaryCore.Years: self.years})
 
-        self.power_production = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.installed_power = pd.DataFrame({GlossaryCore.Years: self.years})
 
     def configure_parameters(self, inputs_dict):
         '''
@@ -215,7 +216,7 @@ class TechnoType:
         self.resources_CO2_emissions = inputs_dict[GlossaryCore.RessourcesCO2EmissionsValue]
         self.energy_CO2_emissions = inputs_dict[GlossaryCore.EnergyCO2EmissionsValue]
         self.production_detailed = pd.DataFrame({GlossaryCore.Years: self.years})
-        self.power_production = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.installed_power = pd.DataFrame({GlossaryCore.Years: self.years})
         self.ratio_df = pd.DataFrame({GlossaryCore.Years: self.years})
         self.is_stream_demand = inputs_dict['is_stream_demand']
         self.is_apply_resource_ratio = inputs_dict['is_apply_resource_ratio']
@@ -242,17 +243,12 @@ class TechnoType:
         Maybe add efficiency in consumption computation ?
         """
 
-        #self.compute_power_production()
-
-    def compute_consumption_and_power_production(self):
+    def compute_consumption_and_installed_power(self):
         """
         Compute the power installed (W) of the technology for a given investment
         """
-        self.compute_primary_power_production()
-        
 
-
-    def select_ratios(self):
+    def select_resources_ratios(self):
         """! Select the ratios to be added to ratio_df and convert it from % to normal
              This function is to be overloaded in specific techno_models
         """
@@ -270,18 +266,18 @@ class TechnoType:
 
         return ratio_df
 
-    def apply_ratios_on_consumption_and_production(self, is_apply_ratio=True):
+    def apply_resources_ratios(self, apply_ressources_ratio: bool = True):
         """! Select the most constraining ratio and apply it to production and consumption.
         To avoid clipping effects, the applied ratio is not the minimum value between all the ratios, 
         but the smoothed minimum value between all the ratio (see func_manager documentation for more).
         A model variables is set in this method:
             -self.applied_ratio: the effective ratio applied for each year
         The method "select_ratios" must have been called beforehand to have the self.ratio_df variable
-        @param is_apply_ratio: boolean, used to activate(True)/deactivate(False) the application of limiting ratios. Defaults to True.
+        @param apply_resources_ratio: boolean, used to activate(True)/deactivate(False) the application of limiting ratios. Defaults to True.
         """
         ratio_values = np.ones(len(self.years))
         min_ratio_name = ['' for _ in ratio_values]
-        if is_apply_ratio:
+        if apply_ressources_ratio:
             elements = []
             for element in self.ratio_df.columns:
                 for col in self.consumption_detailed.columns:
@@ -318,7 +314,7 @@ class TechnoType:
         # (quadratic correlation or other)
         self.production_woratio = pd.DataFrame({GlossaryCore.Years: self.years})
         for col in self.production_detailed.columns:
-            if col not in [GlossaryCore.Years]:
+            if col != GlossaryCore.Years:
                 self.production_woratio[col] = self.production_detailed[col].values
                 self.production_detailed[col] = self.production_detailed[col].values * \
                                                 ratio_values
@@ -1051,10 +1047,10 @@ class TechnoType:
 
         self.compute_land_use()
 
-    def compute_primary_power_production(self):
+    def compute_primary_installed_power(self):
 
-        if 'construction_delay' in self.techno_infos_dict:
-            construction_delay = self.techno_infos_dict['construction_delay']
+        if GlossaryCore.ConstructionDelay in self.techno_infos_dict:
+            construction_delay = self.techno_infos_dict[GlossaryCore.ConstructionDelay]
         else:
             print(
                 f'The construction_delay data is not set for {self.name} : default = 3 years  ')
@@ -1072,19 +1068,18 @@ class TechnoType:
             construction_delay=construction_delay)
         
         #Conversion from TWh to MW
-        self.power_production['new_power_production'] = production_from_invest.loc[production_from_invest[GlossaryCore.Years] == self.years, 'prod_from_invest'].values / full_load_hours * 1000
-        self.power_production['total_installed_power'] = self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] / full_load_hours * 1000
-        self.power_production['removed_power_production'] = np.zeros(len(self.years))
+        self.installed_power['new_power_production'] = production_from_invest.loc[production_from_invest[GlossaryCore.Years] == self.years, 'prod_from_invest'].values / full_load_hours * 1000
+        self.installed_power['total_installed_power'] = self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] / full_load_hours * 1000
+        self.installed_power['removed_power_production'] = np.zeros(len(self.years))
 
-        power_production_dict = self.power_production.to_dict()
+        power_production_dict = self.installed_power.to_dict()
 
         for year in self.years[1:]:
             power_production_dict['removed_power_production'][year- power_production_dict[GlossaryCore.Years][0] ] = \
                 power_production_dict['total_installed_power'][year - 1 - power_production_dict[GlossaryCore.Years][0] ]\
                     - power_production_dict['total_installed_power'][year - power_production_dict[GlossaryCore.Years][0] ]\
                         + power_production_dict['new_power_production'][year - power_production_dict[GlossaryCore.Years][0] ]
-        self.power_production = pd.DataFrame.from_dict(power_production_dict) 
-
+        self.installed_power = pd.DataFrame.from_dict(power_production_dict)
 
     def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapex_list_dinvest_list):
         '''
@@ -1109,10 +1104,10 @@ class TechnoType:
             dpprod_dpinvest = compute_dfunc_with_exp_min(np.array([invest_list[i]]), self.min_value_invest)[0][0] / \
                 capex_list[i]
             len_non_zeros = min(max(0, nb_years -
-                                    techno_dict['construction_delay'] - i),
+                                    techno_dict[GlossaryCore.ConstructionDelay] - i),
                                 techno_dict['lifetime'])
             first_len_zeros = min(
-                i + techno_dict['construction_delay'], nb_years)
+                i + techno_dict[GlossaryCore.ConstructionDelay], nb_years)
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
             # For prod in each column there is lifetime times the same value which is dpprod_dpinvest
@@ -1160,10 +1155,10 @@ class TechnoType:
         for i in range(nb_years):
 
             len_non_zeros = min(max(0, nb_years -
-                                    techno_dict['construction_delay'] - i),
+                                    techno_dict[GlossaryCore.ConstructionDelay] - i),
                                 techno_dict['lifetime'])
             first_len_zeros = min(
-                i + techno_dict['construction_delay'], nb_years)
+                i + techno_dict[GlossaryCore.ConstructionDelay], nb_years)
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
             # Same for capex
@@ -1195,7 +1190,7 @@ class TechnoType:
         dpower_list_dinvest_list = np.zeros(
             (nb_years, nb_years))
 
-        delay = techno_dict['construction_delay']
+        delay = techno_dict[GlossaryCore.ConstructionDelay]
         # power = cste * invest / capex ie dpower_d_invest = cste * (Id/capex - invest * dcapex_dinvest / capex**2)
         for i in range(delay, nb_years) :
             if capex_list[i - delay] != 0 :
@@ -1281,8 +1276,8 @@ class TechnoType:
         aging_distrib_year_df[f'distrib_prod ({self.product_energy_unit})'] = self.initial_age_distrib['distrib'] * \
             self.initial_production / 100.0
 
-        if 'construction_delay' in self.techno_infos_dict:
-            construction_delay = self.techno_infos_dict['construction_delay']
+        if GlossaryCore.ConstructionDelay in self.techno_infos_dict:
+            construction_delay = self.techno_infos_dict[GlossaryCore.ConstructionDelay]
         else:
             print(
                 f'The construction_delay data is not set for {self.name} : default = 3 years  ')
@@ -1444,16 +1439,16 @@ class TechnoType:
         self.compute_price()
         self.compute_primary_energy_production()
         self.compute_consumption_and_production()
-        self.compute_consumption_and_power_production()
+        self.compute_primary_installed_power()
+        self.compute_consumption_and_installed_power()
         self.apply_utilisation_ratio()
 
         # Create a datafarame containing all the ratios
-        self.select_ratios()
+        self.select_resources_ratios()
 
         # Apply the ratios, if a relevant one (resource consumed by the techno)
         # is inferior to one
-        self.apply_ratios_on_consumption_and_production(
-            inputs_dict['is_apply_ratio'])
+        self.apply_resources_ratios(inputs_dict['is_apply_ratio'])
 
         self.compute_non_use_capital()
         self.get_mean_age_over_years()
@@ -1481,7 +1476,6 @@ class TechnoType:
         - consumption
         - production
         - co2 emissions
-        - power production
         """
         for column in self.consumption_detailed.columns:
             if column == GlossaryCore.Years:

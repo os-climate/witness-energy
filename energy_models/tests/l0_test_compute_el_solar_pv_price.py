@@ -187,16 +187,18 @@ class SolarPvPriceTestCase(unittest.TestCase):
         power_production = disc.get_sosdisc_outputs(GlossaryCore.InstalledPower)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
+        filters = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filters)
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass
+
         self.assertLessEqual(list(production_detailed['electricity (TWh)'].values),
                              list(power_production['total_installed_power'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
         self.assertGreaterEqual(list(production_detailed[f'electricity (TWh)'].values),
                                 list(power_production['total_installed_power'] * techno_infos_dict[
                                     'full_load_hours'] / 1000 * 0.999))
-        filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
-        for graph in graph_list:
-            #graph.to_plotly().show()
-            pass
+
 # if __name__ == "__main__":
 #     unittest.main()

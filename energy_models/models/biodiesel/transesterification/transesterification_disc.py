@@ -106,7 +106,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                                              'WACC': 0.0878,
                                              'techno_evo_eff': 'no',
 
-                                             'construction_delay': self.construction_delay
+                                             GlossaryCore.ConstructionDelay: self.construction_delay
                                              }
 
                 # Source for initial production: IEA 2022, Renewables 2021, https://www.iea.org/reports/renewables-2021, License: CC BY 4.0.

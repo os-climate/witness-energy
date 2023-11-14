@@ -104,7 +104,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                  'techno_evo_eff': 'no',
                                  'crop_residue_price_percent_dif': crop_residue_price_percent_dif,
 
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
 
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0]})

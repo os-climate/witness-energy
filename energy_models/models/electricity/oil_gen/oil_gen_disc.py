@@ -117,7 +117,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  'transport_cost_unit': '$/kg',  # check if pertinent
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1,
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'copper_needs': 1100,  #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 

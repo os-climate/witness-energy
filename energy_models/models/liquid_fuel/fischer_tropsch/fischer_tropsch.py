@@ -57,10 +57,10 @@ class FischerTropsch(LiquidFuelTechno):
         self.syngas_energy_dict = inputs_dict['syngas.data_fuel_dict']
         self.gaseous_hydrogen_energy_dict = inputs_dict['hydrogen.gaseous_hydrogen.data_fuel_dict']
 
-    def select_ratios(self):
+    def select_resources_ratios(self):
         """! Select the ratios to be added to ratio_df
         """
-        ratio_df = LiquidFuelTechno.select_ratios(self)
+        ratio_df = LiquidFuelTechno.select_resources_ratios(self)
         if 'carbon_capture' in ratio_df.columns and self.is_stream_demand:
             ratio_df['carbon_capture'] =  ratio_df['carbon_capture'].values
         else:

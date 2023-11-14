@@ -122,7 +122,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.89,  # https://publications.anl.gov/anlpubs/2011/01/69026.pdf
                                  'techno_evo_eff': 'no',
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'pourcentage_of_total': 0.09,
                                  'product_break_down': product_break_down}
 

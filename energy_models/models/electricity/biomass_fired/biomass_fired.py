@@ -57,16 +57,15 @@ class BiomassFired(ElectricityTechno):
         self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] - \
                                                                                                self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # TWh
 
-    def compute_consumption_and_power_production(self):
+    def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment
         """
-        self.compute_primary_power_production()
 
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.installed_power['new_power_production'] # in Mt
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         '''

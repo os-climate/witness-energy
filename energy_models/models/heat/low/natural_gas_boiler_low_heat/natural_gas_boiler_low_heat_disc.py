@@ -65,7 +65,7 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
         'Opex_init_unit': '$/kW',
         'lifetime': lifetime,
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
         'efficiency': 0.8,    # consumptions and productions already have efficiency included
         'natural_gas_calorific_val': 53600,

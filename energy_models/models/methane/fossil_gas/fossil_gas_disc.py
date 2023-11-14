@@ -70,7 +70,7 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'learning_rate': 0,
                                  'WACC': 0.0878,
                                  'efficiency': 0.4, # https://geospatial.blogs.com/geospatial/2010/01/energy-efficiency-of-fossil-fuel-power-generation.html#:~:text=The%20average%20efficiencies%20of%20power,up%20the%20stack%22%20as%20heat.
-                                 'construction_delay': construction_delay,  # in kWh/kg
+                                 GlossaryCore.ConstructionDelay: construction_delay,  # in kWh/kg
                                  'maturity': 5
                                  }
     energy_own_use = 3732.83  # TWh

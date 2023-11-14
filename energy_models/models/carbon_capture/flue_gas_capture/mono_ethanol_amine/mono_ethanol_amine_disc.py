@@ -94,7 +94,7 @@ class MonoEthanolAmineDiscipline(CCTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'construction_delay': construction_delay, }
+                                 GlossaryCore.ConstructionDelay: construction_delay, }
 
     techno_info_dict = techno_infos_dict_default
 

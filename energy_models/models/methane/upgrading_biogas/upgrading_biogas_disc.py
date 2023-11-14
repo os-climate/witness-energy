@@ -71,7 +71,7 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
                                  'learning_rate': 0.2,
                                  'WACC': 0.0878,
                                  'techno_evo_eff': 'no',
-                                 'construction_delay': construction_delay  # in kWh/kg
+                                 GlossaryCore.ConstructionDelay: construction_delay  # in kWh/kg
                                  }
 
     # At present, about  3.5 Mtoe of biomethane is produced around the world and 92.3% are from upgrading biogas, rest is biomass gasification 0.27mtoe

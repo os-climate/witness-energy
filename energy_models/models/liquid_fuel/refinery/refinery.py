@@ -263,10 +263,10 @@ class Refinery(LiquidFuelTechno):
             dpprod_dpinvest = compute_dfunc_with_exp_min(np.array([invest_list[i]]), self.min_value_invest)[0][0] / \
                 (capex_list[i] + self.oil_extraction_capex)
             len_non_zeros = min(max(0, nb_years -
-                                    techno_dict['construction_delay'] - i),
+                                    techno_dict[GlossaryCore.ConstructionDelay] - i),
                                 techno_dict['lifetime'])
             first_len_zeros = min(
-                i + techno_dict['construction_delay'], nb_years)
+                i + techno_dict[GlossaryCore.ConstructionDelay], nb_years)
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
             # For prod in each column there is lifetime times the same value which is dpprod_dpinvest
@@ -314,10 +314,10 @@ class Refinery(LiquidFuelTechno):
         for i in range(nb_years):
 
             len_non_zeros = min(max(0, nb_years -
-                                    techno_dict['construction_delay'] - i),
+                                    techno_dict[GlossaryCore.ConstructionDelay] - i),
                                 techno_dict['lifetime'])
             first_len_zeros = min(
-                i + techno_dict['construction_delay'], nb_years)
+                i + techno_dict[GlossaryCore.ConstructionDelay], nb_years)
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
             # Same for capex

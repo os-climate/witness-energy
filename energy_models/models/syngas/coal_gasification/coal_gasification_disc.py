@@ -67,7 +67,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                  'euro_dollar': 1.12,
                                  'efficiency': 1.0,
                                  'techno_evo_eff': 'no',
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
     # We do not invest on coal gasification yet
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [2.636, 2.636, 2.636, 2.636]})

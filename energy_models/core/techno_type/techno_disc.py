@@ -103,7 +103,7 @@ class TechnoDiscipline(SoSWrapp):
         GlossaryCore.LandUseRequiredValue: {'type': 'dataframe', 'unit': 'Gha'},
         'applied_ratio': {'type': 'dataframe', 'unit': '-'},
         'non_use_capital': {'type': 'dataframe', 'unit': 'G$'},
-        'power_production': {'type': 'dataframe', 'unit': 'MW'},
+        GlossaryCore.InstalledPower: {'type': 'dataframe', 'unit': 'MW'},
         GlossaryEnergy.TechnoCapitalDfValue: GlossaryEnergy.TechnoCapitalDf
     }
     _maturity = 'Research'
@@ -197,7 +197,7 @@ class TechnoDiscipline(SoSWrapp):
                         'applied_ratio': self.techno_model.applied_ratio,
                         'non_use_capital': self.techno_model.non_use_capital,
                         GlossaryEnergy.TechnoCapitalDfValue: self.techno_model.techno_capital,
-                        'power_production': self.techno_model.power_production,
+                        GlossaryCore.InstalledPower: self.techno_model.installed_power,
                         }
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
@@ -212,7 +212,7 @@ class TechnoDiscipline(SoSWrapp):
         scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
         production = outputs_dict[GlossaryCore.TechnoProductionValue]
         consumption = outputs_dict[GlossaryCore.TechnoConsumptionValue]
-        power_production = outputs_dict['power_production']
+        power_production = outputs_dict[GlossaryCore.InstalledPower]
         ratio_df = self.techno_model.ratio_df
         dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
             invest_level.loc[invest_level[GlossaryCore.Years]
@@ -305,7 +305,7 @@ class TechnoDiscipline(SoSWrapp):
                 for line in range(len(years)):
                     # Problem when invest is zero at the first year and prod
                     # consequently zero (but gradient is not null)
-                    if self.techno_model.is_invest_before_year(years[line] - self.techno_model.techno_infos_dict['construction_delay']) \
+                    if self.techno_model.is_invest_before_year(years[line] - self.techno_model.techno_infos_dict[GlossaryCore.ConstructionDelay]) \
                             and var_prod[line] == 0.0 and self.dprod_dinvest[line, :].sum() != 0.0 and line != len(years) - 1:
 
                         var_prod[line] = var_prod[line + 1]
@@ -361,7 +361,7 @@ class TechnoDiscipline(SoSWrapp):
                 for line in range(len(years)):
                     # Problem when invest is zero at the first year and prod
                     # consequently zero (but gradient is not null)
-                    if self.techno_model.is_invest_before_year(years[line] - self.techno_model.techno_infos_dict['construction_delay']) \
+                    if self.techno_model.is_invest_before_year(years[line] - self.techno_model.techno_infos_dict[GlossaryCore.ConstructionDelay]) \
                             and var_cons[line] == 0.0 and self.dprod_dinvest[line, :].sum() != 0.0 and line != len(years) - 1:
                         var_cons[line] = var_cons[line + 1]
                     self.dcons_column_dinvest[line, :] = self.dprod_dinvest[line,
@@ -1124,7 +1124,7 @@ class TechnoDiscipline(SoSWrapp):
     
     def get_chart_power_production(self, technos_info_dict):
         power_production = self.get_sosdisc_outputs(
-            'power_production')
+            GlossaryCore.InstalledPower)
         chart_name = f'Power installed of {self.techno_name} factories'
 
         new_chart =  TwoAxesInstanciatedChart(GlossaryCore.Years, 'Power [MW]',

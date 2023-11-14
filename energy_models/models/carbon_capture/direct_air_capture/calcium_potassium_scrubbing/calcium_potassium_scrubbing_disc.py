@@ -82,7 +82,7 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryCore.EnergyEfficiency: 0.78,
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  'calcium_refound_efficiency': 0.98,
                                  'potassium_refound_efficiency': 0.98,

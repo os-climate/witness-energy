@@ -76,7 +76,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': co2_from_prod,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'resource_price': 75.0,
                                  'resource_price_unit': '$/MWh',
                                  'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,

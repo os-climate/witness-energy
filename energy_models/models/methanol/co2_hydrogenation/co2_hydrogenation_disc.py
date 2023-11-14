@@ -57,7 +57,7 @@ class CO2HydrogenationDiscipline(MethanolTechnoDiscipline):
         'Opex_percentage': 0.06,
         'lifetime': lifetime,
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
         'efficiency': 1,
         'CO2_from_production': 0.0,

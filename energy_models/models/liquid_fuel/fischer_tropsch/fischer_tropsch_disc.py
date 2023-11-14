@@ -89,7 +89,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.65,
                                  'techno_evo_eff': 'no',
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  # N/2N+1 with N number of carbon mol in
                                  # liquid_fuel
                                  'carbon_number': 12}  # To review
