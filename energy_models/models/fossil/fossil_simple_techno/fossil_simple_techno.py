@@ -34,7 +34,7 @@ class FossilSimpleTechno(FossilTechno):
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ?
         """
-        self.compute_primary_energy_production()
+        
 
         # co2_from_raw_to_net will represent the co2 emitted from the use of
         # the fossil energy into other fossil energies. For example generation

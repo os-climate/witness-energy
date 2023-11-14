@@ -140,7 +140,7 @@ class SMR(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
         # Consumption
         self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['CH4_needs'] * \
                                                                                     self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \

@@ -37,7 +37,7 @@ class WetCropResidues(WetBiomassTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
         self.consumption_detailed[f'{Electricity.name} (kWh)'] = self.cost_details['elec_needs'] * \
                                                                  self.production_detailed[f'{WetBiomassTechno.energy_name} (kWh)']  # in kWH
 

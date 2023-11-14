@@ -24,15 +24,6 @@ class WindOnshore(ElectricityTechno):
 
     def compute_other_primary_energy_costs(self):
         return 0
-
-    # def compute_consumption_and_production(self):
-    #     """
-    #     Compute the consumption and the production of the technology for a given investment
-    #     Maybe add efficiency in consumption computation ?
-    #     """
-    #     self.compute_primary_energy_production()
-
-    #     self.compute_power_production()  
     
     def compute_consumption_and_power_production(self):
         """

@@ -87,7 +87,7 @@ class BiomassFermentation(EthanolTechno):
         Compute the consumption and the production of the technology for a given investment
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Production
         carbon_production_factor = self.get_theoretical_co2_prod()

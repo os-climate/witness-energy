@@ -435,7 +435,7 @@ class RWGS(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
         th_water_prod = self.get_theoretical_water_prod()
 
         self.production_detailed[f'{Water.name} ({self.mass_unit})'] = th_water_prod * \

@@ -62,7 +62,7 @@ class NaturalGasMediumHeat(mediumheattechno):
         Compute the consumption and the production of the technology for a given investment
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Consumption
 

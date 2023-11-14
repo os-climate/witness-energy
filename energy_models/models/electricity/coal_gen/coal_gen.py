@@ -61,7 +61,7 @@ class CoalGen(ElectricityTechno):
         Compute the consumption and the production of the technology for a given investment
         """
 
-        self.compute_primary_energy_production()
+        
         elec_needs = self.get_electricity_needs()
 
         # Consumption

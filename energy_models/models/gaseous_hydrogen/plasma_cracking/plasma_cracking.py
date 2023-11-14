@@ -66,7 +66,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         Maybe add efficiency in consumption computation ?
         """
 
-        self.compute_primary_energy_production()
+        
 
         C_per_h2 = self.get_theoretical_graphene_production()
 

@@ -157,7 +157,7 @@ class CoElectrolysis(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         o2_production = self.get_oxygen_production()
 

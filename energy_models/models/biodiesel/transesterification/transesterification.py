@@ -117,7 +117,7 @@ class Transesterification(BioDieselTechno):
         Maybe add efficiency in consumption computation ?
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Production
         self.production_detailed[f'{Glycerol.name} ({self.mass_unit})'] = 0.12 * self.production_detailed[f'{BioDiesel.name} ({self.product_energy_unit})'] / \

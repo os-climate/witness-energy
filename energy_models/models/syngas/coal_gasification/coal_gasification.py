@@ -67,7 +67,7 @@ class CoalGasification(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
                                                                                       self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH

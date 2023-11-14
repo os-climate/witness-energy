@@ -133,10 +133,10 @@ class GasTurbinePriceTestCase(unittest.TestCase):
                        'data_fuel_dict': Electricity.data_energy_dict,
                        }
 
-        bf_model = BiomassFired('BiomassFired')
-        bf_model.configure_parameters(inputs_dict)
-        bf_model.configure_parameters_update(inputs_dict)
-        price_details = bf_model.compute_price()
+        model = BiomassFired('BiomassFired')
+        model.configure_parameters(inputs_dict)
+        model.configure_parameters_update(inputs_dict)
+        price_details = model.compute_price()
 
         # Comparison in $/kWH
         plt.figure()
@@ -152,104 +152,6 @@ class GasTurbinePriceTestCase(unittest.TestCase):
                  label='SoSTrades Factory')
         plt.legend()
         plt.ylabel('Price ($/kWh)')
-
-    def test_02_compute_gasturbine_price_prod_consumption(self):
-
-        years = np.arange(2020, 2051)
-        utilisation_ratio = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
-        })
-        
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
-                       'techno_infos_dict': BiomassFiredDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.InvestLevelValue: self.invest_level_2,
-                       GlossaryCore.InvestmentBeforeYearStartValue: BiomassFiredDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': BiomassFiredDiscipline.initial_production,
-                       'initial_age_distrib': BiomassFiredDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Electricity.data_energy_dict,
-                       }
-
-        bf_model = BiomassFired('BiomassFired')
-        bf_model.configure_parameters(inputs_dict)
-        bf_model.configure_parameters_update(inputs_dict)
-        price_details = bf_model.compute_price()
-        # print(price_details)
-        bf_model.compute_consumption_and_production()
-        bf_model.check_outputs_dict(self.biblio_data)
-        # print(production)
-        # print(consumption)
-
-    def test_04_compute_gasturbine_power(self):
-
-        years = np.arange(2020, 2051)
-        utilisation_ratio = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
-        })
-        
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
-                       'techno_infos_dict': BiomassFiredDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.InvestLevelValue: self.invest_level_2,
-                       GlossaryCore.InvestmentBeforeYearStartValue: BiomassFiredDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': BiomassFiredDiscipline.initial_production,
-                       'initial_age_distrib': BiomassFiredDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Electricity.data_energy_dict,
-                       }
-
-        bf_model = BiomassFired('BiomassFired')
-        bf_model.configure_parameters(inputs_dict)
-        bf_model.configure_parameters_update(inputs_dict)
-        price_details = bf_model.compute_price()
-        bf_model.compute_consumption_and_production()
-        bf_model.compute_consumption_and_power_production()
-
-        print(bf_model.power_production)
-
-        print(bf_model.power_production * bf_model.techno_infos_dict['full_load_hours'] / 1000)
-
-        print(bf_model.production_detailed[f'electricity ({bf_model.product_energy_unit})'])
-
-        self.assertLessEqual(list(bf_model.production_detailed[f'electricity ({bf_model.product_energy_unit})'].values),
-                             list(bf_model.power_production['total_installed_power'] * bf_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001))
-        self.assertGreaterEqual(list(bf_model.production_detailed[f'electricity ({bf_model.product_energy_unit})'].values),
-                                list(bf_model.power_production['total_installed_power'] * bf_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999))
 
     def test_03_gas_turbine_discipline(self):
 
@@ -292,6 +194,18 @@ class GasTurbinePriceTestCase(unittest.TestCase):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
+
+        production_detailed = disc.get_sosdisc_outputs(GlossaryCore.TechnoDetailedProductionValue)
+        power_production = disc.get_sosdisc_outputs(GlossaryCore.InstalledPower)
+        techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
+
+        self.assertLessEqual(list(production_detailed['electricity (TWh)'].values),
+                             list(power_production['total_installed_power'] * techno_infos_dict[
+                                 'full_load_hours'] / 1000 * 1.001))
+        self.assertGreaterEqual(list(production_detailed[f'electricity (TWh)'].values),
+                                list(power_production['total_installed_power'] * techno_infos_dict[
+                                    'full_load_hours'] / 1000 * 0.999))
+
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
         for graph in graph_list:

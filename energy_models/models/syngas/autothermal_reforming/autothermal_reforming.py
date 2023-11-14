@@ -166,7 +166,7 @@ class AuthothermalReforming(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         # kg of H2O produced with 1kg of CH4
         H2Oprod = self.get_h2o_production()

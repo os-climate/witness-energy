@@ -77,7 +77,7 @@ class Methanation(MethaneTechno):
         """
 
         # compute CH4 production in kWh
-        self.compute_primary_energy_production()
+        
 
         # kg of H2O produced with 1kWh of CH4
         H2Oprod = self.get_h2o_production()

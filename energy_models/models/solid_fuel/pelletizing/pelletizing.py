@@ -67,7 +67,7 @@ class Pelletizing(SolidFuelTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
                                                                                         self.production_detailed[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \

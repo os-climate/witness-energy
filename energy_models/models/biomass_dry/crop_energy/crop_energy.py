@@ -55,13 +55,14 @@ class CropEnergy(BiomassDryTechno):
         Compute part for energy and details for crop and residues
         """
 
+        
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_crop = f'{self.energy_name}_crop (TWh)'
         name_non_energy = f'{self.energy_name}_non_energy (TWh)'
         name_residue_non_energy = f'{self.energy_name}_residue_non_energy (TWh)'
         name_tot = f'{self.energy_name}_tot (TWh)'
 
-        self.compute_primary_energy_production()
+
 
         self.production_mix = pd.DataFrame({GlossaryCore.Years: self.years})
 

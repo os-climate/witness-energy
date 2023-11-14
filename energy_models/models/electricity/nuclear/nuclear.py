@@ -55,7 +55,7 @@ class Nuclear(ElectricityTechno):
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ?
         """
-        self.compute_primary_energy_production()
+        
 
         # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
         #       self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \

@@ -70,7 +70,7 @@ class FossilGas(MethaneTechno):
         """
 
         # compute CH4 production in kWh
-        self.compute_primary_energy_production()
+        
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
                                                                                         self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 

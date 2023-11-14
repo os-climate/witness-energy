@@ -93,7 +93,7 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
         Maybe add efficiency in consumption computation ?
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Theoretical C02 production in kg
         water_calorific_value = Water.data_energy_dict['calorific_value']

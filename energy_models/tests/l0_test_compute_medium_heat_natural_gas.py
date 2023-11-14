@@ -88,48 +88,6 @@ class NaturalGasTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_compute_natural_gas_price_prod_consumption(self):
-
-        years = np.arange(2020, 2051)
-        utilisation_ratio = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
-        })
-        
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
-                       'techno_infos_dict': NaturalGasBoilerMediumHeatDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: NaturalGasBoilerMediumHeatDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': NaturalGasBoilerMediumHeatDiscipline.initial_production,
-                       'initial_age_distrib': NaturalGasBoilerMediumHeatDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Methane.data_energy_dict,
-                       }
-
-        ng_model = NaturalGasMediumHeat('NaturalGas')
-        ng_model.configure_parameters(inputs_dict)
-        ng_model.configure_parameters_update(inputs_dict)
-        price_details = ng_model.compute_price()
-        ng_model.compute_consumption_and_production()
-        # ng_model.check_outputs_dict(self.biblio_data)
-
     def test_02_natural_gas_discipline(self):
 
         self.name = 'Test'

@@ -52,7 +52,7 @@ class CHPHighHeat(highheattechno):
         Compute the consumption and the production of the technology for a given investment
         """
 
-        self.compute_primary_energy_production()
+        
 
         self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
                                                                                     self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})']

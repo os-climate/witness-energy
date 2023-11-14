@@ -241,7 +241,6 @@ class TechnoType:
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ?
         """
-        self.compute_primary_energy_production()
 
         #self.compute_power_production()
 
@@ -1443,8 +1442,10 @@ class TechnoType:
         self.configure_parameters_update(inputs_dict)
         # -- compute informations
         self.compute_price()
+        self.compute_primary_energy_production()
         self.compute_consumption_and_production()
         self.compute_consumption_and_power_production()
+        self.apply_utilisation_ratio()
 
         # Create a datafarame containing all the ratios
         self.select_ratios()
@@ -1474,3 +1475,25 @@ class TechnoType:
             self.production[column] = self.production[column].values / self.scaling_factor_techno_production
             self.production_woratio[column] = self.production_woratio[column].values / self.scaling_factor_techno_production
 
+    def apply_utilisation_ratio(self):
+        """
+        Apply utilisation ratio percentage to
+        - consumption
+        - production
+        - co2 emissions
+        - power production
+        """
+        for column in self.consumption_detailed.columns:
+            if column == GlossaryCore.Years:
+                continue
+            self.consumption_detailed[column] = self.consumption_detailed[column].values * self.utilisation_ratio / 100.
+
+        for column in self.production_detailed.columns:
+            if column == GlossaryCore.Years:
+                continue
+            self.production_detailed[column] = self.production_detailed[column].values * self.utilisation_ratio / 100.
+
+        for column in self.carbon_emissions.columns:
+            if column == GlossaryCore.Years:
+                continue
+            self.carbon_emissions[column] = self.carbon_emissions[column].values * self.utilisation_ratio / 100.

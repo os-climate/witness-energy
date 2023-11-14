@@ -65,7 +65,7 @@ class CO2Membranes(CCTechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        self.compute_primary_energy_production()
+        
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \

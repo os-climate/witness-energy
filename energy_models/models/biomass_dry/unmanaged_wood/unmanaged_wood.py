@@ -105,12 +105,14 @@ class UnmanagedWood(BiomassDryTechno):
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
         """
+        
+
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_wood = f'{self.energy_name}_wood (TWh)'
         name_non_energy = f'{self.energy_name}_non_energy (TWh)'
         name_tot = f'{self.energy_name}_tot (TWh)'
 
-        self.compute_primary_energy_production()
+
 
         self.production_mix = pd.DataFrame({GlossaryCore.Years: self.years})
         unmanaged_production = deepcopy(

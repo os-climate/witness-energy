@@ -32,7 +32,7 @@ class GeologicMineralization(CSTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Consumption
 

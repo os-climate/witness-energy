@@ -96,7 +96,7 @@ class Refinery(LiquidFuelTechno):
         the break down is made with self.production['kerosene'] ... ect 
         """
 
-        self.compute_primary_energy_production()
+        
 
         for energy in self.other_energy_dict:
             # if it s a dict, so it is a data_energy_dict

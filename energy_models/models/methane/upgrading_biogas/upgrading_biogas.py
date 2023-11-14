@@ -65,7 +65,7 @@ class UpgradingBiogas(MethaneTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
         # kg/kWh corresponds to Mt/TWh
         co2_prod = self.get_theoretical_co2_prod()
         self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = co2_prod * \

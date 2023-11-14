@@ -121,7 +121,7 @@ class ElectrolysisSOEC(GaseousHydrogenTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         o2_needs = self.get_oxygen_produced()
         self.production_detailed[f'O2 ({self.mass_unit})'] = o2_needs / \

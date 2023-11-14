@@ -42,7 +42,7 @@ class BiogasFired(ElectricityTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         co2_prod = self.get_theoretical_co2_prod()
 

@@ -93,7 +93,7 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         Maybe add efficiency in consumption computation ?
         """
 
-        self.compute_primary_energy_production()
+        
 
         carbon_production_factor = self.get_theoretical_co2_prod()
         self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \

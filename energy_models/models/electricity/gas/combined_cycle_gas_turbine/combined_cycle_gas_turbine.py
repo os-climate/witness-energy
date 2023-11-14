@@ -42,7 +42,7 @@ class CCGasT(ElectricityTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         co2_prod = self.get_theoretical_co2_prod()
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \

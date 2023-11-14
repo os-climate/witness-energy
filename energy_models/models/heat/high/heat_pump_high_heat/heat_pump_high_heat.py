@@ -47,7 +47,7 @@ class HeatPump(highheattechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        self.compute_primary_energy_production()
+        
         # Production
         self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
             self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
