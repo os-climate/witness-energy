@@ -63,6 +63,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryCore.Years: years, 'CO2': 0})
+        
 
         self.invest_level = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.ones(len(years)) * 0.0325})
@@ -574,8 +575,8 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         })
         for techno in technos:
             inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 

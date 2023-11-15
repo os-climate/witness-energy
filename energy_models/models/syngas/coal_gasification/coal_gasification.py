@@ -56,10 +56,10 @@ class CoalGasification(SyngasTechno):
         Need to take into account negative CO2 from biomass and positive from elec
         '''
 
-        self.carbon_emissions[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
-            self.cost_details['solid_fuel_needs']
+        self.carbon_intensity[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
+                                                self.cost_details['solid_fuel_needs']
 
-        return self.carbon_emissions[SolidFuel.name]
+        return self.carbon_intensity[SolidFuel.name]
 
     def compute_consumption_and_production(self):
         """

@@ -48,11 +48,11 @@ class DirectAirCaptureTechno(CCTechno):
         Need to take into account  CO2 from coal extraction and electricity production
         '''
 
-        self.carbon_emissions[Fossil.name] = self.energy_CO2_emissions[Fossil.name] * self.cost_details['heat_needs']
+        self.carbon_intensity[Fossil.name] = self.energy_CO2_emissions[Fossil.name] * self.cost_details['heat_needs']
 
-        self.carbon_emissions[Renewable.name] = self.energy_CO2_emissions[Renewable.name] * self.cost_details['elec_needs']
+        self.carbon_intensity[Renewable.name] = self.energy_CO2_emissions[Renewable.name] * self.cost_details['elec_needs']
 
-        return self.carbon_emissions[Fossil.name] + self.carbon_emissions[Renewable.name] - 1.0
+        return self.carbon_intensity[Fossil.name] + self.carbon_intensity[Renewable.name] - 1.0
 
     def grad_price_vs_energy_price(self):
         '''

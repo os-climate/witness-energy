@@ -52,6 +52,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.energy_name = 'liquid_hydrogen'
 
         years = np.arange(2020, 2051)
+        
         self.years = years
 
         self.hydrogen_liquefaction_techno_prices = pd.DataFrame(
@@ -275,7 +276,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-        inputs_dict[f'{namespace}.{self.energy_name}.HydrogenLiquefaction.techno_production'][
+        inputs_dict[f'{namespace}.{self.energy_name}.HydrogenLiquefaction.{GlossaryCore.TechnoProductionValue}'][
             'hydrogen.liquid_hydrogen (TWh)'] *= np.linspace(5.0, 5.0, len(self.years))
 
         technos = inputs_dict[f"{self.name}.technologies_list"]
@@ -285,8 +286,8 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         })
         for techno in technos:
             inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)

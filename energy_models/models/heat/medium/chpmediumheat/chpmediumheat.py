@@ -78,10 +78,10 @@ class CHPMediumHeat(mediumheattechno):
         Need to take into account CO2 from Methane production
         '''
 
-        self.carbon_emissions[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-            self.cost_details[f'{Methane.name}_needs']
+        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
+                                              self.cost_details[f'{Methane.name}_needs']
 
-        return self.carbon_emissions[f'{Methane.name}']
+        return self.carbon_intensity[f'{Methane.name}']
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh

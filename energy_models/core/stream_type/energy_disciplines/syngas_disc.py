@@ -102,7 +102,7 @@ class SyngasDiscipline(EnergyDiscipline):
                     dynamic_inputs[f'{techno}.{GlossaryCore.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] =\
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] =\
                         GlossaryCore.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
 
         self.add_inputs(dynamic_inputs)

@@ -45,9 +45,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
             "invest": ("float", None, True),
         },
     }
-    TechnoCapitalDfValue = "techno_capital"
     TechnoCapitalDf = {
-        "var_name": TechnoCapitalDfValue,
+        "var_name": GlossaryWitnessCore.TechnoCapitalValue,
         "type": "dataframe",
         "unit": "G$",
         "description": "Capital in G$ of the technology",

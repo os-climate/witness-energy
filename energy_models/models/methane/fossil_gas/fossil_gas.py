@@ -94,11 +94,11 @@ class FossilGas(MethaneTechno):
         Need to take into account  CO2 from electricity production 
         '''
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details['elec_needs']
 
-        self.carbon_emissions[self.NATURAL_GAS_RESOURCE_NAME] = \
+        self.carbon_intensity[self.NATURAL_GAS_RESOURCE_NAME] = \
             self.resources_CO2_emissions[self.NATURAL_GAS_RESOURCE_NAME] * \
             self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[self.NATURAL_GAS_RESOURCE_NAME]
+        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[self.NATURAL_GAS_RESOURCE_NAME]

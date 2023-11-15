@@ -99,10 +99,10 @@ class ManagedWood(BiomassDryTechno):
         Need to take into account  CO2 from electricity/fuel production
         '''
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details['elec_needs']
 
-        return self.carbon_emissions[f'{Electricity.name}']
+        return self.carbon_intensity[f'{Electricity.name}']
 
     def compute_price(self):
         prices = BiomassDryTechno.compute_price(self)

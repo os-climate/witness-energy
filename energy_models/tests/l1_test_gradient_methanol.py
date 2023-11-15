@@ -61,6 +61,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.years = np.arange(2020, 2051)
+        
         self.energy_name = 'methanol'
         self.product_energy_unit = 'TWh'
         self.mass_unit = 'Mt'
@@ -76,6 +77,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                                                      CarbonCapture.name: 0.0,
                                                      Electricity.name: 0.0,
                                                      })
+        
         self.resources_price = pd.DataFrame({GlossaryCore.Years: self.years, Water.name: 2.0})
 
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
@@ -216,18 +218,18 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
             GlossaryCore.Years: self.years,
             GlossaryCore.Capital: 20000 * np.ones_like(self.years)
         })
-
+        techno_name = 'CO2Hydrogenation'
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
                        f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.techno_list}': ['CO2Hydrogenation'],
-                       f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_consumption': self.co2_hydrogenation_consumption,
-                       f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_capital': techno_capital,
-                       f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_consumption_woratio': self.co2_hydrogenation_consumption,
-                       f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_production': self.co2_hydrogenation_production,
-                       f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_prices': self.co2_hydrogenation_techno_prices,
-                       f'{self.name}.{self.model_name}.CO2Hydrogenation.{GlossaryCore.CO2EmissionsValue}': self.co2_hydrogenation_carbon_emissions,
-                       f'{self.name}.{self.model_name}.CO2Hydrogenation.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_CO2Hydrogenation,
+                       f'{self.name}.{GlossaryCore.techno_list}': [techno_name],
+                       f'{self.name}.{self.model_name}.{techno_name}.{GlossaryCore.TechnoConsumptionValue}': self.co2_hydrogenation_consumption,
+                       f'{self.name}.{self.model_name}.{techno_name}.{GlossaryCore.TechnoCapitalValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.{techno_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.co2_hydrogenation_consumption,
+                       f'{self.name}.{self.model_name}.{techno_name}.{GlossaryCore.TechnoProductionValue}': self.co2_hydrogenation_production,
+                       f'{self.name}.{self.model_name}.{techno_name}.{GlossaryCore.TechnoPricesValue}': self.co2_hydrogenation_techno_prices,
+                       f'{self.name}.{self.model_name}.{techno_name}.{GlossaryCore.CO2EmissionsValue}': self.co2_hydrogenation_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{techno_name}.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_CO2Hydrogenation,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -240,10 +242,10 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_specific_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_production',
-                                    f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_consumption',
-                                    f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_prices',
-                                    f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_consumption',
+                            inputs=[f'{self.name}.{self.model_name}.{techno_name}.{GlossaryCore.TechnoProductionValue}',
+                                    f'{self.name}.{self.model_name}.{techno_name}.{GlossaryCore.TechnoConsumptionValue}',
+                                    f'{self.name}.{self.model_name}.{techno_name}.{GlossaryCore.TechnoPricesValue}',
+                                    f'{self.name}.{self.model_name}.{techno_name}.{GlossaryCore.TechnoConsumptionValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.CO2_per_use',

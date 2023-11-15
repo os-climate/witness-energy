@@ -63,6 +63,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1.5 * 1000.0
         self.years = np.arange(2020, 2051)
+        
 
         self.energy_prices = pd.DataFrame(
             {GlossaryCore.Years: self.years, 'electricity': electricity_price})
@@ -171,7 +172,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.LandUseRequiredValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      f'{self.name}.{self.model_name}.non_use_capital'], )
 
     def test_02_managed_wood_discipline_analytic_grad(self):
@@ -222,7 +223,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.LandUseRequiredValue}'], )
 
     def test_03_unmanaged_wood_discipline_analytic_grad(self):
@@ -276,7 +277,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.LandUseRequiredValue}'])
 
     def test_04_biomass_dry_discipline_jacobian(self):
@@ -336,8 +337,8 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
             GlossaryCore.Capital: 20000 * np.ones_like(self.years)
         })
         for techno in technos:
-            inputs_dict[f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+            inputs_dict[f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 

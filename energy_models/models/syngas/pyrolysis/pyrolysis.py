@@ -82,10 +82,10 @@ class Pyrolysis(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_emissions[ResourceGlossary.Wood['name']] = self.resources_CO2_emissions[ResourceGlossary.Wood['name']] * \
-            self.cost_details['wood_needs']
+        self.carbon_intensity[ResourceGlossary.Wood['name']] = self.resources_CO2_emissions[ResourceGlossary.Wood['name']] * \
+                                                               self.cost_details['wood_needs']
 
-        return self.carbon_emissions[ResourceGlossary.Wood['name']]
+        return self.carbon_intensity[ResourceGlossary.Wood['name']]
 
     def grad_price_vs_energy_price(self):
         '''

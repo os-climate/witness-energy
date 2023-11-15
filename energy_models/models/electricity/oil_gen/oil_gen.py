@@ -106,12 +106,12 @@ class OilGen(ElectricityTechno):
         Need to take into account  CO2 from coal extraction and electricity production
         '''
 
-        self.carbon_emissions[LiquidFuel.name] = self.energy_CO2_emissions[LiquidFuel.name] * \
-            self.cost_details['liquid_fuel_needs']
-        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
-            self.cost_details['water_needs']
+        self.carbon_intensity[LiquidFuel.name] = self.energy_CO2_emissions[LiquidFuel.name] * \
+                                                 self.cost_details['liquid_fuel_needs']
+        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
+                                            self.cost_details['water_needs']
 
-        return self.carbon_emissions[LiquidFuel.name] + self.carbon_emissions[Water.name]
+        return self.carbon_intensity[LiquidFuel.name] + self.carbon_intensity[Water.name]
 
     def grad_price_vs_energy_price(self):
         '''

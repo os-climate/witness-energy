@@ -124,7 +124,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                           inputs_dict[GlossaryCore.YearEnd] + 1)
         if hydropower_name in self.energy_model.subelements_list:
             self.set_partial_derivative_for_other_types(('prod_hydropower_constraint', 'hydropower_constraint'), (
-                'Hydropower.techno_production', f'{Electricity.name} ({Electricity.unit})'),
+                f'Hydropower.{GlossaryCore.TechnoProductionValue}', f'{Electricity.name} ({Electricity.unit})'),
                                                         - inputs_dict['scaling_factor_techno_production'] * np.identity(
                                                             len(years)) / inputs_dict['hydropower_constraint_ref'])
 

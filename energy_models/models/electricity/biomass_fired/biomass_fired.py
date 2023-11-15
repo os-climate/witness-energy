@@ -98,10 +98,10 @@ class BiomassFired(ElectricityTechno):
         Need to take into account  CO2 from methane extraction
         '''
 
-        self.carbon_emissions[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-            self.techno_infos_dict['biomass_needs']
+        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
+                                                 self.techno_infos_dict['biomass_needs']
 
-        return self.carbon_emissions[BiomassDry.name]
+        return self.carbon_intensity[BiomassDry.name]
 
     def grad_price_vs_energy_price(self):
         '''

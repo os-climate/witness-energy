@@ -100,7 +100,7 @@ class FischerTropsch(LiquidFuelTechno):
                 dco2_taxes_dsyngas_ratio * \
                 (np.identity(len(self.years)) * sg_needs_efficiency) * \
                 np.sign(np.maximum(
-                    0.0, self.syngas_ratio_techno.carbon_emissions[self.sg_transformation_name].values))
+                    0.0, self.syngas_ratio_techno.carbon_intensity[self.sg_transformation_name].values))
 
         elif np.all(self.needed_syngas_ratio <= self.syngas_ratio):
             self.sg_transformation_name = 'WGS'
@@ -117,7 +117,7 @@ class FischerTropsch(LiquidFuelTechno):
                 dco2_taxes_dsyngas_ratio * \
                 (np.identity(len(self.years)) * sg_needs_efficiency) * \
                 np.sign(np.maximum(
-                    0.0, self.syngas_ratio_techno.carbon_emissions[self.sg_transformation_name].values))
+                    0.0, self.syngas_ratio_techno.carbon_intensity[self.sg_transformation_name].values))
             self.cost_details[self.sg_transformation_name] = self.price_details_sg_techno[
                 f'{self.sg_transformation_name}_wotaxes']
         else:
@@ -141,7 +141,7 @@ class FischerTropsch(LiquidFuelTechno):
                 dco2_taxes_dsyngas_ratio_wgs * \
                 (np.identity(len(self.years)) * sg_needs_efficiency) * \
                 np.sign(np.maximum(
-                    0.0, self.syngas_ratio_techno.carbon_emissions['WGS'].values))
+                    0.0, self.syngas_ratio_techno.carbon_intensity['WGS'].values))
 
             sg_ratio_rwgs = np.minimum(
                 self.syngas_ratio, self.needed_syngas_ratio)
@@ -159,12 +159,12 @@ class FischerTropsch(LiquidFuelTechno):
             dprice_FT_wotaxes_dsyngas_ratio_RWGS = dprice_RWGS_dsyngas_ratio * \
                 (np.ones(len(self.years)) * sg_needs_efficiency)
             dprice_FT_dsyngas_ratio_RWGS = dprice_FT_wotaxes_dsyngas_ratio_RWGS + \
-                dco2_taxes_dsyngas_ratio_rwgs * \
-                (np.identity(len(self.years)) * sg_needs_efficiency) * \
-                np.sign(
-                    self.syngas_ratio_techno.carbon_emissions['RWGS'].values) * \
-                np.sign(np.maximum(
-                    0.0, self.syngas_ratio_techno.carbon_emissions['RWGS'].values))
+                                           dco2_taxes_dsyngas_ratio_rwgs * \
+                                           (np.identity(len(self.years)) * sg_needs_efficiency) * \
+                                           np.sign(
+                    self.syngas_ratio_techno.carbon_intensity['RWGS'].values) * \
+                                           np.sign(np.maximum(
+                    0.0, self.syngas_ratio_techno.carbon_intensity['RWGS'].values))
 
             self.price_details_sg_techno = pd.concat([price_details_sg_techno_wgs.loc[
                 price_details_sg_techno_wgs['sg_ratio'] >= self.needed_syngas_ratio],
@@ -551,8 +551,8 @@ class FischerTropsch(LiquidFuelTechno):
             self.cost_details['syngas_needs_for_FT'] / \
             self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            (self.cost_details['elec_needs'] + elec_needs_wgs)
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       (self.cost_details['elec_needs'] + elec_needs_wgs)
 
         # needs of syngas in kWh syngasin/kWhsyngas_out
         syngas_needs_wgs = self.price_details_sg_techno['syngas_needs'] / \
@@ -564,7 +564,7 @@ class FischerTropsch(LiquidFuelTechno):
             self.cost_details['syngas_needs_for_FT'] / \
             self.cost_details['efficiency']
 
-        self.carbon_emissions[Syngas.name] = self.energy_CO2_emissions[
+        self.carbon_intensity[Syngas.name] = self.energy_CO2_emissions[
             f'{Syngas.name}'] * syngas_needs
 
         co2_needs = 0.0
@@ -587,14 +587,14 @@ class FischerTropsch(LiquidFuelTechno):
                 self.cost_details['syngas_needs_for_FT'] / \
                 self.cost_details['efficiency']
 
-        self.carbon_emissions[CO2.name] = self.resources_CO2_emissions[
+        self.carbon_intensity[CO2.name] = self.resources_CO2_emissions[
             ResourceGlossary.CO2['name']] * co2_needs
 
-        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[
+        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[
             ResourceGlossary.Water['name']] * water_needs
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[Syngas.name] + \
-               self.carbon_emissions[CO2.name] + self.carbon_emissions[Water.name]
+        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[Syngas.name] + \
+               self.carbon_intensity[CO2.name] + self.carbon_intensity[Water.name]
 
     def compute_dco2_emissions_dsyngas_ratio(self):
 

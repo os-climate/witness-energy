@@ -92,10 +92,10 @@ class GasElec(ElectricityTechno):
         Need to take into account  CO2 from methane extraction
         '''
 
-        self.carbon_emissions[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-            self.techno_infos_dict['kwh_methane/kwh']
+        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
+                                              self.techno_infos_dict['kwh_methane/kwh']
 
-        return self.carbon_emissions[Methane.name]
+        return self.carbon_intensity[Methane.name]
 
     def grad_price_vs_energy_price(self):
         '''

@@ -87,18 +87,18 @@ class PlasmaCracking(GaseousHydrogenTechno):
         Carbon capture (Methane is not burned but transformed is not taken into account)
         '''
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
+                                                  self.cost_details['elec_needs']
 
-        self.carbon_emissions[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-            self.cost_details['fuel_needs'] / self.cost_details['efficiency']
+        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
+                                              self.cost_details['fuel_needs'] / self.cost_details['efficiency']
 
         # self.energy_CO2_emissions['carbon_storage']
         C_per_h2 = self.get_theoretical_graphene_production()
-        self.carbon_emissions['carbon storage'] = -C_per_h2 * \
-            CO2.data_energy_dict['molar_mass'] / \
-            Carbon.data_energy_dict['molar_mass']
-        return self.carbon_emissions[Electricity.name] + self.carbon_emissions[Methane.name] + self.carbon_emissions['carbon storage']
+        self.carbon_intensity['carbon storage'] = -C_per_h2 * \
+                                                  CO2.data_energy_dict['molar_mass'] / \
+                                                  Carbon.data_energy_dict['molar_mass']
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Methane.name] + self.carbon_intensity['carbon storage']
 
     def get_theoretical_graphene_production(self):
         ''' 

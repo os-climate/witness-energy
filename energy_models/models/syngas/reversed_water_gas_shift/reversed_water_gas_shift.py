@@ -498,18 +498,18 @@ class RWGS(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_emissions[f'{Syngas.name}'] = self.energy_CO2_emissions[f'{Syngas.name}'] * \
-            self.cost_details['syngas_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{Syngas.name}'] = self.energy_CO2_emissions[f'{Syngas.name}'] * \
+                                                  self.cost_details['syngas_needs'] / \
+                                                  self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details['elec_needs']
 
-        self.carbon_emissions[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2['name']] * \
-            self.cost_details['CO2_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2['name']] * \
+                                               self.cost_details['CO2_needs'] / \
+                                               self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Syngas.name}'] + self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[f'{CO2.name}']
+        return self.carbon_intensity[f'{Syngas.name}'] + self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[f'{CO2.name}']
 
     def compute_dco2_emissions_dsyngas_ratio(self):
         dco2_needs_dsyngas_ratio = self.compute_dco2_needs_dsyngas_ratio()

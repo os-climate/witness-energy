@@ -70,13 +70,13 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         Carbon capture (Methane is not burned but transformed is not taken into account)
         '''
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
+                                                  self.cost_details['elec_needs']
 
-        self.carbon_emissions[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
-            self.cost_details['hydrogen_needs']
+        self.carbon_intensity[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
+                                                      self.cost_details['hydrogen_needs']
 
-        return self.carbon_emissions[Electricity.name] + self.carbon_emissions[GaseousHydrogen.name]
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[GaseousHydrogen.name]
 
     def compute_consumption_and_production(self):
         """

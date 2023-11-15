@@ -78,12 +78,12 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         Carbon capture (Methane is not burned but transformed is not taken into account)
         '''
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details['elec_needs']
-        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
-            self.cost_details['water_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
+                                                  self.cost_details['elec_needs']
+        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
+                                            self.cost_details['water_needs']
 
-        return self.carbon_emissions[Electricity.name] + self.carbon_emissions[Water.name]
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Water.name]
 
     def get_water_needs(self):
         ''' 

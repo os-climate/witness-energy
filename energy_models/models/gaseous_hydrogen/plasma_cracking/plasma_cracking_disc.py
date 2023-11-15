@@ -303,8 +303,8 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
    GRADIENT H2 VS CO2_TAXES
         '''
 
-        dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_emissions[GlossaryCore.Years].max(
-        )) * self.techno_model.carbon_emissions[self.techno_name].clip(0).values
+        dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_intensity[GlossaryCore.Years].max(
+        )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values
         dtechno_prices_dCO2_taxes = dCO2_taxes_factory * \
             self.techno_model.margin.loc[self.techno_model.margin[GlossaryCore.Years] <=
                                          self.techno_model.cost_details[GlossaryCore.Years].max()][GlossaryCore.MarginValue].values / 100.0

@@ -118,24 +118,24 @@ class HefaDecarboxylation(HydrotreatedOilFuelTechno):
         Need to take into account  CO2 from electricity/hydrogen production
         """
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details[f'{Electricity.name}_needs']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details[f'{Electricity.name}_needs']
 
-        self.carbon_emissions[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
-            self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
+                                                           self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
+                                                           self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{NaturalOil.name}'] = self.resources_CO2_emissions[f'{NaturalOil.name}'] * \
-            self.cost_details[f'{NaturalOil.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{NaturalOil.name}'] = self.resources_CO2_emissions[f'{NaturalOil.name}'] * \
+                                                      self.cost_details[f'{NaturalOil.name}_needs'] / \
+                                                      self.cost_details['efficiency']
 
         # Theoretical C02 production in kg
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.carbon_emissions[f'{CarbonCapture.name}'] = carbon_production_factor
+        self.carbon_intensity[f'{CarbonCapture.name}'] = carbon_production_factor
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[f'{NaturalOil.name}']  \
-            + self.carbon_emissions[f'{GaseousHydrogen.name}'] + \
-            self.carbon_emissions[f'{CarbonCapture.name}']
+        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[f'{NaturalOil.name}'] \
+               + self.carbon_intensity[f'{GaseousHydrogen.name}'] + \
+               self.carbon_intensity[f'{CarbonCapture.name}']
 
     def get_theoretical_natural_oil_needs(self):
         """

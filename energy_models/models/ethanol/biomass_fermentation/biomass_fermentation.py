@@ -112,20 +112,20 @@ class BiomassFermentation(EthanolTechno):
         Need to take into account CO2 from electricity/fuel production
         '''
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details[f'{Electricity.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details[f'{Electricity.name}_needs'] / \
+                                                       self.cost_details['efficiency']
 
-        self.carbon_emissions[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-            self.cost_details[f'{BiomassDry.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
+                                                 self.cost_details[f'{BiomassDry.name}_needs'] / \
+                                                 self.cost_details['efficiency']
 
-        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                               self.cost_details[f'{Water.name}_needs'] / \
-                                               self.cost_details['efficiency']
+        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
+                                            self.cost_details[f'{Water.name}_needs'] / \
+                                            self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[f'{BiomassDry.name}'] + \
-               self.carbon_emissions[Water.name]
+        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[f'{BiomassDry.name}'] + \
+               self.carbon_intensity[Water.name]
 
     def get_theoretical_biomass_needs(self):
         """

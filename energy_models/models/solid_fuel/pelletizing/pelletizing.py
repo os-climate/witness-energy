@@ -88,9 +88,9 @@ class Pelletizing(SolidFuelTechno):
         Need to take into account negative CO2 from biomass_dry and CO2 from electricity (can be 0.0 or positive)
         '''
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details['elec_needs']
-        self.carbon_emissions[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-            self.cost_details['biomass_dry_needs']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details['elec_needs']
+        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
+                                                 self.cost_details['biomass_dry_needs']
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[BiomassDry.name]
+        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[BiomassDry.name]

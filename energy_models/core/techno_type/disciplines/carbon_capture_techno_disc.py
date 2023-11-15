@@ -134,7 +134,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('non_use_capital', self.techno_model.name), (GlossaryCore.FlueGasMean, GlossaryCore.FlueGasMean), dnon_use_capital_dflue_gas_mean)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoCapitalDfValue, GlossaryEnergy.Capital),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital),
             (GlossaryCore.FlueGasMean, GlossaryCore.FlueGasMean), dtechnocapital_dflue_gas_mean)
 
     def get_chart_filter_list(self):

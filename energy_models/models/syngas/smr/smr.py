@@ -88,19 +88,19 @@ class SMR(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_emissions[f'{Methane.name}'] = self.energy_CO2_emissions[f'{Methane.name}'] * \
-            self.cost_details['CH4_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{Methane.name}'] = self.energy_CO2_emissions[f'{Methane.name}'] * \
+                                                   self.cost_details['CH4_needs'] / \
+                                                   self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details['elec_needs']
 
-        self.carbon_emissions[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
-            self.cost_details[f'{Water.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
+                                                 self.cost_details[f'{Water.name}_needs'] / \
+                                                 self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Methane.name}'] + self.carbon_emissions[f'{Electricity.name}'] + \
-               self.carbon_emissions[f'{Water.name}']
+        return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[f'{Electricity.name}'] + \
+               self.carbon_intensity[f'{Water.name}']
 
     def get_theoretical_CH4_needs(self):
         ''' 

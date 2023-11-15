@@ -65,7 +65,7 @@ class EnergyDiscipline(StreamDiscipline):
             if techno_list is not None:
                 techno_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
                 for techno in techno_list:
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryCore.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.{GlossaryCore.TechnoConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         "dynamic_dataframe_columns": True}

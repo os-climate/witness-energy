@@ -62,19 +62,19 @@ class CalciumPotassium(CCTechno):
         Need to take into account  CO2 from coal extraction and electricity production
         '''
 
-        self.carbon_emissions[Methane.name] = self.energy_CO2_emissions[Methane.name] * self.cost_details['heat_needs']
+        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * self.cost_details['heat_needs']
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs']
 
-        self.carbon_emissions[ResourceGlossary.Potassium['name']] = self.resources_CO2_emissions[ResourceGlossary.Potassium['name']] * \
-                                                            self.cost_details['potassium_needs']
+        self.carbon_intensity[ResourceGlossary.Potassium['name']] = self.resources_CO2_emissions[ResourceGlossary.Potassium['name']] * \
+                                                                    self.cost_details['potassium_needs']
 
-        self.carbon_emissions[ResourceGlossary.Calcium['name']] = self.resources_CO2_emissions[ResourceGlossary.Calcium['name']] * \
-                                                            self.cost_details['calcium_needs']
+        self.carbon_intensity[ResourceGlossary.Calcium['name']] = self.resources_CO2_emissions[ResourceGlossary.Calcium['name']] * \
+                                                                  self.cost_details['calcium_needs']
 
 
 
-        return self.carbon_emissions[Methane.name] + self.carbon_emissions[Electricity.name] + self.carbon_emissions[ResourceGlossary.Potassium['name']] + self.carbon_emissions[ResourceGlossary.Calcium['name']]
+        return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[ResourceGlossary.Potassium['name']] + self.carbon_intensity[ResourceGlossary.Calcium['name']]
 
 
     def grad_price_vs_energy_price(self):

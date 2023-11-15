@@ -84,10 +84,10 @@ class BiomassGasification(SyngasTechno):
         Need to take into account negative CO2 from biomass and positive from elec
         '''
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
+                                                  self.cost_details['elec_needs']
 
-        self.carbon_emissions[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-            self.cost_details['biomass_needs']
+        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
+                                                 self.cost_details['biomass_needs']
 
-        return self.carbon_emissions[Electricity.name] + self.carbon_emissions[BiomassDry.name]
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[BiomassDry.name]

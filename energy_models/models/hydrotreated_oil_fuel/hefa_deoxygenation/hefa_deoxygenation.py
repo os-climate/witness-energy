@@ -119,19 +119,19 @@ class HefaDeoxygenation(HydrotreatedOilFuelTechno):
         Need to take into account  CO2 from electricity/hydrogen production
         """
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details[f'{Electricity.name}_needs']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details[f'{Electricity.name}_needs']
 
-        self.carbon_emissions[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
-            self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
+                                                           self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
+                                                           self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{NaturalOil.name}'] = self.resources_CO2_emissions[f'{NaturalOil.name}'] * \
-            self.cost_details[f'{NaturalOil.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{NaturalOil.name}'] = self.resources_CO2_emissions[f'{NaturalOil.name}'] * \
+                                                      self.cost_details[f'{NaturalOil.name}_needs'] / \
+                                                      self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[f'{NaturalOil.name}']  \
-            + self.carbon_emissions[f'{GaseousHydrogen.name}']
+        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[f'{NaturalOil.name}'] \
+               + self.carbon_intensity[f'{GaseousHydrogen.name}']
 
     def get_theoretical_natural_oil_needs(self):
         """

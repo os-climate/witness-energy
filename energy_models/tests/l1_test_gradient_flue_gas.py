@@ -53,6 +53,7 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
 
         self.energy_name = 'flue_gas'
 
+        
         self.flue_gas_mean = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.FlueGasMean: 0.3})
 
@@ -136,7 +137,6 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryCore.FlueGasMean}': self.flue_gas_mean,
                        f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -145,6 +145,7 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
+                       
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,

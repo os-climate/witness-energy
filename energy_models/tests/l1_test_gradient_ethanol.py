@@ -56,6 +56,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                                            'biomass_dry': 45.0,
                                            })
 
+        
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryCore.Years: years,
              'electricity': 0.0,

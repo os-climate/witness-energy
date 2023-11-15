@@ -148,29 +148,29 @@ class Transesterification(BioDieselTechno):
         Need to take into account  CO2 from electricity/fuel production
         '''
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details[f'{Electricity.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details[f'{Electricity.name}_needs'] / \
+                                                       self.cost_details['efficiency']
 
-        self.carbon_emissions[SodiumHydroxide.name] = self.resources_CO2_emissions[SodiumHydroxide.name] * \
-            self.cost_details[f'{SodiumHydroxide.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[SodiumHydroxide.name] = self.resources_CO2_emissions[SodiumHydroxide.name] * \
+                                                      self.cost_details[f'{SodiumHydroxide.name}_needs'] / \
+                                                      self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{NaturalOil.name}'] = self.resources_CO2_emissions[f'{NaturalOil.name}'] * \
-            self.cost_details[f'{NaturalOil.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{NaturalOil.name}'] = self.resources_CO2_emissions[f'{NaturalOil.name}'] * \
+                                                      self.cost_details[f'{NaturalOil.name}_needs'] / \
+                                                      self.cost_details['efficiency']
 
-        self.carbon_emissions[Methanol.name] = self.resources_CO2_emissions[Methanol.name] * \
-            self.cost_details[f'{Methanol.name}_needs'] / \
-            self.cost_details['efficiency']
-
-        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                               self.cost_details[f'{Water.name}_needs'] / \
+        self.carbon_intensity[Methanol.name] = self.resources_CO2_emissions[Methanol.name] * \
+                                               self.cost_details[f'{Methanol.name}_needs'] / \
                                                self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[SodiumHydroxide.name] + \
-               self.carbon_emissions[f'{NaturalOil.name}'] + self.carbon_emissions[Methanol.name] + \
-               self.carbon_emissions[Water.name]
+        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
+                                            self.cost_details[f'{Water.name}_needs'] / \
+                                            self.cost_details['efficiency']
+
+        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[SodiumHydroxide.name] + \
+               self.carbon_intensity[f'{NaturalOil.name}'] + self.carbon_intensity[Methanol.name] + \
+               self.carbon_intensity[Water.name]
 
     def grad_co2_emissions_vs_resources_co2_emissions(self):
         '''

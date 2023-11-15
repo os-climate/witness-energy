@@ -53,6 +53,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.energy_name = 'liquid_fuel'
 
         years = np.arange(2020, 2051)
+        
         self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'electricity': np.ones(len(years)) * 20,
                                            'syngas': 34
                                            })
@@ -141,6 +142,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
+        
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
 
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
@@ -203,6 +205,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
+        
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
 
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
@@ -264,6 +267,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
+        
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
 
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
@@ -388,6 +392,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
+        
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
 
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(years),

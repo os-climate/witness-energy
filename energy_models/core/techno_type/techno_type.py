@@ -56,7 +56,7 @@ class TechnoType:
 
         self.resources_price = None
         self.resources_CO2_emissions = None
-        self.carbon_emissions = None
+        self.carbon_intensity = None
         self.product_energy_unit = 'TWh'
         self.mass_unit = 'Mt'
         self.crf = None
@@ -139,7 +139,7 @@ class TechnoType:
 
         self.aging_distribution = pd.DataFrame({GlossaryCore.Years: self.years})
 
-        self.carbon_emissions = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.carbon_intensity = pd.DataFrame({GlossaryCore.Years: self.years})
 
         self.land_use = pd.DataFrame({GlossaryCore.Years: self.years})
 
@@ -970,16 +970,16 @@ class TechnoType:
         '''
 
         if 'CO2_from_production' not in self.techno_infos_dict:
-            self.carbon_emissions['production'] = self.get_theoretical_co2_prod(
+            self.carbon_intensity['production'] = self.get_theoretical_co2_prod(
                 unit='kg/kWh')
         elif self.techno_infos_dict['CO2_from_production'] == 0.0:
-            self.carbon_emissions['production'] = 0.0
+            self.carbon_intensity['production'] = 0.0
         else:
             if self.techno_infos_dict['CO2_from_production_unit'] == 'kg/kg':
-                self.carbon_emissions['production'] = self.techno_infos_dict['CO2_from_production'] / \
-                    self.data_energy_dict['high_calorific_value']
+                self.carbon_intensity['production'] = self.techno_infos_dict['CO2_from_production'] / \
+                                                      self.data_energy_dict['high_calorific_value']
             elif self.techno_infos_dict['CO2_from_production_unit'] == 'kg/kWh':
-                self.carbon_emissions['production'] = self.techno_infos_dict['CO2_from_production']
+                self.carbon_intensity['production'] = self.techno_infos_dict['CO2_from_production']
 
         # Add carbon emission from input energies (resources or other
         # energies)
@@ -988,8 +988,8 @@ class TechnoType:
         )
 
         # Add CO2 from production + C02 from input energies
-        self.carbon_emissions[self.name] = self.carbon_emissions['production'] + \
-            co2_emissions_frominput_energies
+        self.carbon_intensity[self.name] = self.carbon_intensity['production'] + \
+                                           co2_emissions_frominput_energies
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
@@ -1006,8 +1006,8 @@ class TechnoType:
         '''
         self.compute_carbon_emissions()
         CO2_taxes_kwh = self.CO2_taxes[GlossaryCore.CO2Tax].loc[self.CO2_taxes[GlossaryCore.Years]
-                                                      <= self.carbon_emissions[GlossaryCore.Years].max()].values * \
-            self.carbon_emissions[self.name].clip(0)
+                                                                <= self.carbon_intensity[GlossaryCore.Years].max()].values * \
+                        self.carbon_intensity[self.name].clip(0)
         return CO2_taxes_kwh
 
     @abstractmethod
@@ -1488,11 +1488,6 @@ class TechnoType:
             if column == GlossaryCore.Years:
                 continue
             self.production_detailed[column] = self.production_detailed[column].values * self.utilisation_ratio / 100.
-
-        for column in self.carbon_emissions.columns:
-            if column == GlossaryCore.Years:
-                continue
-            self.carbon_emissions[column] = self.carbon_emissions[column].values * self.utilisation_ratio / 100.
 
     def store_consumption_and_production_and_landuse_wo_ratios(self):
         """

@@ -56,6 +56,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         years = np.arange(2020, 2051)
+        
         self.years = years
         self.energy_name = 'liquid_fuel'
         # crude oil price : 1.3$/gallon
@@ -471,8 +472,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         })
         for techno in technos:
             inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
