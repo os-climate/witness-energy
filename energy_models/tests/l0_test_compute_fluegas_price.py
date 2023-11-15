@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,9 +17,6 @@ import unittest
 import pandas as pd
 import numpy as np
 from os.path import join, dirname
-
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -78,8 +74,6 @@ class FlueGasRatioTestCase(unittest.TestCase):
                        f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': np.array([0.2]),
                        f'{self.name}.{GlossaryCore.ccs_list}': ['carbon_capture'],
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': np.array([0.4]),
-                       f'{self.name}.{self.model_name}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
-                       f'{self.name}.{self.model_name}.electricity.CoalGen.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
                        f'{self.name}.{self.model_name}.scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        f'{self.name}.{self.model_name}.scaling_factor_techno_production': self.scaling_factor_techno_production, }
 

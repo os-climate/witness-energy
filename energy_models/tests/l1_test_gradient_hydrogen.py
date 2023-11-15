@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,9 +19,6 @@ import pandas as pd
 import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
-
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
@@ -58,7 +54,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.energy_name = 'hydrogen'
 
         years = np.arange(2020, 2051)
-        self.years = years
 
         self.electrolysis_techno_prices = pd.DataFrame(
             {'Electrolysis': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
@@ -668,8 +663,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.CO2EmissionsValue}': self.smr_carbon_emissions,
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
                        f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption': self.plasmacracking_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_capital': techno_capital,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.techno_capital': techno_capital,
                        f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption_woratio': self.plasmacracking_consumption,
                        f'{self.name}.{self.model_name}.PlasmaCracking.techno_production': self.plasmacracking_production,
                        f'{self.name}.{self.model_name}.PlasmaCracking.techno_prices': self.plasmacracking_techno_prices,
@@ -684,7 +677,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', local_data=disc.local_data,
                             inputs=[f'{self.name}.{self.model_name}.WaterGasShift.techno_prices',
@@ -1029,17 +1022,6 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-        technos = inputs_dict[f"{self.name}.technologies_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
-        })
-        for techno in technos:
-            inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
-
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()

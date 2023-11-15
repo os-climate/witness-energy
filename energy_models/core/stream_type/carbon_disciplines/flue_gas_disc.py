@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +15,6 @@ limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
@@ -132,8 +130,6 @@ class FlueGasDiscipline(SoSWrapp):
                                                  'CO2 from Flue Gas (Mt)': ('float', None, False),
                                                  }
                     }
-
-                    #dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
                                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                       'namespace': ns_variable, 'unit': '',
@@ -147,7 +143,7 @@ class FlueGasDiscipline(SoSWrapp):
         # -- configure class with inputs
         self.energy_model.configure_parameters_update(inputs_dict)
         # -- compute informations
-        flue_gas_mean = self.energy_model.compute(inputs_dict)
+        flue_gas_mean = self.energy_model.compute()
 
         outputs_dict = {
             GlossaryCore.FlueGasMean: flue_gas_mean,

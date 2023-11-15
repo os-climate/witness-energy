@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/27-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -58,14 +57,14 @@ class BiomassWetDiscipline(EnergyDiscipline):
         self.energy_model.configure_parameters(inputs_dict)
 
     def run(self):
-        super().run()
+        EnergyDiscipline.run(self)
 
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
         # -- instantiate specific class
 
         # -- compute informations
-        cost_details, production, consumption, techno_mix = self.energy_model.compute(inputs_dict)
+        cost_details, production, consumption, techno_mix = self.energy_model.compute()
 
         outputs_dict = {GlossaryCore.EnergyPricesValue: cost_details,
                         GlossaryCore.EnergyConsumptionValue: consumption / inputs_dict['scaling_factor_energy_consumption'],

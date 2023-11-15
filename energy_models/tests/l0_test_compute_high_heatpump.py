@@ -1,5 +1,5 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2022 Airbus SAS
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -128,8 +128,7 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
         self.name = 'Test'
         self.model_name = 'HeatPump'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name,
-                   'ns_energy': f'{self.name}',
+        ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_heat_high': f'{self.name}',
                    'ns_resource': self.name
@@ -167,6 +166,9 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
         # for graph in graph_list:
         #     graph.to_plotly().show()
 
+
+if __name__ == "__main__":
+    unittest.main()
 
 # Test Results
 #https://www.iea.org/data-and-statistics/charts/levelised-cost-of-heating-for-air-to-air-and-air-to-water-heat-pumps-and-gas-boilers-for-selected-countries-and-sensitivity-to-fuel-prices-h1-2021-h1-2022

@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/27-2023/11/06 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,7 +18,6 @@ import logging
 import numpy as np
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -180,7 +178,8 @@ class StreamDiscipline(SoSWrapp):
         # -- configure class with inputs
         self.energy_model.configure(inputs_dict)
         # -- compute informations
-        cost_details, production, consumption, consumption_woratio, techno_mix = self.energy_model.compute(inputs_dict, exp_min=inputs_dict['exp_min'])
+        cost_details, production, consumption, consumption_woratio, techno_mix = self.energy_model.compute(
+            exp_min=inputs_dict['exp_min'])
 
         cost_details_technos = self.energy_model.sub_prices
 
@@ -317,20 +316,11 @@ class StreamDiscipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.LandUseRequiredValue, f'{techno} (Gha)'), (f'{techno}.{GlossaryCore.LandUseRequiredValue}', f'{techno} (Gha)'), np.identity(len(years)))
 
-        for techno in technos_list:
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyTypeCapitalDfValue, GlossaryEnergy.Capital),
-                (f"{techno}.{GlossaryEnergy.TechnoCapitalDfValue}", GlossaryEnergy.Capital),
-                identity,
-            )
-
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Energy price',
-                      'Technology mix',
-                      'Consumption and production',
-                      GlossaryEnergy.Capital]
+        chart_list = ['Energy price', 'Technology mix',
+                      'Consumption and production']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -387,10 +377,6 @@ class StreamDiscipline(SoSWrapp):
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-
-        if GlossaryCore.Capital in charts:
-            chart = self.get_capital_breakdown_by_technos()
-            instanciated_charts.append(chart)
         return instanciated_charts
 
     def get_chart_energy_price_in_dollar_kwh(self):

@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -216,7 +215,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
         self.techno_model.configure_parameters(inputs_dict)
 
     def run(self):
-        super().run()
+        BiomassDryTechnoDiscipline.run(self)
         self.specific_run()
 
     def specific_run(self):

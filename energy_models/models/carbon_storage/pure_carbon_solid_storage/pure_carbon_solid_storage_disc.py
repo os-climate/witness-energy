@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -127,7 +126,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
     def setup_sos_disciplines(self):
 
-        super().setup_sos_disciplines()
+        CSTechnoDiscipline.setup_sos_disciplines(self)
 
         if self.get_data_in() is not None:
             if GlossaryCore.YearStart in self.get_data_in():

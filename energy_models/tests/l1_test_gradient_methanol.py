@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,7 +21,6 @@ from os.path import join, dirname
 import scipy.interpolate as sc
 import pickle
 
-from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
@@ -222,7 +220,6 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryCore.techno_list}': ['CO2Hydrogenation'],
                        f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_consumption': self.co2_hydrogenation_consumption,
-                       f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_capital': techno_capital,
                        f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_consumption_woratio': self.co2_hydrogenation_consumption,
                        f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_production': self.co2_hydrogenation_production,
                        f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_prices': self.co2_hydrogenation_techno_prices,

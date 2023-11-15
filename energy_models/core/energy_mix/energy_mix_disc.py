@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,7 +20,6 @@ import pandas as pd
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
     AgricultureMixDiscipline
-from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
@@ -53,7 +51,7 @@ from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDis
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from climateeconomics.glossarycore import GlossaryCore as GlossaryCore
+from climateeconomics.glossarycore import GlossaryCore as GlossaryEnergy, GlossaryCore
 
 
 class Energy_Mix_Discipline(SoSWrapp):
@@ -186,7 +184,6 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
-        GlossaryCore.EnergyCapitalDfValue: GlossaryCore.EnergyCapitalDf
     }
 
     energy_name = EnergyMix.name
@@ -257,14 +254,12 @@ class Energy_Mix_Discipline(SoSWrapp):
                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                      GlossaryCore.CO2Tax: ('float', None, True),
                                                      'CO2_per_use': ('float', None, True),
-                                                     },
-                        }
+                                                     }, }
                         dynamic_inputs[f'{ns_energy}.losses_percentage'] = {
                             'type': 'float', 'unit': '%', 'default': self.loss_percentage_default_dict[energy],
                             'range': [0., 100.],
                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                                     'years7': ('float', None, True), },
-                        }
+                                                     'years7': ('float', None, True), }, }
                         # If the name is different than the energy then the namespace is also different
                         # Valid for biomass which is in agriculture node
                         if ns_energy != energy:
@@ -327,7 +322,6 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                      'direct_air_capture.DirectAirCaptureTechno (Gha)': (
                                                          'float', None, True), }}
 
-
         self.update_default_with_years(inputs_dict)
 
         self.add_inputs(dynamic_inputs)
@@ -377,7 +371,32 @@ class Energy_Mix_Discipline(SoSWrapp):
         inputs_dict.update(inputs_dict_orig)
         self.update_biomass_dry_name(inputs_dict_orig, inputs_dict)
 
-        self.energy_model.compute(inputs_dict)
+        self.energy_model.configure_parameters_update(inputs_dict)
+
+        # -- compute informations
+        self.energy_model.compute_raw_production()
+        self.energy_model.compute_net_consumable_energy()
+        self.energy_model.compute_net_energy_production()
+        self.energy_model.compute_energy_production_uncut()
+        self.energy_model.compute_price_by_energy()
+        self.energy_model.compute_CO2_emissions()
+
+        self.energy_model.compute_CO2_emissions_ratio()
+
+        self.energy_model.aggregate_land_use_required()
+
+        self.energy_model.compute_total_prod_minus_min_prod_constraint()
+        self.energy_model.compute_constraint_solid_fuel_elec()
+        self.energy_model.compute_constraint_h2()
+        self.energy_model.compute_syngas_prod_objective()
+        self.energy_model.compute_syngas_prod_constraint()
+
+        self.energy_model.compute_all_streams_demand_ratio()
+
+        net_positive_consumable_energy_production = self.energy_model.compute_net_positive_consumable_energy_production()
+
+        mean_price_df = self.energy_model.compute_mean_price(
+            exp_min=inputs_dict['exp_min'])
 
         # -- Compute objectives with alpha trades
         alpha = inputs_dict['alpha']
@@ -411,8 +430,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                         'energy_prices_after_tax': self.energy_model.price_by_energy,
                         'energy_production_objective': energy_production_objective,
                         'land_demand_df': self.energy_model.land_use_required,
-                        GlossaryCore.EnergyMeanPriceValue: self.energy_model.energy_mean_price,
-                        'production_energy_net_positive': self.energy_model.net_positive_consumable_energy_production,
+                        GlossaryCore.EnergyMeanPriceValue: mean_price_df,
+                        'production_energy_net_positive': net_positive_consumable_energy_production,
                         self.energy_model.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: self.energy_model.total_prod_minus_min_prod_constraint_df,
                         EnergyMix.CONSTRAINT_PROD_H2_LIQUID: self.energy_model.constraint_liquid_hydrogen,
                         EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC: self.energy_model.constraint_solid_fuel_elec,
@@ -423,8 +442,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                         'resources_demand': self.energy_model.resources_demand,
                         'resources_demand_woratio': self.energy_model.resources_demand_woratio,
                         'co2_emissions_needed_by_energy_mix': self.energy_model.co2_emissions_needed_by_energy_mix,
-                        'carbon_capture_from_energy_mix': self.energy_model.carbon_capture_from_energy_mix,
-                        GlossaryCore.EnergyCapitalDfValue: self.energy_model.energy_capital
+                        'carbon_capture_from_energy_mix': self.energy_model.carbon_capture_from_energy_mix
                         }
 
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
@@ -490,7 +508,6 @@ class Energy_Mix_Discipline(SoSWrapp):
         years = np.arange(inputs_dict[GlossaryCore.YearStart],
                           inputs_dict[GlossaryCore.YearEnd] + 1)
         identity = np.eye(len(years))
-
         heat_losses_percentage = inputs_dict['heat_losses_percentage'] / 100.0
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
         production_detailed_df = outputs_dict[GlossaryCore.EnergyProductionDetailedValue]

@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/23-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -46,6 +45,10 @@ class CalciumLooping(CCTechno):
         self.cost_details[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect)
 
+
+
+
+
         return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
@@ -80,6 +83,8 @@ class CalciumLooping(CCTechno):
             self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect)
 
         return self.carbon_emissions[Electricity.name] - 1.0
+
+
 
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)

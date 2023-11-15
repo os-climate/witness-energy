@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/08-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,10 +20,8 @@ import numpy as np
 import scipy.interpolate as sc
 from os.path import join, dirname
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
-from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import \
     AmineScrubbingDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -79,7 +76,6 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                               1.0, 1.0, 1.0, 1.0]) * 85.0
 
         years = np.arange(2020, 2051)
-        self.years = years
 
         self.energy_prices = pd.DataFrame(
             {GlossaryCore.Years: years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
@@ -415,24 +411,13 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
-        technos = inputs_dict[f"{self.name}.technologies_list"]
-        techno_capital = pd.DataFrame({
-            GlossaryCore.Years: self.years,
-            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
-        })
-
-        for techno in technos:
-            inputs_dict[f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
-
-        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,

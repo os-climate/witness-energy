@@ -1,5 +1,5 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2022 Airbus SAS
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -112,7 +112,7 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         self.techno_model.configure_input(inputs_dict)
 
     def setup_sos_disciplines(self):
-        super().setup_sos_disciplines()
+        MediumHeatTechnoDiscipline.setup_sos_disciplines(self)
 
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',

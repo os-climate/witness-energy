@@ -15,7 +15,7 @@ def launch_data_pickle_generation(directory=''):
     ee = ExecutionEngine(name)
     model_name = 'EnergyMix'
 
-    repo = 'energy_models.sos_processes.energy.MDA'
+    repo = 'energy_models.sos_processes.energy.MDA' 
     builder = ee.factory.get_builder_from_process(
         repo, 'energy_process_v0')
 

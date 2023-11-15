@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,9 +17,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import BiomassDryTechnoDiscipline
-from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.biomass_dry.crop_energy.crop_energy import CropEnergy
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
@@ -163,7 +160,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         specific run for crops 
         '''
         # -- get inputs
-        super().run()
+        BiomassDryTechnoDiscipline.run(self)
         self.specific_run()
 
     def specific_run(self):
@@ -176,7 +173,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
-        super().compute_sos_jacobian()
+        BiomassDryTechnoDiscipline.compute_sos_jacobian(self)
 
         scaling_factor_techno_production = self.get_sosdisc_inputs(
             'scaling_factor_techno_production')
@@ -196,7 +193,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.TechnoConsumptionWithoutRatioValue, f'{CO2.name} (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoCapitalDfValue, GlossaryCore.Capital), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_prod_dland_for_food / scaling_factor_techno_production)
+            ('techno_capital', f'{self.techno_name}'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_prod_dland_for_food / scaling_factor_techno_production)
 
         dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
             invest_level.loc[invest_level[GlossaryCore.Years]
@@ -208,8 +205,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
             ('non_use_capital', self.techno_model.name), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), dnon_use_capital_dinvest)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoCapitalDfValue, GlossaryCore.Capital),
-            (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), dtechnocapital_dinvest)
+            ('techno_capital', self.techno_model.name), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), dtechnocapital_dinvest)
 
     def get_post_processing_list(self, filters=None):
         charts = []

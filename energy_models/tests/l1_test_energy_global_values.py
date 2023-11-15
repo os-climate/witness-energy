@@ -1,21 +1,6 @@
 '''
-Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/06 Copyright 2023 Capgemini
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
-'''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
+mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8
+Copyright (C) 2020 Airbus SAS
 '''
 import unittest
 import time
@@ -41,29 +26,28 @@ class TestGlobalEnergyValues(unittest.TestCase):
         License: CC BY 4.0.
     """
 
-    @classmethod
-    def setUpClass(cls):
+    def setUp(self):
         '''
         Initialize third data needed for testing
         '''
-        cls.dirs_to_del = []
+        self.dirs_to_del = []
         chain_builders = []
-        cls.namespace = 'MyCase'
-        cls.study_name = f'{cls.namespace}'
-        cls.name = 'Test'
-        cls.energymixname = 'EnergyMix'
-        cls.agrimixname = 'AgricultureMix'
+        self.namespace = 'MyCase'
+        self.study_name = f'{self.namespace}'
+        self.name = 'Test'
+        self.energymixname = 'EnergyMix'
+        self.agrimixname = 'AgricultureMix'
         ns_crop = 'Crop'
         ns_forest = 'Forest'
 
-        cls.ee = ExecutionEngine(cls.name)
+        self.ee = ExecutionEngine(self.name)
         repo_agri = 'climateeconomics.sos_processes.iam.witness'
-        builder_agri = cls.ee.factory.get_builder_from_process(
+        builder_agri = self.ee.factory.get_builder_from_process(
             repo_agri, 'agriculture_mix_process')
         chain_builders.extend(builder_agri)
 
         repo = 'energy_models.sos_processes.energy.MDA'
-        builder = cls.ee.factory.get_builder_from_process(
+        builder = self.ee.factory.get_builder_from_process(
             repo, 'energy_process_v0_mda', techno_dict=DEFAULT_TECHNO_DICT)
 
         for i, disc in enumerate(builder):
@@ -72,42 +56,38 @@ class TestGlobalEnergyValues(unittest.TestCase):
         builder.pop(i_disc_to_pop)
         chain_builders.extend(builder)
 
-        ns_dict = {'ns_crop': f'{cls.name}.{cls.agrimixname}.{ns_crop}',
-                   'ns_forest': f'{cls.name}.{cls.agrimixname}.{ns_forest}',
-                   'ns_agriculture': f'{cls.name}.{cls.agrimixname}',
+        ns_dict = {'ns_crop': f'{self.name}.{self.agrimixname}.{ns_crop}',
+                   'ns_forest': f'{self.name}.{self.agrimixname}.{ns_forest}',
+                   'ns_agriculture': f'{self.name}.{self.agrimixname}',
                    }
 
-        cls.ee.ns_manager.add_ns_def(ns_dict)
+        self.ee.ns_manager.add_ns_def(ns_dict)
 
-        cls.ee.factory.set_builders_to_coupling_builder(chain_builders)
-        cls.ee.configure()
-        usecase = Study_open(execution_engine=cls.ee,
+        self.ee.factory.set_builders_to_coupling_builder(chain_builders)
+        self.ee.configure()
+        usecase = Study_open(execution_engine=self.ee,
                              techno_dict=DEFAULT_TECHNO_DICT)
-        usecase.study_name = cls.name
+        usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
-        cls.ee.display_treeview_nodes()
+        self.ee.display_treeview_nodes()
         full_values_dict = {}
         for dict_v in values_dict:
             full_values_dict.update(dict_v)
 
-        # full_values_dict[f'{cls.name}.is_dev'] = True
+        # full_values_dict[f'{self.name}.is_dev'] = True
 
         full_values_dict[f'{cls.name}.{GlossaryCore.CO2TaxesValue}'] = pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051),
                                                                    GlossaryCore.CO2Tax: 20.0}, index=np.arange(2020, 2051))
 
-        usecase_agri = agri_study_open(execution_engine=cls.ee, year_start=2020, year_end=2050, time_step=1)
-        usecase_agri.study_name = cls.name
+        usecase_agri = agri_study_open(execution_engine=self.ee, year_start=2020, year_end=2050, time_step=1)
+        usecase_agri.study_name = self.name
         usecase_agri.additional_ns = '.InvestmentDistribution'
         values_dict_agri = usecase_agri.setup_usecase()
         for dict_v in values_dict_agri:
             full_values_dict.update(dict_v)
 
-        cls.ee.load_study_from_input_dict(full_values_dict)
-
-        cls.ee.execute()
-
-
+        self.ee.load_study_from_input_dict(full_values_dict)
 
     def test_01_check_global_production_values(self):
         '''
@@ -115,7 +95,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         https://ourworldindata.org/energy-mix?country=
 
         '''
-
+        self.ee.execute()
 
         # These emissions are in Gt
         energy_production = self.ee.dm.get_value(
@@ -289,7 +269,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         https://ourworldindata.org/emissions-by-fuel
 
         '''
-
+        self.ee.execute()
 
         # These emissions are in Gt
 
@@ -401,7 +381,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019, License: CC BY 4.0.
 
         '''
-
+        self.ee.execute()
 
         # These emissions are in Gt
         net_energy_production = self.ee.dm.get_value(
@@ -961,7 +941,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         Test order of magnitude of prices
 
         '''
-
+        self.ee.execute()
 
         # These emissions are in Gt
         energy_prices = self.ee.dm.get_value(

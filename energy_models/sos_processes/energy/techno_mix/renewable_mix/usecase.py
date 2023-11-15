@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -24,7 +23,7 @@ from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.stream_type.energy_models.renewable import Renewable
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.database_witness_energy import DatabaseWitnessEnergy
+
 DEFAULT_TECHNOLOGIES_LIST = ['RenewableSimpleTechno']
 TECHNOLOGIES_LIST = ['RenewableSimpleTechno']
 
@@ -45,16 +44,14 @@ class Study(EnergyMixStudyManager):
 
         if 'RenewableSimpleTechno' in self.technologies_list:
 
-            invest_renewable_mix_dict['RenewableSimpleTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE) * 1e-6
-            # set value for first year
-            invest_renewable_mix_dict['RenewableSimpleTechno'][0] = DatabaseWitnessEnergy.InvestCleanEnergy2020.value
+            invest_renewable_mix_dict['RenewableSimpleTechno'] = np.ones(GlossaryEnergy.NB_POLES_COARSE)
 
         if self.bspline:
             invest_renewable_mix_dict[GlossaryCore.Years] = self.years
 
             for techno in self.technologies_list:
-                invest_ren_2020 = DatabaseWitnessEnergy.InvestCleanEnergy2020.value
-                invest_renewable_mix_dict[techno] = np.linspace(invest_ren_2020, invest_ren_2020*2, len(self.years))
+                invest_renewable_mix_dict[techno], _ = self.invest_bspline(
+                    invest_renewable_mix_dict[techno], len(self.years))
 
         renewable_mix_invest_df = pd.DataFrame(invest_renewable_mix_dict)
 

@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -122,7 +121,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
 
-        super().compute_sos_jacobian()
+        BiogasTechnoDiscipline.compute_sos_jacobian(self)
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
