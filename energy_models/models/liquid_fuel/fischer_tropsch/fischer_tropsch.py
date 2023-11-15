@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/26-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/26-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ from operator import mul
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
@@ -40,7 +41,7 @@ class FischerTropsch(LiquidFuelTechno):
 
     def configure_parameters_update(self, inputs_dict):
         LiquidFuelTechno.configure_parameters_update(self, inputs_dict)
-        self.cost_details = pd.DataFrame({'years': self.years})
+        self.cost_details = pd.DataFrame({GlossaryCore.Years: self.years})
         self.syngas_ratio = np.array(inputs_dict['syngas_ratio']) / 100.0
 
         self.needed_syngas_ratio = self.techno_infos_dict['carbon_number'] / (
@@ -90,7 +91,7 @@ class FischerTropsch(LiquidFuelTechno):
             dprice_RWGS_dsyngas_ratio = self.syngas_ratio_techno.compute_dprice_RWGS_wo_taxes_dsyngas_ratio()
             dco2_taxes_dsyngas_ratio = self.syngas_ratio_techno.dco2_taxes_dsyngas_ratio()
 
-            self.dprice_FT_wotaxes_dsyngas_ratio = dprice_RWGS_dsyngas_ratio * self.margin['margin'].values / 100.0 * \
+            self.dprice_FT_wotaxes_dsyngas_ratio = dprice_RWGS_dsyngas_ratio * self.margin[GlossaryCore.MarginValue].values / 100.0 * \
                 (np.ones(len(self.years)) * sg_needs_efficiency)
             self.cost_details[self.sg_transformation_name] = self.price_details_sg_techno[
                 f'{self.sg_transformation_name}_wotaxes']
@@ -107,7 +108,7 @@ class FischerTropsch(LiquidFuelTechno):
                 self.syngas_ratio)
             # For WGS dprice is composed of dsyngas, dwater, dCO2_taxes
             dprice_WGS_dsyngas_ratio = self.syngas_ratio_techno.compute_dprice_WGS_wo_taxes_dsyngas_ratio() * \
-                self.margin['margin'].values / 100.0
+                self.margin[GlossaryCore.MarginValue].values / 100.0
             dco2_taxes_dsyngas_ratio = self.syngas_ratio_techno.dco2_taxes_dsyngas_ratio()
 
             self.dprice_FT_wotaxes_dsyngas_ratio = dprice_WGS_dsyngas_ratio * \
@@ -131,7 +132,7 @@ class FischerTropsch(LiquidFuelTechno):
             price_details_sg_techno_wgs[self.sg_transformation_name] = price_details_sg_techno_wgs['WGS']
             # WGS matrix
             dprice_WGS_dsyngas_ratio = self.syngas_ratio_techno_wgs.compute_dprice_WGS_wo_taxes_dsyngas_ratio() * \
-                self.margin['margin'].values / 100.0
+                self.margin[GlossaryCore.MarginValue].values / 100.0
             dco2_taxes_dsyngas_ratio_wgs = self.syngas_ratio_techno_wgs.dco2_taxes_dsyngas_ratio()
 
             dprice_FT_wotaxes_dsyngas_ratio_wgs = dprice_WGS_dsyngas_ratio * \
@@ -153,7 +154,7 @@ class FischerTropsch(LiquidFuelTechno):
             # RWGS matrix
 
             dprice_RWGS_dsyngas_ratio = self.syngas_ratio_techno_rwgs.compute_dprice_RWGS_wo_taxes_dsyngas_ratio() * \
-                self.margin['margin'].values / 100.0
+                self.margin[GlossaryCore.MarginValue].values / 100.0
             dco2_taxes_dsyngas_ratio_rwgs = self.syngas_ratio_techno_rwgs.dco2_taxes_dsyngas_ratio()
             dprice_FT_wotaxes_dsyngas_ratio_RWGS = dprice_RWGS_dsyngas_ratio * \
                 (np.ones(len(self.years)) * sg_needs_efficiency)
@@ -349,24 +350,24 @@ class FischerTropsch(LiquidFuelTechno):
 
     def compute_rwgs_contribution(self, sg_ratio):
         years = np.arange(self.year_start, self.year_end + 1)
-        inputs_dict = {'year_start': self.year_start,
-                       'year_end': self.year_end,
+        inputs_dict = {GlossaryCore.YearStart: self.year_start,
+                       GlossaryCore.YearEnd: self.year_end,
                        'techno_infos_dict': RWGSDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.prices,
-                       'energy_CO2_emissions': self.energy_CO2_emissions,
+                       GlossaryCore.EnergyPricesValue: self.prices,
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_CO2_emissions,
                        # We suppose invest are not influencing the price of WGS or RWGS because the gradient is a mess to compute
                        # AND Is it obvious the fact that investing in Fischer
                        # Tropsch will decrease the price of WGS ?
-                       'invest_level': pd.DataFrame({'years': years, 'invest': 1.0}),
-                       'invest_before_ystart': RWGSDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.CO2_taxes,
-                       'margin': pd.DataFrame({'years': years, 'margin': 100.0}),
-                       'transport_cost': pd.DataFrame({'years': years, 'transport': 0.0}),
-                       'transport_margin': pd.DataFrame({'years': years, 'margin': 100.0}),
+                       GlossaryCore.InvestLevelValue: pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.InvestValue: 1.0}),
+                       GlossaryCore.InvestmentBeforeYearStartValue: RWGSDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.CO2_taxes,
+                       GlossaryCore.MarginValue: pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.MarginValue: 100.0}),
+                       GlossaryCore.TransportCostValue: pd.DataFrame({GlossaryCore.Years: years, 'transport': 0.0}),
+                       GlossaryCore.TransportMarginValue: pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.MarginValue: 100.0}),
                        'initial_production': RWGSDiscipline.initial_production,
                        'initial_age_distrib': RWGSDiscipline.initial_age_distribution,
-                       'resources_CO2_emissions': self.resources_CO2_emissions,
-                       'resources_price': self.resources_prices,
+                       GlossaryCore.RessourcesCO2EmissionsValue: self.resources_CO2_emissions,
+                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
                        'syngas_ratio': sg_ratio * 100.0,
                        'needed_syngas_ratio': self.needed_syngas_ratio * 100.0,
                        'scaling_factor_invest_level': self.scaling_factor_invest_level,
@@ -378,7 +379,7 @@ class FischerTropsch(LiquidFuelTechno):
                        'data_fuel_dict': self.syngas_energy_dict
                        }
         if self.is_stream_demand:
-            inputs_dict['all_streams_demand_ratio'] = self.all_streams_demand_ratio
+            inputs_dict[GlossaryCore.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
         if self.is_apply_resource_ratio:
             inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND] = self.ratio_available_resource
 
@@ -394,25 +395,25 @@ class FischerTropsch(LiquidFuelTechno):
 
     def compute_wgs_contribution(self, sg_ratio):
         years = np.arange(self.year_start, self.year_end + 1)
-        inputs_dict = {'year_start': self.year_start,
-                       'year_end': self.year_end,
+        inputs_dict = {GlossaryCore.YearStart: self.year_start,
+                       GlossaryCore.YearEnd: self.year_end,
                        'techno_infos_dict': WaterGasShiftDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.prices,
-                       'energy_CO2_emissions': self.energy_CO2_emissions,
+                       GlossaryCore.EnergyPricesValue: self.prices,
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_CO2_emissions,
                        # We suppose invest are not influencing the price of WGS or RWGS because the gradient is a mess to compute
                        # AND Is it obvious the fact that investing in Fischer
                        # Tropsch will decrease the price of WGS ? Not sure so
                        # the hypothesis looks fine
-                       'invest_level': pd.DataFrame({'years': years, 'invest': 1.0}),
-                       'invest_before_ystart': WaterGasShiftDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.CO2_taxes,
-                       'margin':  pd.DataFrame({'years': years, 'margin': 100.0}),
-                       'transport_cost': pd.DataFrame({'years': years, 'transport': 0.0}),
-                       'transport_margin': pd.DataFrame({'years': years, 'margin': 100.0}),
+                       GlossaryCore.InvestLevelValue: pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.InvestValue: 1.0}),
+                       GlossaryCore.InvestmentBeforeYearStartValue: WaterGasShiftDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.CO2_taxes,
+                       GlossaryCore.MarginValue:  pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.MarginValue: 100.0}),
+                       GlossaryCore.TransportCostValue: pd.DataFrame({GlossaryCore.Years: years, 'transport': 0.0}),
+                       GlossaryCore.TransportMarginValue: pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.MarginValue: 100.0}),
                        'initial_production': WaterGasShiftDiscipline.initial_production,
                        'initial_age_distrib': WaterGasShiftDiscipline.initial_age_distribution,
-                       'resources_CO2_emissions': self.resources_CO2_emissions,
-                       'resources_price': self.resources_prices,
+                       GlossaryCore.RessourcesCO2EmissionsValue: self.resources_CO2_emissions,
+                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
                        'syngas_ratio': sg_ratio * 100.0,
                        'needed_syngas_ratio': self.needed_syngas_ratio * 100.0,
                        'scaling_factor_invest_level': self.scaling_factor_invest_level,
@@ -424,7 +425,7 @@ class FischerTropsch(LiquidFuelTechno):
                        'data_fuel_dict': self.gaseous_hydrogen_energy_dict
                        }
         if self.is_stream_demand:
-            inputs_dict['all_streams_demand_ratio'] = self.all_streams_demand_ratio
+            inputs_dict[GlossaryCore.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
         if self.is_apply_resource_ratio:
             inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND] = self.ratio_available_resource
 
@@ -742,7 +743,7 @@ class FischerTropsch(LiquidFuelTechno):
         expo_factor = self.compute_expo_factor(
             self.techno_infos_dict)
 
-        if 'complex128' in [type(self.initial_production), type(capex_init), self.cost_details['invest'].values.dtype]:
+        if 'complex128' in [type(self.initial_production), type(capex_init), self.cost_details[GlossaryCore.InvestValue].values.dtype]:
             arr_type = 'complex128'
         else:
             arr_type = 'float64'
@@ -759,7 +760,7 @@ class FischerTropsch(LiquidFuelTechno):
         else:
             maximum_learning_capex_ratio = 0.9
 
-        invest_list = self.cost_details['invest'].values
+        invest_list = self.cost_details[GlossaryCore.InvestValue].values
 
         if min(invest_list.real) < 0:
             print(

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/27-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/27-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ class BiomassWetDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': ['WetCropResidues', 'AnimalManure'],
                                      'namespace': 'ns_wet_biomass',
                                      'structuring': True,
@@ -67,8 +67,8 @@ class BiomassWetDiscipline(EnergyDiscipline):
         # -- compute informations
         cost_details, production, consumption, techno_mix = self.energy_model.compute(inputs_dict)
 
-        outputs_dict = {'energy_prices': cost_details,
-                        'energy_consumption': consumption / inputs_dict['scaling_factor_energy_consumption'],
+        outputs_dict = {GlossaryCore.EnergyPricesValue: cost_details,
+                        GlossaryCore.EnergyConsumptionValue: consumption / inputs_dict['scaling_factor_energy_consumption'],
                         GlossaryCore.EnergyProductionValue: production / inputs_dict[
                             'scaling_factor_energy_production'],
                         'techno_mix': techno_mix}

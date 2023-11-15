@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.ethanol_techno_disc import EthanolTechnoDiscipline
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.models.ethanol.biomass_fermentation.biomass_fermentation import BiomassFermentation
@@ -69,9 +71,9 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
         'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.02,
         'lifetime': lifetime,
-        'lifetime_unit': 'years',
+        'lifetime_unit': GlossaryCore.Years,
         'construction_delay': construction_delay,
-        'construction_delay_unit': 'years',
+        'construction_delay_unit': GlossaryCore.Years,
         'efficiency': 1,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
@@ -110,17 +112,17 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
     # Renewable Fuels Association [online]
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     DESC_IN.update(EthanolTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

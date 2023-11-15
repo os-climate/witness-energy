@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +17,7 @@ limitations under the License.
 
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
@@ -107,7 +109,7 @@ class RWGS(SyngasTechno):
         capex_init = self.check_capex_unity(
             self.techno_infos_dict)
 
-        if 'complex128' in [type(self.initial_production), type(self.slope_capex), capex_init.dtype, self.cost_details['invest'].values.dtype]:
+        if 'complex128' in [type(self.initial_production), type(self.slope_capex), capex_init.dtype, self.cost_details[GlossaryCore.InvestValue].values.dtype]:
             arr_type = 'complex128'
         else:
             arr_type = 'float64'
@@ -123,7 +125,7 @@ class RWGS(SyngasTechno):
         dinvest_sum = -1.0 * self.initial_production * self.slope_capex
         capex_year = capex_init
         capex_grad[0][0] = -self.slope_capex
-        invest_list = self.cost_details['invest'].values
+        invest_list = self.cost_details[GlossaryCore.InvestValue].values
         if min(invest_list.real) < 0:
             invest_list = np.maximum(0.0, invest_list)
         for i, invest in enumerate(invest_list):
@@ -195,7 +197,7 @@ class RWGS(SyngasTechno):
 
         dco2_price_dsyngas_ratio = self.compute_dco2_price_dsyngas_ratio()
 
-        margin = self.margin['margin'].values
+        margin = self.margin[GlossaryCore.MarginValue].values
 
         denergy_cost_dsyngas_ratio = dsyngas_price_dsyngas_ratio + \
             delectricity_price_dsyngas_ratio + \
@@ -281,7 +283,7 @@ class RWGS(SyngasTechno):
 
         dco2_emissions_dsyngas_ratio = self.dtotal_co2_emissions_dsyngas_ratio()
 
-        return dco2_emissions_dsyngas_ratio * self.CO2_taxes['CO2_tax'].values
+        return dco2_emissions_dsyngas_ratio * self.CO2_taxes[GlossaryCore.CO2Tax].values
 
     def compute_dco2_price_dsyngas_ratio(self):
         dco2_needs_dsyngas_ratio = self.compute_dco2_needs_dsyngas_ratio()
@@ -324,8 +326,8 @@ class RWGS(SyngasTechno):
     def compute_dprice_RWGS_dsyngas_ratio(self):
         efficiency = self.configure_efficiency()
         years = np.arange(
-            self.inputs_dict['year_start'], self.inputs_dict['year_end'] + 1)
-        margin = self.inputs_dict['margin']['margin'].values
+            self.inputs_dict[GlossaryCore.YearStart], self.inputs_dict[GlossaryCore.YearEnd] + 1)
+        margin = self.inputs_dict[GlossaryCore.MarginValue][GlossaryCore.MarginValue].values
         factory_grad = self.compute_drwgs_factory_dsyngas_ratio()
 
         dsyngas_dsyngas_ratio = np.identity(len(years)) * self.compute_dsyngas_needs_dsyngas_ratio() * \
@@ -345,8 +347,8 @@ class RWGS(SyngasTechno):
     def compute_dprice_RWGS_wo_taxes_dsyngas_ratio(self):
         efficiency = self.configure_efficiency()
         years = np.arange(
-            self.inputs_dict['year_start'], self.inputs_dict['year_end'] + 1)
-        margin = self.inputs_dict['margin']['margin'].values
+            self.inputs_dict[GlossaryCore.YearStart], self.inputs_dict[GlossaryCore.YearEnd] + 1)
+        margin = self.inputs_dict[GlossaryCore.MarginValue][GlossaryCore.MarginValue].values
         factory_grad = self.compute_drwgs_factory_dsyngas_ratio()
 
         dsyngas_dsyngas_ratio = np.identity(len(years)) * self.compute_dsyngas_needs_dsyngas_ratio() * \

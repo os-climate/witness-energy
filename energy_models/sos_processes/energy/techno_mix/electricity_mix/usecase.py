@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/23-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/23-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -147,7 +148,7 @@ class Study(EnergyMixStudyManager):
                 0.1, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001])
 
         if self.bspline:
-            invest_electricity_mix_dict['years'] = self.years
+            invest_electricity_mix_dict[GlossaryCore.Years] = self.years
 
             for techno in self.technologies_list:
                 invest_electricity_mix_dict[techno], _ = self.invest_bspline(
@@ -217,7 +218,7 @@ class Study(EnergyMixStudyManager):
                 2.1 + 0.05 * i for i in l_ctrl]
 
         if self.bspline:
-            invest_electricity_mix_dict['years'] = self.years
+            invest_electricity_mix_dict[GlossaryCore.Years] = self.years
 
             for techno in self.technologies_list:
                 invest_electricity_mix_dict[techno], _ = self.invest_bspline(
@@ -235,7 +236,7 @@ class Study(EnergyMixStudyManager):
 
         # reference_data_name = 'Reference_aircraft_data'
         # prices are now in $/MWh
-        self.energy_prices = pd.DataFrame({'years': years, 'electricity': 10.0,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'electricity': 10.0,
                                            'methane': 60.0,
                                            'biogas': 5.0,
                                            'biomass_dry': 11.0,
@@ -245,13 +246,13 @@ class Study(EnergyMixStudyManager):
 
         #  IRENA invest data - Future of wind 2019
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4,
+            {GlossaryCore.Years: years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4,
              'biogas': 0.123 / 15.4, 'biomass_dry': - 0.64 / 4.86, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0,
              'fuel.liquid_fuel': 0.64 / 4.86,
              })
 
         # the value for invest_level is just set as an order of magnitude
-        self.invest_level = pd.DataFrame({'years': years, 'invest': 10.0})
+        self.invest_level = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.InvestValue: 10.0})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -260,9 +261,9 @@ class Study(EnergyMixStudyManager):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
         transport_cost = 11.0,  # $/MWh
         # It is noteworthy that the cost of transmission has generally been held (and can
@@ -271,34 +272,34 @@ class Study(EnergyMixStudyManager):
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
         self.transport_offshore = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * transport_cost})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * transport_cost})
 
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.zeros(len(years))})
+            {GlossaryCore.Years: years, 'transport': np.zeros(len(years))})
 
         # define invest mix
         investment_mix = self.get_investments()
 
-        values_dict = {f'{self.study_name}.year_start': self.year_start,
-                       f'{self.study_name}.year_end': self.year_end,
-                       f'{self.study_name}.{electricity_name}.technologies_list': self.technologies_list,
-                       f'{self.study_name}.{electricity_name}.WindOffshore.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.WindOffshore.transport_cost': self.transport_offshore,
-                       f'{self.study_name}.{electricity_name}.WindOnshore.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.SolarPv.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.SolarThermal.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.Hydropower.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.Nuclear.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.CombinedCycleGasTurbine.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.GasTurbine.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.BiogasFired.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.BiomassFired.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.Geothermal.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.CoalGen.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.RenewableElectricitySimpleTechno.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.OilGen.margin': self.margin,
-                       f'{self.study_name}.{electricity_name}.transport_cost': self.transport,
-                       f'{self.study_name}.{electricity_name}.transport_margin': self.margin,
+        values_dict = {f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.study_name}.{electricity_name}.{GlossaryCore.techno_list}': self.technologies_list,
+                       f'{self.study_name}.{electricity_name}.WindOffshore.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.WindOffshore.{GlossaryCore.TransportCostValue}': self.transport_offshore,
+                       f'{self.study_name}.{electricity_name}.WindOnshore.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.SolarPv.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.SolarThermal.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.Hydropower.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.Nuclear.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.CombinedCycleGasTurbine.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.GasTurbine.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.BiogasFired.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.BiomassFired.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.Geothermal.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.CoalGen.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.RenewableElectricitySimpleTechno.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.OilGen.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{electricity_name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.study_name}.{electricity_name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{electricity_name}.invest_techno_mix': investment_mix,
 
                        }
@@ -306,19 +307,19 @@ class Study(EnergyMixStudyManager):
         if self.main_study:
 
             values_dict.update(
-                {f'{self.study_name}.{energy_mix_name}.energy_prices': self.energy_prices,
-                 f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                 f'{self.study_name}.CO2_taxes': self.co2_taxes,
+                {f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                 f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
-                    columns=['years']).sum(axis=1)
+                    columns=[GlossaryCore.Years]).sum(axis=1)
                 for techno in self.technologies_list:
-                    invest_level_techno = pd.DataFrame({'years': self.invest_level['years'].values,
-                                                        'invest': self.invest_level['invest'].values * investment_mix[techno].values / investment_mix_sum})
-                    values_dict[f'{self.study_name}.{electricity_name}.{techno}.invest_level'] = invest_level_techno
+                    invest_level_techno = pd.DataFrame({GlossaryCore.Years: self.invest_level[GlossaryCore.Years].values,
+                                                        GlossaryCore.InvestValue: self.invest_level[GlossaryCore.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
+                    values_dict[f'{self.study_name}.{electricity_name}.{techno}.{GlossaryCore.InvestLevelValue}'] = invest_level_techno
             else:
-                values_dict[f'{self.study_name}.{electricity_name}.invest_level'] = self.invest_level
+                values_dict[f'{self.study_name}.{electricity_name}.{GlossaryCore.InvestLevelValue}'] = self.invest_level
         else:
             self.update_dv_arrays()
 

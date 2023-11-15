@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ from time import sleep
 from shutil import rmtree
 from pathlib import Path
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
 import numpy as np
@@ -80,7 +82,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        energy_prices0 = self.ee.dm.get_value('Test.EnergyMix.energy_prices')
+        energy_prices0 = self.ee.dm.get_value(f'{self.name}.EnergyMix.{GlossaryCore.EnergyPricesValue}')
 
         self.ee2 = ExecutionEngine(self.name)
         repo = 'energy_models.sos_processes.energy.MDA'
@@ -94,8 +96,8 @@ class TestMDARobustness(AbstractJacobianUnittest):
         values_dict = usecase.setup_usecase()
         years = np.arange(self.year_start, self.year_end + 1)
 
-        values_dict[1]['Test.EnergyMix.energy_prices'] = pd.DataFrame(
-            {'years': years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+        values_dict[1][f'{self.name}.EnergyMix.{GlossaryCore.EnergyPricesValue}'] = pd.DataFrame(
+            {GlossaryCore.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                       0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                                       0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
                                                       0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
@@ -124,8 +126,8 @@ class TestMDARobustness(AbstractJacobianUnittest):
 
         self.ee2.execute()
 
-        energy_prices1 = self.ee2.dm.get_value('Test.EnergyMix.energy_prices')
-        tolerance = full_values_dict['Test.tolerance']
+        energy_prices1 = self.ee2.dm.get_value(f'{self.name}.EnergyMix.{GlossaryCore.EnergyPricesValue}')
+        tolerance = full_values_dict[f'{self.name}.tolerance']
         for column in energy_prices0:
             for value1, value2 in zip(list(energy_prices0[column].values), list(energy_prices1[column].values)):
                 self.assertAlmostEqual(

@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +17,7 @@ limitations under the License.
 
 from energy_models.core.stream_type.energy_models.kerosene import Kerosene
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class KeroseneTechnoDiscipline(TechnoDiscipline):
@@ -33,15 +35,15 @@ class KeroseneTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+    DESC_IN = {GlossaryCore.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_kerosene',
-                                  'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
+                                  'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
                                                            'transport': ('float',  None, True)},
                                   'dataframe_edition_locked': False},
-               'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               GlossaryCore.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                     'namespace': 'ns_kerosene',
-                                    'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                             'margin': ('float',  None, True)},
+                                    'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
+                                                             GlossaryCore.MarginValue: ('float',  None, True)},
                                     'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,

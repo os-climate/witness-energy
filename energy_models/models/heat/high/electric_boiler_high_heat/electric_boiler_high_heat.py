@@ -18,6 +18,7 @@ from energy_models.core.techno_type.base_techno_models.high_heat_techno import h
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 import numpy as np
 import pandas as pd
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class ElectricBoilerHighHeat(highheattechno):
@@ -49,7 +50,7 @@ class ElectricBoilerHighHeat(highheattechno):
         land_rate = self.land_rate
         heat_price = self.compute_other_primary_energy_costs()
         self.heat_flux = land_rate/heat_price
-        self.heat_flux_distribution = pd.DataFrame({'years': self.cost_details['years'],
+        self.heat_flux_distribution = pd.DataFrame({GlossaryCore.Years: self.cost_details[GlossaryCore.Years],
                                                'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
 

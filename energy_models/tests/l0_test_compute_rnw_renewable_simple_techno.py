@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,6 +21,7 @@ import pandas as pd
 import scipy.interpolate as sc
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc import RenewableSimpleTechnoDiscipline
 from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno import RenewableSimpleTechno
 
@@ -43,20 +45,20 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
         self.resources_price = pd.DataFrame(
-            columns=['years', 'water'])
-        self.resources_price['years'] = years
+            columns=[GlossaryCore.Years, 'water'])
+        self.resources_price[GlossaryCore.Years] = years
         self.resources_price['water'] = 2.0
         self.resources_price['uranium fuel'] = 1390.0e3
 
-        self.invest_level = pd.DataFrame({'years': years})
-        self.invest_level['invest'] = 33.0 * \
-            1.10 ** (self.invest_level['years'] - 2020)
+        self.invest_level = pd.DataFrame({GlossaryCore.Years: years})
+        self.invest_level[GlossaryCore.InvestValue] = 33.0 * \
+            1.10 ** (self.invest_level[GlossaryCore.Years] - 2020)
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -64,21 +66,21 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
 
         self.margin = pd.DataFrame(
-            {'years': np.arange(2020, 2051), 'margin': np.ones(len(np.arange(2020, 2051))) * 110})
+            {GlossaryCore.Years: np.arange(2020, 2051), GlossaryCore.MarginValue: np.ones(len(np.arange(2020, 2051))) * 110})
 
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.zeros(len(years))})
+            {GlossaryCore.Years: years, 'transport': np.zeros(len(years))})
 
-        self.energy_prices = pd.DataFrame({'years': years})
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years})
 
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict['years'] = years
+        demand_ratio_dict[GlossaryCore.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -88,26 +90,26 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
 
     def test_01_compute_renewable_simple_techno_price(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': RenewableSimpleTechnoDiscipline.techno_infos_dict_default,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': RenewableSimpleTechnoDiscipline.invest_before_year_start,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'resources_price': self.resources_price,
-                       'energy_prices': self.energy_prices,
-                       'CO2_taxes': self.co2_taxes,
-                       'transport_margin': self.margin,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: RenewableSimpleTechnoDiscipline.invest_before_year_start,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.ResourcesPriceValue: self.resources_price,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': RenewableSimpleTechnoDiscipline.initial_production,
                        'initial_age_distrib': RenewableSimpleTechnoDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': pd.DataFrame(),
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyCO2EmissionsValue: pd.DataFrame(),
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -121,26 +123,26 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
 
     def test_02_compute_renewable_simple_techno_price_prod_consumption(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': RenewableSimpleTechnoDiscipline.techno_infos_dict_default,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': RenewableSimpleTechnoDiscipline.invest_before_year_start,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'resources_price': self.resources_price,
-                       'energy_prices': self.energy_prices,
-                       'CO2_taxes': self.co2_taxes,
-                       'transport_margin': self.margin,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: RenewableSimpleTechnoDiscipline.invest_before_year_start,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.ResourcesPriceValue: self.resources_price,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': RenewableSimpleTechnoDiscipline.initial_production,
                        'initial_age_distrib': RenewableSimpleTechnoDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': pd.DataFrame(),
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyCO2EmissionsValue: pd.DataFrame(),
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -175,15 +177,15 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': pd.DataFrame(),
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.{self.model_name}.margin':  self.margin}
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

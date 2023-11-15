@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/23-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/23-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ class Study(EnergyMixStudyManager):
                 10 * (1 - 0.04) ** i for i in l_ctrl]
 
         if self.bspline:
-            invest_carbon_capture_mix_dict['years'] = self.years
+            invest_carbon_capture_mix_dict[GlossaryCore.Years] = self.years
 
             for techno in self.technologies_list:
                 invest_carbon_capture_mix_dict[techno], _ = self.invest_bspline(
@@ -77,16 +77,16 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
-        self.energy_prices = pd.DataFrame({'years': years,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years,
                                            'renewable': 10.0,
                                            'fossil': 2.0,
                                            })
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': 10.0})
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: 10.0})
         self.flue_gas_mean = pd.DataFrame(
-            {'years': years, 'flue_gas_mean': 0.13})
+            {GlossaryCore.Years: years, GlossaryCore.FlueGasMean: 0.13})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
@@ -95,54 +95,54 @@ class Study(EnergyMixStudyManager):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 7.0})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 7.0})
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'amine': 0.0, 'potassium': 0.0, 'electricity': 0.0, 'calcium': 0.0, 'renewable': 0.0, 'fossil': 5.0})
+            {GlossaryCore.Years: years, 'amine': 0.0, 'potassium': 0.0, 'electricity': 0.0, 'calcium': 0.0, 'renewable': 0.0, 'fossil': 5.0})
 
         flue_gas_list = ['fossil.FossilSimpleTechno', 'carbon_capture.direct_air_capture.DirectAirCaptureTechno' ]
-        fossil_simple_techno_prod = pd.DataFrame({'years': years,
+        fossil_simple_techno_prod = pd.DataFrame({GlossaryCore.Years: years,
                                                   f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
 
         investment_mix = self.get_investments()
-        values_dict = {f'{self.study_name}.year_start': self.year_start,
-                       f'{self.study_name}.year_end': self.year_end,
-                       f'{self.study_name}.ccs_list': ['carbon_capture', 'carbon_storage'],
-                       f'{self.study_name}.{ccs_name}.{flue_gas_name}.technologies_list': flue_gas_list,
-                       f'{self.study_name}.{ccs_name}.technologies_list': self.technologies_list,
+        values_dict = {f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.study_name}.{GlossaryCore.ccs_list}': ['carbon_capture', 'carbon_storage'],
+                       f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryCore.techno_list}': flue_gas_list,
+                       f'{self.study_name}.{ccs_name}.{GlossaryCore.techno_list}': self.technologies_list,
                        f'{self.study_name}.{ccs_name}.flue_gas_capture.flue_gas_mean': self.flue_gas_mean,
-                       f'{self.study_name}.{ccs_name}.direct_air_capture.DirectAirCaptureTechno.margin': self.margin,
-                       f'{self.study_name}.{ccs_name}.flue_gas_capture.FlueGasTechno.margin': self.margin,
-                       f'{self.study_name}.{ccs_name}.transport_cost': self.transport,
-                       f'{self.study_name}.{ccs_name}.transport_margin': self.margin,
+                       f'{self.study_name}.{ccs_name}.direct_air_capture.DirectAirCaptureTechno.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{ccs_name}.flue_gas_capture.FlueGasTechno.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{ccs_name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.study_name}.{ccs_name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
                        }
 
-        techno_capital = pd.DataFrame({'years': years, GlossaryCore.Capital: 0.0})
+        techno_capital = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.Capital: 0.0})
         if self.main_study:
             values_dict.update(
                 {
 
-                    f'{self.study_name}.CO2_taxes': self.co2_taxes,
-                    f'{self.study_name}.{energy_mix_name}.energy_prices': self.energy_prices,
-                    f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                    f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                     f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.flue_gas_co2_ratio': np.array([0.13]),
                     f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.techno_production': fossil_simple_techno_prod,
                     f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,})
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
-                    columns=['years']).sum(axis=1)
+                    columns=[GlossaryCore.Years]).sum(axis=1)
                 for techno in self.technologies_list:
-                    invest_level_techno = pd.DataFrame({'years': self.invest_level['years'].values,
-                                                        'invest': self.invest_level['invest'].values * investment_mix[techno].values / investment_mix_sum})
-                    values_dict[f'{self.study_name}.{ccs_name}.{techno}.invest_level'] = invest_level_techno
+                    invest_level_techno = pd.DataFrame({GlossaryCore.Years: self.invest_level[GlossaryCore.Years].values,
+                                                        GlossaryCore.InvestValue: self.invest_level[GlossaryCore.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
+                    values_dict[f'{self.study_name}.{ccs_name}.{techno}.{GlossaryCore.InvestLevelValue}'] = invest_level_techno
                     values_dict[f'{self.study_name}.{ccs_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = techno_capital
             else:
-                values_dict[f'{self.study_name}.{ccs_name}.invest_level'] = self.invest_level
+                values_dict[f'{self.study_name}.{ccs_name}.{GlossaryCore.InvestLevelValue}'] = self.invest_level
         else:
             self.update_dv_arrays()
 

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -55,26 +55,26 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                                                                                         len(years))
                                                       })
 
-        self.hydropower_consumption = pd.DataFrame({'years': years
+        self.hydropower_consumption = pd.DataFrame({GlossaryCore.Years: years
                                                     })
 
-        self.gasturbine_consumption = pd.DataFrame({'years': years,
+        self.gasturbine_consumption = pd.DataFrame({GlossaryCore.Years: years,
                                                     'methane (TWh)': [4.192699] * len(years)
                                                     })
 
         self.techno_capital = pd.DataFrame(
-            {'years': years, GlossaryCore.Capital: 0.0})
+            {GlossaryCore.Years: years, GlossaryCore.Capital: 0.0})
 
         self.hydropower_carbon_emissions = pd.DataFrame(
-            {'years': years, 'Hydropower': 0.0})
+            {GlossaryCore.Years: years, 'Hydropower': 0.0})
 
         self.gasturbine_carbon_emissions = pd.DataFrame(
-            {'years': years, 'GasTurbine': 0.366208})
+            {GlossaryCore.Years: years, 'GasTurbine': 0.366208})
 
         self.land_use_required_GasTurbine = pd.DataFrame(
-            {'years': years, 'GasTurbine (Gha)': 0.0})
+            {GlossaryCore.Years: years, 'GasTurbine (Gha)': 0.0})
         self.land_use_required_Hydropower = pd.DataFrame(
-            {'years': years, 'Hydropower (Gha)': 0.0})
+            {GlossaryCore.Years: years, 'Hydropower (Gha)': 0.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
                      0.02901, 0.03405, 0.03908, 0.04469, 0.05029]
@@ -82,7 +82,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
 
     def tearDown(self):
         pass
@@ -115,41 +115,41 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         low_prod = 1.e-2
         years_low_prod = 10
-        hydropower_production = pd.DataFrame({'years': self.years,
+        hydropower_production = pd.DataFrame({GlossaryCore.Years: self.years,
                                               'electricity (TWh)': np.linspace(100, 100, len(self.years)),
                                               'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
-        gasturbine_production = pd.DataFrame({'years': self.years,
+        gasturbine_production = pd.DataFrame({GlossaryCore.Years: self.years,
                                               'electricity (TWh)': [low_prod] * years_low_prod + [100] * (
                                                           len(self.years) - years_low_prod),
                                               'O2 (Mt)': [0.019217] * len(self.years)})
-        inputs_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2050,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.technologies_list': ['Hydropower', 'GasTurbine'],
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.techno_list}': ['Hydropower', 'GasTurbine'],
                        f'{self.name}.{self.model_name}.Hydropower.techno_consumption': self.hydropower_consumption,
                        f'{self.name}.{self.model_name}.Hydropower.techno_consumption_woratio': self.hydropower_consumption,
                        f'{self.name}.{self.model_name}.Hydropower.techno_production': hydropower_production,
                        f'{self.name}.{self.model_name}.Hydropower.techno_prices': self.hydropower_techno_prices,
-                       f'{self.name}.{self.model_name}.Hydropower.CO2_emissions': self.hydropower_carbon_emissions,
-                       f'{self.name}.{self.model_name}.Hydropower.land_use_required': self.land_use_required_Hydropower,
+                       f'{self.name}.{self.model_name}.Hydropower.{GlossaryCore.CO2EmissionsValue}': self.hydropower_carbon_emissions,
+                       f'{self.name}.{self.model_name}.Hydropower.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_Hydropower,
                        f'{self.name}.{self.model_name}.GasTurbine.techno_consumption': self.gasturbine_consumption,
                        f'{self.name}.{self.model_name}.Hydropower.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
                        f'{self.name}.{self.model_name}.GasTurbine.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
                        f'{self.name}.{self.model_name}.GasTurbine.techno_consumption_woratio': self.gasturbine_consumption,
                        f'{self.name}.{self.model_name}.GasTurbine.techno_production': gasturbine_production,
                        f'{self.name}.{self.model_name}.GasTurbine.techno_prices': self.gasturbine_techno_prices,
-                       f'{self.name}.{self.model_name}.GasTurbine.CO2_emissions': self.gasturbine_carbon_emissions,
-                       f'{self.name}.{self.model_name}.GasTurbine.land_use_required': self.land_use_required_GasTurbine}
+                       f'{self.name}.{self.model_name}.GasTurbine.{GlossaryCore.CO2EmissionsValue}': self.gasturbine_carbon_emissions,
+                       f'{self.name}.{self.model_name}.GasTurbine.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_GasTurbine}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.energy_prices')
+            f'{self.name}.{self.model_name}.{GlossaryCore.EnergyPricesValue}')
         co2_emissions = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.CO2_emissions')
+            f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}')
         # Check if for the first year_low_prod values the price value of hydrogen is equal to the price value of WGS
         # We erase the influence of low prod to the price BUT the mix weight is
         # not 100% for the other techno

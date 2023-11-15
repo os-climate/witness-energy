@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,6 +20,7 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem import ElectrolysisPEM
 from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem_disc import ElectrolysisPEMDiscipline
 from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec import ElectrolysisSOEC
@@ -48,19 +50,19 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource', 'copper_resource', 'platinum_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 100, 100, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {'years': years, 'electricity': 60.0})
+            {GlossaryCore.Years: years, 'electricity': 60.0})
         self.energy_co2_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.0})
+            {GlossaryCore.Years: years, 'electricity': 0.0})
         # price of 1 kg of wood
-        self.resources_prices = pd.DataFrame({'years': years, ResourceGlossary.Water['name']: 0.0, ResourceGlossary.Platinum['name']: 32825887 })
+        self.resources_prices = pd.DataFrame({GlossaryCore.Years: years, ResourceGlossary.Water['name']: 0.0, ResourceGlossary.Platinum['name']: 32825887 })
 
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': len(years) * [0.3]})
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: len(years) * [0.3]})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -69,17 +71,17 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
 
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 500.0})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 500.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years))) * 100))
-        demand_ratio_dict['years'] = years
+        demand_ratio_dict[GlossaryCore.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -89,26 +91,26 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
 
     def _test_01_compute_pemel(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': ElectrolysisPEMDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'resources_price': self.resources_prices,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': ElectrolysisPEMDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: ElectrolysisPEMDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': ElectrolysisPEMDiscipline.initial_production,
                        'initial_age_distrib': ElectrolysisPEMDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': self.energy_co2_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_co2_emissions,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -125,26 +127,26 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
 
     def test_02_compute_pem_ratio_prod_consumption(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': ElectrolysisPEMDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'resources_price': self.resources_prices,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': ElectrolysisPEMDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: ElectrolysisPEMDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': ElectrolysisPEMDiscipline.initial_production,
                        'initial_age_distrib': ElectrolysisPEMDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': self.energy_co2_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_co2_emissions,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -188,15 +190,15 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_co2_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.resources_price': self.resources_prices,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_co2_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin,
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        }
@@ -214,26 +216,26 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
 
     def _test_04_compute_soec(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': ElectrolysisSOECDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'resources_price': self.resources_prices,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': ElectrolysisSOECDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: ElectrolysisSOECDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': ElectrolysisSOECDiscipline.initial_production,
                        'initial_age_distrib': ElectrolysisSOECDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': self.energy_co2_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_co2_emissions,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -266,15 +268,15 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_co2_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.resources_price': self.resources_prices,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_co2_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin,
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        }
@@ -292,26 +294,26 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
 
     def _test_06_compute_awe(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': ElectrolysisAWEDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'resources_price': self.resources_prices,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': ElectrolysisAWEDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: ElectrolysisAWEDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': ElectrolysisAWEDiscipline.initial_production,
                        'initial_age_distrib': ElectrolysisAWEDiscipline.initial_age_distribution,
-                       'energy_CO2_emissions': self.energy_co2_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_co2_emissions,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -344,15 +346,15 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_co2_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.resources_price': self.resources_prices
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_co2_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin,
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

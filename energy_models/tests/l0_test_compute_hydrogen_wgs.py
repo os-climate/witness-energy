@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,6 +20,7 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift import WGS
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -55,19 +57,19 @@ class WGSPriceTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({'years': years, 'electricity': electricity_price,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'electricity': electricity_price,
                                            'syngas': np.ones(len(years)) * 33.
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.2, 'syngas': 0.2})
+            {GlossaryCore.Years: years, 'electricity': 0.2, 'syngas': 0.2})
 
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 0.1715})
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.ones(len(years)) * 0.1715})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -75,12 +77,12 @@ class WGSPriceTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 500.0})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 500.0})
 
         self.syngas_ratio = np.ones(len(years)) * 100.0
         self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34.,
@@ -93,7 +95,7 @@ class WGSPriceTestCase(unittest.TestCase):
                                      'CoElectrolysis': 100.0,
                                      'BiomassGasification': 200.0
                                      }
-        self.resources_prices = pd.DataFrame({'years': np.arange(2020, 2051),
+        self.resources_prices = pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051),
                                               ResourceGlossary.Water['name']: 31 * [0.002],
                                               ResourceGlossary.Uranium['name']: 1390,
                                               ResourceGlossary.CO2['name']: [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119],
@@ -105,7 +107,7 @@ class WGSPriceTestCase(unittest.TestCase):
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict['years'] = years
+        demand_ratio_dict[GlossaryCore.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -116,28 +118,28 @@ class WGSPriceTestCase(unittest.TestCase):
 
     def test_01_compute_smr_price_prod_consumption(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': WaterGasShiftDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': WaterGasShiftDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: WaterGasShiftDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': WaterGasShiftDiscipline.initial_production,
                        'initial_age_distrib': WaterGasShiftDiscipline.initial_age_distribution,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'resources_price': self.resources_prices,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
                        'syngas_ratio': self.syngas_ratio * 0.33,
                        'needed_syngas_ratio': 0.0,
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -152,28 +154,28 @@ class WGSPriceTestCase(unittest.TestCase):
 
     def test_01_compute_wgs_price_vssyngas_ratio(self):
 
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
+        inputs_dict = {GlossaryCore.YearStart: 2020,
+                       GlossaryCore.YearEnd: 2050,
                        'techno_infos_dict': WaterGasShiftDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': WaterGasShiftDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
+                       GlossaryCore.EnergyPricesValue: self.energy_prices,
+                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
+                       GlossaryCore.InvestLevelValue: self.invest_level,
+                       GlossaryCore.InvestmentBeforeYearStartValue: WaterGasShiftDiscipline.invest_before_year_start,
+                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
+                       GlossaryCore.MarginValue:  self.margin,
+                       GlossaryCore.TransportCostValue: self.transport,
+                       GlossaryCore.TransportMarginValue: self.margin,
                        'initial_production': WaterGasShiftDiscipline.initial_production,
                        'initial_age_distrib': WaterGasShiftDiscipline.initial_age_distribution,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'resources_price': self.resources_prices,
+                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
                        'syngas_ratio': self.syngas_ratio,
                        'needed_syngas_ratio': 0.0,
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
+                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -227,14 +229,14 @@ class WGSPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin,
                        f'{self.name}.syngas_ratio': self.syngas_ratio * 0.33,
                        f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
                        f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
@@ -255,13 +257,13 @@ class WGSPriceTestCase(unittest.TestCase):
 
 #         disc_techno = self.ee.root_process.proxy_disciplines[0]
 #
-#         disc_techno.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.invest_level',
-#                                                                        f'{self.name}.energy_prices',
-#                                                                        f'{self.name}.energy_CO2_emissions',  f'{self.name}.syngas_ratio'],
-#                                    outputs=[f'{self.name}.{self.model_name}.techno_prices',
-#                                             f'{self.name}.{self.model_name}.CO2_emissions',
-#                                             f'{self.name}.{self.model_name}.techno_consumption',
-#                                             f'{self.name}.{self.model_name}.techno_production'])
+#         disc_techno.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+#                                                                        f'{self.name}.{GlossaryCore.EnergyPricesValue}',
+#                                                                        f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',  f'{self.name}.syngas_ratio'],
+#                                    outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
+#                                             f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
+#                                             f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
+#                                             f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}'])
 
     def test_02_wgs_discipline_for_other_ratio(self):
 
@@ -284,14 +286,14 @@ class WGSPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin,
                        f'{self.name}.syngas_ratio': self.syngas_ratio * 1.0,
                        f'{self.name}.{self.model_name}.needed_syngas_ratio': 1.0,
                        f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
@@ -330,14 +332,14 @@ class WGSPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.syngas_ratio': np.linspace(0, 100, len(self.margin['years'])),
+        inputs_dict = {f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin,
+                       f'{self.name}.syngas_ratio': np.linspace(0, 100, len(self.margin[GlossaryCore.Years])),
                        f'{self.name}.{self.model_name}.needed_syngas_ratio': 0.0,
                        f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
                        f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices
