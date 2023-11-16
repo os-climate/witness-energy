@@ -139,7 +139,6 @@ class Refinery(LiquidFuelTechno):
         self.production_detailed[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
                                                                                   self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
 
-<<<<<<< HEAD
     def compute_price(self):
         """
         Compute the detail price of the technology
@@ -198,63 +197,6 @@ class Refinery(LiquidFuelTechno):
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
 
         return self.cost_details
-=======
-    # def compute_price(self):
-    #     """
-    #     Compute the detail price of the technology
-    #     """
-    #
-    #     self.cost_details['invest'] = self.invest_level.loc[self.invest_level['years']
-    #                                                         <= self.cost_details['years'].max()]['invest'].values
-    #     # Maximize with smooth exponential
-    #     self.cost_details['invest'] = compute_func_with_exp_min(
-    #         self.cost_details['invest'].values, 1.0e-12)
-    #
-    #     self.cost_details[f'Capex_{self.name}'] = self.compute_capex(
-    #         self.cost_details['invest'].values, self.techno_infos_dict)
-    #
-    #     crf = self.compute_crf(self.techno_infos_dict)
-    #
-    #     # Compute efficiency evolving in time or not
-    #     if self.techno_infos_dict['techno_evo_eff'] == 'yes':
-    #         self.cost_details['efficiency'] = self.configure_efficiency()
-    #     else:
-    #         self.cost_details['efficiency'] = self.techno_infos_dict['efficiency']
-    #
-    #     self.prices = self.prices.loc[self.prices['years']
-    #                                   <= self.cost_details['years'].max()]
-    #     self.cost_details['energy_costs'] = self.compute_other_primary_energy_costs(
-    #     )
-    #
-    #     # Factory cost including CAPEX OPEX
-    #     self.cost_details[f'{self.name}_factory'] = self.cost_details[f'Capex_{self.name}'] * \
-    #         (crf + self.techno_infos_dict['Opex_percentage'])
-    #
-    #     # Compute transport and CO2 taxes
-    #     self.cost_details['transport'] = self.compute_transport()
-    #
-    #     self.cost_details['CO2_taxes_factory'] = self.compute_co2_tax()
-    #
-    #     # Add transport and CO2 taxes
-    #     self.cost_details[self.name] = self.cost_details[f'{self.name}_factory'] + self.cost_details['transport'] + \
-    #         self.cost_details['CO2_taxes_factory'] + \
-    #         self.cost_details['energy_costs']
-    #
-    #     # Add margin in %
-    #     self.cost_details[self.name] *= self.margin.loc[self.margin['years']
-    #                                                     <= self.cost_details['years'].max()]['margin'].values / 100.0
-    #
-    #     if 'CO2_taxes_factory' in self.cost_details:
-    #         self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name] - \
-    #             self.cost_details['CO2_taxes_factory'] * \
-    #             self.margin.loc[self.margin['years']
-    #                             <= self.cost_details['years'].max()]['margin'].values / 100.0
-    #
-    #     else:
-    #         self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
-    #
-    #     return self.cost_details
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
