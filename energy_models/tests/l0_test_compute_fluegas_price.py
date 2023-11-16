@@ -41,9 +41,12 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
 
+<<<<<<< HEAD
         self.techno_capital = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.Capital: 0.0})
 
+=======
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
     def tearDown(self):
         pass
 
@@ -117,10 +120,15 @@ class FlueGasRatioTestCase(unittest.TestCase):
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.techno_production': self.hydrogen_WaterGasShift_production,
                        f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': np.array([0.2]),
                        f'{self.name}.carbon_capture.flue_gas_co2_ratio' : np.array([0.2]),
+<<<<<<< HEAD
                        f'{self.name}.{GlossaryCore.ccs_list}': ['carbon_capture'],
                        f'{self.name}.{self.model_name}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
                        f'{self.name}.{self.model_name}.electricity.CoalGen.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
                        f'{self.name}.{self.model_name}.carbon_capture.direct_air_capture.DirectAirCaptureTechno.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
+=======
+                       f'{self.name}.ccs_list': ['carbon_capture'],
+
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': np.array([0.4]),
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production, }

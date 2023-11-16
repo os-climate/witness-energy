@@ -365,12 +365,21 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}',
                                     ],
+<<<<<<< HEAD
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
+=======
+                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                                     f'{self.name}.{self.model_name}.techno_consumption',
+                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
+                                     f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.techno_capital',
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                                      f'{self.name}.{self.model_name}.non_use_capital',
                                      ], )
 
@@ -647,6 +656,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+<<<<<<< HEAD
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.Capital: 20000 * np.ones_like(self.years)
@@ -656,6 +666,12 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryCore.techno_list}': ['WaterGasShift', 'PlasmaCracking'],
+=======
+        inputs_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2050,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.technologies_list': ['WaterGasShift', 'PlasmaCracking'],
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption': self.smr_consumption,
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption_woratio': self.smr_consumption,
                        f'{self.name}.{self.model_name}.WaterGasShift.techno_production': self.smr_production,
@@ -686,6 +702,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                     f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption',
                                     f'{self.name}.{self.model_name}.WaterGasShift.techno_production',
                                     f'{self.name}.{self.model_name}.PlasmaCracking.techno_production',
+<<<<<<< HEAD
                                     f'{self.name}.{self.model_name}.WaterGasShift.techno_capital',
                                     f'{self.name}.{self.model_name}.PlasmaCracking.techno_capital',
                                     f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.CO2EmissionsValue}',
@@ -696,6 +713,15 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.EnergyConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}'], )
+=======
+                                    f'{self.name}.{self.model_name}.WaterGasShift.CO2_emissions',
+                                    f'{self.name}.{self.model_name}.PlasmaCracking.CO2_emissions'],
+                            outputs=[f'{self.name}.{self.model_name}.techno_mix',
+                                     f'{self.name}.{self.model_name}.energy_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                                     f'{self.name}.{self.model_name}.energy_consumption',
+                                     f'{self.name}.{self.model_name}.energy_production'], )
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
     def test_07_wgs_jacobian_invest_negative(self):
 
@@ -719,9 +745,14 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2101)
+<<<<<<< HEAD
 
         invest_level_negative2 = pd.DataFrame({GlossaryCore.Years: years,
                                                GlossaryCore.InvestValue: np.array(
+=======
+        invest_level_negative2 = pd.DataFrame({'years': years,
+                                               'invest': np.array(
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                                                    [7.522704294248678, 4.397620762690489, 1.5216552248664645,
                                                     1.188019520330695, -0.11546691751734979, -0.41257105779015807,
                                                     -0.4713142430480846, -0.31319746735224685, -0.16690328690379208,

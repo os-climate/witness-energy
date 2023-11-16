@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 '''
 Copyright 2023 Capgemini
 
@@ -14,6 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
+=======
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity

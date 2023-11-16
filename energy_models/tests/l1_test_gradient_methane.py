@@ -53,8 +53,12 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         self.year_start = 2020
         self.year_end = 2050
         years = np.arange(self.year_start, self.year_end + 1)
+<<<<<<< HEAD
         self.years = years
         self.energy_prices = pd.DataFrame({GlossaryCore.Years: years,
+=======
+        self.energy_prices = pd.DataFrame({'years': years,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                                            'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                     0.089236536471781, 0.08899046935409588,
                                                                     0.08874840310033885,

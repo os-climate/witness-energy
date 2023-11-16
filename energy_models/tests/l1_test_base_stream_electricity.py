@@ -58,9 +58,12 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                                                     'methane (TWh)': [4.192699] * len(years)
                                                     })
 
+<<<<<<< HEAD
         self.techno_capital = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.Capital: 0.0})
 
+=======
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
         self.hydropower_carbon_emissions = pd.DataFrame(
             {GlossaryCore.Years: years, 'Hydropower': 0.0})
 

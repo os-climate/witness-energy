@@ -43,8 +43,11 @@ class EnergyMixTestCase(unittest.TestCase):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start + 1
         self.energy_list = ['hydrogen.gaseous_hydrogen', 'methane']
+<<<<<<< HEAD
         self.energy_type_capital = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.Capital: 0.0})
+=======
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
         self.consumption_hydro = pd.DataFrame(
             {'electricity (TWh)': np.array([5.79262302e+09, 5.96550630e+09, 6.13351314e+09, 6.29771389e+09,
                                             6.45887954e+09, 6.61758183e+09, 6.81571547e+09, 7.00833095e+09,
@@ -406,6 +409,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryCore.EnergyPricesValue}': pd.DataFrame(
                            {'hydrogen.gaseous_hydrogen': self.prices_hydro['hydrogen.gaseous_hydrogen'],
                             'methane': self.cost_details['methane']}),
+<<<<<<< HEAD
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryCore.EnergyConsumptionValue}': self.consumption_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryCore.EnergyConsumptionWithoutRatioValue}': self.consumption_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryCore.EnergyProductionValue}': self.production_hydro,
@@ -431,6 +435,30 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.{GlossaryCore.EnergyProcductionWithoutRatioValue}': self.production,
                        f'{name}.{model_name}.methane.{GlossaryCore.EnergyPricesValue}': self.cost_details,
                        f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
+=======
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_consumption': self.consumption_hydro,
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_consumption_woratio': self.consumption_hydro,
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_production': self.production_hydro,
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_production_woratio': self.production_hydro,
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.energy_prices': self.prices_hydro,
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_per_use': pd.DataFrame(
+                           {'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_emissions': pd.DataFrame(
+                           {'years': self.years, 'hydrogen.gaseous_hydrogen': 0.0}),
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.land_use_required': self.land_use_required_mock,
+                       f'{name}.{agriculture_mix}.energy_consumption': self.energy_consumption_biomass,
+                       f'{name}.{agriculture_mix}.energy_consumption_woratio': self.energy_consumption_biomass,
+                       f'{name}.{agriculture_mix}.energy_production': self.energy_production_biomass,
+                       f'{name}.{agriculture_mix}.energy_prices': self.energy_prices_biomass,
+                       f'{name}.{agriculture_mix}.CO2_per_use': self.CO2_per_use_biomass,
+                       f'{name}.{agriculture_mix}.CO2_emissions': self.CO2_emissions_biomass,
+                       f'{name}.{agriculture_mix}.land_use_required': self.land_use_required_mock,
+                       f'{name}.{model_name}.methane.energy_consumption': self.consumption,
+                       f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
+                       f'{name}.{model_name}.methane.energy_production': self.production,
+                       f'{name}.{model_name}.methane.energy_production_woratio': self.production,
+                       f'{name}.{model_name}.methane.energy_prices': self.cost_details,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame(
                            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.methane.{GlossaryCore.CO2EmissionsValue}': pd.DataFrame(
@@ -503,6 +531,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryCore.EnergyProcductionWithoutRatioValue}': self.production_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryCore.EnergyPricesValue}': self.prices_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_per_use': pd.DataFrame(
+<<<<<<< HEAD
                            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryCore.CO2EmissionsValue}': pd.DataFrame(
                            {GlossaryCore.Years: self.years, 'hydrogen.gaseous_hydrogen': 0.0}),
@@ -514,6 +543,17 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.{GlossaryCore.EnergyProductionValue}': self.production,
                        f'{name}.{model_name}.methane.{GlossaryCore.EnergyProcductionWithoutRatioValue}': self.production,
                        f'{name}.{model_name}.methane.{GlossaryCore.EnergyPricesValue}': self.cost_details,
+=======
+                           {'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_emissions': pd.DataFrame(
+                           {'years': self.years, 'hydrogen.gaseous_hydrogen': 0.0}),
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.land_use_required': self.land_use_required_mock,
+                       f'{name}.{model_name}.methane.energy_consumption': self.consumption,
+                       f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
+                       f'{name}.{model_name}.methane.energy_production': self.production,
+                       f'{name}.{model_name}.methane.energy_production_woratio': self.production,
+                       f'{name}.{model_name}.methane.energy_prices': self.cost_details,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame(
                            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.methane.{GlossaryCore.CO2EmissionsValue}': pd.DataFrame(
@@ -584,6 +624,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryCore.EnergyProcductionWithoutRatioValue}': self.production_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryCore.EnergyPricesValue}': self.prices_hydro,
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_per_use': pd.DataFrame(
+<<<<<<< HEAD
                            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.{GlossaryCore.CO2EmissionsValue}': pd.DataFrame(
                            {GlossaryCore.Years: self.years, 'hydrogen.gaseous_hydrogen': 0.0}),
@@ -595,6 +636,17 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.{GlossaryCore.EnergyProductionValue}': self.production,
                        f'{name}.{model_name}.methane.{GlossaryCore.EnergyProcductionWithoutRatioValue}': self.production,
                        f'{name}.{model_name}.methane.{GlossaryCore.EnergyPricesValue}': self.cost_details,
+=======
+                           {'years': self.years, 'CO2_tax': 0.0, 'CO2_per_use': 0.0}),
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.CO2_emissions': pd.DataFrame(
+                           {'years': self.years, 'hydrogen.gaseous_hydrogen': 0.0}),
+                       f'{name}.{model_name}.hydrogen.gaseous_hydrogen.land_use_required': self.land_use_required_mock,
+                       f'{name}.{model_name}.methane.energy_consumption': self.consumption,
+                       f'{name}.{model_name}.methane.energy_consumption_woratio': self.consumption,
+                       f'{name}.{model_name}.methane.energy_production': self.production,
+                       f'{name}.{model_name}.methane.energy_production_woratio': self.production,
+                       f'{name}.{model_name}.methane.energy_prices': self.cost_details,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame(
                            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.methane.{GlossaryCore.CO2EmissionsValue}': pd.DataFrame(

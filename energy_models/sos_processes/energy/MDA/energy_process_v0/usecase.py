@@ -562,10 +562,16 @@ class Study(EnergyStudyManager):
                                               energy_invest_poles * \
                                               energy_invest_factor
                 else:
+<<<<<<< HEAD
 
                     indep_invest_df[column] = invest_mix_df[column].values
                                               #energy_invest[GlossaryCore.EnergyInvestmentsValue].values * \
                                               #energy_invest_factor
+=======
+                    indep_invest_df[column] = invest_mix_df[column].values * \
+                                              energy_invest['energy_investment'].values * \
+                                              energy_invest_factor
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
         return indep_invest_df
 
@@ -869,6 +875,7 @@ class Study(EnergyStudyManager):
         CO2_emissions = pd.DataFrame({GlossaryCore.Years: self.years,
                                       'biomass_dry': -0.277})
 
+<<<<<<< HEAD
         energy_type_capital = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.Capital: 0.0})
         agri_values_dict = {f'{self.study_name}.{agri_mix_name}.N2O_per_use': N2O_per_use,
@@ -882,6 +889,17 @@ class Study(EnergyStudyManager):
                             f'{self.study_name}.{agri_mix_name}.{GlossaryCore.LandUseRequiredValue}': land_use_required,
                             f'{self.study_name}.{agri_mix_name}.{GlossaryCore.CO2EmissionsValue}': CO2_emissions, }
 
+=======
+        agri_values_dict = {f'{self.study_name}.{agri_mix_name}.N2O_per_use': N2O_per_use,
+                            f'{self.study_name}.{agri_mix_name}.CH4_per_use': CH4_per_use,
+                            f'{self.study_name}.{agri_mix_name}.CO2_per_use': CO2_per_use,
+                            f'{self.study_name}.{agri_mix_name}.energy_consumption': energy_consumption,
+                            f'{self.study_name}.{agri_mix_name}.energy_consumption_woratio': energy_consumption,
+                            f'{self.study_name}.{agri_mix_name}.energy_production': energy_production,
+                            f'{self.study_name}.{agri_mix_name}.energy_prices': energy_prices,
+                            f'{self.study_name}.{agri_mix_name}.land_use_required': land_use_required,
+                            f'{self.study_name}.{agri_mix_name}.CO2_emissions': CO2_emissions, }
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
         return agri_values_dict
 

@@ -162,12 +162,22 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                     f'{self.name}.land_surface_for_food_df',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}'
                                     ],
+<<<<<<< HEAD
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.LandUseRequiredValue}',
+=======
+                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                                     f'{self.name}.{self.model_name}.techno_consumption',
+                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
+                                     f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.land_use_required',
+                                     f'{self.name}.{self.model_name}.techno_capital',
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                                      f'{self.name}.{self.model_name}.non_use_capital'], )
 
     def test_02_managed_wood_discipline_analytic_grad(self):
@@ -211,6 +221,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
+<<<<<<< HEAD
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}', f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
@@ -220,6 +231,16 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.LandUseRequiredValue}'], )
+=======
+                            inputs=[f'{self.name}.{self.model_name}.invest_level', f'{self.name}.energy_prices',
+                                    f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
+                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                                     f'{self.name}.{self.model_name}.techno_consumption',
+                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
+                                     f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.land_use_required'], )
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
     def test_03_unmanaged_wood_discipline_analytic_grad(self):
 
@@ -264,6 +285,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
+<<<<<<< HEAD
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
@@ -274,6 +296,17 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.LandUseRequiredValue}'])
+=======
+                            inputs=[f'{self.name}.{self.model_name}.invest_level',
+                                    f'{self.name}.energy_prices',
+                                    f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
+                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
+                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                                     f'{self.name}.{self.model_name}.techno_consumption',
+                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
+                                     f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.land_use_required'])
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
     def test_04_biomass_dry_discipline_jacobian(self):
 

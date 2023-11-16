@@ -77,8 +77,13 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # full_values_dict[f'{self.name}.is_dev'] = True
 
+<<<<<<< HEAD
         full_values_dict[f'{cls.name}.{GlossaryCore.CO2TaxesValue}'] = pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051),
                                                                    GlossaryCore.CO2Tax: 20.0}, index=np.arange(2020, 2051))
+=======
+        full_values_dict[f'{self.name}.CO2_taxes'] = pd.DataFrame({'years': np.arange(2020, 2051),
+                                                                   'CO2_tax': 20.0}, index=np.arange(2020, 2051))
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
         usecase_agri = agri_study_open(execution_engine=self.ee, year_start=2020, year_end=2050, time_step=1)
         usecase_agri.study_name = self.name

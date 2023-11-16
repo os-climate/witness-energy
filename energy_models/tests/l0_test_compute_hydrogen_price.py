@@ -276,9 +276,12 @@ class HydrogenPriceTestCase(unittest.TestCase):
                                                                  1903228912.9121237, 1900508965.3773632, 1897572989.323316, 1894437297.5816505,
                                                                  1891117678.7879717, 1887628158.5415828, 1883981246.8879216]})
 
+<<<<<<< HEAD
         self.techno_capital = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.Capital: 0.0})
 
+=======
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
         self.electrolysis_carbon_emissions = pd.DataFrame(
             {GlossaryCore.Years: years, 'Electrolysis.PEM': 0.0})
 
@@ -303,8 +306,11 @@ class HydrogenPriceTestCase(unittest.TestCase):
             {GlossaryCore.Years: years, 'PlasmaCracking (Gha)': 0.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
+<<<<<<< HEAD
         self.techno_capital = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.Capital: 0.0})
+=======
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
     def tearDown(self):
         pass

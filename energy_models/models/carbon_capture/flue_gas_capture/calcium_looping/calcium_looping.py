@@ -49,6 +49,10 @@ class CalciumLooping(CCTechno):
 
 
 
+
+
+
+
         return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):

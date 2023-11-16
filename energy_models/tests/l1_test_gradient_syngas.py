@@ -164,6 +164,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
@@ -175,6 +176,20 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+=======
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.resources_price': self.resources_prices,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -223,6 +238,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
@@ -234,6 +250,20 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+=======
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.resources_price': self.resources_prices,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -281,6 +311,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
@@ -292,6 +323,20 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+=======
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.resources_price': self.resources_prices,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -336,6 +381,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
+<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
@@ -345,6 +391,18 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
+=======
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level_rwgs,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.{self.model_name}.syngas_ratio': np.ones(len(years)) * 33,
                        f'{self.name}.{self.model_name}.needed_syngas_ratio': 100.0,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -394,6 +452,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
@@ -404,6 +463,19 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+=======
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -449,6 +521,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
@@ -459,6 +532,19 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+=======
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -504,6 +590,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
@@ -514,6 +601,19 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+=======
+        inputs_dict = {f'{self.name}.year_end': 2050,
+                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.energy_prices': self.energy_prices,
+                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.transport_margin': self.margin,
+                       f'{self.name}.transport_cost': self.transport,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -2407,6 +2507,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+<<<<<<< HEAD
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.Capital: 20000 * np.ones_like(self.years)
@@ -2416,6 +2517,12 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryCore.techno_list}': ['Pyrolysis', 'SMR', 'AutothermalReforming',
+=======
+        inputs_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2050,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.technologies_list': ['Pyrolysis', 'SMR', 'AutothermalReforming',
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                                                           'BiomassGasification', 'CoalGasification', 'CoElectrolysis'],
                        f'{self.name}.{self.model_name}.Pyrolysis.techno_consumption': self.pyrolysis_consumption,
                        f'{self.name}.{self.model_name}.Pyrolysis.techno_consumption_woratio': self.pyrolysis_consumption,
@@ -2458,6 +2565,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.CoElectrolysis.techno_prices': self.CoElectrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryCore.CO2EmissionsValue}': self.CoElectrolysis_carbon_emissions,
                        f'{self.name}.{self.model_name}.CoElectrolysis.syngas_ratio': np.array([100.]),
+<<<<<<< HEAD
                        f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_CoElectrolysis,
                        f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
                        f'{self.name}.{self.model_name}.CoalGasification.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
@@ -2466,6 +2574,10 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.SMR.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
                        f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+=======
+                       f'{self.name}.{self.model_name}.CoElectrolysis.land_use_required': self.land_use_required_CoElectrolysis,
+                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 

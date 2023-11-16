@@ -210,6 +210,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+<<<<<<< HEAD
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.Capital: 20000 * np.ones_like(self.years)
@@ -219,6 +220,12 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryCore.techno_list}': ['CO2Hydrogenation'],
+=======
+        inputs_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2050,
+                       f'{self.name}.CO2_taxes': self.co2_taxes,
+                       f'{self.name}.technologies_list': ['CO2Hydrogenation'],
+>>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_consumption': self.co2_hydrogenation_consumption,
                        f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_consumption_woratio': self.co2_hydrogenation_consumption,
                        f'{self.name}.{self.model_name}.CO2Hydrogenation.techno_production': self.co2_hydrogenation_production,
