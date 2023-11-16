@@ -1,24 +1,11 @@
-'''
-Copyright 2023 Capgemini
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-'''
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 
+import numpy as np
 import pandas as pd
-
 
 class HydrogenBoilerMediumHeat(mediumheattechno):
 
@@ -60,10 +47,26 @@ class HydrogenBoilerMediumHeat(mediumheattechno):
 
         self.compute_primary_energy_production()
 
+
         # Consumption
 
         self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[f'{GaseousHydrogen.name}_needs'] * \
             self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})']
+
+        # CO2 production
+        # self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = GaseousHydrogen.data_energy_dict['CO2_per_use'] / \
+        #                                                                        GaseousHydrogen.data_energy_dict['calorific_value'] * \
+        #     self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})']
+
+    # def compute_CO2_emissions_from_input_resources(self):
+    #     '''
+    #     Need to take into account CO2 from Gaseous Hydrogen production
+    #     '''
+    #
+    #     self.carbon_emissions[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
+    #         self.cost_details[f'{GaseousHydrogen.name}_needs']
+    #
+    #     return self.carbon_emissions[f'{GaseousHydrogen.name}']
 
     def get_theoretical_hydrogen_needs(self):
         # we need as output kwh/kwh
@@ -72,6 +75,16 @@ class HydrogenBoilerMediumHeat(mediumheattechno):
         hydrogen_needs = hydrogen_demand
 
         return hydrogen_needs
+
+    # def get_theoretical_co2_prod(self, unit='kg/kWh'):
+    #     co2_captured__production = self.techno_infos_dict['co2_captured__production']
+    #     heat_density = GaseousHydrogen.data_energy_dict['density']  # kg/m^3
+    #     heat_calorific_value = GaseousHydrogen.data_energy_dict['calorific_value']  # kWh/kg
+    #
+    #     co2_prod = co2_captured__production / (heat_density * heat_calorific_value)
+    #
+    #     return co2_prod
+
 
     def configure_input(self, inputs_dict):
         '''
@@ -85,5 +98,4 @@ class HydrogenBoilerMediumHeat(mediumheattechno):
         self.heat_flux = land_rate/heat_price
         self.heat_flux_distribution = pd.DataFrame({'years': self.cost_details['years'],
                                                'heat_flux': self.heat_flux})
-
         return self.heat_flux_distribution

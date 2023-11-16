@@ -132,7 +132,6 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.HeatPump.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.Geothermal.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.CHP.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.HydrogenBoiler.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.study_name}.{energy_name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
