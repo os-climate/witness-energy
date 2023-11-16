@@ -62,7 +62,8 @@ class TestEnergyInvest(unittest.TestCase):
         data_invest.update({techno: 100. / 5 for sublist in all_techno_list for techno in sublist})
 
         self.invest_percentage_per_techno = pd.DataFrame(data=data_invest)
-        self.invest_percentage_gdp = 10.
+        self.invest_percentage_gdp = pd.DataFrame(data={GlossaryCore.Years: self.years,
+                                                        GlossaryEnergy.EnergyInvestPercentageGDPName: np.linspace(10., 20., len(self.years))})
         forest_invest = np.linspace(5, 8, len(self.years))
         self.forest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.ForestInvestmentValue: forest_invest})
@@ -118,6 +119,24 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
+
+        # assert that for fossil techno and direct air capture, investment is 10% * 130 * 20% at 2020 and 20% * 190 * 20%
+        fossil_invest_level = self.ee.dm.get_value(f'{self.name}.fossil.FossilSimpleTechno.{GlossaryEnergy.InvestLevelValue}')[GlossaryEnergy.InvestValue].values
+        fossil_invest_2020 = fossil_invest_level[0]
+        fossil_invest_2050 = fossil_invest_level[-1]
+        error_message = 'Error in investment, it is not equal to expected'
+        self.assertAlmostEqual(fossil_invest_2020, 0.1 * 130 * 0.2, msg=error_message)
+        self.assertAlmostEqual(fossil_invest_2050, 0.2 * 190 * 0.2, msg=error_message)
+
+        dac_invest_level = self.ee.dm.get_value(f'{self.name}.CCUS.carbon_capture.direct_air_capture'
+                                                f'.DirectAirCaptureTechno.{GlossaryEnergy.InvestLevelValue}')[
+            GlossaryEnergy.InvestValue].values
+        dac_invest_2020 = dac_invest_level[0]
+        dac_invest_2050 = dac_invest_level[-1]
+        self.assertAlmostEqual(dac_invest_2020, 0.1 * 130 * 0.2,
+                               msg=error_message)
+        self.assertAlmostEqual(dac_invest_2050, 0.2 * 190 * 0.2,
+                               msg=error_message)
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
