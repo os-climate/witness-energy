@@ -55,13 +55,13 @@ class Amine(CCTechno):
         Need to take into account  CO2 from Methane and electricity consumption
         '''
 
-        self.carbon_emissions[Methane.name] = self.energy_CO2_emissions[Methane.name] * self.cost_details['heat_needs']
+        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * self.cost_details['heat_needs']
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs']
 
-        self.carbon_emissions[ResourceGlossary.Amine['name']] = self.resources_CO2_emissions[ResourceGlossary.Amine['name']] * \
-                                                            self.cost_details['amine_needs']
-        return self.carbon_emissions[Methane.name] + self.carbon_emissions[Electricity.name] + self.carbon_emissions[ResourceGlossary.Amine['name']] - 1.0
+        self.carbon_intensity[ResourceGlossary.Amine['name']] = self.resources_CO2_emissions[ResourceGlossary.Amine['name']] * \
+                                                                self.cost_details['amine_needs']
+        return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[ResourceGlossary.Amine['name']] - 1.0
 
 
 
@@ -91,21 +91,21 @@ class Amine(CCTechno):
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
         """
-        self.compute_primary_energy_production()
+        
         # Consumption
 
-        self.consumption[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
+                                                                            self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'amine ({self.mass_unit})'] = self.cost_details['amine_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']   # in kWH
+        self.consumption_detailed[f'amine ({self.mass_unit})'] = self.cost_details['amine_needs'] * \
+                                                                 self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']   # in kWH
 
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
-                                                              self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
-                                                              Methane.data_energy_dict['CO2_per_use'] / Methane.data_energy_dict['calorific_value']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
+                                                                                        self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                        Methane.data_energy_dict['CO2_per_use'] / Methane.data_energy_dict['calorific_value']
     def compute_amine_need(self):
         """
         'reaction': 'RNH2(Amine) + CO2 <--> (RNHCOO-) + (H+)'

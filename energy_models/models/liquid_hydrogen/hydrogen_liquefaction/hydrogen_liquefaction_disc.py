@@ -69,7 +69,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'euro_dollar': 1.114,
                                  'available_power': 73000000,
                                  'available_power_unit': 'kg/year',
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
 
     initial_production = 70.0 * 33.3 * 0.001
 

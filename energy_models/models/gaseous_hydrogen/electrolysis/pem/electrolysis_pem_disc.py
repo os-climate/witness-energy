@@ -76,7 +76,7 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.65,
                                  'efficiency_max': 0.75,
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'platinum_needs': 1.0/8.0, #Fuel Cell technologies Office 2017
                                  'platinum_needs_units': 'g/KW',}
 

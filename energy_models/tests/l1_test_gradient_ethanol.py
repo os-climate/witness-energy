@@ -57,6 +57,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                                            'biomass_dry': 45.0,
                                            })
 
+        
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryCore.Years: years,
              'electricity': 0.0,
@@ -135,6 +136,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}',

@@ -45,7 +45,7 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'Capex_init_unit': '$/kW',
         'lifetime': lifetime,
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
         'efficiency': 0.52,                # consumptions and productions already have efficiency included
                                            #https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.

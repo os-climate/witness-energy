@@ -64,20 +64,20 @@ class UpgradingBiogas(MethaneTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
         # kg/kWh corresponds to Mt/TWh
         co2_prod = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.name} ({self.mass_unit})'] = co2_prod * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = co2_prod * \
+                                                                               self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{BioGas.name} ({self.product_energy_unit})'] = self.cost_details['biogas_needs'] * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{Monotethanolamine.name} ({self.mass_unit})'] = self.get_MEA_loss() * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{BioGas.name} ({self.product_energy_unit})'] = self.cost_details['biogas_needs'] * \
+                                                                                   self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Monotethanolamine.name} ({self.mass_unit})'] = self.get_MEA_loss() * \
+                                                                                    self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
         # production
         self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
@@ -134,15 +134,15 @@ class UpgradingBiogas(MethaneTechno):
         Need to take into account  CO2 from electricity production and negative CO2 from biogas
         '''
 
-        self.carbon_emissions[f'{BioGas.name}'] = self.energy_CO2_emissions[f'{BioGas.name}'] * \
-            self.cost_details['biogas_needs']
+        self.carbon_intensity[f'{BioGas.name}'] = self.energy_CO2_emissions[f'{BioGas.name}'] * \
+                                                  self.cost_details['biogas_needs']
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
+                                                  self.cost_details['elec_needs']
 
         # This CO2 is captured we do not take it into account in the CO2 emissions
 #         co2_prod = self.get_theoretical_co2_prod()
 #         self.carbon_emissions['CO2'] = -self.resources_CO2_emissions['CO2'] * \
 #             co2_prod
         # + self.carbon_emissions['CO2']
-        return self.carbon_emissions[f'{BioGas.name}'] + self.carbon_emissions[Electricity.name]
+        return self.carbon_intensity[f'{BioGas.name}'] + self.carbon_intensity[Electricity.name]

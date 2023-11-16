@@ -72,7 +72,7 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
         'Opex_percentage': 0.02,
         'lifetime': lifetime,
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
         'efficiency': 1,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,

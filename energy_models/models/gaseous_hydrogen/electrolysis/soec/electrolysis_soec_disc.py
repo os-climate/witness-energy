@@ -69,7 +69,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.84,
                                  'efficiency_max': 0.92,  # because of topsoe
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
 
     initial_production = 0.0
 

@@ -71,23 +71,23 @@ class AnaerobicDigestion(BioGasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Consumption
-        self.consumption[f'{WetBiomass.name} ({self.mass_unit})'] = self.cost_details['wet_biomass_needs'] * \
-            self.production[f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{WetBiomass.name} ({self.mass_unit})'] = self.cost_details['wet_biomass_needs'] * \
+                                                                             self.production_detailed[f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from electricity production and negative CO2 from biomass
         '''
 
-        self.carbon_emissions[f'{WetBiomass.name}'] = self.resources_CO2_emissions[ResourceGlossary.WetBiomass['name']] * \
-            self.cost_details['wet_biomass_needs']
+        self.carbon_intensity[f'{WetBiomass.name}'] = self.resources_CO2_emissions[ResourceGlossary.WetBiomass['name']] * \
+                                                      self.cost_details['wet_biomass_needs']
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
+                                                  self.cost_details['elec_needs']
 
-        return self.carbon_emissions[f'{WetBiomass.name}'] + self.carbon_emissions[Electricity.name]
+        return self.carbon_intensity[f'{WetBiomass.name}'] + self.carbon_intensity[Electricity.name]

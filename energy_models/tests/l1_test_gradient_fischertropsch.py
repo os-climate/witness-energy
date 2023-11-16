@@ -54,6 +54,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.energy_name = 'liquid_fuel'
 
         years = np.arange(2020, 2051)
+        
         self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'electricity': np.ones(len(years)) * 20,
                                            'syngas': 34
                                            })
@@ -142,6 +143,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
+        
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
 
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
@@ -170,6 +172,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.syngas_ratio',
@@ -204,6 +207,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
+        
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
 
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
@@ -232,6 +236,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}', f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.syngas_ratio',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -265,6 +270,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
+        
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
 
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
@@ -293,6 +299,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.syngas_ratio',
@@ -356,6 +363,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.syngas_ratio',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -389,6 +397,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
+        
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
 
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(years),
@@ -416,6 +425,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}', f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.syngas_ratio',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -477,6 +487,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.syngas_ratio',

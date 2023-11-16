@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/10/10-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -69,13 +70,13 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         Carbon capture (Methane is not burned but transformed is not taken into account)
         '''
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
+                                                  self.cost_details['elec_needs']
 
-        self.carbon_emissions[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
-            self.cost_details['hydrogen_needs']
+        self.carbon_intensity[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
+                                                      self.cost_details['hydrogen_needs']
 
-        return self.carbon_emissions[Electricity.name] + self.carbon_emissions[GaseousHydrogen.name]
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[GaseousHydrogen.name]
 
     def compute_consumption_and_production(self):
         """
@@ -83,23 +84,21 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
-        #print(self.techno_infos_dict)
+        
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details['hydrogen_needs'] * \
-            self.production[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details['hydrogen_needs'] * \
+                                                                                            self.production_detailed[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = (1 - self.techno_infos_dict['efficiency']) * \
         #     self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})']/\
         #     self.techno_infos_dict['efficiency']
 
-        self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = \
-            self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] \
-            * self.techno_infos_dict['useful_heat_recovery_factor']
+        # self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = \
+        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] * self.techno_infos_dict['heat_recovery_factor']
 
         #
         # print('')

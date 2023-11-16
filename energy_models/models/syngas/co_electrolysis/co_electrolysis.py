@@ -81,18 +81,18 @@ class CoElectrolysis(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_emissions[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
-            self.cost_details['CO2_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
+                                               self.cost_details['CO2_needs'] / \
+                                               self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
-            self.cost_details['water_needs'] / self.cost_details['efficiency']
+        self.carbon_intensity[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
+                                                 self.cost_details['water_needs'] / self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details['elec_needs']
 
-        return self.carbon_emissions[f'{CO2.name}'] + self.carbon_emissions[f'{Water.name}'] + \
-               self.carbon_emissions[f'{Electricity.name}']
+        return self.carbon_intensity[f'{CO2.name}'] + self.carbon_intensity[f'{Water.name}'] + \
+               self.carbon_intensity[f'{Electricity.name}']
 
     def grad_co2_emissions_vs_resources_co2_emissions(self):
         '''
@@ -156,26 +156,26 @@ class CoElectrolysis(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         o2_production = self.get_oxygen_production()
 
-        self.production[f'{Dioxygen.name} ({self.mass_unit})'] = o2_production / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{Dioxygen.name} ({self.mass_unit})'] = o2_production / \
+                                                                          self.data_energy_dict['calorific_value'] * \
+                                                                          self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
-        self.consumption[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
+                                                                                self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                self.cost_details['efficiency']
 
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
+                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                        self.cost_details['efficiency']
 
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = \
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = \
             self.cost_details['elec_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+            self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
         # self.consumption[f'{hightemperatureheat.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
         #      self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \

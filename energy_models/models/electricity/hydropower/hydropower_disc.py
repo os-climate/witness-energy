@@ -63,7 +63,7 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
                                  'full_load_hours': 8760.0,
                                  'capacity_factor': 0.46,  # IRENA
                                  'efficiency': 1.0,  # No need of efficiency here
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'learning_rate': 0.0,
                                  'techno_evo_eff': 'no',
                                  'copper_needs': 1100,  #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)

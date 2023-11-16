@@ -50,7 +50,7 @@ class NaturalGasBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'Opex_init_unit': '$/kW',
         'lifetime': lifetime,
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
         'efficiency': 0.8,    # consumptions and productions already have efficiency included
         'natural_gas_calorific_val': 53600,
@@ -181,22 +181,11 @@ class NaturalGasBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
         return new_chart
 
-    def get_chart_filter_list(self):
-        chart_filters = MediumHeatTechnoDiscipline.get_chart_filter_list(self)
-
-        self.instanciated_charts = MediumHeatTechnoDiscipline.get_post_processing_list(self, chart_filters)
-
-        chart_list = ['heat_flux']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
-
-        return chart_filters
-
     def get_post_processing_list(self, filters=None):
         """
         Basic post processing method for the model
         """
-        instanciated_charts = self.instanciated_charts
+        instanciated_charts = super().get_post_processing_list(filters)
         charts = []
         # for pie charts Title
         unit_str = '$/MWh'

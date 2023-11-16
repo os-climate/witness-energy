@@ -64,7 +64,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  'medium_heat_production_unit': 'TWh/kg',
                                  'useful_heat_recovery_factor': 0.8,
                                  'efficiency': 1.0,  # No need of efficiency here
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'learning_rate': 0.0,
                                  'techno_evo_eff': 'no',
                                  'syngas_yield': 0.7,  # with 1kg of wood

@@ -64,7 +64,7 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'resource_price': 70.0,
                                  'resource_price_unit': '$/MWh'}
 

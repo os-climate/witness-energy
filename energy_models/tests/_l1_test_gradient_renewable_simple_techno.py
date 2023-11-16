@@ -129,7 +129,7 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                                      'efficiency': 1.0,
                                      'CO2_from_production': 0.0,
                                      'CO2_from_production_unit': 'kg/kg',
-                                     'construction_delay': 3,
+                                     GlossaryCore.ConstructionDelay: 3,
                                      'resource_price': 70.0,
                                      'resource_price_unit': '$/MWh'}
 
@@ -201,7 +201,7 @@ class RenewableSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                                      'efficiency': 1.0,
                                      'CO2_from_production': 0.0,
                                      'CO2_from_production_unit': 'kg/kg',
-                                     'construction_delay': 0,
+                                     GlossaryCore.ConstructionDelay: 0,
                                      'resource_price': 70.0,
                                      'resource_price_unit': '$/MWh'}
 

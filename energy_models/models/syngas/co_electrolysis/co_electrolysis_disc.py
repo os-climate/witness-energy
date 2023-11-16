@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,7 +66,8 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                  'full_load_hours': 8000.0,
                                  'WACC': 0.0878,
                                  'techno_evo_eff': 'no',
-                                 'construction_delay': construction_delay  # in kWh/kg
+                                 'efficiency': 0.8,
+                                 GlossaryCore.ConstructionDelay: construction_delay  # in kWh/kg
                                  }
 
     syngas_ratio = CoElectrolysis.syngas_COH2_ratio

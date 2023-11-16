@@ -54,7 +54,7 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'Opex_percentage': 0.0287, # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
         'lifetime': lifetime,
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
         'efficiency': 1,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.122, # high GHG concentrations in the reservoir fluid # https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf
@@ -164,22 +164,11 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
         return new_chart
 
-    def get_chart_filter_list(self):
-        chart_filters = MediumHeatTechnoDiscipline.get_chart_filter_list(self)
-
-        self.instanciated_charts = MediumHeatTechnoDiscipline.get_post_processing_list(self, chart_filters)
-
-        chart_list = ['heat_flux']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
-
-        return chart_filters
-
     def get_post_processing_list(self, filters=None):
         """
         Basic post processing method for the model
         """
-        instanciated_charts = self.instanciated_charts
+        instanciated_charts = super().get_post_processing_list(filters)
         charts = []
         # for pie charts Title
         unit_str = '$/MWh'

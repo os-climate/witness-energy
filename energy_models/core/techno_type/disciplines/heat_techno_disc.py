@@ -18,6 +18,7 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
 
 class LowHeatTechnoDiscipline(TechnoDiscipline):
@@ -65,6 +66,15 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
 
+    def get_chart_filter_list(self):
+        chart_filters = super().get_chart_filter_list()
+
+        chart_list = ['heat_flux']
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
+
+        return chart_filters
+
 
 class MediumHeatTechnoDiscipline(TechnoDiscipline):
     # ontology information
@@ -110,6 +120,15 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
+
+    def get_chart_filter_list(self):
+        chart_filters = super().get_chart_filter_list()
+
+        chart_list = ['heat_flux']
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
+
+        return chart_filters
 
 
 class HighHeatTechnoDiscipline(TechnoDiscipline):
@@ -157,3 +176,9 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
+
+    def get_chart_filter_list(self):
+        chart_filters = super().get_chart_filter_list()
+        chart_filters[0].extend(['heat_flux'])
+
+        return chart_filters

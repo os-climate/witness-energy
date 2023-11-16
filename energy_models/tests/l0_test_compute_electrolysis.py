@@ -88,88 +88,6 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def _test_01_compute_pemel(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': ElectrolysisPEMDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: ElectrolysisPEMDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': ElectrolysisPEMDiscipline.initial_production,
-                       'initial_age_distrib': ElectrolysisPEMDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_co2_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': GaseousHydrogen.data_energy_dict,
-                       }
-
-        pem = ElectrolysisPEM('PEM')
-        pem.configure_parameters(inputs_dict)
-        pem.configure_parameters_update(inputs_dict)
-        price_details = pem.compute_price()
-        pem.compute_consumption_and_production()
-
-        print(pem.consumption)
-
-    def test_02_compute_pem_ratio_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': ElectrolysisPEMDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: ElectrolysisPEMDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': ElectrolysisPEMDiscipline.initial_production,
-                       'initial_age_distrib': ElectrolysisPEMDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_co2_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': GaseousHydrogen.data_energy_dict,
-                       }
-
-        pem = ElectrolysisPEM('PEM')
-        pem.configure_parameters(inputs_dict)
-        pem.configure_parameters_update(inputs_dict)
-        price_details = pem.compute_price()
-        pem.compute_consumption_and_production()
-        consumption_with_ratio = pem.consumption['platinum_resource (Mt)'].values * \
-            self.ratio_available_resource['platinum_resource'].values /100
-        pem.select_ratios()
-        pem.apply_ratios_on_consumption_and_production(True)
-        #self.assertListEqual(list(pem.consumption['platinum_resource (Mt)'].values),list(consumption_with_ratio))
-        print("Calculated consumption w ratio")
-        print(list(pem.consumption['platinum_resource (Mt)'].values))
-        print('theoretical consumption w ratio')
-        print(list(consumption_with_ratio))
-        
-
-
     def test_03_pem_discipline(self):
 
         self.name = 'Test'
@@ -214,40 +132,6 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         for graph in graph_list:
             graph.to_plotly()#.show()
 
-    def _test_04_compute_soec(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': ElectrolysisSOECDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: ElectrolysisSOECDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': ElectrolysisSOECDiscipline.initial_production,
-                       'initial_age_distrib': ElectrolysisSOECDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_co2_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': GaseousHydrogen.data_energy_dict,
-                       }
-
-        SOEC = ElectrolysisSOEC('SOEC')
-        SOEC.configure_parameters(inputs_dict)
-        SOEC.configure_parameters_update(inputs_dict)
-        price_details = SOEC.compute_price()
-        SOEC.compute_consumption_and_production()
-
     def _test_05_soec_discipline(self):
 
         self.name = 'Test'
@@ -291,40 +175,6 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filters)
 #         for graph in graph_list:
 #             graph.to_plotly().show()
-
-    def _test_06_compute_awe(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': ElectrolysisAWEDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: ElectrolysisAWEDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': ElectrolysisAWEDiscipline.initial_production,
-                       'initial_age_distrib': ElectrolysisAWEDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_co2_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': GaseousHydrogen.data_energy_dict,
-                       }
-
-        AWE = ElectrolysisAWE('AWE')
-        AWE.configure_parameters(inputs_dict)
-        AWE.configure_parameters_update(inputs_dict)
-        price_details = AWE.compute_price()
-        AWE.compute_consumption_and_production()
 
     def _test_07_awe_discipline(self):
 

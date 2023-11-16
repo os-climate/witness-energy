@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +21,8 @@ import scipy.interpolate as sc
 from os.path import join, basename, dirname
 import pickle
 
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
@@ -62,6 +63,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1.5 * 1000.0
         self.years = np.arange(2020, 2051)
+        
 
         self.energy_prices = pd.DataFrame(
             {GlossaryCore.Years: self.years, 'electricity': electricity_price})
@@ -159,27 +161,20 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             local_data=disc_techno.local_data,
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}', f'{self.name}.{GlossaryCore.EnergyPricesValue}',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.land_surface_for_food_df',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}'
                                     ],
-<<<<<<< HEAD
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.LandUseRequiredValue}',
-=======
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
-                                     f'{self.name}.{self.model_name}.land_use_required',
-                                     f'{self.name}.{self.model_name}.techno_capital',
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      f'{self.name}.{self.model_name}.non_use_capital'], )
 
     def test_02_managed_wood_discipline_analytic_grad(self):
@@ -223,26 +218,18 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-<<<<<<< HEAD
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}', f'{self.name}.{GlossaryCore.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.LandUseRequiredValue}'], )
-=======
-                            inputs=[f'{self.name}.{self.model_name}.invest_level', f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
-                                     f'{self.name}.{self.model_name}.land_use_required'], )
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
     def test_03_unmanaged_wood_discipline_analytic_grad(self):
 
@@ -287,28 +274,18 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-<<<<<<< HEAD
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
+                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.LandUseRequiredValue}'])
-=======
-                            inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    f'{self.name}.energy_prices',
-                                    f'{self.name}.energy_CO2_emissions', f'{self.name}.CO2_taxes'],
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
-                                     f'{self.name}.{self.model_name}.land_use_required'])
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
     def test_04_biomass_dry_discipline_jacobian(self):
 
@@ -360,6 +337,17 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         for key in mda_data_output_dict[self.energy_name].keys():
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
+
+        technos = inputs_dict[f"{self.name}.technologies_list"]
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
+        for techno in technos:
+            inputs_dict[f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
+
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

@@ -66,11 +66,11 @@ class CO2Membranes(CCTechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        self.compute_primary_energy_production()
+        
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
 
 
     def compute_capex(self, invest_list, data_config):

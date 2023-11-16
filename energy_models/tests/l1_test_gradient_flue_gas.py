@@ -30,7 +30,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 
-class GradiantFGTestCase(AbstractJacobianUnittest):
+class GradientFlueGasTestCase(AbstractJacobianUnittest):
     """
     Flue gas gradients test class
     """
@@ -54,6 +54,7 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
 
         self.energy_name = 'flue_gas'
 
+        
         self.flue_gas_mean = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.FlueGasMean: 0.3})
 
@@ -137,7 +138,6 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryCore.FlueGasMean}': self.flue_gas_mean,
                        f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -146,6 +146,7 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
+                       
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
@@ -158,6 +159,7 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.FlueGasMean}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
@@ -218,6 +220,7 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.FlueGasMean}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
@@ -277,6 +280,7 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.FlueGasMean}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
@@ -335,6 +339,7 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.FlueGasMean}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
@@ -395,6 +400,7 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.FlueGasMean}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
@@ -455,6 +461,7 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.FlueGasMean}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',

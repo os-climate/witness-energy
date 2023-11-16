@@ -17,6 +17,8 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -72,7 +74,7 @@ class RenewableElectricitySimpleTechnoDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                 # 'copper_needs': 1100, #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                   }
 

@@ -65,7 +65,7 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'Opex_percentage': 0.0715,
         'lifetime': lifetime,  # for now constant in time but should increase with time
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
         'Invest_init': 347.5,
         'Invest_init_unit': 'M$',

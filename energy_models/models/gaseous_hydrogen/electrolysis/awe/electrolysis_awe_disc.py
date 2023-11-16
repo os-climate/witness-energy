@@ -75,7 +75,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.60,
                                  'efficiency_max': 0.70,
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
     # see doc
     initial_production = 1.6 - 0.4
     # Industrial plants started to emerge around 2015

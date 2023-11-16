@@ -84,7 +84,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'efficiency': 1,
                                  # 'efficiency': 0.55,       #https://www.ipieca.org/resources/energy-efficiency-solutions/combined-cycle-gas-turbines-2022#:~:text=The%20overall%20efficiency%20of%20an,drops%20significantly%20at%20partial%20load.
                                  'techno_evo_eff': 'no',  # yes or no
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
                                  'copper_needs': 1100,  #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }

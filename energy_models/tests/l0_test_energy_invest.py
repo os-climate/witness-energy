@@ -234,13 +234,12 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
-                                                                          f'{self.name}.{self.model_name}.invest_techno_mix'],
-                                      outputs=[
-            f'{self.name}.{self.model_name}.{techno}.{GlossaryCore.InvestLevelValue}' for techno in technology_list],
+        succeed = disc.check_jacobian(derr_approx='complex_step',
+                                      inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                              f'{self.name}.{self.model_name}.invest_techno_mix'],
+                                      outputs=[f'{self.name}.{self.model_name}.{techno}.{GlossaryCore.InvestLevelValue}' for techno in technology_list],
                                       input_data = disc.local_data,
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                               f'jacobian_techno_invest_disc.pkl'))
+            load_jac_path=join(dirname(__file__), 'jacobian_pkls', f'jacobian_techno_invest_disc.pkl'))
 
         self.assertTrue(
             succeed, msg=f"Wrong gradient")

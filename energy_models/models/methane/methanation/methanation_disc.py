@@ -69,7 +69,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
                                  'full_load_hours': 8000.0,
                                  'WACC': 0.0878,
                                  'techno_evo_eff': 'no',
-                                 'construction_delay': construction_delay  # in kWh/kg
+                                 GlossaryCore.ConstructionDelay: construction_delay  # in kWh/kg
                                  }
 
     # Methanation is mostly used in PtG plants

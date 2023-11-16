@@ -436,23 +436,23 @@ class RWGS(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
         th_water_prod = self.get_theoretical_water_prod()
 
-        self.production[f'{Water.name} ({self.mass_unit})'] = th_water_prod * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = th_water_prod * \
+                                                                       self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']  # in kWH
+        self.consumption_detailed[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
+                                                                                   self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                   self.cost_details['efficiency']  # in kWH
 
-        self.consumption[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']  # in kg
+        self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
+                                                                                self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                self.cost_details['efficiency']  # in kg
 
     def compute_dprod_water_dsyngas_ratio(self, dprodenergy_dsyngas_ratio, prod_energy):
         dwater_prod_dsyngas_ratio = self.compute_dwater_prod_dsynags_ratio()
@@ -499,18 +499,18 @@ class RWGS(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_emissions[f'{Syngas.name}'] = self.energy_CO2_emissions[f'{Syngas.name}'] * \
-            self.cost_details['syngas_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{Syngas.name}'] = self.energy_CO2_emissions[f'{Syngas.name}'] * \
+                                                  self.cost_details['syngas_needs'] / \
+                                                  self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details['elec_needs']
 
-        self.carbon_emissions[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2['name']] * \
-            self.cost_details['CO2_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2['name']] * \
+                                               self.cost_details['CO2_needs'] / \
+                                               self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Syngas.name}'] + self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[f'{CO2.name}']
+        return self.carbon_intensity[f'{Syngas.name}'] + self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[f'{CO2.name}']
 
     def compute_dco2_emissions_dsyngas_ratio(self):
         dco2_needs_dsyngas_ratio = self.compute_dco2_needs_dsyngas_ratio()

@@ -180,7 +180,7 @@ class BaseStream:
     def compute_energy_type_capital(self, inputs):
         technos = inputs[GlossaryCore.techno_list]
         capitals = [
-            inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"][GlossaryEnergy.Capital].values for techno in technos
+            inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalValue}"][GlossaryEnergy.Capital].values for techno in technos
         ]
         sum_technos_capital = np.sum(capitals, axis=0)
 

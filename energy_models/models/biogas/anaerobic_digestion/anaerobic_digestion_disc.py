@@ -76,7 +76,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                  'efficiency': 0.4,
                                  'WACC': 0.06,
                                  'techno_evo_eff': 'no',
-                                 'construction_delay': construction_delay
+                                 GlossaryCore.ConstructionDelay: construction_delay
                                  }
 
     # Source for initial production: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,

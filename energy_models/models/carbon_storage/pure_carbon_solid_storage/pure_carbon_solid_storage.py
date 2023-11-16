@@ -39,13 +39,13 @@ class PureCarbonSS(CSTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Consumption
         # Production is gaseous CO2 equivalent
         # COnsumption is real Carbon storage (C)
-        self.consumption[f'{Carbon.name} ({self.mass_unit})'] = self.production[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
-            Carbon.data_energy_dict['CO2_per_use']
+        self.consumption_detailed[f'{Carbon.name} ({self.mass_unit})'] = self.production_detailed[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                         Carbon.data_energy_dict['CO2_per_use']
 
     def compute_constraint(self, carbon_quantity_to_be_stored, consumption):
         """

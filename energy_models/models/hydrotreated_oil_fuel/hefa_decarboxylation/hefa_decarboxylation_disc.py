@@ -62,7 +62,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
 
         'lifetime': lifetime,  # for now constant in time but should increase with time
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
 
         'Invest_init': 347.5,

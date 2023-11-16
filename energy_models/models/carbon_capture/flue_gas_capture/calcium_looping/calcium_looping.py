@@ -71,11 +71,11 @@ class CalciumLooping(CCTechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        self.compute_primary_energy_production()
+        
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
 
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -84,10 +84,10 @@ class CalciumLooping(CCTechno):
         '''
 
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs'] * self.compute_electricity_variation_from_fg_ratio(
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs'] * self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect)
 
-        return self.carbon_emissions[Electricity.name] - 1.0
+        return self.carbon_intensity[Electricity.name] - 1.0
 
 
 

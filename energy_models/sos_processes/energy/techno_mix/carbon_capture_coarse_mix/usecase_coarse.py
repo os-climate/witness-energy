@@ -133,8 +133,8 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                     f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.flue_gas_co2_ratio': np.array([0.13]),
-                    f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.techno_production': fossil_simple_techno_prod,
-                    f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,})
+                    f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.{GlossaryCore.TechnoProductionValue}': fossil_simple_techno_prod,
+                    f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,})
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
                     columns=[GlossaryCore.Years]).sum(axis=1)
@@ -142,7 +142,7 @@ class Study(EnergyMixStudyManager):
                     invest_level_techno = pd.DataFrame({GlossaryCore.Years: self.invest_level[GlossaryCore.Years].values,
                                                         GlossaryCore.InvestValue: self.invest_level[GlossaryCore.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
                     values_dict[f'{self.study_name}.{ccs_name}.{techno}.{GlossaryCore.InvestLevelValue}'] = invest_level_techno
-                    values_dict[f'{self.study_name}.{ccs_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = techno_capital
+                    values_dict[f'{self.study_name}.{ccs_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = techno_capital
             else:
                 values_dict[f'{self.study_name}.{ccs_name}.{GlossaryCore.InvestLevelValue}'] = self.invest_level
         else:

@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +21,8 @@ import numpy as np
 from os.path import join, dirname
 import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
@@ -56,11 +57,13 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         years = np.arange(2020, 2051)
+        self.years = years
 
         self.energy_name = 'carbon_storage'
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryCore.Years: years, 'CO2': 0})
+        
 
         self.invest_level = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.ones(len(years)) * 0.0325})
@@ -128,7 +131,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051)}),
@@ -140,20 +142,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
-=======
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': pd.DataFrame({'years': np.arange(2020, 2051)}),
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes_nul,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.{self.model_name}.margin': self.margin,
-                       f'{self.name}.all_streams_demand_ratio': self.all_streams_demand_ratio,
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -165,6 +153,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
@@ -196,7 +185,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051)}),
@@ -207,19 +195,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin}
-=======
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': pd.DataFrame({'years': np.arange(2020, 2051)}),
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.{self.model_name}.margin': self.margin}
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
@@ -228,6 +203,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
@@ -259,7 +235,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051)}),
@@ -270,19 +245,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin}
-=======
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': pd.DataFrame({'years': np.arange(2020, 2051)}),
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.{self.model_name}.margin': self.margin}
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
@@ -291,6 +253,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
@@ -322,7 +285,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051)}),
@@ -333,19 +295,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin}
-=======
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': pd.DataFrame({'years': np.arange(2020, 2051)}),
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.{self.model_name}.margin': self.margin}
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
@@ -354,6 +303,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
@@ -389,7 +339,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051)}),
@@ -400,19 +349,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin}
-=======
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': pd.DataFrame({'years': np.arange(2020, 2051)}),
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.{self.model_name}.margin': self.margin}
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
@@ -422,6 +358,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.carbon_quantity_to_be_stored', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
@@ -457,7 +394,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051)}),
@@ -468,19 +404,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin}
-=======
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': pd.DataFrame({'years': np.arange(2020, 2051)}),
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.{self.model_name}.margin': self.margin}
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
@@ -489,6 +412,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
@@ -520,7 +444,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051)}),
@@ -531,19 +454,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin}
-=======
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': pd.DataFrame({'years': np.arange(2020, 2051)}),
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.{self.model_name}.margin': self.margin}
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
@@ -552,6 +462,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
@@ -584,7 +495,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-<<<<<<< HEAD
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051)}),
@@ -595,19 +505,6 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin}
-=======
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.energy_prices': pd.DataFrame({'years': np.arange(2020, 2051)}),
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
-                       f'{self.name}.{self.model_name}.margin': self.margin}
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
@@ -617,6 +514,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
@@ -678,14 +576,25 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
+        technos = inputs_dict[f"{self.name}.technologies_list"]
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
+        for techno in technos:
+            inputs_dict[
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
+
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
+
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,

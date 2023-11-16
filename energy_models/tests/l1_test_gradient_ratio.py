@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/07/03-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +19,8 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -256,7 +257,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
@@ -539,7 +540,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
@@ -632,7 +633,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
@@ -782,6 +783,18 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
+        technos = inputs_dict[f"{self.name}.technologies_list"]
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
+        for techno in technos:
+            inputs_dict[
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
+
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
+
         # Overwrite values for ratios with values from setup
         inputs_dict[f'{namespace}.{GlossaryCore.YearEnd}'] = 2050
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
@@ -867,7 +880,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
         # Overwrite CalciumLooping techno production to test the flue_gas
         # limited case
-        inputs_dict[f'{namespace}.{self.energy_name}.flue_gas_capture.CalciumLooping.techno_production'][
+        inputs_dict[f'{namespace}.{self.energy_name}.flue_gas_capture.CalciumLooping.{GlossaryCore.TechnoProductionValue}'][
             'carbon_capture (Mt)'] *= np.linspace(1.0, 5.0, len(self.years))
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -1579,7 +1592,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         )
         coupled_outputs.append(
             f'{namespace}.{self.techno_name}.non_use_capital')
-        coupled_outputs.remove('Test_Ratio.Electrolysis.PEM.techno_prices')
+        coupled_outputs.remove(f'Test_Ratio.Electrolysis.PEM.{GlossaryCore.TechnoPricesValue}')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=2e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,

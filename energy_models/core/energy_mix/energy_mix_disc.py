@@ -1943,7 +1943,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         techno_cons_dict = {}
         for techno in technologies_list:
             techno_disc = self.ee.dm.get_disciplines_with_name(self.ee.dm.get_all_namespaces_from_var_name(
-                f'{techno}.{GlossaryCore.TechnoProductionValue}')[0][:-len('.techno_production')])[0]
+                f'{techno}.{GlossaryCore.TechnoProductionValue}')[0][:-len('.{GlossaryCore.TechnoProductionValue}')])[0]
             cons_col = techno_disc.get_sosdisc_outputs(
                 GlossaryCore.TechnoDetailedConsumptionValue).columns
             consummed_stream = [col.split(' ')[0]

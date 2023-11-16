@@ -71,7 +71,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'heat_recovery_factor': 0.6,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'waste_disposal_levy': 0.1 * 1e-2 * 1e3,   # conversion from c/kWh to $/MWh
                                  'waste_disposal_levy_unit': '$/MWh',
                                  'decommissioning_cost': 1000,

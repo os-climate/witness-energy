@@ -107,40 +107,6 @@ class LiquefactionPriceTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_compute_liquefaction_price_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': HydrogenLiquefactionDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: HydrogenLiquefactionDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': HydrogenLiquefactionDiscipline.initial_production,
-                       'initial_age_distrib': HydrogenLiquefactionDiscipline.initial_age_distribution,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': LiquidHydrogen.data_energy_dict,
-                       }
-
-        hl2_model = HydrogenLiquefaction('HL2')
-        hl2_model.configure_parameters(inputs_dict)
-        hl2_model.configure_parameters_update(inputs_dict)
-        price_details = hl2_model.compute_price()
-        hl2_model.compute_consumption_and_production()
-
     def test_02_liquefaction_H2_discipline(self):
 
         self.name = 'Test'

@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/10/23-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-<<<<<<< HEAD
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.glossaryenergy import GlossaryEnergy
-=======
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import pandas as pd
 import numpy as np
@@ -55,6 +51,7 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
         '''
         self.energy_name = 'biogas'
         years = np.arange(2020, 2051)
+        
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
@@ -157,24 +154,17 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}',
                                     ],
-<<<<<<< HEAD
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
-=======
-                            outputs=[f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     f'{self.name}.{self.model_name}.techno_production',
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      ], )
