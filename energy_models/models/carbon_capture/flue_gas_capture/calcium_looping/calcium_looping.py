@@ -46,14 +46,6 @@ class CalciumLooping(CCTechno):
         self.cost_details[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect)
 
-
-
-
-
-
-
-
-
         return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
@@ -88,8 +80,6 @@ class CalciumLooping(CCTechno):
             self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect)
 
         return self.carbon_intensity[Electricity.name] - 1.0
-
-
 
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)

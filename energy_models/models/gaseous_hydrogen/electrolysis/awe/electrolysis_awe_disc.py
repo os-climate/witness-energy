@@ -16,8 +16,6 @@ limitations under the License.
 '''
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-Copyright (c) 2020 Airbus SAS.
-All rights reserved.
 '''
 import copy
 

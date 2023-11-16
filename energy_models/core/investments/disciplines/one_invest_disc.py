@@ -16,8 +16,6 @@ limitations under the License.
 '''
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-Copyright (c) 2020 Airbus SAS.
-All rights reserved.
 '''
 import numpy as np
 import pandas as pd
@@ -82,8 +80,6 @@ class OneInvestDiscipline(SoSWrapp):
                                                 'heat.hightemperatureheat.HeatPumpHighHeat': ('float', None, True),
                                                 'heat.hightemperatureheat.GeothermalHighHeat': ('float', None, True),
                                                 'heat.hightemperatureheat.CHPHighHeat': ('float', None, True),
-                                                'heat.hightemperatureheat.HydrogenBoilerHighHeat': ('float', None, True),
-                                                'heat.lowtemperatureheat.HydrogenBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.NaturalGasBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.ElectricBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.HeatPumpLowHeat': ('float', None, True),
@@ -94,7 +90,6 @@ class OneInvestDiscipline(SoSWrapp):
                                                 'heat.mediumtemperatureheat.HeatPumpMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.GeothermalMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.CHPMediumHeat': ('float', None, True),
-                                                'heat.mediumtemperatureheat.HydrogenBoilerMediumHeat': ('float', None, True),
                                                 'hydrogen.gaseous_hydrogen.PlasmaCracking': ('float', None, True),
                                                 'hydrogen.gaseous_hydrogen.Electrolysis.SOEC': ('float', None, True),
                                                 'hydrogen.gaseous_hydrogen.Electrolysis.PEM': ('float', None, True),

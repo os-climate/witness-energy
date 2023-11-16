@@ -1,4 +1,3 @@
-
 '''
 Copyright 2022 Airbus SAS
 Modifications on 2023/09/06-2023/11/09 Copyright 2023 Capgemini

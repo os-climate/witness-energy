@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/03/29-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,10 +41,10 @@ class CarbonStorageDiscipline(StreamDiscipline):
 
     DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': CarbonStorage.default_techno_list,
-                                     'visibility': StreamDiscipline.SHARED_VISIBILITY,
+                                     'visibility': 'Shared',
                                      'unit': '-',
                                      'namespace': 'ns_carbon_storage', 'structuring': True},
-               'data_fuel_dict': {'type': 'dict', 'visibility': StreamDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'visibility': 'Shared',
                                   'namespace': 'ns_carbon_storage', 'default': CarbonStorage.data_energy_dict,
                                   'unit': 'defined in dict'},
                }
@@ -64,7 +64,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
 
         chart_filters = []
         chart_list = ['CO2 Storage price', 'Technology mix',
-                      'Consumption and production']
+                      'Consumption and production', GlossaryCore.Capital]
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -109,6 +109,10 @@ class CarbonStorageDiscipline(StreamDiscipline):
             for new_chart in new_charts:
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
+
+        if GlossaryCore.Capital in charts:
+            chart = self.get_capital_breakdown_by_technos()
+            instanciated_charts.append(chart)
 
         if 'Technology mix' in charts:
             new_charts = self.get_chart_technology_mix(years_list)

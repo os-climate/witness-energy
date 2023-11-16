@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/29-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -83,48 +83,7 @@ class EnergyDiscipline(StreamDiscipline):
                         "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{techno}.{GlossaryCore.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha',
-                        'dataframe_descriptor': {'years': ('float', None, True),
-                                                 'Crop (Gha)': ('float', None, True),
-                                                 'HydrogenBoilerHighHeat (Gha)': ('float', None, True),
-                                                 'Crop for Food (Gha)': ('float', None, True),
-                                                 'Forest (Gha)': ('float', None, True),
-                                                 'WaterGasShift (Gha)': ('float', None, True),
-                                                 'RenewableSimpleTechno (Gha)': ('float', None, True),
-                                                 'FossilSimpleTechno (Gha)': ('float', None, True),
-                                                 'Electrolysis.PEM (Gha)': ('float', None, True),
-                                                 'PlasmaCracking (Gha)': ('float', None, True),
-                                                 'CHPHighHeat (Gha)': ('float', None, True),
-                                                 'GeothermalHighHeat (Gha)': ('float', None, True),
-                                                 'HeatPumpHighHeat (Gha)': ('float', None, True),
-                                                 'ElectricBoilerHighHeat (Gha)': ('float', None, True),
-                                                 'NaturalGasBoilerHighHeat (Gha)': ('float', None, True),
-                                                 'Hydropower (Gha)': ('float', None, True),
-                                                 'GasTurbine (Gha)': ('float', None, True),
-                                                 'ManagedWood (Gha)': ('float', None, True),
-                                                 'UnmanagedWood (Gha)': ('float', None, True),
-                                                 'CropEnergy (Gha)': ('float', None, True),
-                                                 'WindOffshore (Gha)': ('float', None, True),
-                                                 'WindOnshore (Gha)': ('float', None, True),
-                                                 'SolarPv (Gha)': ('float', None, True),
-                                                 'SolarThermal (Gha)': ('float', None, True),
-                                                 'Nuclear (Gha)': ('float', None, True),
-                                                 'CombinedCycleGasTurbine (Gha)': ('float', None, True),
-                                                 'BiogasFired (Gha)': ('float', None, True),
-                                                 'Geothermal (Gha)': ('float', None, True),
-                                                 'CoalGen (Gha)': ('float', None, True),
-                                                 'OilGen (Gha)': ('float', None, True),
-                                                 'BiomassFired (Gha)': ('float', None, True),
-                                                 'Electrolysis.SOEC (Gha)': ('float', None, True),
-                                                 'Electrolysis.AWE (Gha)': ('float', None, True),
-                                                 'Refinery (Gha)': ('float', None, True),
-                                                 'FischerTropsch (Gha)': ('float', None, True),
-                                                 'FossilGas (Gha)': ('float', None, True),
-                                                 'UpgradingBiogas (Gha)': ('float', None, True),
-                                                 'CO2Hydrogenation (Gha)': ('float', None, True),
-                                                 'CoalExtraction (Gha)': ('float', None, True),
-                                                 'Pelletizing (Gha)': ('float', None, True),
-                                                 'HydrogenLiquefaction (Gha)': ('float', None, True),
-                                                 }}
+                        "dynamic_dataframe_columns": True}
 
         self.add_inputs(dynamic_inputs)
 
@@ -223,7 +182,10 @@ class EnergyDiscipline(StreamDiscipline):
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Energy price', 'Technology mix', 'CO2 emissions',
+        chart_list = ['Energy price',
+                      GlossaryCore.Capital,
+                      'Technology mix',
+                      'CO2 emissions',
                       'Consumption and production']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))

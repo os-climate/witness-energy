@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/29-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/11/06-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ limitations under the License.
 
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -67,22 +68,6 @@ class CSTechnoDiscipline(TechnoDiscipline):
         self.set_partial_derivatives_techno(
             grad_dict, None)
 
-    def get_chart_filter_list(self):
-
-        chart_filters = []
-        chart_list = ['Detailed prices',
-                      'Consumption and production',
-                      'Initial Production', 'Factory Mean Age', 'CO2 emissions']
-        if self.get_sosdisc_inputs('is_apply_ratio'):
-            chart_list.extend(['Applied Ratio'])
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
-
-        price_unit_list = ['$/tCO2']
-        chart_filters.append(ChartFilter(
-            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
-        return chart_filters
-
     def get_post_processing_list(self, filters=None):
 
         # For the outputs, making a graph for block fuel vs range and blocktime vs
@@ -124,6 +109,11 @@ class CSTechnoDiscipline(TechnoDiscipline):
                 new_chart = self.get_chart_initial_production()
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
+
+        if 'Non-Use Capital' in charts:
+            new_chart = self.get_chart_non_use_capital()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
 
         return instanciated_charts
 

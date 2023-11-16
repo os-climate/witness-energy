@@ -1,7 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
-
+Modifications on 2023/04/19-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -76,7 +75,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                                 'production hydrogen.gaseous_hydrogen (TWh)': (
                                                                 'float', None, True),
                                                                 'production biogas (TWh)': ('float', None, True),
-                                                                'production fuel.ethanol (TWh)': ('float', None, True),
                                                                 'production syngas (TWh)': ('float', None, True),
                                                                 'production fuel.liquid_fuel (TWh)': (
                                                                 'float', None, True),
@@ -93,10 +91,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                                 'production carbon_storage (Mt)': ('float', None, True),
                                                                 'Total production': ('float', None, True),
                                                                 'Total production (uncut)': ('float', None, True),
-                                                                'production heat.lowtemperatureheat (TWh)': ('float', None, True),
-                                                                'production heat.mediumtemperatureheat (TWh)': (
-                                                                'float', None, True),
-                                                                'production heat.hightemperatureheat (TWh)': ('float', None, True),
                                                                 },
               },
         'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt',
@@ -202,7 +196,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'methane': ('float', None, True),
                                                      'wet_biomass (Mt)': ('float', None, True),
                                                      'biogas': ('float', None, True),
-                                                     'biomass_dry': ('float', None, True),
                                                      'sodium_hydroxide_resource (Mt)': ('float', None, True),
                                                      'natural_oil_resource (TWh)': ('float', None, True),
                                                      'methanol_resource (Mt)': ('float', None, True),
@@ -224,9 +217,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'electricity (TWh)': ('float', None, True),
                                                      'water_resource (Mt)': ('float', None, True),
                                                      'dioxygen_resource (Mt)': ('float', None, True),
-                                                     'heat.lowtemperatureheat (TWh)': ('float', None, True),
-                                                     'heat.mediumtemperatureheat (TWh)': ('float', None, True),
-                                                     'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                      }
                         }
                         dynamic_inputs[f'{energy}.{GlossaryCore.EnergyProductionValue}'] = {
@@ -258,8 +248,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'methane': ('float', None, True),
                                                      'wet_biomass (Mt)': ('float', None, True),
                                                      'biogas': ('float', None, True),
-                                                     'biomass_dry': ('float', None, True),
-                                                     'biomass_dry (TWh)': ('float', None, True),
                                                      'sodium_hydroxide_resource (Mt)': ('float', None, True),
                                                      'natural_oil_resource (TWh)': ('float', None, True),
                                                      'methanol_resource (Mt)': ('float', None, True),
@@ -281,9 +269,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                      'water_resource (Mt)': ('float', None, True),
                                                      'dioxygen_resource (Mt)': ('float', None, True),
-                                                     'heat.lowtemperatureheat (TWh)': ('float', None, True),
-                                                     'heat.mediumtemperatureheat (TWh)': ('float', None, True),
-                                                     'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                      }
                         }
             if GlossaryCore.ccs_list in self.get_data_in():

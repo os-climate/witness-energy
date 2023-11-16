@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -170,6 +170,7 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
         # Grad of price vs energyprice
 
         TechnoDiscipline.compute_sos_jacobian(self)
+
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()

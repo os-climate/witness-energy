@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/06/26-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -524,9 +523,9 @@ class FischerTropsch(LiquidFuelTechno):
         self.production_detailed[f'{Water.name} ({self.mass_unit})'] = water_prod * \
                                                                        self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']
 
-        self.production[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = \
-            self.techno_infos_dict['medium_heat_production'] * self.techno_infos_dict['useful_heat_recovery_factor'] * \
-            self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] * 1000000000
+        # self.production[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['medium_heat_production'] * \
+        #     self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] * 1000000000
 
         self.consumption = self.consumption_detailed.fillna(0.0)
         self.production = self.production_detailed.fillna(0.0)

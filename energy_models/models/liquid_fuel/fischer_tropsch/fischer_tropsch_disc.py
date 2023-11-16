@@ -1,8 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/10/10-2023/11/09 Copyright 2023 Capgemini
-
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -40,8 +38,8 @@ from energy_models.core.stream_type.energy_models.gasoline import Gasoline
 from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
 from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
 from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
-from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+
+
 
 class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
@@ -80,12 +78,10 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'learning_rate':  0.15,
                                  'maximum_learning_capex_ratio': 0.5,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'medium_heat_production': ((165-41)/28.01)*1000*2.77778e-13,
                                  'lifetime_unit': GlossaryCore.Years,
                                  # 'medium_heat_production': (165/28.01)*1000*2.77778e-13,
                                  # # https://www.sciencedirect.com/science/article/pii/S1385894718309215, reaction enthalpy of −165 kJ/molCO
-                                 'medium_heat_production_unit': 'TWh/kg',
-                                 'useful_heat_recovery_factor': 0.8,
+                                 # 'medium_heat_production_unit': 'TWh/kg',
                                  # 60000 euro/bpd : 1 barrel = 1553,41kwh of
                                  # liquid_fuel per 24 hours
                                  # Capex initial at year 2020
@@ -166,7 +162,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             'scaling_factor_techno_consumption')
         scaling_factor_techno_production = self.get_sosdisc_inputs(
             'scaling_factor_techno_production')
-        #print(self.get_sosdisc_inputs('syngas_ratio'))
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources, grad_dict_resources_co2)
@@ -190,21 +185,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             key: value for key, value in grad_dict.items()}
         self.set_partial_derivatives_output_wr_input(
             GlossaryCore.TechnoProductionValue, 'syngas_ratio', grad_dict)
-
-        # Grad of heatproduction vs investment
-        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-        applied_ratio = self.get_sosdisc_outputs(
-            'applied_ratio')['applied_ratio'].values
-
-        dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-        consumption_gradient = self.techno_consumption_derivative[f'{CarbonCapture.name} ({self.techno_model.mass_unit})']
-        #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
-        # self.set_partial_derivative_for_other_types(
-        #     ('techno_production',
-        #      f'{mediumheattechno.energy_name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
-        #     (consumption_gradient - dprod_name_dinvest))
-
 
         # Grad of techno_consumption vs syngas_ratio
 

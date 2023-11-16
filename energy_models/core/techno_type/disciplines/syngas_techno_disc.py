@@ -65,7 +65,7 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
 
     def run(self):
 
-        TechnoDiscipline.run(self)
+        super().run()
 
         outputs_dict = {'syngas_ratio': np.array([self.syngas_ratio])}
         # -- store outputs

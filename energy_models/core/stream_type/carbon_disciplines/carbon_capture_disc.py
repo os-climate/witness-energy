@@ -19,6 +19,7 @@ import numpy as np
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -41,15 +42,15 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
     DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': CarbonCapture.default_techno_list,
-                                     'visibility': StreamDiscipline.SHARED_VISIBILITY,
+                                     'visibility': 'Shared',
                                      'namespace': 'ns_carbon_capture', 'structuring': True, 'unit': '-'},
                'flue_gas_production': {'type': 'dataframe',
-                                       'visibility': StreamDiscipline.SHARED_VISIBILITY,
+                                       'visibility': 'Shared',
                                        'namespace': 'ns_flue_gas', 'unit': 'Mt',
                                        'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
                                                                 'CO2 from Flue Gas': ('float', None, False)}},
                'flue_gas_prod_ratio': {'type': 'dataframe',
-                                       'visibility': StreamDiscipline.SHARED_VISIBILITY,
+                                       'visibility': 'Shared',
                                        'namespace': 'ns_flue_gas', 'unit': '-',
                                        'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
                                                                 'electricity.CoalGen': ('float', None, True),
@@ -71,7 +72,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                                                 'carbon_capture.direct_air_capture.DirectAirCaptureTechno': (
                                                                 'float', None, True),
                                                                 }},
-               'data_fuel_dict': {'type': 'dict', 'visibility': StreamDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'visibility': 'Shared',
                                   'namespace': 'ns_carbon_capture', 'default': CarbonCapture.data_energy_dict,
                                   'unit': 'defined in dict'},
                }
@@ -80,10 +81,12 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
     energy_name = CarbonCapture.name
 
-    DESC_OUT = {'carbon_captured_type': {'type': 'dataframe', 'unit': 'Mt'},
-                'carbon_captured_type_woratio': {'type': 'dataframe', 'unit': 'Mt'}}
+    DESC_OUT = StreamDiscipline.DESC_OUT
 
-    DESC_OUT.update(StreamDiscipline.DESC_OUT)
+    DESC_OUT.update({'carbon_captured_type': {'type': 'dataframe', 'unit': 'Mt'},
+                'carbon_captured_type_woratio': {'type': 'dataframe', 'unit': 'Mt'}})
+
+    #DESC_OUT.update(StreamDiscipline.DESC_OUT)
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -95,7 +98,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         Overwrite run to limit flue gas carbon capture 
         '''
 
-        StreamDiscipline.run(self)
+        super().run()
 
         outputs_dict = {
             'carbon_captured_type': self.energy_model.carbon_captured_type,
@@ -108,7 +111,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         '''
              Compute gradient of coupling outputs vs coupling inputs
         '''
-        super(CarbonCaptureDiscipline, self).compute_sos_jacobian()
+        super().compute_sos_jacobian()
 
         inputs_dict = self.get_sosdisc_inputs()
         outputs_dict = self.get_sosdisc_outputs()
@@ -410,8 +413,11 @@ class CarbonCaptureDiscipline(StreamDiscipline):
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Energy price', 'Technology mix',
-                      'Consumption and production', 'Flue gas or DAC capture']
+        chart_list = ['Energy price',
+                      'Technology mix',
+                      GlossaryCore.Capital,
+                      'Consumption and production',
+                      'Flue gas or DAC capture']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -451,6 +457,10 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             new_chart = self.get_chart_energy_price_in_dollar_kg()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
+
+        if GlossaryCore.Capital in charts:
+            chart = self.get_capital_breakdown_by_technos()
+            instanciated_charts.append(chart)
 
         if 'Consumption and production' in charts:
             new_charts = self.get_charts_consumption_and_production_mass_CO2()

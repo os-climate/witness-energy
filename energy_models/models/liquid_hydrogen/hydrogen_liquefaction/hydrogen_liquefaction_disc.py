@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -58,7 +57,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'efficiency': 0.98,
                                  'techno_evo_eff': 'no',
                                  'WACC': 0.1,
-                                 'useful_heat_recovery_factor': 0.8,
+                                 #'heat_recovery_factor': 0.8,
                                  'learning_rate':  0.2,
                                  'lifetime': lifetime,
                                  'lifetime_unit': GlossaryCore.Years,
@@ -107,8 +106,8 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
         self.techno_model.configure_parameters(inputs_dict)
 
     # def compute_sos_jacobian(self):
-    #     #inputs_dict = self.get_sosdisc_outputs()
-    #     #print(inputs_dict)
+    #     inputs_dict = self.get_sosdisc_inputs()
+    #     self.techno_model.configure_parameters(inputs_dict)
     #     LiquidHydrogenTechnoDiscipline.compute_sos_jacobian(self)
 
         # # the generic gradient for production column is not working because of

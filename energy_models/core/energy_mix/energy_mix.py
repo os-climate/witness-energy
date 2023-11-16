@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/05/31-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -48,6 +48,8 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from copy import deepcopy
+
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
@@ -136,6 +138,7 @@ class EnergyMix(BaseStream):
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
         self.losses_percentage_dict = {}
+        self.inputs = {}
 
     def configure(self, inputs_dict):
         '''
@@ -185,6 +188,7 @@ class EnergyMix(BaseStream):
         '''
         Configure parameters with possible update (variables that does change during the run)
         '''
+        self.inputs = inputs_dict
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
         self.carbon_tax = inputs_dict[GlossaryCore.CO2TaxesValue]
@@ -590,6 +594,7 @@ class EnergyMix(BaseStream):
                         self.mix_weights.loc[self.mix_weights[GlossaryCore.Years] == year,
                         energy] = 1. if energy == min_energy_name else 0.0
 
+        self.energy_mean_price = energy_mean_price
         return energy_mean_price
 
     def compute_total_prod_minus_min_prod_constraint(self):
@@ -894,6 +899,29 @@ class EnergyMix(BaseStream):
             dtot_CO2_emissions, key_dep_tuple_list, new_key)
 
         return dtot_CO2_emissions
+
+    def compute(self, inputs: dict, exp_min=True):
+        self.configure_parameters_update(inputs)
+
+        self.compute_raw_production()
+        self.compute_net_consumable_energy()
+        self.compute_net_energy_production()
+        self.compute_energy_production_uncut()
+        self.compute_price_by_energy()
+        self.compute_CO2_emissions()
+        self.compute_CO2_emissions_ratio()
+        self.aggregate_land_use_required()
+        self.compute_energy_capital()
+        self.compute_total_prod_minus_min_prod_constraint()
+        self.compute_constraint_solid_fuel_elec()
+        self.compute_constraint_h2()
+        self.compute_syngas_prod_objective()
+        self.compute_syngas_prod_constraint()
+
+        self.compute_all_streams_demand_ratio()
+        self.compute_net_positive_consumable_energy_production()
+        self.compute_mean_price(exp_min=inputs['exp_min'])
+        self.compute_constraint_h2()
 
 
 def update_new_gradient(grad_dict, key_dep_tuple_list, new_key):

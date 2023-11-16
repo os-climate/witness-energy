@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/10/18-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -154,6 +153,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
 
         return instanciated_chart
 
+
     def compute_sos_jacobian(self):
         ElectricityTechnoDiscipline.compute_sos_jacobian(self)
 
@@ -172,4 +172,3 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
             (GlossaryCore.TechnoProductionValue,
              f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
             (consumption_gradient- dprod_name_dinvest))
-

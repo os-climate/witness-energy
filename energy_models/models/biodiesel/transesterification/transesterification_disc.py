@@ -76,7 +76,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
         '''
         Compute techno_infos_dict with updated data_fuel_dict
         '''
-        BioDieselTechnoDiscipline.setup_sos_disciplines(self)
+        super().setup_sos_disciplines()
         dynamic_inputs = self.get_inst_desc_in()
         if self.get_data_in() is not None:
             if 'data_fuel_dict' in self.get_data_in():

@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/09/25-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -152,7 +153,7 @@ class SMR(SyngasTechno):
                                                                         self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                         self.cost_details['efficiency']
 
-        self.production[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
-            self.techno_infos_dict['high_heat_production'] * self.techno_infos_dict['useful_heat_recovery_factor'] *\
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        # self.production[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['high_heat_production'] * \
+        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 

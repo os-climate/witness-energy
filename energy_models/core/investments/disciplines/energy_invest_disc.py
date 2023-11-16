@@ -1,5 +1,4 @@
 '''
-
 Copyright 2022 Airbus SAS
 Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
@@ -17,8 +16,6 @@ limitations under the License.
 '''
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-Copyright (c) 2020 Airbus SAS.
-All rights reserved.
 '''
 import numpy as np
 import pandas as pd

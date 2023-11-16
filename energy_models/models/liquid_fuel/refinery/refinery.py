@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/06/09-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -119,9 +118,8 @@ class Refinery(LiquidFuelTechno):
         self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] * \
                                                                                             self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
 
-        self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['medium_heat_production'] *  \
-                                                                                           self.techno_infos_dict['useful_heat_recovery_factor'] * \
-                                                                                           self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
+        # self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['medium_heat_production'] *  \
+        #     self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
 
     def compute_ch4_emissions(self):
         '''

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 '''
 Copyright 2023 Capgemini
 
@@ -15,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
-=======
->>>>>>> parent of 86c062ec (Merge branch 'develop' of https://github.com/CG-DEMS/witness-energy into india_develop)
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -38,13 +35,13 @@ class ElectricBoilerMediumHeat(mediumheattechno):
 
         return self.cost_details[f'{Electricity.name}']
 
-    def grad_price_vs_energy_price_calc(self):
+    def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices
         '''
         elec_needs = self.get_theoretical_electricity_needs()
         efficiency = self.techno_infos_dict['efficiency']
-        return {'natural_gas_resource': np.identity(len(self.years)) * elec_needs / efficiency,
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
                 }
 
     def compute_consumption_and_production(self):

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -67,7 +67,6 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                                 'production methane (TWh)': ('float', None, True),
                                                                 'production hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
                                                                 'production biogas (TWh)': ('float', None, True),
-                                                                'production fuel.ethanol (TWh)': ('float', None, True),
                                                                 'production syngas (TWh)': ('float', None, True),
                                                                 'production fuel.liquid_fuel (TWh)': ('float', None, True),
                                                                 'production fuel.hydrotreated_oil_fuel (TWh)': ('float', None, True),
@@ -79,10 +78,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                                 'production carbon_capture (Mt)': ('float', None, True),
                                                                 'production carbon_storage (Mt)': ('float', None, True),
                                                                 'Total production': ('float', None, True),
-                                                                'Total production (uncut)': ('float', None, True),
-                                                                'production heat.lowtemperatureheat (TWh)': ('float', None, True),
-                                                                'production heat.mediumtemperatureheat (TWh)': ('float', None, True),
-                                                                'production heat.hightemperatureheat (TWh)': ('float', None, True),}
+                                                                'Total production (uncut)': ('float', None, True), }
                                        },
     }
 
@@ -164,12 +160,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                     'carbon_capture (Mt)': ('float', None, True),
                                                     'dioxygen_resource (Mt)': ('float', None, True),
                                                     'electricity (TWh)': ('float', None, True),
-                                                    'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
-                                                    'heat.lowtemperatureheat (TWh)': ('float', None, True),
-                                                    'heat.mediumtemperatureheat (TWh)': ('float', None, True),
-                                                    'heat.hightemperatureheat (TWh)': ('float', None, True),
-                                                     }}
-
+                                                    'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),}}
                         dynamic_inputs[f'{energy}.{GlossaryCore.EnergyProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -190,7 +181,6 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                     'methane': ('float', None, True),
                                                     'carbon_capture (Mt)': ('float', None, True),
                                                     'biogas': ('float', None, True),
-                                                    'biomass_dry': ('float', None, True),
                                                     'fuel.biodiesel': ('float', None, True),
                                                     'glycerol_resource (Mt)': ('float', None, True),
                                                     'solid_fuel': ('float', None, True),
@@ -202,15 +192,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                     'bio_oil (Mt)': ('float', None, True),
                                                     'water_resource (Mt)': ('float', None, True),
                                                     'dioxygen_resource (Mt)': ('float', None, True),
-                                                    'hydrogen.liquid_hydrogen': ('float', None, True),
-                                                    'heat.lowtemperatureheat (TWh)': ('float', None, True),
-                                                    'heat.mediumtemperatureheat (TWh)': ('float', None, True),
-                                                    'heat.hightemperatureheat (TWh)': ('float', None, True),
-                                                    'electricity (TWh)': ('float', None, True),
-                                                    'heat.lowtemperatureheat': ('float', None, True),
-                                                    'heat.mediumtemperatureheat': ('float', None, True),
-                                                    'heat.hightemperatureheat': ('float', None, True),
-                                                     }}
+                                                    'hydrogen.liquid_hydrogen': ('float', None, True),}}
 
         if GlossaryCore.ccs_list in self.get_data_in():
             ccs_list = self.get_sosdisc_inputs(GlossaryCore.ccs_list)

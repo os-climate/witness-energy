@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,7 +58,6 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
                                  'CO2_from_production_unit': 'kg/kg',
                                  'low_heat_production': ((663.2 * 3600) / 2.393) * 1e-9, # https://www.sciencedirect.com/science/article/abs/pii/S0957582021002469
                                  'low_heat_production_unit': 'TWh/kg',
-                                 'useful_heat_recovery_factor': 0.8,
                                  # biogas demand represent needed biogas to obtain 1 m^3 of methane here 6201 t of biogas for 3.44
                                  #p25 in graphs
                                  'biogas_demand': 6.46 / 3.44,

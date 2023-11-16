@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,7 +50,6 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                  'elec_demand': 0.23,
                                  'elec_demand_unit': 'kWh/kg',
                                  'Opex_percentage': 0.05,
-                                 'useful_heat_recovery_factor': 0.8,
                                  'high_heat_production':  (206 / (28.01 + 3*2.016)) * 1000 * 2.77778e-13/33.33 * 1e-9,
                                  # CH4 + H2O → CO + 3H2  ΔH°= 206 kJ/mol
                                  # Total power demand of 0.1 kWh/kg H2

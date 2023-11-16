@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -135,7 +134,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
 
     def setup_sos_disciplines(self):
 
-        GaseousHydrogenTechnoDiscipline.setup_sos_disciplines(self)
+        super().setup_sos_disciplines()
 
         if self.get_data_in() is not None:
             if GlossaryCore.YearStart in self.get_data_in():

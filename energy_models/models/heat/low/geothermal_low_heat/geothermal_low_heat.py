@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ class GeothermalHeat(lowheattechno):
         return self.cost_details[f'{Electricity.name}']
 
 
-    def grad_price_vs_energy_price_calc(self):
+    def grad_price_vs_energy_price(self):
         elec_needs = self.get_theoretical_electricity_needs()
         heat_generated = elec_needs #self.get_theoretical_heat_generated()
         mean_temperature = self.techno_infos_dict['mean_temperature']
@@ -49,10 +49,9 @@ class GeothermalHeat(lowheattechno):
         COP = output_temperature / (output_temperature - mean_temperature)
         efficiency = COP
         #efficiency = self.techno_infos_dict['COP']
-        # return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-        #        lowtemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
-        #        }
-        return {}
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
+               lowtemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
+               }
 
     def compute_consumption_and_production(self):
         """

@@ -20,6 +20,7 @@ import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
@@ -136,25 +137,7 @@ class CCUS_Discipline(SoSWrapp):
                     dynamic_inputs[f'{ccs_name}.{GlossaryCore.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs',
-                        'dataframe_descriptor': {'years': ('float', None, True),
-                                                 'direct_air_capture.AmineScrubbing (Gha)': ('float', None, True),
-                                                 'direct_air_capture.CalciumPotassiumScrubbing (Gha)': (
-                                                 'float', None, True),
-                                                 'flue_gas_capture.CalciumLooping (Gha)': ('float', None, True),
-                                                 'flue_gas_capture.ChilledAmmoniaProcess (Gha)': ('float', None, True),
-                                                 'flue_gas_capture.CO2Membranes (Gha)': ('float', None, True),
-                                                 'flue_gas_capture.MonoEthanolAmine (Gha)': ('float', None, True),
-                                                 'flue_gas_capture.PiperazineProcess (Gha)': ('float', None, True),
-                                                 'flue_gas_capture.PressureSwingAdsorption (Gha)': (
-                                                 'float', None, True),
-                                                 'BiomassBuryingFossilization (Gha)': ('float', None, True),
-                                                 'DeepOceanInjection (Gha)': ('float', None, True),
-                                                 'DeepSalineFormation (Gha)': ('float', None, True),
-                                                 'DepletedOilGas (Gha)': ('float', None, True),
-                                                 'EnhancedOilRecovery (Gha)': ('float', None, True),
-                                                 'GeologicMineralization (Gha)': ('float', None, True),
-                                                 'PureCarbonSolidStorage (Gha)': ('float', None, True),
-                                                 }}
+                        "dynamic_dataframe_columns": True}
 
         if GlossaryCore.YearStart in self.get_data_in() and GlossaryCore.YearEnd in self.get_data_in():
             year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)

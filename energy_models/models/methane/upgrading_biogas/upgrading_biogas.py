@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/10/10-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -80,9 +81,9 @@ class UpgradingBiogas(MethaneTechno):
                                                                                     self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
         # production
-        self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-            self.techno_infos_dict['low_heat_production'] * self.techno_infos_dict['useful_heat_recovery_factor'] *\
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['low_heat_production'] * \
+        #     self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 
     def get_biogas_needs(self):
         '''

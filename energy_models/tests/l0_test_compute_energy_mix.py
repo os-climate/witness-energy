@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-
 Modifications on 2023/04/21-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +24,7 @@ from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
@@ -473,6 +473,7 @@ class EnergyMixTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_hydrogen': f'{name}',
+                   'ns_witness': f'{name}',
                    'ns_methane': f'{name}',
                    'ns_energy_study': f'{name}',
                    'ns_energy_mix': f'{name}.{model_name}',
@@ -555,6 +556,7 @@ class EnergyMixTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_hydrogen': f'{name}',
+                   'ns_witness': f'{name}',
                    'ns_methane': f'{name}',
                    'ns_energy_study': f'{name}',
                    'ns_energy_mix': f'{name}.{model_name}',
@@ -597,7 +599,6 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.methane.{GlossaryCore.EnergyProductionValue}': self.production,
                        f'{name}.{model_name}.methane.{GlossaryCore.EnergyProcductionWithoutRatioValue}': self.production,
                        f'{name}.{model_name}.methane.{GlossaryCore.EnergyPricesValue}': self.cost_details,
-
                        f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame(
                            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
                        f'{name}.{model_name}.methane.{GlossaryCore.CO2EmissionsValue}': pd.DataFrame(

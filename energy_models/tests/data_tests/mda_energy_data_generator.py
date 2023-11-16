@@ -19,7 +19,7 @@ limitations under the License.
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as MDA_Energy
 import pickle
-from climateeconomics.glossarycore import GlossaryCore
+
 
 def launch_data_pickle_generation(directory=''):
     # Run MDA Energy
@@ -27,7 +27,7 @@ def launch_data_pickle_generation(directory=''):
     ee = ExecutionEngine(name)
     model_name = 'EnergyMix'
 
-    repo = 'energy_models.sos_processes.energy.MDA' 
+    repo = 'energy_models.sos_processes.energy.MDA'
     builder = ee.factory.get_builder_from_process(
         repo, 'energy_process_v0')
 
@@ -63,7 +63,6 @@ def launch_data_pickle_generation(directory=''):
     ############
     # Energies #
     ############
-    energy_list.remove("biomass_dry")
     for energy in energy_list:
         # Loop on energies
         energy_disc = ee.dm.get_disciplines_with_name(

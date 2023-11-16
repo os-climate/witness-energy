@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/10/23-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ class FlueGas(BaseStream):
             self.production[
                 f'{self.name}'] += self.production[f'{self.name} {element} ({self.unit})']
 
-    def compute(self):
+    def compute(self, inputs, exp_min=True):
         '''
         Compute function which compute flue gas production and flue gas mean ratio
         '''
