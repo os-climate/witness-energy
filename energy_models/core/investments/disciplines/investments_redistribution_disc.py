@@ -45,25 +45,17 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
         'version': '',
     }
     energy_mix_name = EnergyMix.name
+    # update used dictionaries in DESC_IN with specific informations
+    energy_list_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyList)
+    energy_list_desc_dict.update({'possible_values': EnergyMix.energy_list})
+    ccs_list_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.CCSList)
+    ccs_list_desc_dict.update({'possible_values': CCUS.ccs_list})
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        GlossaryEnergy.EnergyListName: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                        'possible_values': EnergyMix.energy_list,
-                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                                        'editable': False, 'structuring': True},
-        GlossaryEnergy.CCSListName: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': CCUS.ccs_list,
-                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                                     'editable': False,
-                                     'structuring': True},
-        GlossaryEnergy.ForestInvestmentValue: {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                                               'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
-                                                                        GlossaryEnergy.ForestInvestmentValue: (
-                                                                            'float', None, False)},
-                                               'namespace': 'ns_invest',
-                                               'dataframe_edition_locked': False},
-
+        GlossaryEnergy.EnergyListName: energy_list_desc_dict,
+        GlossaryEnergy.CCSListName: ccs_list_desc_dict,
+        GlossaryEnergy.ForestInvestmentValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.ForestInvestment),
         GlossaryCore.EconomicsDfValue: GlossaryCore.get_dynamic_variable(GlossaryCore.EconomicsDf),
         GlossaryEnergy.EnergyInvestPercentageGDPName: GlossaryEnergy.get_dynamic_variable(
             GlossaryEnergy.EnergyInvestPercentageGDP)
@@ -91,22 +83,29 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                 for energy in energy_list:
                     if energy != BiomassDry.name:
                         # Add technologies_list to inputs
-                        dynamic_inputs[f'{energy}.{GlossaryCore.techno_list}'] = {
-                            'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
-                            'visibility': 'Shared', 'namespace': 'ns_energy',
-                            'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
-                            'default': EnergyMix.stream_class_dict[energy].default_techno_list}
+                        techno_list_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoList)
+                        # update informations of technologies list with specific ones (namespace, default and possible values)
+                        techno_list_desc_dict.update(
+                            {'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
+                             'namespace': 'ns_energy',
+                             'default': EnergyMix.stream_class_dict[energy].default_techno_list})
+                        dynamic_inputs[f'{energy}.{GlossaryCore.techno_list}'] = techno_list_desc_dict
                         # Add all invest_level outputs
                         if f'{energy}.{GlossaryCore.techno_list}' in self.get_data_in():
                             technology_list = self.get_sosdisc_inputs(
                                 f'{energy}.{GlossaryCore.techno_list}')
                             if technology_list is not None:
                                 for techno in technology_list:
+                                    # update dataframe descriptor with used technologies
                                     techno_invest_percentage_desc[self.DATAFRAME_DESCRIPTOR].update(
                                         {techno: ("float", None, True)})
-                                    dynamic_outputs[f'{energy}.{techno}.{GlossaryCore.InvestLevelValue}'] = {
-                                        'type': 'dataframe', 'unit': 'G$',
-                                        'visibility': 'Shared', 'namespace': 'ns_energy'}
+                                    # use generic invest level from Glossary and update namespace
+                                    invest_level_desc_dict = GlossaryEnergy.get_dynamic_variable(
+                                        GlossaryEnergy.InvestLevel)
+                                    invest_level_desc_dict.update({'namespace': 'ns_energy'})
+                                    dynamic_outputs[
+                                        f'{energy}.{techno}.{GlossaryCore.InvestLevelValue}'] = invest_level_desc_dict
+
                     else:
                         # if Biomass dry energy then add relevant variables
                         dynamic_inputs[GlossaryEnergy.ManagedWoodInvestmentName] = GlossaryEnergy.get_dynamic_variable(
@@ -122,10 +121,11 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             if ccs_list is not None:
                 for ccs in ccs_list:
                     # Add technologies_list to inputs
-                    dynamic_inputs[f'{ccs}.{GlossaryCore.techno_list}'] = {
-                        'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
-                        'visibility': 'Shared', 'namespace': 'ns_ccs',
-                        'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list}
+                    techno_list_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoList)
+                    techno_list_desc_dict.update(
+                        {'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
+                         'namespace': 'ns_ccs'})
+                    dynamic_inputs[f'{ccs}.{GlossaryEnergy.TechnoListName}'] = techno_list_desc_dict
                     # Add all invest_level outputs
                     if f'{ccs}.{GlossaryCore.techno_list}' in self.get_data_in():
                         technology_list = self.get_sosdisc_inputs(
@@ -135,11 +135,31 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                                 # update dataframe descriptor
                                 techno_invest_percentage_desc[self.DATAFRAME_DESCRIPTOR].update(
                                     {techno: ("float", None, True)})
-                                dynamic_outputs[f'{ccs}.{techno}.{GlossaryCore.InvestLevelValue}'] = {
-                                    'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_ccs'}
+                                # use generic invest level from Glossary and update namespace
+
+                                invest_level_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.InvestLevel)
+                                invest_level_desc_dict.update({'namespace': 'ns_ccs'})
+                                dynamic_outputs[
+                                    f'{ccs}.{techno}.{GlossaryCore.InvestLevelValue}'] = invest_level_desc_dict
+        # use updated informations for variable
         dynamic_inputs[GlossaryEnergy.TechnoInvestPercentageName] = techno_invest_percentage_desc
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
+
+    def check_data_integrity(self):
+        '''
+        Check data integrity of the discipline
+
+        '''
+        inputs_dict = self.get_sosdisc_inputs()
+        self.init_execution()
+
+        integrity_msg_dict = self.invest_redistribution_model.check_data_integrity(inputs_dict)
+
+        for var_name, integrity_msg in integrity_msg_dict.items():
+            var_full_name = self.get_input_var_full_name(var_name)
+            self.dm.set_data(
+                var_full_name, self.CHECK_INTEGRITY_MSG, integrity_msg)
 
     def run(self):
 
@@ -147,14 +167,14 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
         self.invest_redistribution_model.configure_parameters(input_dict)
         self.invest_redistribution_model.compute()
 
+        # add energy investments wo tax to output dictionnary
         output_dict = {
             GlossaryCore.EnergyInvestmentsWoTaxValue: self.invest_redistribution_model.energy_investment_wo_tax,
-            }
+        }
 
+        # add investments in all technologies (except for biomass dry to output)
         for energy in input_dict[GlossaryCore.energy_list] + input_dict[GlossaryCore.ccs_list]:
-            if energy == BiomassDry.name:
-                pass
-            else:
+            if energy != BiomassDry.name:
                 for techno_name, invest_techno in self.invest_redistribution_model.investment_per_technology_dict.items():
                     output_dict[f'{techno_name}.{GlossaryCore.InvestLevelValue}'] = invest_techno
 
@@ -169,11 +189,9 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
 
         delta_years = len(years)
         identity = np.identity(delta_years)
-        ones = np.ones(delta_years)
         energy_list = inputs_dict[GlossaryEnergy.EnergyListName]
-        ccs_list = inputs_dict[GlossaryEnergy.CCSListName]
-        percentage_gdp_invest_energy = inputs_dict[
-                                           GlossaryEnergy.EnergyInvestPercentageGDPName] / 100.  # divide by 100 as it is percentage
+        percentage_gdp_invest_energy = inputs_dict[GlossaryEnergy.EnergyInvestPercentageGDPName][
+                                           GlossaryEnergy.EnergyInvestPercentageGDPName].values / 100.  # divide by 100 as it is percentage
         techno_invest_percentage_df = inputs_dict[GlossaryEnergy.TechnoInvestPercentageName]
 
         for energy, techno_list in self.invest_redistribution_model.techno_list_dict.items():
@@ -214,7 +232,6 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
 
     def get_post_processing_list(self, filters=None):
 
-
         instanciated_charts = []
         charts = []
 
@@ -225,7 +242,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                     charts = chart_filter.selected_values
 
         inputs_dict = self.get_sosdisc_inputs(
-            )
+        )
         outputs_dict = self.get_sosdisc_outputs()
         year_start = inputs_dict[GlossaryEnergy.YearStart]
         year_end = inputs_dict[GlossaryEnergy.YearEnd]
@@ -238,6 +255,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                                                         chart_name=chart_name, stacked_bar=True)
             energy_list = inputs_dict[GlossaryCore.energy_list]
             ccs_list = inputs_dict[GlossaryCore.ccs_list]
+            # add a chart per energy with breakdown of investments in every technology of the energy
             for energy in energy_list + ccs_list:
                 list_energy = []
                 if energy != BiomassDry.name:

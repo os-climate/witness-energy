@@ -70,11 +70,13 @@ class InvestmentsRedistribution():
         # compute sum of all investments (energy investments + forest investments + biomass_dry investments
         # if used in model )
         self.total_investments_in_energy_w_biomass_dry = (self.total_investments_in_energy +
-                                                          self.forest_investment_df[GlossaryEnergy.ForestInvestmentValue].values)
+                                                          self.forest_investment_df[
+                                                              GlossaryEnergy.ForestInvestmentValue].values)
 
         if BiomassDry.name in self.energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                self.total_investments_in_energy_w_biomass_dry += self.inputs_dict[techno][GlossaryCore.InvestmentsValue].values
+                self.total_investments_in_energy_w_biomass_dry += self.inputs_dict[techno][
+                    GlossaryCore.InvestmentsValue].values
         self.energy_investment_wo_tax = pd.DataFrame(
             {GlossaryCore.Years: self.total_investments_in_energy_w_biomass_dry,
              GlossaryCore.EnergyInvestmentsWoTaxValue: self.total_investments_in_energy_w_biomass_dry / 1e3})  # G$ to T$
@@ -85,16 +87,53 @@ class InvestmentsRedistribution():
         """
         # compute part of gdp that is used for investment in energy
         self.total_investments_in_energy = (self.economics_df[GlossaryCore.OutputNetOfDamage].values *
-                                       self.percentage_gdp_energy_invest / 100.)
+                                            self.percentage_gdp_energy_invest[
+                                                GlossaryEnergy.EnergyInvestPercentageGDPName] / 100.)
         self.years = self.economics_df[GlossaryEnergy.Years]
         investments_dict = {}
         for energy, techno_list in self.techno_list_dict.items():
             # biomassdry technologies does not come in percentages
             if energy != BiomassDry.name:
                 for techno in techno_list:
+                    # investment in technology is total invest in energy * techno percentage
                     investments_dict[f'{energy}.{techno}'] = (self.total_investments_in_energy *
                                                               self.techno_invest_percentage_df[techno].values) / 100.
 
+        # create dictionnary with all dataframes of investments prepared
         self.investment_per_technology_dict = {
             full_techno_name: pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: invests
                                             }) for full_techno_name, invests in investments_dict.items()}
+
+    def check_data_integrity(self, inputs_dict):
+        '''
+        Check the data integrity of the model
+        Returns a dict with problematic variable name as keys and integrity msg to send to the GUI as values
+        '''
+        # Check that all input values are filled (No None in values) If none it is checked by the genric data integrity function
+        integrity_msg_dict = {}
+
+        self.configure_parameters(inputs_dict)
+
+        integrity_msg_dict.update(self.check_integrity_techno_percentages())
+
+        return integrity_msg_dict
+
+    def check_integrity_techno_percentages(self):
+        """
+        Check sum of technos percentages is 100%
+        """
+        integrity_msg_dict = {}
+
+        techno_percentages_col = self.techno_invest_percentage_df.columns[
+            self.techno_invest_percentage_df.columns != 'years']
+
+        # check if sum is 100% or not
+        all_years_equal_100 = all(
+            self.techno_invest_percentage_df[self.techno_invest_percentage_df['years'] == year][
+                techno_percentages_col].sum(axis=1).values[0] == 100
+            for year in self.techno_invest_percentage_df['years']
+        )
+        if not all_years_equal_100:
+            integrity_msg_dict[GlossaryEnergy.TechnoInvestPercentageName] = ('Sum of percentages is not equal to 100%, '
+                                                                             'please verify your input dataframe')
+        return integrity_msg_dict
