@@ -21,9 +21,9 @@ import numpy as np
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+from energy_models.core.stream_type.carbon_models.carbon import Carbon
 
 
 class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
@@ -190,19 +190,29 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         GRADIENT CONSTRAINT VS CARBON_STORAGE_QUANTITY
         '''
 
-        carbon_quantity_to_be_stored = self.get_sosdisc_inputs(
-            'carbon_quantity_to_be_stored')
-        carbon_to_be_stored_constraint = self.get_sosdisc_outputs(
-            'carbon_to_be_stored_constraint')
         scaling_factor_invest_level = self.get_sosdisc_inputs(
             'scaling_factor_invest_level')
         scaling_factor_techno_production = self.get_sosdisc_inputs(
             'scaling_factor_techno_production')
 
-        value = - \
-            np.identity(len(self.techno_model.carbon_to_be_stored_constraint))
+        consumption_wo_ratio = self.get_sosdisc_outputs(GlossaryCore.TechnoConsumptionWithoutRatioValue)
+        applied_ratio = self.get_sosdisc_outputs('applied_ratio')['applied_ratio'].values
+        d_constraint_d_utillisation_ratio = np.diag(
+            consumption_wo_ratio[f'{Carbon.name} ({self.techno_model.mass_unit})'].values *
+            applied_ratio / 100.
+        )
+
         self.set_partial_derivative_for_other_types(
-            ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'), ('carbon_quantity_to_be_stored', 'carbon_storage'), value)
+            ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'),
+            (GlossaryCore.UtilisationRatioValue, GlossaryCore.UtilisationRatioValue),
+            d_constraint_d_utillisation_ratio
+        )
+
+        self.set_partial_derivative_for_other_types(
+            ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'),
+            ('carbon_quantity_to_be_stored', 'carbon_storage'),
+            - np.identity(len(self.techno_model.carbon_to_be_stored_constraint))
+        )
 
         '''
         GRADIENT CONSTRAINT VS INVEST_LEVEL (because constraint depends on consumption and consumption depends on invest_level)
@@ -210,10 +220,12 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
         consumption = self.get_sosdisc_outputs(GlossaryCore.TechnoConsumptionValue)
         for column in consumption.keys():
-            if (column not in [GlossaryCore.Years]):
+            if column != GlossaryCore.Years:
                 value = self.dcons_column_dinvest
                 self.set_partial_derivative_for_other_types(
-                    ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'), (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue), value * scaling_factor_invest_level / scaling_factor_techno_production)
+                    ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'),
+                    (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
+                    value * scaling_factor_invest_level / scaling_factor_techno_production)
 
     def get_chart_filter_list(self):
 

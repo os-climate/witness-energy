@@ -147,14 +147,6 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        energy_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryCore.EnergyPricesValue}')
-        co2_emissions = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}')
-        # Check if for the first year_low_prod values the price value of hydrogen is equal to the price value of WGS
-        # We erase the influence of low prod to the price BUT the mix weight is
-        # not 100% for the other techno
-
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         disc = self.ee.dm.get_disciplines_with_name(

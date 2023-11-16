@@ -114,7 +114,7 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         self.utilisation_ratio = pd.DataFrame({
             GlossaryCore.Years: self.years,
-            GlossaryCore.UtilisationRatioValue: np.ones_like(self.years) * 100.0
+            GlossaryCore.UtilisationRatioValue: np.ones_like(self.years) * 50.0
         })
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
@@ -139,11 +139,13 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
         for graph in graph_list:
-            graph.to_plotly().show()
+            #graph.to_plotly().show()
+            pass
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}',
@@ -196,6 +198,7 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}',
