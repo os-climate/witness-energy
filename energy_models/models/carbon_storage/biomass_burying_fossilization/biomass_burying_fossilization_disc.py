@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/19-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/19-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -48,14 +48,14 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
                                  'learning_rate': 0,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'Capex_init': 0.0175,
                                  'Capex_init_unit': '$/kgCO2',
                                  'efficiency': 1,
                                  'CO2_capacity_peryear': 3.6E+8,  # kg CO2 /year
                                  'CO2_capacity_peryear_unit': 'kg CO2/year',
                                  'real_factor_CO2': 1.0,
-                                 'transport_cost': 0.0,
+                                 GlossaryCore.TransportCostValue: 0.0,
                                  'transport_cost_unit': '$/kgCO2',
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
@@ -68,7 +68,7 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
 
     initial_storage = 0  # in kg at year_start
     invest_before_year_start = pd.DataFrame(
-        {'past years': [], 'invest': []})
+        {'past years': [], GlossaryCore.InvestValue: []})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
@@ -91,9 +91,9 @@ class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)

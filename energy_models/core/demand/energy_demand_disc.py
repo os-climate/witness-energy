@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -45,9 +45,9 @@ class EnergyDemandDiscipline(SoSWrapp):
         'version': '',
     }
 
-    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               'energy_production_detailed': {'type': 'dataframe', 'unit': 'TWh',
+    DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
                                               'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
                                                                        'demand': ('float',  None, True),
                                                                        'production electricity (TWh)': ('float',  None, True),
@@ -66,8 +66,8 @@ class EnergyDemandDiscipline(SoSWrapp):
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': '-'},
                'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
-               'transport_demand': {'type': 'dataframe', 'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
-                                                                                  'transport_demand': ('float',  None, True)},
+               GlossaryCore.TransportDemandValue: {'type': 'dataframe', 'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
+                                                                                  GlossaryCore.TransportDemandValue: ('float',  None, True)},
                                     'dataframe_edition_locked': False, 'unit': 'TWh'},
                'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'additional_demand_transport': {'type': 'float', 'default': 10., 'unit': '%'}}
@@ -109,17 +109,17 @@ class EnergyDemandDiscipline(SoSWrapp):
         '''
         delec_demand_cosntraint_delec_prod = self.demand_model.compute_delec_demand_constraint_delec_prod()
         self.set_partial_derivative_for_other_types(
-            ('electricity_demand_constraint', 'elec_demand_constraint'), ('energy_production_detailed', self.elec_prod_column),  delec_demand_cosntraint_delec_prod)
+            ('electricity_demand_constraint', 'elec_demand_constraint'), (GlossaryCore.EnergyProductionDetailedValue, self.elec_prod_column),  delec_demand_cosntraint_delec_prod)
 
         delec_demand_cosntraint_dpop = self.demand_model.compute_delec_demand_constraint_dpop()
         self.set_partial_derivative_for_other_types(
-            ('electricity_demand_constraint', 'elec_demand_constraint'), (GlossaryCore.PopulationDfValue, 'population'),  delec_demand_cosntraint_dpop)
+            ('electricity_demand_constraint', 'elec_demand_constraint'), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  delec_demand_cosntraint_dpop)
         dtransport_demand_denergy_prod = self.demand_model.compute_dtransport_demand_dprod()
 
         for energy_name in self.demand_model.energy_list_transport:
 
             self.set_partial_derivative_for_other_types(
-                ('transport_demand_constraint',),  ('energy_production_detailed',
+                ('transport_demand_constraint',),  (GlossaryCore.EnergyProductionDetailedValue,
                                                     f"production {energy_name} ({EnergyMix.stream_class_dict[energy_name].unit})"),
                 dtransport_demand_denergy_prod)
 
@@ -179,7 +179,7 @@ class EnergyDemandDiscipline(SoSWrapp):
         new_chart.series.append(serie)
 
         energy_production_detailed = self.get_sosdisc_inputs(
-            'energy_production_detailed')
+            GlossaryCore.EnergyProductionDetailedValue)
         net_elec_prod = energy_production_detailed
         serie = InstanciatedSeries(
             net_elec_prod[GlossaryCore.Years].values.tolist(),
@@ -198,11 +198,11 @@ class EnergyDemandDiscipline(SoSWrapp):
             'Transport energies': 'Liquid hydrogen, liquid fuel, biodiesel, methane, biogas, HEFA'}
         new_chart.annotation_upper_left = note
         transport_demand, energy_production_detailed = self.get_sosdisc_inputs(
-            ['transport_demand', 'energy_production_detailed'])
+            [GlossaryCore.TransportDemandValue, GlossaryCore.EnergyProductionDetailedValue])
 
         serie = InstanciatedSeries(
             transport_demand[GlossaryCore.Years].values.tolist(),
-            transport_demand['transport_demand'].values.tolist(), 'transport demand', 'lines')
+            transport_demand[GlossaryCore.TransportDemandValue].values.tolist(), 'transport demand', 'lines')
         new_chart.series.append(serie)
         net_transport_production = self.get_sosdisc_outputs(
             'net_transport_production')

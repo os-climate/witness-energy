@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,6 +17,8 @@ limitations under the License.
 
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
 from energy_models.models.electricity.wind_onshore.wind_onshore import WindOnshore
@@ -49,7 +52,7 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
                                  'WACC': 0.05,  # Weighted averaged cost of capital / ATB NREL 2020
                                  'learning_rate':  0.05,  # Cost development of low carbon energy technologies
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'Capex_init': 1497,  # Irena Future of wind 2019
                                  'Capex_init_unit': '$/kW',
                                  'full_load_hours': 8760.0,  # Full year hours
@@ -71,7 +74,7 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
     initial_production = 1323  # IEA in 2019
     # Invest in 2019 => 138.2 bn less 29.6 bn offshore => 108.6 bn
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [98.1, 92.7, 108.6]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [98.1, 92.7, 108.6]})
 
     # Age distribution => GWEC Annual-Wind-Report_2019_digital_final_2r
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
@@ -88,9 +91,9 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
@@ -108,16 +111,16 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
         "Adds the chart specific for resources needed for construction"
         instanciated_chart = super().get_charts_consumption_and_production()
         techno_consumption = self.get_sosdisc_outputs(
-            'techno_detailed_consumption')
+            GlossaryCore.TechnoDetailedConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:
 
-            if product != 'years' and product.endswith(f'(Mt)'):
+            if product != GlossaryCore.Years and product.endswith(f'(Mt)'):
                 if ResourceGlossary.Copper['name'] in product :
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
-                        'years', 'Mass [t]', chart_name=chart_name, stacked_bar=True)
+                        GlossaryCore.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
             if ResourceGlossary.Copper['name'] in reactant:
@@ -125,7 +128,7 @@ class WindOnshoreDiscipline(ElectricityTechnoDiscipline):
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
-                    techno_consumption['years'].values.tolist(),
+                    techno_consumption[GlossaryCore.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)

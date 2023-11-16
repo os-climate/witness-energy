@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/06-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/06-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
 from energy_models.models.electricity.gas.gas_elec import GasElec
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
@@ -63,7 +64,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'WACC': 0.075,  # fraunhofer
                                  'learning_rate': 0,  # fraunhofer
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # 0.1025 kt/PJ (mean) at gas power plants in
                                  # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
                                  'CH4_emission_factor': 0.1025e-3 / 0.277,
@@ -90,7 +91,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
     # Major hypothesis: 25% of invest in gas go into gas turbine, 75% into CCGT
     share = 0.75
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [ 0.0, 51.0 * share]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [ 0.0, 51.0 * share]})
 # For initial production: MAJOR hypothesis, took IEA WEO 2019 production for 2018
     # Source for initial production: IEA 2022, World Energy Outlook, https://www.iea.org/reports/world-energy-outlook-2018, License: CC BY 4.0.
 # In US according to EIA 53% of capa from CCGT and 47 for GT in 2017
@@ -110,9 +111,9 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}
                }
     # -- add specific techno inputs to this
@@ -127,16 +128,16 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
         "Adds the chart specific for resources needed for construction"
         instanciated_chart = super().get_charts_consumption_and_production()
         techno_consumption = self.get_sosdisc_outputs(
-            'techno_detailed_consumption')
+            GlossaryCore.TechnoDetailedConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:
 
-            if product != 'years' and product.endswith(f'(Mt)'):
+            if product != GlossaryCore.Years and product.endswith(f'(Mt)'):
                 if ResourceGlossary.Copper['name'] in product :
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
-                        'years', 'Mass [t]', chart_name=chart_name, stacked_bar=True)
+                        GlossaryCore.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
             if ResourceGlossary.Copper['name'] in reactant:
@@ -144,7 +145,7 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
-                    techno_consumption['years'].values.tolist(),
+                    techno_consumption[GlossaryCore.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)
@@ -166,6 +167,6 @@ class CombinedCycleGasTurbineDiscipline(ElectricityTechnoDiscipline):
         consumption_gradient = self.techno_consumption_derivative[f'{Methane.name} ({self.techno_model.product_energy_unit})']
         #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
         self.set_partial_derivative_for_other_types(
-            ('techno_production',
-             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
+            (GlossaryCore.TechnoProductionValue,
+             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
             (consumption_gradient- dprod_name_dinvest))
