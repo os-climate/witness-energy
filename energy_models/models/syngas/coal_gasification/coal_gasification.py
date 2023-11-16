@@ -56,10 +56,10 @@ class CoalGasification(SyngasTechno):
         Need to take into account negative CO2 from biomass and positive from elec
         '''
 
-        self.carbon_emissions[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
-            self.cost_details['solid_fuel_needs']
+        self.carbon_intensity[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
+                                                self.cost_details['solid_fuel_needs']
 
-        return self.carbon_emissions[SolidFuel.name]
+        return self.carbon_intensity[SolidFuel.name]
 
     def compute_consumption_and_production(self):
         """
@@ -67,14 +67,14 @@ class CoalGasification(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
-        self.consumption[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
+                                                                                      self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
         #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
+                                                                                        self.data_energy_dict['calorific_value'] * \
+                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']

@@ -790,8 +790,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         })
         for techno in technos:
             inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
@@ -880,7 +880,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
         # Overwrite CalciumLooping techno production to test the flue_gas
         # limited case
-        inputs_dict[f'{namespace}.{self.energy_name}.flue_gas_capture.CalciumLooping.techno_production'][
+        inputs_dict[f'{namespace}.{self.energy_name}.flue_gas_capture.CalciumLooping.{GlossaryCore.TechnoProductionValue}'][
             'carbon_capture (Mt)'] *= np.linspace(1.0, 5.0, len(self.years))
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -1592,7 +1592,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         )
         coupled_outputs.append(
             f'{namespace}.{self.techno_name}.non_use_capital')
-        coupled_outputs.remove('Test_Ratio.Electrolysis.PEM.techno_prices')
+        coupled_outputs.remove(f'Test_Ratio.Electrolysis.PEM.{GlossaryCore.TechnoPricesValue}')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=2e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,

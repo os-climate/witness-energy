@@ -75,7 +75,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
                                  'biogas_needs': biogas_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
                                  'copper_needs': 1100,  #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }

@@ -67,7 +67,7 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                  'WACC': 0.0878,
                                  'techno_evo_eff': 'no',
                                  'efficiency': 0.8,
-                                 'construction_delay': construction_delay  # in kWh/kg
+                                 GlossaryCore.ConstructionDelay: construction_delay  # in kWh/kg
                                  }
 
     syngas_ratio = CoElectrolysis.syngas_COH2_ratio

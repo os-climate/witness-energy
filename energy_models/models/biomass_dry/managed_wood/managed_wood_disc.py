@@ -134,7 +134,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                  'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                                  'recyle_part': recycle_part,
 
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
     # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
     # the share of wood (not residue)
     invest_before_year_start = pd.DataFrame(

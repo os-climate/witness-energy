@@ -53,17 +53,17 @@ class HeatPump(mediumheattechno):
         Compute the consumption and the production of the technology for a given investment
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Production
-        self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] = \
-            self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
+        self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] = \
+            self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-            self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
+                                                                                        self.cost_details['efficiency']
 
 
     def get_theoretical_electricity_needs(self):

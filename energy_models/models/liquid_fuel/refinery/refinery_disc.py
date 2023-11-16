@@ -122,7 +122,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.89,  # https://publications.anl.gov/anlpubs/2011/01/69026.pdf
                                  'techno_evo_eff': 'no',
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'pourcentage_of_total': 0.09,
                                  'product_break_down': product_break_down}
 
@@ -223,8 +223,8 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                 (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.EnergyCO2EmissionsValue, energy), grad_on_co2_tax * np.split(self.techno_model.margin[GlossaryCore.MarginValue].values, len(self.techno_model.margin[GlossaryCore.MarginValue].values)) /
                 100.0)
 
-            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_emissions[GlossaryCore.Years].max(
-            )) * self.techno_model.carbon_emissions[self.techno_name].clip(0).values
+            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_intensity[GlossaryCore.Years].max(
+            )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values
             dtechno_prices_dCO2_taxes = dCO2_taxes_factory * \
                 self.techno_model.margin.loc[self.techno_model.margin[GlossaryCore.Years] <=
                                              self.techno_model.cost_details[GlossaryCore.Years].max()][GlossaryCore.MarginValue].values / 100.0
@@ -257,16 +257,10 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     def get_chart_filter_list(self):
 
-        chart_filters = []
-        chart_list = ['Detailed prices', 'Prices per flow',
-                      'Consumption and production', 'Age Distribution Production',
-                      'Initial Production', 'Factory Mean Age', 'CO2 emissions']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters = super().get_chart_filter_list()
+        chart_filters[0].extend(['Prices per flow', 'Age Distribution Production'])
+        chart_filters[1].extend(['$/USgallon'])
 
-        price_unit_list = ['$/MWh', '$/t', '$/USgallon']
-        chart_filters.append(ChartFilter(
-            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):

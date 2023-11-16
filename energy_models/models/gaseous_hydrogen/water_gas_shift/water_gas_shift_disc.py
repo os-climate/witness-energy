@@ -85,7 +85,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # perfectly efficient
                                  'input_power_unit': 'mol/h',
                                  'techno_evo_eff': 'no',  # yes or no
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
 
     # Fake investments (not found in the litterature...)
     invest_before_year_start = pd.DataFrame(
@@ -258,7 +258,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             (GlossaryCore.CO2EmissionsValue, 'WaterGasShift'),  ('syngas_ratio',),  np.identity(len(self.techno_model.years)) * (dco2_prod_dsyngas_ratio + dco2_syngas_dsyngas_ratio) / 100.0)
 
         CO2_emissions_is_positive = np.maximum(0.0, np.sign(
-            self.techno_model.carbon_emissions['WaterGasShift'].values))
+            self.techno_model.carbon_intensity['WaterGasShift'].values))
         dprice_CO2_fact = np.identity(
             len(self.techno_model.years)) * (dco2_prod_dsyngas_ratio + dco2_syngas_dsyngas_ratio) * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryCore.Years]
                                                                                                                                     <= self.techno_model.year_end][GlossaryCore.CO2Tax].values * CO2_emissions_is_positive
@@ -350,7 +350,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             ('non_use_capital', self.techno_model.name), ('syngas_ratio',), dnon_use_capital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoCapitalDfValue, GlossaryEnergy.Capital), ('syngas_ratio',), dtechnocapital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital), ('syngas_ratio',), dtechnocapital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
 
     def specific_run(self):
 

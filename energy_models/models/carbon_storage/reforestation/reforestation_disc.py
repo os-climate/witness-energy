@@ -85,7 +85,7 @@ class ReforestationDiscipline(CSTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'techno_evo_eff': 'no',  # yes or no
 
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
 
     # invest: 0.1 Mha are planted each year at 13047.328euro/ha
     invest_before_year_start = pd.DataFrame(

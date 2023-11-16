@@ -62,19 +62,19 @@ class CalciumPotassium(CCTechno):
         Need to take into account  CO2 from coal extraction and electricity production
         '''
 
-        self.carbon_emissions[Methane.name] = self.energy_CO2_emissions[Methane.name] * self.cost_details['heat_needs']
+        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * self.cost_details['heat_needs']
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs']
 
-        self.carbon_emissions[ResourceGlossary.Potassium['name']] = self.resources_CO2_emissions[ResourceGlossary.Potassium['name']] * \
-                                                            self.cost_details['potassium_needs']
+        self.carbon_intensity[ResourceGlossary.Potassium['name']] = self.resources_CO2_emissions[ResourceGlossary.Potassium['name']] * \
+                                                                    self.cost_details['potassium_needs']
 
-        self.carbon_emissions[ResourceGlossary.Calcium['name']] = self.resources_CO2_emissions[ResourceGlossary.Calcium['name']] * \
-                                                            self.cost_details['calcium_needs']
+        self.carbon_intensity[ResourceGlossary.Calcium['name']] = self.resources_CO2_emissions[ResourceGlossary.Calcium['name']] * \
+                                                                  self.cost_details['calcium_needs']
 
 
 
-        return self.carbon_emissions[Methane.name] + self.carbon_emissions[Electricity.name] + self.carbon_emissions[ResourceGlossary.Potassium['name']] + self.carbon_emissions[ResourceGlossary.Calcium['name']]
+        return self.carbon_intensity[Methane.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[ResourceGlossary.Potassium['name']] + self.carbon_intensity[ResourceGlossary.Calcium['name']]
 
 
     def grad_price_vs_energy_price(self):
@@ -107,26 +107,26 @@ class CalciumPotassium(CCTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
         # Consumption
 
-        self.consumption[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})'] # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})'] # in kWH
 
-        self.consumption[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
+                                                                            self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'calcium ({self.mass_unit})'] = self.cost_details['calcium_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']   # in kWH
+        self.consumption_detailed[f'calcium ({self.mass_unit})'] = self.cost_details['calcium_needs'] * \
+                                                                   self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']   # in kWH
 
-        self.consumption[f'potassium ({self.mass_unit})'] = self.cost_details['potassium_needs'] * \
-            self.production[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'potassium ({self.mass_unit})'] = self.cost_details['potassium_needs'] * \
+                                                                     self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
-                                                                               self.production[
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
+                                                                                        self.production_detailed[
                                                                                    f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
-                                                                               Methane.data_energy_dict['CO2_per_use'] / \
-                                                                               Methane.data_energy_dict[
+                                                                                        Methane.data_energy_dict['CO2_per_use'] / \
+                                                                                        Methane.data_energy_dict[
                                                                                    'calorific_value']
     def compute_potassium_need(self):
         """

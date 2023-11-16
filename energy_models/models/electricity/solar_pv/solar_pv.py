@@ -34,21 +34,20 @@ class SolarPv(ElectricityTechno):
         '''
         density_per_ha = self.techno_infos_dict['density_per_ha']
 
-        self.techno_land_use[f'{self.name} (Gha)'] = \
-            self.production[f'{self.energy_name} ({self.product_energy_unit})'] / \
+        self.land_use[f'{self.name} (Gha)'] = \
+            self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] / \
             density_per_ha
     
     
-    def compute_consumption_and_power_production(self):
+    def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment
         """
-        self.compute_primary_power_production()
 
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.installed_power['new_power_production'] # in Mt
 
     @staticmethod
     def get_theoretical_copper_needs(self):

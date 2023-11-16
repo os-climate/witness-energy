@@ -78,7 +78,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
 
                                  'efficiency':  0.75,  # pump + compressor efficiency Rezaei2019
                                  'techno_evo_eff': 'no',  # yes or no
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
 
     # Fake investments (not found in the litterature...)
     invest_before_year_start = pd.DataFrame(

@@ -101,42 +101,6 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_02_compute_direct_air_capture_techno_price_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': DirectAirCaptureTechnoDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.InvestmentBeforeYearStartValue: DirectAirCaptureTechnoDiscipline.invest_before_year_start,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': DirectAirCaptureTechnoDiscipline.initial_capture,
-                       'initial_age_distrib': DirectAirCaptureTechnoDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': CarbonCapture.data_energy_dict,
-                       }
-
-        direct_air_capture_techno_model = DirectAirCaptureTechno(
-            'direct_air_capture.DirectAirCaptureTechno')
-        direct_air_capture_techno_model.configure_parameters(inputs_dict)
-        direct_air_capture_techno_model.configure_parameters_update(
-            inputs_dict)
-        price_details = direct_air_capture_techno_model.compute_price()
-        direct_air_capture_techno_model.compute_consumption_and_production()
-
     def test_03_direct_air_capture_techno_discipline(self):
 
         self.name = 'Test'

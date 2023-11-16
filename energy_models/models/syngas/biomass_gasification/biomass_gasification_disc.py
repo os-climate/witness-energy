@@ -102,7 +102,7 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  # Wang2019 + ratio water + ratio masse syngas
                                  # / masse H2
                                  'kgH20_perkgSyngas': 157.75 / (10.99 / 0.42),
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
     # We do not invest on biomass gasification yet
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 0.0, 0.0]})

@@ -87,40 +87,6 @@ class ElectricBoilerTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_compute_electric_boiler_price_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': ElectricBoilerMediumHeatDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: ElectricBoilerMediumHeatDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': ElectricBoilerMediumHeatDiscipline.initial_production,
-                       'initial_age_distrib': ElectricBoilerMediumHeatDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': mediumtemperatureheat.data_energy_dict
-                       }
-
-        ng_model = ElectricBoilerMediumHeat('Electric Boiler')
-        ng_model.configure_parameters(inputs_dict)
-        ng_model.configure_parameters_update(inputs_dict)
-        price_details = ng_model.compute_price()
-        ng_model.compute_consumption_and_production()
-
     def test_02_electric_boiler_discipline(self):
 
         self.name = 'Test'

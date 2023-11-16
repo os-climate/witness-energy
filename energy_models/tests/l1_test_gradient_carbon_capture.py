@@ -79,6 +79,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                               1.0, 1.0, 1.0, 1.0]) * 85.0
 
         years = np.arange(2020, 2051)
+        
         self.years = years
 
         self.energy_prices = pd.DataFrame(
@@ -218,6 +219,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.InvestmentBeforeYearStartValue}':
                            AmineScrubbingDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
+                       
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -232,6 +234,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, local_data=disc_techno.local_data,
                             derr_approx='complex_step', threshold=1e-5,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -243,7 +246,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      f'{self.name}.{self.model_name}.non_use_capital'], )
 
     def test_02_CaKOH_jacobian(self):
@@ -278,6 +281,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.InvestmentBeforeYearStartValue}':
                            CalciumPotassiumScrubbingDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
+                       #
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -290,6 +294,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -301,7 +306,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      f'{self.name}.{self.model_name}.non_use_capital'], )
 
     def test_03_Calcium_looping_jacobian(self):
@@ -337,6 +342,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.InvestmentBeforeYearStartValue}':
                            CalciumLoopingDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
+                       
                        f'{self.name}.{GlossaryCore.FlueGasMean}': self.flue_gas_mean,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
@@ -350,6 +356,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.FlueGasMean}', f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
@@ -358,7 +365,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      f'{self.name}.{self.model_name}.non_use_capital']
                             )
 
@@ -422,8 +429,8 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         })
 
         for techno in technos:
-            inputs_dict[f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+            inputs_dict[f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -471,6 +478,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.InvestmentBeforeYearStartValue}':
                            DirectAirCaptureTechnoDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
+                       
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        }
 
@@ -484,6 +492,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -496,7 +505,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      f'{self.name}.{self.model_name}.non_use_capital'], )
 
 

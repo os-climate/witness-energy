@@ -95,45 +95,6 @@ class CropEnergyPriceTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_compute_crop_residues_price_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: self.year_end,
-                       'techno_infos_dict': CropEnergyDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: CropEnergyDiscipline.invest_before_year_start,
-                       'land_surface_for_food_df': CropEnergyDiscipline.land_surface_for_food,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': CropEnergyDiscipline.initial_production,
-                       'initial_age_distrib': CropEnergyDiscipline.initial_age_distribution,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       GlossaryCore.ResourcesPriceValue: pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051),
-                                                        'water': 31 * [0.002],
-                                                        'uranium fuel': 1390,
-                                                        'CO2': [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119],
-                                                        }),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': BiomassDry.data_energy_dict
-                       }
-
-        smr_model = CropEnergy('CropEnergy')
-        smr_model.configure_parameters(inputs_dict)
-        smr_model.configure_parameters_update(inputs_dict)
-        price_details = smr_model.compute_price()
-        smr_model.compute_consumption_and_production()
-
     def test_02_crop_residues_discipline(self):
 
         self.name = 'Test'

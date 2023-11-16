@@ -77,37 +77,37 @@ class Methanation(MethaneTechno):
         """
 
         # compute CH4 production in kWh
-        self.compute_primary_energy_production()
+        
 
         # kg of H2O produced with 1kWh of CH4
         H2Oprod = self.get_h2o_production()
 
         # total H2O production
-        self.production[f'{Water.name} ({self.mass_unit})'] = self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * \
-            H2Oprod
+        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                       H2Oprod
 
         # Consumption
-        self.consumption[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['dioxide_needs'] * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['dioxide_needs'] * \
+                                                                                self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                self.cost_details['efficiency']
 
-        self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details['hydrogen_needs'] * \
-            self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details['hydrogen_needs'] * \
+                                                                                            self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                            self.cost_details['efficiency']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from hydrogen
         '''
 
-        self.carbon_emissions[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
-            self.cost_details['hydrogen_needs'] / \
-            self.cost_details['efficiency']
-        self.carbon_emissions[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
-                                                           self.cost_details['dioxide_needs'] / \
+        self.carbon_intensity[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
+                                                           self.cost_details['hydrogen_needs'] / \
                                                            self.cost_details['efficiency']
+        self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
+                                               self.cost_details['dioxide_needs'] / \
+                                               self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{GaseousHydrogen.name}'] + self.carbon_emissions[f'{CO2.name}']
+        return self.carbon_intensity[f'{GaseousHydrogen.name}'] + self.carbon_intensity[f'{CO2.name}']
 
     def get_h2o_production(self):
         """

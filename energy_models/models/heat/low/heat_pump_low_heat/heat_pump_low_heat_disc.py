@@ -63,7 +63,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
         'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
         'efficiency': 1,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
@@ -171,22 +171,11 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
 
         return new_chart
 
-    def get_chart_filter_list(self):
-        chart_filters = LowHeatTechnoDiscipline.get_chart_filter_list(self)
-
-        self.instanciated_charts = LowHeatTechnoDiscipline.get_post_processing_list(self, chart_filters)
-
-        chart_list = ['heat_flux']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
-
-        return chart_filters
-
     def get_post_processing_list(self, filters=None):
         """
         Basic post processing method for the model
         """
-        instanciated_charts = self.instanciated_charts
+        instanciated_charts = LowHeatTechnoDiscipline.get_post_processing_list(self, filters)
         charts = []
         # for pie charts Title
         unit_str = '$/MWh'

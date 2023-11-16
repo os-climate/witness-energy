@@ -83,7 +83,7 @@ class StreamDiscipline(SoSWrapp):
             techno_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
             if techno_list is not None:
                 for techno in techno_list:
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = \
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = \
                         GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.{GlossaryCore.TechnoConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
@@ -320,7 +320,7 @@ class StreamDiscipline(SoSWrapp):
         for techno in technos_list:
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.EnergyTypeCapitalDfValue, GlossaryEnergy.Capital),
-                (f"{techno}.{GlossaryEnergy.TechnoCapitalDfValue}", GlossaryEnergy.Capital),
+                (f"{techno}.{GlossaryEnergy.TechnoCapitalValue}", GlossaryEnergy.Capital),
                 identity,
             )
 
@@ -618,7 +618,7 @@ class StreamDiscipline(SoSWrapp):
 
         for techno in techno_list:
             ordonate_data = list(
-                self.get_sosdisc_inputs(f"{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")[
+                self.get_sosdisc_inputs(f"{techno}.{GlossaryEnergy.TechnoCapitalValue}")[
                     GlossaryEnergy.Capital].values)
 
             new_series = InstanciatedSeries(
