@@ -1,6 +1,8 @@
 '''
 Copyright 2022 Airbus SAS
 
+Modifications on 2023/04/21-2023/11/09 Copyright 2023 Capgemini
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -28,6 +30,7 @@ from plotly import figure_factory as ff
 from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
 import pandas as pd
 from plotly.express.colors import qualitative
+from climateeconomics.glossarycore import GlossaryCore
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2

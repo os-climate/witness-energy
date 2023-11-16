@@ -1,6 +1,8 @@
 '''
 Copyright 2022 Airbus SAS
 
+Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -19,6 +21,7 @@ import numpy as np
 
 from energy_models.core.techno_type.disciplines.wet_biomass_techno_disc import WetBiomassTechnoDiscipline
 from energy_models.models.wet_biomass.animal_manure.animal_manure import AnimalManure
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class AnimalManureDiscipline(WetBiomassTechnoDiscipline):

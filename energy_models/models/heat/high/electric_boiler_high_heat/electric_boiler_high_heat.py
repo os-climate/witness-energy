@@ -3,6 +3,7 @@ from energy_models.core.techno_type.base_techno_models.high_heat_techno import h
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 import numpy as np
 import pandas as pd
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class ElectricBoilerHighHeat(highheattechno):
