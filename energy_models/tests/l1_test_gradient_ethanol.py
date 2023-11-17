@@ -38,7 +38,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
     Ethanol Fuel jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -51,6 +51,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         years = np.arange(2020, 2051)
+        self.years = years
         self.energy_name = 'ethanol'
         self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'electricity': np.ones(len(years)) * 0.135 * 1000,
                                            'biomass_dry': 45.0,
@@ -114,11 +115,14 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        utilisation_ratio = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                  GlossaryCore.UtilisationRatioValue: 50.0 * np.ones_like(self.years)})
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}': utilisation_ratio,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
