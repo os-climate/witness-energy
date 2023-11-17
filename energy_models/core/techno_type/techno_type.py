@@ -1477,7 +1477,6 @@ class TechnoType:
         Apply utilisation ratio percentage to
         - consumption
         - production
-        - co2 emissions
         """
         for column in self.consumption_detailed.columns:
             if column == GlossaryCore.Years:
