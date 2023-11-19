@@ -92,6 +92,7 @@ class OneInvestDiscipline(SoSWrapp):
                                                 'heat.mediumtemperatureheat.HeatPumpMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.GeothermalMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.CHPMediumHeat': ('float', None, True),
+                                                'heat.mediumtemperatureheat.HydrogenBoilerMediumHeat': ('float', None, True),
                                                 'hydrogen.gaseous_hydrogen.PlasmaCracking': ('float', None, True),
                                                 'hydrogen.gaseous_hydrogen.Electrolysis.SOEC': ('float', None, True),
                                                 'hydrogen.gaseous_hydrogen.Electrolysis.PEM': ('float', None, True),

@@ -21,7 +21,7 @@ class lowtemperatureheat(EnergyType):
     name = 'heat' + '.' + 'lowtemperatureheat'
     short_name = 'low heat'
     default_techno_list = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                           'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerHighHeat']
+                           'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
     data_energy_dict = {'maturity': 5,
                         'Highest_Temperature': 100,
                         'Temperature_unit': 'c',
@@ -32,7 +32,7 @@ class mediumtemperatureheat(EnergyType):
     name = 'heat' + '.' + 'mediumtemperatureheat'
     short_name = 'medium heat'
     default_techno_list = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                           'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
+                           'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat' ]
     data_energy_dict = {'maturity': 5,
                         'Highest_Temperature': 400,
                         'Lowest_Temperature': 100,
