@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                             'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
+                             'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                     'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
+                     'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerHighHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
+                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -64,6 +64,10 @@ class Study(EnergyMixStudyManager):
 
         if 'CHPHighHeat' in self.technologies_list:
             invest_high_heat_mix_dict['CHPHighHeat'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
+        if 'HydrogenBoilerHighHeat' in self.technologies_list:
+            invest_high_heat_mix_dict['HydrogenBoilerHighHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
         if self.bspline:
@@ -125,6 +129,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.HeatPump.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.Geothermal.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.CHP.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.HydrogenBoiler.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.study_name}.{energy_name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
