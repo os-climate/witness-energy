@@ -32,12 +32,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'version': '',
     }
 
-    def __init__(self, ee, process_level='dev'):
-        WITNESSSubProcessBuilder.__init__(self, ee)
-        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
-        self.process_level = process_level
-        # Running a mda only => need to add specific investment redistribution disicpline through this flag
-        self.ismdo = False
 
     def get_builders(self):
         ns_study = self.ee.study_name
@@ -49,7 +43,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
             builder_list = self.ee.factory.get_builder_from_process(
                 'energy_models.sos_processes.energy.MDA', 'energy_process_v0',
-                techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, ismdo=self.ismdo, process_level=self.process_level)
+                techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, ismdo=False, process_level=self.process_level)
         else:
             # else we get them the old fashioned way
             builder_list = self.ee.factory.get_builder_from_process(
