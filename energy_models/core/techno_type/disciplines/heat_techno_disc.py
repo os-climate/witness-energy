@@ -61,25 +61,19 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
-        grad_dict_resources = self.techno_model.grad_price_vs_energy_price_calc()
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
 
     def get_chart_filter_list(self):
-        # chart_filters = super().get_chart_filter_list()
-        #
-        # chart_list = ['heat_flux']
-        # chart_filters.append(ChartFilter(
-        #     'Charts', chart_list, chart_list, 'charts'))
-        #
-        # return chart_filters
-
         chart_filters = super().get_chart_filter_list()
-        chart_filters[0].extend(['heat_flux'])
+
+        chart_list = ['heat_flux']
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
 
         return chart_filters
-
 
 
 class MediumHeatTechnoDiscipline(TechnoDiscipline):
@@ -122,21 +116,17 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
-        grad_dict_resources = self.techno_model.grad_price_vs_energy_price_calc()
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
 
     def get_chart_filter_list(self):
-        # chart_filters = super().get_chart_filter_list()
-        #
-        # chart_list = ['heat_flux']
-        # chart_filters.append(ChartFilter(
-        #     'Charts', chart_list, chart_list, 'charts'))
-        #
-        # return chart_filters
         chart_filters = super().get_chart_filter_list()
-        chart_filters[0].extend(['heat_flux'])
+
+        chart_list = ['heat_flux']
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
 
         return chart_filters
 

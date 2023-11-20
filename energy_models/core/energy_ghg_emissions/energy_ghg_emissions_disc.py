@@ -196,7 +196,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'methane': ('float', None, True),
                                                      'wet_biomass (Mt)': ('float', None, True),
                                                      'biogas': ('float', None, True),
-                                                     # 'biomass_dry': ('float', None, True),
                                                      'sodium_hydroxide_resource (Mt)': ('float', None, True),
                                                      'natural_oil_resource (TWh)': ('float', None, True),
                                                      'methanol_resource (Mt)': ('float', None, True),

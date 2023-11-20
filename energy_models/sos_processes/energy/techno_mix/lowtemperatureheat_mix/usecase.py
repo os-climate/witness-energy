@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                             'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
+                             'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                     'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
+                     'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerLowHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
+                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -66,10 +66,6 @@ class Study(EnergyMixStudyManager):
             invest_low_heat_mix_dict['CHPLowHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
-        if 'HydrogenBoilerLowHeat' in self.technologies_list:
-            invest_low_heat_mix_dict['HydrogenBoilerLowHeat'] = list(np.ones(
-                len(l_ctrl)) * 0.001)
-
         if self.bspline:
             invest_low_heat_mix_dict[GlossaryCore.Years] = self.years
 
@@ -93,9 +89,7 @@ class Study(EnergyMixStudyManager):
                                            'syngas': 80.0,
                                            'biogas': 70.0,
                                            'methane': 100,
-                                           'biomass_dry': 45,
-                                           'hydrogen.gaseous_hydrogen': 40
-                                           })
+                                           'biomass_dry': 45})
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
@@ -129,7 +123,6 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.HeatPump.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.Geothermal.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.CHP.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.HydrogenBoiler.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.study_name}.{energy_name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,

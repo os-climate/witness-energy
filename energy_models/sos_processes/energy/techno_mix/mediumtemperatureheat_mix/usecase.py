@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                             'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
+                             'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                     'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
+                     'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerMediumHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
+                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -66,10 +66,6 @@ class Study(EnergyMixStudyManager):
             invest_medium_heat_mix_dict['CHPMediumHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
-        if 'HydrogenBoilerMediumHeat' in self.technologies_list:
-            invest_medium_heat_mix_dict['HydrogenBoilerMediumHeat'] = list(np.ones(
-                len(l_ctrl)) * 0.001)
-
         if self.bspline:
             invest_medium_heat_mix_dict[GlossaryCore.Years] = self.years
 
@@ -93,9 +89,7 @@ class Study(EnergyMixStudyManager):
                                            'syngas': 80.0,
                                            'biogas': 70.0,
                                            'methane': 100,
-                                           'biomass_dry': 45,
-                                           'hydrogen.gaseous_hydrogen': 40
-                                           })
+                                           'biomass_dry': 45})
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(

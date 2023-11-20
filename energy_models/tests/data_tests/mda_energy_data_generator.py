@@ -18,8 +18,6 @@ limitations under the License.
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as MDA_Energy
-from climateeconomics.glossarycore import GlossaryCore as GlossaryCore
-
 import pickle
 
 
@@ -65,7 +63,6 @@ def launch_data_pickle_generation(directory=''):
     ############
     # Energies #
     ############
-    # energy_list.remove("biomass_dry")
     for energy in energy_list:
         # Loop on energies
         energy_disc = ee.dm.get_disciplines_with_name(
