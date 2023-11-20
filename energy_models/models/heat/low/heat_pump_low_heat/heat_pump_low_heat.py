@@ -51,9 +51,6 @@ class HeatPump(lowheattechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-
-        
-
         # Production
         self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = \
             self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] / \
@@ -62,7 +59,7 @@ class HeatPump(lowheattechno):
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
                                                                                         self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] / \
-                                                                                        self.cost_details['efficiency']
+                                                                                 self.cost_details['efficiency']
 
     def get_theoretical_electricity_needs(self):
         mean_temperature = self.techno_infos_dict['mean_temperature']
