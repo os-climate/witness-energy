@@ -41,7 +41,7 @@ class CHPMediumHeat(mediumheattechno):
         # and then we divide by efficiency
         return self.cost_details[f'{Methane.name}']
 
-    def grad_price_vs_energy_price(self):
+    def grad_price_vs_energy_price_calc(self):
         '''
         Compute the gradient of global price vs energy prices
         Work also for total CO2_emissions vs energy CO2 emissions
@@ -50,7 +50,7 @@ class CHPMediumHeat(mediumheattechno):
         efficiency = self.techno_infos_dict['efficiency']
 
         return {
-                Methane.name: np.identity(len(self.years)) * methane_needs / efficiency
+                'natural_gas_resource': np.identity(len(self.years)) * methane_needs / efficiency
                 }
 
     def compute_consumption_and_production(self):

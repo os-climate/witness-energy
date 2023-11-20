@@ -61,7 +61,7 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
-        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
+        grad_dict_resources = self.techno_model.grad_price_vs_energy_price_calc()
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
@@ -116,7 +116,7 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
-        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
+        grad_dict_resources = self.techno_model.grad_price_vs_energy_price_calc()
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
