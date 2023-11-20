@@ -100,8 +100,10 @@ class InvestmentsRedistribution():
                                                               self.techno_invest_percentage_df[techno].values) / 100.
 
         # create dictionnary with all dataframes of investments prepared
+        # in case of witness studies, self.years has index=years whereas invests have index starting at 0
+        # => Reset self.years index so that they are consistent with invests indices and fill out properly the df
         self.investment_per_technology_dict = {
-            full_techno_name: pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: invests
+            full_techno_name: pd.DataFrame({GlossaryEnergy.Years: self.years.reset_index(drop=True), GlossaryEnergy.InvestValue: invests
                                             }) for full_techno_name, invests in investments_dict.items()}
 
     def check_data_integrity(self, inputs_dict):

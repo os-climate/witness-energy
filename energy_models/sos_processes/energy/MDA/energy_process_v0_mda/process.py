@@ -19,6 +19,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -31,8 +32,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'version': '',
     }
 
-    def get_builders(self):
+    def __init__(self, ee, process_level='dev'):
+        WITNESSSubProcessBuilder.__init__(self, ee)
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
+        self.process_level = process_level
+        self.ismda = True
 
+    def get_builders(self):
         ns_study = self.ee.study_name
         energy_mix = EnergyMix.name
         carbon_storage = PureCarbonSS.energy_name
@@ -42,7 +48,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
             builder_list = self.ee.factory.get_builder_from_process(
                 'energy_models.sos_processes.energy.MDA', 'energy_process_v0',
-                techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, process_level=self.process_level)
+                techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, ismda=self.ismda, process_level=self.process_level)
         else:
             # else we get them the old fashioned way
             builder_list = self.ee.factory.get_builder_from_process(

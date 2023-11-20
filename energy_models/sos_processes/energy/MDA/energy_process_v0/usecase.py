@@ -75,7 +75,7 @@ hydropower_name = Electricity.hydropower_name
 class Study(EnergyStudyManager):
     def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
                  techno_dict=DEFAULT_TECHNO_DICT,
-                 main_study=True, bspline=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
+                 main_study=True, bspline=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT, ismda=False):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -100,6 +100,7 @@ class Study(EnergyStudyManager):
         self.create_study_list()
         self.bspline = bspline
         self.invest_discipline = invest_discipline
+        self.ismda = ismda
 
     def create_study_list(self):
         self.sub_study_dict = {}
@@ -760,6 +761,23 @@ class Study(EnergyStudyManager):
         self.forest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.ForestInvestmentValue: 5})
 
+        if self.ismda:
+            self.invest_percentage_gdp = pd.DataFrame(data={GlossaryCore.Years: self.years,
+                                                            GlossaryEnergy.EnergyInvestPercentageGDPName: np.linspace(
+                                                                10., 20., len(self.years))})
+            self.techno_list_fossil = ['FossilSimpleTechno']
+            self.techno_list_renewable = ['RenewableSimpleTechno']
+            self.techno_list_carbon_capture = ['direct_air_capture.DirectAirCaptureTechno',
+                                               'flue_gas_capture.FlueGasTechno']
+            self.techno_list_carbon_storage = ['CarbonStorageTechno']
+            data_invest = {
+                GlossaryCore.Years: self.years
+            }
+            all_techno_list = [self.techno_list_fossil, self.techno_list_renewable, self.techno_list_carbon_capture,
+                               self.techno_list_carbon_storage]
+            data_invest.update({techno: 100. / 5. for sublist in all_techno_list for techno in sublist})
+            self.invest_percentage_per_techno = pd.DataFrame(data=data_invest)
+
         values_dict = {f'{self.study_name}.{GlossaryCore.EnergyInvestmentsValue}': invest_df,
                        f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -829,6 +847,13 @@ class Study(EnergyStudyManager):
             values_dict.update(
                 {f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryCore.invest_mix}': invest_mix_df})
             self.update_dv_arrays_technos(invest_mix_df)
+
+            if self.ismda:
+                values_dict.update(
+                    {f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
+                     f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
+                     }
+                )
 
         values_dict_list.append(values_dict)
 

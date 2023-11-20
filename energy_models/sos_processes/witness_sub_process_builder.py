@@ -28,8 +28,11 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         self.techno_dict = DEFAULT_TECHNO_DICT
         self.invest_discipline = INVEST_DISCIPLINE_DEFAULT
         self.process_level = 'val'
+        # flag to introduce investments_redistribution discipline in case of mda.  Initial dev was done for mdo
+        # => default case is mdo, ie ismda=False where nothing has to be changed
+        self.ismda = False
 
-    def setup_process(self, techno_dict, invest_discipline=INVEST_DISCIPLINE_DEFAULT, process_level='val', associate_namespace=False):
+    def setup_process(self, techno_dict, invest_discipline=INVEST_DISCIPLINE_DEFAULT, process_level='val', ismda=False, associate_namespace=False):
         '''
         Setup process function which will be called if the builder is retrieved with get_builder_from_process with args
         This allows to define instance variables inside the class as energy_list or one invest discipline
@@ -43,3 +46,4 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         self.invest_discipline = invest_discipline
         self.process_level = process_level
         self.associate_namespace = associate_namespace
+        self.ismda = ismda

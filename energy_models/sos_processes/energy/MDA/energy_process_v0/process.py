@@ -148,9 +148,14 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                        'ns_ccs': f'{ns_study}',
                        'ns_ref': f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
                        'ns_functions': f'{ns_study}.{func_manager_name}', }
-            mods_dict = {
-                INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.independent_invest_disc.IndependentInvestDiscipline',
-            }
+            if self.ismda:
+                mods_dict = {
+                    INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.investments_redistribution_disc.InvestmentsRedistributionDisicpline',
+                }
+            else:
+                mods_dict = {
+                    INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.independent_invest_disc.IndependentInvestDiscipline',
+                }
 
             builder_invest = self.create_builder_list(
                 mods_dict, ns_dict=ns_dict, associate_namespace=False)
