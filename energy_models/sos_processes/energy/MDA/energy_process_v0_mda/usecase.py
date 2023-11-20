@@ -40,7 +40,7 @@ FUNC_DF = FunctionManagerDisc.FUNC_DF
 class Study(StudyManager):
 
     def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
-                 techno_dict=DEFAULT_TECHNO_DICT, bspline=True, invest_discipline=INVEST_DISCIPLINE_DEFAULT,
+                 techno_dict=DEFAULT_TECHNO_DICT, bspline=True, invest_discipline=INVEST_DISCIPLINE_DEFAULT, ismdo=True,
                  execution_engine=None):
         self.year_start = year_start
         self.year_end = year_end
@@ -50,8 +50,7 @@ class Study(StudyManager):
         self.dict_technos = None
         self.bspline = bspline
         self.invest_discipline = invest_discipline
-        # running a mda, not mdo => need to add the investment redistribution disicpline to handle investment split
-        self.ismdo = False
+        self.ismdo = ismdo
         self.lower_bound_techno = lower_bound_techno
         self.upper_bound_techno = upper_bound_techno
 
