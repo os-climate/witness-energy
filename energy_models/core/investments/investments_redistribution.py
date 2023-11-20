@@ -78,7 +78,7 @@ class InvestmentsRedistribution():
                 self.total_investments_in_energy_w_biomass_dry += self.inputs_dict[techno][
                     GlossaryCore.InvestmentsValue].values
         self.energy_investment_wo_tax = pd.DataFrame(
-            {GlossaryCore.Years: self.years,
+            {GlossaryCore.Years: self.years.reset_index(drop=True),
              GlossaryCore.EnergyInvestmentsWoTaxValue: self.total_investments_in_energy_w_biomass_dry / 1e3})  # G$ to T$
 
     def compute_investment_per_technology(self):
