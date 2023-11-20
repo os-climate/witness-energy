@@ -50,7 +50,8 @@ class Study(StudyManager):
         self.dict_technos = None
         self.bspline = bspline
         self.invest_discipline = invest_discipline
-        self.ismda = True
+        # running a mda, not mdo => need to add the investment redistribution disicpline to handle investment split
+        self.ismdo = False
         self.lower_bound_techno = lower_bound_techno
         self.upper_bound_techno = upper_bound_techno
 
@@ -60,7 +61,7 @@ class Study(StudyManager):
         self.study_v0 = Study_v0(
             self.year_start, self.year_end, self.time_step, main_study=False, bspline=self.bspline,
             execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, ismda=self.ismda, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, ismdo=self.ismdo, techno_dict=techno_dict)
         self.sub_study_path_dict = self.study_v0.sub_study_path_dict
 
     def setup_objectives(self):
