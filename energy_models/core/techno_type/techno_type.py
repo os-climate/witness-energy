@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/02-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/06/02-2023/11/17 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -1477,7 +1477,6 @@ class TechnoType:
         Apply utilisation ratio percentage to
         - consumption
         - production
-        - co2 emissions
         """
         for column in self.consumption_detailed.columns:
             if column == GlossaryCore.Years:
