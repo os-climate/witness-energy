@@ -75,7 +75,8 @@ hydropower_name = Electricity.hydropower_name
 class Study(EnergyStudyManager):
     def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
                  techno_dict=DEFAULT_TECHNO_DICT,
-                 main_study=True, bspline=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT, ismdo=True):
+                 main_study=True, bspline=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT,
+                 energy_invest_input_in_abs_value=True):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -100,7 +101,7 @@ class Study(EnergyStudyManager):
         self.create_study_list()
         self.bspline = bspline
         self.invest_discipline = invest_discipline
-        self.ismdo = ismdo
+        self.energy_invest_input_in_abs_value = energy_invest_input_in_abs_value
 
     def create_study_list(self):
         self.sub_study_dict = {}
@@ -761,7 +762,7 @@ class Study(EnergyStudyManager):
         self.forest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.ForestInvestmentValue: 5})
 
-        if not self.ismdo:
+        if not self.energy_invest_input_in_abs_value:
             # in case of mda only, added the investment_redistribution_discipline that requires new inputs
             self.invest_percentage_gdp = pd.DataFrame(data={GlossaryCore.Years: self.years,
                                                             GlossaryEnergy.EnergyInvestPercentageGDPName: np.linspace(
@@ -849,7 +850,7 @@ class Study(EnergyStudyManager):
                 {f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryCore.invest_mix}': invest_mix_df})
             self.update_dv_arrays_technos(invest_mix_df)
 
-            if not self.ismdo:
+            if not self.energy_invest_input_in_abs_value:
                 # in case of mda only, added the investment_redistribution_discipline that requires new inputs
                 values_dict.update(
                     {f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,

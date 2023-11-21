@@ -40,8 +40,8 @@ FUNC_DF = FunctionManagerDisc.FUNC_DF
 class Study(StudyManager):
 
     def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
-                 techno_dict=DEFAULT_TECHNO_DICT, bspline=True, invest_discipline=INVEST_DISCIPLINE_DEFAULT, ismdo=True,
-                 execution_engine=None):
+                 techno_dict=DEFAULT_TECHNO_DICT, bspline=True, invest_discipline=INVEST_DISCIPLINE_DEFAULT,
+                 energy_invest_input_in_abs_value=True, execution_engine=None):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -50,7 +50,7 @@ class Study(StudyManager):
         self.dict_technos = None
         self.bspline = bspline
         self.invest_discipline = invest_discipline
-        self.ismdo = ismdo
+        self.energy_invest_input_in_abs_value = energy_invest_input_in_abs_value
         self.lower_bound_techno = lower_bound_techno
         self.upper_bound_techno = upper_bound_techno
 
@@ -60,7 +60,8 @@ class Study(StudyManager):
         self.study_v0 = Study_v0(
             self.year_start, self.year_end, self.time_step, main_study=False, bspline=self.bspline,
             execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, ismdo=self.ismdo, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value,
+            techno_dict=techno_dict)
         self.sub_study_path_dict = self.study_v0.sub_study_path_dict
 
     def setup_objectives(self):

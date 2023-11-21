@@ -43,7 +43,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
             builder_list = self.ee.factory.get_builder_from_process(
                 'energy_models.sos_processes.energy.MDA', 'energy_process_v0',
-                techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, ismdo=self.ismdo, process_level=self.process_level)
+                techno_dict=self.techno_dict, invest_discipline=self.invest_discipline,
+                energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value, process_level=self.process_level)
         else:
             # else we get them the old fashioned way
             builder_list = self.ee.factory.get_builder_from_process(
