@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
+from energy_models.core.energy_process_builder import EnergyProcessBuilder, \
     INVEST_DISCIPLINE_OPTIONS
-from energy_models.sos_processes.energy.techno_mix.biomass_dry_mix.usecase import TECHNOLOGIES_LIST
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.sos_processes.energy.techno_mix.biomass_dry_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):

@@ -19,9 +19,10 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
+
 DEFAULT_TECHNOLOGIES_LIST = ['HydrogenLiquefaction']
 TECHNOLOGIES_LIST = ['HydrogenLiquefaction']
 TECHNOLOGIES_LIST_DEV = ['HydrogenLiquefaction']

@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
-from energy_models.core.energy_study_manager import DEFAULT_ENERGY_LIST, DEFAULT_CCS_LIST, DEFAULT_TECHNO_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
+from energy_models.core.energy_study_manager import DEFAULT_ENERGY_LIST, DEFAULT_CCS_LIST, DEFAULT_TECHNO_DICT
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class WITNESSSubProcessBuilder(BaseProcessBuilder):

@@ -15,19 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.ccus.ccus import CCUS
-
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
-from energy_models.core.stream_type.energy_disciplines.fuel_disc import FuelDiscipline
-from energy_models.core.stream_type.energy_disciplines.heat_disc import HeatDiscipline
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
-from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import EnergyGHGEmissionsDiscipline
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import AGRI_TYPE
+from energy_models.core.stream_type.energy_disciplines.fuel_disc import FuelDiscipline
+from energy_models.core.stream_type.energy_disciplines.heat_disc import HeatDiscipline
+from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
+from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
