@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
-    INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import DEFAULT_TECHNOLOGIES_LIST
@@ -62,14 +61,5 @@ class ProcessBuilder(EnergyProcessBuilder):
                 electricity_name, techno_name, sub_dir)
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
-
-        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
-
-            mods_dict_invest = {f'{energy_mix}.{electricity_name}': 'energy_models.core.investments.disciplines.techno_invest_disc.InvestTechnoDiscipline',
-                                }
-
-            builder_list_invest = self.create_builder_list(
-                mods_dict_invest, ns_dict=ns_dict)
-            builder_list.extend(builder_list_invest)
 
         return builder_list

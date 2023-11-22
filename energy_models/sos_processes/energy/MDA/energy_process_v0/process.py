@@ -92,38 +92,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'climateeconomics.sos_processes.iam.witness', 'resources_process', associate_namespace=False)
         builder_list.extend(chain_builders_resource)
 
-        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
-            ns_dict = {'ns_public': f'{ns_study}',
-                       'ns_energy_study': f'{ns_study}',
-                       'ns_emissions': f'{ns_study}',
-                       'ns_ccs': f'{ns_study}.{CCS_NAME}'
-                       }
-            mods_dict = {
-                energy_mix: 'energy_models.core.investments.disciplines.energy_invest_disc.InvestEnergyDiscipline',
-            }
-
-            builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict, associate_namespace=False)
-            builder_list.extend(builder_invest)
-
-            mods_dict = {
-                energy_mix: 'energy_models.core.investments.disciplines.energy_or_ccs_invest_disc.InvestCCSorEnergyDiscipline',
-            }
-
-            builder_invest = self.create_builder_list(mods_dict, ns_dict={}, associate_namespace=False)
-            builder_list.extend(builder_invest)
-
-            ns_dict = {'ns_public': f'{ns_study}',
-                       'ns_energy_study': f'{ns_study}'}
-            mods_dict = {
-                CCS_NAME: 'energy_models.core.investments.disciplines.ccs_invest_disc.InvestCCSDiscipline',
-            }
-
-            builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict, associate_namespace=False)
-            builder_list.extend(builder_invest)
-
-        elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
             ns_dict = {'ns_public': f'{ns_study}',
                        'ns_energy_study': f'{ns_study}',
                        'ns_witness': f'{ns_study}',

@@ -823,16 +823,7 @@ class Study(EnergyStudyManager):
         if renewable_name in self.energy_list and fossil_name in self.energy_list:
             values_dict.update(
                 {f'{self.study_name}.EnergyMix.heat_losses_percentage': 0.0})
-        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
-            energy_mix_invest_df = self.get_investments_mix_custom()
-            invest_ccs_mix = self.get_investments_ccs_mix_custom()
-            values_dict.update({f'{self.study_name}.{energy_mix_name}.invest_energy_mix': energy_mix_invest_df,
-                                f'{self.study_name}.{CCS_NAME}.ccs_percentage': ccs_percentage,
-                                f'{self.study_name}.{CCS_NAME}.invest_ccs_mix': invest_ccs_mix})
-
-            # merge design spaces
-            self.merge_design_spaces(dspace_list)
-        elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
 
             invest_mix_df = self.get_total_mix(
                 instanciated_studies, ccs_percentage)
@@ -857,9 +848,7 @@ class Study(EnergyStudyManager):
 
         values_dict_list.append(values_dict)
 
-        # if not self.main_study:
-        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
-            self.update_dv_arrays()
+
         self.create_technolist_per_energy(instanciated_studies)
 
         # -- load data from resource
