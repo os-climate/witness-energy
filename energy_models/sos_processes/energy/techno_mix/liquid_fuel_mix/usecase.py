@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,10 +18,12 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 DEFAULT_TECHNOLOGIES_LIST = ['Refinery', 'FischerTropsch']
 TECHNOLOGIES_LIST = ['Refinery', 'FischerTropsch']
@@ -52,7 +55,7 @@ class Study(EnergyMixStudyManager):
                 min(100.0, 0.1 + 10 * i) for i in l_ctrl]
 
         if self.bspline:
-            invest_liquid_fuel_mix_dict['years'] = self.years
+            invest_liquid_fuel_mix_dict[GlossaryCore.Years] = self.years
             for techno in self.technologies_list:
                 invest_liquid_fuel_mix_dict[techno], _ = self.invest_bspline(
                     invest_liquid_fuel_mix_dict[techno], len(self.years))
@@ -68,7 +71,7 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
 
-        self.energy_prices = pd.DataFrame({'years': years,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years,
                                            'electricity': 16.0,
                                            'CO2': 0.0,
                                            'crude oil': 38.0,
@@ -82,7 +85,7 @@ class Study(EnergyMixStudyManager):
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': 10.0})
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: 10.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -90,43 +93,43 @@ class Study(EnergyMixStudyManager):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
         # From smart ap
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 200.0})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 200.0})
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+            {GlossaryCore.Years: years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 
         # define invest mix
         investment_mix = self.get_investments()
 
-        values_dict = {f'{self.study_name}.year_start': self.year_start,
-                       f'{self.study_name}.year_end': self.year_end,
-                       f'{self.study_name}.{energy_name}.technologies_list': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.Refinery.margin': self.margin,
-                       f'{self.study_name}.{energy_name}.FischerTropsch.margin': self.margin,
-                       f'{self.study_name}.{energy_name}.transport_cost': self.transport,
-                       f'{self.study_name}.{energy_name}.transport_margin': self.margin,
+        values_dict = {f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.study_name}.{energy_name}.{GlossaryCore.techno_list}': self.technologies_list,
+                       f'{self.study_name}.{energy_name}.Refinery.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.FischerTropsch.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.study_name}.{energy_name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
                        }
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.CO2_taxes': self.co2_taxes,
-                    f'{self.study_name}.{energy_mix_name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                    f'{self.study_name}.{energy_mix_name}.energy_prices': self.energy_prices,
+                {f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                    f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
                     f'{self.study_name}.{energy_mix_name}.syngas.syngas_ratio': np.ones(len(years)) * 0.33,
                     f'{self.study_name}.{energy_mix_name}.syngas.syngas_ratio_technos': {'SMR': 0.33, 'CoElectrolysis': 1.0, 'ATR': 0.66, 'CoalGasification': 1.5}})
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
-                    columns=['years']).sum(axis=1)
+                    columns=[GlossaryCore.Years]).sum(axis=1)
                 for techno in self.technologies_list:
-                    invest_level_techno = pd.DataFrame({'years': self.invest_level['years'].values,
-                                                        'invest': self.invest_level['invest'].values * investment_mix[techno].values / investment_mix_sum})
-                    values_dict[f'{self.study_name}.{energy_name}.{techno}.invest_level'] = invest_level_techno
+                    invest_level_techno = pd.DataFrame({GlossaryCore.Years: self.invest_level[GlossaryCore.Years].values,
+                                                        GlossaryCore.InvestValue: self.invest_level[GlossaryCore.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
+                    values_dict[f'{self.study_name}.{energy_name}.{techno}.{GlossaryCore.InvestLevelValue}'] = invest_level_techno
             else:
-                values_dict[f'{self.study_name}.{energy_name}.invest_level'] = self.invest_level
+                values_dict[f'{self.study_name}.{energy_name}.{GlossaryCore.InvestLevelValue}'] = self.invest_level
         else:
             self.update_dv_arrays()
         return [values_dict]

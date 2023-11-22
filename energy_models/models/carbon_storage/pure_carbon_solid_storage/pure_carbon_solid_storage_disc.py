@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,13 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
+from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
@@ -51,7 +51,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
                                  'learning_rate': 0,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224,
@@ -62,12 +62,12 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                  'CO2_capacity_peryear': 3.6E+8,  # kg CO2 /year
                                  'CO2_capacity_peryear_unit': 'kg CO2/year',
                                  'real_factor_CO2': 1.0,
-                                 'transport_cost': 0.0,
+                                 GlossaryCore.TransportCostValue: 0.0,
                                  'transport_cost_unit': '$/kgCO2',
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryCore.EnergyEfficiency: 1,
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  }
 
@@ -75,7 +75,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
     initial_storage = 0
     invest_before_year_start = pd.DataFrame(
-        {'past years': [], 'invest': []})
+        {'past years': [], GlossaryCore.InvestValue: []})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
@@ -92,7 +92,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                              })
 
     carbon_zero_quantity_to_be_stored = pd.DataFrame(
-        {'years': range(2020, 2051), 'carbon_storage': 0.})
+        {GlossaryCore.Years: range(2020, 2051), 'carbon_storage': 0.})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -101,12 +101,12 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False},
                'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt', 'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb', 'visibility': 'Shared', 'structuring': True,
-                                                'dataframe_descriptor': {'years': ('int',  None, False),
+                                                'dataframe_descriptor': {GlossaryCore.Years: ('int',  None, False),
                                                                    'carbon_storage': ('float', None, False),
                                                                    }
     }}
@@ -130,15 +130,15 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         super().setup_sos_disciplines()
 
         if self.get_data_in() is not None:
-            if 'year_start' in self.get_data_in():
+            if GlossaryCore.YearStart in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs(
-                    ['year_start', 'year_end'])
+                    [GlossaryCore.YearStart, GlossaryCore.YearEnd])
                 years = np.arange(year_start, year_end + 1)
 
                 if self.get_sosdisc_inputs('carbon_quantity_to_be_stored') is not None:
-                    if self.get_sosdisc_inputs('carbon_quantity_to_be_stored')['years'].values.tolist() != list(years):
+                    if self.get_sosdisc_inputs('carbon_quantity_to_be_stored')[GlossaryCore.Years].values.tolist() != list(years):
                         self.update_default_value(
-                            'carbon_quantity_to_be_stored', self.IO_TYPE_IN, pd.DataFrame({'years': years, 'carbon_storage': 0.}))
+                            'carbon_quantity_to_be_stored', self.IO_TYPE_IN, pd.DataFrame({GlossaryCore.Years: years, 'carbon_storage': 0.}))
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -171,7 +171,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
         carbon_quantity_to_be_stored = inputs_dict.pop(
             'carbon_quantity_to_be_stored')
-        consumption = outputs_dict.pop('techno_consumption')
+        consumption = outputs_dict.pop(GlossaryCore.TechnoConsumptionValue)
 
         self.techno_model.compute_constraint(
             carbon_quantity_to_be_stored, consumption)
@@ -190,38 +190,47 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         GRADIENT CONSTRAINT VS CARBON_STORAGE_QUANTITY
         '''
 
-        carbon_quantity_to_be_stored = self.get_sosdisc_inputs(
-            'carbon_quantity_to_be_stored')
-        carbon_to_be_stored_constraint = self.get_sosdisc_outputs(
-            'carbon_to_be_stored_constraint')
         scaling_factor_invest_level = self.get_sosdisc_inputs(
             'scaling_factor_invest_level')
         scaling_factor_techno_production = self.get_sosdisc_inputs(
             'scaling_factor_techno_production')
 
-        value = - \
-            np.identity(len(self.techno_model.carbon_to_be_stored_constraint))
+        consumption_wo_ratio = self.get_sosdisc_outputs(GlossaryCore.TechnoConsumptionWithoutRatioValue)
+        applied_ratio = self.get_sosdisc_outputs('applied_ratio')['applied_ratio'].values
+        d_constraint_d_utillisation_ratio = np.diag(
+            consumption_wo_ratio[f'{Carbon.name} ({self.techno_model.mass_unit})'].values *
+            applied_ratio / 100.
+        )
+
         self.set_partial_derivative_for_other_types(
-            ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'), ('carbon_quantity_to_be_stored', 'carbon_storage'), value)
+            ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'),
+            (GlossaryCore.UtilisationRatioValue, GlossaryCore.UtilisationRatioValue),
+            d_constraint_d_utillisation_ratio
+        )
+
+        self.set_partial_derivative_for_other_types(
+            ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'),
+            ('carbon_quantity_to_be_stored', 'carbon_storage'),
+            - np.identity(len(self.techno_model.carbon_to_be_stored_constraint))
+        )
 
         '''
         GRADIENT CONSTRAINT VS INVEST_LEVEL (because constraint depends on consumption and consumption depends on invest_level)
         '''
 
-        consumption = self.get_sosdisc_outputs('techno_consumption')
+        consumption = self.get_sosdisc_outputs(GlossaryCore.TechnoConsumptionValue)
         for column in consumption.keys():
-            if (column not in ['years']):
+            if column != GlossaryCore.Years:
                 value = self.dcons_column_dinvest
                 self.set_partial_derivative_for_other_types(
-                    ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'), ('invest_level', 'invest'), value * scaling_factor_invest_level / scaling_factor_techno_production)
+                    ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'),
+                    (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
+                    value * scaling_factor_invest_level / scaling_factor_techno_production)
 
     def get_chart_filter_list(self):
 
-        chart_filters = CSTechnoDiscipline.get_chart_filter_list(self)
-        chart_list = chart_filters[0].filter_values
-        chart_list.append('Constraint')
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters = super().get_chart_filter_list()
+        chart_filters[0].extend('Constraint')
 
         return chart_filters
 
@@ -262,18 +271,18 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
         carbon_quantity_to_be_stored = inputs_dict.pop(
             'carbon_quantity_to_be_stored')
-        consumption = outputs_dict.pop('techno_consumption')
+        consumption = outputs_dict.pop(GlossaryCore.TechnoConsumptionValue)
 
         constraint = self.techno_model.compute_constraint(
             carbon_quantity_to_be_stored, consumption)
 
         output_var = pd.merge(constraint, carbon_quantity_to_be_stored,
-                              how="right", left_on="years", right_on="years")
+                              how="right", left_on=GlossaryCore.Years, right_on=GlossaryCore.Years)
         all_var = pd.merge(output_var, consumption, how="right",
-                           left_on="years", right_on="years")
+                           left_on=GlossaryCore.Years, right_on=GlossaryCore.Years)
 
         var_list = list(all_var.keys())
-        var_list.remove('years')
+        var_list.remove(GlossaryCore.Years)
 
         chart_name = 'Carbon to be stored from cracking constraint'
         max_value = 0
@@ -284,7 +293,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
             min_value = min(min(all_var[var].values.tolist()), min_value)
 
         new_chart = TwoAxesInstanciatedChart(
-            'years', 'carbon storage [Mt]', primary_ordinate_axis_range=[min_value, max_value], chart_name=chart_name)
+            GlossaryCore.Years, 'carbon storage [Mt]', primary_ordinate_axis_range=[min_value, max_value], chart_name=chart_name)
 
         for var in var_list:
             type = 'bar'
@@ -297,7 +306,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                 type = 'lines'
 
             serie = InstanciatedSeries(
-                all_var['years'].values.tolist(),
+                all_var[GlossaryCore.Years].values.tolist(),
                 all_var[var].values.tolist(), title, type)
             new_chart.series.append(serie)
 

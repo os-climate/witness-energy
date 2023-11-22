@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/30-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/09/30-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.renewable_techno_disc import RenewableTechnoDiscipline
@@ -56,21 +56,21 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                  'WACC': 0.058,
                                  'learning_rate': 0.00,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'Capex_init': 230.0,
                                  'Capex_init_unit': '$/MWh',
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'resource_price': 70.0,
                                  'resource_price_unit': '$/MWh'}
 
     techno_info_dict = techno_infos_dict_default
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 635.0, 638.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 635.0, 638.0]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [4.14634146, 6.2195122, 2.77439024, 6.92073171, 6.92073171,

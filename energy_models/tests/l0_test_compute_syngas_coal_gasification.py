@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,19 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
 
-from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.models.syngas.coal_gasification.coal_gasification import CoalGasification
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
-    get_static_prices
-
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.syngas import Syngas
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class SyngasCoalGasificationTestCase(unittest.TestCase):
@@ -43,21 +39,21 @@ class SyngasCoalGasificationTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
         # per kWh
         self.energy_prices = pd.DataFrame({
-            'years': years, 'solid_fuel': np.ones(len(years)) * 48
+            GlossaryCore.Years: years, 'solid_fuel': np.ones(len(years)) * 48
         })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.0, 'solid_fuel': 0.0})
+            {GlossaryCore.Years: years, 'electricity': 0.0, 'solid_fuel': 0.0})
 
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.array([4435750000.0, 4522000000.0, 4608250000.0,
+            {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
                                                  4694500000.0, 4780750000.0, 4867000000.0,
                                                  4969400000.0, 5071800000.0, 5174200000.0,
                                                  5276600000.0, 5379000000.0, 5364700000.0,
@@ -75,57 +71,23 @@ class SyngasCoalGasificationTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.zeros(len(years))})
+            {GlossaryCore.Years: years, 'transport': np.zeros(len(years))})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict['years'] = years
+        demand_ratio_dict[GlossaryCore.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
 
     def tearDown(self):
         pass
-
-    def test_01_compute_smr_price_prod_consumption(self):
-
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
-                       'techno_infos_dict': CoalGasificationDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'invest_level': self.invest_level,
-                       'invest_before_ystart': CoalGasificationDiscipline.invest_before_year_start,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
-                       'initial_production': CoalGasificationDiscipline.initial_production,
-                       'initial_age_distrib': CoalGasificationDiscipline.initial_age_distribution,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'resources_price': get_static_prices(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Syngas.data_energy_dict,
-                       }
-
-        smr_model = CoalGasification('CoalGasification')
-        smr_model.configure_parameters(inputs_dict)
-        smr_model.configure_parameters_update(inputs_dict)
-        price_details = smr_model.compute_price()
-        smr_model.compute_consumption_and_production()
 
     def test_02_biomass_gas_discipline(self):
 
@@ -148,14 +110,14 @@ class SyngasCoalGasificationTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

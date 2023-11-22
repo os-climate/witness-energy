@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,22 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
-import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
-    get_static_prices
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-import pickle
 from energy_models.core.demand.energy_demand import EnergyDemand
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class DemandModelJacobianTestCase(AbstractJacobianUnittest):
@@ -53,7 +46,7 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.year_end = 2100
         self.years = np.arange(self.year_start, self.year_end + 1)
 
-        self.energy_production_detailed = pd.DataFrame({'years': self.years,
+        self.energy_production_detailed = pd.DataFrame({GlossaryCore.Years: self.years,
                                                         EnergyDemand.elec_prod_column: np.linspace(20000, 19000,
                                                                                                    len(self.years)),
                                                         'production hydrogen.liquid_hydrogen (TWh)': np.linspace(20000,
@@ -70,10 +63,10 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
                                                         'production fuel.hydrotreated_oil_fuel (TWh)': np.linspace(
                                                             2000., 3000., len(self.years)),
                                                         })
-        self.population = pd.DataFrame({'years': self.years,
-                                        'population': np.linspace(7794.79, 9000., len(self.years))})
-        self.transport_demand = pd.DataFrame({'years': self.years,
-                                              'transport_demand': np.linspace(33600., 30000., len(self.years))})
+        self.population = pd.DataFrame({GlossaryCore.Years: self.years,
+                                        GlossaryCore.PopulationValue: np.linspace(7794.79, 9000., len(self.years))})
+        self.transport_demand = pd.DataFrame({GlossaryCore.Years: self.years,
+                                              GlossaryCore.TransportDemandValue: np.linspace(33600., 30000., len(self.years))})
 
     def tearDown(self):
         pass
@@ -98,11 +91,11 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.energy_production_detailed': self.energy_production_detailed,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.EnergyProductionDetailedValue}': self.energy_production_detailed,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population,
-                       f'{self.name}.{self.model_name}.transport_demand': self.transport_demand
+                       f'{self.name}.{self.model_name}.{GlossaryCore.TransportDemandValue}': self.transport_demand
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -112,7 +105,7 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.energy_production_detailed',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionDetailedValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}'],
                             outputs=[f'{self.name}.{self.model_name}.electricity_demand_constraint',
                                      f'{self.name}.{self.model_name}.transport_demand_constraint'

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/06-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/09/06-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,12 +18,10 @@ import unittest
 
 import numpy as np
 import pandas as pd
-from pandas.testing import assert_frame_equal
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.demand.energy_demand import EnergyDemand
-from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class DemandTestCase(unittest.TestCase):
@@ -39,12 +37,12 @@ class DemandTestCase(unittest.TestCase):
         self.year_end = 2100
         self.years = np.arange(self.year_start, self.year_end + 1)
 
-        self.energy_production_detailed = pd.DataFrame({'years': self.years,
+        self.energy_production_detailed = pd.DataFrame({GlossaryCore.Years: self.years,
                                                         EnergyDemand.elec_prod_column: 25000.0})
-        self.population = pd.DataFrame({'years': self.years,
-                                        'population': np.linspace(7794.79, 9000., len(self.years))})
-        self.transport_demand = pd.DataFrame({'years': self.years,
-                                        'transport_demand': np.linspace(33000., 33000., len(self.years))})
+        self.population = pd.DataFrame({GlossaryCore.Years: self.years,
+                                        GlossaryCore.PopulationValue: np.linspace(7794.79, 9000., len(self.years))})
+        self.transport_demand = pd.DataFrame({GlossaryCore.Years: self.years,
+                                        GlossaryCore.TransportDemandValue: np.linspace(33000., 33000., len(self.years))})
     def tearDown(self):
         pass
 
@@ -69,11 +67,11 @@ class DemandTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.energy_production_detailed': self.energy_production_detailed,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.EnergyProductionDetailedValue}': self.energy_production_detailed,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population,
-                       f'{self.name}.Demand.transport_demand': self.transport_demand
+                       f'{self.name}.Demand.{GlossaryCore.TransportDemandValue}': self.transport_demand
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

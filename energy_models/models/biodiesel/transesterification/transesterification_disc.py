@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,10 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
-from energy_models.core.techno_type.disciplines.biodiesel_techno_disc import BioDieselTechnoDiscipline
+import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
+from energy_models.core.techno_type.disciplines.biodiesel_techno_disc import BioDieselTechnoDiscipline
 from energy_models.models.biodiesel.transesterification.transesterification import Transesterification
 
 
@@ -51,15 +53,15 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                                                          8.631749219311956]})  # to review
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 3.0, 2.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 3.0, 2.0]})
     DESC_IN = {'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     DESC_IN.update(BioDieselTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
@@ -90,7 +92,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                 co2_from_production = (6.7 / 1000) * biodiesel_calorific_value
                 techno_infos_dict_default = {'Opex_percentage': 0.04,
                                              'lifetime': self.lifetime,  # for now constant in time but should increase with time
-                                             'lifetime_unit': 'years',
+                                             'lifetime_unit': GlossaryCore.Years,
                                              'Capex_init': 22359405 / 40798942,  # Capex initial at year 2020
                                              'Capex_init_unit': '$/kg',
                                              'efficiency': 0.99,
@@ -104,7 +106,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
                                              'WACC': 0.0878,
                                              'techno_evo_eff': 'no',
 
-                                             'construction_delay': self.construction_delay
+                                             GlossaryCore.ConstructionDelay: self.construction_delay
                                              }
 
                 # Source for initial production: IEA 2022, Renewables 2021, https://www.iea.org/reports/renewables-2021, License: CC BY 4.0.
@@ -125,60 +127,60 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
         self.grad_total = {}
         for energy, value in grad_dict.items():
             self.grad_total[energy] = value * \
-                self.techno_model.margin['margin'].values / 100.0
+                self.techno_model.margin[GlossaryCore.MarginValue].values / 100.0
             self.set_partial_derivative_for_other_types(
-                ('techno_prices', self.techno_name), ('energy_prices', energy), self.grad_total[energy])
+                (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.EnergyPricesValue, energy), self.grad_total[energy])
             self.set_partial_derivative_for_other_types(
-                ('techno_prices', f'{self.techno_name}_wotaxes'), ('energy_prices', energy), self.grad_total[energy])
+                (GlossaryCore.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryCore.EnergyPricesValue, energy), self.grad_total[energy])
             # Means it has no sense to compute carbon emissions as for CC and
             # CS
             if carbon_emissions is not None:
                 self.set_partial_derivative_for_other_types(
-                    ('CO2_emissions', self.techno_name), ('energy_CO2_emissions', energy), value)
+                    (GlossaryCore.CO2EmissionsValue, self.techno_name), (GlossaryCore.EnergyCO2EmissionsValue, energy), value)
 
                 # to manage gradient when carbon_emissions is null:
                 # sign_carbon_emissions = 1 if carbon_emissions >=0, -1 if
                 # carbon_emissions < 0
                 sign_carbon_emissions = np.sign(
-                    carbon_emissions.loc[carbon_emissions['years'] <= self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <= self.techno_model.year_end][self.techno_name])**2
+                    carbon_emissions.loc[carbon_emissions[GlossaryCore.Years] <= self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions[GlossaryCore.Years] <= self.techno_model.year_end][self.techno_name])**2
                 grad_on_co2_tax = value * \
-                    self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <= self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(
+                    self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.year_end][GlossaryCore.CO2Tax].values[:, np.newaxis] * np.maximum(
                         0, sign_carbon_emissions).values
 
                 self.dprices_demissions[energy] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(
-                    ('techno_prices', self.techno_name), ('energy_CO2_emissions', energy), self.dprices_demissions[energy])
+                    (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.EnergyCO2EmissionsValue, energy), self.dprices_demissions[energy])
         if carbon_emissions is not None:
-            dCO2_taxes_factory = (self.techno_model.CO2_taxes['years'] <= self.techno_model.carbon_emissions['years'].max(
-            )) * self.techno_model.carbon_emissions[self.techno_name].clip(0).values
+            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_intensity[GlossaryCore.Years].max(
+            )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values
             dtechno_prices_dCO2_taxes = dCO2_taxes_factory
 
             self.set_partial_derivative_for_other_types(
-                ('techno_prices', self.techno_name), ('CO2_taxes', 'CO2_tax'), dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
+                (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
 
         for resource, value in grad_dict_resources.items():
             self.set_partial_derivative_for_other_types(
-                ('techno_prices', self.techno_name), ('resources_price', resource), value *
-                self.techno_model.margin['margin'].values / 100.0)
+                (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.ResourcesPriceValue, resource), value *
+                self.techno_model.margin[GlossaryCore.MarginValue].values / 100.0)
             self.set_partial_derivative_for_other_types(
-                ('techno_prices', f'{self.techno_name}_wotaxes'), ('resources_price', resource), value *
-                self.techno_model.margin['margin'].values / 100.0)
+                (GlossaryCore.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryCore.ResourcesPriceValue, resource), value *
+                self.techno_model.margin[GlossaryCore.MarginValue].values / 100.0)
 
         for resource, value in grad_dict_resources_co2.items():
             if carbon_emissions is not None:
                 # resources carbon emissions
                 self.set_partial_derivative_for_other_types(
-                    ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)
+                    (GlossaryCore.CO2EmissionsValue, self.techno_name), (GlossaryCore.RessourcesCO2EmissionsValue, resource), value)
 
-                sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
-                                                                     self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions['years'] <=
+                sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions[GlossaryCore.Years] <=
+                                                                     self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions[GlossaryCore.Years] <=
                                                                                                                                                        self.techno_model.year_end][self.techno_name]) ** 2
-                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes['years'] <=
-                                                                          self.techno_model.year_end]['CO2_tax'].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
+                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryCore.Years] <=
+                                                                          self.techno_model.year_end][GlossaryCore.CO2Tax].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
 
                 self.dprices_demissions[resource] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(
-                    ('techno_prices', self.techno_name), ('resources_CO2_emissions', resource), self.dprices_demissions[resource])
+                    (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.RessourcesCO2EmissionsValue, resource), self.dprices_demissions[resource])
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
@@ -186,7 +188,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
         BioDieselTechnoDiscipline.compute_sos_jacobian(self)
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
-        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
         grad_dict_resources_co2 = self.techno_model.grad_co2_emissions_vs_resources_co2_emissions()
 
@@ -195,4 +197,4 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
 
         # for resource, value in grad_dict_resources_co2.items():
         #     self.set_partial_derivative_for_other_types(
-        #         ('CO2_emissions', self.techno_name), ('resources_CO2_emissions', resource), value)
+        #         (GlossaryCore.CO2EmissionsValue, self.techno_name), (GlossaryCore.RessourcesCO2EmissionsValue, resource), value)

@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,19 +14,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
-from time import sleep
-from shutil import rmtree
+from os.path import join, dirname
 from pathlib import Path
+from shutil import rmtree
+from time import sleep
+
 import numpy as np
 import pandas as pd
 
-from os.path import join, dirname
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_MDA
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as Study_open
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_MDA
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.study_manager.base_study_manager import BaseStudyManager
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
 
 
@@ -89,7 +91,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
                           'carbon_storage']
 
         output_prices = [
-            f'{self.name}.EnergyMix.{energy}.energy_prices' for energy in output_columns]
+            f'{self.name}.EnergyMix.{energy}.{GlossaryCore.EnergyPricesValue}' for energy in output_columns]
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_price_test.pkl',
                             discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
@@ -125,13 +127,13 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
                           'carbon_storage']
 
         output_prices = [
-            f'{self.name}.EnergyMix.{energy}.energy_prices' for energy in output_columns]
+            f'{self.name}.EnergyMix.{energy}.{GlossaryCore.EnergyPricesValue}' for energy in output_columns]
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_invest.pkl',
                             discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
                             inputs=[
                                 f'{self.name}.EnergyMix.energy_investment'],
-                            outputs=output_prices + [f'{self.name}.EnergyMix.energy_prices'], parallel=True)
+                            outputs=output_prices + [f'{self.name}.EnergyMix.{GlossaryCore.EnergyPricesValue}'], parallel=True)
 
     def test_03_check_gradient_of_price_vs_co2_emissions_open_loop(self):
 
@@ -167,24 +169,24 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
                           'carbon_storage']
 
         output_prices = [
-            f'{self.name}.EnergyMix.{energy}.energy_prices' for energy in output_columns]
+            f'{self.name}.EnergyMix.{energy}.{GlossaryCore.EnergyPricesValue}' for energy in output_columns]
 
         hydrogen_techno = ['Electrolysis.SOEC', 'Electrolysis.PEM', 'PlasmaCracking', 'WaterGasShift'
                            ]
         output_hydrogen_prices = [
-            f'{self.name}.EnergyMix.hydrogen.gaseous_hydrogen.{techno}.techno_prices' for techno in hydrogen_techno]
+            f'{self.name}.EnergyMix.hydrogen.gaseous_hydrogen.{techno}.{GlossaryCore.TechnoPricesValue}' for techno in hydrogen_techno]
         liquid_fuel_techno = ['Refinery', 'FischerTropsch']
         output_lf_prices = [
-            f'{self.name}.EnergyMix.liquid_fuel.{techno}.techno_prices' for techno in liquid_fuel_techno]
+            f'{self.name}.EnergyMix.liquid_fuel.{techno}.{GlossaryCore.TechnoPricesValue}' for techno in liquid_fuel_techno]
         output_co2_emissions = [
-            f'{self.name}.EnergyMix.{energy}.CO2_emissions' for energy in output_columns[:-2]]
+            f'{self.name}.EnergyMix.{energy}.{GlossaryCore.CO2EmissionsValue}' for energy in output_columns[:-2]]
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_CO2_emissions.pkl',
                             discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
-                            inputs=[f'{self.name}.energy_CO2_emissions'],
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}'],
                             outputs=output_prices + output_co2_emissions + output_hydrogen_prices + output_lf_prices +
-                            [f'{self.name}.EnergyMix.energy_prices',
-                             f'{self.name}.EnergyMix.energy_CO2_emissions'], parallel=True)
+                            [f'{self.name}.EnergyMix.{GlossaryCore.EnergyPricesValue}',
+                             f'{self.name}.EnergyMix.{GlossaryCore.EnergyCO2EmissionsValue}'], parallel=True)
 
     def test_04_check_gradient_energymixoutputs_vs_energy_investment(self):
 
@@ -215,7 +217,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         disc_mda = self.ee.root_process
 
-        energy_mix_output = [f'{self.name}.EnergyMix.energy_production', f'{self.name}.EnergyMix.co2_emissions_Gt',
+        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'{self.name}.EnergyMix.co2_emissions_Gt',
                              f'{self.name}.FunctionManagerDisc.energy_production_objective', f'{self.name}.FunctionManagerDisc.co2_emissions_objective', f'{self.name}.EnergyMix.energy_mean_price',
                              f'{self.name}.EnergyMix.land_demand_df',
                              f'{self.name}.FunctionManagerDisc.primary_energies_production', f'{self.name}.EnergyMix.CCS_price']
@@ -258,9 +260,9 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.ee.execute()
 
         energy_prices = self.ee.dm.get_value(
-            f'{usecase.study_name}.EnergyMix.energy_prices')
+            f'{usecase.study_name}.EnergyMix.{GlossaryCore.EnergyPricesValue}')
         energy_emissions = self.ee.dm.get_value(
-            f'{usecase.study_name}.EnergyMix.energy_CO2_emissions')
+            f'{usecase.study_name}.EnergyMix.{GlossaryCore.EnergyCO2EmissionsValue}')
 
         dump_dir = join(dirname(__file__), self.name)
 
@@ -280,8 +282,8 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         full_values_dict = {
             f'{usecase.study_name}.sub_mda_class': 'MDAGaussSeidel',
-            f'{usecase.study_name}.energy_prices': energy_prices,
-            f'{usecase.study_name}.energy_CO2_emissions': energy_emissions}
+            f'{usecase.study_name}.{GlossaryCore.EnergyPricesValue}': energy_prices,
+            f'{usecase.study_name}.{GlossaryCore.EnergyCO2EmissionsValue}': energy_emissions}
 
         exec_eng2.load_study_from_input_dict(full_values_dict)
         energy_list = ['methane', 'solid_fuel', 'syngas', 'electricity', 'liquid_fuel',
@@ -291,12 +293,12 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         energy_price_outputs = []
         for energy in energy_list:
             energy_price_outputs.append(
-                f'{usecase.study_name}.EnergyMix.{energy}.energy_prices')
+                f'{usecase.study_name}.EnergyMix.{energy}.{GlossaryCore.EnergyPricesValue}')
             techno_list = self.ee.dm.get_value(
-                f'{usecase.study_name}.EnergyMix.{energy}.technologies_list')
+                f'{usecase.study_name}.EnergyMix.{energy}.{GlossaryCore.techno_list}')
             for techno in techno_list:
                 energy_price_outputs.append(
-                    f'{usecase.study_name}.EnergyMix.{energy}.{techno}.techno_prices')
+                    f'{usecase.study_name}.EnergyMix.{energy}.{techno}.{GlossaryCore.TechnoPricesValue}')
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_after_MDA_results.pkl',
                             discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
@@ -343,13 +345,13 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         full_values_dict[f'{usecase.study_name}.CO2_taxes_array'] = np.linspace(
             70, 200, nb_poles)
         input_full_names = [f'{usecase.study_name}.CO2_taxes_array']
-        for energy in full_values_dict[f'{self.name}.energy_list']:
+        for energy in full_values_dict[f'{self.name}.{GlossaryCore.energy_list}']:
             energy_wo_dot = energy.replace('.', '_')
             input_name = f'{self.name}.EnergyMix.{energy}.{energy_wo_dot}_array_mix'
             input_full_names.append(input_name)
             full_values_dict[input_name] = np.linspace(1, 2, nb_poles)
 
-            for technology in full_values_dict[f'{self.name}.EnergyMix.{energy}.technologies_list']:
+            for technology in full_values_dict[f'{self.name}.EnergyMix.{energy}.{GlossaryCore.techno_list}']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_name = f'{self.name}.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'
                 input_full_names.append(input_name)
@@ -372,7 +374,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         disc_mda = self.ee.root_process
 
-        energy_mix_output = [f'{self.name}.EnergyMix.energy_production', f'{self.name}.EnergyMix.co2_emissions_Gt',
+        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'{self.name}.EnergyMix.co2_emissions_Gt',
                              f'{self.name}.FunctionManagerDisc.energy_production_objective', f'{self.name}.FunctionManagerDisc.co2_emissions_objective', f'{self.name}.EnergyMix.energy_mean_price',
                              f'{self.name}.EnergyMix.land_demand_df',
                              f'{self.name}.FunctionManagerDisc.primary_energies_production', f'{self.name}.EnergyMix.CCS_price']
@@ -421,13 +423,13 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 #         full_values_dict[f'{usecase.study_name}.CO2_taxes_array'] = np.linspace(
 #             70, 200, nb_poles)
 #         input_full_names = [f'{usecase.study_name}.CO2_taxes_array']
-#         for energy in full_values_dict[f'{self.name}.energy_list']:
+#         for energy in full_values_dict[f'{self.name}.{GlossaryCore.energy_list}']:
 #             energy_wo_dot = energy.replace('.', '_')
 #             input_name = f'{self.name}.EnergyMix.{energy}.{energy_wo_dot}_array_mix'
 #             input_full_names.append(input_name)
 #             full_values_dict[input_name] = np.linspace(1, 2, nb_poles)
 #
-#             for technology in full_values_dict[f'{self.name}.EnergyMix.{energy}.technologies_list']:
+#             for technology in full_values_dict[f'{self.name}.EnergyMix.{energy}.{GlossaryCore.techno_list}']:
 #                 technology_wo_dot = technology.replace('.', '_')
 #                 input_name = f'{self.name}.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'
 #                 input_full_names.append(input_name)
@@ -450,7 +452,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 #
 #         disc_mda = self.ee.root_process
 #
-#         energy_mix_output = [f'{self.name}.EnergyMix.energy_production', f'{self.name}.EnergyMix.co2_emissions_Gt',
+#         energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'{self.name}.EnergyMix.co2_emissions_Gt',
 #                              f'{self.name}.FunctionManagerDisc.energy_production_objective', f'{self.name}.FunctionManagerDisc.co2_emissions_objective', f'{self.name}.EnergyMix.energy_mean_price',
 #                              f'{self.name}.EnergyMix.land_demand_df',
 #                              f'{self.name}.FunctionManagerDisc.primary_energies_production', f'{self.name}.EnergyMix.CCS_price']

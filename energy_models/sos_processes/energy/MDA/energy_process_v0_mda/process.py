@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/05/02-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/05/02-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'version': '',
     }
 
-    def get_builders(self):
 
+    def get_builders(self):
         ns_study = self.ee.study_name
         energy_mix = EnergyMix.name
         carbon_storage = PureCarbonSS.energy_name
@@ -42,7 +42,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         if hasattr(self, 'techno_dict') and hasattr(self, 'invest_discipline'):
             builder_list = self.ee.factory.get_builder_from_process(
                 'energy_models.sos_processes.energy.MDA', 'energy_process_v0',
-                techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, process_level=self.process_level)
+                techno_dict=self.techno_dict, invest_discipline=self.invest_discipline,
+                energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value, process_level=self.process_level)
         else:
             # else we get them the old fashioned way
             builder_list = self.ee.factory.get_builder_from_process(

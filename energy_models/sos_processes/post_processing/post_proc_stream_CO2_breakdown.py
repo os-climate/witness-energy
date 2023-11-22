@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,21 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+import pandas as pd
+from matplotlib.pyplot import cm
+from plotly import figure_factory as ff
+from plotly import graph_objects as go
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-
-import numpy as np
-from matplotlib.pyplot import cm
-from plotly import graph_objects as go
-from plotly.subplots import make_subplots
-from plotly import figure_factory as ff
 from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
-import pandas as pd
-from plotly.express.colors import qualitative
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
@@ -80,7 +76,7 @@ def get_comparision_data(execution_engine, namespace, year):
         techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices" #	"energy_detailed_techno_prices" for Hydrogen and Fuel
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
 
-        filtereddata = price_details[price_details['years'] == year] # Filtering data for a year of 2023
+        filtereddata = price_details[price_details[GlossaryCore.Years] == year] # Filtering data for a year of 2023
         capex_price = filtereddata['CAPEX_Part'].iloc[0]
         opex_price = filtereddata['OPEX_Part'].iloc[0]
         CO2tax_price = filtereddata['CO2Tax_Part'].iloc[0]
@@ -174,7 +170,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
     # Prepare data
     multilevel_df, years = get_multilevel_df(
         execution_engine, namespace, columns=['price_per_kWh', 'price_per_kWh_wotaxes',
-                                              'CO2_per_kWh', 'production', 'invest'])
+                                              'CO2_per_kWh', 'production', GlossaryCore.InvestValue])
     energy_list = list(set(multilevel_df.index.droplevel(1)))
     # Create Figure
     fig = go.Figure()
@@ -194,8 +190,8 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
         ], [], [], [], [], [], []
         energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
             0]
-        CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs('CO2_taxes')[
-            'CO2_tax'].values, []
+        CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs(GlossaryCore.CO2TaxesValue)[
+            GlossaryCore.CO2Tax].values, []
         for i, row in multilevel_df.iterrows():
             # skip techno that do not produce the selected energy
             if i[0] != energy_name:
@@ -205,7 +201,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
             CO2_per_kWh  += [np.mean(row['CO2_per_kWh']), ]
             label += [i, ]
             production += [np.sum(row['production']), ]
-            invest += [np.sum(row['invest']), ]
+            invest += [np.sum(row[GlossaryCore.InvestValue]), ]
             total_CO2 += [np.sum(row['CO2_per_kWh'] *
                                  row['production']), ]
             CO2_taxes_array += [np.mean(CO2_taxes), ]
@@ -244,8 +240,8 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
             ], [], [], [], [], [], []
             energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
                 0]
-            CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs('CO2_taxes')[
-                'CO2_tax'].values, []
+            CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs(GlossaryCore.CO2TaxesValue)[
+                GlossaryCore.CO2Tax].values, []
             for i, row in multilevel_df.iterrows():
                 # skip techno that do not produce the selected energy
                 if i[0] != energy_name:
@@ -255,7 +251,7 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
                 CO2_per_kWh += [row['CO2_per_kWh'][i_year], ]
                 label += [i, ]
                 production += [row['production'][i_year], ]
-                invest += [row['invest'][i_year], ]
+                invest += [row[GlossaryCore.InvestValue][i_year], ]
                 total_CO2 += [row['CO2_per_kWh'][i_year] *
                               row['production'][i_year], ]
                 CO2_taxes_array += [CO2_taxes[i_year], ]
@@ -324,51 +320,51 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     idx = pd.MultiIndex.from_tuples([], names=['energy', 'techno'])
     multilevel_df = pd.DataFrame(
         index=idx,
-        columns=['production', 'invest', 'CO2_per_kWh', 'price_per_kWh', 'price_per_kWh_wotaxes'])
+        columns=['production', GlossaryCore.InvestValue, 'CO2_per_kWh', 'price_per_kWh', 'price_per_kWh_wotaxes'])
     energy_list = [execution_engine.dm.get_disciplines_with_name(namespace)[
                        0].mdo_discipline_wrapp.wrapper.energy_name]
     for energy in energy_list:
         energy_disc = execution_engine.dm.get_disciplines_with_name(
             f'{namespace}')[0]
-        techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
+        techno_list = energy_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in techno_list:
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.{techno}')[0]
             production_techno = techno_disc.get_sosdisc_outputs(
-                'techno_production')[f'{energy} (TWh)'].values * \
+                GlossaryCore.TechnoProductionValue)[f'{energy} (TWh)'].values * \
                                 techno_disc.get_sosdisc_inputs(
                                     'scaling_factor_techno_production')
-            invest_techno = techno_disc.get_sosdisc_inputs('invest_level')[
-                                f'invest'].values * \
+            invest_techno = techno_disc.get_sosdisc_inputs(GlossaryCore.InvestLevelValue)[
+                                GlossaryCore.InvestValue].values * \
                             techno_disc.get_sosdisc_inputs('scaling_factor_invest_level')
             # Calculate total CO2 emissions
             data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
             carbon_emissions = techno_disc.get_sosdisc_outputs(
                 'CO2_emissions_detailed')
             CO2_per_use = np.zeros(
-                len(carbon_emissions['years']))
+                len(carbon_emissions[GlossaryCore.Years]))
             if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
                 if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
+                        len(carbon_emissions[GlossaryCore.Years])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
                                       'high_calorific_value']
                 elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use']
+                        len(carbon_emissions[GlossaryCore.Years])) * data_fuel_dict['CO2_per_use']
             for emission_type in carbon_emissions:
                 if emission_type == techno:
                     total_carbon_emissions = CO2_per_use + \
                                              carbon_emissions[techno].values
             CO2_per_kWh_techno = total_carbon_emissions
             # Data for scatter plot
-            price_per_kWh_techno = techno_disc.get_sosdisc_outputs('techno_prices')[
+            price_per_kWh_techno = techno_disc.get_sosdisc_outputs(GlossaryCore.TechnoPricesValue)[
                 f'{techno}'].values
-            price_per_kWh_wotaxes_techno = techno_disc.get_sosdisc_outputs('techno_prices')[
+            price_per_kWh_wotaxes_techno = techno_disc.get_sosdisc_outputs(GlossaryCore.TechnoPricesValue)[
                 f'{techno}_wotaxes'].values
             idx = pd.MultiIndex.from_tuples(
                 [(f'{energy}', f'{techno}')], names=['energy', 'techno'])
             columns_techno = ['energy', 'technology',
-                              'production', 'invest',
+                              'production', GlossaryCore.InvestValue,
                               'CO2_per_kWh', 'price_per_kWh',
                               'price_per_kWh_wotaxes']
             techno_df = pd.DataFrame([(energy, techno, production_techno, invest_techno, CO2_per_kWh_techno,
@@ -377,7 +373,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             multilevel_df = multilevel_df.append(techno_df)
 
     years = np.arange(energy_disc.get_sosdisc_inputs(
-        'year_start'), energy_disc.get_sosdisc_inputs('year_end') + 1, 1)
+        GlossaryCore.YearStart), energy_disc.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1, 1)
 
     # If columns is not None, return a subset of multilevel_df with selected
     # columns
@@ -651,7 +647,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     energy_list = [energy_disc.energy_name]
 
     years = np.arange(energy_disc.get_sosdisc_inputs(
-        'year_start'), energy_disc.get_sosdisc_inputs('year_end') + 1, 1)
+        GlossaryCore.YearStart), energy_disc.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1, 1)
     # Construct a DataFrame to organize the data on two levels: energy and
     # techno
     idx = pd.MultiIndex.from_tuples([], names=['energy', 'techno'])
@@ -660,14 +656,14 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     # Gather all the possible emission types
     other_emission_type = []
     for energy in energy_list:
-        techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
+        techno_list = energy_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in techno_list:
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.{techno}')[0]
             carbon_emissions = techno_disc.get_sosdisc_outputs(
                 'CO2_emissions_detailed')
             other_emission_type += [col for col in carbon_emissions.columns if col not in [
-                'years', 'production', techno]]
+                GlossaryCore.Years, 'production', techno]]
     other_emission_type = list(set(other_emission_type))
     columns += [f'CO2_from_{other_emission}_consumption' for other_emission in other_emission_type]
     multilevel_df = pd.DataFrame(
@@ -676,12 +672,12 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     for energy in energy_list:
         energy_disc = execution_engine.dm.get_disciplines_with_name(
             f'{namespace}')[0]
-        techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
+        techno_list = energy_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in techno_list:
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.{techno}')[0]
             production_techno = techno_disc.get_sosdisc_outputs(
-                'techno_production')[f'{energy} (TWh)'].values * \
+                GlossaryCore.TechnoProductionValue)[f'{energy} (TWh)'].values * \
                                 techno_disc.get_sosdisc_inputs(
                                     'scaling_factor_techno_production')
             # Calculate total CO2 emissions
@@ -689,20 +685,20 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
             carbon_emissions = techno_disc.get_sosdisc_outputs(
                 'CO2_emissions_detailed')
             CO2_per_use = np.zeros(
-                len(carbon_emissions['years']))
+                len(carbon_emissions[GlossaryCore.Years]))
             if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
                 if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
+                        len(carbon_emissions[GlossaryCore.Years])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
                                       'high_calorific_value']
                 elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use']
+                        len(carbon_emissions[GlossaryCore.Years])) * data_fuel_dict['CO2_per_use']
             CO2_from_other_consumption = dict(
                 zip([f'CO2_from_{other_emission}_consumption' for other_emission in other_emission_type],
                     [np.zeros(len(years)) for _ in other_emission_type]))
             for emission_type in carbon_emissions:
-                if emission_type == 'years':
+                if emission_type == GlossaryCore.Years:
                     continue
                 elif emission_type == 'production':
                     CO2_from_production = carbon_emissions[emission_type].values

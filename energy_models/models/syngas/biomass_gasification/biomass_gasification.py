@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/09-2023/11/15 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,13 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.stream_type.resources_models.water import Water
-
 import numpy as np
+
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 
 
 class BiomassGasification(SyngasTechno):
@@ -66,16 +67,16 @@ class BiomassGasification(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details['biomass_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = self.techno_infos_dict['kgH20_perkgSyngas'] / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kg
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details['biomass_needs'] * \
+                                                                                       self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.techno_infos_dict['kgH20_perkgSyngas'] / \
+                                                                        self.data_energy_dict['calorific_value'] * \
+                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
         self.compute_ghg_emissions(Methane.emission_name)
 
@@ -84,10 +85,10 @@ class BiomassGasification(SyngasTechno):
         Need to take into account negative CO2 from biomass and positive from elec
         '''
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
+                                                  self.cost_details['elec_needs']
 
-        self.carbon_emissions[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-            self.cost_details['biomass_needs']
+        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
+                                                 self.cost_details['biomass_needs']
 
-        return self.carbon_emissions[Electricity.name] + self.carbon_emissions[BiomassDry.name]
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[BiomassDry.name]

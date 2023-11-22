@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,17 +14,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
-from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.carbon_models.carbon import Carbon
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from energy_models.core.stream_type.energy_type import EnergyType
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.carbon_models.carbon import Carbon
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
 
 
 class PlasmaCracking(GaseousHydrogenTechno):
@@ -66,20 +66,20 @@ class PlasmaCracking(GaseousHydrogenTechno):
         Maybe add efficiency in consumption computation ?
         """
 
-        self.compute_primary_energy_production()
+        
 
         C_per_h2 = self.get_theoretical_graphene_production()
 
-        self.production[f'{Carbon.name} ({self.mass_unit})'] = C_per_h2 * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{Carbon.name} ({self.mass_unit})'] = C_per_h2 * \
+                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['fuel_needs'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']  # in kWH
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['fuel_needs'] * \
+                                                                                    self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                    self.cost_details['efficiency']  # in kWH
 
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
@@ -87,18 +87,18 @@ class PlasmaCracking(GaseousHydrogenTechno):
         Carbon capture (Methane is not burned but transformed is not taken into account)
         '''
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
+                                                  self.cost_details['elec_needs']
 
-        self.carbon_emissions[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-            self.cost_details['fuel_needs'] / self.cost_details['efficiency']
+        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
+                                              self.cost_details['fuel_needs'] / self.cost_details['efficiency']
 
         # self.energy_CO2_emissions['carbon_storage']
         C_per_h2 = self.get_theoretical_graphene_production()
-        self.carbon_emissions['carbon storage'] = -C_per_h2 * \
-            CO2.data_energy_dict['molar_mass'] / \
-            Carbon.data_energy_dict['molar_mass']
-        return self.carbon_emissions[Electricity.name] + self.carbon_emissions[Methane.name] + self.carbon_emissions['carbon storage']
+        self.carbon_intensity['carbon storage'] = -C_per_h2 * \
+                                                  CO2.data_energy_dict['molar_mass'] / \
+                                                  Carbon.data_energy_dict['molar_mass']
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Methane.name] + self.carbon_intensity['carbon storage']
 
     def get_theoretical_graphene_production(self):
         ''' 
@@ -152,15 +152,15 @@ class PlasmaCracking(GaseousHydrogenTechno):
         percentage_resource[GaseousHydrogenTechno.energy_name] = percentage_resource['hydrogen_sales_revenues'] / \
             percentage_resource['total_revenues'] * 100.
 
-        return percentage_resource[['years', GaseousHydrogenTechno.energy_name]]
+        return percentage_resource[[GlossaryCore.Years, GaseousHydrogenTechno.energy_name]]
 
     def compute_revenues(self, CO2_credits, carbon_market_demand):
         '''
         Carbon storage for carbon production higher than carbon demand
         '''
-        quantity = pd.DataFrame({'years': self.years,
-                                 'carbon_production': self.production[f'{Carbon.name} ({self.mass_unit})'].values * self.scaling_factor_techno_production,
-                                 'hydrogen_production': self.production[f'{GaseousHydrogenTechno.energy_name} ({EnergyType.unit})'] * self.scaling_factor_techno_production,
+        quantity = pd.DataFrame({GlossaryCore.Years: self.years,
+                                 'carbon_production': self.production_detailed[f'{Carbon.name} ({self.mass_unit})'].values * self.scaling_factor_techno_production,
+                                 'hydrogen_production': self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({EnergyType.unit})'] * self.scaling_factor_techno_production,
                                  'carbon_demand': carbon_market_demand['carbon_demand'].values,
                                  'CO2_credits': CO2_credits['CO2_credits'].values,
                                  'hydrogen_price': self.prices[GaseousHydrogenTechno.energy_name],
@@ -219,7 +219,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         #     col for col in self.production.columns if 'carbon' in col]
         # cols_hydrogen = [
         #     col for col in self.production.columns if GaseousHydrogenTechno.energy_name in col]
-        # techno_production = self.production[['years', cols_carbon[0], cols_hydrogen[0]]].rename(columns={
+        # techno_production = self.production[[GlossaryCore.Years, cols_carbon[0], cols_hydrogen[0]]].rename(columns={
         #     cols_carbon[0]: "carbon_production", cols_hydrogen[0]: "hydrogen_production"})
         # hydrogen_production = techno_production['hydrogen_production'].values
         quantity = self.compute_revenues(

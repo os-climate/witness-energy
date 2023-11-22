@@ -1,13 +1,27 @@
 '''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-Copyright (c) 2020 Airbus SAS.
-All rights reserved.
+Copyright 2022 Airbus SAS
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 '''
-import copy
+'''
+mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
+'''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
 from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe import ElectrolysisAWE
 
@@ -44,7 +58,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'learning_rate': 0.05,
                                  'maximum_learning_capex_ratio': 200 / 581.25,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'stack_lifetime': 100000,
                                  'stack_lifetime_unit': 'hours',
                                  'Capex_init': 581.25,  # for a power input of 2MW, decreases for 10 MW
@@ -58,7 +72,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.60,
                                  'efficiency_max': 0.70,
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
     # see doc
     initial_production = 1.6 - 0.4
     # Industrial plants started to emerge around 2015
@@ -68,7 +82,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
 
     # We assume no investments
     invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
-                                             'invest': [0.0]})
+                                             GlossaryCore.InvestValue: [0.0]})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -76,15 +90,15 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                       'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe',
                                        'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               'invest_before_ystart': {'type': 'dataframe',
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe',
                                         'unit': 'G$',
                                         'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 

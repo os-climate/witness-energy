@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,14 +20,9 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from energy_models.models.methane.fossil_gas.fossil_gas import FossilGas
-from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.methane import Methane
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class UpgradingBiogasPriceTestCase(unittest.TestCase):
@@ -42,11 +38,11 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({'years': years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                                     0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                                                                     0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
                                                                                     0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
@@ -60,10 +56,10 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.0})
+            {GlossaryCore.Years: years, 'electricity': 0.0})
         # Use the same inest as SMR techno
-        self.invest_level = pd.DataFrame({'years': years,
-                                          'invest': np.array([4435750000.0, 4522000000.0, 4608250000.0,
+        self.invest_level = pd.DataFrame({GlossaryCore.Years: years,
+                                          GlossaryCore.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
                                                               4694500000.0, 4780750000.0, 4867000000.0,
                                                               4969400000.0, 5071800000.0, 5174200000.0,
                                                               5276600000.0, 5379000000.0, 5364700000.0,
@@ -81,14 +77,14 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 200.0})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 200.0})
         self.resources_price = pd.DataFrame(
-            columns=['years', 'CO2', 'water', 'natural_gas_resource'])
-        self.resources_price['years'] = years
+            columns=[GlossaryCore.Years, 'CO2', 'water', 'natural_gas_resource'])
+        self.resources_price[GlossaryCore.Years] = years
         self.resources_price['CO2'] = np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542,
                                                 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
         self.resources_price['water'] = 1.4
@@ -97,45 +93,13 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict['years'] = years
+        demand_ratio_dict[GlossaryCore.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
 
     def tearDown(self):
         pass
-
-    def test_01_compute_methane_price(self):
-
-        inputs_dict = {'year_start': 2020,
-                       'year_end': 2050,
-                       'techno_infos_dict': FossilGasDiscipline.techno_infos_dict_default,
-                       'energy_prices': self.energy_prices,
-                       'invest_level': self.invest_level,
-                       'CO2_taxes': self.co2_taxes,
-                       'margin':  self.margin,
-                       'transport_cost': self.transport,
-                       'transport_margin': self.margin,
-                       'resources_price': self.resources_price,
-                       'initial_production': FossilGasDiscipline.initial_production,
-                       'initial_age_distrib': FossilGasDiscipline.initial_age_distribution,
-                       'invest_before_ystart': FossilGasDiscipline.invest_before_year_start,
-                       'energy_CO2_emissions': self.energy_carbon_emissions,
-                       'resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       'all_streams_demand_ratio': self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Methane.data_energy_dict}
-
-        methane = FossilGas('FossilGas')
-        methane.configure_parameters(inputs_dict)
-        methane.configure_parameters_update(inputs_dict)
-        price_details = methane.compute_price()
 
     def test_02_fossil_gas_discipline(self):
 
@@ -157,15 +121,15 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.resources_price': self.resources_price}
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin,
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

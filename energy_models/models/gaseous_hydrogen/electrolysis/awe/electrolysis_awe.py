@@ -1,16 +1,28 @@
 '''
-mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
-Copyright (c) 2020 Airbus SAS.
-All rights reserved.
-'''
+Copyright 2022 Airbus SAS
+Modifications on 2023/10/10-2023/11/16 Copyright 2023 Capgemini
 
-from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
+'''
+mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
+'''
+import numpy as np
+
+from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
 from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
-import numpy as np
+from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
 
 
 class ElectrolysisAWE(GaseousHydrogenTechno):
@@ -65,12 +77,12 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         Carbon capture (Methane is not burned but transformed is not taken into account)
         '''
 
-        self.carbon_emissions[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-            self.cost_details['elec_needs']
-        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
-            self.cost_details['water_needs']
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
+                                                  self.cost_details['elec_needs']
+        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
+                                            self.cost_details['water_needs']
 
-        return self.carbon_emissions[Electricity.name] + self.carbon_emissions[Water.name]
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Water.name]
 
     def get_water_needs(self):
         ''' 
@@ -110,21 +122,21 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         o2_needs = self.get_oxygen_produced()
-        self.production[f'O2 ({self.mass_unit})'] = o2_needs / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'O2 ({self.mass_unit})'] = o2_needs / \
+                                                             self.data_energy_dict['calorific_value'] * \
+                                                             self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
 
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kg
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] / \
+                                                                        self.data_energy_dict['calorific_value'] * \
+                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
         # production
         # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \

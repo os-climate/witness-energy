@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/09-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/06/09-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,18 +14,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.resources_models.oil import CrudeOil
-from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min, compute_dfunc_with_exp_min
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-
-import pandas as pd
-import numpy as np
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min, compute_dfunc_with_exp_min
+
 
 class Refinery(LiquidFuelTechno):
 
@@ -95,27 +95,27 @@ class Refinery(LiquidFuelTechno):
         the break down is made with self.production['kerosene'] ... ect 
         """
 
-        self.compute_primary_energy_production()
+        
 
         for energy in self.other_energy_dict:
             # if it s a dict, so it is a data_energy_dict
-            self.production[f'{energy} ({self.product_energy_unit})'] = self.production[
+            self.production_detailed[f'{energy} ({self.product_energy_unit})'] = self.production_detailed[
                 f'{self.energy_name} ({self.product_energy_unit})'] * self.techno_infos_dict['product_break_down'][energy] / 11.66 * self.other_energy_dict[energy]['calorific_value']
 
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
+                                                                                        self.data_energy_dict['calorific_value'] * \
+                                                                                        self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']
         self.compute_ch4_emissions()
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # oil consumption: prod [TWh] * needs [kg/kWh] = [Mt]
-        self.consumption[f'{self.OIL_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] * \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in Mt
+        self.consumption_detailed[f'{self.OIL_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs'] * \
+                                                                                    self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
-        self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] *  \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
+        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] * \
+                                                                                            self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
 
         # self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['medium_heat_production'] *  \
         #     self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
@@ -133,22 +133,22 @@ class Refinery(LiquidFuelTechno):
             self.techno_infos_dict['CH4_venting_emission_factor'] + \
             self.techno_infos_dict['CH4_unintended_leakage_emission_factor']
 
-        self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
-            self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
+        self.production_detailed[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
+                                                                                  self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
 
     def compute_price(self):
         """
         Compute the detail price of the technology
         """
 
-        self.cost_details['invest'] = self.invest_level.loc[self.invest_level['years']
-                                                            <= self.cost_details['years'].max()]['invest'].values
+        self.cost_details[GlossaryCore.InvestValue] = self.invest_level.loc[self.invest_level[GlossaryCore.Years]
+                                                            <= self.cost_details[GlossaryCore.Years].max()][GlossaryCore.InvestValue].values
         # Maximize with smooth exponential
-        self.cost_details['invest'] = compute_func_with_exp_min(
-            self.cost_details['invest'].values, 1.0e-12)
+        self.cost_details[GlossaryCore.InvestValue] = compute_func_with_exp_min(
+            self.cost_details[GlossaryCore.InvestValue].values, 1.0e-12)
 
         self.cost_details[f'Capex_{self.name}'] = self.compute_capex(
-            self.cost_details['invest'].values, self.techno_infos_dict)
+            self.cost_details[GlossaryCore.InvestValue].values, self.techno_infos_dict)
 
         crf = self.compute_crf(self.techno_infos_dict)
 
@@ -158,8 +158,8 @@ class Refinery(LiquidFuelTechno):
         else:
             self.cost_details['efficiency'] = self.techno_infos_dict['efficiency']
 
-        self.prices = self.prices.loc[self.prices['years']
-                                      <= self.cost_details['years'].max()]
+        self.prices = self.prices.loc[self.prices[GlossaryCore.Years]
+                                      <= self.cost_details[GlossaryCore.Years].max()]
         self.cost_details['energy_costs'] = self.compute_other_primary_energy_costs(
         )
 
@@ -178,17 +178,17 @@ class Refinery(LiquidFuelTechno):
             self.cost_details['energy_costs']
 
         # Add margin in %
-        price_with_margin = self.cost_details[self.name] * self.margin.loc[self.margin['years']
-                                                        <= self.cost_details['years'].max()]['margin'].values / 100.0
+        price_with_margin = self.cost_details[self.name] * self.margin.loc[self.margin[GlossaryCore.Years]
+                                                        <= self.cost_details[GlossaryCore.Years].max()][GlossaryCore.MarginValue].values / 100.0
 
-        self.cost_details['margin'] = price_with_margin - self.cost_details[self.name]
+        self.cost_details[GlossaryCore.MarginValue] = price_with_margin - self.cost_details[self.name]
         self.cost_details[self.name] = price_with_margin
 
         if 'CO2_taxes_factory' in self.cost_details:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name] - \
                 self.cost_details['CO2_taxes_factory'] * \
-                self.margin.loc[self.margin['years']
-                                <= self.cost_details['years'].max()]['margin'].values / 100.0
+                self.margin.loc[self.margin[GlossaryCore.Years]
+                                <= self.cost_details[GlossaryCore.Years].max()][GlossaryCore.MarginValue].values / 100.0
 
         else:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
@@ -200,18 +200,18 @@ class Refinery(LiquidFuelTechno):
         Need to take into account  CO2 from electricity/fuel production
         '''
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details['elec_needs']
 
-        self.carbon_emissions[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
-            self.techno_infos_dict['hydrogen_demand']
+        self.carbon_intensity[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
+                                                           self.techno_infos_dict['hydrogen_demand']
 
-        self.carbon_emissions[self.OIL_RESOURCE_NAME] = self.resources_CO2_emissions[f'{self.OIL_RESOURCE_NAME}'] * \
-            self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs']
+        self.carbon_intensity[self.OIL_RESOURCE_NAME] = self.resources_CO2_emissions[f'{self.OIL_RESOURCE_NAME}'] * \
+                                                        self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs']
 
-        return self.carbon_emissions[f'{Electricity.name}'] + \
-            self.carbon_emissions[self.OIL_RESOURCE_NAME] + \
-            self.carbon_emissions[f'{GaseousHydrogen.name}']
+        return self.carbon_intensity[f'{Electricity.name}'] + \
+               self.carbon_intensity[self.OIL_RESOURCE_NAME] + \
+               self.carbon_intensity[f'{GaseousHydrogen.name}']
 
     def compute_prod_from_invest(self, construction_delay):
         '''
@@ -220,21 +220,21 @@ class Refinery(LiquidFuelTechno):
         '''
 
         # Reverse the array of invest before year start with [::-1]
-        prod_before_ystart = pd.DataFrame({'years': np.arange(self.year_start - construction_delay, self.year_start),
-                                           'invest': self.invest_before_ystart['invest'].values[::1],
-                                           f'Capex_{self.name}': self.cost_details.loc[self.cost_details['years'] == self.year_start, f'Capex_{self.name}'].values[0]})
+        prod_before_ystart = pd.DataFrame({GlossaryCore.Years: np.arange(self.year_start - construction_delay, self.year_start),
+                                           GlossaryCore.InvestValue: self.invest_before_ystart[GlossaryCore.InvestValue].values[::1],
+                                           f'Capex_{self.name}': self.cost_details.loc[self.cost_details[GlossaryCore.Years] == self.year_start, f'Capex_{self.name}'].values[0]})
 
         production_from_invest = pd.concat(
-            [self.cost_details[['years', 'invest', f'Capex_{self.name}']], prod_before_ystart], ignore_index=True)
-        production_from_invest.sort_values(by=['years'], inplace=True)
+            [self.cost_details[[GlossaryCore.Years, GlossaryCore.InvestValue, f'Capex_{self.name}']], prod_before_ystart], ignore_index=True)
+        production_from_invest.sort_values(by=[GlossaryCore.Years], inplace=True)
         # invest from G$ to M$
         # Added a cost of 44.0$/TWh / 0.89 (efficiency) to account for the price of oil extraction
         # (until an extraction model is connected)
-        production_from_invest['prod_from_invest'] = production_from_invest['invest'] / \
+        production_from_invest['prod_from_invest'] = production_from_invest[GlossaryCore.InvestValue] / \
             (production_from_invest[f'Capex_{self.name}'] +
              self.oil_extraction_capex)
-        production_from_invest['years'] += construction_delay
-        production_from_invest = production_from_invest[production_from_invest['years']
+        production_from_invest[GlossaryCore.Years] += construction_delay
+        production_from_invest = production_from_invest[production_from_invest[GlossaryCore.Years]
                                                         <= self.year_end]
 
         return production_from_invest
@@ -262,10 +262,10 @@ class Refinery(LiquidFuelTechno):
             dpprod_dpinvest = compute_dfunc_with_exp_min(np.array([invest_list[i]]), self.min_value_invest)[0][0] / \
                 (capex_list[i] + self.oil_extraction_capex)
             len_non_zeros = min(max(0, nb_years -
-                                    techno_dict['construction_delay'] - i),
+                                    techno_dict[GlossaryCore.ConstructionDelay] - i),
                                 techno_dict['lifetime'])
             first_len_zeros = min(
-                i + techno_dict['construction_delay'], nb_years)
+                i + techno_dict[GlossaryCore.ConstructionDelay], nb_years)
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
             # For prod in each column there is lifetime times the same value which is dpprod_dpinvest
@@ -313,10 +313,10 @@ class Refinery(LiquidFuelTechno):
         for i in range(nb_years):
 
             len_non_zeros = min(max(0, nb_years -
-                                    techno_dict['construction_delay'] - i),
+                                    techno_dict[GlossaryCore.ConstructionDelay] - i),
                                 techno_dict['lifetime'])
             first_len_zeros = min(
-                i + techno_dict['construction_delay'], nb_years)
+                i + techno_dict[GlossaryCore.ConstructionDelay], nb_years)
             last_len_zeros = max(0, nb_years -
                                  len_non_zeros - first_len_zeros)
             # Same for capex

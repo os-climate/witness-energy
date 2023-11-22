@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,13 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
 
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class PlasmaCrackingPriceTestCase(unittest.TestCase):
@@ -34,18 +37,18 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
         '''
 
         self.hydro_techno_margin = pd.DataFrame({'H2plasmacracking': [120, 115, 110],
-                                                 'years': [2020, 2030, 2050]})
+                                                 GlossaryCore.Years: [2020, 2030, 2050]})
 
-        func = sc.interp1d(list(self.hydro_techno_margin['years']), self.hydro_techno_margin['H2plasmacracking'],
+        func = sc.interp1d(list(self.hydro_techno_margin[GlossaryCore.Years]), self.hydro_techno_margin['H2plasmacracking'],
                            kind='linear', fill_value='extrapolate')
         years = np.arange(2020, 2050 + 1)
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'electricity': 0.0, 'methane': 0.123 / 15.4})
+            {GlossaryCore.Years: years, 'electricity': 0.0, 'methane': 0.123 / 15.4})
         hydro_margin = list(func(list(years)))
 
-        self.margin = pd.DataFrame({'years': years,
-                                    'margin': hydro_margin})
+        self.margin = pd.DataFrame({GlossaryCore.Years: years,
+                                    GlossaryCore.MarginValue: hydro_margin})
 
         CO2_tax = np.array([0.01722, 0.033496, 0.049772, 0.066048, 0.082324, 0.0986,
                             0.114876, 0.131152, 0.147428, 0.163704, 0.17998, 0.217668,
@@ -53,12 +56,12 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
                             0.481484, 0.519172, 0.55686, 0.591706, 0.626552, 0.661398,
                             0.696244, 0.73109, 0.765936, 0.800782, 0.835628, 0.870474,
                             0.90532]) * 1000
-        self.CO2_taxes = pd.DataFrame({'years': years,
-                                       'CO2_tax': CO2_tax})
+        self.CO2_taxes = pd.DataFrame({GlossaryCore.Years: years,
+                                       GlossaryCore.CO2Tax: CO2_tax})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
-        self.invest = pd.DataFrame({'years': years,
-                                    'invest': np.array([4435750000.0, 4522000000.0, 4608250000.0,
+        self.invest = pd.DataFrame({GlossaryCore.Years: years,
+                                    GlossaryCore.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
                                                         4694500000.0, 4780750000.0, 4867000000.0,
                                                         4969400000.0, 5071800000.0, 5174200000.0,
                                                         5276600000.0, 5379000000.0, 5364700000.0,
@@ -70,8 +73,8 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
                                                         5135900000.0, 5121600000.0, 5107300000.0,
                                                         5093000000.0]) * 1.0e-9})
 
-        self.invest_for_grad = pd.DataFrame({'years': years,
-                                             'invest': [1.0e-11] + list(np.linspace(10, 100, len(years) - 1))})
+        self.invest_for_grad = pd.DataFrame({GlossaryCore.Years: years,
+                                             GlossaryCore.InvestValue: [1.0e-11] + list(np.linspace(10, 100, len(years) - 1))})
         H2_transport = np.array([2.53376664, 2.43804818, 2.34232972, 2.24661127, 2.15089281,
                                  2.05517435, 1.95945589, 1.86373744, 1.76801898, 1.67230052,
                                  1.57658206, 1.48086361, 1.38514515, 1.28942669, 1.19370823,
@@ -79,10 +82,10 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
                                  0.61939749, 0.56864131, 0.51788512, 0.46712894, 0.41637276,
                                  0.36561658, 0.3148604, 0.26410422, 0.21334804, 0.16259186,
                                  0.11183567]) * 1000
-        self.transport = pd.DataFrame({'years': years,
+        self.transport = pd.DataFrame({GlossaryCore.Years: years,
                                        'transport': H2_transport})
 
-        self.energy_prices = pd.DataFrame({'years': years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                                     0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                                                                     0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
                                                                                     0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
@@ -141,18 +144,18 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
         self.ee.configure()
         self.ee.display_treeview_nodes()
         invest_before_year_start = pd.DataFrame({
-            'years': -np.arange(1, 2 + 1), 'invest': [1000.0, 1000.0]})
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.{self.model_name}.margin': self.margin,
-                       f'{self.name}.CO2_taxes': self.CO2_taxes,
-                       f'{self.name}.{self.model_name}.invest_level':  self.invest,
-                       f'{self.name}.transport_cost':  self.transport,
-                       f'{self.name}.transport_margin':  self.margin,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.energy_CO2_emissions': invest_before_year_start,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051))}
+            GlossaryCore.Years: -np.arange(1, 2 + 1), GlossaryCore.InvestValue: [1000.0, 1000.0]})
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.CO2_taxes,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}':  self.invest,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}':  self.transport,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}':  self.margin,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyCO2EmissionsValue}': invest_before_year_start,
+                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -193,26 +196,26 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
         self.ee.configure()
         self.ee.display_treeview_nodes()
         invest_before_year_start = pd.DataFrame({
-            'years': -np.arange(1, 2 + 1), 'invest': [1000.0, 1000.0]})
+            GlossaryCore.Years: -np.arange(1, 2 + 1), GlossaryCore.InvestValue: [1000.0, 1000.0]})
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.{self.model_name}.margin': self.margin,
-                       f'{self.name}.CO2_taxes': self.CO2_taxes,
-                       f'{self.name}.{self.model_name}.invest_level':  self.invest_for_grad,
-                       f'{self.name}.transport_cost':  self.transport,
-                       f'{self.name}.transport_margin':  self.margin,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.energy_CO2_emissions': invest_before_year_start,
-                       f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051))}
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.CO2_taxes,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}':  self.invest_for_grad,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}':  self.transport,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}':  self.margin,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyCO2EmissionsValue}': invest_before_year_start,
+                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
 
         capex = self.ee.dm.get_value(
-            f'{self.name}.{self.model_name}.techno_detailed_prices')[f'Capex_PlasmaCracking']
+            f'{self.name}.{self.model_name}.{GlossaryCore.TechnoDetailedPricesValue}')[f'Capex_PlasmaCracking']
         ratio_capex = [capex[i + 1] / capex[i] for i in range(len(capex) - 1)]
         # check that the ratio capex is never below 0.92
         self.assertEqual(min(min(ratio_capex), 0.92), 0.92)

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,19 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.ccus.ccus import CCUS
-
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
-from energy_models.core.stream_type.energy_disciplines.fuel_disc import FuelDiscipline
-from energy_models.core.stream_type.energy_disciplines.heat_disc import HeatDiscipline
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
-from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import EnergyGHGEmissionsDiscipline
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import AGRI_TYPE
+from energy_models.core.stream_type.energy_disciplines.fuel_disc import FuelDiscipline
+from energy_models.core.stream_type.energy_disciplines.heat_disc import HeatDiscipline
+from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
+from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -94,38 +92,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'climateeconomics.sos_processes.iam.witness', 'resources_process', associate_namespace=False)
         builder_list.extend(chain_builders_resource)
 
-        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
-            ns_dict = {'ns_public': f'{ns_study}',
-                       'ns_energy_study': f'{ns_study}',
-                       'ns_emissions': f'{ns_study}',
-                       'ns_ccs': f'{ns_study}.{CCS_NAME}'
-                       }
-            mods_dict = {
-                energy_mix: 'energy_models.core.investments.disciplines.energy_invest_disc.InvestEnergyDiscipline',
-            }
-
-            builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict, associate_namespace=False)
-            builder_list.extend(builder_invest)
-
-            mods_dict = {
-                energy_mix: 'energy_models.core.investments.disciplines.energy_or_ccs_invest_disc.InvestCCSorEnergyDiscipline',
-            }
-
-            builder_invest = self.create_builder_list(mods_dict, ns_dict={}, associate_namespace=False)
-            builder_list.extend(builder_invest)
-
-            ns_dict = {'ns_public': f'{ns_study}',
-                       'ns_energy_study': f'{ns_study}'}
-            mods_dict = {
-                CCS_NAME: 'energy_models.core.investments.disciplines.ccs_invest_disc.InvestCCSDiscipline',
-            }
-
-            builder_invest = self.create_builder_list(
-                mods_dict, ns_dict=ns_dict, associate_namespace=False)
-            builder_list.extend(builder_invest)
-
-        elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
             ns_dict = {'ns_public': f'{ns_study}',
                        'ns_energy_study': f'{ns_study}',
                        'ns_witness': f'{ns_study}',
@@ -148,9 +115,15 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                        'ns_ccs': f'{ns_study}',
                        'ns_ref': f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
                        'ns_functions': f'{ns_study}.{func_manager_name}', }
-            mods_dict = {
-                INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.independent_invest_disc.IndependentInvestDiscipline',
-            }
+            if not self.energy_invest_input_in_abs_value:
+                # add a discipline to handle correct investment split in case of mda (ie no optimizer to handle the split properly)
+                mods_dict = {
+                    INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.investments_redistribution_disc.InvestmentsRedistributionDisicpline',
+                }
+            else:
+                mods_dict = {
+                    INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.independent_invest_disc.IndependentInvestDiscipline',
+                }
 
             builder_invest = self.create_builder_list(
                 mods_dict, ns_dict=ns_dict, associate_namespace=False)

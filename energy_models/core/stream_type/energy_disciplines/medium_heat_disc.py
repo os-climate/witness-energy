@@ -13,12 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-import numpy as np
-import pandas as pd
+
+
 class MediumHeatDiscipline(EnergyDiscipline):
     # ontology information
     _ontology_data = {
@@ -35,7 +34,7 @@ class MediumHeatDiscipline(EnergyDiscipline):
     }
     # -- add specific techno inputs to this
 
-    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': mediumtemperatureheat.default_techno_list,
                                      'default': mediumtemperatureheat.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_heat_medium',
@@ -61,8 +60,8 @@ class MediumHeatDiscipline(EnergyDiscipline):
     #     '''
     #
     #     dynamic_inputs = {}
-    #     if 'technologies_list' in self.get_data_in():
-    #         self.techno_list = self.get_sosdisc_inputs('technologies_list')
+    #     if GlossaryCore.techno_list in self.get_data_in():
+    #         self.techno_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
     #         if self.techno_list is not None:
     #             for techno in self.techno_list:
     #                 #print(techno)
@@ -80,9 +79,9 @@ class MediumHeatDiscipline(EnergyDiscipline):
     #
     #     # init dataframes
     #     year_start, year_end = self.get_sosdisc_inputs(
-    #         ['year_start', 'year_end'])
+    #         [GlossaryCore.YearStart, GlossaryCore.YearEnd])
     #     years = np.arange(year_start, year_end + 1)
-    #     techno_heat_fluxes = pd.DataFrame({'years': years})
+    #     techno_heat_fluxes = pd.DataFrame({GlossaryCore.Years: years})
     #
     #     for techno in self.techno_list:
     #         techno_heat_flux = self.get_sosdisc_inputs(f'{techno}.heat_flux')
@@ -91,7 +90,7 @@ class MediumHeatDiscipline(EnergyDiscipline):
     #         techno_heat_flux.rename(columns={'heat_flux': f'{techno}.heat_flux'}, inplace=True)
     #
     #         techno_heat_fluxes = pd.concat(
-    #             [techno_heat_fluxes, techno_heat_flux.drop('years', axis=1)], axis=1)
+    #             [techno_heat_fluxes, techno_heat_flux.drop(GlossaryCore.Years, axis=1)], axis=1)
     #     #print('techno_heat_flux', techno_heat_flux)
     #     outputs_dict = {'energy_heat_flux_detailed': techno_heat_flux
     #                     }

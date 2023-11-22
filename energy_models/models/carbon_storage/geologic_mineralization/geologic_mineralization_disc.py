@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/19-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/09/19-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.carbon_storage.geologic_mineralization.geologic_mineralization import GeologicMineralization
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
+from energy_models.models.carbon_storage.geologic_mineralization.geologic_mineralization import GeologicMineralization
 
 
 class GeologicMineralizationDiscipline(CSTechnoDiscipline):
@@ -48,7 +48,7 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
                                  'learning_rate': 0,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224,
@@ -59,12 +59,12 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
                                  'CO2_capacity_peryear': 3.6E+8,  # kg CO2 /year
                                  'CO2_capacity_peryear_unit': 'kg CO2/year',
                                  'real_factor_CO2': 1.0,
-                                 'transport_cost': 0.0,
+                                 GlossaryCore.TransportCostValue: 0.0,
                                  'transport_cost_unit': '$/kgCO2',
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryCore.EnergyEfficiency: 1,
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  }
 
@@ -72,7 +72,7 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
 
     initial_storage = 0
     invest_before_year_start = pd.DataFrame(
-        {'past years': [], 'invest': []})
+        {'past years': [], GlossaryCore.InvestValue: []})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
@@ -95,9 +95,9 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)

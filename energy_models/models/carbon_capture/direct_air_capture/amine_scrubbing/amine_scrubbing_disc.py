@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/19-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/09/19-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine import Amine
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine import Amine
 
 
 class AmineScrubbingDiscipline(CCTechnoDiscipline):
@@ -64,7 +64,7 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.33,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # 0.6577,  # 730 euro/tCO2 in Fashi2019 Capex
                                  # initial at year 2020 1.11 euro/$
                                  'Capex_init': 0.88,  # average for solid techno, Fashi2019
@@ -73,7 +73,7 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
                                  'CO2_capacity_peryear': 3.6E+8,  # kg CO2 /year
                                  'CO2_capacity_peryear_unit': 'kg CO2/year',
                                  'real_factor_CO2': 1.0,
-                                 'transport_cost': 0.0,
+                                 GlossaryCore.TransportCostValue: 0.0,
                                  'transport_cost_unit': '$/kgCO2',
                                  # Keith, D.W., Holmes, G., Angelo, D.S. and Heidel, K., 2018.
                                  # A process for capturing CO2 from the atmosphere.
@@ -88,7 +88,7 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryCore.EnergyEfficiency: 0.78,
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
@@ -108,7 +108,7 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
 
     initial_capture = 5.0e-3  # in Mt at year_start
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': np.array([0.05093, 0.05093, 15.0930]) * 0.8 / 3000})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: np.array([0.05093, 0.05093, 15.0930]) * 0.8 / 3000})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
@@ -133,9 +133,9 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)
@@ -156,6 +156,6 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
-        carbon_emissions = self.get_sosdisc_outputs('CO2_emissions')
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)

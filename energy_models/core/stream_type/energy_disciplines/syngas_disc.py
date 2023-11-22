@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/15-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/06/15-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,17 +15,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from copy import deepcopy
+
 import numpy as np
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.syngas import Syngas, \
     compute_calorific_value, compute_molar_mass, compute_high_calorific_value, compute_dcal_val_dsyngas_ratio
+from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from energy_models.core.stream_type.stream_disc import StreamDiscipline
-from copy import deepcopy
 
 
 class SyngasDiscipline(EnergyDiscipline):
@@ -43,7 +44,7 @@ class SyngasDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': Syngas.default_techno_list,
                                      'default': Syngas.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
@@ -77,32 +78,32 @@ class SyngasDiscipline(EnergyDiscipline):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'technologies_list' in self.get_data_in():
-            techno_list = self.get_sosdisc_inputs('technologies_list')
+        if GlossaryCore.techno_list in self.get_data_in():
+            techno_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
             self.update_default_technology_list()
             if techno_list is not None:
                 for techno in techno_list:
-                    dynamic_inputs[f'{techno}.techno_consumption'] = {
+                    dynamic_inputs[f'{techno}.{GlossaryCore.TechnoConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.techno_consumption_woratio'] = {
+                    dynamic_inputs[f'{techno}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.techno_production'] = {
+                    dynamic_inputs[f'{techno}.{GlossaryCore.TechnoProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.techno_prices'] = {
+                    dynamic_inputs[f'{techno}.{GlossaryCore.TechnoPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.CO2_emissions'] = {
+                    dynamic_inputs[f'{techno}.{GlossaryCore.CO2EmissionsValue}'] = {
                         'type': 'dataframe', 'unit': 'kg/kWh',
                         "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{techno}.syngas_ratio'] = {
                         'type': 'array', 'unit': '%'}
-                    dynamic_inputs[f'{techno}.land_use_required'] = {
+                    dynamic_inputs[f'{techno}.{GlossaryCore.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] =\
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] =\
                         GlossaryCore.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
 
         self.add_inputs(dynamic_inputs)
@@ -123,7 +124,7 @@ class SyngasDiscipline(EnergyDiscipline):
         self.energy_model.data_energy_dict_input.update(data_energy_dict)
         ghg_per_use_dict = self.energy_model.compute_ghg_emissions_per_use()
 
-        outputs_dict = {'CO2_emissions': CO2_emissions,
+        outputs_dict = {GlossaryCore.CO2EmissionsValue: CO2_emissions,
                         'syngas_ratio': syngas_ratio,
                         'syngas_ratio_technos': self.energy_model.syngas_ratio}
         outputs_dict.update(ghg_per_use_dict)
@@ -155,9 +156,9 @@ class SyngasDiscipline(EnergyDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         outputs_dict = self.get_sosdisc_outputs()
 
-        years = np.arange(inputs_dict['year_start'],
-                          inputs_dict['year_end'] + 1)
-        technos_list = inputs_dict['technologies_list']
+        years = np.arange(inputs_dict[GlossaryCore.YearStart],
+                          inputs_dict[GlossaryCore.YearEnd] + 1)
+        technos_list = inputs_dict[GlossaryCore.techno_list]
         list_columns_energyprod = list(
             outputs_dict[GlossaryCore.EnergyProductionValue].columns)
         mix_weight = outputs_dict['techno_mix']
@@ -171,7 +172,7 @@ class SyngasDiscipline(EnergyDiscipline):
             grad_syngas_prod = np.array(
                 inputs_dict[f'{techno}.syngas_ratio']) * grad_techno_mix_vs_prod
 
-            for techno_other in inputs_dict['technologies_list']:
+            for techno_other in inputs_dict[GlossaryCore.techno_list]:
                 if techno != techno_other:
                     mix_weight_techno_other = mix_weight[techno_other].values / 100.0
                     grad_techno_mix_vs_prod = self.grad_techno_mix_vs_prod_dict[f'{techno} {techno_other}'] * np.sign(
@@ -182,7 +183,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 ('syngas_ratio',),
-                (f'{techno}.techno_production', f'{self.energy_name} (TWh)'),
+                (f'{techno}.{GlossaryCore.TechnoProductionValue}', f'{self.energy_name} (TWh)'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_syngas_prod)
             self.set_partial_derivative(
                 'syngas_ratio',
@@ -209,7 +210,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 ('CO2_per_use', 'CO2_per_use'),
-                (f'{techno}.techno_production', f'{self.energy_name} (TWh)'),
+                (f'{techno}.{GlossaryCore.TechnoProductionValue}', f'{self.energy_name} (TWh)'),
                 inputs_dict['scaling_factor_techno_production'] * np.identity(len(years)) * grad_carbon_tax_vs_prod)
 
             if co2_per_use != 0:
@@ -230,7 +231,7 @@ class SyngasDiscipline(EnergyDiscipline):
             self, generic_filter)
 
         year_start, year_end = self.get_sosdisc_inputs(
-            ['year_start', 'year_end'])
+            [GlossaryCore.YearStart, GlossaryCore.YearEnd])
         years = np.arange(year_start, year_end + 1)
         syngas_ratio = self.get_sosdisc_outputs(
             'syngas_ratio')
@@ -238,7 +239,7 @@ class SyngasDiscipline(EnergyDiscipline):
             'syngas_ratio_technos')
         chart_name = f'Molar syngas CO over H2 ratio for the global mix'
 
-        new_chart = TwoAxesInstanciatedChart('years', 'CO over H2 molar ratio', [], [],
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO over H2 molar ratio', [], [],
                                              chart_name=chart_name)
 
         for techno in syngas_ratio_technos:

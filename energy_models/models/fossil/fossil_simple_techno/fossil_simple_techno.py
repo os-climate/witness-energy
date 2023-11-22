@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/09-2023/11/14 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.techno_type.base_techno_models.fossil_techno import FossilTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.techno_type.base_techno_models.fossil_techno import FossilTechno
 
 
 class FossilSimpleTechno(FossilTechno):
@@ -34,20 +35,20 @@ class FossilSimpleTechno(FossilTechno):
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ?
         """
-        self.compute_primary_energy_production()
+        
 
         # co2_from_raw_to_net will represent the co2 emitted from the use of
         # the fossil energy into other fossil energies. For example generation
         # of fossil electricity from fossil fuels
         co2_per_use = self.data_energy_dict['CO2_per_use'] / \
             self.data_energy_dict['calorific_value']
-        co2_from_raw_to_net = self.production[f'{FossilTechno.energy_name} ({self.product_energy_unit})'].values * (
+        co2_from_raw_to_net = self.production_detailed[f'{FossilTechno.energy_name} ({self.product_energy_unit})'].values * (
             1.0 - Fossil.raw_to_net_production) * co2_per_use
 
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{FossilTechno.energy_name} ({self.product_energy_unit})'] + \
-            co2_from_raw_to_net
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
+                                                                                        self.data_energy_dict['calorific_value'] * \
+                                                                                        self.production_detailed[f'{FossilTechno.energy_name} ({self.product_energy_unit})'] + \
+                                                                                        co2_from_raw_to_net
         self.compute_ch4_emissions()
 
     def compute_ch4_emissions(self):
@@ -63,5 +64,5 @@ class FossilSimpleTechno(FossilTechno):
             self.techno_infos_dict['CH4_venting_emission_factor'] + \
             self.techno_infos_dict['CH4_unintended_leakage_emission_factor']
 
-        self.production[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
-            self.production[f'{FossilTechno.energy_name} ({self.product_energy_unit})'].values
+        self.production_detailed[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
+                                                                                  self.production_detailed[f'{FossilTechno.energy_name} ({self.product_energy_unit})'].values

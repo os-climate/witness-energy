@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,11 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from abc import abstractmethod
+from copy import deepcopy
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.syngas import Syngas, compute_molar_mass, \
     compute_calorific_value, compute_density
 from energy_models.core.techno_type.techno_type import TechnoType
-from copy import deepcopy
+
 
 class SyngasTechno(TechnoType):
 
@@ -56,6 +59,6 @@ class SyngasTechno(TechnoType):
         # Electricity has no Calorific value overload
         # Warning transport cost unit must $/kWh
         transport_cost = self.transport_cost['transport'] * \
-            self.transport_margin['margin'] / 100.0
+            self.transport_margin[GlossaryCore.MarginValue] / 100.0
 
         return transport_cost

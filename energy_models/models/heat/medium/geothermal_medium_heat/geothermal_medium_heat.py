@@ -13,13 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+
+
 class GeothermalHeat(mediumheattechno):
     #self.Mean_Temperature = 500
     #self.Output_Temperature =400
@@ -56,18 +59,18 @@ class GeothermalHeat(mediumheattechno):
         Compute the consumption and the production of the technology for a given investment
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Production
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
-            self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
+                                                                               self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
+                                                                               self.cost_details['efficiency']
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-            self.production[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_energy_unit})'] / \
+                                                                                        self.cost_details['efficiency']
 
     def get_theoretical_electricity_needs(self):
         mean_temperature = self.techno_infos_dict['mean_temperature']
@@ -99,7 +102,7 @@ class GeothermalHeat(mediumheattechno):
         land_rate = self.land_rate
         heat_price = self.compute_other_primary_energy_costs()
         self.heat_flux = land_rate/heat_price
-        self.heat_flux_distribution = pd.DataFrame({'years': self.cost_details['years'],
+        self.heat_flux_distribution = pd.DataFrame({GlossaryCore.Years: self.cost_details[GlossaryCore.Years],
                                                'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
 

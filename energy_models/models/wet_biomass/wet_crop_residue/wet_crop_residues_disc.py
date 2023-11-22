@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,9 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.wet_biomass_techno_disc import WetBiomassTechnoDiscipline
 from energy_models.models.wet_biomass.wet_crop_residue.wet_crop_residues import WetCropResidues
 
@@ -61,7 +62,7 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
                                  'WACC': 0.07,  # ?
                                  'learning_rate': 0.2,  # augmentation of forests ha per year?
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  # capex from gov.mb.ca/agriculture/farm-management/production-economics/pubs/cop-crop-production.pdf
                                  # 25% of 237.95 euro/ha (717 $/acre)
                                  # 1USD = 0,82 euro in 2021
@@ -82,10 +83,10 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
                                  'efficiency': 0.0,
                                  'techno_evo_eff': 'no',  # yes or no
 
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
     # To be defined
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [0.0, 0.0, 0.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 0.0, 0.0]})
     # 7% of available power is the amount of crop residue in 2017
     # (worldbioenergy.org)
     initial_production = 4.828 * 0.07 * 1522.4 * 3.36  # in Twh
@@ -104,14 +105,14 @@ class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):
                                      'default': techno_infos_dict_default},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True),
                                                                 }
                                        },
-               'invest_before_ystart': {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 'invest': ('float',  None, True)},
+                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno inputs to this
     DESC_IN.update(WetBiomassTechnoDiscipline.DESC_IN)

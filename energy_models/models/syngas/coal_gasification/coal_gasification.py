@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/25-2023/11/02 Copyright 2023 Capgemini
+Modifications on 2023/09/25-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
+import numpy as np
+
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-
-import numpy as np
+from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 
 
 class CoalGasification(SyngasTechno):
@@ -56,10 +55,10 @@ class CoalGasification(SyngasTechno):
         Need to take into account negative CO2 from biomass and positive from elec
         '''
 
-        self.carbon_emissions[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
-            self.cost_details['solid_fuel_needs']
+        self.carbon_intensity[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
+                                                self.cost_details['solid_fuel_needs']
 
-        return self.carbon_emissions[SolidFuel.name]
+        return self.carbon_intensity[SolidFuel.name]
 
     def compute_consumption_and_production(self):
         """
@@ -67,14 +66,14 @@ class CoalGasification(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
-        self.consumption[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
+                                                                                      self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
         #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
-            self.data_energy_dict['calorific_value'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
+                                                                                        self.data_energy_dict['calorific_value'] * \
+                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']

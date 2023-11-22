@@ -15,7 +15,6 @@ limitations under the License.
 '''
 
 from energy_models.core.stream_type.base_stream import BaseStream
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class N2O(BaseStream):

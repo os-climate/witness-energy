@@ -14,18 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
+from os.path import join, dirname
 
 import numpy as np
-import pandas as pd
-import re
 import scipy.interpolate as sc
-from os.path import join, dirname
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class NuclearTestCase(unittest.TestCase):
@@ -40,14 +38,14 @@ class NuclearTestCase(unittest.TestCase):
         years = np.arange(2020, 2051)
 
         self.resources_price = pd.DataFrame(
-            columns=['years', ResourceGlossary.Water['name'], ResourceGlossary.Uranium['name']])
-        self.resources_price['years'] = years
+            columns=[GlossaryCore.Years, ResourceGlossary.Water['name'], ResourceGlossary.Uranium['name']])
+        self.resources_price[GlossaryCore.Years] = years
         self.resources_price[ResourceGlossary.Water['name']] = 2.0
         self.resources_price[ResourceGlossary.Uranium['name']] = 1390.0e3
         self.resources_price[ResourceGlossary.Copper['name']] = 10057.7 * 1000 * 1000 # in $/Mt
 
-        self.invest_level = pd.DataFrame({'years': years})
-        self.invest_level['invest'] = 10.
+        self.invest_level = pd.DataFrame({GlossaryCore.Years: years})
+        self.invest_level[GlossaryCore.InvestValue] = 10.
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -55,15 +53,15 @@ class NuclearTestCase(unittest.TestCase):
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
 
         self.margin = pd.DataFrame(
-            {'years': np.arange(2020, 2051), 'margin': np.ones(len(np.arange(2020, 2051))) * 200})
+            {GlossaryCore.Years: np.arange(2020, 2051), GlossaryCore.MarginValue: np.ones(len(np.arange(2020, 2051))) * 200})
 
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.zeros(len(years))})
+            {GlossaryCore.Years: years, 'transport': np.zeros(len(years))})
 
-        self.energy_prices = pd.DataFrame({'years': years.tolist()})
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years.tolist()})
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
@@ -75,14 +73,14 @@ class NuclearTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource', 'copper_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {'years': np.arange(2020, 2050 + 1)})
+            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 0.5, 0.5, len(self.ratio_available_resource.index))
 
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict['years'] = years
+        demand_ratio_dict[GlossaryCore.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -122,19 +120,19 @@ class NuclearTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_end': 2050,
-                       f'{self.name}.energy_prices': self.energy_prices,
-                       f'{self.name}.energy_CO2_emissions': pd.DataFrame(),
-                       f'{self.name}.{self.model_name}.invest_level': self.invest_level,
-                       f'{self.name}.{model_name_US}.invest_level': self.invest_level,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{model_name_US}.{GlossaryCore.InvestLevelValue}': self.invest_level,
 
-                       f'{self.name}.CO2_taxes': self.co2_taxes,
-                       f'{self.name}.transport_margin': self.margin,
-                       f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.resources_price': self.resources_price,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
-                       f'{self.name}.{model_name_US}.margin':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin,
+                       f'{self.name}.{model_name_US}.{GlossaryCore.MarginValue}':  self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -161,8 +159,8 @@ class NuclearTestCase(unittest.TestCase):
         self.assertEqual(data_ref_us['techno_infos_dict']['maturity'], disc_us.get_sosdisc_inputs('techno_infos_dict')['maturity'])
 
         # check that for a variable not in ns_electricity_nuc, the used value is the one given in the test not in the json. We test it on transport_margin variable 
-        self.assertNotEqual(data_ref_europe['transport_margin']['margin'].max(), disc_europe.get_sosdisc_inputs('transport_margin')['margin'].max())
-        self.assertNotEqual(data_ref_us['transport_margin']['margin'].max(), disc_us.get_sosdisc_inputs('transport_margin')['margin'].max())
+        self.assertNotEqual(data_ref_europe[GlossaryCore.TransportMarginValue][GlossaryCore.MarginValue].max(), disc_europe.get_sosdisc_inputs(GlossaryCore.TransportMarginValue)[GlossaryCore.MarginValue].max())
+        self.assertNotEqual(data_ref_us[GlossaryCore.TransportMarginValue][GlossaryCore.MarginValue].max(), disc_us.get_sosdisc_inputs(GlossaryCore.TransportMarginValue)[GlossaryCore.MarginValue].max())
 
 
 import json
