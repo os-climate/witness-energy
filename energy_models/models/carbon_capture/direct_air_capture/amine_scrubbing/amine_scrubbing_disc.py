@@ -15,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine import Amine
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine import Amine
 
 
 class AmineScrubbingDiscipline(CCTechnoDiscipline):

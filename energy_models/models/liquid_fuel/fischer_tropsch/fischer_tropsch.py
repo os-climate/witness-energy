@@ -17,25 +17,26 @@ limitations under the License.
 from functools import reduce
 from operator import mul
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
-from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.syngas import Syngas
+from energy_models.core.stream_type.energy_models.syngas import \
+    compute_calorific_value as compute_syngas_calorific_value
 from energy_models.core.stream_type.energy_models.syngas import compute_molar_mass as compute_syngas_molar_mass
-from energy_models.core.stream_type.energy_models.syngas import compute_calorific_value as compute_syngas_calorific_value
-from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift import RWGS
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift import WGS
-from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc import RWGSDiscipline
-from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
+from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift import WGS
+from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
+from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift import RWGS
+from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc import RWGSDiscipline
+
 
 class FischerTropsch(LiquidFuelTechno):
 

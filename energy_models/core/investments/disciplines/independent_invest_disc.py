@@ -20,7 +20,9 @@ mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 import numpy as np
 import pandas as pd
 
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.independent_invest import IndependentInvest
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -28,8 +30,6 @@ from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.ccus.ccus import CCUS
 
 
 class IndependentInvestDiscipline(SoSWrapp):

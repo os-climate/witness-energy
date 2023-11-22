@@ -15,13 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.methane_techno_disc import MethaneTechnoDiscipline
 from energy_models.models.methane.methanation.methanation import Methanation
-from energy_models.core.stream_type.energy_models.methane import Methane
 
 
 class MethanationDiscipline(MethaneTechnoDiscipline):

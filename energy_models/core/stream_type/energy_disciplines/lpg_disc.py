@@ -17,7 +17,6 @@ limitations under the License.
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
-from climateeconomics.glossarycore import GlossaryCore
 
 
 class LiquefiedGasPetroleumDiscipline(EnergyDiscipline):

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import re
+
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 INVEST_DISCIPLINE_OPTIONS = ['one_per_energy',  # Instantiate one disicpline for each energy to distribute investments

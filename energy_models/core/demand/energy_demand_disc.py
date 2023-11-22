@@ -17,16 +17,15 @@ limitations under the License.
 
 import numpy as np
 
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.demand.energy_demand import EnergyDemand
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.energy_models.electricity import Electricity
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class EnergyDemandDiscipline(SoSWrapp):

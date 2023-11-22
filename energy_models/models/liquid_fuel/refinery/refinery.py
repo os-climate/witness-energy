@@ -14,19 +14,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+import pandas as pd
+
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.resources_models.oil import CrudeOil
-from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min, compute_dfunc_with_exp_min
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-
-import pandas as pd
-import numpy as np
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min, compute_dfunc_with_exp_min
+
 
 class Refinery(LiquidFuelTechno):
 

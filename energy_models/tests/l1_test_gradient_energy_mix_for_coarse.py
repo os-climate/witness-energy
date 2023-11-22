@@ -17,13 +17,12 @@ import os
 from os.path import dirname
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import \
     DEFAULT_COARSE_TECHNO_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):

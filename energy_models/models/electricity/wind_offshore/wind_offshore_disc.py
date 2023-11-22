@@ -16,8 +16,8 @@ limitations under the License.
 '''
 from copy import deepcopy
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary

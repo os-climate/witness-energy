@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 import numpy as np
+
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 
 
 class Pyrolysis(SyngasTechno):

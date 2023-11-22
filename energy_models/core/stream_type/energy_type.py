@@ -16,10 +16,9 @@ limitations under the License.
 '''
 import pandas as pd
 
+from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.base_stream import BaseStream
-
-from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 
 
 class EnergyType(BaseStream):

@@ -15,14 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-
-import numpy as np
-from os.path import join, dirname
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from copy import deepcopy
 
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as StudyMDA
-from copy import deepcopy
 from gemseo.utils.compare_data_manager_tooling import compare_dict
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class DiscDoubleRunTestCase(unittest.TestCase):

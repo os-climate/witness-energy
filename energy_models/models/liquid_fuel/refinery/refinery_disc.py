@@ -15,21 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.liquid_fuel.refinery.refinery import Refinery
 from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import LiquidFuelTechnoDiscipline
-
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
-from energy_models.core.stream_type.energy_models.kerosene import Kerosene
-from energy_models.core.stream_type.energy_models.gasoline import Gasoline
-from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
-from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
-from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
+from energy_models.models.liquid_fuel.refinery.refinery import Refinery
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 
 
 class RefineryDiscipline(LiquidFuelTechnoDiscipline):

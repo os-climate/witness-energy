@@ -21,19 +21,9 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem import ElectrolysisPEM
-from energy_models.models.gaseous_hydrogen.electrolysis.pem.electrolysis_pem_disc import ElectrolysisPEMDiscipline
-from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec import ElectrolysisSOEC
-from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec_disc import ElectrolysisSOECDiscipline
-from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe import ElectrolysisAWE
-from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe_disc import ElectrolysisAWEDiscipline
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class ElectrolysisPriceTestCase(unittest.TestCase):

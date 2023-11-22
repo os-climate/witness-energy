@@ -15,15 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 
 
 class HydrogenPriceTestCase(unittest.TestCase):

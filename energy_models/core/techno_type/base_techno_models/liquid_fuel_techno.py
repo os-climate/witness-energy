@@ -15,11 +15,6 @@ limitations under the License.
 '''
 from abc import abstractmethod
 
-from energy_models.core.stream_type.energy_models.kerosene import Kerosene
-from energy_models.core.stream_type.energy_models.gasoline import Gasoline
-from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
-from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
-from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.techno_type.techno_type import TechnoType
 

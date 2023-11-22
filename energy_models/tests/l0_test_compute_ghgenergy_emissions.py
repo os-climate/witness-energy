@@ -14,17 +14,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pickle
 import unittest
-import pandas as pd
+from os.path import join, dirname
+
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
+    AgricultureMixDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-
-from os.path import join, dirname
-import pickle
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import AgricultureMixDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):

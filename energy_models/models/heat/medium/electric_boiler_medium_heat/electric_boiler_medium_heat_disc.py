@@ -13,16 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.models.heat.medium.electric_boiler_medium_heat.electric_boiler_medium_heat import ElectricBoilerMediumHeat
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
+from energy_models.models.heat.medium.electric_boiler_medium_heat.electric_boiler_medium_heat import \
+    ElectricBoilerMediumHeat
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+
 
 class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 

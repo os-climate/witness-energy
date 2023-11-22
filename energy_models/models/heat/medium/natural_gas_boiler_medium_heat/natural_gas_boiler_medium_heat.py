@@ -13,14 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
-from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+
 
 class NaturalGasMediumHeat(mediumheattechno):
 

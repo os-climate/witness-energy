@@ -15,24 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
+from copy import deepcopy
 
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from os.path import join, dirname
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction import HydrogenLiquefaction
-from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction_disc import HydrogenLiquefactionDiscipline
-
-from copy import deepcopy
-from gemseo.utils.compare_data_manager_tooling import compare_dict
-
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from gemseo.utils.compare_data_manager_tooling import compare_dict
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class LiquefactionPriceTestCase(unittest.TestCase):

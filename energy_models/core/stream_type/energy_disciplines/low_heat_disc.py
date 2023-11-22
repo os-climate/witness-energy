@@ -16,9 +16,7 @@ limitations under the License.
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-import numpy as np
-import pandas as pd
+
 
 class LowHeatDiscipline(EnergyDiscipline):
     # ontology information

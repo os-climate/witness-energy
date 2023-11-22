@@ -14,12 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
-from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 import numpy as np
+
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
+from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
 
 
 class CHPHighHeat(highheattechno):

@@ -21,15 +21,9 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.syngas.autothermal_reforming.autothermal_reforming import AuthothermalReforming
-from energy_models.models.syngas.autothermal_reforming.autothermal_reforming_disc import \
-    AutothermalReformingDiscipline
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class ATRPriceTestCase(unittest.TestCase):

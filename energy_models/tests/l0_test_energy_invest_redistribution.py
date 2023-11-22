@@ -15,10 +15,10 @@ limitations under the License.
 '''
 
 import unittest
+from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.glossaryenergy import GlossaryEnergy

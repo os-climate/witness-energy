@@ -15,7 +15,6 @@ limitations under the License.
 '''
 from abc import abstractmethod
 
-from energy_models.core.stream_type.energy_models.kerosene import Kerosene
 from energy_models.core.techno_type.techno_type import TechnoType
 
 

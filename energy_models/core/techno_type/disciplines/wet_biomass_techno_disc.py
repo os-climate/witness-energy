@@ -17,7 +17,6 @@ limitations under the License.
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.wet_biomass import WetBiomass
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
-from climateeconomics.glossarycore import GlossaryCore
 
 
 class WetBiomassTechnoDiscipline(TechnoDiscipline):

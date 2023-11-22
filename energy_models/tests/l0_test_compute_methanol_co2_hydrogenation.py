@@ -15,24 +15,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
-import scipy.interpolate as sc
 from os.path import join, dirname
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation_disc import CO2HydrogenationDiscipline
-from energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation import CO2Hydrogenation
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.methanol import Methanol
+import numpy as np
+import pandas as pd
+import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.stream_type.energy_models.electricity import Electricity
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CO2HydrogenationPriceTestCase(unittest.TestCase):

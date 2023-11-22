@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.techno_type.base_techno_models.fossil_techno import FossilTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.fossil import Fossil
 from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.techno_type.base_techno_models.fossil_techno import FossilTechno
 
 
 class FossilSimpleTechno(FossilTechno):

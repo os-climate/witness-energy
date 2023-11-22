@@ -15,13 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.wet_biomass_techno_disc import WetBiomassTechnoDiscipline
 from energy_models.models.wet_biomass.wet_crop_residue.wet_crop_residues import WetCropResidues
-from climateeconomics.glossarycore import GlossaryCore
 
 
 class WetCropResiduesDiscipline(WetBiomassTechnoDiscipline):

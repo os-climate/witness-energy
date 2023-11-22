@@ -18,7 +18,7 @@ import unittest
 
 import numpy as np
 import pandas as pd
-from pandas.util.testing import assert_frame_equal
+import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -27,8 +27,6 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-
-import scipy.interpolate as sc
 
 
 class EnergyMixTestCase(unittest.TestCase):

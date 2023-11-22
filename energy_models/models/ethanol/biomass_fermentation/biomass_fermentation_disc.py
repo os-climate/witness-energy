@@ -15,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.techno_type.disciplines.ethanol_techno_disc import EthanolTechnoDiscipline
 from energy_models.core.stream_type.energy_models.ethanol import Ethanol
+from energy_models.core.techno_type.disciplines.ethanol_techno_disc import EthanolTechnoDiscipline
 from energy_models.models.ethanol.biomass_fermentation.biomass_fermentation import BiomassFermentation
 
 
