@@ -146,7 +146,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                        'ns_ccs': f'{ns_study}',
                        'ns_ref': f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
                        'ns_functions': f'{ns_study}.{func_manager_name}', }
-            if not self.ismdo:
+            if not self.energy_invest_input_in_abs_value:
                 # add a discipline to handle correct investment split in case of mda (ie no optimizer to handle the split properly)
                 mods_dict = {
                     INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.investments_redistribution_disc.InvestmentsRedistributionDisicpline',
