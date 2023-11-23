@@ -189,7 +189,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
         identity = np.identity(delta_years)
         energy_list = inputs_dict[GlossaryEnergy.EnergyListName]
         percentage_gdp_invest_energy = inputs_dict[GlossaryEnergy.EnergyInvestPercentageGDPName][
-                                           GlossaryEnergy.EnergyInvestPercentageGDPName].values / 100.  # divide by 100 as it is percentage
+                                           GlossaryEnergy.EnergyInvestPercentageGDPName].values / 100.  # divide by 100 as it is percentage and *1e3 as we convert to G$
         techno_invest_percentage_df = inputs_dict[GlossaryEnergy.TechnoInvestPercentageName]
 
         for energy, techno_list in self.invest_redistribution_model.techno_list_dict.items():
@@ -200,11 +200,11 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                 self.set_partial_derivative_for_other_types(
                     (f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
                     (GlossaryEnergy.EconomicsDfValue, GlossaryEnergy.OutputNetOfDamage),
-                    grad_inv_level_wrt_economics)
+                    grad_inv_level_wrt_economics * 1e3)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
-            (GlossaryCore.EconomicsDfValue, GlossaryEnergy.OutputNetOfDamage),
+            (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
+            (GlossaryEnergy.EconomicsDfValue, GlossaryEnergy.OutputNetOfDamage),
             percentage_gdp_invest_energy * identity)
 
         self.set_partial_derivative_for_other_types(
