@@ -203,9 +203,9 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                     grad_inv_level_wrt_economics)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
-            (GlossaryEnergy.EconomicsDfValue, GlossaryEnergy.OutputNetOfDamage),
-            percentage_gdp_invest_energy * identity * 1e-3)  # 1e-3 to convert G$ to T$
+            (GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
+            (GlossaryCore.EconomicsDfValue, GlossaryEnergy.OutputNetOfDamage),
+            percentage_gdp_invest_energy * identity)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
