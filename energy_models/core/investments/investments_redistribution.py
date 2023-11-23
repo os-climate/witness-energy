@@ -87,7 +87,7 @@ class InvestmentsRedistribution():
         Compute investment per energy technology based on percentage of GDP and input percentages
         """
         # compute part of gdp that is used for investment in energy
-        self.total_investments_in_energy = (self.economics_df[GlossaryEnergy.OutputNetOfDamage].values *
+        self.total_investments_in_energy = (self.economics_df[GlossaryEnergy.OutputNetOfDamage].values * 1e3 * # T$ to G$
                                             self.percentage_gdp_energy_invest[
                                                 GlossaryEnergy.EnergyInvestPercentageGDPName] / 100.)
         self.years = self.economics_df[GlossaryEnergy.Years]
