@@ -118,9 +118,8 @@ class Refinery(LiquidFuelTechno):
         self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] *  \
             self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
 
-        self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['medium_heat_production'] *  \
-                                                                                           self.techno_infos_dict['useful_heat_recovery_factor'] * \
-                                                                                           self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
+        self.production[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['useful_heat_recovery_factor'] * \
+                                                                                          self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})']      # in kWh
 
     def compute_ch4_emissions(self):
         '''

@@ -288,6 +288,8 @@ class TechnoDiscipline(SoSWrapp):
         consumption = outputs_dict[GlossaryCore.TechnoConsumptionValue]
         power_production = outputs_dict['power_production']
         ratio_df = self.techno_model.ratio_df
+        # print('*******')
+        # print(invest_level)
         dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
 
             invest_level.loc[invest_level[GlossaryCore.Years]
@@ -303,9 +305,13 @@ class TechnoDiscipline(SoSWrapp):
                               100.0
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.TechnoPricesValue, f'{self.techno_name}'), (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue), self.dprice_dinvest * scaling_factor_invest_level)
+            (GlossaryCore.TechnoPricesValue, f'{self.techno_name}'),
+            (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
+            self.dprice_dinvest * scaling_factor_invest_level)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue), self.dprice_dinvest * scaling_factor_invest_level)
+            (GlossaryCore.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
+            (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
+            self.dprice_dinvest * scaling_factor_invest_level)
 
         capex = outputs_dict[GlossaryCore.TechnoDetailedPricesValue][
             f'Capex_{self.techno_name}'].values
