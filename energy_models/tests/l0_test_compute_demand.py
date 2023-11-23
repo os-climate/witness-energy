@@ -19,8 +19,8 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.demand.energy_demand import EnergyDemand
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -37,12 +37,12 @@ class DemandTestCase(unittest.TestCase):
         self.year_end = 2100
         self.years = np.arange(self.year_start, self.year_end + 1)
 
-        self.energy_production_detailed = pd.DataFrame({GlossaryCore.Years: self.years,
+        self.energy_production_detailed = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                         EnergyDemand.elec_prod_column: 25000.0})
-        self.population = pd.DataFrame({GlossaryCore.Years: self.years,
-                                        GlossaryCore.PopulationValue: np.linspace(7794.79, 9000., len(self.years))})
-        self.transport_demand = pd.DataFrame({GlossaryCore.Years: self.years,
-                                        GlossaryCore.TransportDemandValue: np.linspace(33000., 33000., len(self.years))})
+        self.population = pd.DataFrame({GlossaryEnergy.Years: self.years,
+                                        GlossaryEnergy.PopulationValue: np.linspace(7794.79, 9000., len(self.years))})
+        self.transport_demand = pd.DataFrame({GlossaryEnergy.Years: self.years,
+                                        GlossaryEnergy.TransportDemandValue: np.linspace(33000., 33000., len(self.years))})
     def tearDown(self):
         pass
 
@@ -67,11 +67,11 @@ class DemandTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
-                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.EnergyProductionDetailedValue}': self.energy_production_detailed,
-                       f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population,
-                       f'{self.name}.Demand.{GlossaryCore.TransportDemandValue}': self.transport_demand
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}': self.energy_production_detailed,
+                       f'{self.name}.{GlossaryEnergy.PopulationDfValue}': self.population,
+                       f'{self.name}.Demand.{GlossaryEnergy.TransportDemandValue}': self.transport_demand
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

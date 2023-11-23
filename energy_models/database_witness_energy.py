@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from datetime import date
-
-import pandas as pd
 from os.path import join
 from pathlib import Path
+
+import pandas as pd
+
 
 class ColectedData:
     def __init__(self,

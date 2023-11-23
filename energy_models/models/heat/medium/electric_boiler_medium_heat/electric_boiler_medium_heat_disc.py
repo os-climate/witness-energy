@@ -16,9 +16,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.medium.electric_boiler_medium_heat.electric_boiler_medium_heat import \
     ElectricBoilerMediumHeat
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -58,9 +58,9 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'Capex_init_unit': '$/kW',    # $ per kW of electricity
         'Opex_percentage': 1.6,       #https://www.google.com/search?q=+OPEX+%25+of+an+electric+boiler&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEddXq4YjX58191BnDyTZd08c2VWtJw%3A1683713517747&ei=7W1bZJqaLaicseMP_pSKkAQ&ved=0ahUKEwjaxIPRwer-AhUoTmwGHX6KAkIQ4dUDCA8&uact=5&oq=+OPEX+%25+of+an+electric+boiler&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQogQyBQgAEKIEMgUIABCiBDIFCAAQogQ6BQghEKABSgQIQRgAUABYxSdggjFoAHAAeACAAZYBiAGuA5IBAzIuMpgBAKABAcABAQ&sclient=gws-wiz-serp
         'lifetime': lifetime,
-        'lifetime_unit': GlossaryCore.Years,
-        GlossaryCore.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryCore.Years,
+        'lifetime_unit': GlossaryEnergy.Years,
+        GlossaryEnergy.ConstructionDelay: construction_delay,
+        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 0.99,           # consumptions and productions already have efficiency included
                                       # https://www.google.com/search?q=electric+boiler+efficiency&rlz=1C1UEAD_enIN1000IN1000&sxsrf=APwXEddgb3MP-p7vfw3Bi3_aNLESRLQX8g%3A1685475202926&ei=gk92ZJKcOL-VseMPs4WWuA0&ved=0ahUKEwiS5f215J3_AhW_SmwGHbOCBdcQ4dUDCA8&uact=5&oq=electric+boiler+efficiency&gs_lcp=Cgxnd3Mtd2l6LXNlcnAQAzIFCAAQgAQyBQgAEIAEMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjIGCAAQFhAeMgYIABAWEB4yBggAEBYQHjoKCAAQRxDWBBCwAzoECCMQJzoHCCMQ6gIQJzoVCAAQAxCPARDqAhC0AhCMAxDlAhgBOhUILhADEI8BEOoCELQCEIwDEOUCGAE6BwgAEIoFEEM6CAgAEIoFEJECOgsIABCABBCxAxCDAToNCAAQigUQsQMQgwEQQzoKCAAQigUQsQMQQzoICAAQgAQQsQM6CggAEIAEEBQQhwJKBAhBGABQ-QRYx1pgxWVoAnABeAOAAcMBiAG0K5IBBTI3LjI2mAEAoAEBsAEUwAEByAEI2gEGCAEQARgL&sclient=gws-wiz-serp
         'elec_demand': 1,             #https://billswiz.com/electric-boiler-electricity-use
@@ -89,19 +89,19 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
     # Renewable Association [online]
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: 0})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: 0})
     flux_input_dict = {'land_rate': 26000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True),
                                                                 }
                                        },
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False},
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
@@ -120,7 +120,7 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',
-                                        'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], True),
+                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], True),
                                                                  'heat_flux': ('float', [1.e-8, 1e30], True),
                                                                  },
                                         }
@@ -186,9 +186,9 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         heat_flux = self.get_sosdisc_outputs('heat_flux')
 
         if 'heat_flux' in charts:
-            x_data = heat_flux[GlossaryCore.Years].values
+            x_data = heat_flux[GlossaryEnergy.Years].values
             y_data = heat_flux['heat_flux'].values
-            x_label = GlossaryCore.Years
+            x_label = GlossaryEnergy.Years
             y_label = 'heat_flux'
             series_name = y_label
             title = f'Detailed heat_flux over the years'

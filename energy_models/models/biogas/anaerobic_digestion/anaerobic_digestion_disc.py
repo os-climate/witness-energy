@@ -18,8 +18,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.biogas_techno_disc import BiogasTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion import AnaerobicDigestion
 
 
@@ -45,7 +45,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     techno_infos_dict_default = {'maturity': 3,
                                  'Opex_percentage': 0.85,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  # Rajendran, K., Gallach�ir, B.�. and Murphy, J.D., 2019.
@@ -76,7 +76,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                  'efficiency': 0.4,
                                  'WACC': 0.06,
                                  'techno_evo_eff': 'no',
-                                 GlossaryCore.ConstructionDelay: construction_delay
+                                 GlossaryEnergy.ConstructionDelay: construction_delay
                                  }
 
     # Source for initial production: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,
@@ -96,18 +96,18 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
     # License: CC BY 4.0.
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.015, 0.017, 0.009]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.015, 0.017, 0.009]})
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     DESC_IN.update(BiogasTechnoDiscipline.DESC_IN)
 
@@ -125,7 +125,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
         super().compute_sos_jacobian()
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         self.set_partial_derivatives_techno(

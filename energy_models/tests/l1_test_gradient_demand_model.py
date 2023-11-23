@@ -20,8 +20,8 @@ from os.path import dirname
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.demand.energy_demand import EnergyDemand
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -46,7 +46,7 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.year_end = 2100
         self.years = np.arange(self.year_start, self.year_end + 1)
 
-        self.energy_production_detailed = pd.DataFrame({GlossaryCore.Years: self.years,
+        self.energy_production_detailed = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                         EnergyDemand.elec_prod_column: np.linspace(20000, 19000,
                                                                                                    len(self.years)),
                                                         'production hydrogen.liquid_hydrogen (TWh)': np.linspace(20000,
@@ -63,10 +63,10 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
                                                         'production fuel.hydrotreated_oil_fuel (TWh)': np.linspace(
                                                             2000., 3000., len(self.years)),
                                                         })
-        self.population = pd.DataFrame({GlossaryCore.Years: self.years,
-                                        GlossaryCore.PopulationValue: np.linspace(7794.79, 9000., len(self.years))})
-        self.transport_demand = pd.DataFrame({GlossaryCore.Years: self.years,
-                                              GlossaryCore.TransportDemandValue: np.linspace(33600., 30000., len(self.years))})
+        self.population = pd.DataFrame({GlossaryEnergy.Years: self.years,
+                                        GlossaryEnergy.PopulationValue: np.linspace(7794.79, 9000., len(self.years))})
+        self.transport_demand = pd.DataFrame({GlossaryEnergy.Years: self.years,
+                                              GlossaryEnergy.TransportDemandValue: np.linspace(33600., 30000., len(self.years))})
 
     def tearDown(self):
         pass
@@ -91,11 +91,11 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
-                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.EnergyProductionDetailedValue}': self.energy_production_detailed,
-                       f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.TransportDemandValue}': self.transport_demand
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}': self.energy_production_detailed,
+                       f'{self.name}.{GlossaryEnergy.PopulationDfValue}': self.population,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.TransportDemandValue}': self.transport_demand
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -105,8 +105,8 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionDetailedValue}',
-                                    f'{self.name}.{GlossaryCore.PopulationDfValue}'],
+                            inputs=[f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}',
+                                    f'{self.name}.{GlossaryEnergy.PopulationDfValue}'],
                             outputs=[f'{self.name}.{self.model_name}.electricity_demand_constraint',
                                      f'{self.name}.{self.model_name}.transport_demand_constraint'
                                      ], )

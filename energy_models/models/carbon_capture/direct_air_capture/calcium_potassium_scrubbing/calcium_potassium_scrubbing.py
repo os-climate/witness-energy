@@ -16,7 +16,6 @@ limitations under the License.
 '''
 import numpy as np
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
@@ -24,6 +23,7 @@ from energy_models.core.stream_type.resources_models.calcium_oxide import Calciu
 from energy_models.core.stream_type.resources_models.potassium_hydroxide import PotassiumHydroxide
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CalciumPotassium(CCTechno):
@@ -39,12 +39,12 @@ class CalciumPotassium(CCTechno):
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    )
 
-        self.cost_details['potassium_needs'] = self.compute_potassium_need() / self.techno_infos_dict[GlossaryCore.EnergyEfficiency]
+        self.cost_details['potassium_needs'] = self.compute_potassium_need() / self.techno_infos_dict[GlossaryEnergy.EnergyEfficiency]
 
         self.cost_details['potassium'] = list(self.resources_prices[ResourceGlossary.Potassium['name']] * self.cost_details['potassium_needs']
                                               )
 
-        self.cost_details['calcium_needs'] = self.compute_calcium_need() / self.techno_infos_dict[GlossaryCore.EnergyEfficiency]
+        self.cost_details['calcium_needs'] = self.compute_calcium_need() / self.techno_infos_dict[GlossaryEnergy.EnergyEfficiency]
 
         self.cost_details['calcium'] = list(self.resources_prices[ResourceGlossary.Calcium['name']] * self.cost_details['calcium_needs']
                                             )
@@ -94,7 +94,7 @@ class CalciumPotassium(CCTechno):
         '''
         calcium_needs = self.compute_calcium_need()
         potassium_needs = self.compute_potassium_need()
-        efficiency = self.techno_infos_dict[GlossaryCore.EnergyEfficiency]
+        efficiency = self.techno_infos_dict[GlossaryEnergy.EnergyEfficiency]
         return {
             ResourceGlossary.Calcium['name']: np.identity(len(self.years)) * calcium_needs / efficiency,
             ResourceGlossary.Potassium['name']: np.identity(len(self.years)) * potassium_needs / efficiency,

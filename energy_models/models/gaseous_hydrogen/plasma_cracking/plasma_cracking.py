@@ -17,13 +17,13 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_type import EnergyType
 from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class PlasmaCracking(GaseousHydrogenTechno):
@@ -152,13 +152,13 @@ class PlasmaCracking(GaseousHydrogenTechno):
         percentage_resource[GaseousHydrogenTechno.energy_name] = percentage_resource['hydrogen_sales_revenues'] / \
             percentage_resource['total_revenues'] * 100.
 
-        return percentage_resource[[GlossaryCore.Years, GaseousHydrogenTechno.energy_name]]
+        return percentage_resource[[GlossaryEnergy.Years, GaseousHydrogenTechno.energy_name]]
 
     def compute_revenues(self, CO2_credits, carbon_market_demand):
         '''
         Carbon storage for carbon production higher than carbon demand
         '''
-        quantity = pd.DataFrame({GlossaryCore.Years: self.years,
+        quantity = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                  'carbon_production': self.production_detailed[f'{Carbon.name} ({self.mass_unit})'].values * self.scaling_factor_techno_production,
                                  'hydrogen_production': self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({EnergyType.unit})'] * self.scaling_factor_techno_production,
                                  'carbon_demand': carbon_market_demand['carbon_demand'].values,
@@ -219,7 +219,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         #     col for col in self.production.columns if 'carbon' in col]
         # cols_hydrogen = [
         #     col for col in self.production.columns if GaseousHydrogenTechno.energy_name in col]
-        # techno_production = self.production[[GlossaryCore.Years, cols_carbon[0], cols_hydrogen[0]]].rename(columns={
+        # techno_production = self.production[[GlossaryEnergy.Years, cols_carbon[0], cols_hydrogen[0]]].rename(columns={
         #     cols_carbon[0]: "carbon_production", cols_hydrogen[0]: "hydrogen_production"})
         # hydrogen_production = techno_production['hydrogen_production'].values
         quantity = self.compute_revenues(

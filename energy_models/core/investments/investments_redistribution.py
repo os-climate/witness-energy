@@ -13,12 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from math import isclose
+
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
-from math import isclose
 
 
 class InvestmentsRedistribution():
@@ -53,7 +53,7 @@ class InvestmentsRedistribution():
         self.inputs_dict = inputs_dict
         self.percentage_gdp_energy_invest = self.inputs_dict[GlossaryEnergy.EnergyInvestPercentageGDPName]
         self.techno_invest_percentage_df = self.inputs_dict[GlossaryEnergy.TechnoInvestPercentageName]
-        self.economics_df = self.inputs_dict[GlossaryCore.EconomicsDfValue]
+        self.economics_df = self.inputs_dict[GlossaryEnergy.EconomicsDfValue]
         self.energy_list = self.inputs_dict[GlossaryEnergy.EnergyListName]
         self.ccs_list = self.inputs_dict[GlossaryEnergy.CCSListName]
         self.techno_list_dict = {energy: self.inputs_dict[f'{energy}.{GlossaryEnergy.TechnoListName}'] for energy in
@@ -77,17 +77,17 @@ class InvestmentsRedistribution():
         if BiomassDry.name in self.energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                 self.total_investments_in_energy_w_biomass_dry += self.inputs_dict[techno][
-                    GlossaryCore.InvestmentsValue].values
+                    GlossaryEnergy.InvestmentsValue].values
         self.energy_investment_wo_tax = pd.DataFrame(
-            {GlossaryCore.Years: self.years.reset_index(drop=True),
-             GlossaryCore.EnergyInvestmentsWoTaxValue: self.total_investments_in_energy_w_biomass_dry / 1e3})  # G$ to T$
+            {GlossaryEnergy.Years: self.years.reset_index(drop=True),
+             GlossaryEnergy.EnergyInvestmentsWoTaxValue: self.total_investments_in_energy_w_biomass_dry / 1e3})  # G$ to T$
 
     def compute_investment_per_technology(self):
         """
         Compute investment per energy technology based on percentage of GDP and input percentages
         """
         # compute part of gdp that is used for investment in energy
-        self.total_investments_in_energy = (self.economics_df[GlossaryCore.OutputNetOfDamage].values *
+        self.total_investments_in_energy = (self.economics_df[GlossaryEnergy.OutputNetOfDamage].values *
                                             self.percentage_gdp_energy_invest[
                                                 GlossaryEnergy.EnergyInvestPercentageGDPName] / 100.)
         self.years = self.economics_df[GlossaryEnergy.Years]

@@ -17,9 +17,9 @@ limitations under the License.
 import numpy as np
 from plotly import graph_objects as go
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import hydropower_name
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -42,7 +42,7 @@ class ElectricityDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+    DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': Electricity.default_techno_list,
                                      'default': Electricity.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_electricity',
@@ -78,8 +78,8 @@ class ElectricityDiscipline(EnergyDiscipline):
         super().setup_sos_disciplines()
 
         dynamic_outputs = {}
-        if GlossaryCore.techno_list in self.get_data_in():
-            techno_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
+        if GlossaryEnergy.techno_list in self.get_data_in():
+            techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
 
             if techno_list is not None:
                 if hydropower_name in techno_list:
@@ -117,11 +117,11 @@ class ElectricityDiscipline(EnergyDiscipline):
         '''
         inputs_dict = self.get_sosdisc_inputs()
 
-        years = np.arange(inputs_dict[GlossaryCore.YearStart],
-                          inputs_dict[GlossaryCore.YearEnd] + 1)
+        years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
+                          inputs_dict[GlossaryEnergy.YearEnd] + 1)
         if hydropower_name in self.energy_model.subelements_list:
             self.set_partial_derivative_for_other_types(('prod_hydropower_constraint', 'hydropower_constraint'), (
-                f'Hydropower.{GlossaryCore.TechnoProductionValue}', f'{Electricity.name} ({Electricity.unit})'),
+                f'Hydropower.{GlossaryEnergy.TechnoProductionValue}', f'{Electricity.name} ({Electricity.unit})'),
                                                         - inputs_dict['scaling_factor_techno_production'] * np.identity(
                                                             len(years)) / inputs_dict['hydropower_constraint_ref'])
 
@@ -169,7 +169,7 @@ class ElectricityDiscipline(EnergyDiscipline):
             constraints_dict[constraint] = list(
                 self.get_sosdisc_outputs(constraint).values[:, 1])
         years = list(np.arange(self.get_sosdisc_inputs(
-            GlossaryCore.YearStart), self.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1))
+            GlossaryEnergy.YearStart), self.get_sosdisc_inputs(GlossaryEnergy.YearEnd) + 1))
         chart_name = 'Constraints'
         fig = go.Figure()
         for key in constraints_dict.keys():
@@ -177,7 +177,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                                      y=list(constraints_dict[key]), name=key,
                                      mode='lines', ))
         fig.update_layout(title={'text': chart_name, 'x': 0.5, 'y': 0.95, 'xanchor': 'center', 'yanchor': 'top'},
-                          xaxis_title=GlossaryCore.Years, yaxis_title=f'value of constraint')
+                          xaxis_title=GlossaryEnergy.Years, yaxis_title=f'value of constraint')
         fig.update_layout(
             updatemenus=[
                 dict(

@@ -18,10 +18,10 @@ limitations under the License.
 import numpy as np
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.demand.energy_demand import EnergyDemand
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -44,10 +44,10 @@ class EnergyDemandDiscipline(SoSWrapp):
         'version': '',
     }
 
-    DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               GlossaryCore.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
-                                              'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
+    DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
+                                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
                                                                        'demand': ('float',  None, True),
                                                                        'production electricity (TWh)': ('float',  None, True),
                                                                        'production hydrogen.liquid_hydrogen (TWh)': ('float', None, True),
@@ -64,9 +64,9 @@ class EnergyDemandDiscipline(SoSWrapp):
                'initial_electricity_demand': {'type': 'float', 'default': 18000., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': '-'},
                'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
-               GlossaryCore.TransportDemandValue: {'type': 'dataframe', 'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
-                                                                                  GlossaryCore.TransportDemandValue: ('float',  None, True)},
+               GlossaryEnergy.PopulationDf['var_name']: GlossaryEnergy.PopulationDf,
+               GlossaryEnergy.TransportDemandValue: {'type': 'dataframe', 'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
+                                                                                  GlossaryEnergy.TransportDemandValue: ('float',  None, True)},
                                     'dataframe_edition_locked': False, 'unit': 'TWh'},
                'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                'additional_demand_transport': {'type': 'float', 'default': 10., 'unit': '%'}}
@@ -108,17 +108,17 @@ class EnergyDemandDiscipline(SoSWrapp):
         '''
         delec_demand_cosntraint_delec_prod = self.demand_model.compute_delec_demand_constraint_delec_prod()
         self.set_partial_derivative_for_other_types(
-            ('electricity_demand_constraint', 'elec_demand_constraint'), (GlossaryCore.EnergyProductionDetailedValue, self.elec_prod_column),  delec_demand_cosntraint_delec_prod)
+            ('electricity_demand_constraint', 'elec_demand_constraint'), (GlossaryEnergy.EnergyProductionDetailedValue, self.elec_prod_column),  delec_demand_cosntraint_delec_prod)
 
         delec_demand_cosntraint_dpop = self.demand_model.compute_delec_demand_constraint_dpop()
         self.set_partial_derivative_for_other_types(
-            ('electricity_demand_constraint', 'elec_demand_constraint'), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  delec_demand_cosntraint_dpop)
+            ('electricity_demand_constraint', 'elec_demand_constraint'), (GlossaryEnergy.PopulationDfValue, GlossaryEnergy.PopulationValue),  delec_demand_cosntraint_dpop)
         dtransport_demand_denergy_prod = self.demand_model.compute_dtransport_demand_dprod()
 
         for energy_name in self.demand_model.energy_list_transport:
 
             self.set_partial_derivative_for_other_types(
-                ('transport_demand_constraint',),  (GlossaryCore.EnergyProductionDetailedValue,
+                ('transport_demand_constraint',),  (GlossaryEnergy.EnergyProductionDetailedValue,
                                                     f"production {energy_name} ({EnergyMix.stream_class_dict[energy_name].unit})"),
                 dtransport_demand_denergy_prod)
 
@@ -167,21 +167,21 @@ class EnergyDemandDiscipline(SoSWrapp):
     def get_chart_elec_demand_constraint(self):
         chart_name = 'Electricity Demand Constraint'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Energy demand [TWh]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy demand [TWh]',
                                              chart_name=chart_name, stacked_bar=True)
 
         electricity_demand = self.get_sosdisc_outputs('electricity_demand')
 
         serie = InstanciatedSeries(
-            electricity_demand[GlossaryCore.Years].values.tolist(),
+            electricity_demand[GlossaryEnergy.Years].values.tolist(),
             electricity_demand['elec_demand (TWh)'].values.tolist(), 'electricity demand', 'lines')
         new_chart.series.append(serie)
 
         energy_production_detailed = self.get_sosdisc_inputs(
-            GlossaryCore.EnergyProductionDetailedValue)
+            GlossaryEnergy.EnergyProductionDetailedValue)
         net_elec_prod = energy_production_detailed
         serie = InstanciatedSeries(
-            net_elec_prod[GlossaryCore.Years].values.tolist(),
+            net_elec_prod[GlossaryEnergy.Years].values.tolist(),
             net_elec_prod[self.elec_prod_column].values.tolist(), 'electricity net production', 'lines')
         new_chart.series.append(serie)
 
@@ -190,23 +190,23 @@ class EnergyDemandDiscipline(SoSWrapp):
     def get_chart_transport_demand_constraint(self):
         chart_name = 'Transport Demand Constraint'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Energy demand [TWh]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy demand [TWh]',
                                              chart_name=chart_name, stacked_bar=True)
 
         note = {
             'Transport energies': 'Liquid hydrogen, liquid fuel, biodiesel, methane, biogas, HEFA'}
         new_chart.annotation_upper_left = note
         transport_demand, energy_production_detailed = self.get_sosdisc_inputs(
-            [GlossaryCore.TransportDemandValue, GlossaryCore.EnergyProductionDetailedValue])
+            [GlossaryEnergy.TransportDemandValue, GlossaryEnergy.EnergyProductionDetailedValue])
 
         serie = InstanciatedSeries(
-            transport_demand[GlossaryCore.Years].values.tolist(),
-            transport_demand[GlossaryCore.TransportDemandValue].values.tolist(), 'transport demand', 'lines')
+            transport_demand[GlossaryEnergy.Years].values.tolist(),
+            transport_demand[GlossaryEnergy.TransportDemandValue].values.tolist(), 'transport demand', 'lines')
         new_chart.series.append(serie)
         net_transport_production = self.get_sosdisc_outputs(
             'net_transport_production')
         serie = InstanciatedSeries(
-            transport_demand[GlossaryCore.Years].values.tolist(),
+            transport_demand[GlossaryEnergy.Years].values.tolist(),
             net_transport_production.tolist(), 'transport energies net production', 'lines')
         new_chart.series.append(serie)
 
@@ -215,7 +215,7 @@ class EnergyDemandDiscipline(SoSWrapp):
     def get_chart_elec_machine_efficiency(self):
         chart_name = 'Electrical Machine Efficiency'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Electrical efficiency [-]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Electrical efficiency [-]',
                                              chart_name=chart_name, stacked_bar=True)
 
         years = np.arange(2000, 2050)
