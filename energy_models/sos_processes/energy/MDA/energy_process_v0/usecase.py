@@ -760,7 +760,7 @@ class Study(EnergyStudyManager):
             {GlossaryCore.Years: self.years, GlossaryCore.ForestInvestmentValue: 5})
 
         if not self.energy_invest_input_in_abs_value:
-            # in case of mda only, added the investment_redistribution_discipline that requires new inputs
+            # if energy investments are expressed in percentage, the new corresponding inputs must be defined
             self.invest_percentage_gdp = pd.DataFrame(data={GlossaryCore.Years: self.years,
                                                             GlossaryEnergy.EnergyInvestPercentageGDPName: np.linspace(
                                                                 10., 20., len(self.years))})
@@ -839,7 +839,7 @@ class Study(EnergyStudyManager):
             self.update_dv_arrays_technos(invest_mix_df)
 
             if not self.energy_invest_input_in_abs_value:
-                # in case of mda only, added the investment_redistribution_discipline that requires new inputs
+                # if energy investments are expressed in percentage, the new corresponding inputs must be defined
                 values_dict.update(
                     {f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
                      f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,

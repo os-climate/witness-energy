@@ -27,6 +27,16 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     NB_POLES_COARSE: int = 20
 
+    # energy techno discipline names
+    CarbonStorageTechno = 'CarbonStorageTechno'
+    FossilSimpleTechno = 'FossilSimpleTechno'
+    RenewableSimpleTechno = 'RenewableSimpleTechno'
+    CarbonCaptureAndStorageTechno = 'CarbonCaptureAndStorageTechno'
+    CarbonStorageTechno = 'CarbonStorageTechno'
+    DirectAirCapture = 'direct_air_capture.DirectAirCaptureTechno'
+    FlueGasCapture = 'flue_gas_capture.FlueGasTechno'
+
+
     CCSTechnoInvest = {
         "type": "dataframe",
         "unit": "G$",
