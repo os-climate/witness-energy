@@ -293,6 +293,9 @@ class Study(EnergyStudyManager):
         self.update_dspace_dict_with(
             'ccs_percentage_array', list(ccs_percentage), lbnd1, ubnd1, activated_elem=activated_elem_list)
 
+        # add utilization ratios
+
+
     def update_dv_arrays_technos(self, invest_mix_df):
         """
         Update design variable arrays for all technologies in the case where we have only one investment discipline
@@ -837,6 +840,7 @@ class Study(EnergyStudyManager):
             values_dict.update(
                 {f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryCore.invest_mix}': invest_mix_df})
             self.update_dv_arrays_technos(invest_mix_df)
+            self.add_utilization_ratio_dv(instanciated_studies)
 
             if not self.energy_invest_input_in_abs_value:
                 # if energy investments are expressed in percentage, the new corresponding inputs must be defined
@@ -862,6 +866,23 @@ class Study(EnergyStudyManager):
         agri_values_dict = self.get_input_value_from_agriculture_mix()
         values_dict_list.append(agri_values_dict)
         return values_dict_list
+
+    def add_utilization_ratio_dv(self, instanciated_studies):
+        """
+        Update design space with utilization ratio for each technology
+        """
+        dict_energy_studies = dict(zip(self.energy_list + self.ccs_list, instanciated_studies))
+        len_years= len(self.years)
+        start_value_utilization_ratio = np.ones(len_years) * 100.
+        lower_bound = np.ones(len_years) * 0.
+        upper_bound = np.ones(len_years) * 100.
+        for energy_name, study in dict_energy_studies.items():
+            if study is not None :
+                for techno_name in study.technologies_list:
+                    print(energy_name, techno_name)
+                    self.update_dspace_dict_with(f'{energy_name}_{techno_name}_utilization_ratio_array', start_value_utilization_ratio, lower_bound, upper_bound)
+
+
 
     def get_input_value_from_agriculture_mix(self):
         agri_mix_name = 'AgricultureMix'
