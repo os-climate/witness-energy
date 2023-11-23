@@ -200,7 +200,7 @@ class TestEnergyInvest(unittest.TestCase):
                                       [f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
                                        all_technos_list] + [f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'],
                                       input_data=disc.local_data,
-                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                      dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                          f'jacobian_redistribution_invest_disc_wo_biomass.pkl'),
                                       )
         self.assertTrue(
