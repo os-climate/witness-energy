@@ -126,7 +126,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "type": "dataframe",
         "unit": "%",
         "dataframe_descriptor": {GlossaryWitnessCore.Years: ('float', None, False),
-                                 EnergyInvestPercentageGDPName: ('float', None, False)},
+                                 EnergyInvestPercentageGDPName: ('float', None, True)},
         "description": "percentage of total energy investment in each of the energy technologies",
     }
 
