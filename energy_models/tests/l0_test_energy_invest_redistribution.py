@@ -124,17 +124,17 @@ class TestEnergyInvest(unittest.TestCase):
         fossil_invest_2020 = fossil_invest_level[0]
         fossil_invest_2050 = fossil_invest_level[-1]
         error_message = 'Error in investment, it is not equal to expected'
-        self.assertAlmostEqual(fossil_invest_2020, 0.1 * 130 * 0.2, msg=error_message)
-        self.assertAlmostEqual(fossil_invest_2050, 0.2 * 190 * 0.2, msg=error_message)
+        self.assertAlmostEqual(fossil_invest_2020, 0.1 * 130 * 1e3 * 0.2, msg=error_message)
+        self.assertAlmostEqual(fossil_invest_2050, 0.2 * 190 * 1e3 * 0.2, msg=error_message)
 
         dac_invest_level = self.ee.dm.get_value(f'{self.name}.CCUS.carbon_capture.direct_air_capture'
                                                 f'.DirectAirCaptureTechno.{GlossaryEnergy.InvestLevelValue}')[
             GlossaryEnergy.InvestValue].values
         dac_invest_2020 = dac_invest_level[0]
         dac_invest_2050 = dac_invest_level[-1]
-        self.assertAlmostEqual(dac_invest_2020, 0.1 * 130 * 0.2,
+        self.assertAlmostEqual(dac_invest_2020, 0.1 * 130 * 1e3 * 0.2,
                                msg=error_message)
-        self.assertAlmostEqual(dac_invest_2050, 0.2 * 190 * 0.2,
+        self.assertAlmostEqual(dac_invest_2050, 0.2 * 190 * 1e3 * 0.2,
                                msg=error_message)
 
         disc = self.ee.dm.get_disciplines_with_name(
