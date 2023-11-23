@@ -16,7 +16,8 @@ limitations under the License.
 from datetime import date
 
 import pandas as pd
-from os.path import join, dirname
+from os.path import join
+from pathlib import Path
 
 class ColectedData:
     def __init__(self,
@@ -34,7 +35,7 @@ class ColectedData:
 
 class DatabaseWitnessEnergy:
     # Example :
-    data_folder = join(dirname(dirname(dirname(__file__))), 'data_energy', 'data')
+    data_folder = join(Path(__file__).parents[1], 'data_energy', 'data')
     data_invest = pd.read_csv(join(data_folder, 'invest_in_fossil.csv'))
     data_invest_nze_scenario = pd.read_csv(join(data_folder, 'nze_scenario.csv'))
     data_invest_steps_scenario = pd.read_csv(join(data_folder, 'scenario_steps.csv'))
