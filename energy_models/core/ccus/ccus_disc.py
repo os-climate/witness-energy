@@ -19,12 +19,12 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -47,11 +47,11 @@ class CCUS_Discipline(SoSWrapp):
     }
 
     DESC_IN = {
-        GlossaryCore.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
+        GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True},
-        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
@@ -64,7 +64,7 @@ class CCUS_Discipline(SoSWrapp):
                                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-                                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                          'carbon_capture': ('float', None, True),
                                                                             'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                                             'carbon_storage': ('float', None, True),
@@ -74,7 +74,7 @@ class CCUS_Discipline(SoSWrapp):
                                                                          },},
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-                                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                      'carbon_capture': ('float', None, True),
                                                                         'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                                         'carbon_storage': ('float', None, True),
@@ -105,48 +105,48 @@ class CCUS_Discipline(SoSWrapp):
         dynamic_inputs = {}
         dynamic_outputs = {}
 
-        if GlossaryCore.ccs_list in self.get_data_in():
-            ccs_list = self.get_sosdisc_inputs(GlossaryCore.ccs_list)
+        if GlossaryEnergy.ccs_list in self.get_data_in():
+            ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
             self.update_default_ccs_list()
             if ccs_list is not None:
                 for ccs_name in ccs_list:
-                    dynamic_inputs[f'{ccs_name}.{GlossaryCore.EnergyConsumptionValue}'] = {
+                    dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{ccs_name}.{GlossaryCore.EnergyConsumptionWithoutRatioValue}'] = {
+                    dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{ccs_name}.{GlossaryCore.EnergyProductionValue}'] = {
+                    dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs',
-                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  'carbon_capture': ('float', None, True),
                                                 'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                 'carbon_storage': ('float', None, True),}}
-                    dynamic_inputs[f'{ccs_name}.{GlossaryCore.EnergyPricesValue}'] = {
+                    dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs',
-                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  'carbon_capture': ('float', None, True),
                                                     'carbon_capture_wotaxes': ('float', None, True),
                                                     'carbon_storage': ('float', None, True),
                                                     'carbon_storage_wotaxes': ('float', None, True),}}
-                    dynamic_inputs[f'{ccs_name}.{GlossaryCore.LandUseRequiredValue}'] = {
+                    dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': 'ns_ccs',
                         "dynamic_dataframe_columns": True}
 
-        if GlossaryCore.YearStart in self.get_data_in() and GlossaryCore.YearEnd in self.get_data_in():
-            year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
-            year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
+        if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():
+            year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+            year_end = self.get_sosdisc_inputs(GlossaryEnergy.YearEnd)
 
             if year_start is not None and year_end is not None:
                 dynamic_inputs['co2_for_food'] = {
-                    'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1), f'{CO2.name} for food (Mt)': 0.0}),
+                    'type': 'dataframe', 'unit': 'Mt', 'default': pd.DataFrame({GlossaryEnergy.Years: np.arange(year_start, year_end + 1), f'{CO2.name} for food (Mt)': 0.0}),
                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                    'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                              'CO2_resource for food (Mt)': ('float', None, True),}
                 }
 
@@ -159,7 +159,7 @@ class CCUS_Discipline(SoSWrapp):
         '''
 
         found_ccs = self.found_ccs_under_ccsmix()
-        self.set_dynamic_default_values({GlossaryCore.ccs_list: found_ccs})
+        self.set_dynamic_default_values({GlossaryEnergy.ccs_list: found_ccs})
 
     def found_ccs_under_ccsmix(self):
         '''
@@ -204,17 +204,17 @@ class CCUS_Discipline(SoSWrapp):
 
         inputs_dict = self.get_sosdisc_inputs()
 
-        years = np.arange(inputs_dict[GlossaryCore.YearStart],
-                          inputs_dict[GlossaryCore.YearEnd] + 1)
-        ccs_list = inputs_dict[GlossaryCore.ccs_list]
+        years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
+                          inputs_dict[GlossaryEnergy.YearEnd] + 1)
+        ccs_list = inputs_dict[GlossaryEnergy.ccs_list]
         scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
 
         sub_production_dict, sub_consumption_dict = {}, {}
         for ccs in ccs_list:
-            sub_production_dict[ccs] = inputs_dict[f'{ccs}.{GlossaryCore.EnergyProductionValue}'] * \
+            sub_production_dict[ccs] = inputs_dict[f'{ccs}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                        scaling_factor_energy_production
-            sub_consumption_dict[ccs] = inputs_dict[f'{ccs}.{GlossaryCore.EnergyConsumptionValue}'] * \
+            sub_consumption_dict[ccs] = inputs_dict[f'{ccs}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
                                         scaling_factor_energy_consumption
 
         # -------------------------------#
@@ -222,10 +222,10 @@ class CCUS_Discipline(SoSWrapp):
         # -------------------------------#
         resource_list = EnergyMix.RESOURCE_LIST
         for ccs in ccs_list:
-            for resource in inputs_dict[f'{ccs}.{GlossaryCore.EnergyConsumptionValue}']:
+            for resource in inputs_dict[f'{ccs}.{GlossaryEnergy.EnergyConsumptionValue}']:
                 if resource in resource_list:
                     self.set_partial_derivative_for_other_types(('All_Demand', resource), (
-                        f'{ccs}.{GlossaryCore.EnergyConsumptionValue}', resource), scaling_factor_energy_consumption * np.identity(
+                        f'{ccs}.{GlossaryEnergy.EnergyConsumptionValue}', resource), scaling_factor_energy_consumption * np.identity(
                         len(years)))
 
         # --------------------------------#
@@ -248,16 +248,16 @@ class CCUS_Discipline(SoSWrapp):
 
                 if last_part_key == 'prod':
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus', co2_emission_column), (f'{energy}.{GlossaryCore.EnergyProductionValue}', energy),
+                        ('co2_emissions_ccus', co2_emission_column), (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
                         np.identity(len(years)) * scaling_factor_energy_production * value)
                 elif last_part_key == 'cons':
                     for energy_df in ccs_list:
                         list_columnsenergycons = list(
-                            inputs_dict[f'{energy_df}.{GlossaryCore.EnergyConsumptionValue}'].columns)
+                            inputs_dict[f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
                         if f'{energy} (TWh)' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
                                 ('co2_emissions_ccus', co2_emission_column),
-                                (f'{energy_df}.{GlossaryCore.EnergyConsumptionValue}', f'{energy} (TWh)'),
+                                (f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} (TWh)'),
                                 np.identity(len(years)) * scaling_factor_energy_consumption * value)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
@@ -269,12 +269,12 @@ class CCUS_Discipline(SoSWrapp):
 
                     if very_last_part_key == 'prod':
                         self.set_partial_derivative_for_other_types(
-                            ('co2_emissions_ccus', co2_emission_column), (f'{energy}.{GlossaryCore.EnergyProductionValue}', last_part_key),
+                            ('co2_emissions_ccus', co2_emission_column), (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
                             ('co2_emissions_ccus', co2_emission_column),
-                            (f'{energy}.{GlossaryCore.EnergyConsumptionValue}', last_part_key),
+                            (f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value)
 
             '''
@@ -285,16 +285,16 @@ class CCUS_Discipline(SoSWrapp):
                     '(Mt)', '(Gt)')
                 if last_part_key == 'prod':
                     self.set_partial_derivative_for_other_types(
-                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.{GlossaryCore.EnergyProductionValue}', energy),
+                        ('co2_emissions_ccus_Gt', co2_emission_column_upd), (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
                         np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
                 elif last_part_key == 'cons':
                     for energy_df in ccs_list:
                         list_columnsenergycons = list(
-                            inputs_dict[f'{energy_df}.{GlossaryCore.EnergyConsumptionValue}'].columns)
+                            inputs_dict[f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
                         if f'{energy} (TWh)' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
                                 ('co2_emissions_ccus_Gt', co2_emission_column_upd),
-                                (f'{energy_df}.{GlossaryCore.EnergyConsumptionValue}', f'{energy} (TWh)'),
+                                (f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} (TWh)'),
                                 np.identity(len(years)) * scaling_factor_energy_consumption * value / 1.0e3)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
@@ -323,12 +323,12 @@ class CCUS_Discipline(SoSWrapp):
 
                         self.set_partial_derivative_for_other_types(
                             ('co2_emissions_ccus_Gt', co2_emission_column_upd),
-                            (f'{energy}.{GlossaryCore.EnergyProductionValue}', last_part_key),
+                            (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
                             ('co2_emissions_ccus_Gt', co2_emission_column_upd),
-                            (f'{energy}.{GlossaryCore.EnergyConsumptionValue}', last_part_key),
+                            (f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}', last_part_key),
                             np.identity(len(years)) * scaling_factor_energy_production * value / 1.0e3)
 
                 '''
@@ -338,16 +338,16 @@ class CCUS_Discipline(SoSWrapp):
 
                 if last_part_key == 'prod' and energy in ccs_list:
                     self.set_partial_derivative_for_other_types(
-                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.{GlossaryCore.EnergyProductionValue}', energy),
+                        (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
                         scaling_factor_energy_production * value)
                 elif last_part_key == 'cons' and energy in ccs_list:
                     for energy_df in ccs_list:
                         list_columnsenergycons = list(
-                            inputs_dict[f'{energy_df}.{GlossaryCore.EnergyConsumptionValue}'].columns)
+                            inputs_dict[f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}'].columns)
                         if f'{energy} (TWh)' in list_columnsenergycons:
                             self.set_partial_derivative_for_other_types(
                                 (EnergyMix.CARBON_STORAGE_CONSTRAINT,),
-                                (f'{energy_df}.{GlossaryCore.EnergyConsumptionValue}', f'{energy} (TWh)'),
+                                (f'{energy_df}.{GlossaryEnergy.EnergyConsumptionValue}', f'{energy} (TWh)'),
                                 scaling_factor_energy_consumption * value)
                 elif last_part_key == 'co2_per_use':
                     self.set_partial_derivative_for_other_types(
@@ -371,20 +371,20 @@ class CCUS_Discipline(SoSWrapp):
                     very_last_part_key = energy_prod_info.split('#')[2]
                     if very_last_part_key == 'prod':
                         self.set_partial_derivative_for_other_types(
-                            (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.{GlossaryCore.EnergyProductionValue}', last_part_key),
+                            (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', last_part_key),
                             scaling_factor_energy_production * value)
                     elif very_last_part_key == 'cons':
                         self.set_partial_derivative_for_other_types(
-                            (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.{GlossaryCore.EnergyConsumptionValue}', last_part_key),
+                            (EnergyMix.CARBON_STORAGE_CONSTRAINT,), (f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}', last_part_key),
                             scaling_factor_energy_production * value)
 
         if CarbonCapture.name in ccs_list:
             self.set_partial_derivative_for_other_types(
-                ('CCS_price', 'ccs_price_per_tCO2'), (f'{CarbonCapture.name}.{GlossaryCore.EnergyPricesValue}', CarbonCapture.name),
+                ('CCS_price', 'ccs_price_per_tCO2'), (f'{CarbonCapture.name}.{GlossaryEnergy.EnergyPricesValue}', CarbonCapture.name),
                 np.identity(len(years)))
         if CarbonStorage.name in ccs_list:
             self.set_partial_derivative_for_other_types(
-                ('CCS_price', 'ccs_price_per_tCO2'), (f'{CarbonStorage.name}.{GlossaryCore.EnergyPricesValue}', CarbonStorage.name),
+                ('CCS_price', 'ccs_price_per_tCO2'), (f'{CarbonStorage.name}.{GlossaryEnergy.EnergyPricesValue}', CarbonStorage.name),
                 np.identity(len(years)))
 
     def get_chart_filter_list(self):
@@ -401,10 +401,10 @@ class CCUS_Discipline(SoSWrapp):
             'Price unit', price_unit_list, price_unit_list, 'price_unit'))
 
         year_start, year_end = self.get_sosdisc_inputs(
-            [GlossaryCore.YearStart, GlossaryCore.YearEnd])
+            [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
         years = list(np.arange(year_start, year_end + 1, 5))
         chart_filters.append(ChartFilter(
-            'Years for energy mix', years, [year_start, year_end], GlossaryCore.Years))
+            'Years for energy mix', years, [year_start, year_end], GlossaryEnergy.Years))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
@@ -416,7 +416,7 @@ class CCUS_Discipline(SoSWrapp):
         charts = []
 
         price_unit_list = ['$/MWh', '$/t']
-        years_list = [self.get_sosdisc_inputs(GlossaryCore.YearStart)]
+        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -424,7 +424,7 @@ class CCUS_Discipline(SoSWrapp):
                     charts = chart_filter.selected_values
                 if chart_filter.filter_key == 'price_unit':
                     price_unit_list = chart_filter.selected_values
-                if chart_filter.filter_key == GlossaryCore.Years:
+                if chart_filter.filter_key == GlossaryEnergy.Years:
                     years_list = chart_filter.selected_values
 
         if 'Carbon storage constraint' in charts:
@@ -453,7 +453,7 @@ class CCUS_Discipline(SoSWrapp):
 
         ccs_prices = self.get_sosdisc_outputs('CCS_price')
 
-        years = list(ccs_prices[GlossaryCore.Years].values)
+        years = list(ccs_prices[GlossaryEnergy.Years].values)
 
         chart_name = 'CCS price over time'
 
@@ -480,10 +480,10 @@ class CCUS_Discipline(SoSWrapp):
             'carbon_capture_from_energy_mix')
         co2_emissions_needed_by_energy_mix = self.get_sosdisc_inputs(
             'co2_emissions_needed_by_energy_mix')
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 emissions (Gt)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
-        x_serie_1 = co2_emissions[GlossaryCore.Years].values.tolist()
+        x_serie_1 = co2_emissions[GlossaryEnergy.Years].values.tolist()
 
         serie = InstanciatedSeries(
             x_serie_1,
@@ -522,10 +522,10 @@ class CCUS_Discipline(SoSWrapp):
         chart_name = 'CO2 emissions storage limited by CO2 to store'
         co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
         carbon_storage_by_invest = self.get_sosdisc_outputs('carbon_storage_by_invest')
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 emissions (Gt)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
-        x_serie_1 = co2_emissions[GlossaryCore.Years].values.tolist()
+        x_serie_1 = co2_emissions[GlossaryEnergy.Years].values.tolist()
         serie = InstanciatedSeries(
             x_serie_1,
             (co2_emissions[f'{CarbonCapture.name} to be stored (Mt)'].values / 1.0e3 ).tolist(), f'CO2 to store')
@@ -550,10 +550,10 @@ class CCUS_Discipline(SoSWrapp):
         '''
         chart_name = 'CO2 emissions sources'
         co2_emissions = self.get_sosdisc_outputs('co2_emissions')
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 emissions (Gt)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'CO2 emissions (Gt)',
                                              chart_name=chart_name)
 
-        x_serie_1 = co2_emissions[GlossaryCore.Years].values.tolist()
+        x_serie_1 = co2_emissions[GlossaryEnergy.Years].values.tolist()
 
         serie = InstanciatedSeries(
             x_serie_1,
@@ -589,14 +589,14 @@ class CCUS_Discipline(SoSWrapp):
         co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus_Gt')
 
         carbon_storage_limit = self.get_sosdisc_inputs('carbonstorage_limit')
-        years = list(co2_emissions[GlossaryCore.Years])
+        years = list(co2_emissions[GlossaryEnergy.Years])
 
         chart_name = 'Cumulated carbon storage (Gt) vs years'
 
         year_start = years[0]
         year_end = years[len(years) - 1]
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Cumulated carbon storage (Gt)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Cumulated carbon storage (Gt)',
                                              chart_name=chart_name)
 
         visible_line = True

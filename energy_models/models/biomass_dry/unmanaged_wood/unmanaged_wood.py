@@ -19,10 +19,10 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.techno_type.base_techno_models.biomass_dry_techno import BiomassDryTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class UnmanagedWood(BiomassDryTechno):
@@ -50,12 +50,12 @@ class UnmanagedWood(BiomassDryTechno):
     def grad_production_invest(self, capex, production, production_mix):
 
         dcapex_dinvest = self.compute_dcapex_dinvest(
-            self.invest_level.loc[self.invest_level[GlossaryCore.Years]
-                                  <= self.year_end][GlossaryCore.InvestValue].values, self.techno_infos_dict, self.initial_production)
+            self.invest_level.loc[self.invest_level[GlossaryEnergy.Years]
+                                  <= self.year_end][GlossaryEnergy.InvestValue].values, self.techno_infos_dict, self.initial_production)
 
         dprod_dinvest = self.compute_dprod_dinvest(
-            capex, self.invest_level[GlossaryCore.InvestValue].values,
-            self.invest_before_ystart[GlossaryCore.InvestValue].values,
+            capex, self.invest_level[GlossaryEnergy.InvestValue].values,
+            self.invest_before_ystart[GlossaryEnergy.InvestValue].values,
             self.techno_infos_dict, dcapex_dinvest)
 
         years = self.years
@@ -92,7 +92,7 @@ class UnmanagedWood(BiomassDryTechno):
             if column == f'{self.energy_name} ({self.product_energy_unit})':
                 var_prod = d_production_tot
                 for line in range(len(years)):
-                    if self.is_invest_before_year(years[line] - self.techno_infos_dict[GlossaryCore.ConstructionDelay]) \
+                    if self.is_invest_before_year(years[line] - self.techno_infos_dict[GlossaryEnergy.ConstructionDelay]) \
                             and var_prod[line] == 0.0 and dprod_dinvest[line, :].sum() != 0.0 and line != len(years) - 1:
 
                         var_prod[line] = var_prod[line + 1]
@@ -116,7 +116,7 @@ class UnmanagedWood(BiomassDryTechno):
 
 
 
-        self.production_mix = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.production_mix = pd.DataFrame({GlossaryEnergy.Years: self.years})
         unmanaged_production = deepcopy(
             self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'])
 
@@ -183,7 +183,7 @@ class UnmanagedWood(BiomassDryTechno):
 
         # Price_tot = Price_residue * %res + Price_wood * %wood
         # Price_residue = %res_wood * Price_wood
-        self.price_mix = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.price_mix = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.price_mix[f'{BiomassDryTechno.energy_name}_wood'] = unmanaged_price / \
             (wood_residue_percent * residue_percent + wood_percent)
         self.price_mix[f'{BiomassDryTechno.energy_name}_residue'] = wood_residue_percent * \
@@ -193,7 +193,7 @@ class UnmanagedWood(BiomassDryTechno):
 
     def get_mean_age_over_years(self):
 
-        mean_age_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        mean_age_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         self.age_distrib_prod_df['age_x_prod'] = self.age_distrib_prod_df['age'] * \
             self.age_distrib_prod_df[f'distrib_prod ({self.product_energy_unit})']
@@ -207,7 +207,7 @@ class UnmanagedWood(BiomassDryTechno):
             (1 - self.techno_infos_dict['wood_percentage_for_energy'])
 
         mean_age_df['mean age'] = self.age_distrib_prod_df.groupby(
-            [GlossaryCore.Years], as_index=False).agg({'age_x_prod': 'sum'})['age_x_prod'] / \
+            [GlossaryEnergy.Years], as_index=False).agg({'age_x_prod': 'sum'})['age_x_prod'] / \
             (production + residue_year_start_production + wood_year_start_production)
         mean_age_df.replace([np.inf, -np.inf], np.nan, inplace=True)
         mean_age_df.fillna(0.0, inplace=True)

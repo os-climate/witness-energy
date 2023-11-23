@@ -14,9 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.methanol import Methanol
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class MethanolDiscipline(EnergyDiscipline):
@@ -35,7 +35,7 @@ class MethanolDiscipline(EnergyDiscipline):
     }
     # -- add specific techno inputs to this
 
-    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+    DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': Methanol.default_techno_list,
                                      'default': Methanol.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,

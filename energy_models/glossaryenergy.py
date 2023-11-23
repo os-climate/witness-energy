@@ -27,15 +27,32 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     NB_POLES_COARSE: int = 20
 
+    AllStreamsDemandRatioValue = "all_streams_demand_ratio"
+    FlueGasMean = "flue_gas_mean"
+    MarginValue = "margin"
+    CO2EmissionsValue = "CO2_emissions"
+    EnergyCO2EmissionsValue = "energy_CO2_emissions"
+    TechnoProductionValue = "techno_production"
+    TechnoPricesValue = "techno_prices"
+    TechnoDetailedConsumptionValue = "techno_detailed_consumption"
+    TechnoDetailedProductionValue = "techno_detailed_production"
+    TechnoDetailedPricesValue = "techno_detailed_prices"
+    TechnoConsumptionValue = "techno_consumption"
+    TechnoProductionWithoutRatioValue = "techno_production_woratio"
+    RessourcesCO2EmissionsValue = "resources_CO2_emissions"
+    TransportCostValue = "transport_cost"
+    TransportMarginValue = "transport_margin"
+    TransportDemandValue = "transport_demand"
+    ForestInvestmentValue = "forest_investment"
+    InstalledPower = "power_production"  # todo : rename string to 'Installed Power [MW]' (check unit)
+
     # energy techno discipline names
-    CarbonStorageTechno = 'CarbonStorageTechno'
     FossilSimpleTechno = 'FossilSimpleTechno'
     RenewableSimpleTechno = 'RenewableSimpleTechno'
     CarbonCaptureAndStorageTechno = 'CarbonCaptureAndStorageTechno'
     CarbonStorageTechno = 'CarbonStorageTechno'
     DirectAirCapture = 'direct_air_capture.DirectAirCaptureTechno'
     FlueGasCapture = 'flue_gas_capture.FlueGasTechno'
-
 
     CCSTechnoInvest = {
         "type": "dataframe",
@@ -68,6 +85,17 @@ class GlossaryEnergy(GlossaryWitnessCore):
             GlossaryWitnessCore.Capital: ("float", None, False),
         },
     }
+
+    UtilisationRatioDf = {
+        "var_name": GlossaryWitnessCore.UtilisationRatioValue,
+        "type": "dataframe",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("int", [1900, 2100], False),
+            GlossaryWitnessCore.UtilisationRatioValue: ("float", [0, 100], False),
+        },
+    }
+
 
     EnergyTypeCapitalDfValue = "energy_type_capital"
     EnergyTypeCapitalDf = {
@@ -138,10 +166,10 @@ class GlossaryEnergy(GlossaryWitnessCore):
                'visibility': 'Shared', 'namespace': 'ns_energy_study',
                'editable': False, 'structuring': True}
 
-    ForestInvestment = {'var_name': GlossaryWitnessCore.ForestInvestmentValue, 'type': 'dataframe', 'unit': 'G$',
+    ForestInvestment = {'var_name': ForestInvestmentValue, 'type': 'dataframe', 'unit': 'G$',
                         'visibility': 'Shared',
                         'dataframe_descriptor': {GlossaryWitnessCore.Years: ('float', None, False),
-                                                 GlossaryWitnessCore.ForestInvestmentValue: (
+                                                 ForestInvestmentValue: (
                                                      'float', None, False)},
                         'namespace': 'ns_invest',
                         'dataframe_edition_locked': False}

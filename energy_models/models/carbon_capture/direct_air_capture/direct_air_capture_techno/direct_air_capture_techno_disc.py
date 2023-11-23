@@ -17,8 +17,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno import \
     DirectAirCaptureTechno
 
@@ -57,19 +57,19 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.33,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 0.88,
                                  'Capex_init_unit': '$/kgCO2',
                                  'efficiency': 0.9,
                                  'CO2_capacity_peryear': 3.6E+8,
                                  'CO2_capacity_peryear_unit': 'kg CO2/year',
                                  'real_factor_CO2': 1.0,
-                                 GlossaryCore.TransportCostValue: 0.0,
+                                 GlossaryEnergy.TransportCostValue: 0.0,
                                  'transport_cost_unit': '$/kgCO2',
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
-                                 GlossaryCore.EnergyEfficiency: 0.78,
-                                 GlossaryCore.ConstructionDelay: construction_delay,
+                                 GlossaryEnergy.EnergyEfficiency: 0.78,
+                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
@@ -79,7 +79,7 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
 
     initial_capture = 5.0e-3  # in Mt at year_start
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: np.array([0.05093, 0.05093, 15.0930]) * 0.8 / 3000})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: np.array([0.05093, 0.05093, 15.0930]) * 0.8 / 3000})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
@@ -105,9 +105,9 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)
@@ -127,7 +127,7 @@ class DirectAirCaptureTechnoDiscipline(CCTechnoDiscipline):
         CCTechnoDiscipline.compute_sos_jacobian(self)
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions)

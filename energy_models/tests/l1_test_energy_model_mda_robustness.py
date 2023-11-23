@@ -23,7 +23,7 @@ from time import sleep
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
@@ -81,7 +81,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        energy_prices0 = self.ee.dm.get_value(f'{self.name}.EnergyMix.{GlossaryCore.EnergyPricesValue}')
+        energy_prices0 = self.ee.dm.get_value(f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
 
         self.ee2 = ExecutionEngine(self.name)
         repo = 'energy_models.sos_processes.energy.MDA'
@@ -95,8 +95,8 @@ class TestMDARobustness(AbstractJacobianUnittest):
         values_dict = usecase.setup_usecase()
         years = np.arange(self.year_start, self.year_end + 1)
 
-        values_dict[1][f'{self.name}.EnergyMix.{GlossaryCore.EnergyPricesValue}'] = pd.DataFrame(
-            {GlossaryCore.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+        values_dict[1][f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}'] = pd.DataFrame(
+            {GlossaryEnergy.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                       0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                                       0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
                                                       0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
@@ -125,7 +125,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
 
         self.ee2.execute()
 
-        energy_prices1 = self.ee2.dm.get_value(f'{self.name}.EnergyMix.{GlossaryCore.EnergyPricesValue}')
+        energy_prices1 = self.ee2.dm.get_value(f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
         tolerance = full_values_dict[f'{self.name}.tolerance']
         for column in energy_prices0:
             for value1, value2 in zip(list(energy_prices0[column].values), list(energy_prices1[column].values)):

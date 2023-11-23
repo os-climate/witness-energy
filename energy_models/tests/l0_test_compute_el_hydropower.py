@@ -23,10 +23,10 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.electricity.hydropower.hydropower import Hydropower
 from energy_models.models.electricity.hydropower.hydropower_disc import HydropowerDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -45,12 +45,12 @@ class HydropowerTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.invest_level = pd.DataFrame({GlossaryCore.Years: years,
-                                          GlossaryCore.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
+        self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
+                                          GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
                                                               4694500000.0, 4780750000.0, 4867000000.0,
                                                               4969400000.0, 5071800000.0, 5174200000.0,
                                                               5276600000.0, 5379000000.0, 5364700000.0,
@@ -68,10 +68,10 @@ class HydropowerTestCase(unittest.TestCase):
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
 
         self.margin = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(2020, 2051), GlossaryCore.MarginValue: np.ones(len(np.arange(2020, 2051))) * 110})
+            {GlossaryEnergy.Years: np.arange(2020, 2051), GlossaryEnergy.MarginValue: np.ones(len(np.arange(2020, 2051))) * 110})
 
         transport_cost = 11,
         # It is noteworthy that the cost of transmission has generally been held (and can
@@ -80,10 +80,10 @@ class HydropowerTestCase(unittest.TestCase):
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
         self.transport = pd.DataFrame(
-            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * transport_cost})
+            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * transport_cost})
 
-        self.resources_price = pd.DataFrame({GlossaryCore.Years: years})
-        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years})
+        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years})
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
@@ -94,7 +94,7 @@ class HydropowerTestCase(unittest.TestCase):
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict[GlossaryCore.Years] = years
+        demand_ratio_dict[GlossaryEnergy.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -106,31 +106,31 @@ class HydropowerTestCase(unittest.TestCase):
 
         years = np.arange(2020, 2051)
         utilisation_ratio = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+            GlossaryEnergy.Years: years,
+            GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
         })
         
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
+        inputs_dict = {GlossaryEnergy.YearStart: 2020,
+                       GlossaryEnergy.YearEnd: 2050,
+                       GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': HydropowerDiscipline.techno_infos_dict_default,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: HydropowerDiscipline.invest_before_year_start,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.TransportMarginValue: self.margin,
+                       GlossaryEnergy.InvestLevelValue: self.invest_level,
+                       GlossaryEnergy.InvestmentBeforeYearStartValue: HydropowerDiscipline.invest_before_year_start,
+                       GlossaryEnergy.MarginValue:  self.margin,
+                       GlossaryEnergy.TransportCostValue: self.transport,
+                       GlossaryEnergy.ResourcesPriceValue: self.resources_price,
+                       GlossaryEnergy.EnergyPricesValue: self.energy_prices,
+                       GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
+                       GlossaryEnergy.TransportMarginValue: self.margin,
                        'initial_production': HydropowerDiscipline.initial_production,
                        'initial_age_distrib': HydropowerDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: pd.DataFrame(),
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryEnergy.EnergyCO2EmissionsValue: pd.DataFrame(),
+                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
+                       GlossaryEnergy.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
                        'is_stream_demand': self.is_stream_demand,
                        'is_apply_resource_ratio': self.is_apply_resource_ratio,
                        'smooth_type': 'smooth_max',
@@ -144,15 +144,15 @@ class HydropowerTestCase(unittest.TestCase):
 
         # Comparison in $/kWH
         plt.figure()
-        plt.xlabel(GlossaryCore.Years)
+        plt.xlabel(GlossaryEnergy.Years)
 
-        plt.plot(price_details[GlossaryCore.Years],
+        plt.plot(price_details[GlossaryEnergy.Years],
                  price_details[HydropowerDiscipline.techno_name], label='SoSTrades Total')
 
-        plt.plot(price_details[GlossaryCore.Years], price_details['transport'],
+        plt.plot(price_details[GlossaryEnergy.Years], price_details['transport'],
                  label='SoSTrades Transport')
 
-        plt.plot(price_details[GlossaryCore.Years], price_details[f'{HydropowerDiscipline.techno_name}_factory'],
+        plt.plot(price_details[GlossaryEnergy.Years], price_details[f'{HydropowerDiscipline.techno_name}_factory'],
                  label='SoSTrades Factory')
         plt.legend()
         plt.ylabel('Price ($/kWh)')
@@ -180,15 +180,15 @@ class HydropowerTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': pd.DataFrame(),
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin}
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': pd.DataFrame(),
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -196,8 +196,8 @@ class HydropowerTestCase(unittest.TestCase):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
-        production_detailed = disc.get_sosdisc_outputs(GlossaryCore.TechnoDetailedProductionValue)
-        power_production = disc.get_sosdisc_outputs(GlossaryCore.InstalledPower)
+        production_detailed = disc.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
+        power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
         self.assertLessEqual(list(production_detailed['electricity (TWh)'].values),

@@ -14,8 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.base_stream import BaseStream
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CarbonStorage(BaseStream):
@@ -40,5 +40,5 @@ class CarbonStorage(BaseStream):
                         'high_calorific_value_unit': 'kWh/kg'}
 
     def configure_parameters(self, inputs_dict):
-        self.subelements_list = inputs_dict[GlossaryCore.techno_list]
+        self.subelements_list = inputs_dict[GlossaryEnergy.techno_list]
         BaseStream.configure_parameters(self, inputs_dict)

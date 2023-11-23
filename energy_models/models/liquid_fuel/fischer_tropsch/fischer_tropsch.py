@@ -21,7 +21,6 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.electricity import Electricity
@@ -32,6 +31,7 @@ from energy_models.core.stream_type.energy_models.syngas import compute_molar_ma
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift import WGS
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
 from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift import RWGS
@@ -42,7 +42,7 @@ class FischerTropsch(LiquidFuelTechno):
 
     def configure_parameters_update(self, inputs_dict):
         LiquidFuelTechno.configure_parameters_update(self, inputs_dict)
-        self.cost_details = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.cost_details = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.syngas_ratio = np.array(inputs_dict['syngas_ratio']) / 100.0
 
         self.needed_syngas_ratio = self.techno_infos_dict['carbon_number'] / (
@@ -92,7 +92,7 @@ class FischerTropsch(LiquidFuelTechno):
             dprice_RWGS_dsyngas_ratio = self.syngas_ratio_techno.compute_dprice_RWGS_wo_taxes_dsyngas_ratio()
             dco2_taxes_dsyngas_ratio = self.syngas_ratio_techno.dco2_taxes_dsyngas_ratio()
 
-            self.dprice_FT_wotaxes_dsyngas_ratio = dprice_RWGS_dsyngas_ratio * self.margin[GlossaryCore.MarginValue].values / 100.0 * \
+            self.dprice_FT_wotaxes_dsyngas_ratio = dprice_RWGS_dsyngas_ratio * self.margin[GlossaryEnergy.MarginValue].values / 100.0 * \
                 (np.ones(len(self.years)) * sg_needs_efficiency)
             self.cost_details[self.sg_transformation_name] = self.price_details_sg_techno[
                 f'{self.sg_transformation_name}_wotaxes']
@@ -109,7 +109,7 @@ class FischerTropsch(LiquidFuelTechno):
                 self.syngas_ratio)
             # For WGS dprice is composed of dsyngas, dwater, dCO2_taxes
             dprice_WGS_dsyngas_ratio = self.syngas_ratio_techno.compute_dprice_WGS_wo_taxes_dsyngas_ratio() * \
-                self.margin[GlossaryCore.MarginValue].values / 100.0
+                self.margin[GlossaryEnergy.MarginValue].values / 100.0
             dco2_taxes_dsyngas_ratio = self.syngas_ratio_techno.dco2_taxes_dsyngas_ratio()
 
             self.dprice_FT_wotaxes_dsyngas_ratio = dprice_WGS_dsyngas_ratio * \
@@ -133,7 +133,7 @@ class FischerTropsch(LiquidFuelTechno):
             price_details_sg_techno_wgs[self.sg_transformation_name] = price_details_sg_techno_wgs['WGS']
             # WGS matrix
             dprice_WGS_dsyngas_ratio = self.syngas_ratio_techno_wgs.compute_dprice_WGS_wo_taxes_dsyngas_ratio() * \
-                self.margin[GlossaryCore.MarginValue].values / 100.0
+                self.margin[GlossaryEnergy.MarginValue].values / 100.0
             dco2_taxes_dsyngas_ratio_wgs = self.syngas_ratio_techno_wgs.dco2_taxes_dsyngas_ratio()
 
             dprice_FT_wotaxes_dsyngas_ratio_wgs = dprice_WGS_dsyngas_ratio * \
@@ -155,7 +155,7 @@ class FischerTropsch(LiquidFuelTechno):
             # RWGS matrix
 
             dprice_RWGS_dsyngas_ratio = self.syngas_ratio_techno_rwgs.compute_dprice_RWGS_wo_taxes_dsyngas_ratio() * \
-                self.margin[GlossaryCore.MarginValue].values / 100.0
+                self.margin[GlossaryEnergy.MarginValue].values / 100.0
             dco2_taxes_dsyngas_ratio_rwgs = self.syngas_ratio_techno_rwgs.dco2_taxes_dsyngas_ratio()
             dprice_FT_wotaxes_dsyngas_ratio_RWGS = dprice_RWGS_dsyngas_ratio * \
                 (np.ones(len(self.years)) * sg_needs_efficiency)
@@ -351,27 +351,27 @@ class FischerTropsch(LiquidFuelTechno):
 
     def compute_rwgs_contribution(self, sg_ratio):
         years = np.arange(self.year_start, self.year_end + 1)
-        utlisation_ratio = pd.DataFrame({GlossaryCore.Years: years,
-                                        GlossaryCore.UtilisationRatioValue: self.utilisation_ratio})
-        inputs_dict = {GlossaryCore.YearStart: self.year_start,
-                       GlossaryCore.YearEnd: self.year_end,
-                       GlossaryCore.UtilisationRatioValue: utlisation_ratio,
+        utlisation_ratio = pd.DataFrame({GlossaryEnergy.Years: years,
+                                        GlossaryEnergy.UtilisationRatioValue: self.utilisation_ratio})
+        inputs_dict = {GlossaryEnergy.YearStart: self.year_start,
+                       GlossaryEnergy.YearEnd: self.year_end,
+                       GlossaryEnergy.UtilisationRatioValue: utlisation_ratio,
                        'techno_infos_dict': RWGSDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.prices,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_CO2_emissions,
+                       GlossaryEnergy.EnergyPricesValue: self.prices,
+                       GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_CO2_emissions,
                        # We suppose invest are not influencing the price of WGS or RWGS because the gradient is a mess to compute
                        # AND Is it obvious the fact that investing in Fischer
                        # Tropsch will decrease the price of WGS ?
-                       GlossaryCore.InvestLevelValue: pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.InvestValue: 1.0}),
-                       GlossaryCore.InvestmentBeforeYearStartValue: RWGSDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.CO2_taxes,
-                       GlossaryCore.MarginValue: pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.MarginValue: 100.0}),
-                       GlossaryCore.TransportCostValue: pd.DataFrame({GlossaryCore.Years: years, 'transport': 0.0}),
-                       GlossaryCore.TransportMarginValue: pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.MarginValue: 100.0}),
+                       GlossaryEnergy.InvestLevelValue: pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 1.0}),
+                       GlossaryEnergy.InvestmentBeforeYearStartValue: RWGSDiscipline.invest_before_year_start,
+                       GlossaryEnergy.CO2TaxesValue: self.CO2_taxes,
+                       GlossaryEnergy.MarginValue: pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),
+                       GlossaryEnergy.TransportCostValue: pd.DataFrame({GlossaryEnergy.Years: years, 'transport': 0.0}),
+                       GlossaryEnergy.TransportMarginValue: pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),
                        'initial_production': RWGSDiscipline.initial_production,
                        'initial_age_distrib': RWGSDiscipline.initial_age_distribution,
-                       GlossaryCore.RessourcesCO2EmissionsValue: self.resources_CO2_emissions,
-                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
+                       GlossaryEnergy.RessourcesCO2EmissionsValue: self.resources_CO2_emissions,
+                       GlossaryEnergy.ResourcesPriceValue: self.resources_prices,
                        'syngas_ratio': sg_ratio * 100.0,
                        'needed_syngas_ratio': self.needed_syngas_ratio * 100.0,
                        'scaling_factor_invest_level': self.scaling_factor_invest_level,
@@ -383,7 +383,7 @@ class FischerTropsch(LiquidFuelTechno):
                        'data_fuel_dict': self.syngas_energy_dict
                        }
         if self.is_stream_demand:
-            inputs_dict[GlossaryCore.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
+            inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
         if self.is_apply_resource_ratio:
             inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND] = self.ratio_available_resource
 
@@ -400,29 +400,29 @@ class FischerTropsch(LiquidFuelTechno):
     def compute_wgs_contribution(self, sg_ratio):
         years = np.arange(self.year_start, self.year_end + 1)
         utlisation_ratio = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.UtilisationRatioValue: self.utilisation_ratio
+            GlossaryEnergy.Years: years,
+            GlossaryEnergy.UtilisationRatioValue: self.utilisation_ratio
         })
-        inputs_dict = {GlossaryCore.YearStart: self.year_start,
-                       GlossaryCore.YearEnd: self.year_end,
-                       GlossaryCore.UtilisationRatioValue: utlisation_ratio,
+        inputs_dict = {GlossaryEnergy.YearStart: self.year_start,
+                       GlossaryEnergy.YearEnd: self.year_end,
+                       GlossaryEnergy.UtilisationRatioValue: utlisation_ratio,
                        'techno_infos_dict': WaterGasShiftDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.prices,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_CO2_emissions,
+                       GlossaryEnergy.EnergyPricesValue: self.prices,
+                       GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_CO2_emissions,
                        # We suppose invest are not influencing the price of WGS or RWGS because the gradient is a mess to compute
                        # AND Is it obvious the fact that investing in Fischer
                        # Tropsch will decrease the price of WGS ? Not sure so
                        # the hypothesis looks fine
-                       GlossaryCore.InvestLevelValue: pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.InvestValue: 1.0}),
-                       GlossaryCore.InvestmentBeforeYearStartValue: WaterGasShiftDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.CO2_taxes,
-                       GlossaryCore.MarginValue:  pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.MarginValue: 100.0}),
-                       GlossaryCore.TransportCostValue: pd.DataFrame({GlossaryCore.Years: years, 'transport': 0.0}),
-                       GlossaryCore.TransportMarginValue: pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.MarginValue: 100.0}),
+                       GlossaryEnergy.InvestLevelValue: pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 1.0}),
+                       GlossaryEnergy.InvestmentBeforeYearStartValue: WaterGasShiftDiscipline.invest_before_year_start,
+                       GlossaryEnergy.CO2TaxesValue: self.CO2_taxes,
+                       GlossaryEnergy.MarginValue:  pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),
+                       GlossaryEnergy.TransportCostValue: pd.DataFrame({GlossaryEnergy.Years: years, 'transport': 0.0}),
+                       GlossaryEnergy.TransportMarginValue: pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 100.0}),
                        'initial_production': WaterGasShiftDiscipline.initial_production,
                        'initial_age_distrib': WaterGasShiftDiscipline.initial_age_distribution,
-                       GlossaryCore.RessourcesCO2EmissionsValue: self.resources_CO2_emissions,
-                       GlossaryCore.ResourcesPriceValue: self.resources_prices,
+                       GlossaryEnergy.RessourcesCO2EmissionsValue: self.resources_CO2_emissions,
+                       GlossaryEnergy.ResourcesPriceValue: self.resources_prices,
                        'syngas_ratio': sg_ratio * 100.0,
                        'needed_syngas_ratio': self.needed_syngas_ratio * 100.0,
                        'scaling_factor_invest_level': self.scaling_factor_invest_level,
@@ -434,7 +434,7 @@ class FischerTropsch(LiquidFuelTechno):
                        'data_fuel_dict': self.gaseous_hydrogen_energy_dict
                        }
         if self.is_stream_demand:
-            inputs_dict[GlossaryCore.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
+            inputs_dict[GlossaryEnergy.AllStreamsDemandRatioValue] = self.all_streams_demand_ratio
         if self.is_apply_resource_ratio:
             inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND] = self.ratio_available_resource
 
@@ -752,7 +752,7 @@ class FischerTropsch(LiquidFuelTechno):
         expo_factor = self.compute_expo_factor(
             self.techno_infos_dict)
 
-        if 'complex128' in [type(self.initial_production), type(capex_init), self.cost_details[GlossaryCore.InvestValue].values.dtype]:
+        if 'complex128' in [type(self.initial_production), type(capex_init), self.cost_details[GlossaryEnergy.InvestValue].values.dtype]:
             arr_type = 'complex128'
         else:
             arr_type = 'float64'
@@ -769,7 +769,7 @@ class FischerTropsch(LiquidFuelTechno):
         else:
             maximum_learning_capex_ratio = 0.9
 
-        invest_list = self.cost_details[GlossaryCore.InvestValue].values
+        invest_list = self.cost_details[GlossaryEnergy.InvestValue].values
 
         if min(invest_list.real) < 0:
             print(

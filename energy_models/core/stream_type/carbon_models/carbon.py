@@ -14,16 +14,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.base_stream import BaseStream
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Carbon(BaseStream):
     name = ResourceGlossary.Carbon['name']
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
-                        'CO2_per_use': ResourceGlossary.Carbon[GlossaryCore.CO2EmissionsValue],
+                        'CO2_per_use': ResourceGlossary.Carbon[GlossaryEnergy.CO2EmissionsValue],
                         'CO2_per_use_unit': 'kg/kg',
                         'density': 2267.0,
                         'density_unit': 'kg/m^3',

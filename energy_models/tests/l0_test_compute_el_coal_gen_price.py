@@ -21,10 +21,10 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -43,11 +43,11 @@ class CoalGenPriceTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                                     0.089236536471781, 0.08899046935409588, 0.08874840310033885,
                                                                                     0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
                                                                                     0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
@@ -62,9 +62,9 @@ class CoalGenPriceTestCase(unittest.TestCase):
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryCore.Years: years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0})
         self.invest_level = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.ones(len(years)) * 50.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 50.0})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -73,9 +73,9 @@ class CoalGenPriceTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
 
         transport_cost = 0
         # It is noteworthy that the cost of transmission has generally been held (and can
@@ -84,12 +84,12 @@ class CoalGenPriceTestCase(unittest.TestCase):
         # leftmost bar to 170km for the 2020 scenarios / OWPB 2016
 
         self.transport = pd.DataFrame(
-            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * transport_cost})
+            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * transport_cost})
         self.resources_price = pd.DataFrame()
 
         self.resources_price = pd.DataFrame(
-            columns=[GlossaryCore.Years, ResourceGlossary.Water['name']])
-        self.resources_price[GlossaryCore.Years] = years
+            columns=[GlossaryEnergy.Years, ResourceGlossary.Water['name']])
+        self.resources_price[GlossaryEnergy.Years] = years
         self.resources_price[ResourceGlossary.Water['name']
                              ] = Water.data_energy_dict['cost_now']
 
@@ -102,7 +102,7 @@ class CoalGenPriceTestCase(unittest.TestCase):
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict[GlossaryCore.Years] = years
+        demand_ratio_dict[GlossaryEnergy.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -136,15 +136,15 @@ class CoalGenPriceTestCase(unittest.TestCase):
             traceback.print_exc()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin}
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -153,8 +153,8 @@ class CoalGenPriceTestCase(unittest.TestCase):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
 
-        production_detailed = disc.get_sosdisc_outputs(GlossaryCore.TechnoDetailedProductionValue)
-        power_production = disc.get_sosdisc_outputs(GlossaryCore.InstalledPower)
+        production_detailed = disc.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
+        power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
         self.assertLessEqual(list(production_detailed['electricity (TWh)'].values),

@@ -18,8 +18,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.gaseous_hydrogen.electrolysis.soec.electrolysis_soec import ElectrolysisSOEC
 
 
@@ -56,7 +56,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'learning_rate':  0.2,
                                  'maximum_learning_capex_ratio': 500.0 / 2800,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 2800,
                                  'Capex_init_unit': '$/kW',
                                  'euro_dollar': 1.114,
@@ -68,7 +68,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.84,
                                  'efficiency_max': 0.92,  # because of topsoe
-                                 GlossaryCore.ConstructionDelay: construction_delay}
+                                 GlossaryEnergy.ConstructionDelay: construction_delay}
 
     initial_production = 0.0
 
@@ -80,7 +80,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
 # Worldwide the investment of europe for PEM is 36%   190/2*100/32 = 297 M$
 # https://www.euractiv.com/section/energy/news/europe-china-battle-for-global-supremacy-on-electrolyser-manufacturing/
     invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
-                                             GlossaryCore.InvestValue: [0.297]})
+                                             GlossaryEnergy.InvestValue: [0.297]})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -88,15 +88,15 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                       'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe',
                                        'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe',
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
                                         'unit': 'G$',
                                         'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 

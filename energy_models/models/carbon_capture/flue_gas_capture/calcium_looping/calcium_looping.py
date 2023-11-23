@@ -16,9 +16,9 @@ limitations under the License.
 '''
 import numpy as np
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CalciumLooping(CCTechno):
@@ -26,7 +26,7 @@ class CalciumLooping(CCTechno):
     def configure_parameters_update(self, inputs_dict):
 
         CCTechno.configure_parameters_update(self, inputs_dict)
-        self.flue_gas_ratio = inputs_dict[GlossaryCore.FlueGasMean].loc[inputs_dict[GlossaryCore.FlueGasMean][GlossaryCore.Years]
+        self.flue_gas_ratio = inputs_dict[GlossaryEnergy.FlueGasMean].loc[inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.Years]
                                                                <= self.year_end]
         # To deal quickly with l0 test
         if 'fg_ratio_effect' in inputs_dict:
@@ -43,7 +43,7 @@ class CalciumLooping(CCTechno):
                                                    )
 
         self.cost_details[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect)
+            self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
         return self.cost_details[Electricity.name]
 
@@ -56,7 +56,7 @@ class CalciumLooping(CCTechno):
         heat_needs = self.get_heat_needs()
         efficiency = self.configure_efficiency()
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency * self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect)}
+            self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)}
 
     def compute_consumption_and_production(self):
         """
@@ -76,13 +76,13 @@ class CalciumLooping(CCTechno):
 
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs'] * self.compute_electricity_variation_from_fg_ratio(
-            self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect)
+            self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
         return self.carbon_intensity[Electricity.name] - 1.0
 
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)
         capex_calc_list *= self.compute_capex_variation_from_fg_ratio(
-            self.flue_gas_ratio[GlossaryCore.FlueGasMean].values, self.fg_ratio_effect)
+            self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
         return capex_calc_list
