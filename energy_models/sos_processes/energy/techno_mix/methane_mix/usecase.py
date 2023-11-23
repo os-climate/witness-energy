@@ -71,33 +71,6 @@ class Study(EnergyMixStudyManager):
 
         return methane_mix_invest_df
 
-    def get_investments_old(self):
-        invest_methane_mix_dict = {}
-        l_ctrl = np.arange(0, 8)
-
-        if 'FossilGas' in self.technologies_list:
-            invest_methane_mix_dict['FossilGas'] = [
-                max(1e-8, 1.88 - 0.04 * i) for i in l_ctrl]
-
-        if 'UpgradingBiogas' in self.technologies_list:
-            invest_methane_mix_dict['UpgradingBiogas'] = [
-                max(1e-8, 0.02 * (1 + 0.054)**i) for i in l_ctrl]
-
-        if 'Methanation' in self.technologies_list:
-            invest_methane_mix_dict['Methanation'] = np.ones(
-                len(l_ctrl)) * 0.001
-
-        if self.bspline:
-            invest_methane_mix_dict[GlossaryCore.Years] = self.years
-
-            for techno in self.technologies_list:
-                invest_methane_mix_dict[techno], _ = self.invest_bspline(
-                    invest_methane_mix_dict[techno], len(self.years))
-
-        methane_mix_invest_df = pd.DataFrame(invest_methane_mix_dict)
-
-        return methane_mix_invest_df
-
     def setup_usecase(self):
         energy_mix_name = 'EnergyMix'
         self.energy_name = Methane.name

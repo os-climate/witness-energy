@@ -65,24 +65,6 @@ class Study(EnergyMixStudyManager):
 
         return methanol_mix_invest_df
 
-    def get_investments_old(self):
-        invest_methanol_mix_dict = {}
-        l_ctrl = np.arange(0, 8)
-
-        if 'CO2Hydrogenation' in self.technologies_list:
-            invest_methanol_mix_dict['CO2Hydrogenation'] = [
-                max(1e-8, 1.88 - 0.04 * i) for i in l_ctrl]
-        if self.bspline:
-            invest_methanol_mix_dict[GlossaryCore.Years] = self.years
-
-            for techno in self.technologies_list:
-                invest_methanol_mix_dict[techno], _ = self.invest_bspline(
-                    invest_methanol_mix_dict[techno], len(self.years))
-
-        methanol_mix_invest_df = pd.DataFrame(invest_methanol_mix_dict)
-
-        return methanol_mix_invest_df
-
     def setup_usecase(self):
         energy_mix_name = 'EnergyMix'
         self.energy_name = Methanol.name
