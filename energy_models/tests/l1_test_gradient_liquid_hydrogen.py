@@ -225,7 +225,6 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}', ], )
 
     def test_02_liquid_hydrogen_discipline_jacobian(self):
-
         self.name = 'Test'
         self.energy_name = 'hydrogen.liquid_hydrogen'
         self.ee = ExecutionEngine(self.name)
