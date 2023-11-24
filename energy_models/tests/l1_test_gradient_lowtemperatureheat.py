@@ -54,6 +54,7 @@ class LowTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
+
         self.energy_name = 'lowtemperatureheat'
         years = np.arange(2020, 2051)
         self.resource_list = [

@@ -461,7 +461,6 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                    'ns_resource': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
-
         mod_path = 'energy_models.core.stream_type.energy_disciplines.high_heat_disc.HighHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.energy_name, mod_path)
