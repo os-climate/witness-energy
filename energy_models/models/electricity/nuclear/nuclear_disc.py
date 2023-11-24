@@ -67,7 +67,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'capacity_factor': 0.90,
                                  'techno_evo_eff': 'no',
                                  'efficiency': 0.35,
-                                 'heat_recovery_factor': 0.6,
+                                 'useful_heat_recovery_factor': 0.6,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  GlossaryCore.ConstructionDelay: construction_delay,
@@ -186,4 +186,21 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
 
         return new_chart
 
-    
+    # def compute_sos_jacobian(self):
+    #     ElectricityTechnoDiscipline.compute_sos_jacobian(self)
+    #
+    #     # the generic gradient for production column is not working because of
+    #     # abandoned mines not proportional to production
+    #
+    #     scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+    #         ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+    #     applied_ratio = self.get_sosdisc_outputs(
+    #         'applied_ratio')['applied_ratio'].values
+    #
+    #     dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+    #     consumption_gradient = self.techno_consumption_derivative[f'{BiomassDry.name} ({self.techno_model.product_energy_unit})']
+    #     #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
+    #     self.set_partial_derivative_for_other_types(
+    #         (GlossaryCore.TechnoProductionValue,
+    #          f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
+    #         (consumption_gradient- dprod_name_dinvest))
