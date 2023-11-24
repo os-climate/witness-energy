@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/25-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/09/25-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-
+from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
+from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
+import numpy as np
 
 
 class Nuclear(ElectricityTechno):
@@ -56,22 +55,10 @@ class Nuclear(ElectricityTechno):
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ?
         """
-        
-
-        # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
-        #       self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
-        #       self.techno_infos_dict['efficiency']
-
-
-
-
-
-        # self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs'] * \
-        #     self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.compute_primary_energy_production()
 
         # Uranium resource consumption, total (electricity production/ efficiency) / (calorific value of Uranium per Mega Ton)
         # https://www.euronuclear.org/glossary/fuel-comparison/
-
 
         '''
         One tonne of natural uranium feed might end up: as 120-130 kg of uranium for power reactor fuel
@@ -79,27 +66,29 @@ class Nuclear(ElectricityTechno):
         '''
         # FOR ALL_RESOURCES DISCIPLINE
 
-        self.consumption_detailed[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = \
-            (self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] / \
+        self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = \
+            (self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] / \
              self.techno_infos_dict['efficiency']) / (24000000.00)
 
         water_needs = self.get_theoretical_water_needs()
-        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = water_needs * \
-                                                                        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
+        self.consumption[f'{Water.name} ({self.mass_unit})'] = water_needs * \
+            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
-                                                                                               self.consumption_detailed[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00  * self.techno_infos_dict['useful_heat_recovery_factor'] \
+                                                                                      * self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
 
 
-    def compute_consumption_and_installed_power(self):
+    def compute_consumption_and_power_production(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment
         """
+        self.compute_primary_power_production()
 
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.installed_power['new_power_production'] # in Mt
+        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * 0.350000224 *\
+                                                                              self.power_production['new_power_production'] # in Mt
         
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -107,12 +96,12 @@ class Nuclear(ElectricityTechno):
         Need to take into account  CO2 from electricity/hydrogen production
         """
 
-        self.carbon_intensity[self.URANIUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.URANIUM_RESOURCE_NAME] * \
-                                                            self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs']
-        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                            self.cost_details['water_needs']
+        self.carbon_emissions[self.URANIUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.URANIUM_RESOURCE_NAME] * \
+            self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs']  #* 2.85714103055875 * 0.122500060041371
+        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
+            self.cost_details['water_needs']  #* 2.85714103055875 * 0.122500060041371
 
-        return self.carbon_intensity[self.URANIUM_RESOURCE_NAME] + self.carbon_intensity[Water.name]
+        return self.carbon_emissions[self.URANIUM_RESOURCE_NAME] + self.carbon_emissions[Water.name]
 
     #@staticmethod
     def get_theoretical_uranium_fuel_needs(self):
@@ -127,7 +116,8 @@ class Nuclear(ElectricityTechno):
         => 1 kg of fuel => 8.33 kg of ore
         With a complete  fission, approx around 24,000,000 kWh of heat can be generated from 1 kg of uranium-235
         """
-        uranium_fuel_needs = 1.0 / (24000000.00 * self.techno_infos_dict['efficiency']) # kg of uranium_fuel needed for 1 kWh of electric
+        efficiency = self.configure_efficiency()
+        uranium_fuel_needs = 1.0 * 0.050000224 / (24000000.00 * efficiency)  # kg of uranium_fuel needed for 1 kWh of electric
 
         return uranium_fuel_needs
 
@@ -137,7 +127,7 @@ class Nuclear(ElectricityTechno):
         The Nuclear Energy Institute estimates that, per megawatt-hour, a nuclear power reactor
         consumes between 1,514 and 2,725 litres of water.
         """
-        water_needs = (1541 + 2725) / 2 / 1000
+        water_needs = (1541 + 2725) * 0.000000224 / 2 / 1000
 
         return water_needs
     
@@ -252,12 +242,13 @@ class Nuclear(ElectricityTechno):
         '''
         Compute the gradient of global price vs resources prices
         '''
-        water_needs = self.get_theoretical_water_needs()
-        uranium_needs = self.get_theoretical_uranium_fuel_needs()
+        water_needs = self.get_theoretical_water_needs() * 0.350000224
+        uranium_needs = self.get_theoretical_uranium_fuel_needs() * 0.350000224
         efficiency = self.configure_efficiency()
+
         return {
             Water.name: np.identity(
                 len(self.years)) * water_needs / efficiency[:, np.newaxis],
             self.URANIUM_RESOURCE_NAME: np.identity(
-                len(self.years)) * uranium_needs / efficiency[:, np.newaxis],
+                len(self.years)) * uranium_needs  / efficiency[:, np.newaxis],
         }
