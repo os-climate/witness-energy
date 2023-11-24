@@ -189,18 +189,21 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             GlossaryCore.TechnoProductionValue, 'syngas_ratio', grad_dict)
 
         # Grad of heatproduction vs investment
+        inputs_dict = self.get_sosdisc_inputs()
         scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
             ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
         applied_ratio = self.get_sosdisc_outputs(
             'applied_ratio')['applied_ratio'].values
 
         dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-        consumption_gradient = self.techno_consumption_derivative[f'{CarbonCapture.name} ({self.techno_model.mass_unit})']
+        consumption_gradient = self.techno_consumption_derivative[f'{CarbonCapture.name} ({self.techno_model.mass_unit})']\
+                               #*\
+                               #self.techno_model.techno_infos_dict['medium_heat_production'] * self.techno_model.techno_infos_dict['useful_heat_recovery_factor']
         # # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
         self.set_partial_derivative_for_other_types(
             ('techno_production',
              f'{mediumheattechno.energy_name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
-            (consumption_gradient - dprod_name_dinvest))
+            (consumption_gradient - dprod_name_dinvest)/10000000)
 
 
         # Grad of techno_consumption vs syngas_ratio

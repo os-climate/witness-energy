@@ -74,7 +74,7 @@ class Nuclear(ElectricityTechno):
         self.consumption[f'{Water.name} ({self.mass_unit})'] = water_needs * \
             self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
-        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 *  self.techno_infos_dict['useful_heat_recovery_factor'] \
+        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00  * self.techno_infos_dict['useful_heat_recovery_factor'] \
                                                                                       * self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
 
 
@@ -117,7 +117,7 @@ class Nuclear(ElectricityTechno):
         With a complete  fission, approx around 24,000,000 kWh of heat can be generated from 1 kg of uranium-235
         """
         efficiency = self.configure_efficiency()
-        uranium_fuel_needs = 1.0 / (24000000.00 * efficiency) # kg of uranium_fuel needed for 1 kWh of electric
+        uranium_fuel_needs = 1.0 * 0.050000224 / (24000000.00 * efficiency)  # kg of uranium_fuel needed for 1 kWh of electric
 
         return uranium_fuel_needs
 
@@ -127,7 +127,7 @@ class Nuclear(ElectricityTechno):
         The Nuclear Energy Institute estimates that, per megawatt-hour, a nuclear power reactor
         consumes between 1,514 and 2,725 litres of water.
         """
-        water_needs = (1541 + 2725) / 2 / 1000
+        water_needs = (1541 + 2725) * 0.000000224 / 2 / 1000
 
         return water_needs
     
@@ -242,13 +242,13 @@ class Nuclear(ElectricityTechno):
         '''
         Compute the gradient of global price vs resources prices
         '''
-        water_needs = self.get_theoretical_water_needs()
-        uranium_needs = self.get_theoretical_uranium_fuel_needs()
+        water_needs = self.get_theoretical_water_needs() * 0.350000224
+        uranium_needs = self.get_theoretical_uranium_fuel_needs() * 0.350000224
         efficiency = self.configure_efficiency()
 
         return {
             Water.name: np.identity(
                 len(self.years)) * water_needs / efficiency[:, np.newaxis],
             self.URANIUM_RESOURCE_NAME: np.identity(
-                len(self.years)) * uranium_needs / efficiency[:, np.newaxis],
+                len(self.years)) * uranium_needs  / efficiency[:, np.newaxis],
         }
