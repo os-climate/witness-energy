@@ -219,6 +219,8 @@ class TechnoDiscipline(SoSWrapp):
         installed_power = outputs_dict[GlossaryCore.InstalledPower]
         utilisation_ratio = inputs_dict[GlossaryCore.UtilisationRatioValue][GlossaryCore.UtilisationRatioValue].values
         ratio_df = self.techno_model.ratio_df
+        # print('*******')
+        # print(invest_level)
         dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
             invest_level.loc[invest_level[GlossaryCore.Years]
                              <= self.techno_model.year_end][GlossaryCore.InvestValue].values * scaling_factor_invest_level, self.techno_model.techno_infos_dict, self.techno_model.initial_production)

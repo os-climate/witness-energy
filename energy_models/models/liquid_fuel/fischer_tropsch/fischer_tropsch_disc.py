@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/10-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/10/10-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,25 +14,32 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pandas as pd
+import numpy as np
 from copy import deepcopy
 
-import numpy as np
-import pandas as pd
-
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import LiquidFuelTechnoDiscipline
 from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch import FischerTropsch
-from energy_models.models.syngas.autothermal_reforming.autothermal_reforming_disc import AutothermalReformingDiscipline
-from energy_models.models.syngas.biomass_gasification.biomass_gasification_disc import BiomassGasificationDiscipline
-from energy_models.models.syngas.co_electrolysis.co_electrolysis_disc import CoElectrolysisDiscipline
-from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
-from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
-from energy_models.models.syngas.smr.smr_disc import SMRDiscipline
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.syngas import Syngas
 
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+
+from energy_models.models.syngas.biomass_gasification.biomass_gasification_disc import BiomassGasificationDiscipline
+from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
+from energy_models.models.syngas.co_electrolysis.co_electrolysis_disc import CoElectrolysisDiscipline
+from energy_models.models.syngas.smr.smr_disc import SMRDiscipline
+from energy_models.models.syngas.autothermal_reforming.autothermal_reforming_disc import AutothermalReformingDiscipline
+from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
+from energy_models.core.stream_type.energy_models.kerosene import Kerosene
+from energy_models.core.stream_type.energy_models.gasoline import Gasoline
+from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
+from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
+from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
+from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 
 class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
@@ -71,10 +78,12 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'learning_rate':  0.15,
                                  'maximum_learning_capex_ratio': 0.5,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
+                                 'medium_heat_production': ((165-41)/28.01)*1000*2.77778e-13,
                                  'lifetime_unit': GlossaryCore.Years,
                                  # 'medium_heat_production': (165/28.01)*1000*2.77778e-13,
                                  # # https://www.sciencedirect.com/science/article/pii/S1385894718309215, reaction enthalpy of −165 kJ/molCO
-                                 # 'medium_heat_production_unit': 'TWh/kg',
+                                 'medium_heat_production_unit': 'TWh/kg',
+                                 'useful_heat_recovery_factor': 0.8,
                                  # 60000 euro/bpd : 1 barrel = 1553,41kwh of
                                  # liquid_fuel per 24 hours
                                  # Capex initial at year 2020
@@ -82,7 +91,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.65,
                                  'techno_evo_eff': 'no',
-                                 GlossaryCore.ConstructionDelay: construction_delay,
+                                 'construction_delay': construction_delay,
                                  # N/2N+1 with N number of carbon mol in
                                  # liquid_fuel
                                  'carbon_number': 12}  # To review
@@ -179,6 +188,24 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         self.set_partial_derivatives_output_wr_input(
             GlossaryCore.TechnoProductionValue, 'syngas_ratio', grad_dict)
 
+        # Grad of heatproduction vs investment
+        inputs_dict = self.get_sosdisc_inputs()
+        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+        applied_ratio = self.get_sosdisc_outputs(
+            'applied_ratio')['applied_ratio'].values
+
+        dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+        consumption_gradient = self.techno_consumption_derivative[f'{CarbonCapture.name} ({self.techno_model.mass_unit})']\
+                               #*\
+                               #self.techno_model.techno_infos_dict['medium_heat_production'] * self.techno_model.techno_infos_dict['useful_heat_recovery_factor']
+        # # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
+        self.set_partial_derivative_for_other_types(
+            ('techno_production',
+             f'{mediumheattechno.energy_name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
+            (consumption_gradient - dprod_name_dinvest)/10000000)
+
+
         # Grad of techno_consumption vs syngas_ratio
 
         grad_dict = self.techno_model.grad_techno_consumption_vs_syngas_ratio(
@@ -236,8 +263,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                 self.set_partial_derivative_for_other_types(
                     (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.EnergyCO2EmissionsValue, energy), self.dprices_demissions[energy])
         if carbon_emissions is not None:
-            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_intensity[GlossaryCore.Years].max(
-            )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values
+            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_emissions[GlossaryCore.Years].max(
+            )) * self.techno_model.carbon_emissions[self.techno_name].clip(0).values
             dtechno_prices_dCO2_taxes = dCO2_taxes_factory
 
             self.set_partial_derivative_for_other_types(
@@ -321,10 +348,16 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
     def get_chart_filter_list(self):
 
-        chart_filters = super().get_chart_filter_list()
-        chart_filters[0].extend(['Age Distribution Production', 'X to Liquid technologies'])
-        chart_filters[1].extend(['$/USgallon'])
+        chart_filters = []
+        chart_list = ['Detailed prices',
+                      'Consumption and production', 'Age Distribution Production',
+                      'Initial Production', 'Factory Mean Age', 'CO2 emissions', 'X to Liquid technologies']
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
 
+        price_unit_list = ['$/MWh', '$/t', '$/USgallon']
+        chart_filters.append(ChartFilter(
+            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
