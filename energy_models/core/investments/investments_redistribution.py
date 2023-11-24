@@ -13,11 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.glossaryenergy import GlossaryEnergy
+from math import isclose
 
 
 class InvestmentsRedistribution():
@@ -78,7 +79,7 @@ class InvestmentsRedistribution():
                 self.total_investments_in_energy_w_biomass_dry += self.inputs_dict[techno][
                     GlossaryCore.InvestmentsValue].values
         self.energy_investment_wo_tax = pd.DataFrame(
-            {GlossaryCore.Years: self.total_investments_in_energy_w_biomass_dry,
+            {GlossaryCore.Years: self.years.reset_index(drop=True),
              GlossaryCore.EnergyInvestmentsWoTaxValue: self.total_investments_in_energy_w_biomass_dry / 1e3})  # G$ to T$
 
     def compute_investment_per_technology(self):
@@ -100,8 +101,10 @@ class InvestmentsRedistribution():
                                                               self.techno_invest_percentage_df[techno].values) / 100.
 
         # create dictionnary with all dataframes of investments prepared
+        # in case of witness studies, self.years has index=years whereas invests have index starting at 0
+        # => Reset self.years index so that they are consistent with invests indices and fill out properly the df
         self.investment_per_technology_dict = {
-            full_techno_name: pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: invests
+            full_techno_name: pd.DataFrame({GlossaryEnergy.Years: self.years.reset_index(drop=True), GlossaryEnergy.InvestValue: invests
                                             }) for full_techno_name, invests in investments_dict.items()}
 
     def check_data_integrity(self, inputs_dict):
@@ -127,10 +130,10 @@ class InvestmentsRedistribution():
         techno_percentages_col = self.techno_invest_percentage_df.columns[
             self.techno_invest_percentage_df.columns != 'years']
 
-        # check if sum is 100% or not
+        # check if sum is 100% or not with accuracy of 0.001
         all_years_equal_100 = all(
-            self.techno_invest_percentage_df[self.techno_invest_percentage_df['years'] == year][
-                techno_percentages_col].sum(axis=1).values[0] == 100
+            isclose(self.techno_invest_percentage_df[self.techno_invest_percentage_df['years'] == year][
+                techno_percentages_col].sum(axis=1).values[0], 100., rel_tol = 1e-5)
             for year in self.techno_invest_percentage_df['years']
         )
         if not all_years_equal_100:

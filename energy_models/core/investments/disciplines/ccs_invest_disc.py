@@ -22,14 +22,13 @@ import numpy as np
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.investments.base_invest import compute_norm_mix
 from energy_models.core.investments.energy_invest import EnergyInvest
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
-
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 
 
 class InvestCCSDiscipline(SoSWrapp):

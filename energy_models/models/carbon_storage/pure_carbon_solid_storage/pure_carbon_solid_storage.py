@@ -16,11 +16,10 @@ limitations under the License.
 '''
 
 import pandas as pd
-import numpy as np
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
+from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
 
 
 class PureCarbonSS(CSTechno):

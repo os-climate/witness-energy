@@ -14,19 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
+from os.path import join, dirname
 
 import numpy as np
-import pandas as pd
-import re
 import scipy.interpolate as sc
-from os.path import join, dirname
+
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from climateeconomics.glossarycore import GlossaryCore
-
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class NuclearTestCase(unittest.TestCase):

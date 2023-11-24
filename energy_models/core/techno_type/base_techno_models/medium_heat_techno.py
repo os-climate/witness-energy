@@ -19,6 +19,7 @@ from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.techno_type.techno_type import TechnoType
 
+
 class mediumheattechno(TechnoType):
     energy_name = mediumtemperatureheat.name
 

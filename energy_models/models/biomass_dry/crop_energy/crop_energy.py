@@ -16,12 +16,13 @@ limitations under the License.
 '''
 
 from copy import deepcopy
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.techno_type.base_techno_models.biomass_dry_techno import BiomassDryTechno
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+from energy_models.core.techno_type.base_techno_models.biomass_dry_techno import BiomassDryTechno
 
 
 class CropEnergy(BiomassDryTechno):

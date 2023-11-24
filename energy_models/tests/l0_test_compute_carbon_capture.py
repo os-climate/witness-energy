@@ -15,14 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
+from copy import deepcopy
+
 import numpy as np
-from os.path import join, dirname
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import Study
-from copy import deepcopy
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CarbonCaptureTestCase(unittest.TestCase):

@@ -15,22 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygenation_disc import HefaDeoxygenationDiscipline
-from energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygenation import HefaDeoxygenation
-from energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation_disc import HefaDecarboxylationDiscipline
-from energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation import HefaDecarboxylation
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class HEFAPriceTestCase(unittest.TestCase):

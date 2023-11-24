@@ -15,10 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import numpy as np
-from climateeconomics.glossarycore import GlossaryCore
-from .base_invest import BaseInvest
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from .base_invest import BaseInvest
 
 
 class IndependentInvest(BaseInvest):

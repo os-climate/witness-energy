@@ -15,15 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.techno_type.disciplines.hydrotreated_oil_fuel_techno_disc import \
     HydrotreatedOilFuelTechnoDiscipline
 from energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarboxylation import \
     HefaDecarboxylation
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 
 
 class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):

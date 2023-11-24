@@ -15,30 +15,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
-import pandas as pd
+import warnings
+from os.path import dirname
+
 import numpy as np
-from os.path import join, dirname
+import pandas as pd
 import scipy.interpolate as sc
-import pickle
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.methanol import Methanol
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-
-from energy_models.core.stream_type.energy_models.methanol import Methanol
-from energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation_disc import CO2HydrogenationDiscipline
-
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-
-import warnings
+from energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation_disc import CO2HydrogenationDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 warnings.filterwarnings("ignore")
 

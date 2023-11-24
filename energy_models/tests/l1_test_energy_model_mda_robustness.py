@@ -15,18 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
-from time import sleep
-from shutil import rmtree
+import logging
 from pathlib import Path
+from shutil import rmtree
+from time import sleep
+
+import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
-import numpy as np
-import logging
-
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 

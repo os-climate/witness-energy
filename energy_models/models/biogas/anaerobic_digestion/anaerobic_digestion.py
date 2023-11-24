@@ -15,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.techno_type.base_techno_models.biogas_techno import BioGasTechno
-from energy_models.core.stream_type.energy_models.wet_biomass import WetBiomass
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-
 import numpy as np
+
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.wet_biomass import WetBiomass
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.techno_type.base_techno_models.biogas_techno import BioGasTechno
 
 
 class AnaerobicDigestion(BioGasTechno):

@@ -15,12 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from abc import abstractmethod
+from copy import deepcopy
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.syngas import Syngas, compute_molar_mass, \
     compute_calorific_value, compute_density
 from energy_models.core.techno_type.techno_type import TechnoType
-from copy import deepcopy
+
 
 class SyngasTechno(TechnoType):
 

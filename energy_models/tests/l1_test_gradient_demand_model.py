@@ -15,22 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
+from os.path import dirname
 
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
-import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
-    get_static_prices
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-import pickle
 from energy_models.core.demand.energy_demand import EnergyDemand
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class DemandModelJacobianTestCase(AbstractJacobianUnittest):

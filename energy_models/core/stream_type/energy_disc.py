@@ -1,6 +1,5 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -65,7 +64,7 @@ class EnergyDiscipline(StreamDiscipline):
             if techno_list is not None:
                 techno_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
                 for techno in techno_list:
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = GlossaryCore.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.{GlossaryCore.TechnoConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         "dynamic_dataframe_columns": True}
@@ -83,7 +82,6 @@ class EnergyDiscipline(StreamDiscipline):
                         "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{techno}.{GlossaryCore.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha',
-
                         'dataframe_descriptor': {'years': ('float', None, True),
                                                  'Crop (Gha)': ('float', None, True),
                                                  'HydrogenBoilerHighHeat (Gha)': ('float', None, True),
@@ -237,10 +235,7 @@ class EnergyDiscipline(StreamDiscipline):
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Energy price',
-                      GlossaryCore.Capital,
-                      'Technology mix',
-                      'CO2 emissions',
+        chart_list = ['Energy price', 'Technology mix', 'CO2 emissions',
                       'Consumption and production']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))

@@ -14,9 +14,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pandas as pd
+
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_type import EnergyType
-import pandas as pd
 
 
 class Electricity(EnergyType):

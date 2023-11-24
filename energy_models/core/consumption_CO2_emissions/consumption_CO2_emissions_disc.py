@@ -14,22 +14,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions import ConsumptionCO2Emissions
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
     AgricultureMixDiscipline
+from energy_models.core.ccus.ccus import CCUS
+from energy_models.core.consumption_CO2_emissions.consumption_CO2_emissions import ConsumptionCO2Emissions
+from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from energy_models.core.ccus.ccus import CCUS
-
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-
-import numpy as np
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
@@ -181,7 +179,6 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                     'methane': ('float', None, True),
                                                     'carbon_capture (Mt)': ('float', None, True),
                                                     'biogas': ('float', None, True),
-                                                    # 'biomass_dry': ('float', None, True),
                                                     'fuel.biodiesel': ('float', None, True),
                                                     'glycerol_resource (Mt)': ('float', None, True),
                                                     'solid_fuel': ('float', None, True),

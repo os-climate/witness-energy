@@ -15,17 +15,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from copy import deepcopy
+
 import numpy as np
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.syngas import Syngas, \
     compute_calorific_value, compute_molar_mass, compute_high_calorific_value, compute_dcal_val_dsyngas_ratio
+from energy_models.core.stream_type.stream_disc import StreamDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from energy_models.core.stream_type.stream_disc import StreamDiscipline
-from copy import deepcopy
 
 
 class SyngasDiscipline(EnergyDiscipline):

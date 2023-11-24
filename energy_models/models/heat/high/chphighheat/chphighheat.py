@@ -14,12 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
-from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 import numpy as np
+
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
+from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
 
 
 class CHPHighHeat(highheattechno):
@@ -35,7 +36,7 @@ class CHPHighHeat(highheattechno):
 
         return self.cost_details[f'{Methane.name}']
 
-    def grad_price_vs_energy_price_calc(self):
+    def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices
         Work also for total CO2_emissions vs energy CO2 emissions
@@ -44,7 +45,7 @@ class CHPHighHeat(highheattechno):
         efficiency = self.techno_infos_dict['efficiency']
 
         return {
-                'natural_gas_resource': np.identity(len(self.years)) * methane_needs / efficiency
+                Methane.name: np.identity(len(self.years)) * methane_needs / efficiency
                 }
 
     def compute_consumption_and_production(self):

@@ -13,14 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
+from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+
+
 class GeothermalHeat(mediumheattechno):
     #self.Mean_Temperature = 500
     #self.Output_Temperature =400
@@ -40,7 +42,7 @@ class GeothermalHeat(mediumheattechno):
         return self.cost_details[f'{Electricity.name}']
 
 
-    def grad_price_vs_energy_price_calc(self):
+    def grad_price_vs_energy_price(self):
         elec_needs = self.get_theoretical_electricity_needs()
         heat_generated = elec_needs #self.get_theoretical_heat_generated()
         mean_temperature = self.techno_infos_dict['mean_temperature']
@@ -48,10 +50,9 @@ class GeothermalHeat(mediumheattechno):
         COP = output_temperature / (output_temperature - mean_temperature)
         efficiency = COP
         #efficiency = self.techno_infos_dict['COP']
-        # return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-        #        mediumtemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
-        #        }
-        return {}
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
+               mediumtemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
+               }
 
     def compute_consumption_and_production(self):
         """

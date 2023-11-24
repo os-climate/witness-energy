@@ -14,24 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+
+from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.energy_ghg_emissions.energy_ghg_emissions import EnergyGHGEmissions
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
     AgricultureMixDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
+    GHGemissionsDiscipline
+from energy_models.core.ccus.ccus import CCUS
+from energy_models.core.energy_ghg_emissions.energy_ghg_emissions import EnergyGHGEmissions
+from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from energy_models.core.ccus.ccus import CCUS
-
-import numpy as np
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
-    GHGemissionsDiscipline
 
 
 class EnergyGHGEmissionsDiscipline(SoSWrapp):
@@ -196,7 +195,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'methane': ('float', None, True),
                                                      'wet_biomass (Mt)': ('float', None, True),
                                                      'biogas': ('float', None, True),
-                                                     # 'biomass_dry': ('float', None, True),
                                                      'sodium_hydroxide_resource (Mt)': ('float', None, True),
                                                      'natural_oil_resource (TWh)': ('float', None, True),
                                                      'methanol_resource (Mt)': ('float', None, True),

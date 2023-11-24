@@ -13,13 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
+
 
 class ElectricBoilerLowHeat(lowheattechno):
 
@@ -36,13 +37,13 @@ class ElectricBoilerLowHeat(lowheattechno):
 
         return self.cost_details[f'{Electricity.name}']
 
-    def grad_price_vs_energy_price_calc(self):
+    def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices
         '''
         elec_needs = self.get_theoretical_electricity_needs()
         efficiency = self.techno_infos_dict['efficiency']
-        return {'natural_gas_resource': np.identity(len(self.years)) * elec_needs / efficiency,
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
                 }
 
     def compute_consumption_and_production(self):

@@ -16,23 +16,22 @@ limitations under the License.
 '''
 import logging
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import numpy as np
 import pandas as pd
+from plotly import graph_objects as go
 
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, get_static_prices
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from copy import deepcopy
-from plotly import graph_objects as go
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import InstantiatedPlotlyNativeChart
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+    InstantiatedPlotlyNativeChart
 
 
 class TechnoDiscipline(SoSWrapp):

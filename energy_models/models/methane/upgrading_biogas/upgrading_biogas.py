@@ -15,15 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.techno_type.base_techno_models.methane_techno import MethaneTechno
-from energy_models.core.stream_type.energy_models.biogas import BioGas
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+import numpy as np
+
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.monotethanolamine import Monotethanolamine
-from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
-
-import numpy as np
+from energy_models.core.techno_type.base_techno_models.methane_techno import MethaneTechno
 
 
 class UpgradingBiogas(MethaneTechno):

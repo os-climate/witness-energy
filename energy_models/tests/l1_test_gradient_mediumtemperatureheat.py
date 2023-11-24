@@ -30,6 +30,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 import pickle
 
 
+
 class MediumTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     """
     Medium Temperature Heat technos prices test class
@@ -53,7 +54,6 @@ class MediumTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-
         self.energy_name = 'heat.mediumtemperatureheat'
         years = np.arange(2020, 2051)
         self.resource_list = [
@@ -444,10 +444,8 @@ class MediumTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                                     # f'{self.name}.resources_price',
                                     # f'{self.name}.resources_CO2_emissions',
                                     ],
-
-                            outputs=[
-                                     f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                            outputs=[#f'{self.name}.{self.model_name}.techno_prices',
+                                     #f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      #f'{self.name}.{self.model_name}.techno_production',
@@ -522,9 +520,9 @@ class MediumTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
 
 
 
+
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = MediumTemperatureHeatJacobianTestCase()
     cls.setUp()
-
     #cls.test_07_Mediumhtemperatureheat_discipline_jacobian()

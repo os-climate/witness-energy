@@ -14,21 +14,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
-from time import sleep
-from shutil import rmtree
+from os.path import join, dirname
 from pathlib import Path
+from shutil import rmtree
+from time import sleep
+
 import numpy as np
 import pandas as pd
 
-from os.path import join, dirname
-
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_MDA
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as Study_open
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as Study_MDA
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.study_manager.base_study_manager import BaseStudyManager
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
 
 

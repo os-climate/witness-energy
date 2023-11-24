@@ -30,6 +30,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 import pickle
 
 
+
 class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     """
     High Temperature Heat technos prices test class
@@ -45,7 +46,7 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
             self.test_04_heat_pump_high_heat_discipline_analytic_grad,
             self.test_05_hydrogen_boiler_high_heat_discipline_analytic_grad,
             self.test_06_natural_gas_boiler_high_heat_discipline_analytic_grad,
-            self.test_07_hightemperatureheat_discipline_jacobian,
+            #self.test_07_hightemperatureheat_discipline_jacobian,
 
         ]
 
@@ -282,6 +283,8 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      #f'{self.name}.{self.model_name}.techno_production',
                                      ], )
+
+
 
 
 

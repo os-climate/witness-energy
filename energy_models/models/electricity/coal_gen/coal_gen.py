@@ -16,15 +16,13 @@ limitations under the License.
 '''
 import numpy as np
 
-from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-
+from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 
 
 class CoalGen(ElectricityTechno):

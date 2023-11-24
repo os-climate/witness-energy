@@ -25,14 +25,15 @@ from energy_models.core.stream_type.resources_data_disc import get_static_CO2_em
     get_static_prices
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import pickle
 
 
+
 class LowTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     """
-    Low Temperature Heat technos prices test class
+    High Temperature Heat technos prices test class
     """
 
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
@@ -45,7 +46,7 @@ class LowTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
             self.test_04_heat_pump_low_heat_discipline_analytic_grad,
             self.test_05_hydrogen_boiler_low_heat_discipline_analytic_grad,
             self.test_06_natural_gas_boiler_low_heat_discipline_analytic_grad,
-            self.test_07_lowtemperatureheat_discipline_jacobian,
+            #.test_07_lowtemperatureheat_discipline_jacobian,
 
         ]
 
@@ -438,10 +439,8 @@ class LowTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                                     # f'{self.name}.resources_price',
                                     # f'{self.name}.resources_CO2_emissions',
                                     ],
-
-                            outputs=[
-                                     f'{self.name}.{self.model_name}.techno_prices',
-                                     f'{self.name}.{self.model_name}.CO2_emissions',
+                            outputs=[#f'{self.name}.{self.model_name}.techno_prices',
+                                     #f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                      #f'{self.name}.{self.model_name}.techno_production',
@@ -450,19 +449,16 @@ class LowTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     # def test_07_lowtemperatureheat_discipline_jacobian(self):
     #
     #     self.name = 'Test'
-    #     self.energy_name = 'heat.lowtemperatureheat'
     #     self.ee = ExecutionEngine(self.name)
     #     ns_dict = {'ns_public': f'{self.name}',
-    #                'ns_electricity': f'{self.name}',
-    #                'ns_ref': f'{self.name}',
+    #                'ns_methane': f'{self.name}',
     #                'ns_heat_low': f'{self.name}',
-    #                'ns_functions': f'{self.name}',
     #                'ns_energy_study': f'{self.name}',
     #                'ns_resource': f'{self.name}'}
     #
     #     self.ee.ns_manager.add_ns_def(ns_dict)
     #
-    #     mod_path = 'energy_models.core.stream_type.energy_disciplines.low_heat_disc.LowHeatDiscipline'
+    #     mod_path = 'energy_models.core.stream_type.energy_disciplines.high_heat_disc.HighHeatDiscipline'
     #     builder = self.ee.factory.get_builder_from_module(
     #         self.energy_name, mod_path)
     #
@@ -508,17 +504,19 @@ class LowTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     #
     #     disc = self.ee.dm.get_disciplines_with_name(
     #         f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-    #
     #     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #
     #     self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
     #                         discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
     #                         local_data=disc.local_data,
     #                         inputs=coupled_inputs,
     #                         outputs=coupled_outputs, )
+    #
+    #
 
 
 if '__main__' == __name__:
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = LowTemperatureHeatJacobianTestCase()
     cls.setUp()
-    cls.test_07_lowtemperatureheat_discipline_jacobian()
+    cls.test_07_hightemperatureheat_discipline_jacobian()

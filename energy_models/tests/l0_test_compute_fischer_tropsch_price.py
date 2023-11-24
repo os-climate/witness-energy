@@ -15,27 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
-import scipy.interpolate as sc
-from os.path import join, dirname
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import FischerTropschDiscipline
-from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch import FischerTropsch
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_prices,\
-    get_static_CO2_emissions
+import numpy as np
+import pandas as pd
+import scipy.interpolate as sc
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.kerosene import Kerosene
 from energy_models.core.stream_type.energy_models.gasoline import Gasoline
-from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
 from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
+from energy_models.core.stream_type.energy_models.kerosene import Kerosene
+from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
 from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.syngas import Syngas
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class FTPriceTestCase(unittest.TestCase):

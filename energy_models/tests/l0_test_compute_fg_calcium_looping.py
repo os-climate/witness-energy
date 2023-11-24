@@ -15,24 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
-from os.path import join, dirname
 
-import scipy.interpolate as sc
 import matplotlib.pyplot as plt
-
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import  \
-    CalciumLoopingDiscipline
-from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping import CalciumLooping
-
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+import numpy as np
+import pandas as pd
+import scipy.interpolate as sc
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping import CalciumLooping
+from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import \
+    CalciumLoopingDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class FGCalciumLoopingTestCase(unittest.TestCase):

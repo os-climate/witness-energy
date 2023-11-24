@@ -19,6 +19,7 @@ from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.techno_type import TechnoType
 
+
 class highheattechno(TechnoType):
     energy_name = hightemperatureheat.name
 

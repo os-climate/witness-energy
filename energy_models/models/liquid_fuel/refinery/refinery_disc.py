@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/10-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/10/10-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ from energy_models.core.stream_type.energy_models.gasoline import Gasoline
 from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
 from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
 from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
-
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
@@ -83,7 +82,6 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
                                  'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
                                  'CH4_emission_factor_unit': 'Mt/TWh',
-
                                  #'medium_heat_production': (30000/136) * 0.000293 * 1.00E-09 / (1.13E-08),  # 30000  Btu/bbl, https://www.osti.gov/servlets/purl/7261027, Page No 41
                                  #'medium_heat_production_unit': 'TWh/TWh',
                                  'useful_heat_recovery_factor': 0.8,
@@ -128,7 +126,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.89,  # https://publications.anl.gov/anlpubs/2011/01/69026.pdf
                                  'techno_evo_eff': 'no',
-                                 GlossaryCore.ConstructionDelay: construction_delay,
+                                 'construction_delay': construction_delay,
                                  'pourcentage_of_total': 0.09,
                                  'product_break_down': product_break_down}
 
@@ -246,8 +244,8 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                 (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.EnergyCO2EmissionsValue, energy), grad_on_co2_tax * np.split(self.techno_model.margin[GlossaryCore.MarginValue].values, len(self.techno_model.margin[GlossaryCore.MarginValue].values)) /
                 100.0)
 
-            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_intensity[GlossaryCore.Years].max(
-            )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values
+            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_emissions[GlossaryCore.Years].max(
+            )) * self.techno_model.carbon_emissions[self.techno_name].clip(0).values
             dtechno_prices_dCO2_taxes = dCO2_taxes_factory * \
                 self.techno_model.margin.loc[self.techno_model.margin[GlossaryCore.Years] <=
                                              self.techno_model.cost_details[GlossaryCore.Years].max()][GlossaryCore.MarginValue].values / 100.0
@@ -280,10 +278,16 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     def get_chart_filter_list(self):
 
-        chart_filters = super().get_chart_filter_list()
-        chart_filters[0].extend(['Prices per flow', 'Age Distribution Production'])
-        chart_filters[1].extend(['$/USgallon'])
+        chart_filters = []
+        chart_list = ['Detailed prices', 'Prices per flow',
+                      'Consumption and production', 'Age Distribution Production',
+                      'Initial Production', 'Factory Mean Age', 'CO2 emissions']
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
 
+        price_unit_list = ['$/MWh', '$/t', '$/USgallon']
+        chart_filters.append(ChartFilter(
+            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):

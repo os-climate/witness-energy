@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
@@ -61,7 +61,7 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
-        grad_dict_resources = self.techno_model.grad_price_vs_energy_price_calc()
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
@@ -116,7 +116,7 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
-        grad_dict_resources = self.techno_model.grad_price_vs_energy_price_calc()
+        grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)

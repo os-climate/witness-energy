@@ -15,20 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sostrades_core.study_manager.study_manager import StudyManager
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as Study_v0
-
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sostrades_core.tools.base_functions.specific_check import specific_check_years
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
-
-import cProfile
-from io import StringIO
-import pstats
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as Study_v0
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.base_functions.specific_check import specific_check_years
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -41,7 +33,7 @@ class Study(StudyManager):
 
     def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
                  techno_dict=DEFAULT_TECHNO_DICT, bspline=True, invest_discipline=INVEST_DISCIPLINE_DEFAULT,
-                 execution_engine=None):
+                 energy_invest_input_in_abs_value=True, execution_engine=None):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -50,6 +42,7 @@ class Study(StudyManager):
         self.dict_technos = None
         self.bspline = bspline
         self.invest_discipline = invest_discipline
+        self.energy_invest_input_in_abs_value = energy_invest_input_in_abs_value
         self.lower_bound_techno = lower_bound_techno
         self.upper_bound_techno = upper_bound_techno
 
@@ -59,7 +52,8 @@ class Study(StudyManager):
         self.study_v0 = Study_v0(
             self.year_start, self.year_end, self.time_step, main_study=False, bspline=self.bspline,
             execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value,
+            techno_dict=techno_dict)
         self.sub_study_path_dict = self.study_v0.sub_study_path_dict
 
     def setup_objectives(self):

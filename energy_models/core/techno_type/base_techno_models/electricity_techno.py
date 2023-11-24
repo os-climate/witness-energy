@@ -18,7 +18,6 @@ from abc import abstractmethod
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.techno_type.techno_type import TechnoType
 
 

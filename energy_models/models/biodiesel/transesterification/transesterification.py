@@ -15,17 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.resources_models.methanol import Methanol
+import numpy as np
+
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
-from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
-from energy_models.core.techno_type.base_techno_models.biodiesel_techno import BioDieselTechno
-from energy_models.core.stream_type.resources_models.sodium_hydroxide import SodiumHydroxide
-from energy_models.core.stream_type.resources_models.potassium_hydroxide import PotassiumHydroxide
-from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.glycerol import Glycerol
-
-import numpy as np
+from energy_models.core.stream_type.resources_models.methanol import Methanol
+from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
+from energy_models.core.stream_type.resources_models.potassium_hydroxide import PotassiumHydroxide
+from energy_models.core.stream_type.resources_models.sodium_hydroxide import SodiumHydroxide
+from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.techno_type.base_techno_models.biodiesel_techno import BioDieselTechno
 
 
 class Transesterification(BioDieselTechno):

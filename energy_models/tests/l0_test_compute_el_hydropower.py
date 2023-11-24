@@ -15,21 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
 from os.path import join, dirname
 
-import scipy.interpolate as sc
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import scipy.interpolate as sc
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.electricity.hydropower.hydropower_disc import HydropowerDiscipline
-from energy_models.models.electricity.hydropower.hydropower import Hydropower
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.models.electricity.hydropower.hydropower import Hydropower
+from energy_models.models.electricity.hydropower.hydropower_disc import HydropowerDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class HydropowerTestCase(unittest.TestCase):

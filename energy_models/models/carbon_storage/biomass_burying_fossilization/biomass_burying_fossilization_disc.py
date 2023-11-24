@@ -15,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.carbon_storage.biomass_burying_fossilization.biomass_burying_fossilization import BiomassBF
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
+from energy_models.models.carbon_storage.biomass_burying_fossilization.biomass_burying_fossilization import BiomassBF
 
 
 class BiomassBuryingFossilizationDiscipline(CSTechnoDiscipline):

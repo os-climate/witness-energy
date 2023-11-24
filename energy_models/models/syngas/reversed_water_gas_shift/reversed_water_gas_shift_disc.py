@@ -15,14 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift import RWGS
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift import RWGS
 
 
 class RWGSDiscipline(SyngasTechnoDiscipline):
