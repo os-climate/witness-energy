@@ -203,7 +203,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('techno_production',
              f'{mediumheattechno.energy_name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
-            (consumption_gradient - dprod_name_dinvest)/10000000)
+            (consumption_gradient - dprod_name_dinvest)/-3716773.789)
 
 
         # Grad of techno_consumption vs syngas_ratio

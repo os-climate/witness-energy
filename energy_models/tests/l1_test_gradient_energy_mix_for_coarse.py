@@ -69,16 +69,16 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.EnergyMix')[0].mdo_discipline_wrapp.mdo_discipline
         self.energy_list = ['renewable', 'fossil']
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def TearDown(self):
         '''
         To execute after tests
         '''
         # desactivate dump
-        AbstractJacobianUnittest.DUMP_JACOBIAN = False
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = False
     def test_01_energy_mix_discipline_co2_emissions_gt(self):
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         inputs_names = []
 
         inputs_names.extend([
@@ -119,7 +119,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         os.remove(path_pickle)
 
     def test_02_energy_mix_co2_tax(self):
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         inputs_names = [
             f'{self.name}.{GlossaryCore.CO2TaxesValue}']
 
