@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/10-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/10-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,28 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import LiquidFuelTechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_fuel.refinery.refinery import Refinery
-from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import LiquidFuelTechnoDiscipline
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
-from energy_models.core.stream_type.energy_models.kerosene import Kerosene
-from energy_models.core.stream_type.energy_models.gasoline import Gasoline
-from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
-from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
-from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
-from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
-from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 
 class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`
@@ -85,9 +72,8 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
                                  'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
                                  'CH4_emission_factor_unit': 'Mt/TWh',
-                                 #'medium_heat_production': (30000/136) * 0.000293 * 1.00E-09 / (1.13E-08),  # 30000  Btu/bbl, https://www.osti.gov/servlets/purl/7261027, Page No 41
-                                 #'medium_heat_production_unit': 'TWh/TWh',
-                                 'useful_heat_recovery_factor': 0.8,
+                                 # 'medium_heat_production': (30000/136) * 0.000293 * 1.00E-09 / (1.13E-08),  # 30000  Btu/bbl, https://www.osti.gov/servlets/purl/7261027, Page No 41
+                                 # 'medium_heat_production_unit': 'TWh/TWh',
                                  # a barrel of oil weighs around 300 pounds or about 136 kilograms.
                                  #1 BTU = 0.000293 kWh
                                  # https://www.e-education.psu.edu/eme801/node/470
@@ -199,24 +185,6 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
 
-        # Grad of heatproduction vs investment
-        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-        applied_ratio = self.get_sosdisc_outputs(
-            'applied_ratio')['applied_ratio'].values
-
-        #print('***** ', self.techno_production_derivative.keys())
-        self.OIL_RESOURCE_NAME = ResourceGlossary.Oil['name']
-        dprod_name_dinvest = ((self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level )/ \
-                             (scaling_factor_techno_production )
-        consumption_gradient = self.techno_consumption_derivative[
-            f'{GaseousHydrogen.name} ({self.techno_model.product_energy_unit})']
-
-        self.set_partial_derivative_for_other_types(
-            ('techno_production',
-             f'{mediumheattechno.energy_name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
-            (consumption_gradient - dprod_name_dinvest) * -2.66542864735E-02)
-
     def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}):
         """
         Generic method to set partial derivatives of techno_prices / energy_prices, energy_CO2_emissions and dco2_emissions/denergy_co2_emissions
@@ -282,16 +250,10 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
     def get_chart_filter_list(self):
 
-        chart_filters = []
-        chart_list = ['Detailed prices', 'Prices per flow',
-                      'Consumption and production', 'Age Distribution Production',
-                      'Initial Production', 'Factory Mean Age', 'CO2 emissions']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters = super().get_chart_filter_list()
+        chart_filters[0].extend(['Prices per flow', 'Age Distribution Production'])
+        chart_filters[1].extend(['$/USgallon'])
 
-        price_unit_list = ['$/MWh', '$/t', '$/USgallon']
-        chart_filters.append(ChartFilter(
-            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
