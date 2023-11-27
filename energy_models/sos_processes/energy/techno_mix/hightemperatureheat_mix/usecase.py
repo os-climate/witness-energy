@@ -17,18 +17,18 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                             'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                             'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                     'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                     'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerHighHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -66,12 +66,8 @@ class Study(EnergyMixStudyManager):
             invest_high_heat_mix_dict['CHPHighHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
-        if 'HydrogenBoilerHighHeat' in self.technologies_list:
-            invest_high_heat_mix_dict['HydrogenBoilerHighHeat'] = list(np.ones(
-                len(l_ctrl)) * 0.001)
-
         if self.bspline:
-            invest_high_heat_mix_dict[GlossaryCore.Years] = self.years
+            invest_high_heat_mix_dict[GlossaryEnergy.Years] = self.years
 
             for techno in self.technologies_list:
                 invest_high_heat_mix_dict[techno], _ = self.invest_bspline(
@@ -88,18 +84,17 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         # energy_prices data came from test files  of corresponding technologies
-        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years,
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
                                            'electricity': 148.0,
                                            'syngas': 80.0,
                                            'biogas': 70.0,
                                            'methane': 100,
-                                           'biomass_dry': 45,
-                                           'hydrogen.gaseous_hydrogen': 40
+                                           'biomass_dry': 45
                                         })
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestValue: 10.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 10.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01, 34.05, 39.08, 44.69, 50.29]
@@ -107,31 +102,31 @@ class Study(EnergyMixStudyManager):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
         self.transport = pd.DataFrame(
-            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 0})
+            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0})
 
-        self.resources_price = pd.DataFrame(columns=[GlossaryCore.Years, 'CO2', 'water'])
-        self.resources_price[GlossaryCore.Years] = years
+        self.resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
+        self.resources_price[GlossaryEnergy.Years] = years
         self.resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
-        self.energy_carbon_emissions = pd.DataFrame({GlossaryCore.Years: years, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.0, 'water': 0.0})
+        self.energy_carbon_emissions = pd.DataFrame({GlossaryEnergy.Years: years, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.0, 'water': 0.0})
 
         investment_mix = self.get_investments()
         #land_rate = {'land_rate': 5000.0, 'land_rate_unit': '$/Gha', }
 
-        values_dict = {f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
-                       f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.study_name}.{energy_name}.{GlossaryCore.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.NaturalGasBoiler.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.ElectricBoiler.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.HeatPump.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.Geothermal.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.CHP.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.study_name}.{energy_name}.{GlossaryCore.TransportMarginValue}': self.margin,
+        values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
+                       f'{self.study_name}.{energy_name}.NaturalGasBoiler.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.ElectricBoiler.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.HeatPump.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.Geothermal.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.CHP.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
                        # f'{self.study_name}.{energy_name}.ElectricBoiler.flux_input_dict': land_rate,
                        # f'{self.study_name}.{energy_name}.NaturalGasBoiler.flux_input_dict': land_rate,
@@ -141,19 +136,19 @@ class Study(EnergyMixStudyManager):
 
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                 f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                 f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
-                    columns=[GlossaryCore.Years]).sum(axis=1)
+                    columns=[GlossaryEnergy.Years]).sum(axis=1)
                 for techno in self.technologies_list:
-                    invest_level_techno = pd.DataFrame({GlossaryCore.Years: self.invest_level[GlossaryCore.Years].values,
-                                                        GlossaryCore.InvestValue: self.invest_level[GlossaryCore.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
-                    values_dict[f'{self.study_name}.{energy_name}.{techno}.{GlossaryCore.InvestLevelValue}'] = invest_level_techno
+                    invest_level_techno = pd.DataFrame({GlossaryEnergy.Years: self.invest_level[GlossaryEnergy.Years].values,
+                                                        GlossaryEnergy.InvestValue: self.invest_level[GlossaryEnergy.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
+                    values_dict[f'{self.study_name}.{energy_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
             else:
-                values_dict[f'{self.study_name}.{energy_name}.{GlossaryCore.InvestLevelValue}'] = self.invest_level
+                values_dict[f'{self.study_name}.{energy_name}.{GlossaryEnergy.InvestLevelValue}'] = self.invest_level
         else:
             self.update_dv_arrays()
 

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/25-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/25-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,20 +17,20 @@ limitations under the License.
 
 import numpy as np
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
-from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.syngas import Syngas
-from energy_models.core.stream_type.energy_models.syngas import compute_molar_mass as compute_syngas_molar_mass
-from energy_models.core.stream_type.energy_models.syngas import compute_calorific_value as compute_syngas_calorific_value
-from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.syngas import Syngas
+from energy_models.core.stream_type.energy_models.syngas import \
+    compute_calorific_value as compute_syngas_calorific_value
+from energy_models.core.stream_type.energy_models.syngas import compute_molar_mass as compute_syngas_molar_mass
+from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
-from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
 
 
 class WGS(GaseousHydrogenTechno):
@@ -327,7 +327,7 @@ class WGS(GaseousHydrogenTechno):
         capex_init = self.check_capex_unity(
             self.techno_infos_dict)
 
-        if 'complex128' in [type(self.initial_production), type(self.slope_capex), capex_init.dtype, self.cost_details[GlossaryCore.InvestValue].values.dtype]:
+        if 'complex128' in [type(self.initial_production), type(self.slope_capex), capex_init.dtype, self.cost_details[GlossaryEnergy.InvestValue].values.dtype]:
             arr_type = 'complex128'
         else:
             arr_type = 'float64'
@@ -343,7 +343,7 @@ class WGS(GaseousHydrogenTechno):
         dinvest_sum = self.initial_production * 1000.0 * self.slope_capex
         capex_year = capex_init
         capex_grad[0][0] = 1000.0 * self.slope_capex
-        invest_list = self.cost_details[GlossaryCore.InvestValue].values
+        invest_list = self.cost_details[GlossaryEnergy.InvestValue].values
         if min(invest_list.real) < 0:
             invest_list_2 = np.maximum(1e-12, invest_list)
 
@@ -392,8 +392,8 @@ class WGS(GaseousHydrogenTechno):
 
     def compute_dprice_CO2_fact_dsyngas_ratio(self):
 
-        years = np.arange(self.inputs_dict[GlossaryCore.YearStart],
-                          self.inputs_dict[GlossaryCore.YearEnd] + 1)
+        years = np.arange(self.inputs_dict[GlossaryEnergy.YearStart],
+                          self.inputs_dict[GlossaryEnergy.YearEnd] + 1)
 
         co2_data = CO2.data_energy_dict
         needed_syngas_molar_mass = compute_syngas_molar_mass(
@@ -431,8 +431,8 @@ class WGS(GaseousHydrogenTechno):
                                   dco2_prod_down_dsyngas_ratio * co2_prod_up) / co2_prod_down**2
 
 #         dprice_CO2_fact = dco2_prod_syngas_ratio * \
-#             self.inputs_dict[GlossaryCore.CO2TaxesValue].loc[self.inputs_dict[GlossaryCore.CO2TaxesValue][GlossaryCore.Years]
-#                                               <= self.cost_details[GlossaryCore.Years].max()][GlossaryCore.CO2Tax].values
+#             self.inputs_dict[GlossaryEnergy.CO2TaxesValue].loc[self.inputs_dict[GlossaryEnergy.CO2TaxesValue][GlossaryEnergy.Years]
+#                                               <= self.cost_details[GlossaryEnergy.Years].max()][GlossaryEnergy.CO2Tax].values
 
         return dco2_prod_syngas_ratio
 
@@ -444,12 +444,12 @@ class WGS(GaseousHydrogenTechno):
         efficiency = self.configure_efficiency()
 
         dco2_syngas_dsynags_ratio = self.compute_dsyngas_needs_dsyngas_ratio() \
-                                    * self.energy_CO2_emissions.loc[self.energy_CO2_emissions[GlossaryCore.Years]
-                                    <= self.cost_details[GlossaryCore.Years].max()][f'{Syngas.name}'].values / efficiency
+                                    * self.energy_CO2_emissions.loc[self.energy_CO2_emissions[GlossaryEnergy.Years]
+                                    <= self.cost_details[GlossaryEnergy.Years].max()][f'{Syngas.name}'].values / efficiency
 
         dco2_water_dsynags_ratio = self.compute_dwater_needs_dsyngas_ratio() \
-                                   * self.resources_CO2_emissions.loc[self.resources_CO2_emissions[GlossaryCore.Years]
-                                   <= self.cost_details[GlossaryCore.Years].max()][f'{Water.name}'].values / efficiency
+                                   * self.resources_CO2_emissions.loc[self.resources_CO2_emissions[GlossaryEnergy.Years]
+                                   <= self.cost_details[GlossaryEnergy.Years].max()][f'{Water.name}'].values / efficiency
 
         return dco2_syngas_dsynags_ratio + dco2_prod_dsyngas_ratio + dco2_water_dsynags_ratio
 
@@ -458,8 +458,8 @@ class WGS(GaseousHydrogenTechno):
         dtot_co2_emissions_dsyngas_ratio = self.dtotal_co2_emissions_dsyngas_ratio()
 
         dco2_taxes_dsg_ratio = dtot_co2_emissions_dsyngas_ratio * \
-            self.CO2_taxes.loc[self.CO2_taxes[GlossaryCore.Years]
-                               <= self.cost_details[GlossaryCore.Years].max()][GlossaryCore.CO2Tax].values
+            self.CO2_taxes.loc[self.CO2_taxes[GlossaryEnergy.Years]
+                               <= self.cost_details[GlossaryEnergy.Years].max()][GlossaryEnergy.CO2Tax].values
 
         return dco2_taxes_dsg_ratio
 
@@ -482,9 +482,9 @@ class WGS(GaseousHydrogenTechno):
 
         efficiency = self.configure_efficiency()
         years = np.arange(
-            self.inputs_dict[GlossaryCore.YearStart], self.inputs_dict[GlossaryCore.YearEnd] + 1)
-        margin = self.inputs_dict[GlossaryCore.MarginValue].loc[self.inputs_dict[GlossaryCore.MarginValue][GlossaryCore.Years]
-                                                <= self.inputs_dict[GlossaryCore.YearEnd]][GlossaryCore.MarginValue].values
+            self.inputs_dict[GlossaryEnergy.YearStart], self.inputs_dict[GlossaryEnergy.YearEnd] + 1)
+        margin = self.inputs_dict[GlossaryEnergy.MarginValue].loc[self.inputs_dict[GlossaryEnergy.MarginValue][GlossaryEnergy.Years]
+                                                <= self.inputs_dict[GlossaryEnergy.YearEnd]][GlossaryEnergy.MarginValue].values
         factory_grad = self.compute_dfactory_dsyngas_ratio()
 
         dsyngas_dsyngas_ratio = np.identity(len(years)) * self.compute_dsyngas_needs_dsyngas_ratio() * \
@@ -519,10 +519,10 @@ class WGS(GaseousHydrogenTechno):
         dco2_syngas_dsyngas_ratio = self.dco2_syngas_dsyngas_ratio()
 
         CO2_emissions_is_positive = np.maximum(0.0, np.sign(
-            self.carbon_emissions['WaterGasShift'].values))
+            self.carbon_intensity['WaterGasShift'].values))
         dprice_CO2_fact = np.identity(
-            len(self.years)) * (dco2_prod_dsyngas_ratio + dco2_syngas_dsyngas_ratio) * self.CO2_taxes.loc[self.CO2_taxes[GlossaryCore.Years]
-                                                                                                          <= self.year_end][GlossaryCore.CO2Tax].values * CO2_emissions_is_positive
+            len(self.years)) * (dco2_prod_dsyngas_ratio + dco2_syngas_dsyngas_ratio) * self.CO2_taxes.loc[self.CO2_taxes[GlossaryEnergy.Years]
+                                                                                                          <= self.year_end][GlossaryEnergy.CO2Tax].values * CO2_emissions_is_positive
 
         # now syngas is in % grad is divided by 100
         dprice_dsyngas = (factory_grad + dsyngas_dsyngas_ratio +
@@ -533,9 +533,9 @@ class WGS(GaseousHydrogenTechno):
     def compute_dprice_WGS_wo_taxes_dsyngas_ratio(self):
         efficiency = self.configure_efficiency()
         years = np.arange(
-            self.inputs_dict[GlossaryCore.YearStart], self.inputs_dict[GlossaryCore.YearEnd] + 1)
-        margin = self.inputs_dict[GlossaryCore.MarginValue].loc[self.inputs_dict[GlossaryCore.MarginValue][GlossaryCore.Years]
-                                                <= self.inputs_dict[GlossaryCore.YearEnd]][GlossaryCore.MarginValue].values
+            self.inputs_dict[GlossaryEnergy.YearStart], self.inputs_dict[GlossaryEnergy.YearEnd] + 1)
+        margin = self.inputs_dict[GlossaryEnergy.MarginValue].loc[self.inputs_dict[GlossaryEnergy.MarginValue][GlossaryEnergy.Years]
+                                                <= self.inputs_dict[GlossaryEnergy.YearEnd]][GlossaryEnergy.MarginValue].values
         factory_grad = self.compute_dfactory_dsyngas_ratio()
 
         dsyngas_dsyngas_ratio = np.identity(len(years)) * self.compute_dsyngas_needs_dsyngas_ratio() * \
@@ -558,7 +558,7 @@ class WGS(GaseousHydrogenTechno):
         # in kwh of fuel by kwh of H2
 
         self.syngas_ratio = self.syngas_ratio[0:len(
-            self.cost_details[GlossaryCore.Years])]
+            self.cost_details[GlossaryEnergy.Years])]
         # need in kg
         self.cost_details['water_needs'] = self.get_theoretical_water_needs()
 
@@ -637,27 +637,27 @@ class WGS(GaseousHydrogenTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         co2_prod = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = co2_prod * \
+                                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
+                                                                                   self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                   self.cost_details['efficiency']  # in kWH
         th_water_needs = self.get_theoretical_water_needs()
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = th_water_needs * \
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']  # in kg
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = th_water_needs * \
+                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                        self.cost_details['efficiency']  # in kg
 
         # production
-        self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-            self.techno_infos_dict['low_heat_production'] * self.techno_infos_dict['useful_heat_recovery_factor'] *\
-            self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+        #     self.techno_infos_dict['low_heat_production'] * \
+        #     self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 
 
 
@@ -667,18 +667,18 @@ class WGS(GaseousHydrogenTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_emissions[f'{Syngas.name}'] = self.energy_CO2_emissions[f'{Syngas.name}'] * \
-            self.cost_details['syngas_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{Syngas.name}'] = self.energy_CO2_emissions[f'{Syngas.name}'] * \
+                                                  self.cost_details['syngas_needs'] / \
+                                                  self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details['elec_needs']
-        self.carbon_emissions[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
-            self.cost_details['water_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details['elec_needs']
+        self.carbon_intensity[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
+                                                 self.cost_details['water_needs'] / \
+                                                 self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Syngas.name}'] + self.carbon_emissions[f'{Electricity.name}'] + \
-               self.carbon_emissions[f'{Water.name}']
+        return self.carbon_intensity[f'{Syngas.name}'] + self.carbon_intensity[f'{Electricity.name}'] + \
+               self.carbon_intensity[f'{Water.name}']
 
     def get_theoretical_syngas_needs(self, syngas_ratio):
         ''' 

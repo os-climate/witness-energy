@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/08/23-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/08/23-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
-import numpy as np
-from os.path import join, dirname
+from os.path import dirname
 
+import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
-    get_static_prices
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
+    get_static_prices
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
-class GradiantFGTestCase(AbstractJacobianUnittest):
+class GradientFlueGasTestCase(AbstractJacobianUnittest):
     """
     Flue gas gradients test class
     """
@@ -53,20 +53,21 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
 
         self.energy_name = 'flue_gas'
 
+        
         self.flue_gas_mean = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.FlueGasMean: 0.3})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.FlueGasMean: 0.3})
 
         self.flue_gas_mean_swing = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.FlueGasMean: 0.1})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.FlueGasMean: 0.1})
 
         self.flue_gas_mean_piperazine = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.FlueGasMean: 0.2})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.FlueGasMean: 0.2})
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryCore.Years: years, 'electricity': np.ones(len(np.arange(2020, 2051))) * 80.0, 'methane':np.ones(len(np.arange(2020, 2051))) * 80.0})
+            {GlossaryEnergy.Years: years, 'electricity': np.ones(len(np.arange(2020, 2051))) * 80.0, 'methane':np.ones(len(np.arange(2020, 2051))) * 80.0})
 
         self.invest_level = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
                                                  22000.00, 22000.00, 22000.00, 22000.00,
                                                  22000.00, 22000.00, 31000.00, 31000.00,
                                                  31000.00, 31000.00, 31000.00, 31000.00,
@@ -81,29 +82,29 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
 
         self.margin = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(2020, 2051), GlossaryCore.MarginValue: np.ones(len(np.arange(2020, 2051))) * 100})
+            {GlossaryEnergy.Years: np.arange(2020, 2051), GlossaryEnergy.MarginValue: np.ones(len(np.arange(2020, 2051))) * 100})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryCore.Years: years, 'electricity': 0.0, 'methane': 0.2})
+            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'methane': 0.2})
 
         transport_cost = 0,
 
         self.transport = pd.DataFrame(
-            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * transport_cost})
+            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * transport_cost})
 
-        self.resources_price = pd.DataFrame({GlossaryCore.Years: years})
+        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
         #---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
-        demand_ratio_dict[GlossaryCore.Years] = years
+        demand_ratio_dict[GlossaryEnergy.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
 
         resource_ratio_dict = dict(
             zip(EnergyMix.RESOURCE_LIST, np.linspace(1.0, 1.0, len(years))))
-        resource_ratio_dict[GlossaryCore.Years] = years
+        resource_ratio_dict[GlossaryEnergy.Years] = years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
 
@@ -134,19 +135,19 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryCore.FlueGasMean}': self.flue_gas_mean,
-                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean,
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
+                       
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -156,16 +157,17 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
-                                    f'{self.name}.{GlossaryCore.FlueGasMean}',
-                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
+                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
                                      ],)
 
     def test_02_pressure_swing_adsorption_analytic_grad(self):
@@ -193,19 +195,19 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryCore.FlueGasMean}': self.flue_gas_mean_swing,
-                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -216,16 +218,17 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryCore.FlueGasMean}',
-                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
                                      ],)
 
     def test_03_piperazine_process_analytic_grad(self):
@@ -253,19 +256,19 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryCore.FlueGasMean}': self.flue_gas_mean_piperazine,
-                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -275,16 +278,17 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryCore.FlueGasMean}',
-                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
                                      ],)
 
     def test_04_monoethanolamine_analytic_grad(self):
@@ -311,19 +315,19 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryCore.FlueGasMean}': self.flue_gas_mean_piperazine,
-                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -333,16 +337,17 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryCore.FlueGasMean}',
-                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
                                      ],)
 
     def test_05_co2_membranes_analytic_grad(self):
@@ -370,19 +375,19 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryCore.FlueGasMean}': self.flue_gas_mean_piperazine,
-                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -393,16 +398,17 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
-                                    f'{self.name}.{GlossaryCore.FlueGasMean}',
-                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
+                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
                                      ],)
 
     def test_06_chilled_ammonia_process_discipline_analytic_grad(self):
@@ -430,19 +436,19 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryCore.FlueGasMean}': self.flue_gas_mean_swing,
-                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 
@@ -453,14 +459,15 @@ class GradiantFGTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
-                                    f'{self.name}.{GlossaryCore.FlueGasMean}',
-                                    f'{self.name}.{GlossaryCore.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
-                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.TechnoPricesValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.CO2EmissionsValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
+                                    f'{self.name}.{GlossaryEnergy.FlueGasMean}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoPricesValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
                                      ],)

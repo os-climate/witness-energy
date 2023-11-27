@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,16 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.electricity.oil_gen.oil_gen import OilGen
-from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.disciplines.electricity_techno_disc import ElectricityTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.electricity.oil_gen.oil_gen import OilGen
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class OilGenDiscipline(ElectricityTechnoDiscipline):
@@ -95,7 +95,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  # https://www.cmu.edu/epp/iecm/rubin/PDF%20files/2015/A%20review%20of%20learning%20rates%20for%20electricity%20supply%20technologies.pdf
                                  'learning_rate': 0.083,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
 
                                  # ESMAP, Study of Equipment Prices in the Power Sector, 2009
                                  # https://esmap.org/sites/default/files/esmap-files/TR122-09_GBL_Study_of_Equipment_Prices_in_the_Power_Sector.pdf
@@ -117,7 +117,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  'transport_cost_unit': '$/kg',  # check if pertinent
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1,
-                                 'construction_delay': construction_delay,
+                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'copper_needs': 1100,  #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
@@ -134,7 +134,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
     # License: CC BY 4.0.
     # (linear from 2016, 2017, 2018 data)
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [21.0, 20.0, 19.0, 18.0, 17.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [21.0, 20.0, 19.0, 18.0, 17.0]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1, 1.1,
@@ -153,9 +153,9 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False},
                'flue_gas_co2_ratio': {'type': 'array', 'default': oil_flue_gas_ratio, 'unit': ''},
                }
@@ -174,16 +174,16 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
         "Adds the chart specific for resources needed for construction"
         instanciated_chart = super().get_charts_consumption_and_production()
         techno_consumption = self.get_sosdisc_outputs(
-            GlossaryCore.TechnoDetailedConsumptionValue)
+            GlossaryEnergy.TechnoDetailedConsumptionValue)
 
         new_chart_copper = None
         for product in techno_consumption.columns:
 
-            if product != GlossaryCore.Years and product.endswith(f'(Mt)'):
+            if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
                 if ResourceGlossary.Copper['name'] in product :
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
-                        GlossaryCore.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
+                        GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
             if ResourceGlossary.Copper['name'] in reactant:
@@ -191,7 +191,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                     ' (Mt)', "")
                 mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
-                    techno_consumption[GlossaryCore.Years].values.tolist(),
+                    techno_consumption[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)

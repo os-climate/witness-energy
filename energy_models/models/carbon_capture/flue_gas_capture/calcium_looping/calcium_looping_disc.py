@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.carbon_capture_techno_disc import CCTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping import CalciumLooping
 
 
@@ -60,7 +60,7 @@ class CalciumLoopingDiscipline(CCTechnoDiscipline):
     carbon_capture_efficiency = 0.90
 
     techno_infos_dict_default = {'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'capacity_factor': 0.85,  # SAEECCT - Coal capacity factor
                                  'maturity': 0,
                                  'Opex_percentage': 0,
@@ -93,7 +93,7 @@ class CalciumLoopingDiscipline(CCTechnoDiscipline):
                                  'efficiency': 1.0,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'construction_delay': construction_delay, }
+                                 GlossaryEnergy.ConstructionDelay: construction_delay, }
 
     techno_info_dict = techno_infos_dict_default
 
@@ -101,7 +101,7 @@ class CalciumLoopingDiscipline(CCTechnoDiscipline):
 
     # We assume 0.5 MT increase per year, with a capex ~ 40$/ton
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.2]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.2]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
@@ -120,14 +120,14 @@ class CalciumLoopingDiscipline(CCTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryCore.FlueGasMean: {'type': 'dataframe', 'namespace': 'ns_flue_gas',
+               GlossaryEnergy.FlueGasMean: {'type': 'dataframe', 'namespace': 'ns_flue_gas',
                                  'visibility': CCTechnoDiscipline.SHARED_VISIBILITY, 'unit': '',
-                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                                          GlossaryCore.FlueGasMean: ('float', None, True), }
+                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                          GlossaryEnergy.FlueGasMean: ('float', None, True), }
                                  },
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)
@@ -146,7 +146,7 @@ class CalciumLoopingDiscipline(CCTechnoDiscipline):
         CCTechnoDiscipline.compute_sos_jacobian(self)
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions)

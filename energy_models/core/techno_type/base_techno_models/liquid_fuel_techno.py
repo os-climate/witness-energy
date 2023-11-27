@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 23/11/2023 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,11 +16,6 @@ limitations under the License.
 '''
 from abc import abstractmethod
 
-from energy_models.core.stream_type.energy_models.kerosene import Kerosene
-from energy_models.core.stream_type.energy_models.gasoline import Gasoline
-from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
-from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
-from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.techno_type.techno_type import TechnoType
 

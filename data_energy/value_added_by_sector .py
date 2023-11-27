@@ -20,7 +20,9 @@ data_folder = join(dirname(dirname(__file__)), 'data_energy', 'data')
 data=pd.read_csv(join(data_folder, 'value_added_by_sector.csv'))
 "we only keep data for 2017 and we calculate the average for each country and then the global value"
 dt = data[data['Year'] == 2017]
+dt.dropna(subset=['Value USD (Million USD)'], inplace=True)
 mean_per_country = dt.groupby('Country')['Value USD (Million USD)'].mean()
+
 general_average = mean_per_country.mean()
 # "calculate the average of all years in the dataframe "
 # mean_per_country_and_year = data.groupby(['Country', 'Year'])['Value USD (Million USD)'].mean()

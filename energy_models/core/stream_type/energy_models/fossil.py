@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/13-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/13-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.core.stream_type.energy_type import EnergyType
-from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
+from energy_models.core.stream_type.energy_type import EnergyType
 
 
 def compute_fossil_data(data_name):

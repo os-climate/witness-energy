@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/13-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/13-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,11 +14,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
 from copy import deepcopy
 
-from climateeconomics.glossarycore import GlossaryCore
+import numpy as np
+import pandas as pd
+
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -55,7 +55,7 @@ class BaseStream:
         Reload all dataframes with new year start and year end 
         '''
         self.years = np.arange(self.year_start, self.year_end + 1)
-        base_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        base_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.sub_prices = base_df.copy(deep=True)
         self.sub_prices_wo_taxes = base_df.copy(deep=True)
         self.total_prices = base_df.copy(deep=True)
@@ -78,8 +78,8 @@ class BaseStream:
         '''
         Configure at init
         '''
-        self.year_start = inputs_dict[GlossaryCore.YearStart]
-        self.year_end = inputs_dict[GlossaryCore.YearEnd]
+        self.year_start = inputs_dict[GlossaryEnergy.YearStart]
+        self.year_end = inputs_dict[GlossaryEnergy.YearEnd]
 
         self.reload_df()
 
@@ -88,29 +88,29 @@ class BaseStream:
         Configure before each run
         '''
         for element in self.subelements_list:
-            self.sub_prices[element] = inputs_dict[f'{element}.{GlossaryCore.TechnoPricesValue}'][element]
+            self.sub_prices[element] = inputs_dict[f'{element}.{GlossaryEnergy.TechnoPricesValue}'][element]
             self.sub_prices_wo_taxes[element] = inputs_dict[
-                f'{element}.{GlossaryCore.TechnoPricesValue}'][f'{element}_wotaxes']
+                f'{element}.{GlossaryEnergy.TechnoPricesValue}'][f'{element}_wotaxes']
             # Unscale techno production and consumption
             self.sub_production_dict[element] = deepcopy(
-                inputs_dict[f'{element}.{GlossaryCore.TechnoProductionValue}'])
+                inputs_dict[f'{element}.{GlossaryEnergy.TechnoProductionValue}'])
             self.sub_consumption_dict[element] = deepcopy(
-                inputs_dict[f'{element}.{GlossaryCore.TechnoConsumptionValue}'])
+                inputs_dict[f'{element}.{GlossaryEnergy.TechnoConsumptionValue}'])
             self.sub_consumption_woratio_dict[element] = deepcopy(
-                inputs_dict[f'{element}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}'])
+                inputs_dict[f'{element}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'])
             for column in self.sub_production_dict[element].columns:
-                if column == GlossaryCore.Years:
+                if column == GlossaryEnergy.Years:
                     continue
                 self.sub_production_dict[element][column] = self.sub_production_dict[element][column].values * \
                     inputs_dict['scaling_factor_techno_production']
             for column in self.sub_consumption_dict[element].columns:
-                if column == GlossaryCore.Years:
+                if column == GlossaryEnergy.Years:
                     continue
                 self.sub_consumption_dict[element][column] = self.sub_consumption_dict[element][column].values * \
                     inputs_dict['scaling_factor_techno_consumption']
                 self.sub_consumption_woratio_dict[element][column] = self.sub_consumption_woratio_dict[element][column].values * \
                     inputs_dict['scaling_factor_techno_consumption']
-            self.sub_land_use_required_dict[element] = inputs_dict[f'{element}.{GlossaryCore.LandUseRequiredValue}']
+            self.sub_land_use_required_dict[element] = inputs_dict[f'{element}.{GlossaryEnergy.LandUseRequiredValue}']
 
     def compute(self, inputs, exp_min=True):
         '''
@@ -138,7 +138,7 @@ class BaseStream:
         '''
 
         # Initialize dataframe out
-        base_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        base_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
         production = base_df.copy(deep=True)
         consumption = base_df.copy(deep=True)
         production_by_techno = base_df.copy(deep=True)
@@ -164,14 +164,14 @@ class BaseStream:
         for elem, prod in sub_production_dict[element].items():
             # DO not count major energy production in this function (already
             # computed)
-            if elem != f'{self.name} ({self.unit})' and elem != GlossaryCore.Years:
+            if elem != f'{self.name} ({self.unit})' and elem != GlossaryEnergy.Years:
                 if elem in production:
                     production[elem] += prod.values * factor
                 else:
                     production[elem] = prod.values * factor
 
         for elem, cons in sub_consumption_dict[element].items():
-            if elem != GlossaryCore.Years:
+            if elem != GlossaryEnergy.Years:
                 if elem in consumption:
                     consumption[elem] += cons.values * factor
                 else:
@@ -180,9 +180,9 @@ class BaseStream:
         return production, consumption
 
     def compute_energy_type_capital(self, inputs):
-        technos = inputs[GlossaryCore.techno_list]
+        technos = inputs[GlossaryEnergy.techno_list]
         capitals = [
-            inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"][GlossaryEnergy.Capital].values for techno in technos
+            inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalValue}"][GlossaryEnergy.Capital].values for techno in technos
         ]
         sum_technos_capital = np.sum(capitals, axis=0)
 
@@ -226,21 +226,21 @@ class BaseStream:
         # In case all the technologies are below the threshold
         # and the cutoff is applied, assign a placeholder price
         if not exp_min:
-            for year in self.total_prices[GlossaryCore.Years].values:
-                if np.real(self.total_prices.loc[self.total_prices[GlossaryCore.Years] == year][self.name].values) == 0.0:
+            for year in self.total_prices[GlossaryEnergy.Years].values:
+                if np.real(self.total_prices.loc[self.total_prices[GlossaryEnergy.Years] == year][self.name].values) == 0.0:
                     # Get the min_price of the technos this year that are > 0.0
-                    year_techno_prices = self.sub_prices[self.subelements_list].loc[self.sub_prices[GlossaryCore.Years] == year]
+                    year_techno_prices = self.sub_prices[self.subelements_list].loc[self.sub_prices[GlossaryEnergy.Years] == year]
                     min_techno_price = min(
                         val for val in year_techno_prices.values[0] if val > 0.0)
                     min_techno_name = [
                         name for name in year_techno_prices.columns if year_techno_prices[name].values == min_techno_price][0]
                     for element in self.subelements_list:
-                        self.mix_weights.loc[self.mix_weights[GlossaryCore.Years] == year,
+                        self.mix_weights.loc[self.mix_weights[GlossaryEnergy.Years] == year,
                                              element] = 100. if element == min_techno_name else 0.0
                     min_techno_price_wo_taxes = self.sub_prices_wo_taxes[min_techno_name]
-                    self.total_prices.loc[self.total_prices[GlossaryCore.Years] ==
+                    self.total_prices.loc[self.total_prices[GlossaryEnergy.Years] ==
                                           year, self.name] = min_techno_price
-                    self.total_prices.loc[self.total_prices[GlossaryCore.Years] ==
+                    self.total_prices.loc[self.total_prices[GlossaryEnergy.Years] ==
                                           year, f'{self.name}_wotaxes'] = min_techno_price_wo_taxes
 
     def compute_prod_wcutoff(self, production_by_techno, elements_dict, min_prod):
@@ -363,7 +363,7 @@ class BaseStream:
         for element in self.sub_land_use_required_dict.values():
 
             element_columns = list(element)
-            element_columns.remove(GlossaryCore.Years)
+            element_columns.remove(GlossaryEnergy.Years)
 
             for column_df in element_columns:
                 self.land_use_required[column_df] = element[column_df]

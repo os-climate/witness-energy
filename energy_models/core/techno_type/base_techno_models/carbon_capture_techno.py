@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 23/11/2023 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,11 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from abc import abstractmethod
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.techno_type.techno_type import TechnoType
+
+import numpy as np
 import scipy.interpolate as sc
 from scipy.stats import linregress
-import numpy as np
+
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.techno_type.techno_type import TechnoType
 
 
 class CCTechno(TechnoType):

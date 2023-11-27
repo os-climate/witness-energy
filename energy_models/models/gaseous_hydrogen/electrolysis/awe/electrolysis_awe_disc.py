@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/06 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,13 +17,12 @@ limitations under the License.
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
-import copy
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.gaseous_hydrogen.electrolysis.awe.electrolysis_awe import ElectrolysisAWE
 
 
@@ -59,7 +58,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'learning_rate': 0.05,
                                  'maximum_learning_capex_ratio': 200 / 581.25,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'stack_lifetime': 100000,
                                  'stack_lifetime_unit': 'hours',
                                  'Capex_init': 581.25,  # for a power input of 2MW, decreases for 10 MW
@@ -73,7 +72,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # compute elec needs
                                  'efficiency': 0.60,
                                  'efficiency_max': 0.70,
-                                 'construction_delay': construction_delay}
+                                 GlossaryEnergy.ConstructionDelay: construction_delay}
     # see doc
     initial_production = 1.6 - 0.4
     # Industrial plants started to emerge around 2015
@@ -83,7 +82,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
 
     # We assume no investments
     invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
-                                             GlossaryCore.InvestValue: [0.0]})
+                                             GlossaryEnergy.InvestValue: [0.0]})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -91,15 +90,15 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                       'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe',
                                        'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe',
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
                                         'unit': 'G$',
                                         'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 

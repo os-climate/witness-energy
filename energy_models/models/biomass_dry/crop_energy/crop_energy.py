@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,12 +16,13 @@ limitations under the License.
 '''
 
 from copy import deepcopy
-import pandas as pd
-import numpy as np
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.techno_type.base_techno_models.biomass_dry_techno import BiomassDryTechno
+import numpy as np
+import pandas as pd
+
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+from energy_models.core.techno_type.base_techno_models.biomass_dry_techno import BiomassDryTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CropEnergy(BiomassDryTechno):
@@ -55,19 +57,20 @@ class CropEnergy(BiomassDryTechno):
         Compute part for energy and details for crop and residues
         """
 
+        
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_crop = f'{self.energy_name}_crop (TWh)'
         name_non_energy = f'{self.energy_name}_non_energy (TWh)'
         name_residue_non_energy = f'{self.energy_name}_residue_non_energy (TWh)'
         name_tot = f'{self.energy_name}_tot (TWh)'
 
-        self.compute_primary_energy_production()
 
-        self.production_mix = pd.DataFrame({GlossaryCore.Years: self.years})
+
+        self.production_mix = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         # This model compute the production of crop and residue for energy
         crop_residue_energy_production = deepcopy(
-            self.production[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'])
+            self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'])
 
         # production of residue is the production from food surface and from
         # crop energy
@@ -95,12 +98,12 @@ class CropEnergy(BiomassDryTechno):
             self.production_mix[name_crop] + self.production_mix[name_residue]
 
         # compute output production dedicated to energy
-        self.production[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'] = self.production_mix[name_residue] +\
-            self.production_mix[name_crop]
+        self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'] = self.production_mix[name_residue] + \
+                                                                                                   self.production_mix[name_crop]
 
-        self.consumption[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
-            self.data_energy_dict['high_calorific_value'] * \
-            self.production[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
+                                                                      self.data_energy_dict['high_calorific_value'] * \
+                                                                      self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_land_use(self):
         """
@@ -108,8 +111,8 @@ class CropEnergy(BiomassDryTechno):
         """
         density_per_ha = self.techno_infos_dict['density_per_ha']
 
-        self.techno_land_use[f'{self.name} (Gha)'] = \
-            self.production[f'{self.energy_name} ({self.product_energy_unit})'] *\
+        self.land_use[f'{self.name} (Gha)'] = \
+            self.production_detailed[f'{self.energy_name} ({self.product_energy_unit})'] * \
             (1 - self.techno_infos_dict['residue_density_percentage']) / \
             self.data_energy_dict['calorific_value'] / \
             density_per_ha
@@ -141,7 +144,7 @@ class CropEnergy(BiomassDryTechno):
         # Price_residue = crop_residue_ratio * Price_crop
 
         #=> Price_crop = Price_tot / ((1-ratio_prices)*crop_residue_ratio + ratio_prices)
-        self.price_mix = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.price_mix = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.price_mix[f'{BiomassDryTechno.energy_name}_crop'] = price_crop
         self.price_mix[f'{BiomassDryTechno.energy_name}_residue'] = price_residue
 
@@ -204,9 +207,9 @@ class CropEnergy(BiomassDryTechno):
         """
 
         dlanduse_dinvest = np.identity(len(self.years)) * 0
-        for key in self.techno_land_use:
+        for key in self.land_use:
             if key.startswith(self.name):
-                if not (self.techno_land_use[key] == np.array([0] * len(self.years))).all():
+                if not (self.land_use[key] == np.array([0] * len(self.years))).all():
                     dlanduse_dinvest = self.dprod_dinvest *\
                         (1 - self.techno_infos_dict['residue_density_percentage']) / \
                         self.data_energy_dict['calorific_value'] / \

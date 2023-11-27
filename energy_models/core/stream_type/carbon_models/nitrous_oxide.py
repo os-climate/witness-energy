@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 23/11/2023 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +16,6 @@ limitations under the License.
 '''
 
 from energy_models.core.stream_type.base_stream import BaseStream
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class N2O(BaseStream):

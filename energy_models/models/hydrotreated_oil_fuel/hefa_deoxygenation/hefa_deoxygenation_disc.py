@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.techno_type.disciplines.hydrotreated_oil_fuel_techno_disc import \
     HydrotreatedOilFuelTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygenation import \
     HefaDeoxygenation
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 
 
 class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
@@ -63,9 +63,9 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         # (page 67)
         'Opex_percentage': 0.0715,
         'lifetime': lifetime,  # for now constant in time but should increase with time
-        'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
-        'construction_delay_unit': GlossaryCore.Years,
+        'lifetime_unit': GlossaryEnergy.Years,
+        GlossaryEnergy.ConstructionDelay: construction_delay,
+        'construction_delay_unit': GlossaryEnergy.Years,
         'Invest_init': 347.5,
         'Invest_init_unit': 'M$',
         'Capex_init': 347.5 * 1e6 * dollar_per_gallon_to_dollar_per_m3 / 780
@@ -119,19 +119,19 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
                                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [347.5 / 1000 * i for i in [0.0, 0.0, 3.0]]})  # in G$
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [347.5 / 1000 * i for i in [0.0, 0.0, 3.0]]})  # in G$
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     DESC_IN.update(HydrotreatedOilFuelTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

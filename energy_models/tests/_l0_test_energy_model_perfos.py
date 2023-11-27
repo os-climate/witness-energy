@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 23/11/2023 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,16 +14,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
-from time import sleep
-from shutil import rmtree
-from pathlib import Path
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
 import cProfile
 import pstats
+import unittest
 from io import StringIO
-from os.path import join, dirname
+from pathlib import Path
+from shutil import rmtree
+from time import sleep
+
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestModelPerfo(unittest.TestCase):

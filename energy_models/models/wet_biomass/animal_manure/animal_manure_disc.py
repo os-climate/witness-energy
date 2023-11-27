@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,10 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from energy_models.core.techno_type.disciplines.wet_biomass_techno_disc import WetBiomassTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.wet_biomass.animal_manure.animal_manure import AnimalManure
 
 
@@ -59,7 +60,7 @@ class AnimalManureDiscipline(WetBiomassTechnoDiscipline):
                                  'WACC': 0.07,  # ?
                                  'learning_rate': 0.2,  # augmentation of forests ha per year?
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # To be defined, should be nearly 0
                                  'Capex_init': 59.48,
                                  'Capex_init_unit': 'euro/ha',
@@ -72,10 +73,10 @@ class AnimalManureDiscipline(WetBiomassTechnoDiscipline):
                                  'efficiency': 0.0,
                                  'techno_evo_eff': 'no',  # yes or no
 
-                                 'construction_delay': construction_delay}
+                                 GlossaryEnergy.ConstructionDelay: construction_delay}
     # invest: 7% of ha are planted each year at 13047.328euro/ha
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 0.0, 0.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0, 0.0]})
     # To be defined
     initial_production = 1e-12  # in Twh
     # to be defined
@@ -93,14 +94,14 @@ class AnimalManureDiscipline(WetBiomassTechnoDiscipline):
                                      'default': techno_infos_dict_default},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True),
                                                                 }
                                        },
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno inputs to this
     DESC_IN.update(WetBiomassTechnoDiscipline.DESC_IN)

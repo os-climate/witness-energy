@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,20 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import DirectAirCaptureTechnoDiscipline
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno import DirectAirCaptureTechno
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from os.path import join, dirname
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import \
+    DirectAirCaptureTechnoDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class DirectAirCaptureTechnoTestCase(unittest.TestCase):
@@ -43,11 +40,11 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'renewable': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'renewable': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                                                                   0.159236536471781, 0.15899046935409588, 0.15874840310033885,
                                                                                   0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
                                                                                   0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
@@ -61,7 +58,7 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryCore.Years: years, 'renewable': 0.0, 'fossil':0.2})
+            {GlossaryEnergy.Years: years, 'renewable': 0.0, 'fossil':0.2})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -73,9 +70,9 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
                            4169400000.0, 4071800000.0, 4174200000.0,
                            3894500000.0, 3780750000.0, 3567000000.0,
                            ]) * 0.02 / 1000 * 1.0e-9
-        self.resources_price = pd.DataFrame({GlossaryCore.Years: years})
+        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
         self.invest_level = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestValue: invest})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: invest})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -83,58 +80,22 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
         self.transport = pd.DataFrame(
-            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 0.0})
+            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.0})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict[GlossaryCore.Years] = years
+        demand_ratio_dict[GlossaryEnergy.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
 
     def tearDown(self):
         pass
-
-    def test_02_compute_direct_air_capture_techno_price_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': DirectAirCaptureTechnoDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.InvestmentBeforeYearStartValue: DirectAirCaptureTechnoDiscipline.invest_before_year_start,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': DirectAirCaptureTechnoDiscipline.initial_capture,
-                       'initial_age_distrib': DirectAirCaptureTechnoDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': CarbonCapture.data_energy_dict,
-                       }
-
-        direct_air_capture_techno_model = DirectAirCaptureTechno(
-            'direct_air_capture.DirectAirCaptureTechno')
-        direct_air_capture_techno_model.configure_parameters(inputs_dict)
-        direct_air_capture_techno_model.configure_parameters_update(
-            inputs_dict)
-        price_details = direct_air_capture_techno_model.compute_price()
-        direct_air_capture_techno_model.compute_consumption_and_production()
 
     def test_03_direct_air_capture_techno_discipline(self):
 
@@ -156,17 +117,17 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestmentBeforeYearStartValue}':
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
                        DirectAirCaptureTechnoDiscipline.invest_before_year_start,
-                       f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_price,
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

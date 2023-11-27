@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +16,7 @@ limitations under the License.
 '''
 import unittest
 
-from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -53,8 +54,8 @@ class ResourcesDisc(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
-                       f'{self.name}.{GlossaryCore.YearEnd}': 2050
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': 2020,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': 2050
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

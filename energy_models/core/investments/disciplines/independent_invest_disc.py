@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2023/11/06 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,16 +20,16 @@ mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.independent_invest import IndependentInvest
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.ccus.ccus import CCUS
 
 
 class IndependentInvestDiscipline(SoSWrapp):
@@ -48,11 +48,11 @@ class IndependentInvestDiscipline(SoSWrapp):
     }
     energy_mix_name = EnergyMix.name
     DESC_IN = {
-        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        GlossaryCore.invest_mix: {'type': 'dataframe', 'unit': 'G$',
+        GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.invest_mix: {'type': 'dataframe', 'unit': 'G$',
                        'dataframe_edition_locked': False,
-                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                 'electricity.SolarPv': ('float', None, True),
                                                 'electricity.WindOnshore': ('float', None, True),
                                                 'electricity.CoalGen': ('float', None, True),
@@ -74,19 +74,16 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                 'heat.hightemperatureheat.HeatPumpHighHeat': ('float', None, True),
                                                 'heat.hightemperatureheat.GeothermalHighHeat': ('float', None, True),
                                                 'heat.hightemperatureheat.CHPHighHeat': ('float', None, True),
-                                                'heat.hightemperatureheat.HydrogenBoilerHighHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.NaturalGasBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.ElectricBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.HeatPumpLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.GeothermalLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.CHPLowHeat': ('float', None, True),
-                                                'heat.lowtemperatureheat.HydrogenBoilerLowHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.NaturalGasBoilerMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.ElectricBoilerMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.HeatPumpMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.GeothermalMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.CHPMediumHeat': ('float', None, True),
-                                                'heat.mediumtemperatureheat.HydrogenBoilerMediumHeat': ('float', None, True),
                                                 'biogas.AnaerobicDigestion': ('float', None, True),
                                                 'syngas.BiomassGasification': ('float', None, True),
                                                 'syngas.SMR': ('float', None, True),
@@ -135,24 +132,24 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                 'carbon_capture.flue_gas_capture.FlueGasTechno': ('float', None, True),
                                                 'carbon_storage.CarbonStorageTechno': ('float', None, True),
                                                 }},
-        GlossaryCore.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+        GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                         'editable': False, 'structuring': True},
-        GlossaryCore.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
+        GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
                      'structuring': True},
-        GlossaryCore.ForestInvestmentValue: {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                       GlossaryCore.ForestInvestmentValue: ('float', None, False)}, 'namespace': 'ns_invest',
+        GlossaryEnergy.ForestInvestmentValue: {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
+                              'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
+                                                       GlossaryEnergy.ForestInvestmentValue: ('float', None, False)}, 'namespace': 'ns_invest',
                               'dataframe_edition_locked': False},
     }
 
     energy_name = "one_invest"
 
     DESC_OUT = {
-        GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
-        GlossaryCore.EnergyInvestmentsMinimizationObjective: {'type': 'array', 'unit': '-',
+        GlossaryEnergy.EnergyInvestmentsWoTaxValue: GlossaryEnergy.EnergyInvestmentsWoTax,
+        GlossaryEnergy.EnergyInvestmentsMinimizationObjective: {'type': 'array', 'unit': '-',
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                   'namespace': 'ns_functions'},
     }
@@ -168,59 +165,59 @@ class IndependentInvestDiscipline(SoSWrapp):
         dynamic_outputs = {}
         dynamic_inputs = {}
 
-        if GlossaryCore.energy_list in self.get_data_in():
-            energy_list = self.get_sosdisc_inputs(GlossaryCore.energy_list)
+        if GlossaryEnergy.energy_list in self.get_data_in():
+            energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
             if energy_list is not None:
                 for energy in energy_list:
                     if energy == BiomassDry.name:
                         dynamic_inputs['managed_wood_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                     GlossaryCore.InvestmentsValue: ('float', None, False)},
+                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
+                                                     GlossaryEnergy.InvestmentsValue: ('float', None, False)},
                             'namespace': 'ns_forest', 'dataframe_edition_locked': False,}
                         dynamic_inputs['deforestation_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                     GlossaryCore.InvestmentsValue: ('float', None, False)},
+                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
+                                                     GlossaryEnergy.InvestmentsValue: ('float', None, False)},
                             'namespace': 'ns_forest', 'dataframe_edition_locked': False}
                         dynamic_inputs['crop_investment'] = {
                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                     GlossaryCore.InvestmentsValue: ('float', None, False)},
+                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
+                                                     GlossaryEnergy.InvestmentsValue: ('float', None, False)},
                             'namespace': 'ns_crop', 'dataframe_edition_locked': False}
                     else:
                         # Add technologies_list to inputs
-                        dynamic_inputs[f'{energy}.{GlossaryCore.techno_list}'] = {
+                        dynamic_inputs[f'{energy}.{GlossaryEnergy.techno_list}'] = {
                             'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
                             'visibility': 'Shared', 'namespace': 'ns_energy',
                             'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
                             'default': EnergyMix.stream_class_dict[energy].default_techno_list}
                         # Add all invest_level outputs
-                        if f'{energy}.{GlossaryCore.techno_list}' in self.get_data_in():
+                        if f'{energy}.{GlossaryEnergy.techno_list}' in self.get_data_in():
                             technology_list = self.get_sosdisc_inputs(
-                                f'{energy}.{GlossaryCore.techno_list}')
+                                f'{energy}.{GlossaryEnergy.techno_list}')
                             if technology_list is not None:
                                 for techno in technology_list:
-                                    dynamic_outputs[f'{energy}.{techno}.{GlossaryCore.InvestLevelValue}'] = {
+                                    dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = {
                                         'type': 'dataframe', 'unit': 'G$',
                                         'visibility': 'Shared', 'namespace': 'ns_energy'}
 
-        if GlossaryCore.ccs_list in self.get_data_in():
-            ccs_list = self.get_sosdisc_inputs(GlossaryCore.ccs_list)
+        if GlossaryEnergy.ccs_list in self.get_data_in():
+            ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
             if ccs_list is not None:
                 for ccs in ccs_list:
                     # Add technologies_list to inputs
-                    dynamic_inputs[f'{ccs}.{GlossaryCore.techno_list}'] = {
+                    dynamic_inputs[f'{ccs}.{GlossaryEnergy.techno_list}'] = {
                         'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
                         'visibility': 'Shared', 'namespace': 'ns_ccs',
                         'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list}
                     # Add all invest_level outputs
-                    if f'{ccs}.{GlossaryCore.techno_list}' in self.get_data_in():
+                    if f'{ccs}.{GlossaryEnergy.techno_list}' in self.get_data_in():
                         technology_list = self.get_sosdisc_inputs(
-                            f'{ccs}.{GlossaryCore.techno_list}')
+                            f'{ccs}.{GlossaryEnergy.techno_list}')
                         if technology_list is not None:
                             for techno in technology_list:
-                                dynamic_outputs[f'{ccs}.{techno}.{GlossaryCore.InvestLevelValue}'] = {
+                                dynamic_outputs[f'{ccs}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = {
                                     'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_ccs'}
 
         self.add_inputs(dynamic_inputs)
@@ -233,25 +230,25 @@ class IndependentInvestDiscipline(SoSWrapp):
         energy_investment_wo_tax, energy_invest_objective = self.independent_invest_model.compute(
             input_dict)
 
-        output_dict = {GlossaryCore.EnergyInvestmentsWoTaxValue: energy_investment_wo_tax,
-                       GlossaryCore.EnergyInvestmentsMinimizationObjective: energy_invest_objective, }
+        output_dict = {GlossaryEnergy.EnergyInvestmentsWoTaxValue: energy_investment_wo_tax,
+                       GlossaryEnergy.EnergyInvestmentsMinimizationObjective: energy_invest_objective, }
 
-        for energy in input_dict[GlossaryCore.energy_list] + input_dict[GlossaryCore.ccs_list]:
+        for energy in input_dict[GlossaryEnergy.energy_list] + input_dict[GlossaryEnergy.ccs_list]:
             if energy == BiomassDry.name:
                 pass
             else:
-                for techno in input_dict[f'{energy}.{GlossaryCore.techno_list}']:
-                    output_dict[f'{energy}.{techno}.{GlossaryCore.InvestLevelValue}'] = pd.DataFrame(
-                        {GlossaryCore.Years: input_dict[GlossaryCore.invest_mix][GlossaryCore.Years].values,
-                         GlossaryCore.InvestValue: input_dict[GlossaryCore.invest_mix][f'{energy}.{techno}'].values})
+                for techno in input_dict[f'{energy}.{GlossaryEnergy.techno_list}']:
+                    output_dict[f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = pd.DataFrame(
+                        {GlossaryEnergy.Years: input_dict[GlossaryEnergy.invest_mix][GlossaryEnergy.Years].values,
+                         GlossaryEnergy.InvestValue: input_dict[GlossaryEnergy.invest_mix][f'{energy}.{techno}'].values})
 
         self.store_sos_outputs_values(output_dict)
 
     def compute_sos_jacobian(self):
         inputs_dict = self.get_sosdisc_inputs()
 
-        years = np.arange(inputs_dict[GlossaryCore.YearStart],
-                          inputs_dict[GlossaryCore.YearEnd] + 1)
+        years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
+                          inputs_dict[GlossaryEnergy.YearEnd] + 1)
 
         delta_years = len(years)
         identity = np.identity(delta_years)
@@ -259,41 +256,41 @@ class IndependentInvestDiscipline(SoSWrapp):
 
         for techno in self.independent_invest_model.distribution_list:
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.EnergyInvestmentsWoTaxValue),
-                (GlossaryCore.invest_mix, techno),
+                (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
+                (GlossaryEnergy.invest_mix, techno),
                 identity * 1e-3)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.EnergyInvestmentsMinimizationObjective,),
-                (GlossaryCore.invest_mix, techno),
+                (GlossaryEnergy.EnergyInvestmentsMinimizationObjective,),
+                (GlossaryEnergy.invest_mix, techno),
                 ones * 1e-3)
 
             self.set_partial_derivative_for_other_types(
-                (f'{techno}.{GlossaryCore.InvestLevelValue}', GlossaryCore.InvestValue),
-                (GlossaryCore.invest_mix, techno),
+                (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
+                (GlossaryEnergy.invest_mix, techno),
                 np.identity(len(years)))
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.EnergyInvestmentsWoTaxValue),
-            (GlossaryCore.ForestInvestmentValue, GlossaryCore.ForestInvestmentValue),
+            (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
+            (GlossaryEnergy.ForestInvestmentValue, GlossaryEnergy.ForestInvestmentValue),
             identity * 1e-3)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EnergyInvestmentsMinimizationObjective,),
-            (GlossaryCore.ForestInvestmentValue, GlossaryCore.ForestInvestmentValue),
+            (GlossaryEnergy.EnergyInvestmentsMinimizationObjective,),
+            (GlossaryEnergy.ForestInvestmentValue, GlossaryEnergy.ForestInvestmentValue),
             ones * 1e-3)
 
-        energy_list = inputs_dict[GlossaryCore.energy_list]
+        energy_list = inputs_dict[GlossaryEnergy.energy_list]
         if BiomassDry.name in energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.EnergyInvestmentsWoTaxValue),
-                    (techno, GlossaryCore.InvestmentsValue),
+                    (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
+                    (techno, GlossaryEnergy.InvestmentsValue),
                     identity * 1e-3)
 
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryCore.EnergyInvestmentsMinimizationObjective,),
-                    (techno, GlossaryCore.InvestmentsValue),
+                    (GlossaryEnergy.EnergyInvestmentsMinimizationObjective,),
+                    (techno, GlossaryEnergy.InvestmentsValue),
                     ones * 1e-3)
 
     def get_chart_filter_list(self):
@@ -321,25 +318,25 @@ class IndependentInvestDiscipline(SoSWrapp):
 
         if 'Invest Distribution' in charts:
             techno_invests = self.get_sosdisc_inputs(
-                GlossaryCore.invest_mix)
+                GlossaryEnergy.invest_mix)
 
             chart_name = f'Distribution of investments on each energy vs years'
 
-            new_chart_energy = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Invest [G$]',
+            new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                         chart_name=chart_name, stacked_bar=True)
-            energy_list = self.get_sosdisc_inputs(GlossaryCore.energy_list)
-            ccs_list = self.get_sosdisc_inputs(GlossaryCore.ccs_list)
+            energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
+            ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
             for energy in energy_list + ccs_list:
                 techno_list = [
                     col for col in techno_invests.columns if col.startswith(f'{energy}.')]
                 short_df = techno_invests[techno_list]
                 chart_name = f'Distribution of investments for {energy} vs years'
-                new_chart_techno = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Invest [G$]',
+                new_chart_techno = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                             chart_name=chart_name, stacked_bar=True)
 
                 for techno in techno_list:
                     serie = InstanciatedSeries(
-                        techno_invests[GlossaryCore.Years].values.tolist(),
+                        techno_invests[GlossaryEnergy.Years].values.tolist(),
                         short_df[techno].values.tolist(), techno, 'bar')
 
                     new_chart_techno.series.append(serie)
@@ -347,40 +344,40 @@ class IndependentInvestDiscipline(SoSWrapp):
                 invest = short_df.sum(axis=1).values
                 # Add total price
                 serie = InstanciatedSeries(
-                    techno_invests[GlossaryCore.Years].values.tolist(),
+                    techno_invests[GlossaryEnergy.Years].values.tolist(),
                     invest.tolist(), energy, 'bar')
 
                 new_chart_energy.series.append(serie)
 
-            forest_investment = self.get_sosdisc_inputs(GlossaryCore.ForestInvestmentValue)
+            forest_investment = self.get_sosdisc_inputs(GlossaryEnergy.ForestInvestmentValue)
             chart_name = f'Distribution of reforestation investments vs years'
-            agriculture_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Invest [G$]',
+            agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                          chart_name=chart_name, stacked_bar=True)
             serie_agriculture = InstanciatedSeries(
-                forest_investment[GlossaryCore.Years].values.tolist(),
-                forest_investment[GlossaryCore.ForestInvestmentValue].values.tolist(), 'Reforestation', 'bar')
+                forest_investment[GlossaryEnergy.Years].values.tolist(),
+                forest_investment[GlossaryEnergy.ForestInvestmentValue].values.tolist(), 'Reforestation', 'bar')
             agriculture_chart.series.append(serie_agriculture)
             instanciated_charts.append(agriculture_chart)
             serie = InstanciatedSeries(
-                forest_investment[GlossaryCore.Years].values.tolist(),
-                forest_investment[GlossaryCore.ForestInvestmentValue].tolist(), 'Reforestation', 'bar')
+                forest_investment[GlossaryEnergy.Years].values.tolist(),
+                forest_investment[GlossaryEnergy.ForestInvestmentValue].tolist(), 'Reforestation', 'bar')
 
             new_chart_energy.series.append(serie)
 
             if BiomassDry.name in energy_list:
                 chart_name = f'Distribution of agriculture sector investments vs years'
-                agriculture_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Invest [G$]',
+                agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                              chart_name=chart_name, stacked_bar=True)
 
                 for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
                     invest = self.get_sosdisc_inputs(techno)
                     serie_agriculture = InstanciatedSeries(
-                        invest[GlossaryCore.Years].values.tolist(),
-                        invest[GlossaryCore.InvestmentsValue].values.tolist(), techno.replace("_investment", ""), 'bar')
+                        invest[GlossaryEnergy.Years].values.tolist(),
+                        invest[GlossaryEnergy.InvestmentsValue].values.tolist(), techno.replace("_investment", ""), 'bar')
                     agriculture_chart.series.append(serie_agriculture)
                     serie = InstanciatedSeries(
-                        invest[GlossaryCore.Years].values.tolist(),
-                        invest[GlossaryCore.InvestmentsValue].tolist(), techno.replace("_investment", ""), 'bar')
+                        invest[GlossaryEnergy.Years].values.tolist(),
+                        invest[GlossaryEnergy.InvestmentsValue].tolist(), techno.replace("_investment", ""), 'bar')
                     new_chart_energy.series.append(serie)
                 instanciated_charts.append(agriculture_chart)
                 instanciated_charts.insert(0, new_chart_energy)

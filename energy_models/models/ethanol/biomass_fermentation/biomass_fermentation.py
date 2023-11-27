@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/09-2023/11/15 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,14 +14,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.core.stream_type.energy_models.ethanol import Ethanol
-from energy_models.core.techno_type.base_techno_models.ethanol_techno import EthanolTechno
-from energy_models.core.stream_type.resources_models.water import Water
+import numpy as np
+
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-
-import numpy as np
+from energy_models.core.stream_type.energy_models.ethanol import Ethanol
+from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.techno_type.base_techno_models.ethanol_techno import EthanolTechno
 
 
 class BiomassFermentation(EthanolTechno):
@@ -87,45 +88,45 @@ class BiomassFermentation(EthanolTechno):
         Compute the consumption and the production of the technology for a given investment
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Production
         carbon_production_factor = self.get_theoretical_co2_prod()
-        self.production[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
-            self.production[f'{Ethanol.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
+                                                                               self.production_detailed[f'{Ethanol.name} ({self.product_energy_unit})'] / \
+                                                                               self.cost_details['efficiency']
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-            self.production[f'{Ethanol.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[f'{Ethanol.name} ({self.product_energy_unit})'] / \
+                                                                                        self.cost_details['efficiency']
 
-        self.consumption[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details[f'{BiomassDry.name}_needs'] * \
-            self.production[f'{Ethanol.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
-            self.production[f'{Ethanol.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details[f'{BiomassDry.name}_needs'] * \
+                                                                                       self.production_detailed[f'{Ethanol.name} ({self.product_energy_unit})'] / \
+                                                                                       self.cost_details['efficiency']
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
+                                                                        self.production_detailed[f'{Ethanol.name} ({self.product_energy_unit})'] / \
+                                                                        self.cost_details['efficiency']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account CO2 from electricity/fuel production
         '''
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details[f'{Electricity.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details[f'{Electricity.name}_needs'] / \
+                                                       self.cost_details['efficiency']
 
-        self.carbon_emissions[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
-            self.cost_details[f'{BiomassDry.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
+                                                 self.cost_details[f'{BiomassDry.name}_needs'] / \
+                                                 self.cost_details['efficiency']
 
-        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                               self.cost_details[f'{Water.name}_needs'] / \
-                                               self.cost_details['efficiency']
+        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
+                                            self.cost_details[f'{Water.name}_needs'] / \
+                                            self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Electricity.name}'] + self.carbon_emissions[f'{BiomassDry.name}'] + \
-               self.carbon_emissions[Water.name]
+        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[f'{BiomassDry.name}'] + \
+               self.carbon_intensity[Water.name]
 
     def get_theoretical_biomass_needs(self):
         """

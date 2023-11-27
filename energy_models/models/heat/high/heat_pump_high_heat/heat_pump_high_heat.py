@@ -13,12 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 import numpy as np
 import pandas as pd
+
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
+from energy_models.glossaryenergy import GlossaryEnergy
+
 
 class HeatPump(highheattechno):
     def compute_other_primary_energy_costs(self):
@@ -33,31 +35,30 @@ class HeatPump(highheattechno):
 
         return self.cost_details[f'{Electricity.name}']
 
-    def grad_price_vs_energy_price_calc(self):
+    def grad_price_vs_energy_price(self):
         elec_needs = self.get_theoretical_electricity_needs()
         heat_generated = elec_needs #self.get_theoretical_heat_generated()
         mean_temperature = self.techno_infos_dict['mean_temperature']
         output_temperature = self.techno_infos_dict['output_temperature']
         COP = output_temperature / (output_temperature - mean_temperature)
         efficiency = COP
-        # return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-        #        hightemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
-        #        }
-        return {}
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
+               hightemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
+               }
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        self.compute_primary_energy_production()
+        
         # Production
-        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
-            self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
+            self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-            self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
+                                                                                        self.cost_details['efficiency']
 
     def get_theoretical_electricity_needs(self):
 
@@ -78,6 +79,6 @@ class HeatPump(highheattechno):
         land_rate = self.land_rate
         heat_price = self.compute_other_primary_energy_costs()
         self.heat_flux = land_rate/heat_price
-        self.heat_flux_distribution = pd.DataFrame({GlossaryCore.Years: self.cost_details[GlossaryCore.Years],
+        self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
                                                'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
