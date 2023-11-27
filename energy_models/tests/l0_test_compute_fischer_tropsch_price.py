@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,27 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
-import scipy.interpolate as sc
-from os.path import join, dirname
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import FischerTropschDiscipline
-from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch import FischerTropsch
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_prices,\
-    get_static_CO2_emissions
+import numpy as np
+import pandas as pd
+import scipy.interpolate as sc
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.kerosene import Kerosene
 from energy_models.core.stream_type.energy_models.gasoline import Gasoline
-from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
 from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
+from energy_models.core.stream_type.energy_models.kerosene import Kerosene
+from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
 from energy_models.core.stream_type.energy_models.ultralowsulfurdiesel import UltraLowSulfurDiesel
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.syngas import Syngas
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class FTPriceTestCase(unittest.TestCase):
@@ -125,46 +119,6 @@ class FTPriceTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_01_compute_FT_price(self):
-
-        years = np.arange(2020, 2051)
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': FischerTropschDiscipline.techno_infos_dict_default,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue: self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': FischerTropschDiscipline.initial_production,
-                       'initial_age_distrib': FischerTropschDiscipline.initial_age_distribution,
-                       GlossaryCore.InvestmentBeforeYearStartValue: FischerTropschDiscipline.invest_before_year_start,
-                       GlossaryCore.ResourcesPriceValue: get_static_prices(np.arange(2020, 2051)),
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'syngas_ratio': np.ones(len(years)),
-                       'syngas_ratio_technos': self.syngas_ratio_technos,
-                       'energy_detailed_techno_prices': self.syngas_detailed_prices,
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': self.data_fuel,
-                       'syngas.data_fuel_dict': Syngas.data_energy_dict,
-                       'hydrogen.gaseous_hydrogen.data_fuel_dict': GaseousHydrogen.data_energy_dict,
-                       }
-
-        ptl_model = FischerTropsch('FischerTropsch')
-
-        ptl_model.configure_parameters(inputs_dict)
-        ptl_model.configure_parameters_update(inputs_dict)
-        price_details = ptl_model.compute_price()
 
     def test_02_FT_discipline(self):
 

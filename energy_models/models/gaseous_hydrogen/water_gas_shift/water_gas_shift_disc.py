@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/10-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/10-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,19 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
-import numpy as np
 from copy import deepcopy
 
+import numpy as np
+import pandas as pd
+
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
+from energy_models.core.stream_type.energy_models.syngas import \
+    compute_calorific_value as compute_syngas_calorific_value
+from energy_models.core.stream_type.energy_models.syngas import compute_molar_mass as compute_syngas_molar_mass
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift import WGS
-from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
-from energy_models.core.stream_type.energy_models.syngas import compute_molar_mass as compute_syngas_molar_mass
-from energy_models.core.stream_type.energy_models.syngas import compute_calorific_value as compute_syngas_calorific_value
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 
 class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
@@ -71,7 +73,6 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'Capex_init_vs_CO_conversion_unit': 'euro',
                                  'low_heat_production': (41 / 46.016)*1000*2.77778e-13,  # CO+H2O→CO2+H2ΔH°=−41kJ/mol, Co2(44g/mol),H2(2.016g/mol)
                                  'low_heat_production_unit': 'TWh/kg',
-                                 'useful_heat_recovery_factor': 0.8,
                                  # Capex initial at year 2020
                                  'CO_conversion': [36.0, 100.0],
                                  'CO_conversion_unit': '%',
@@ -86,7 +87,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
                                  # perfectly efficient
                                  'input_power_unit': 'mol/h',
                                  'techno_evo_eff': 'no',  # yes or no
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
 
     # Fake investments (not found in the litterature...)
     invest_before_year_start = pd.DataFrame(
@@ -259,7 +260,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             (GlossaryCore.CO2EmissionsValue, 'WaterGasShift'),  ('syngas_ratio',),  np.identity(len(self.techno_model.years)) * (dco2_prod_dsyngas_ratio + dco2_syngas_dsyngas_ratio) / 100.0)
 
         CO2_emissions_is_positive = np.maximum(0.0, np.sign(
-            self.techno_model.carbon_emissions['WaterGasShift'].values))
+            self.techno_model.carbon_intensity['WaterGasShift'].values))
         dprice_CO2_fact = np.identity(
             len(self.techno_model.years)) * (dco2_prod_dsyngas_ratio + dco2_syngas_dsyngas_ratio) * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryCore.Years]
                                                                                                                                     <= self.techno_model.year_end][GlossaryCore.CO2Tax].values * CO2_emissions_is_positive
@@ -351,7 +352,7 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
             ('non_use_capital', self.techno_model.name), ('syngas_ratio',), dnon_use_capital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoCapitalDfValue, GlossaryEnergy.Capital), ('syngas_ratio',), dtechnocapital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital), ('syngas_ratio',), dtechnocapital_dsyngas_ratio / 100.0 / scaling_factor_invest_level)
 
     def specific_run(self):
 

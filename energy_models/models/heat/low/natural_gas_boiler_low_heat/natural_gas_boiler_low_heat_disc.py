@@ -14,16 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
+from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
 from energy_models.models.heat.low.natural_gas_boiler_low_heat.natural_gas_boiler_low_heat import NaturalGasLowHeat
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+
 
 class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
 
@@ -65,7 +65,7 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
         'Opex_init_unit': '$/kW',
         'lifetime': lifetime,
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
         'efficiency': 0.8,    # consumptions and productions already have efficiency included
         'natural_gas_calorific_val': 53600,
@@ -197,22 +197,11 @@ class NaturalGasBoilerLowHeatDiscipline(LowHeatTechnoDiscipline):
 
         return new_chart
 
-    def get_chart_filter_list(self):
-        chart_filters = LowHeatTechnoDiscipline.get_chart_filter_list(self)
-
-        self.instanciated_charts = LowHeatTechnoDiscipline.get_post_processing_list(self, chart_filters)
-
-        chart_list = ['heat_flux']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
-
-        return chart_filters
-
     def get_post_processing_list(self, filters=None):
         """
         Basic post processing method for the model
         """
-        instanciated_charts = self.instanciated_charts
+        instanciated_charts = super().get_post_processing_list(filters)
         charts = []
         # for pie charts Title
         unit_str = '$/MWh'

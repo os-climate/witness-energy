@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,21 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
-from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
-    InstanciatedSeries
 import numpy as np
 
-from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.ccus.ccus import CCUS
+from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
+from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import \
+    AmineScrubbingDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import \
+    CalciumPotassiumScrubbingDiscipline
+from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import \
+    DirectAirCaptureTechnoDiscipline
 from energy_models.models.electricity.coal_gen.coal_gen_disc import CoalGenDiscipline
-from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import GasTurbineDiscipline
 from energy_models.models.electricity.gas.combined_cycle_gas_turbine.combined_cycle_gas_turbine_disc import \
     CombinedCycleGasTurbineDiscipline
+from energy_models.models.electricity.gas.gas_turbine.gas_turbine_disc import GasTurbineDiscipline
+from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
 from energy_models.models.liquid_fuel.fischer_tropsch.fischer_tropsch_disc import FischerTropschDiscipline
 from energy_models.models.liquid_fuel.refinery.refinery_disc import RefineryDiscipline
@@ -36,12 +38,11 @@ from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDis
 from energy_models.models.solid_fuel.pelletizing.pelletizing_disc import PelletizingDiscipline
 from energy_models.models.syngas.coal_gasification.coal_gasification_disc import CoalGasificationDiscipline
 from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscipline
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
-from energy_models.models.carbon_capture.direct_air_capture.amine_scrubbing.amine_scrubbing_disc import AmineScrubbingDiscipline
-from energy_models.models.carbon_capture.direct_air_capture.calcium_potassium_scrubbing.calcium_potassium_scrubbing_disc import CalciumPotassiumScrubbingDiscipline
-from energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc import DirectAirCaptureTechnoDiscipline
-
-from energy_models.core.ccus.ccus import CCUS
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
+    InstanciatedSeries
+from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
 
 
 class FlueGasDiscipline(SoSWrapp):

@@ -14,23 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
-import scipy.interpolate as sc
 from os.path import join, dirname
 
+import numpy as np
+import pandas as pd
+import scipy.interpolate as sc
+
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.heat.high.geothermal_high_heat.geothermal_high_heat_disc import GeothermalHighHeatDiscipline
-from energy_models.models.heat.high.geothermal_high_heat.geothermal_high_heat import GeothermalHeat
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.electricity import Electricity
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+
 
 class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
     """
-    Geothermal prices test class
+    HeatPump prices test class
     """
 
     def setUp(self):
@@ -82,47 +79,10 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'electricity.GeothermalHeat']
-
+                                                == 'heat.GeothermalHeat']
 
     def tearDown(self):
         pass
-
-    def test_01_compute_Geothermal_Heat_price(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': GeothermalHighHeatDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: GeothermalHighHeatDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': GeothermalHighHeatDiscipline.initial_production,
-                       'initial_age_distrib': GeothermalHighHeatDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Electricity.data_energy_dict,
-                       }
-
-
-        geothermal_heat_model = GeothermalHeat('GeothermalHeat')
-        geothermal_heat_model.configure_parameters(inputs_dict)
-        geothermal_heat_model.configure_parameters_update(inputs_dict)
-        price_details = geothermal_heat_model.compute_price()
-        geothermal_heat_model.compute_consumption_and_production()
-        # bf_model.check_outputs_dict(self.biblio_data)
 
     def test_02_GeothermalHigh_discipline(self):
 

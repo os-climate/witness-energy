@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pandas as pd
 import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -118,16 +119,16 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryCore.techno_list}': ['WaterGasShift', 'Electrolysis.PEM'],
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption_woratio': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_production': wgs_production,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_prices': self.wgs_techno_prices,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoConsumptionValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoProductionValue}': wgs_production,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoPricesValue}': self.wgs_techno_prices,
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.CO2EmissionsValue}': self.wgs_carbon_emissions,
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_consumption': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_consumption_woratio': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_production': electrolysis_production,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_prices': self.electrolysis_techno_prices,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoConsumptionValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoProductionValue}': electrolysis_production,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoPricesValue}': self.electrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.CO2EmissionsValue}': self.electrolysis_carbon_emissions,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_Electrolysis}
 
@@ -191,16 +192,16 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryCore.techno_list}': ['WaterGasShift', 'Electrolysis.PEM'],
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption_woratio': self.wgs_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_production': wgs_production,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_prices': self.wgs_techno_prices,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoConsumptionValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.wgs_consumption,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoProductionValue}': wgs_production,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoPricesValue}': self.wgs_techno_prices,
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.CO2EmissionsValue}': self.wgs_carbon_emissions,
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_consumption': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_consumption_woratio': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_production': electrolysis_production,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_prices': self.electrolysis_techno_prices,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoConsumptionValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoProductionValue}': electrolysis_production,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoPricesValue}': self.electrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.CO2EmissionsValue}': self.electrolysis_carbon_emissions,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_Electrolysis}
 

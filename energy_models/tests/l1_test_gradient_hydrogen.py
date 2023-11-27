@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,21 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
-import pandas as pd
-import numpy as np
-import scipy.interpolate as sc
+import pickle
 from os.path import join, dirname
 
+import numpy as np
+import pandas as pd
+import scipy.interpolate as sc
+
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-import pickle
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class HydrogenJacobianTestCase(AbstractJacobianUnittest):
@@ -59,7 +59,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         years = np.arange(2020, 2051)
         self.years = years
-
+        
         self.electrolysis_techno_prices = pd.DataFrame(
             {'Electrolysis': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                        0.089236536471781, 0.08899046935409588, 0.08874840310033885,
@@ -364,6 +364,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.syngas_ratio',
@@ -376,7 +377,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryCore.TechnoProductionValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoCapitalValue}',
                                      f'{self.name}.{self.model_name}.non_use_capital',
                                      ], )
 
@@ -502,6 +503,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -560,6 +562,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -618,6 +621,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -662,18 +666,18 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryCore.techno_list}': ['WaterGasShift', 'PlasmaCracking'],
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption': self.smr_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption_woratio': self.smr_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_production': self.smr_production,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_prices': self.smr_techno_prices,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoConsumptionValue}': self.smr_consumption,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.smr_consumption,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoProductionValue}': self.smr_production,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoPricesValue}': self.smr_techno_prices,
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.CO2EmissionsValue}': self.smr_carbon_emissions,
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption': self.plasmacracking_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_capital': techno_capital,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.techno_capital': techno_capital,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption_woratio': self.plasmacracking_consumption,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.techno_production': self.plasmacracking_production,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.techno_prices': self.plasmacracking_techno_prices,
+                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoConsumptionValue}': self.plasmacracking_consumption,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoCapitalValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoCapitalValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.plasmacracking_consumption,
+                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoProductionValue}': self.plasmacracking_production,
+                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoPricesValue}': self.plasmacracking_techno_prices,
                        f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.CO2EmissionsValue}': self.plasma_cracking_carbon_emissions,
                        f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_PlasmaCracking,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -688,14 +692,14 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', local_data=disc.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.WaterGasShift.techno_prices',
-                                    f'{self.name}.{self.model_name}.PlasmaCracking.techno_prices',
-                                    f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption',
-                                    f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption',
-                                    f'{self.name}.{self.model_name}.WaterGasShift.techno_production',
-                                    f'{self.name}.{self.model_name}.PlasmaCracking.techno_production',
-                                    f'{self.name}.{self.model_name}.WaterGasShift.techno_capital',
-                                    f'{self.name}.{self.model_name}.PlasmaCracking.techno_capital',
+                            inputs=[f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoPricesValue}',
+                                    f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoPricesValue}',
+                                    f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoConsumptionValue}',
+                                    f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoConsumptionValue}',
+                                    f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoProductionValue}',
+                                    f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoProductionValue}',
+                                    f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoCapitalValue}',
+                                    f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoCapitalValue}',
                                     f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.CO2EmissionsValue}',
                                     f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.CO2EmissionsValue}'],
                             outputs=[f'{self.name}.{self.model_name}.techno_mix',
@@ -964,6 +968,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.syngas_ratio',
@@ -1037,8 +1042,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         })
         for techno in technos:
             inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)

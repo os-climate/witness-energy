@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/17 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,20 +15,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
-import pandas as pd
+import warnings
+from os.path import dirname
+
 import numpy as np
-from os.path import join, dirname
+import pandas as pd
 import scipy.interpolate as sc
-import pickle
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
     get_static_prices
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-
-import warnings
 
 warnings.filterwarnings("ignore")
 
@@ -51,11 +49,13 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         years = np.arange(2020, 2051)
+        self.years = years
         self.energy_name = 'ethanol'
         self.energy_prices = pd.DataFrame({GlossaryCore.Years: years, 'electricity': np.ones(len(years)) * 0.135 * 1000,
                                            'biomass_dry': 45.0,
                                            })
 
+        
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryCore.Years: years,
              'electricity': 0.0,
@@ -113,11 +113,14 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        utilisation_ratio = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                  GlossaryCore.UtilisationRatioValue: 50.0 * np.ones_like(self.years)})
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}': utilisation_ratio,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
@@ -134,6 +137,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
                                     f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}',

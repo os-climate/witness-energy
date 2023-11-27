@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,20 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
-from time import sleep
-from shutil import rmtree
 from pathlib import Path
-import numpy as np
-
-from os.path import join, dirname
+from shutil import rmtree
+from time import sleep
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from sostrades_core.study_manager.base_study_manager import BaseStudyManager
-from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
 
 
 class TestMDAAnalyticGradient(AbstractJacobianUnittest):

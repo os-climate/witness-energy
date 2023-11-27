@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,10 +19,9 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.stream_type.energy_models.methane import Methane
 
 DEFAULT_TECHNOLOGIES_LIST = ['FossilGas', 'UpgradingBiogas', 'Methanation']
 TECHNOLOGIES_LIST = ['FossilGas', 'UpgradingBiogas']
@@ -59,33 +59,6 @@ class Study(EnergyMixStudyManager):
         if 'Methanation' in self.technologies_list:
             invest_methane_mix_dict['Methanation'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
-
-        if self.bspline:
-            invest_methane_mix_dict[GlossaryCore.Years] = self.years
-
-            for techno in self.technologies_list:
-                invest_methane_mix_dict[techno], _ = self.invest_bspline(
-                    invest_methane_mix_dict[techno], len(self.years))
-
-        methane_mix_invest_df = pd.DataFrame(invest_methane_mix_dict)
-
-        return methane_mix_invest_df
-
-    def get_investments_old(self):
-        invest_methane_mix_dict = {}
-        l_ctrl = np.arange(0, 8)
-
-        if 'FossilGas' in self.technologies_list:
-            invest_methane_mix_dict['FossilGas'] = [
-                max(1e-8, 1.88 - 0.04 * i) for i in l_ctrl]
-
-        if 'UpgradingBiogas' in self.technologies_list:
-            invest_methane_mix_dict['UpgradingBiogas'] = [
-                max(1e-8, 0.02 * (1 + 0.054)**i) for i in l_ctrl]
-
-        if 'Methanation' in self.technologies_list:
-            invest_methane_mix_dict['Methanation'] = np.ones(
-                len(l_ctrl)) * 0.001
 
         if self.bspline:
             invest_methane_mix_dict[GlossaryCore.Years] = self.years

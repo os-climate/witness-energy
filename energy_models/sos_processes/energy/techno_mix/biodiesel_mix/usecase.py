@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,12 +20,10 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sostrades_core.study_manager.study_manager import StudyManager
-from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,\
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, \
     INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 
 DEFAULT_TECHNOLOGIES_LIST = ['Transesterification']
 TECHNOLOGIES_LIST = ['Transesterification']

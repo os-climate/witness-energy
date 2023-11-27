@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/07-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,19 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
+import pickle
 from os.path import join, dirname
 
+import numpy as np
+import pandas as pd
+
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.tests.data_tests.mda_energy_data_generator import launch_data_pickle_generation
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-import pickle
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as WITNESSFull_subprocess
-from energy_models.tests.data_tests.mda_energy_data_generator import launch_data_pickle_generation
 
 
 class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):

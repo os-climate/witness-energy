@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,10 +16,10 @@ limitations under the License.
 '''
 
 import unittest
+from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.investments.energy_invest import EnergyInvest
@@ -233,13 +234,12 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
-                                                                          f'{self.name}.{self.model_name}.invest_techno_mix'],
-                                      outputs=[
-            f'{self.name}.{self.model_name}.{techno}.{GlossaryCore.InvestLevelValue}' for techno in technology_list],
+        succeed = disc.check_jacobian(derr_approx='complex_step',
+                                      inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                              f'{self.name}.{self.model_name}.invest_techno_mix'],
+                                      outputs=[f'{self.name}.{self.model_name}.{techno}.{GlossaryCore.InvestLevelValue}' for techno in technology_list],
                                       input_data = disc.local_data,
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                               f'jacobian_techno_invest_disc.pkl'))
+            load_jac_path=join(dirname(__file__), 'jacobian_pkls', f'jacobian_techno_invest_disc.pkl'))
 
         self.assertTrue(
             succeed, msg=f"Wrong gradient")

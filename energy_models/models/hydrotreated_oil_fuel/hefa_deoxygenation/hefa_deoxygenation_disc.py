@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 from energy_models.core.techno_type.disciplines.hydrotreated_oil_fuel_techno_disc import \
     HydrotreatedOilFuelTechnoDiscipline
 from energy_models.models.hydrotreated_oil_fuel.hefa_deoxygenation.hefa_deoxygenation import \
     HefaDeoxygenation
-from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
 
 
 class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
@@ -64,7 +64,7 @@ class HefaDeoxygenationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'Opex_percentage': 0.0715,
         'lifetime': lifetime,  # for now constant in time but should increase with time
         'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
+        GlossaryCore.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryCore.Years,
         'Invest_init': 347.5,
         'Invest_init_unit': 'M$',

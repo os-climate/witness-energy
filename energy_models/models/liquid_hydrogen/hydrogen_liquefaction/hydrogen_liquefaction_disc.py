@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,17 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.liquid_hydrogen_techno_disc import LiquidHydrogenTechnoDiscipline
 from energy_models.models.liquid_hydrogen.hydrogen_liquefaction.hydrogen_liquefaction import HydrogenLiquefaction
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.techno_type.base_techno_models.liquid_hydrogen_techno import LiquidHydrogenTechno
-from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.electricity import Electricity
+
 
 class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
     """
@@ -57,7 +53,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'efficiency': 0.98,
                                  'techno_evo_eff': 'no',
                                  'WACC': 0.1,
-                                 'useful_heat_recovery_factor': 0.8,
+                                 #'heat_recovery_factor': 0.8,
                                  'learning_rate':  0.2,
                                  'lifetime': lifetime,
                                  'lifetime_unit': GlossaryCore.Years,
@@ -68,7 +64,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'euro_dollar': 1.114,
                                  'available_power': 73000000,
                                  'available_power_unit': 'kg/year',
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
 
     initial_production = 70.0 * 33.3 * 0.001
 
@@ -106,8 +102,8 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
         self.techno_model.configure_parameters(inputs_dict)
 
     # def compute_sos_jacobian(self):
-    #     #inputs_dict = self.get_sosdisc_outputs()
-    #     #print(inputs_dict)
+    #     inputs_dict = self.get_sosdisc_inputs()
+    #     self.techno_model.configure_parameters(inputs_dict)
     #     LiquidHydrogenTechnoDiscipline.compute_sos_jacobian(self)
 
         # # the generic gradient for production column is not working because of

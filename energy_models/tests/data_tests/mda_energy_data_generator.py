@@ -1,13 +1,26 @@
+'''
+Copyright 2022 Airbus SAS
+Modifications on 2023/10/31-2023/11/16 Copyright 2023 Capgemini
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+'''
 # -*- coding: utf-8 -*-
-"""
-Created on Monday Nov 29 17:21:18 2021
 
-"""
-
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as MDA_Energy
 import pickle
-from climateeconomics.glossarycore import GlossaryCore
+
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as MDA_Energy
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+
 
 def launch_data_pickle_generation(directory=''):
     # Run MDA Energy
@@ -51,7 +64,6 @@ def launch_data_pickle_generation(directory=''):
     ############
     # Energies #
     ############
-    energy_list.remove("biomass_dry")
     for energy in energy_list:
         # Loop on energies
         energy_disc = ee.dm.get_disciplines_with_name(

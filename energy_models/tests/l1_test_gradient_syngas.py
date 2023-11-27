@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,22 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
+import pickle
+from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from os.path import join, dirname
 
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
-    get_static_prices
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-import pickle
 
 
 class SyngasJacobianTestCase(AbstractJacobianUnittest):
@@ -59,6 +57,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         '''
         self.energy_name = 'syngas'
         years = np.arange(2020, 2051)
+        
         self.years = years
         self.energy_prices = pd.DataFrame({GlossaryCore.Years: years,
                                            'methane': 0.034,
@@ -177,6 +176,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
+                       
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -192,6 +192,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -236,6 +237,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
+                       
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -250,6 +252,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -294,6 +297,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryCore.ResourcesPriceValue}': self.resources_prices,
+                       
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -308,6 +312,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
@@ -339,6 +344,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(2020, 2051)
+        
         inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
@@ -366,6 +372,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
@@ -420,6 +427,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
@@ -475,6 +483,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
@@ -532,6 +541,7 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
@@ -2420,54 +2430,54 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryCore.techno_list}': ['Pyrolysis', 'SMR', 'AutothermalReforming',
                                                           'BiomassGasification', 'CoalGasification', 'CoElectrolysis'],
-                       f'{self.name}.{self.model_name}.Pyrolysis.techno_consumption': self.pyrolysis_consumption,
-                       f'{self.name}.{self.model_name}.Pyrolysis.techno_consumption_woratio': self.pyrolysis_consumption,
-                       f'{self.name}.{self.model_name}.Pyrolysis.techno_production': self.pyrolysis_production,
-                       f'{self.name}.{self.model_name}.Pyrolysis.techno_prices': self.pyrolysis_techno_prices,
+                       f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryCore.TechnoConsumptionValue}': self.pyrolysis_consumption,
+                       f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.pyrolysis_consumption,
+                       f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryCore.TechnoProductionValue}': self.pyrolysis_production,
+                       f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryCore.TechnoPricesValue}': self.pyrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryCore.CO2EmissionsValue}': self.pyrolysis_carbon_emissions,
                        f'{self.name}.{self.model_name}.Pyrolysis.syngas_ratio': np.array([111.111111]),
                        f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_Pyrolysis,
-                       f'{self.name}.{self.model_name}.SMR.techno_consumption': self.smr_consumption,
-                       f'{self.name}.{self.model_name}.SMR.techno_consumption_woratio': self.smr_consumption,
-                       f'{self.name}.{self.model_name}.SMR.techno_production': self.smr_production,
-                       f'{self.name}.{self.model_name}.SMR.techno_prices': self.smr_techno_prices,
+                       f'{self.name}.{self.model_name}.SMR.{GlossaryCore.TechnoConsumptionValue}': self.smr_consumption,
+                       f'{self.name}.{self.model_name}.SMR.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.smr_consumption,
+                       f'{self.name}.{self.model_name}.SMR.{GlossaryCore.TechnoProductionValue}': self.smr_production,
+                       f'{self.name}.{self.model_name}.SMR.{GlossaryCore.TechnoPricesValue}': self.smr_techno_prices,
                        f'{self.name}.{self.model_name}.SMR.{GlossaryCore.CO2EmissionsValue}': self.smr_carbon_emissions,
                        f'{self.name}.{self.model_name}.SMR.syngas_ratio': np.array([33.333333]),
                        f'{self.name}.{self.model_name}.SMR.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_SMR,
-                       f'{self.name}.{self.model_name}.AutothermalReforming.techno_consumption': self.AutothermalReforming_consumption,
-                       f'{self.name}.{self.model_name}.AutothermalReforming.techno_consumption_woratio': self.AutothermalReforming_consumption,
-                       f'{self.name}.{self.model_name}.AutothermalReforming.techno_production': self.AutothermalReforming_production,
-                       f'{self.name}.{self.model_name}.AutothermalReforming.techno_prices': self.AutothermalReforming_techno_prices,
+                       f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryCore.TechnoConsumptionValue}': self.AutothermalReforming_consumption,
+                       f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.AutothermalReforming_consumption,
+                       f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryCore.TechnoProductionValue}': self.AutothermalReforming_production,
+                       f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryCore.TechnoPricesValue}': self.AutothermalReforming_techno_prices,
                        f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryCore.CO2EmissionsValue}': self.AutothermalReforming_carbon_emissions,
                        f'{self.name}.{self.model_name}.AutothermalReforming.syngas_ratio': np.array([100.]),
                        f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_AutothermalReforming,
-                       f'{self.name}.{self.model_name}.BiomassGasification.techno_consumption': self.BiomassGasification_consumption,
-                       f'{self.name}.{self.model_name}.BiomassGasification.techno_consumption_woratio': self.BiomassGasification_consumption,
-                       f'{self.name}.{self.model_name}.BiomassGasification.techno_production': self.BiomassGasification_production,
-                       f'{self.name}.{self.model_name}.BiomassGasification.techno_prices': self.BiomassGasification_techno_prices,
+                       f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryCore.TechnoConsumptionValue}': self.BiomassGasification_consumption,
+                       f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.BiomassGasification_consumption,
+                       f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryCore.TechnoProductionValue}': self.BiomassGasification_production,
+                       f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryCore.TechnoPricesValue}': self.BiomassGasification_techno_prices,
                        f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryCore.CO2EmissionsValue}': self.BiomassGasification_carbon_emissions,
                        f'{self.name}.{self.model_name}.BiomassGasification.syngas_ratio': np.array([83.870968]),
                        f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_BiomassGasification,
-                       f'{self.name}.{self.model_name}.CoalGasification.techno_consumption': self.CoalGasification_consumption,
-                       f'{self.name}.{self.model_name}.CoalGasification.techno_consumption_woratio': self.CoalGasification_consumption,
-                       f'{self.name}.{self.model_name}.CoalGasification.techno_production': self.CoalGasification_production,
-                       f'{self.name}.{self.model_name}.CoalGasification.techno_prices': self.CoalGasification_techno_prices,
+                       f'{self.name}.{self.model_name}.CoalGasification.{GlossaryCore.TechnoConsumptionValue}': self.CoalGasification_consumption,
+                       f'{self.name}.{self.model_name}.CoalGasification.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.CoalGasification_consumption,
+                       f'{self.name}.{self.model_name}.CoalGasification.{GlossaryCore.TechnoProductionValue}': self.CoalGasification_production,
+                       f'{self.name}.{self.model_name}.CoalGasification.{GlossaryCore.TechnoPricesValue}': self.CoalGasification_techno_prices,
                        f'{self.name}.{self.model_name}.CoalGasification.{GlossaryCore.CO2EmissionsValue}': self.CoalGasification_carbon_emissions,
                        f'{self.name}.{self.model_name}.CoalGasification.syngas_ratio': np.array([213.636364]),
                        f'{self.name}.{self.model_name}.CoalGasification.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_CoalGasification,
-                       f'{self.name}.{self.model_name}.CoElectrolysis.techno_consumption': self.CoElectrolysis_consumption,
-                       f'{self.name}.{self.model_name}.CoElectrolysis.techno_consumption_woratio': self.CoElectrolysis_consumption,
-                       f'{self.name}.{self.model_name}.CoElectrolysis.techno_production': self.CoElectrolysis_production,
-                       f'{self.name}.{self.model_name}.CoElectrolysis.techno_prices': self.CoElectrolysis_techno_prices,
+                       f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryCore.TechnoConsumptionValue}': self.CoElectrolysis_consumption,
+                       f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.CoElectrolysis_consumption,
+                       f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryCore.TechnoProductionValue}': self.CoElectrolysis_production,
+                       f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryCore.TechnoPricesValue}': self.CoElectrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryCore.CO2EmissionsValue}': self.CoElectrolysis_carbon_emissions,
                        f'{self.name}.{self.model_name}.CoElectrolysis.syngas_ratio': np.array([100.]),
                        f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_CoElectrolysis,
-                       f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
-                       f'{self.name}.{self.model_name}.CoalGasification.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
-                       f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
-                       f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
-                       f'{self.name}.{self.model_name}.SMR.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
-                       f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.CoalGasification.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.SMR.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
+                       f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
                        f'{self.name}.{GlossaryCore.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -2481,17 +2491,17 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_specific_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.Pyrolysis.techno_production',
+                            inputs=[f'{self.name}.{self.model_name}.Pyrolysis.{GlossaryCore.TechnoProductionValue}',
                                     f'{self.name}.{self.model_name}.Pyrolysis.syngas_ratio',
-                                    f'{self.name}.{self.model_name}.SMR.techno_production',
+                                    f'{self.name}.{self.model_name}.SMR.{GlossaryCore.TechnoProductionValue}',
                                     f'{self.name}.{self.model_name}.SMR.syngas_ratio',
-                                    f'{self.name}.{self.model_name}.AutothermalReforming.techno_production',
+                                    f'{self.name}.{self.model_name}.AutothermalReforming.{GlossaryCore.TechnoProductionValue}',
                                     f'{self.name}.{self.model_name}.AutothermalReforming.syngas_ratio',
-                                    f'{self.name}.{self.model_name}.BiomassGasification.techno_production',
+                                    f'{self.name}.{self.model_name}.BiomassGasification.{GlossaryCore.TechnoProductionValue}',
                                     f'{self.name}.{self.model_name}.BiomassGasification.syngas_ratio',
-                                    f'{self.name}.{self.model_name}.CoalGasification.techno_production',
+                                    f'{self.name}.{self.model_name}.CoalGasification.{GlossaryCore.TechnoProductionValue}',
                                     f'{self.name}.{self.model_name}.CoalGasification.syngas_ratio',
-                                    f'{self.name}.{self.model_name}.CoElectrolysis.techno_production',
+                                    f'{self.name}.{self.model_name}.CoElectrolysis.{GlossaryCore.TechnoProductionValue}',
                                     f'{self.name}.{self.model_name}.CoElectrolysis.syngas_ratio',
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}'],
                             outputs=[f'{self.name}.syngas_ratio',
@@ -2564,8 +2574,8 @@ class SyngasJacobianTestCase(AbstractJacobianUnittest):
         })
         for techno in technos:
             inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 

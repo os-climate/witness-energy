@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,23 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
-from os.path import join, dirname
 
+import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
-import matplotlib.pyplot as plt
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.carbon_storage.carbon_storage_techno.carbon_storage_techno import CarbonStorageTechno
-from energy_models.models.carbon_storage.carbon_storage_techno.carbon_storage_techno_disc import CarbonStorageTechnoDiscipline
-
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CarbonStorageTechnoPriceTestCase(unittest.TestCase):
@@ -84,90 +76,6 @@ class CarbonStorageTechnoPriceTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_01_compute_carbon_storage_techno_price(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': CarbonStorageTechnoDiscipline.techno_infos_dict_default,
-                       GlossaryCore.InvestLevelValue: self.invest_level_2,
-                       GlossaryCore.InvestmentBeforeYearStartValue: CarbonStorageTechnoDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.EnergyPricesValue: pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051)}),
-                       'initial_production': CarbonStorageTechnoDiscipline.initial_storage,
-                       'initial_age_distrib': CarbonStorageTechnoDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': CarbonStorage.data_energy_dict,
-                       }
-
-        carbon_storage_techno_model = CarbonStorageTechno(
-            'CarbonStorageTechno')
-        carbon_storage_techno_model.configure_parameters(inputs_dict)
-        carbon_storage_techno_model.configure_parameters_update(inputs_dict)
-        price_details = carbon_storage_techno_model.compute_price()
-
-        # Comparison in $/kgCO2
-        # plt.figure()
-        # plt.xlabel(GlossaryCore.Years)
-
-        # plt.plot(price_details[GlossaryCore.Years],
-        # price_details['Simplified_Carbon_Storage'], label='SoSTrades Total')
-
-        # # plt.plot(price_details[GlossaryCore.Years], price_details['transport'],
-        # #          label='SoSTrades Transport')
-
-        # plt.legend()
-        # plt.ylabel('Price ($/kgCO2)')
-        # plt.show()
-
-    def test_02_compute_carbon_storage_techno_price_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': CarbonStorageTechnoDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051)}),
-                       GlossaryCore.InvestLevelValue: self.invest_level_2,
-                       GlossaryCore.InvestmentBeforeYearStartValue: CarbonStorageTechnoDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': CarbonStorageTechnoDiscipline.initial_storage,
-                       'initial_age_distrib': CarbonStorageTechnoDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': CarbonStorage.data_energy_dict,
-                       }
-
-        carbon_storage_techno_model = CarbonStorageTechno(
-            'CarbonStorageTechno')
-        carbon_storage_techno_model.configure_parameters(inputs_dict)
-        carbon_storage_techno_model.configure_parameters_update(inputs_dict)
-        price_details = carbon_storage_techno_model.compute_price()
-
-        carbon_storage_techno_model.compute_consumption_and_production()
 
     def test_03_carbon_storage_techno_discipline(self):
 

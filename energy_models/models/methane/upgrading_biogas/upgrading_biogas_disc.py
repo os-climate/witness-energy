@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.methane_techno_disc import MethaneTechnoDiscipline
@@ -58,7 +58,6 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
                                  'CO2_from_production_unit': 'kg/kg',
                                  'low_heat_production': ((663.2 * 3600) / 2.393) * 1e-9, # https://www.sciencedirect.com/science/article/abs/pii/S0957582021002469
                                  'low_heat_production_unit': 'TWh/kg',
-                                 'useful_heat_recovery_factor': 0.8,
                                  # biogas demand represent needed biogas to obtain 1 m^3 of methane here 6201 t of biogas for 3.44
                                  #p25 in graphs
                                  'biogas_demand': 6.46 / 3.44,
@@ -72,7 +71,7 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
                                  'learning_rate': 0.2,
                                  'WACC': 0.0878,
                                  'techno_evo_eff': 'no',
-                                 'construction_delay': construction_delay  # in kWh/kg
+                                 GlossaryCore.ConstructionDelay: construction_delay  # in kWh/kg
                                  }
 
     # At present, about  3.5 Mtoe of biomethane is produced around the world and 92.3% are from upgrading biogas, rest is biomass gasification 0.27mtoe

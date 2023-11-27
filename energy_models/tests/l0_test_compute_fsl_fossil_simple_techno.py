@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,17 +19,10 @@ import unittest
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from os.path import join, dirname
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno import FossilSimpleTechno
-
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.fossil import Fossil
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class FossilSimpleTechnoTestCase(unittest.TestCase):
@@ -85,75 +79,6 @@ class FossilSimpleTechnoTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_01_compute_fossil_simple_techno_price(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': FossilSimpleTechnoDiscipline.techno_infos_dict_default,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: FossilSimpleTechnoDiscipline.invest_before_year_start,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': FossilSimpleTechnoDiscipline.initial_production,
-                       'initial_age_distrib': FossilSimpleTechnoDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: pd.DataFrame(),
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Fossil.data_energy_dict,
-                       }
-
-        renewable_simple_techno_model = FossilSimpleTechno(
-            FossilSimpleTechnoDiscipline.techno_name)
-        renewable_simple_techno_model.configure_parameters(inputs_dict)
-        renewable_simple_techno_model.configure_parameters_update(inputs_dict)
-        price_details = renewable_simple_techno_model.compute_price()
-
-    def test_02_compute_fossil_simple_techno_price_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': FossilSimpleTechnoDiscipline.techno_infos_dict_default,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: FossilSimpleTechnoDiscipline.invest_before_year_start,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': FossilSimpleTechnoDiscipline.initial_production,
-                       'initial_age_distrib': FossilSimpleTechnoDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: pd.DataFrame(),
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Fossil.data_energy_dict,
-                       }
-
-        renewable_simple_techno_model = FossilSimpleTechno(
-            FossilSimpleTechnoDiscipline.techno_name)
-        renewable_simple_techno_model.configure_parameters(inputs_dict)
-        renewable_simple_techno_model.configure_parameters_update(inputs_dict)
-        price_details = renewable_simple_techno_model.compute_price()
-        renewable_simple_techno_model.compute_consumption_and_production()
 
     def test_03_fossil_simple_techno_discipline(self):
 

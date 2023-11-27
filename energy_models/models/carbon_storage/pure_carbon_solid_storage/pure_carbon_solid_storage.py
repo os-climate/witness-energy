@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,11 +16,10 @@ limitations under the License.
 '''
 
 import pandas as pd
-import numpy as np
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
+from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
 
 
 class PureCarbonSS(CSTechno):
@@ -38,13 +38,13 @@ class PureCarbonSS(CSTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Consumption
         # Production is gaseous CO2 equivalent
         # COnsumption is real Carbon storage (C)
-        self.consumption[f'{Carbon.name} ({self.mass_unit})'] = self.production[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
-            Carbon.data_energy_dict['CO2_per_use']
+        self.consumption_detailed[f'{Carbon.name} ({self.mass_unit})'] = self.production_detailed[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                         Carbon.data_energy_dict['CO2_per_use']
 
     def compute_constraint(self, carbon_quantity_to_be_stored, consumption):
         """

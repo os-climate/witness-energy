@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/02-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/02-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,12 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
-from os.path import join, dirname
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import Study
 from copy import deepcopy
+
+import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import Study
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CarbonCaptureTestCase(unittest.TestCase):
@@ -124,7 +125,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
 
         inputs_dict = deepcopy(self.dm_dict)
 
-        inputs_dict['Test.EnergyMix.carbon_capture.flue_gas_capture.CalciumLooping.techno_production'][
+        inputs_dict[f'Test.EnergyMix.carbon_capture.flue_gas_capture.CalciumLooping.{GlossaryCore.TechnoProductionValue}'][
             'carbon_capture (Mt)'] *= 5.0
         self.ee.load_study_from_input_dict(inputs_dict)
 

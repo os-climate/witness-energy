@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/06-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,12 +18,10 @@ import unittest
 
 import numpy as np
 import pandas as pd
-from pandas.testing import assert_frame_equal
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.demand.energy_demand import EnergyDemand
-from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class DemandTestCase(unittest.TestCase):

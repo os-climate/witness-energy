@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,24 +15,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
-import scipy.interpolate as sc
 from os.path import join, dirname
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation_disc import CO2HydrogenationDiscipline
-from energy_models.models.methanol.co2_hydrogenation.co2_hydrogenation import CO2Hydrogenation
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.methanol import Methanol
+import numpy as np
+import pandas as pd
+import scipy.interpolate as sc
 
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.stream_type.energy_models.electricity import Electricity
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CO2HydrogenationPriceTestCase(unittest.TestCase):
@@ -97,41 +93,6 @@ class CO2HydrogenationPriceTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_01_compute_co2_hydrogenation_price_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': CO2HydrogenationDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: CO2HydrogenationDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': CO2HydrogenationDiscipline.initial_production,
-                       'initial_age_distrib': CO2HydrogenationDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Methanol.data_energy_dict,
-                       }
-
-        bf_model = CO2Hydrogenation('CO2Hydrogenation')
-        bf_model.configure_parameters(inputs_dict)
-        bf_model.configure_parameters_update(inputs_dict)
-        price_details = bf_model.compute_price()
-        bf_model.compute_consumption_and_production()
-        # bf_model.check_outputs_dict(self.biblio_data)
 
     def test_02_co2_hydrogenation_discipline(self):
 

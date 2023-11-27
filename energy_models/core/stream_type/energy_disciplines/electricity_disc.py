@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,20 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+from plotly import graph_objects as go
+
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import hydropower_name
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-
-import numpy as np
-import pandas as pd
-from plotly import graph_objects as go
-import plotly.colors as plt_color
-
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import hydropower_name
 
 
 class ElectricityDiscipline(EnergyDiscipline):
@@ -124,7 +121,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                           inputs_dict[GlossaryCore.YearEnd] + 1)
         if hydropower_name in self.energy_model.subelements_list:
             self.set_partial_derivative_for_other_types(('prod_hydropower_constraint', 'hydropower_constraint'), (
-                'Hydropower.techno_production', f'{Electricity.name} ({Electricity.unit})'),
+                f'Hydropower.{GlossaryCore.TechnoProductionValue}', f'{Electricity.name} ({Electricity.unit})'),
                                                         - inputs_dict['scaling_factor_techno_production'] * np.identity(
                                                             len(years)) / inputs_dict['hydropower_constraint_ref'])
 

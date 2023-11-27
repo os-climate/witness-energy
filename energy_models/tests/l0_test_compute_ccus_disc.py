@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/01-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/01-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,16 +14,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pickle
 import unittest
-import pandas as pd
+from os.path import join, dirname
+
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-
-from os.path import join, dirname
-import pickle
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class CCUSDiscTestCase(unittest.TestCase):
@@ -40,7 +40,7 @@ class CCUSDiscTestCase(unittest.TestCase):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
             'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage', 'heat.lowtemperatureheat', \
-            'heat.mediumtemperatureheat', 'heat.hightemperatureheat', 'biomass_dry']]
+            'heat.mediumtemperatureheat', 'heat.hightemperatureheat']]
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)

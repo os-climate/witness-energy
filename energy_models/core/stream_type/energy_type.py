@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,10 +16,9 @@ limitations under the License.
 '''
 import pandas as pd
 
+from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.base_stream import BaseStream
-
-from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 
 
 class EnergyType(BaseStream):

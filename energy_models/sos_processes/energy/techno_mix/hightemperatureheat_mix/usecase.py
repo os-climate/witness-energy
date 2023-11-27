@@ -19,16 +19,16 @@ import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                             'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                             'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                     'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                     'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerHighHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -66,10 +66,6 @@ class Study(EnergyMixStudyManager):
             invest_high_heat_mix_dict['CHPHighHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
-        if 'HydrogenBoilerHighHeat' in self.technologies_list:
-            invest_high_heat_mix_dict['HydrogenBoilerHighHeat'] = list(np.ones(
-                len(l_ctrl)) * 0.001)
-
         if self.bspline:
             invest_high_heat_mix_dict[GlossaryCore.Years] = self.years
 
@@ -93,8 +89,7 @@ class Study(EnergyMixStudyManager):
                                            'syngas': 80.0,
                                            'biogas': 70.0,
                                            'methane': 100,
-                                           'biomass_dry': 45,
-                                           'hydrogen.gaseous_hydrogen': 40
+                                           'biomass_dry': 45
                                         })
 
         # the value for invest_level is just set as an order of magnitude

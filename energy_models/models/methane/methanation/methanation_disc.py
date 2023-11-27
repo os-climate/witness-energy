@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,13 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.methane_techno_disc import MethaneTechnoDiscipline
 from energy_models.models.methane.methanation.methanation import Methanation
-from energy_models.core.stream_type.energy_models.methane import Methane
 
 
 class MethanationDiscipline(MethaneTechnoDiscipline):
@@ -68,7 +67,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
                                  'full_load_hours': 8000.0,
                                  'WACC': 0.0878,
                                  'techno_evo_eff': 'no',
-                                 'construction_delay': construction_delay  # in kWh/kg
+                                 GlossaryCore.ConstructionDelay: construction_delay  # in kWh/kg
                                  }
 
     # Methanation is mostly used in PtG plants

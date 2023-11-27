@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,17 +15,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_models.methanol import Methanol
 from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
-from energy_models.core.stream_type.resources_models.sodium_hydroxide import SodiumHydroxide
 from energy_models.core.stream_type.resources_models.potassium_hydroxide import PotassiumHydroxide
-from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.resources_models.sodium_hydroxide import SodiumHydroxide
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TransesterificationPriceTestCase(unittest.TestCase):

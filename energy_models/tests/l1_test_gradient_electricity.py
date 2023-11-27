@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/21-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/21-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,29 +14,28 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import unittest
-import pandas as pd
-import numpy as np
+import pickle
 from os.path import join, dirname
 
+import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
+    get_static_prices
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
-    get_static_prices
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from energy_models.core.energy_mix.energy_mix import EnergyMix
-import pickle
 
 
 class ElectricityJacobianTestCase(AbstractJacobianUnittest):
     """
     Electricity jacobian test class
     """
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -246,6 +245,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
             location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                     f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -302,6 +302,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                             location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}_zz.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5, local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -359,6 +360,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                             location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5, local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     #f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -418,6 +420,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                             location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5, local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -473,6 +476,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryCore.RessourcesCO2EmissionsValue}',
@@ -528,6 +532,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5, local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     #f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -585,6 +590,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5, local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     #f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -641,6 +647,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5, local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     #f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -700,6 +707,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                             location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5, local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                                                                                                       #f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                                                                                                      # f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                                                                                                       #f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -758,6 +766,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-15, local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     #f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -814,6 +823,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5, local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     #f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -870,6 +880,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     #f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -926,6 +937,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.UtilisationRatioValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyPricesValue}',
                                     #f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}',
                                     #f'{self.name}.{GlossaryCore.ResourcesPriceValue}',
@@ -997,8 +1009,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         })
         for techno in technos:
             inputs_dict[
-                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
-            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalValue}")
 
         coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/13-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/13-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,9 +14,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from copy import deepcopy
+
 import numpy as np
 import pandas as pd
-from copy import deepcopy
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -182,7 +183,7 @@ class BaseStream:
     def compute_energy_type_capital(self, inputs):
         technos = inputs[GlossaryCore.techno_list]
         capitals = [
-            inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"][GlossaryEnergy.Capital].values for techno in technos
+            inputs[f"{techno}.{GlossaryEnergy.TechnoCapitalValue}"][GlossaryEnergy.Capital].values for techno in technos
         ]
         sum_technos_capital = np.sum(capitals, axis=0)
 

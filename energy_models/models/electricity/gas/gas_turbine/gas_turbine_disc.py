@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -82,7 +83,7 @@ class GasTurbineDiscipline(ElectricityTechnoDiscipline):
                                  'kwh_methane/kwh': methane_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
                                  'copper_needs': 1100, #IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }

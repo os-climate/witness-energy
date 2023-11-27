@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,22 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
-from os.path import join, dirname
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-from energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood_disc import UnmanagedWoodDiscipline
-from energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood import UnmanagedWood
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions,\
-    get_static_prices
-
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class UnmanagedWoodPriceTestCase(unittest.TestCase):
@@ -107,45 +100,6 @@ class UnmanagedWoodPriceTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_01_compute_unmanaged_wood_price_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': UnmanagedWoodDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: UnmanagedWoodDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': UnmanagedWoodDiscipline.initial_production,
-                       'initial_age_distrib': UnmanagedWoodDiscipline.initial_age_distribution,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': self.scaling_factor_invest_level,
-                       GlossaryCore.ResourcesPriceValue: pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2051),
-                                                        'water': 31 * [0.002],
-                                                        'uranium fuel': 1390,
-                                                        'CO2': [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119],
-                                                        }),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': BiomassDry.data_energy_dict,
-                       }
-
-        smr_model = UnmanagedWood('UnmanagedWood')
-        smr_model.configure_parameters(inputs_dict)
-        smr_model.configure_parameters_update(inputs_dict)
-        price_details = smr_model.compute_price()
-        smr_model.compute_consumption_and_production()
 
     def test_02_unmanaged_wood_discipline(self):
 

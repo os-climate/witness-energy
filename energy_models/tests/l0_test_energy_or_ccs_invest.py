@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,17 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
+from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.investments.energy_or_ccsinvest import EnergyOrCCSInvest
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestEnergyorCCSInvest(unittest.TestCase):

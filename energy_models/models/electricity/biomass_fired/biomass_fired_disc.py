@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/18-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/18-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ class BiomassFiredDiscipline(ElectricityTechnoDiscipline):
                                  'biomass_needs': biomass_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
                                  'copper_needs': 1100, #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }

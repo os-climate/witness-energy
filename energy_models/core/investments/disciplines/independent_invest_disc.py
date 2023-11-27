@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2023/11/06 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@ mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 import numpy as np
 import pandas as pd
 
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.investments.independent_invest import IndependentInvest
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -28,8 +30,6 @@ from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.ccus.ccus import CCUS
 
 
 class IndependentInvestDiscipline(SoSWrapp):
@@ -74,19 +74,16 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                 'heat.hightemperatureheat.HeatPumpHighHeat': ('float', None, True),
                                                 'heat.hightemperatureheat.GeothermalHighHeat': ('float', None, True),
                                                 'heat.hightemperatureheat.CHPHighHeat': ('float', None, True),
-                                                'heat.hightemperatureheat.HydrogenBoilerHighHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.NaturalGasBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.ElectricBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.HeatPumpLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.GeothermalLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.CHPLowHeat': ('float', None, True),
-                                                'heat.lowtemperatureheat.HydrogenBoilerLowHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.NaturalGasBoilerMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.ElectricBoilerMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.HeatPumpMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.GeothermalMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.CHPMediumHeat': ('float', None, True),
-                                                'heat.mediumtemperatureheat.HydrogenBoilerMediumHeat': ('float', None, True),
                                                 'biogas.AnaerobicDigestion': ('float', None, True),
                                                 'syngas.BiomassGasification': ('float', None, True),
                                                 'syngas.SMR': ('float', None, True),

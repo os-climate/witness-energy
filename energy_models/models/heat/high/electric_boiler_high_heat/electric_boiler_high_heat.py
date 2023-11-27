@@ -13,11 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
 
 
 class ElectricBoilerHighHeat(highheattechno):
@@ -53,31 +55,23 @@ class ElectricBoilerHighHeat(highheattechno):
                                                'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
 
-    def compute(self):
-        """
-        computing
-        """
-        self.compute_consumption_and_production()
-        self.compute_other_primary_energy_costs()
-
-        self.grad_price_vs_energy_price()
-    def grad_price_vs_energy_price_calc(self):
+    def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices
         '''
         elec_needs = self.get_theoretical_electricity_needs()
         efficiency = self.techno_infos_dict['efficiency']
-        return {'natural_gas_resource': np.identity(len(self.years)) * elec_needs / efficiency,
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
                 }
 
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        self.compute_primary_energy_production()
+        
         # Consumption
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-            self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})']
 
     def get_theoretical_electricity_needs(self):
         # we need as output kwh/kwh

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/18-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/18-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
                                  'biogas_needs': biogas_needs,
                                  'efficiency': 1,
                                  'techno_evo_eff': 'no',  # yes or no
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
                                  'copper_needs': 1100,  #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
@@ -153,6 +153,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
 
         return instanciated_chart
 
+
     def compute_sos_jacobian(self):
         ElectricityTechnoDiscipline.compute_sos_jacobian(self)
 
@@ -171,4 +172,3 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
             (GlossaryCore.TechnoProductionValue,
              f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
             (consumption_gradient- dprod_name_dinvest))
-

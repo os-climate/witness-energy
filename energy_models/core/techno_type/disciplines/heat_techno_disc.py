@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
 
 class LowHeatTechnoDiscipline(TechnoDiscipline):
@@ -65,6 +66,15 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
 
+    def get_chart_filter_list(self):
+        chart_filters = super().get_chart_filter_list()
+
+        chart_list = ['heat_flux']
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
+
+        return chart_filters
+
 
 class MediumHeatTechnoDiscipline(TechnoDiscipline):
     # ontology information
@@ -111,6 +121,15 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
 
+    def get_chart_filter_list(self):
+        chart_filters = super().get_chart_filter_list()
+
+        chart_list = ['heat_flux']
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
+
+        return chart_filters
+
 
 class HighHeatTechnoDiscipline(TechnoDiscipline):
     # ontology information
@@ -142,7 +161,6 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
                 #                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
-    #DESC_OUT = TechnoDiscipline.DESC_OUT
 
     _maturity = 'Research'
 
@@ -152,9 +170,16 @@ class HighHeatTechnoDiscipline(TechnoDiscipline):
         # Grad of price vs energyprice
 
         TechnoDiscipline.compute_sos_jacobian(self)
+
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
+
+    def get_chart_filter_list(self):
+        chart_filters = super().get_chart_filter_list()
+        chart_filters[0].extend(['heat_flux'])
+
+        return chart_filters

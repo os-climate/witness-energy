@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/09-2023/11/14 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
 
 
 class BiomassBF(CSTechno):
@@ -32,10 +33,10 @@ class BiomassBF(CSTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Consumption
 
-        self.consumption[f'{BiomassDry.name} (TWh)'] = self.production[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
-            BiomassDry.data_energy_dict['CO2_per_use'] * \
-            BiomassDry.data_energy_dict['calorific_value']
+        self.consumption_detailed[f'{BiomassDry.name} (TWh)'] = self.production_detailed[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                BiomassDry.data_energy_dict['CO2_per_use'] * \
+                                                                BiomassDry.data_energy_dict['calorific_value']

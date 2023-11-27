@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/10-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/10-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.syngas.pyrolysis.pyrolysis import Pyrolysis
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
+from energy_models.models.syngas.pyrolysis.pyrolysis import Pyrolysis
 
 
 class PyrolysisDiscipline(SyngasTechnoDiscipline):
@@ -61,9 +61,8 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  # C+H2O→H2+CO   ΔH =+131kJ/mol  # Co(28.01 g/mol),H2(2.016 g/mol)
                                  # https://www.sciencedirect.com/topics/earth-and-planetary-sciences/pyrolysis#:~:text=For%20slow%20pyrolysis%2C%20the%20heating,respectively%20%5B15%2C21%5D.
                                  'medium_heat_production_unit': 'TWh/kg',
-                                 'useful_heat_recovery_factor': 0.8,
                                  'efficiency': 1.0,  # No need of efficiency here
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'learning_rate': 0.0,
                                  'techno_evo_eff': 'no',
                                  'syngas_yield': 0.7,  # with 1kg of wood

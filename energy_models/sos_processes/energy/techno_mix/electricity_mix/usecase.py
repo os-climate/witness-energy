@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/23-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/23-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,10 +20,9 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.stream_type.energy_models.electricity import Electricity
 
 DEFAULT_TECHNOLOGIES_LIST = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal',
                              'Hydropower', 'Nuclear', 'CombinedCycleGasTurbine', 'GasTurbine', 'BiogasFired',
@@ -146,76 +145,6 @@ class Study(EnergyMixStudyManager):
 
             invest_electricity_mix_dict['RenewableElectricitySimpleTechno'] = np.array([
                 0.1, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001])
-
-        if self.bspline:
-            invest_electricity_mix_dict[GlossaryCore.Years] = self.years
-
-            for techno in self.technologies_list:
-                invest_electricity_mix_dict[techno], _ = self.invest_bspline(
-                    invest_electricity_mix_dict[techno], len(self.years))
-
-        electricity_mix_invest_df = pd.DataFrame(invest_electricity_mix_dict)
-
-        return electricity_mix_invest_df
-
-    def get_investments_old(self):
-        invest_electricity_mix_dict = {}
-        l_ctrl = np.arange(0, 8)
-
-        if 'WindOnshore' in self.technologies_list:
-            invest_electricity_mix_dict['WindOnshore'] = [
-                304.4 * 0.00838 + 0.6 * i for i in l_ctrl]
-
-        if 'WindOffshore' in self.technologies_list:
-            invest_electricity_mix_dict['WindOffshore'] = [
-                304.4 * 0.00838 + 0.3 * i for i in l_ctrl]
-
-        if 'SolarPv' in self.technologies_list:
-            invest_electricity_mix_dict['SolarPv'] = [
-                5 + 0.3 * i for i in l_ctrl]
-
-        if 'SolarThermal' in self.technologies_list:
-            invest_electricity_mix_dict['SolarThermal'] = [
-                304.4 * 0.00456 + i for i in l_ctrl]
-
-        if 'Geothermal' in self.technologies_list:
-            invest_electricity_mix_dict['Geothermal'] = [
-                304.4 * 0.00081 * (1 + 0.0236)**i for i in l_ctrl]
-
-        if 'Hydropower' in self.technologies_list:
-            invest_electricity_mix_dict['Hydropower'] = [
-                0.5 for i in l_ctrl]
-
-        if 'Nuclear' in self.technologies_list:
-            invest_electricity_mix_dict['Nuclear'] = [
-                2.1 + 0.05 * i for i in l_ctrl]
-
-        if 'CombinedCycleGasTurbine' in self.technologies_list:
-            invest_electricity_mix_dict['CombinedCycleGasTurbine'] = [
-                max(0.01, 2.1 - 0.2 * i) for i in l_ctrl]
-
-        if 'GasTurbine' in self.technologies_list:
-            invest_electricity_mix_dict['GasTurbine'] = [
-                max(0.01, 0.5 - 0.3 * i) for i in l_ctrl]
-
-        if 'BiogasFired' in self.technologies_list:
-            invest_electricity_mix_dict['BiogasFired'] = np.ones(len(l_ctrl))
-
-        if 'BiomassFired' in self.technologies_list:
-            invest_electricity_mix_dict['BiomassFired'] = np.ones(len(l_ctrl))
-
-        if 'CoalGen' in self.technologies_list:
-            invest_electricity_mix_dict['CoalGen'] = [
-                max(0.01, 0.1 - 0.2 * i) for i in l_ctrl]
-
-        if 'OilGen' in self.technologies_list:
-            invest_electricity_mix_dict['OilGen'] = [
-                max(0.01, 0.1 - 0.2 * i) for i in l_ctrl]
-
-        if 'RenewableElectricitySimpleTechno' in self.technologies_list:
-
-            invest_electricity_mix_dict['RenewableElectricitySimpleTechno'] = [
-                2.1 + 0.05 * i for i in l_ctrl]
 
         if self.bspline:
             invest_electricity_mix_dict[GlossaryCore.Years] = self.years

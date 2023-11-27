@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/23-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/23-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,15 +15,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 
 
 class HydrogenPriceTestCase(unittest.TestCase):
@@ -337,25 +336,25 @@ class HydrogenPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': 2050,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryCore.techno_list}': ['WaterGasShift', 'Electrolysis.PEM', 'PlasmaCracking'],
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption': self.smr_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_consumption_woratio': self.smr_consumption,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_production': self.smr_production,
-                       f'{self.name}.{self.model_name}.WaterGasShift.techno_prices': self.smr_techno_prices,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoConsumptionValue}': self.smr_consumption,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.smr_consumption,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoProductionValue}': self.smr_production,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.TechnoPricesValue}': self.smr_techno_prices,
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.CO2EmissionsValue}': self.smr_carbon_emissions,
                        f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_WaterGasShift,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_consumption': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_consumption_woratio': self.electrolysis_consumption,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_production': self.electrolysis_production,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.techno_prices': self.electrolysis_techno_prices,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoConsumptionValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.electrolysis_consumption,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoProductionValue}': self.electrolysis_production,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.TechnoPricesValue}': self.electrolysis_techno_prices,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.CO2EmissionsValue}': self.electrolysis_carbon_emissions,
                        f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_Electrolysis,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption': self.plasmacracking_consumption,
-                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
-                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoCapitalDfValue}': self.techno_capital,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.techno_consumption_woratio': self.plasmacracking_consumption,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.techno_production': self.plasmacracking_production,
-                       f'{self.name}.{self.model_name}.PlasmaCracking.techno_prices': self.plasmacracking_techno_prices,
+                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoConsumptionValue}': self.plasmacracking_consumption,
+                       f'{self.name}.{self.model_name}.Electrolysis.PEM.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
+                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
+                       f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
+                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.plasmacracking_consumption,
+                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoProductionValue}': self.plasmacracking_production,
+                       f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.TechnoPricesValue}': self.plasmacracking_techno_prices,
                        f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.CO2EmissionsValue}': self.plasma_cracking_carbon_emissions,
                        f'{self.name}.{self.model_name}.PlasmaCracking.{GlossaryCore.LandUseRequiredValue}': self.land_use_required_PlasmaCracking}
 

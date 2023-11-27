@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
-
-from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking import PlasmaCracking
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.techno_type.disciplines.gaseous_hydrogen_techno_disc import GaseousHydrogenTechnoDiscipline
+from energy_models.models.gaseous_hydrogen.plasma_cracking.plasma_cracking import PlasmaCracking
 
 
 class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
@@ -69,7 +68,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency': 0.15,
                                  'efficiency_max': 0.6,
                                  'nb_years_amort_capex': 10.,
-                                 'construction_delay': construction_delay}
+                                 GlossaryCore.ConstructionDelay: construction_delay}
 
     initial_production = 1e-12
     initial_age_distribution = pd.DataFrame({'age': np.arange(0, lifetime),
@@ -303,8 +302,8 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
    GRADIENT H2 VS CO2_TAXES
         '''
 
-        dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_emissions[GlossaryCore.Years].max(
-        )) * self.techno_model.carbon_emissions[self.techno_name].clip(0).values
+        dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_intensity[GlossaryCore.Years].max(
+        )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values
         dtechno_prices_dCO2_taxes = dCO2_taxes_factory * \
             self.techno_model.margin.loc[self.techno_model.margin[GlossaryCore.Years] <=
                                          self.techno_model.cost_details[GlossaryCore.Years].max()][GlossaryCore.MarginValue].values / 100.0

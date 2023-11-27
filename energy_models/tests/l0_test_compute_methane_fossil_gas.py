@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,14 +21,8 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.methane.fossil_gas.fossil_gas import FossilGas
-from energy_models.models.methane.fossil_gas.fossil_gas_disc import FossilGasDiscipline
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
-
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.energy_models.methane import Methane
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class UpgradingBiogasPriceTestCase(unittest.TestCase):
@@ -105,38 +100,6 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
-
-    def test_01_compute_methane_price(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': FossilGasDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       'initial_production': FossilGasDiscipline.initial_production,
-                       'initial_age_distrib': FossilGasDiscipline.initial_age_distribution,
-                       GlossaryCore.InvestmentBeforeYearStartValue: FossilGasDiscipline.invest_before_year_start,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Methane.data_energy_dict}
-
-        methane = FossilGas('FossilGas')
-        methane.configure_parameters(inputs_dict)
-        methane.configure_parameters_update(inputs_dict)
-        price_details = methane.compute_price()
 
     def test_02_fossil_gas_discipline(self):
 

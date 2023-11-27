@@ -13,14 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
-from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
+
 
 class NaturalGasBoilerHighHeat(highheattechno):
 
@@ -43,7 +44,7 @@ class NaturalGasBoilerHighHeat(highheattechno):
         # and then we divide by efficiency
         return self.cost_details[f'{Methane.name}']
 
-    def grad_price_vs_energy_price_calc(self):
+    def grad_price_vs_energy_price(self):
         '''
         Compute the gradient of global price vs energy prices
         Work also for total CO2_emissions vs energy CO2 emissions
@@ -52,7 +53,7 @@ class NaturalGasBoilerHighHeat(highheattechno):
         efficiency = self.techno_infos_dict['efficiency']
 
         return {
-                'natural_gas_resource': np.identity(len(self.years)) * methane_needs / efficiency
+                Methane.name: np.identity(len(self.years)) * methane_needs / efficiency
                 }
 
     def compute_consumption_and_production(self):
@@ -60,28 +61,28 @@ class NaturalGasBoilerHighHeat(highheattechno):
         Compute the consumption and the production of the technology for a given investment
         """
 
-        self.compute_primary_energy_production()
+        
 
 
         # Consumption
 
-        self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
-            self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
+                                                                                    self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})']
 
         # CO2 production
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
-                                                                               Methane.data_energy_dict['calorific_value'] * \
-            self.consumption[f'{Methane.name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
+                                                                                        Methane.data_energy_dict['calorific_value'] * \
+                                                                                        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account CO2 from Methane production
         '''
 
-        self.carbon_emissions[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
-            self.cost_details[f'{Methane.name}_needs']
+        self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
+                                              self.cost_details[f'{Methane.name}_needs']
 
-        return self.carbon_emissions[f'{Methane.name}']
+        return self.carbon_intensity[f'{Methane.name}']
 
     def get_theoretical_methane_needs(self):
         # we need as output kwh/kwh 

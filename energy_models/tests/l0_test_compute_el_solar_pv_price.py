@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,23 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
 from os.path import join, dirname
 
-import scipy.interpolate as sc
 import matplotlib.pyplot as plt
-
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.electricity.solar_pv.solar_pv_disc import SolarPvDiscipline
-from energy_models.models.electricity.solar_pv.solar_pv import SolarPv
-
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+import numpy as np
+import pandas as pd
+import scipy.interpolate as sc
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.models.electricity.solar_pv.solar_pv import SolarPv
+from energy_models.models.electricity.solar_pv.solar_pv_disc import SolarPvDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class SolarPvPriceTestCase(unittest.TestCase):
@@ -95,8 +94,15 @@ class SolarPvPriceTestCase(unittest.TestCase):
 
     def test_01_compute_solarpv_price(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': SolarPvDiscipline.techno_infos_dict_default,
                        GlossaryCore.InvestLevelValue: self.invest_level_2,
                        GlossaryCore.InvestmentBeforeYearStartValue: SolarPvDiscipline.invest_before_year_start,
@@ -141,88 +147,6 @@ class SolarPvPriceTestCase(unittest.TestCase):
         plt.legend()
         plt.ylabel('Price ($/kWh)')
 
-    def test_02_compute_solar_pv_price_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': SolarPvDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.InvestLevelValue: self.invest_level_2,
-                       GlossaryCore.InvestmentBeforeYearStartValue: SolarPvDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': SolarPvDiscipline.initial_production,
-                       'initial_age_distrib': SolarPvDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: pd.DataFrame(),
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Electricity.data_energy_dict,
-                       }
-
-        solar_pv_model = SolarPv('SolarPv')
-        solar_pv_model.configure_parameters(inputs_dict)
-        solar_pv_model.configure_parameters_update(inputs_dict)
-        price_details = solar_pv_model.compute_price()
-        # print(price_details)
-        solar_pv_model.compute_consumption_and_production()
-        solar_pv_model.check_outputs_dict(self.biblio_data)
-
-    def test_04_compute_solar_pv_power(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': SolarPvDiscipline.techno_infos_dict_default,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.InvestLevelValue: self.invest_level_2,
-                       GlossaryCore.InvestmentBeforeYearStartValue: SolarPvDiscipline.invest_before_year_start,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       'initial_production': SolarPvDiscipline.initial_production,
-                       'initial_age_distrib': SolarPvDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: pd.DataFrame(),
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': Electricity.data_energy_dict,
-                       }
-
-        solar_pv_model = SolarPv('SolarPv')
-        solar_pv_model.configure_parameters(inputs_dict)
-        solar_pv_model.configure_parameters_update(inputs_dict)
-        price_details = solar_pv_model.compute_price()
-        solar_pv_model.compute_consumption_and_production()
-        solar_pv_model.compute_consumption_and_power_production()
-
-        print(solar_pv_model.power_production)
-
-        print(solar_pv_model.power_production * solar_pv_model.techno_infos_dict['full_load_hours'] / 1000)
-
-        print(solar_pv_model.production[f'electricity ({solar_pv_model.product_energy_unit})'])
-
-        self.assertLessEqual(list(solar_pv_model.production[f'electricity ({solar_pv_model.product_energy_unit})'].values),
-                            list(solar_pv_model.power_production['total_installed_power'] * solar_pv_model.techno_infos_dict['full_load_hours'] / 1000 * 1.001) )
-        self.assertGreaterEqual(list(solar_pv_model.production[f'electricity ({solar_pv_model.product_energy_unit})'].values),
-                            list(solar_pv_model.power_production['total_installed_power'] * solar_pv_model.techno_infos_dict['full_load_hours'] / 1000 * 0.999) )
-
     def test_03_solar_pv_discipline(self):
 
         self.name = 'Test'
@@ -258,9 +182,22 @@ class SolarPvPriceTestCase(unittest.TestCase):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
+        production_detailed = disc.get_sosdisc_outputs(GlossaryCore.TechnoDetailedProductionValue)
+        power_production = disc.get_sosdisc_outputs(GlossaryCore.InstalledPower)
+        techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
+
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass
+
+        self.assertLessEqual(list(production_detailed['electricity (TWh)'].values),
+                             list(power_production['total_installed_power'] * techno_infos_dict[
+                                 'full_load_hours'] / 1000 * 1.001))
+        self.assertGreaterEqual(list(production_detailed[f'electricity (TWh)'].values),
+                                list(power_production['total_installed_power'] * techno_infos_dict[
+                                    'full_load_hours'] / 1000 * 0.999))
+
 # if __name__ == "__main__":
 #     unittest.main()

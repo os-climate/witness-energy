@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/23-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/10/23-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,15 +14,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart \
     import InstanciatedSeries, TwoAxesInstanciatedChart
-
-import numpy as np
 
 
 class CCTechnoDiscipline(TechnoDiscipline):
@@ -113,7 +112,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
             [GlossaryCore.TechnoProductionValue, GlossaryCore.TechnoConsumptionValue])
         for column in consumption:
             dprod_column_dfluegas = dprod_dfluegas.copy()
-            if column not in [GlossaryCore.Years]:
+            if column != GlossaryCore.Years:
                 var_cons = (consumption[column] /
                             production[f'{self.energy_name} ({self.techno_model.product_energy_unit})']).fillna(
                     0)
@@ -134,23 +133,20 @@ class CCTechnoDiscipline(TechnoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('non_use_capital', self.techno_model.name), (GlossaryCore.FlueGasMean, GlossaryCore.FlueGasMean), dnon_use_capital_dflue_gas_mean)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoCapitalDfValue, GlossaryEnergy.Capital),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital),
             (GlossaryCore.FlueGasMean, GlossaryCore.FlueGasMean), dtechnocapital_dflue_gas_mean)
 
     def get_chart_filter_list(self):
 
-        chart_filters = []
-        chart_list = ['Detailed prices',
-                      'Consumption and production',
-                      'Initial Production']
-        if self.get_sosdisc_inputs('is_apply_ratio'):
-            chart_list.extend(['Applied Ratio'])
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
-
-        price_unit_list = ['$/tCO2']
-        chart_filters.append(ChartFilter(
-            'Price unit', price_unit_list, price_unit_list, 'price_unit'))
+        chart_filters = super().get_chart_filter_list()
+        chart_filters[0].remove(
+            [
+                'CO2 emissions',
+                'Non-Use Capital',
+                'Power production',
+                'Factory Mean Age'
+            ]
+        )
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
@@ -173,6 +169,10 @@ class CCTechnoDiscipline(TechnoDiscipline):
             new_chart = self.get_chart_detailed_price_in_dollar_tCO2()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
+
+        if GlossaryCore.UtilisationRatioValue in charts:
+            new_chart = self.get_utilisation_ratio_chart()
+            instanciated_charts.append(new_chart)
 
         if 'Consumption and production' in charts:
             new_chart = self.get_chart_investments()

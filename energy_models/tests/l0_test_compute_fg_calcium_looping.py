@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,24 +15,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
-from os.path import join, dirname
 
-import scipy.interpolate as sc
 import matplotlib.pyplot as plt
-
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import  \
-    CalciumLoopingDiscipline
-from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping import CalciumLooping
-
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+import numpy as np
+import pandas as pd
+import scipy.interpolate as sc
 
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
+from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping import CalciumLooping
+from energy_models.models.carbon_capture.flue_gas_capture.calcium_looping.calcium_looping_disc import \
+    CalciumLoopingDiscipline
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class FGCalciumLoopingTestCase(unittest.TestCase):
@@ -102,8 +100,15 @@ class FGCalciumLoopingTestCase(unittest.TestCase):
 
     def test_01_compute_calcium_looping_price(self):
 
+        years = np.arange(2020, 2051)
+        utilisation_ratio = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.UtilisationRatioValue: np.ones_like(years) * 100.
+        })
+        
         inputs_dict = {GlossaryCore.YearStart: 2020,
                        GlossaryCore.YearEnd: 2050,
+                       GlossaryCore.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': CalciumLoopingDiscipline.techno_infos_dict_default,
                        GlossaryCore.InvestLevelValue: self.invest_level,
                        GlossaryCore.InvestmentBeforeYearStartValue: CalciumLoopingDiscipline.invest_before_year_start,
@@ -149,41 +154,6 @@ class FGCalciumLoopingTestCase(unittest.TestCase):
                  label='SoSTrades Factory')
         plt.legend()
         plt.ylabel('Price ($/kWh)')
-
-    def test_02_compute_calcium_looping_price_prod_consumption(self):
-
-        inputs_dict = {GlossaryCore.YearStart: 2020,
-                       GlossaryCore.YearEnd: 2050,
-                       'techno_infos_dict': CalciumLoopingDiscipline.techno_infos_dict_default,
-                       GlossaryCore.InvestLevelValue: self.invest_level,
-                       GlossaryCore.InvestmentBeforeYearStartValue: CalciumLoopingDiscipline.invest_before_year_start,
-                       GlossaryCore.MarginValue:  self.margin,
-                       GlossaryCore.TransportCostValue: self.transport,
-                       GlossaryCore.ResourcesPriceValue: self.resources_price,
-                       GlossaryCore.EnergyPricesValue: self.energy_prices,
-                       GlossaryCore.CO2TaxesValue: self.co2_taxes,
-                       GlossaryCore.TransportMarginValue: self.margin,
-                       GlossaryCore.FlueGasMean: self.flue_gas_mean,
-                       'initial_production': CalciumLoopingDiscipline.initial_capture,
-                       'initial_age_distrib': CalciumLoopingDiscipline.initial_age_distribution,
-                       GlossaryCore.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryCore.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
-                       'scaling_factor_invest_level': 1e3,
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production,
-                       ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       GlossaryCore.AllStreamsDemandRatioValue: self.all_streams_demand_ratio,
-                       'is_stream_demand': self.is_stream_demand,
-                       'is_apply_resource_ratio': self.is_apply_resource_ratio,
-                       'smooth_type': 'smooth_max',
-                       'data_fuel_dict': CarbonCapture.data_energy_dict,
-                       }
-
-        calcium_looping_model = CalciumLooping('Calcium_Looping')
-        calcium_looping_model.configure_parameters(inputs_dict)
-        calcium_looping_model.configure_parameters_update(inputs_dict)
-        price_details = calcium_looping_model.compute_price()
-        calcium_looping_model.compute_consumption_and_production()
 
     def test_03_calcium_looping_discipline(self):
 

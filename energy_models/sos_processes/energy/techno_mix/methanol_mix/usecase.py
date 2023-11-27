@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,15 +19,14 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
-from energy_models.core.stream_type.energy_models.methanol import Methanol
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT, INVEST_DISCIPLINE_OPTIONS
-
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
+from energy_models.core.stream_type.energy_models.methanol import Methanol
+from energy_models.core.stream_type.resources_models.water import Water
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 DEFAULT_TECHNOLOGIES_LIST = ['CO2Hydrogenation']
 TECHNOLOGIES_LIST = ['CO2Hydrogenation']
@@ -60,24 +60,6 @@ class Study(EnergyMixStudyManager):
                 invest_methanol_mix_dict[techno], _ = self.invest_bspline(
                     invest_methanol_mix_dict[techno], len(self.years))
 
-
-        methanol_mix_invest_df = pd.DataFrame(invest_methanol_mix_dict)
-
-        return methanol_mix_invest_df
-
-    def get_investments_old(self):
-        invest_methanol_mix_dict = {}
-        l_ctrl = np.arange(0, 8)
-
-        if 'CO2Hydrogenation' in self.technologies_list:
-            invest_methanol_mix_dict['CO2Hydrogenation'] = [
-                max(1e-8, 1.88 - 0.04 * i) for i in l_ctrl]
-        if self.bspline:
-            invest_methanol_mix_dict[GlossaryCore.Years] = self.years
-
-            for techno in self.technologies_list:
-                invest_methanol_mix_dict[techno], _ = self.invest_bspline(
-                    invest_methanol_mix_dict[techno], len(self.years))
 
         methanol_mix_invest_df = pd.DataFrame(invest_methanol_mix_dict)
 
