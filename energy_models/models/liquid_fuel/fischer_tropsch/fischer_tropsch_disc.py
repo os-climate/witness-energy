@@ -72,12 +72,13 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'maximum_learning_capex_ratio': 0.5,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': GlossaryEnergy.Years,
-                                 # 'medium_heat_production': (165/28.01)*1000*2.77778e-13,
+                                 'medium_heat_production': (165/28.01)*1000*2.77778e-13,
                                  # # https://www.sciencedirect.com/science/article/pii/S1385894718309215, reaction enthalpy of −165 kJ/molCO
-                                 # 'medium_heat_production_unit': 'TWh/kg',
+                                 'medium_heat_production_unit': 'TWh/kg',
                                  # 60000 euro/bpd : 1 barrel = 1553,41kwh of
                                  # liquid_fuel per 24 hours
                                  # Capex initial at year 2020
+                                 'useful_heat_recovery_factor': 0.8,
                                  'Capex_init': 60000.0 / (1553.41 / 24.0 * 8000.0),
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.65,

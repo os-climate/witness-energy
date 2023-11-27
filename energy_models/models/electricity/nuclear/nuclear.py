@@ -87,8 +87,8 @@ class Nuclear(ElectricityTechno):
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = water_needs * \
                                                                         self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
-        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 *  self.techno_infos_dict['useful_heat_recovery_factor'] \
-                                                                                      * self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 *  self.techno_infos_dict['useful_heat_recovery_factor'] \
+                                                                                      * self.consumption_detailed[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
 
 
 
@@ -108,9 +108,9 @@ class Nuclear(ElectricityTechno):
         Need to take into account  CO2 from electricity/hydrogen production
         """
 
-        self.carbon_emissions[self.URANIUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.URANIUM_RESOURCE_NAME] * \
+        self.carbon_intensity[self.URANIUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.URANIUM_RESOURCE_NAME] * \
             self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs']  #* 2.85714103055875 * 0.122500060041371
-        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
+        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
             self.cost_details['water_needs']  #* 2.85714103055875 * 0.122500060041371
 
         return self.carbon_intensity[self.URANIUM_RESOURCE_NAME] + self.carbon_intensity[Water.name]
