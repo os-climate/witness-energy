@@ -20,7 +20,6 @@ from os.path import join, dirname
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -40,14 +39,14 @@ class TestEnergyInvest(unittest.TestCase):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = ['fossil', 'renewable']
         self.ccs_list = ['carbon_capture', 'carbon_storage']
-        self.economics_df = pd.DataFrame(columns=[GlossaryCore.Years, GlossaryCore.GrossOutput,
-                                                  GlossaryCore.OutputNetOfDamage, GlossaryCore.PerCapitaConsumption,
-                                                  GlossaryCore.EnergyWasted])
-        self.economics_df[GlossaryCore.Years] = self.years
-        self.economics_df[GlossaryCore.GrossOutput] = np.linspace(140., 200., len(self.years))
-        self.economics_df[GlossaryCore.OutputNetOfDamage] = np.linspace(130., 190., len(self.years))
-        self.economics_df[GlossaryCore.PerCapitaConsumption] = 0.
-        self.economics_df[GlossaryCore.EnergyWasted] = 0.
+        self.economics_df = pd.DataFrame(columns=[GlossaryEnergy.Years, GlossaryEnergy.GrossOutput,
+                                                  GlossaryEnergy.OutputNetOfDamage, GlossaryEnergy.PerCapitaConsumption,
+                                                  GlossaryEnergy.EnergyWasted])
+        self.economics_df[GlossaryEnergy.Years] = self.years
+        self.economics_df[GlossaryEnergy.GrossOutput] = np.linspace(140., 200., len(self.years))
+        self.economics_df[GlossaryEnergy.OutputNetOfDamage] = np.linspace(130., 190., len(self.years))
+        self.economics_df[GlossaryEnergy.PerCapitaConsumption] = 0.
+        self.economics_df[GlossaryEnergy.EnergyWasted] = 0.
         self.techno_list_fossil = ['FossilSimpleTechno']
         self.techno_list_renewable = ['RenewableSimpleTechno']
         self.techno_list_carbon_capture = ['direct_air_capture.DirectAirCaptureTechno',
@@ -55,27 +54,27 @@ class TestEnergyInvest(unittest.TestCase):
         self.techno_list_carbon_storage = ['CarbonStorageTechno']
 
         data_invest = {
-            GlossaryCore.Years: self.years
+            GlossaryEnergy.Years: self.years
         }
         all_techno_list = [self.techno_list_fossil, self.techno_list_renewable, self.techno_list_carbon_capture,
                            self.techno_list_carbon_storage]
         data_invest.update({techno: 100. / 5 for sublist in all_techno_list for techno in sublist})
 
         self.invest_percentage_per_techno = pd.DataFrame(data=data_invest)
-        self.invest_percentage_gdp = pd.DataFrame(data={GlossaryCore.Years: self.years,
+        self.invest_percentage_gdp = pd.DataFrame(data={GlossaryEnergy.Years: self.years,
                                                         GlossaryEnergy.EnergyInvestPercentageGDPName: np.linspace(10., 20., len(self.years))})
         forest_invest = np.linspace(5, 8, len(self.years))
         self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, GlossaryCore.ForestInvestmentValue: forest_invest})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: forest_invest})
         managed_wood_invest = np.linspace(0.5, 2, len(self.years))
         self.managed_wood_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, "investment": managed_wood_invest})
+            {GlossaryEnergy.Years: self.years, "investment": managed_wood_invest})
         deforestation_invest = np.linspace(1.0, 0.1, len(self.years))
         self.deforestation_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, "investment": deforestation_invest})
+            {GlossaryEnergy.Years: self.years, "investment": deforestation_invest})
         crop_invest = np.linspace(0.5, 0.25, len(self.years))
         self.crop_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, "investment": crop_invest})
+            {GlossaryEnergy.Years: self.years, "investment": crop_invest})
 
     def test_01_redistribution_invest_disc(self):
         self.name = 'Energy'
@@ -102,15 +101,15 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
-                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.energy_list}': self.energy_list,
-                       f'{self.name}.{GlossaryCore.ccs_list}': self.ccs_list,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list,
+                       f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.fossil.{GlossaryEnergy.TechnoListName}': self.techno_list_fossil,
                        f'{self.name}.renewable.{GlossaryEnergy.TechnoListName}': self.techno_list_renewable,
                        f'{self.name}.CCUS.carbon_capture.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
                        f'{self.name}.CCUS.carbon_storage.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
-                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
+                       f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df
@@ -125,17 +124,17 @@ class TestEnergyInvest(unittest.TestCase):
         fossil_invest_2020 = fossil_invest_level[0]
         fossil_invest_2050 = fossil_invest_level[-1]
         error_message = 'Error in investment, it is not equal to expected'
-        self.assertAlmostEqual(fossil_invest_2020, 0.1 * 130 * 0.2, msg=error_message)
-        self.assertAlmostEqual(fossil_invest_2050, 0.2 * 190 * 0.2, msg=error_message)
+        self.assertAlmostEqual(fossil_invest_2020, 0.1 * 130 * 1e3 * 0.2, msg=error_message)
+        self.assertAlmostEqual(fossil_invest_2050, 0.2 * 190 * 1e3 * 0.2, msg=error_message)
 
         dac_invest_level = self.ee.dm.get_value(f'{self.name}.CCUS.carbon_capture.direct_air_capture'
                                                 f'.DirectAirCaptureTechno.{GlossaryEnergy.InvestLevelValue}')[
             GlossaryEnergy.InvestValue].values
         dac_invest_2020 = dac_invest_level[0]
         dac_invest_2050 = dac_invest_level[-1]
-        self.assertAlmostEqual(dac_invest_2020, 0.1 * 130 * 0.2,
+        self.assertAlmostEqual(dac_invest_2020, 0.1 * 130 * 1e3 * 0.2,
                                msg=error_message)
-        self.assertAlmostEqual(dac_invest_2050, 0.2 * 190 * 0.2,
+        self.assertAlmostEqual(dac_invest_2050, 0.2 * 190 * 1e3 * 0.2,
                                msg=error_message)
 
         disc = self.ee.dm.get_disciplines_with_name(
@@ -172,15 +171,15 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
-                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.energy_list}': self.energy_list,
-                       f'{self.name}.{GlossaryCore.ccs_list}': self.ccs_list,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list,
+                       f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.fossil.{GlossaryEnergy.TechnoListName}': self.techno_list_fossil,
                        f'{self.name}.renewable.{GlossaryEnergy.TechnoListName}': self.techno_list_renewable,
                        f'{self.name}.carbon_capture.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
                        f'{self.name}.carbon_storage.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
-                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
+                       f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df
@@ -192,14 +191,14 @@ class TestEnergyInvest(unittest.TestCase):
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         all_technos_list = [
             f'{energy}.{techno}' for energy in self.energy_list + self.ccs_list for techno in
-            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.techno_list}']]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
 
         succeed = disc.check_jacobian(derr_approx='complex_step',
-                                      inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                              f'{self.name}.{self.model_name}.{GlossaryCore.ForestInvestmentValue}'],
+                                      inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
+                                              f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}'],
                                       outputs=
-                                      [f'{self.name}.{techno}.{GlossaryCore.InvestLevelValue}' for techno in
-                                       all_technos_list] + [f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'],
+                                      [f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
+                                       all_technos_list] + [f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'],
                                       input_data=disc.local_data,
                                       load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                          f'jacobian_redistribution_invest_disc_wo_biomass.pkl'),
@@ -234,16 +233,16 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
-                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.energy_list}': self.energy_list + ['biomass_dry'],
-                       f'{self.name}.{GlossaryCore.ccs_list}': self.ccs_list,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list + ['biomass_dry'],
+                       f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.fossil.{GlossaryEnergy.TechnoListName}': self.techno_list_fossil,
                        f'{self.name}.renewable.{GlossaryEnergy.TechnoListName}': self.techno_list_renewable,
                        f'{self.name}.carbon_capture.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_capture,
                        f'{self.name}.carbon_storage.{GlossaryEnergy.TechnoListName}': self.techno_list_carbon_storage,
                        f'{self.name}.biomass_dry.{GlossaryEnergy.TechnoListName}': [],
-                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
+                       f'{self.name}.{GlossaryEnergy.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoInvestPercentageName}': self.invest_percentage_per_techno,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': self.invest_percentage_gdp,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df,
@@ -258,17 +257,17 @@ class TestEnergyInvest(unittest.TestCase):
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         all_technos_list = [
             f'{energy}.{techno}' for energy in self.energy_list + self.ccs_list for techno in
-            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.techno_list}']]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
 
         succeed = disc.check_jacobian(derr_approx='complex_step',
-                                      inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                              f'{self.name}.{self.model_name}.{GlossaryCore.ForestInvestmentValue}',
+                                      inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
+                                              f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}',
                                               f'{self.name}.managed_wood_investment',
                                               f'{self.name}.deforestation_investment',
                                               f'{self.name}.crop_investment'],
                                       outputs=
-                                      [f'{self.name}.{techno}.{GlossaryCore.InvestLevelValue}' for techno in
-                                       all_technos_list] + [f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'],
+                                      [f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
+                                       all_technos_list] + [f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'],
                                       input_data=disc.local_data,
                                       load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                          f'jacobian_redistribution_invest_disc_w_biomass.pkl'),

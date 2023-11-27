@@ -16,9 +16,9 @@ limitations under the License.
 '''
 import numpy as np
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.stream_disc import StreamDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -39,7 +39,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
         'version': '',
     }
 
-    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+    DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': CarbonStorage.default_techno_list,
                                      'visibility': 'Shared',
                                      'unit': '-',
@@ -64,7 +64,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
 
         chart_filters = []
         chart_list = ['CO2 Storage price', 'Technology mix',
-                      'Consumption and production', GlossaryCore.Capital]
+                      'Consumption and production', GlossaryEnergy.Capital]
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -73,10 +73,10 @@ class CarbonStorageDiscipline(StreamDiscipline):
             'Price unit', price_unit_list, price_unit_list, 'price_unit'))
 
         year_start, year_end = self.get_sosdisc_inputs(
-            [GlossaryCore.YearStart, GlossaryCore.YearEnd])
+            [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
         years = list(np.arange(year_start, year_end + 1, 5))
         chart_filters.append(ChartFilter(
-            'Years for techno mix', years, [year_start, year_end], GlossaryCore.Years))
+            'Years for techno mix', years, [year_start, year_end], GlossaryEnergy.Years))
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
@@ -88,7 +88,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
         charts = []
         price_unit_list = ['$/ton']
         unit = 'Mt'
-        years_list = [self.get_sosdisc_inputs(GlossaryCore.YearStart)]
+        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -96,7 +96,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
                     charts = chart_filter.selected_values
                 if chart_filter.filter_key == 'price_unit':
                     price_unit_list = chart_filter.selected_values
-                if chart_filter.filter_key == GlossaryCore.Years:
+                if chart_filter.filter_key == GlossaryEnergy.Years:
                     years_list = chart_filter.selected_values
 
         if 'CO2 Storage price' in charts and '$/ton' in price_unit_list:
@@ -110,7 +110,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
-        if GlossaryCore.Capital in charts:
+        if GlossaryEnergy.Capital in charts:
             chart = self.get_capital_breakdown_by_technos()
             instanciated_charts.append(chart)
 
@@ -126,24 +126,24 @@ class CarbonStorageDiscipline(StreamDiscipline):
         return instanciated_charts
 
     def get_chart_CO2_storage_price_in_dollar_ton(self):
-        CO2_storage_prices = self.get_sosdisc_outputs(GlossaryCore.EnergyPricesValue)
+        CO2_storage_prices = self.get_sosdisc_outputs(GlossaryEnergy.EnergyPricesValue)
         chart_name = f'Detailed prices of {self.energy_name} mix over the years'
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryCore.Years, 'Prices [$/ton]', chart_name=chart_name)
+            GlossaryEnergy.Years, 'Prices [$/ton]', chart_name=chart_name)
 
         serie = InstanciatedSeries(
-            CO2_storage_prices[GlossaryCore.Years].values.tolist(),
+            CO2_storage_prices[GlossaryEnergy.Years].values.tolist(),
             (CO2_storage_prices[self.energy_name].values).tolist(), f'{self.energy_name} mix price', 'lines')
 
         new_chart.series.append(serie)
 
-        technology_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
+        technology_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
 
         for technology in technology_list:
             techno_price = self.get_sosdisc_inputs(
-                f'{technology}.{GlossaryCore.TechnoPricesValue}')
+                f'{technology}.{GlossaryEnergy.TechnoPricesValue}')
             serie = InstanciatedSeries(
-                CO2_storage_prices[GlossaryCore.Years].values.tolist(),
+                CO2_storage_prices[GlossaryEnergy.Years].values.tolist(),
                 (techno_price[technology].values).tolist(), f'{technology} price', 'lines')
             new_chart.series.append(serie)
 
@@ -152,26 +152,26 @@ class CarbonStorageDiscipline(StreamDiscipline):
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
-        energy_consumption = self.get_sosdisc_outputs(GlossaryCore.EnergyConsumptionValue)
-        energy_production = self.get_sosdisc_outputs(GlossaryCore.EnergyProductionValue)
+        energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
+        energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
         scaling_factor_energy_production = self.get_sosdisc_inputs(
             'scaling_factor_energy_production')
         chart_name = 'Total consumption and production with input investments'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Mass [Mt]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',
                                              chart_name=chart_name, stacked_bar=True)
 
         for reactant in energy_consumption.columns:
-            if reactant != GlossaryCore.Years and reactant.endswith('(Mt)'):
+            if reactant != GlossaryEnergy.Years and reactant.endswith('(Mt)'):
                 energy_twh = - \
                                  energy_consumption[reactant].values * \
                              scaling_factor_energy_consumption
                 legend_title = f'{reactant}'.replace(
                     "(Mt)", "")
                 serie = InstanciatedSeries(
-                    energy_consumption[GlossaryCore.Years].values.tolist(),
+                    energy_consumption[GlossaryEnergy.Years].values.tolist(),
                     energy_twh.tolist(), legend_title, 'bar')
 
                 new_chart.series.append(serie)
@@ -180,19 +180,19 @@ class CarbonStorageDiscipline(StreamDiscipline):
             # We do not plot technology H2 production on this graph
             # Pie charts are here to see difference of production between
             # technologies
-            if products != GlossaryCore.Years and products.endswith('(Mt)') and self.energy_name not in products:
+            if products != GlossaryEnergy.Years and products.endswith('(Mt)') and self.energy_name not in products:
                 energy_twh = energy_production[products].values * \
                              scaling_factor_energy_production
                 legend_title = f'{products}'.replace(
                     "(Mt)", "")
                 serie = InstanciatedSeries(
-                    energy_production[GlossaryCore.Years].values.tolist(),
+                    energy_production[GlossaryEnergy.Years].values.tolist(),
                     energy_twh.tolist(), legend_title, 'bar')
 
                 new_chart.series.append(serie)
         energy_prod_twh = energy_production[self.energy_name].values
         serie = InstanciatedSeries(
-            energy_production[GlossaryCore.Years].values.tolist(),
+            energy_production[GlossaryEnergy.Years].values.tolist(),
             energy_prod_twh.tolist(), self.energy_name, 'bar')
 
         new_chart.series.append(serie)
@@ -203,14 +203,14 @@ class CarbonStorageDiscipline(StreamDiscipline):
         kg_values_consumption = 0
         reactant_found = ''
         for reactant in energy_consumption.columns:
-            if reactant != GlossaryCore.Years and reactant.endswith('(Mt)'):
+            if reactant != GlossaryEnergy.Years and reactant.endswith('(Mt)'):
                 kg_values_consumption += 1
                 reactant_found = reactant
 
         kg_values_production = 0
         product_found = ''
         for product in energy_production.columns:
-            if product != GlossaryCore.Years and product.endswith('(Mt)'):
+            if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
                 kg_values_production += 1
                 product_found = product
         if kg_values_consumption == 1 and kg_values_production == 0:
@@ -224,25 +224,25 @@ class CarbonStorageDiscipline(StreamDiscipline):
         else:
             chart_name = 'Consumption and production with input investments'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Mass [Mt]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',
                                              chart_name=chart_name.capitalize(), stacked_bar=True)
 
         for reactant in energy_consumption.columns:
-            if reactant != GlossaryCore.Years and reactant.endswith('(Mt)'):
+            if reactant != GlossaryEnergy.Years and reactant.endswith('(Mt)'):
                 legend_title = f'{reactant} consumption'.replace(
                     "(Mt)", "")
                 mass = -energy_consumption[reactant].values
                 serie = InstanciatedSeries(
-                    energy_consumption[GlossaryCore.Years].values.tolist(),
+                    energy_consumption[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart.series.append(serie)
         for product in energy_production.columns:
-            if product != GlossaryCore.Years and product.endswith('(Mt)') and product != "carbon_storage (Mt)":
+            if product != GlossaryEnergy.Years and product.endswith('(Mt)') and product != "carbon_storage (Mt)":
                 legend_title = f'{product} production'.replace(
                     "(Mt)", "").replace("carbon_storage ", "")
                 mass = energy_production[product].values
                 serie = InstanciatedSeries(
-                    energy_production[GlossaryCore.Years].values.tolist(),
+                    energy_production[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart.series.append(serie)
 

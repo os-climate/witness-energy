@@ -17,9 +17,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.medium.geothermal_medium_heat.geothermal_medium_heat import GeothermalHeat
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -53,9 +53,9 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'Capex_init_unit': '$/kW',
         'Opex_percentage': 0.0287, # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
         'lifetime': lifetime,
-        'lifetime_unit': GlossaryCore.Years,
-        GlossaryCore.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryCore.Years,
+        'lifetime_unit': GlossaryEnergy.Years,
+        GlossaryEnergy.ConstructionDelay: construction_delay,
+        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 1,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.122, # high GHG concentrations in the reservoir fluid # https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf
         'CO2_from_production_unit': 'kg/kWh',
@@ -85,7 +85,7 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), GlossaryCore.InvestValue: 3830/(25*8760) * np.array([182500/3])})
+        {'past years': np.array(-construction_delay), GlossaryEnergy.InvestValue: 3830/(25*8760) * np.array([182500/3])})
     flux_input_dict = {'land_rate': 15000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -94,9 +94,9 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False},
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
@@ -116,7 +116,7 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',
-                                        'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], True),
+                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], True),
                                                                  'heat_flux': ('float', [1.e-8, 1e30], True),
                                                                  },
                                         }
@@ -182,9 +182,9 @@ class GeothermalMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         heat_flux = self.get_sosdisc_outputs('heat_flux')
 
         if 'heat_flux' in charts:
-            x_data = heat_flux[GlossaryCore.Years].values
+            x_data = heat_flux[GlossaryEnergy.Years].values
             y_data = heat_flux['heat_flux'].values
-            x_label = GlossaryCore.Years
+            x_label = GlossaryEnergy.Years
             y_label = 'heat_flux'
             series_name = y_label
             title = f'Detailed heat_flux over the years'

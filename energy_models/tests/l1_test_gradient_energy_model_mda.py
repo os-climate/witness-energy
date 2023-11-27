@@ -19,7 +19,7 @@ from pathlib import Path
 from shutil import rmtree
 from time import sleep
 
-from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
@@ -78,7 +78,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.ee.execute()
 
         energy_prices_nr = self.ee.dm.get_value(
-            f'{usecase.study_name}.EnergyMix.{GlossaryCore.EnergyPricesValue}')
+            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
 
         ####################
         self.name = 'Test2'
@@ -101,7 +101,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.ee2.display_treeview_nodes()
         self.ee2.execute()
         energy_prices_jac = self.ee2.dm.get_value(
-            f'{usecase.study_name}.EnergyMix.{GlossaryCore.EnergyPricesValue}')
+            f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
 
         diff = energy_prices_jac - energy_prices_nr
 

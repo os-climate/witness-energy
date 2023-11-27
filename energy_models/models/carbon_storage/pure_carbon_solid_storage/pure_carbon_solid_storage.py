@@ -17,9 +17,9 @@ limitations under the License.
 
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class PureCarbonSS(CSTechno):
@@ -55,6 +55,6 @@ class PureCarbonSS(CSTechno):
             constraint = consumption[f'{Carbon.name} ({self.mass_unit})'] - \
                 carbon_quantity_to_be_stored['carbon_storage']
             self.carbon_to_be_stored_constraint = pd.DataFrame(
-                {GlossaryCore.Years: self.years, 'carbon_to_be_stored_constraint': constraint})
+                {GlossaryEnergy.Years: self.years, 'carbon_to_be_stored_constraint': constraint})
 
         return self.carbon_to_be_stored_constraint

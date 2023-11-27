@@ -14,9 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class LiquidHydrogenTechnoDiscipline(TechnoDiscipline):
@@ -34,15 +34,15 @@ class LiquidHydrogenTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {GlossaryCore.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+    DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_liquid_hydrogen',
-                                  'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
+                                  'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
                                                            'transport': ('float',  None, True)},
                                   'dataframe_edition_locked': False},
-               GlossaryCore.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+               GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                     'namespace': 'ns_liquid_hydrogen',
-                                    'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
-                                                             GlossaryCore.MarginValue: ('float',  None, True)},
+                                    'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
+                                                             GlossaryEnergy.MarginValue: ('float',  None, True)},
                                     'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
@@ -63,7 +63,7 @@ class LiquidHydrogenTechnoDiscipline(TechnoDiscipline):
 
         grad_dict = self.techno_model.grad_price_vs_energy_price()
 
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsValue)
+        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions)

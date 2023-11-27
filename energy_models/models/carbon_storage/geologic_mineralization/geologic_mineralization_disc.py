@@ -18,8 +18,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.carbon_storage_techno_disc import CSTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_storage.geologic_mineralization.geologic_mineralization import GeologicMineralization
 
 
@@ -48,7 +48,7 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon storage plant
                                  'learning_rate': 0,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224,
@@ -59,12 +59,12 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
                                  'CO2_capacity_peryear': 3.6E+8,  # kg CO2 /year
                                  'CO2_capacity_peryear_unit': 'kg CO2/year',
                                  'real_factor_CO2': 1.0,
-                                 GlossaryCore.TransportCostValue: 0.0,
+                                 GlossaryEnergy.TransportCostValue: 0.0,
                                  'transport_cost_unit': '$/kgCO2',
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
-                                 GlossaryCore.EnergyEfficiency: 1,
-                                 GlossaryCore.ConstructionDelay: construction_delay,
+                                 GlossaryEnergy.EnergyEfficiency: 1,
+                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  }
 
@@ -72,7 +72,7 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
 
     initial_storage = 0
     invest_before_year_start = pd.DataFrame(
-        {'past years': [], GlossaryCore.InvestValue: []})
+        {'past years': [], GlossaryEnergy.InvestValue: []})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
@@ -95,9 +95,9 @@ class GeologicMineralizationDiscipline(CSTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)

@@ -20,8 +20,8 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -50,22 +50,22 @@ class UnmanagedWoodPriceTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(2020, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryCore.Years: years, 'electricity': electricity_price})
+            {GlossaryEnergy.Years: years, 'electricity': electricity_price})
 
         years = np.arange(2020, 2051)
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryCore.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, 'electricity': 0.0})
         # invest: plantation of 0.19Mha of forests each years (actual trend
         # since 2017)
         self.scaling_factor_invest_level = 1e3
         self.invest_level = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.array([1135081003.0, 1135081003.0, 1135081003.0,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([1135081003.0, 1135081003.0, 1135081003.0,
                                                  1135081003.0, 1135081003.0, 1135081003.0,
                                                  1135081003.0, 1135081003.0, 1135081003.0,
                                                  1135081003.0, 1135081003.0, 1135081003.0,
@@ -83,17 +83,17 @@ class UnmanagedWoodPriceTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 0.1})
+            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.1})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict[GlossaryCore.Years] = years
+        demand_ratio_dict[GlossaryEnergy.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -121,14 +121,14 @@ class UnmanagedWoodPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

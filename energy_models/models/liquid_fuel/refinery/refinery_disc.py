@@ -18,7 +18,10 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 
+
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import LiquidFuelTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.liquid_fuel.refinery.refinery import Refinery
 from energy_models.core.techno_type.disciplines.liquid_fuel_techno_disc import LiquidFuelTechnoDiscipline
 
@@ -118,7 +121,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.0,  # 0.15,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # 22000 euro/bpd : 1 barrel = 1553,41kwh of
                                  # liquid_fuel per 24 hours
                                  # Capex initial at year 2020
@@ -126,7 +129,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.89,  # https://publications.anl.gov/anlpubs/2011/01/69026.pdf
                                  'techno_evo_eff': 'no',
-                                 'construction_delay': construction_delay,
+                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'pourcentage_of_total': 0.09,
                                  'product_break_down': product_break_down}
 
@@ -143,7 +146,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
     # License: CC BY 4.0.
     invest_before_year_start = pd.DataFrame(
 
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 477, 470]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 477, 470]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [4.7, 4.63, 4.52, 4.85, 4.299999999999999,
@@ -167,9 +170,9 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)
@@ -191,7 +194,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         grad_dict_resources = self.techno_model.grad_price_vs_resources_price()
 
         carbon_emissions = self.get_sosdisc_outputs(
-            GlossaryCore.CO2EmissionsValue)
+            GlossaryEnergy.CO2EmissionsValue)
 
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
@@ -220,61 +223,62 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         """
 
         for energy, value in grad_dict.items():
-            grad_total = value * np.split(self.techno_model.margin[GlossaryCore.MarginValue].values, len(self.techno_model.margin[GlossaryCore.MarginValue].values)) / \
+
+            grad_total = value * np.split(self.techno_model.margin[GlossaryEnergy.MarginValue].values, len(self.techno_model.margin[GlossaryEnergy.MarginValue].values)) / \
                 100.0
             grad_total_efficiency = grad_total / self.techno_model.configure_efficiency()
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.EnergyPricesValue, energy), grad_total_efficiency)
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyPricesValue, energy), grad_total_efficiency)
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryCore.EnergyCO2EmissionsValue, energy), np.zeros(len(self.techno_model.years)))
+                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryEnergy.EnergyCO2EmissionsValue, energy), np.zeros(len(self.techno_model.years)))
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryCore.EnergyPricesValue, energy), grad_total_efficiency)
+                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryEnergy.EnergyPricesValue, energy), grad_total_efficiency)
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.CO2EmissionsValue, self.techno_name), (GlossaryCore.EnergyCO2EmissionsValue, energy), value)
+                (GlossaryEnergy.CO2EmissionsValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy), value)
 
 #             self.set_partial_derivative_for_other_types(
-#                 (GlossaryCore.CO2EmissionsValue, energy), (GlossaryCore.EnergyCO2EmissionsValue, energy), value)
+#                 (GlossaryEnergy.CO2EmissionsValue, energy), (GlossaryEnergy.EnergyCO2EmissionsValue, energy), value)
             grad_on_co2_tax = value * \
-                self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryCore.Years]
-                                                <= self.techno_model.year_end][GlossaryCore.CO2Tax].values[:, np.newaxis] * np.maximum(
+                self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years]
+                                                <= self.techno_model.year_end][GlossaryEnergy.CO2Tax].values[:, np.newaxis] * np.maximum(
                     0, np.sign(carbon_emissions[self.techno_name]))[:, np.newaxis]
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.EnergyCO2EmissionsValue, energy), grad_on_co2_tax * np.split(self.techno_model.margin[GlossaryCore.MarginValue].values, len(self.techno_model.margin[GlossaryCore.MarginValue].values)) /
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy), grad_on_co2_tax * np.split(self.techno_model.margin[GlossaryEnergy.MarginValue].values, len(self.techno_model.margin[GlossaryEnergy.MarginValue].values)) /
                 100.0)
 
-            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryCore.Years] <= self.techno_model.carbon_emissions[GlossaryCore.Years].max(
-            )) * self.techno_model.carbon_emissions[self.techno_name].clip(0).values
+            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <= self.techno_model.carbon_intensity[GlossaryEnergy.Years].max(
+            )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values
             dtechno_prices_dCO2_taxes = dCO2_taxes_factory * \
-                self.techno_model.margin.loc[self.techno_model.margin[GlossaryCore.Years] <=
-                                             self.techno_model.cost_details[GlossaryCore.Years].max()][GlossaryCore.MarginValue].values / 100.0
+                self.techno_model.margin.loc[self.techno_model.margin[GlossaryEnergy.Years] <=
+                                             self.techno_model.cost_details[GlossaryEnergy.Years].max()][GlossaryEnergy.MarginValue].values / 100.0
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.CO2Tax), dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
 
         for resource, value in grad_dict_resources.items():
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.ResourcesPriceValue, resource), value / self.techno_model.configure_efficiency() *
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.ResourcesPriceValue, resource), value / self.techno_model.configure_efficiency() *
                 self.techno_model.margin[
-                    GlossaryCore.MarginValue].values / 100.0)
+                    GlossaryEnergy.MarginValue].values / 100.0)
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryCore.ResourcesPriceValue, resource), value / self.techno_model.configure_efficiency() *
+                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryEnergy.ResourcesPriceValue, resource), value / self.techno_model.configure_efficiency() *
                 self.techno_model.margin[
-                    GlossaryCore.MarginValue].values / 100.0)
+                    GlossaryEnergy.MarginValue].values / 100.0)
             grad_on_co2_tax = value *\
-                self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryCore.Years]
-                                                <= self.techno_model.year_end][GlossaryCore.CO2Tax].values[:,
+                self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years]
+                                                <= self.techno_model.year_end][GlossaryEnergy.CO2Tax].values[:,
                                                                                                  np.newaxis] * np.maximum(
                     0, np.sign(carbon_emissions[self.techno_name]))[:, np.newaxis]
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TechnoPricesValue, self.techno_name), (GlossaryCore.RessourcesCO2EmissionsValue, resource), grad_on_co2_tax * np.split(self.techno_model.margin[GlossaryCore.MarginValue].values,
-                                                                                                                       len(self.techno_model.margin[GlossaryCore.MarginValue].values)) / 100.0)
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.RessourcesCO2EmissionsValue, resource), grad_on_co2_tax * np.split(self.techno_model.margin[GlossaryEnergy.MarginValue].values,
+                                                                                                                       len(self.techno_model.margin[GlossaryEnergy.MarginValue].values)) / 100.0)
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryCore.RessourcesCO2EmissionsValue, resource), np.zeros(len(self.techno_model.years)))
+                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryEnergy.RessourcesCO2EmissionsValue, resource), np.zeros(len(self.techno_model.years)))
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.CO2EmissionsValue, self.techno_name), (GlossaryCore.RessourcesCO2EmissionsValue, resource), value)
+                (GlossaryEnergy.CO2EmissionsValue, self.techno_name), (GlossaryEnergy.RessourcesCO2EmissionsValue, resource), value)
 
     def get_chart_filter_list(self):
 
@@ -294,7 +298,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t', "$/USgallon"]
-        years_list = [self.get_sosdisc_inputs(GlossaryCore.YearStart)]
+        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
         other_fuel_dict = self.get_sosdisc_inputs('other_fuel_dict')
         # Overload default value with chart filter
@@ -312,10 +316,10 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         if 'Detailed prices' in charts and '$/USgallon' in price_unit_list:
             techno_detailed_prices = self.get_sosdisc_outputs(
-                GlossaryCore.TechnoDetailedPricesValue)
+                GlossaryEnergy.TechnoDetailedPricesValue)
             chart_name = f'Detailed prices of {self.techno_name} technology over the years'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Prices [$/USgallon]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/USgallon]',
                                                  chart_name=chart_name)
 
             if 'part_of_total' in self.get_data_in():
@@ -326,7 +330,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                     data_fuel_dict['calorific_value'] / \
                     part_of_total
                 serie = InstanciatedSeries(
-                    techno_detailed_prices[GlossaryCore.Years].values.tolist(),
+                    techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                     tot_price.tolist(), 'Total price without percentage', 'lines')
                 new_chart.series.append(serie)
             # Add total price
@@ -334,7 +338,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                 data_fuel_dict['calorific_value'] * \
                 data_fuel_dict['density'] / 1e6 * 3.78
             serie = InstanciatedSeries(
-                techno_detailed_prices[GlossaryCore.Years].values.tolist(),
+                techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                 techno_gallon_price.tolist(), 'Total price with margin', 'lines')
 
             new_chart.series.append(serie)
@@ -342,12 +346,12 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
 
         if 'Prices per flow' in charts and '$/USgallon' in price_unit_list:
             techno_detailed_prices = self.get_sosdisc_outputs(
-                GlossaryCore.TechnoDetailedPricesValue)
+                GlossaryEnergy.TechnoDetailedPricesValue)
             chart_name = f'Refinery breakdown price for {self.techno_name} technology over the years'
-            year_start = min(techno_detailed_prices[GlossaryCore.Years].values.tolist())
-            year_end = max(techno_detailed_prices[GlossaryCore.Years].values.tolist())
+            year_start = min(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
+            year_end = max(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Prices [$/USgallon]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/USgallon]',
                                                  chart_name=chart_name)
 
             for energy in other_fuel_dict:
@@ -360,7 +364,7 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
                     data_fuel_dict['calorific_value'] * \
                     data_fuel_dict['density'] / 1e6 * 3.78
                 serie = InstanciatedSeries(
-                    techno_detailed_prices[GlossaryCore.Years].values.tolist(),
+                    techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                     energy_price_gal.tolist(), f'{energy} price', 'lines')
                 new_chart.series.append(serie)
 
@@ -372,32 +376,32 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         instanciated_charts = []
         # Charts for consumption and prod
         techno_consumption = self.get_sosdisc_outputs(
-            GlossaryCore.TechnoDetailedConsumptionValue)
+            GlossaryEnergy.TechnoDetailedConsumptionValue)
         techno_production = self.get_sosdisc_outputs(
-            GlossaryCore.TechnoDetailedProductionValue)
+            GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'{self.techno_name} technology energy Production & consumption<br>with input investments'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Energy [TWh]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
                                              chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if reactant != GlossaryCore.Years and reactant.endswith('(TWh)'):
+            if reactant != GlossaryEnergy.Years and reactant.endswith('(TWh)'):
                 energy_twh = -techno_consumption[reactant].values
                 legend_title = f'{reactant} consumption'.replace(
                     "(TWh)", "")
                 serie = InstanciatedSeries(
-                    techno_consumption[GlossaryCore.Years].values.tolist(),
+                    techno_consumption[GlossaryEnergy.Years].values.tolist(),
                     energy_twh.tolist(), legend_title, 'bar')
 
                 new_chart.series.append(serie)
 
         for products in techno_production.columns:
-            if products != GlossaryCore.Years and products.endswith('(TWh)') and products != f'{LiquidFuelTechnoDiscipline.energy_name} (TWh)':
+            if products != GlossaryEnergy.Years and products.endswith('(TWh)') and products != f'{LiquidFuelTechnoDiscipline.energy_name} (TWh)':
                 energy_twh = techno_production[products].values
                 legend_title = f'{products} production'.replace(
                     "(TWh)", "")
                 serie = InstanciatedSeries(
-                    techno_production[GlossaryCore.Years].values.tolist(),
+                    techno_production[GlossaryEnergy.Years].values.tolist(),
                     energy_twh.tolist(), legend_title, 'bar')
 
                 new_chart.series.append(serie)
@@ -408,14 +412,14 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         kg_values_consumption = 0
         reactant_found = None
         for reactant in techno_consumption.columns:
-            if reactant != GlossaryCore.Years and reactant.endswith('(Mt)'):
+            if reactant != GlossaryEnergy.Years and reactant.endswith('(Mt)'):
                 kg_values_consumption += 1
                 reactant_found = reactant
 
         kg_values_production = 0
         product_found = None
         for product in techno_consumption.columns:
-            if product != GlossaryCore.Years and product.endswith('(Mt)'):
+            if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
                 kg_values_production += 1
                 product_found = product
         if kg_values_consumption == 1 and kg_values_production == 0:
@@ -429,27 +433,27 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         else:
             chart_name = f'{self.techno_name} technology mass Production & consumption<br>with input investments'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Mass [Mt]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',
                                              chart_name=chart_name, stacked_bar=True)
 
         for reactant in techno_consumption.columns:
-            if reactant != GlossaryCore.Years and reactant.endswith('(Mt)'):
+            if reactant != GlossaryEnergy.Years and reactant.endswith('(Mt)'):
                 legend_title = f'{reactant} consumption'.replace(
                     "(Mt)", "")
                 # 1GT = 1e9T = 1e12 kg
                 mass = -techno_consumption[reactant].values
                 serie = InstanciatedSeries(
-                    techno_consumption[GlossaryCore.Years].values.tolist(),
+                    techno_consumption[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart.series.append(serie)
         for product in techno_production.columns:
-            if product != GlossaryCore.Years and product.endswith('(Mt)'):
+            if product != GlossaryEnergy.Years and product.endswith('(Mt)'):
                 legend_title = f'{product} production'.replace(
                     "(Mt)", "")
                 # 1GT = 1e9T = 1e12 kg
                 mass = techno_production[product].values
                 serie = InstanciatedSeries(
-                    techno_production[GlossaryCore.Years].values.tolist(),
+                    techno_production[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart.series.append(serie)
 

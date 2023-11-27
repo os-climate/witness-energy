@@ -17,9 +17,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.medium.chpmediumheat.chpmediumheat import CHPMediumHeat
 
 
@@ -59,9 +59,9 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'Capex_init': 1300,              #https://iea-etsap.org/E-TechDS/PDF/E04-CHP-GS-gct_ADfinal.pdf # page no-1 # average between 900$/kW to 1500$/kW
         'Capex_init_unit': '$/kW',
         'lifetime': lifetime,
-        'lifetime_unit': GlossaryCore.Years,
-        GlossaryCore.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryCore.Years,
+        'lifetime_unit': GlossaryEnergy.Years,
+        GlossaryEnergy.ConstructionDelay: construction_delay,
+        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 0.52,                # consumptions and productions already have efficiency included
                                            #https://www.epa.gov/chp/chp-benefits#:~:text=By%20recovering%20and%20using%20heat,of%2065%20to%2080%20percent.
         'chp_calorific_val': 22000,        #https://ec.europa.eu/eurostat/documents/38154/42195/Final_CHP_reporting_instructions_reference_year_2016_onwards_30052017.pdf/f114b673-aef3-499b-bf38-f58998b40fe6
@@ -101,19 +101,19 @@ class CHPMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
     # Renewable Methane Association [online]
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: 2.145/(16 * 8760) * np.array([0, 0.2608])})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: 2.145/(16 * 8760) * np.array([0, 0.2608])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True),
                                                                 }
                                        },
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

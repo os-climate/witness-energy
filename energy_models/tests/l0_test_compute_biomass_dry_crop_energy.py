@@ -20,8 +20,8 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.biomass_dry.crop_energy.crop_energy_disc import CropEnergyDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -51,18 +51,18 @@ class CropEnergyPriceTestCase(unittest.TestCase):
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(2020, self.year_end + 1)})
+            {GlossaryEnergy.Years: np.arange(2020, self.year_end + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {GlossaryCore.Years: years, 'electricity': electricity_price})
+            {GlossaryEnergy.Years: years, 'electricity': electricity_price})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryCore.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, 'electricity': 0.0})
         # invest: 1Mha of crop land each year
         self.invest_level = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestValue: np.ones(31) * 0})  # * 0.1*(0.001*237.95*1.52 + 0.2*237.95*0.52)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(31) * 0})  # * 0.1*(0.001*237.95*1.52 + 0.2*237.95*0.52)})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -70,17 +70,17 @@ class CropEnergyPriceTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
         self.margin = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.MarginValue: np.ones(len(years)) * 110.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 0.1})
+            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.1})
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.ones((len(years), len(years)))))
-        demand_ratio_dict[GlossaryCore.Years] = years
+        demand_ratio_dict[GlossaryEnergy.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -109,16 +109,16 @@ class CropEnergyPriceTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.EnergyPricesValue}': self.energy_prices,
-                       f'{self.name}.{GlossaryCore.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
-                       f'{self.name}.{GlossaryCore.InvestLevelValue}': self.invest_level,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
+                       f'{self.name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                        f'{self.name}.land_surface_for_food_df': CropEnergyDiscipline.land_surface_for_food,
-                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-                       f'{self.name}.{GlossaryCore.TransportMarginValue}': self.margin,
-                       f'{self.name}.{GlossaryCore.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.MarginValue}':  self.margin
+                       f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

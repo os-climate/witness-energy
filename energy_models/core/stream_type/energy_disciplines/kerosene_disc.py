@@ -14,9 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.kerosene import Kerosene
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class KeroseneDiscipline(EnergyDiscipline):
@@ -34,7 +34,7 @@ class KeroseneDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+    DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': ['AlcoholToFuel', 'BioFuel', 'EOR',
                                                          'Refinery', 'HEFA', 'FischerTropsch'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
