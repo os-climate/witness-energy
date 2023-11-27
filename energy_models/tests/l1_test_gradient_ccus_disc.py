@@ -21,8 +21,8 @@ from os.path import join, dirname
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.tests.data_tests.mda_energy_data_generator import launch_data_pickle_generation
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
@@ -69,31 +69,31 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         self.energy_production, self.energy_consumption, self.land_use_required = {}, {}, {}
         for i, energy in enumerate(self.energy_list):
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue][
+            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
                 'value']
-            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyConsumptionValue]['value']
+            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
         for energy in ['carbon_capture', 'carbon_storage']:
-            self.land_use_required[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.LandUseRequiredValue]['value']
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyProductionValue][
+            self.land_use_required[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.LandUseRequiredValue]['value']
+            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
                 'value']
-            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyConsumptionValue]['value']
-            self.energy_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyPricesValue]['value']
+            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
+            self.energy_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyPricesValue]['value']
             self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[
-                f'{energy}'][GlossaryCore.EnergyConsumptionWithoutRatioValue]['value']
+                f'{energy}'][GlossaryEnergy.EnergyConsumptionWithoutRatioValue]['value']
 
         self.scaling_factor_energy_production = 1000.0
         self.scaling_factor_energy_consumption = 1000.0
-        self.energy_production_detailed = streams_outputs_dict[GlossaryCore.EnergyProductionDetailedValue]
-        years = streams_outputs_dict[f'{energy}'][GlossaryCore.EnergyConsumptionValue]['value'][GlossaryCore.Years]
-        self.CO2_taxes = pd.DataFrame(data={GlossaryCore.Years: years, GlossaryCore.CO2Tax: 150.})
+        self.energy_production_detailed = streams_outputs_dict[GlossaryEnergy.EnergyProductionDetailedValue]
+        years = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value'][GlossaryEnergy.Years]
+        self.CO2_taxes = pd.DataFrame(data={GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: 150.})
         self.co2_emissions = pd.DataFrame(
-            data={GlossaryCore.Years: years, 'carbon_capture needed by energy mix (Mt)': 0.005})
+            data={GlossaryEnergy.Years: years, 'carbon_capture needed by energy mix (Mt)': 0.005})
         self.co2_emissions = pd.DataFrame(
-            data={GlossaryCore.Years: years, 'carbon_capture needed by energy mix (Mt)': 0.005})
+            data={GlossaryEnergy.Years: years, 'carbon_capture needed by energy mix (Mt)': 0.005})
         self.co2_emissions_needed_by_energy_mix = pd.DataFrame(
-            data={GlossaryCore.Years: years, 'carbon_capture needed by energy mix (Gt)': 0.005})
+            data={GlossaryEnergy.Years: years, 'carbon_capture needed by energy mix (Gt)': 0.005})
         self.carbon_capture_from_energy_mix = pd.DataFrame(
-            data={GlossaryCore.Years: years, 'carbon_capture from energy mix (Gt)': 1e-15})
+            data={GlossaryEnergy.Years: years, 'carbon_capture from energy mix (Gt)': 1e-15})
 
     def tearDown(self):
         pass
@@ -127,27 +127,27 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {
-            f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
-            f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-            f'{self.name}.{GlossaryCore.energy_list}': self.energy_list,
-            f'{self.name}.{GlossaryCore.ccs_list}': ['carbon_capture', 'carbon_storage'],
+            f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
+            f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
+            f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list,
+            f'{self.name}.{GlossaryEnergy.ccs_list}': ['carbon_capture', 'carbon_storage'],
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
-            f'{self.name}.{GlossaryCore.EnergyProductionDetailedValue}': self.energy_production_detailed,
+            f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}': self.energy_production_detailed,
         }
         for energy in self.energy_list:
             inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyProductionValue}'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyConsumptionValue}'] = self.energy_consumption[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[energy]
 
         for energy in ['carbon_capture', 'carbon_storage']:
-            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyProductionValue}'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyConsumptionValue}'] = self.energy_consumption[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyPricesValue}'] = self.energy_prices[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.LandUseRequiredValue}'] = self.land_use_required[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryCore.EnergyConsumptionWithoutRatioValue}'] = self.energy_consumption_woratio[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyPricesValue}'] = self.energy_prices[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = self.land_use_required[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = self.energy_consumption_woratio[energy]
             inputs_dict[f'{self.name}.{energy}.co2_emissions'] = self.co2_emissions
-        inputs_dict[f'{self.name}.{GlossaryCore.CO2TaxesValue}'] = self.CO2_taxes
+        inputs_dict[f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'] = self.CO2_taxes
         inputs_dict[f'{self.name}.carbon_capture_from_energy_mix'] = self.carbon_capture_from_energy_mix
         inputs_dict[f'{self.name}.co2_emissions_needed_by_energy_mix'] = self.co2_emissions_needed_by_energy_mix
 
@@ -160,14 +160,14 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         coupled_inputs = [
             f'{self.name}.carbon_capture_from_energy_mix',
             f'{self.name}.co2_emissions_needed_by_energy_mix',
-            f'{self.name}.carbon_capture.{GlossaryCore.EnergyProductionValue}',
-            f'{self.name}.carbon_capture.{GlossaryCore.EnergyConsumptionValue}',
-            f'{self.name}.carbon_capture.{GlossaryCore.EnergyPricesValue}',
-            f'{self.name}.carbon_capture.{GlossaryCore.LandUseRequiredValue}',
-            f'{self.name}.carbon_storage.{GlossaryCore.EnergyProductionValue}',
-            f'{self.name}.carbon_storage.{GlossaryCore.EnergyConsumptionValue}',
-            f'{self.name}.carbon_storage.{GlossaryCore.EnergyPricesValue}',
-            f'{self.name}.carbon_storage.{GlossaryCore.LandUseRequiredValue}',
+            f'{self.name}.carbon_capture.{GlossaryEnergy.EnergyProductionValue}',
+            f'{self.name}.carbon_capture.{GlossaryEnergy.EnergyConsumptionValue}',
+            f'{self.name}.carbon_capture.{GlossaryEnergy.EnergyPricesValue}',
+            f'{self.name}.carbon_capture.{GlossaryEnergy.LandUseRequiredValue}',
+            f'{self.name}.carbon_storage.{GlossaryEnergy.EnergyProductionValue}',
+            f'{self.name}.carbon_storage.{GlossaryEnergy.EnergyConsumptionValue}',
+            f'{self.name}.carbon_storage.{GlossaryEnergy.EnergyPricesValue}',
+            f'{self.name}.carbon_storage.{GlossaryEnergy.LandUseRequiredValue}',
         ]
         coupled_outputs = [f'{self.name}.co2_emissions_ccus_Gt',
                            f'{self.name}.CCS_price',

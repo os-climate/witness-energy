@@ -19,10 +19,10 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.techno_type.base_techno_models.biomass_dry_techno import BiomassDryTechno
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class ManagedWood(BiomassDryTechno):
@@ -59,7 +59,7 @@ class ManagedWood(BiomassDryTechno):
         name_non_energy = f'{self.energy_name}_non_energy (TWh)'
         name_tot = f'{self.energy_name}_tot (TWh)'
 
-        self.production_mix = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.production_mix = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         managed_production = deepcopy(
             self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'])
@@ -118,7 +118,7 @@ class ManagedWood(BiomassDryTechno):
 
         # Price_tot = Price_residue * %res + Price_wood * %wood
         # Price_residue = %res_wood * Price_wood
-        self.price_mix = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.price_mix = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.price_mix[f'{BiomassDryTechno.energy_name}_wood'] = managed_price / \
             (wood_residue_percent * residue_percent + wood_percent)
         self.price_mix[f'{BiomassDryTechno.energy_name}_residue'] = wood_residue_percent * \
@@ -128,7 +128,7 @@ class ManagedWood(BiomassDryTechno):
 
     def get_mean_age_over_years(self):
 
-        mean_age_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        mean_age_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         self.age_distrib_prod_df['age_x_prod'] = self.age_distrib_prod_df['age'] * \
             self.age_distrib_prod_df[f'distrib_prod ({self.product_energy_unit})']
@@ -142,7 +142,7 @@ class ManagedWood(BiomassDryTechno):
             (1 - self.techno_infos_dict['wood_percentage_for_energy'])
 
         mean_age_df['mean age'] = self.age_distrib_prod_df.groupby(
-            [GlossaryCore.Years], as_index=False).agg({'age_x_prod': 'sum'})['age_x_prod'] / \
+            [GlossaryEnergy.Years], as_index=False).agg({'age_x_prod': 'sum'})['age_x_prod'] / \
             (production + residue_year_start_production + wood_year_start_production)
         mean_age_df.replace([np.inf, -np.inf], np.nan, inplace=True)
         mean_age_df.fillna(0.0, inplace=True)

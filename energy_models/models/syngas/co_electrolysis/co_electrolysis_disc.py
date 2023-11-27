@@ -18,8 +18,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.syngas.co_electrolysis.co_electrolysis import CoElectrolysis
 
 
@@ -51,7 +51,7 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                  'elec_demand_unit': 'kWh/kg',
                                  'Opex_percentage': 0.07,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 600,
                                  'Capex_init_unit': '$/kW',
                                  'efficiency': 0.8,
@@ -65,13 +65,13 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                  'WACC': 0.0878,
                                  'techno_evo_eff': 'no',
                                  'efficiency': 0.8,
-                                 GlossaryCore.ConstructionDelay: construction_delay  # in kWh/kg
+                                 GlossaryEnergy.ConstructionDelay: construction_delay  # in kWh/kg
                                  }
 
     syngas_ratio = CoElectrolysis.syngas_COH2_ratio
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 0.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0]})
     # From Future of hydrogen : accounting for around three quarters of the
     # annual global dedicated hydrogen production of around 70 million tonnes.
     initial_production = 0.0
@@ -82,13 +82,13 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)

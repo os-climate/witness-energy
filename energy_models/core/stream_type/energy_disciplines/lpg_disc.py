@@ -14,9 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.lpg import LiquefiedPetroleumGas
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class LiquefiedGasPetroleumDiscipline(EnergyDiscipline):
@@ -35,7 +35,7 @@ class LiquefiedGasPetroleumDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {
-        GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': ['Refinery'],
+        GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': ['Refinery'],
                               'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                               'namespace': 'ns_kerosene',
                               'structuring': True, 'unit': '-'},

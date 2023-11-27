@@ -18,8 +18,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.base_stream import BaseStream
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CarbonCapture(BaseStream):
@@ -55,7 +55,7 @@ class CarbonCapture(BaseStream):
         self.fg_ratio = None
 
     def configure_parameters_update(self, inputs_dict):
-        self.subelements_list = inputs_dict[GlossaryCore.techno_list]
+        self.subelements_list = inputs_dict[GlossaryEnergy.techno_list]
         BaseStream.configure_parameters_update(self, inputs_dict)
         self.flue_gas_production = inputs_dict['flue_gas_production'][self.flue_gas_name].values
         self.flue_gas_prod_ratio = inputs_dict['flue_gas_prod_ratio']
@@ -85,11 +85,11 @@ class CarbonCapture(BaseStream):
         '''
 
         # Initialize dataframe out
-        base_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        base_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
         production = base_df.copy(deep=True)
         consumption = base_df.copy(deep=True)
         production_by_techno = base_df.copy(deep=True)
-        carbon_captured_type = pd.DataFrame({GlossaryCore.Years: self.years,
+        carbon_captured_type = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                              'flue gas': 0.0,
                                              'DAC': 0.0,
                                              'flue_gas_limited': 0.0})
@@ -171,7 +171,7 @@ class CarbonCapture(BaseStream):
         for element in self.sub_land_use_required_dict.values():
 
             element_columns = list(element)
-            element_columns.remove(GlossaryCore.Years)
+            element_columns.remove(GlossaryEnergy.Years)
 
             for column_df in element_columns:
                 if column_df.startswith('flue_gas_capture') and self.flue_gas_percentage is not None:

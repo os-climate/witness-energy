@@ -18,12 +18,12 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.base_stream import BaseStream
 from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class ConsumptionCO2Emissions(BaseStream):
@@ -57,8 +57,8 @@ class ConsumptionCO2Emissions(BaseStream):
         '''
         Configure parameters (variables that does not change during the run)
         '''
-        self.energy_list = inputs_dict[GlossaryCore.energy_list]
-        self.ccs_list = inputs_dict[GlossaryCore.ccs_list]
+        self.energy_list = inputs_dict[GlossaryEnergy.energy_list]
+        self.ccs_list = inputs_dict[GlossaryEnergy.ccs_list]
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -66,41 +66,41 @@ class ConsumptionCO2Emissions(BaseStream):
         '''
 
         self.years = np.arange(
-            inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1)
+            inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1)
 
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
-        self.energy_list = inputs_dict[GlossaryCore.energy_list]
-        self.ccs_list = inputs_dict[GlossaryCore.ccs_list]
+        self.energy_list = inputs_dict[GlossaryEnergy.energy_list]
+        self.ccs_list = inputs_dict[GlossaryEnergy.ccs_list]
 
         self.co2_per_use = pd.DataFrame(
-            {GlossaryCore.Years: self.years})
+            {GlossaryEnergy.Years: self.years})
         self.sub_production_dict = {}
         self.sub_consumption_dict = {}
 
         for energy in self.energy_list:
 
             self.co2_per_use[energy] = inputs_dict[f'{energy}.CO2_per_use']['CO2_per_use']
-            self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryCore.EnergyProductionValue}'] * \
+            self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
                 self.scaling_factor_energy_production
-            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryCore.EnergyConsumptionValue}'] * \
+            self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
                 self.scaling_factor_energy_consumption
 
         for energy in self.ccs_list:
-            self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryCore.EnergyProductionValue}'] * \
+            self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                                self.scaling_factor_energy_production
 
-        self.energy_production_detailed = inputs_dict[GlossaryCore.EnergyProductionDetailedValue]
+        self.energy_production_detailed = inputs_dict[GlossaryEnergy.EnergyProductionDetailedValue]
 
     def compute_CO2_emissions(self):
         '''
         Compute CO2 total emissions
         '''
         # Initialize dataframes
-        self.CO2_sources = pd.DataFrame({GlossaryCore.Years: self.years})
-        self.CO2_sinks = pd.DataFrame({GlossaryCore.Years: self.years})
-        self.CO2_production = pd.DataFrame({GlossaryCore.Years: self.years})
-        self.CO2_consumption = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.CO2_sources = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        self.CO2_sinks = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        self.CO2_production = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        self.CO2_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         # Aggregate CO2 production and consumption columns from sub_production
         # and sub_consumption df
@@ -184,17 +184,17 @@ class ConsumptionCO2Emissions(BaseStream):
 
         # update values to Gt
         self.CO2_sources_Gt = pd.DataFrame(
-            {GlossaryCore.Years: self.CO2_sources[GlossaryCore.Years]})
+            {GlossaryEnergy.Years: self.CO2_sources[GlossaryEnergy.Years]})
         self.CO2_sinks_Gt = pd.DataFrame(
-            {GlossaryCore.Years: self.CO2_sinks[GlossaryCore.Years]})
+            {GlossaryEnergy.Years: self.CO2_sinks[GlossaryEnergy.Years]})
 
         for column_df in self.CO2_sources.columns:
-            if column_df != GlossaryCore.Years:
+            if column_df != GlossaryEnergy.Years:
                 self.CO2_sources_Gt[column_df.replace(
                     '(Mt)', '(Gt)')] = self.CO2_sources[column_df] / 1e3
 
         for column_df in self.CO2_sinks.columns:
-            if column_df != GlossaryCore.Years:
+            if column_df != GlossaryEnergy.Years:
                 self.CO2_sinks_Gt[column_df.replace(
                     'Mt', 'Gt')] = self.CO2_sinks[column_df] / 1e3
 
@@ -208,8 +208,8 @@ class ConsumptionCO2Emissions(BaseStream):
         # Initialize dataframes
         len_years = len(self.years)
 
-        co2_production = pd.DataFrame({GlossaryCore.Years: self.years})
-        co2_consumption = pd.DataFrame({GlossaryCore.Years: self.years})
+        co2_production = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        co2_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         dtot_CO2_emissions = {}
         # Do not loop over carbon capture and carbon storage which will be
@@ -328,8 +328,8 @@ class ConsumptionCO2Emissions(BaseStream):
         # Initialize dataframes
         len_years = len(self.years)
 
-        co2_production = pd.DataFrame({GlossaryCore.Years: self.years})
-        co2_consumption = pd.DataFrame({GlossaryCore.Years: self.years})
+        co2_production = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        co2_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         dtot_CO2_emissions = {}
         # Do not loop over carbon capture and carbon storage which will be

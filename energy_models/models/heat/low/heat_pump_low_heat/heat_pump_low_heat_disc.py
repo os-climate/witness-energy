@@ -17,9 +17,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.techno_type.disciplines.heat_techno_disc import LowHeatTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.heat.low.heat_pump_low_heat.heat_pump_low_heat import HeatPump
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -62,9 +62,9 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
         'Capex_init_unit': '$/kWh',
         'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
-        'lifetime_unit': GlossaryCore.Years,
-        GlossaryCore.ConstructionDelay: construction_delay,
-        'construction_delay_unit': GlossaryCore.Years,
+        'lifetime_unit': GlossaryEnergy.Years,
+        GlossaryEnergy.ConstructionDelay: construction_delay,
+        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 1,    # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
@@ -92,7 +92,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), GlossaryCore.InvestValue: 0 * np.array([1*8760*0.5*0.5/3])}) # Invest before year start is 0
+        {'past years': np.array(-construction_delay), GlossaryEnergy.InvestValue: 0 * np.array([1*8760*0.5*0.5/3])}) # Invest before year start is 0
     flux_input_dict = {'land_rate': 19000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -101,9 +101,9 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False},
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
@@ -123,7 +123,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
 
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',
-                                        'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], True),
+                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], True),
                                                                  'heat_flux': ('float', [1.e-8, 1e30], True),
                                                                  },
                                         }
@@ -189,9 +189,9 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
         heat_flux = self.get_sosdisc_outputs('heat_flux')
 
         if 'heat_flux' in charts:
-            x_data = heat_flux[GlossaryCore.Years].values
+            x_data = heat_flux[GlossaryEnergy.Years].values
             y_data = heat_flux['heat_flux'].values
-            x_label = GlossaryCore.Years
+            x_label = GlossaryEnergy.Years
             y_label = 'heat_flux'
             series_name = y_label
             title = f'Detailed heat_flux over the years'
