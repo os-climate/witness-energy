@@ -62,6 +62,10 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
         GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                        'namespace': 'ns_energy',
                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                                'production heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                                'production heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                                'production heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                                'production fuel.ethanol (TWh)': ('float', None, True),
                                                                 'production methane (TWh)': ('float', None, True),
                                                                 'production hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
                                                                 'production biogas (TWh)': ('float', None, True),
@@ -76,7 +80,8 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                                 'production carbon_capture (Mt)': ('float', None, True),
                                                                 'production carbon_storage (Mt)': ('float', None, True),
                                                                 'Total production': ('float', None, True),
-                                                                'Total production (uncut)': ('float', None, True), }
+                                                                'Total production (uncut)': ('float', None, True),
+                                                                }
                                        },
     }
 
@@ -136,6 +141,9 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_energy',
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                     'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                     'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                     'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                     'syngas (TWh)': ('float', None, True),
                                                     'platinum_resource (Mt)': ('float', None, True),
                                                     'oil_resource (Mt)': ('float', None, True),
@@ -164,6 +172,9 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_energy',
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                     'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                     'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                     'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                      'hydrogen.gaseous_hydrogen': ('float', None, True),
                                                     'O2 (Mt)': ('float', None, True),
                                                     'carbon_resource (Mt)': ('float', None, True),
