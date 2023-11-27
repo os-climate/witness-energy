@@ -36,7 +36,7 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     High Temperature Heat technos prices test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -233,7 +233,6 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                                      #f'{self.name}.{self.model_name}.techno_production',
                                      ], )
 
-
     def test_03_geothermal_high_heat_discipline_analytic_grad(self):
         self.name = 'Test'
         self.model_name = 'GeothermalHighHeat'
@@ -243,16 +242,12 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                    'ns_heat_high': f'{self.name}',
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
-
         mod_path = 'energy_models.models.heat.high.geothermal_high_heat.geothermal_high_heat_disc.GeothermalHighHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
-
         self.ee.factory.set_builders_to_coupling_builder(builder)
-
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
         inputs_dict = {f'{self.name}.year_end': 2050,
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -260,16 +255,16 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051))
                        }
-
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-10, derr_approx='complex_step', local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-10, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     # f'{self.name}.energy_prices',
                                     # f'{self.name}.energy_CO2_emissions',
@@ -277,16 +272,12 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                                     # f'{self.name}.resources_price',
                                     # f'{self.name}.resources_CO2_emissions',
                                     ],
-                            outputs=[#f'{self.name}.{self.model_name}.techno_prices',
-                                     #f'{self.name}.{self.model_name}.CO2_emissions',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     #f'{self.name}.{self.model_name}.techno_production',
-                                     ], )
-
-
-
-
+                            outputs=[  # f'{self.name}.{self.model_name}.techno_prices',
+                                # f'{self.name}.{self.model_name}.CO2_emissions',
+                                f'{self.name}.{self.model_name}.techno_consumption',
+                                f'{self.name}.{self.model_name}.techno_consumption_woratio',
+                                # f'{self.name}.{self.model_name}.techno_production',
+                            ], )
 
     def test_04_heat_pump_high_heat_discipline_analytic_grad(self):
         self.name = 'Test'
@@ -297,16 +288,12 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                    'ns_heat_high': f'{self.name}',
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
-
         mod_path = 'energy_models.models.heat.high.heat_pump_high_heat.heat_pump_high_heat_disc.HeatPumpHighHeatDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
-
         self.ee.factory.set_builders_to_coupling_builder(builder)
-
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
         inputs_dict = {f'{self.name}.year_end': 2050,
                        f'{self.name}.energy_prices': self.energy_prices,
                        f'{self.name}.energy_CO2_emissions': self.energy_carbon_emissions,
@@ -314,16 +301,16 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.co2_taxes,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport,
-                       f'{self.name}.{self.model_name}.margin':  self.margin,
+                       f'{self.name}.{self.model_name}.margin': self.margin,
                        f'{self.name}.resources_CO2_emissions': get_static_CO2_emissions(np.arange(2020, 2051)),
                        f'{self.name}.resources_price': get_static_prices(np.arange(2020, 2051))
                        }
-
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-10, derr_approx='complex_step', local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-10, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
                                     # f'{self.name}.energy_prices',
                                     # f'{self.name}.energy_CO2_emissions',
@@ -331,13 +318,12 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                                     # f'{self.name}.resources_price',
                                     # f'{self.name}.resources_CO2_emissions',
                                     ],
-                            outputs=[#f'{self.name}.{self.model_name}.techno_prices',
-                                     #f'{self.name}.{self.model_name}.CO2_emissions',
-                                     f'{self.name}.{self.model_name}.techno_consumption',
-                                     f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     #f'{self.name}.{self.model_name}.techno_production',
-                                     ], )
-
+                            outputs=[  # f'{self.name}.{self.model_name}.techno_prices',
+                                # f'{self.name}.{self.model_name}.CO2_emissions',
+                                f'{self.name}.{self.model_name}.techno_consumption',
+                                f'{self.name}.{self.model_name}.techno_consumption_woratio',
+                                # f'{self.name}.{self.model_name}.techno_production',
+                            ], )
 
     def test_05_hydrogen_boiler_high_heat_discipline_analytic_grad(self):
 
@@ -508,6 +494,7 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     #     disc = self.ee.dm.get_disciplines_with_name(
     #         f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
     #
+
     #     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     #     self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
     #                         discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
