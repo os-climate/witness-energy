@@ -20,8 +20,8 @@ import numpy as np
 import pandas as pd
 from numpy.linalg import norm
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.investments.base_invest import BaseInvest
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class TestBaseInvest(unittest.TestCase):
@@ -59,7 +59,7 @@ class TestBaseInvest(unittest.TestCase):
         for i in range(1,len(years)):
             invest[i] = 1.02*invest[i-1]
             
-        invest_df = pd.DataFrame({GlossaryCore.Years:years,GlossaryCore.InvestValue:invest})
+        invest_df = pd.DataFrame({GlossaryEnergy.Years:years,GlossaryEnergy.InvestValue:invest})
         try:
             self.base_invest.set_invest_level(invest, '$')
             passed = True
@@ -82,23 +82,23 @@ class TestBaseInvest(unittest.TestCase):
         for i in range(1,len(years)):
             invest[i] = 1.02*invest[i-1]
             
-        invest_df = pd.DataFrame({GlossaryCore.Years:years,GlossaryCore.InvestValue:invest})
+        invest_df = pd.DataFrame({GlossaryEnergy.Years:years,GlossaryEnergy.InvestValue:invest})
         self.base_invest.set_invest_level(invest_df, '$')
         # in $
         cinvest = self.base_invest.get_invest_level('$')
-        self.assertAlmostEqual(norm(cinvest[GlossaryCore.InvestValue]-invest_df[GlossaryCore.InvestValue]),0.,4)
+        self.assertAlmostEqual(norm(cinvest[GlossaryEnergy.InvestValue]-invest_df[GlossaryEnergy.InvestValue]),0.,4)
         # in k$
         cinvest = self.base_invest.get_invest_level('k$')
-        self.assertAlmostEqual(norm(cinvest[GlossaryCore.InvestValue]-invest_df[GlossaryCore.InvestValue]/1e3),0.,4)
+        self.assertAlmostEqual(norm(cinvest[GlossaryEnergy.InvestValue]-invest_df[GlossaryEnergy.InvestValue]/1e3),0.,4)
         # in M$
         cinvest = self.base_invest.get_invest_level('M$')
-        self.assertAlmostEqual(norm(cinvest[GlossaryCore.InvestValue]-invest_df[GlossaryCore.InvestValue]/1e6),0.,4)
+        self.assertAlmostEqual(norm(cinvest[GlossaryEnergy.InvestValue]-invest_df[GlossaryEnergy.InvestValue]/1e6),0.,4)
         # in G$
         cinvest = self.base_invest.get_invest_level('G$')
-        self.assertAlmostEqual(norm(cinvest[GlossaryCore.InvestValue]-invest_df[GlossaryCore.InvestValue]/1e9),0.,4)
+        self.assertAlmostEqual(norm(cinvest[GlossaryEnergy.InvestValue]-invest_df[GlossaryEnergy.InvestValue]/1e9),0.,4)
         # in T$
         cinvest = self.base_invest.get_invest_level('T$')
-        self.assertAlmostEqual(norm(cinvest[GlossaryCore.InvestValue]-invest_df[GlossaryCore.InvestValue]/1e12),0.,4)
+        self.assertAlmostEqual(norm(cinvest[GlossaryEnergy.InvestValue]-invest_df[GlossaryEnergy.InvestValue]/1e12),0.,4)
  
  
         invest_ref = 3000. # M$
@@ -108,20 +108,20 @@ class TestBaseInvest(unittest.TestCase):
         for i in range(1,len(years)):
             invest[i] = 1.02*invest[i-1]
             
-        invest_df = pd.DataFrame({GlossaryCore.Years:years,GlossaryCore.InvestValue:invest})
+        invest_df = pd.DataFrame({GlossaryEnergy.Years:years,GlossaryEnergy.InvestValue:invest})
         self.base_invest.set_invest_level(invest_df, 'M$')
         # in $
         cinvest = self.base_invest.get_invest_level('$')
-        self.assertAlmostEqual(norm(cinvest[GlossaryCore.InvestValue]-invest_df[GlossaryCore.InvestValue]* 1e6),0.,4)
+        self.assertAlmostEqual(norm(cinvest[GlossaryEnergy.InvestValue]-invest_df[GlossaryEnergy.InvestValue]* 1e6),0.,4)
         # in k$
         cinvest = self.base_invest.get_invest_level('k$')
-        self.assertAlmostEqual(norm(cinvest[GlossaryCore.InvestValue]-invest_df[GlossaryCore.InvestValue]* 1e3),0.,4)
+        self.assertAlmostEqual(norm(cinvest[GlossaryEnergy.InvestValue]-invest_df[GlossaryEnergy.InvestValue]* 1e3),0.,4)
         # in M$
         cinvest = self.base_invest.get_invest_level('M$')
-        self.assertAlmostEqual(norm(cinvest[GlossaryCore.InvestValue]-invest_df[GlossaryCore.InvestValue]),0.,4)
+        self.assertAlmostEqual(norm(cinvest[GlossaryEnergy.InvestValue]-invest_df[GlossaryEnergy.InvestValue]),0.,4)
         # in G$
         cinvest = self.base_invest.get_invest_level('G$')
-        self.assertAlmostEqual(norm(cinvest[GlossaryCore.InvestValue]-invest_df[GlossaryCore.InvestValue]/1e3),0.,4)
+        self.assertAlmostEqual(norm(cinvest[GlossaryEnergy.InvestValue]-invest_df[GlossaryEnergy.InvestValue]/1e3),0.,4)
         # in T$
         cinvest = self.base_invest.get_invest_level('T$')
-        self.assertAlmostEqual(norm(cinvest[GlossaryCore.InvestValue]-invest_df[GlossaryCore.InvestValue]/1e6),0.,4)
+        self.assertAlmostEqual(norm(cinvest[GlossaryEnergy.InvestValue]-invest_df[GlossaryEnergy.InvestValue]/1e6),0.,4)

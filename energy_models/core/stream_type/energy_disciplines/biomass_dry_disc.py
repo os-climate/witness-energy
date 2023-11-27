@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
@@ -37,7 +37,7 @@ class BiomassDryDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+    DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': BiomassDry.default_techno_list,
                                      'default': BiomassDry.default_techno_list,
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
@@ -65,19 +65,19 @@ class BiomassDryDiscipline(EnergyDiscipline):
         new_charts = []
         chart_name = f'Comparison of CO2 emissions due to production and use of {self.energy_name} technologies'
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryCore.Years, 'CO2 emissions (Gt)', chart_name=chart_name, stacked_bar=True)
+            GlossaryEnergy.Years, 'CO2 emissions (Gt)', chart_name=chart_name, stacked_bar=True)
 
-        technology_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
+        technology_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
 
         co2_per_use = self.get_sosdisc_outputs(
             'CO2_per_use')
 
         for technology in technology_list:
             techno_emissions = self.get_sosdisc_inputs(
-                f'{technology}.{GlossaryCore.CO2EmissionsValue}')
+                f'{technology}.{GlossaryEnergy.CO2EmissionsValue}')
             techno_production = self.get_sosdisc_inputs(
-                f'{technology}.{GlossaryCore.TechnoProductionValue}')
-            year_list = techno_emissions[GlossaryCore.Years].values.tolist()
+                f'{technology}.{GlossaryEnergy.TechnoProductionValue}')
+            year_list = techno_emissions[GlossaryEnergy.Years].values.tolist()
             emission_list = techno_emissions[technology].values * \
                             techno_production[f'{self.energy_name} ({BiomassDry.unit})'].values
             serie = InstanciatedSeries(

@@ -19,7 +19,7 @@ from copy import deepcopy
 
 import numpy as np
 
-from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import Study
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -125,7 +125,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
 
         inputs_dict = deepcopy(self.dm_dict)
 
-        inputs_dict[f'Test.EnergyMix.carbon_capture.flue_gas_capture.CalciumLooping.{GlossaryCore.TechnoProductionValue}'][
+        inputs_dict[f'Test.EnergyMix.carbon_capture.flue_gas_capture.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
             'carbon_capture (Mt)'] *= 5.0
         self.ee.load_study_from_input_dict(inputs_dict)
 

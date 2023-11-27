@@ -55,7 +55,7 @@ def launch_data_pickle_generation(directory=''):
     Energy_Mix_disc = ee.dm.get_disciplines_with_name(
         f'{name}.{model_name}')[0]
     energy_list = Energy_Mix_disc.get_sosdisc_inputs(
-        GlossaryCore.energy_list)
+        GlossaryEnergy.energy_list)
 
     # Collect input and output data from each energy and each techno
     mda_energy_data_streams_input_dict, mda_energy_data_streams_output_dict = {}, {}
@@ -107,7 +107,7 @@ def launch_data_pickle_generation(directory=''):
         ################
         # Technologies #
         ################
-        technologies_list = energy_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
+        technologies_list = energy_disc.get_sosdisc_inputs(GlossaryEnergy.techno_list)
         for techno in technologies_list:
             # Loop on technologies
             techno_disc = ee.dm.get_disciplines_with_name(
@@ -148,7 +148,7 @@ def launch_data_pickle_generation(directory=''):
                     'value': techno_disc.get_sosdisc_outputs(key), 'is_coupling': is_coupling}
 
     ccs_list = Energy_Mix_disc.get_sosdisc_inputs(
-        GlossaryCore.ccs_list)
+        GlossaryEnergy.ccs_list)
     ###############
     # CCS Streams #
     ###############
@@ -190,7 +190,7 @@ def launch_data_pickle_generation(directory=''):
         ################
         # Technologies #
         ################
-        technologies_list = stream_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
+        technologies_list = stream_disc.get_sosdisc_inputs(GlossaryEnergy.techno_list)
         for techno in technologies_list:
             # Loop on technologies
             techno_disc = ee.dm.get_disciplines_with_name(
@@ -230,8 +230,8 @@ def launch_data_pickle_generation(directory=''):
                 mda_energy_data_technologies_output_dict[techno][key] = {
                     'value': techno_disc.get_sosdisc_outputs(key), 'is_coupling': is_coupling}
     energy_production_detailed = Energy_Mix_disc.get_sosdisc_outputs(
-        GlossaryCore.EnergyProductionDetailedValue)
-    mda_energy_data_streams_output_dict[GlossaryCore.EnergyProductionDetailedValue] = energy_production_detailed
+        GlossaryEnergy.EnergyProductionDetailedValue)
+    mda_energy_data_streams_output_dict[GlossaryEnergy.EnergyProductionDetailedValue] = energy_production_detailed
 
     if directory =='':
         prefix='.'

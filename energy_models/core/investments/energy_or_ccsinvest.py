@@ -17,7 +17,7 @@ limitations under the License.
 
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class EnergyOrCCSInvest():
@@ -39,27 +39,27 @@ class EnergyOrCCSInvest():
         '''
         COnfigure global invest and invest_ccs percentage
         '''
-        self.global_invest = input_dict[GlossaryCore.EnergyInvestmentsValue]
+        self.global_invest = input_dict[GlossaryEnergy.EnergyInvestmentsValue]
         self.invest_ccs_percentage = input_dict['ccs_percentage']
 
     def compute(self):
         '''
         Compute the investment in to CCS and into energy_conversion 
         '''
-        ccs_invest = self.global_invest[GlossaryCore.EnergyInvestmentsValue].values * \
+        ccs_invest = self.global_invest[GlossaryEnergy.EnergyInvestmentsValue].values * \
             self.invest_ccs_percentage['ccs_percentage'].values / 100.0
 
-        energy_conversion_invest = self.global_invest[GlossaryCore.EnergyInvestmentsValue].values - ccs_invest
-        self.invest_ccs = pd.DataFrame({GlossaryCore.Years: self.global_invest[GlossaryCore.Years].values,
-                                        GlossaryCore.EnergyInvestmentsValue: ccs_invest})
-        self.invest_energy_conversion = pd.DataFrame({GlossaryCore.Years: self.global_invest[GlossaryCore.Years].values,
-                                                      GlossaryCore.EnergyInvestmentsValue: energy_conversion_invest})
+        energy_conversion_invest = self.global_invest[GlossaryEnergy.EnergyInvestmentsValue].values - ccs_invest
+        self.invest_ccs = pd.DataFrame({GlossaryEnergy.Years: self.global_invest[GlossaryEnergy.Years].values,
+                                        GlossaryEnergy.EnergyInvestmentsValue: ccs_invest})
+        self.invest_energy_conversion = pd.DataFrame({GlossaryEnergy.Years: self.global_invest[GlossaryEnergy.Years].values,
+                                                      GlossaryEnergy.EnergyInvestmentsValue: energy_conversion_invest})
 
     def get_ccs_investment(self, rescaling_factor):
         '''
         Rescale the investment with a given rescaling factor
         '''
-        self.invest_ccs[GlossaryCore.EnergyInvestmentsValue] *= rescaling_factor
+        self.invest_ccs[GlossaryEnergy.EnergyInvestmentsValue] *= rescaling_factor
         return self.invest_ccs
 
     def get_energy_conversion_investment(self):

@@ -16,8 +16,8 @@ limitations under the License.
 '''
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Electricity(EnergyType):
@@ -41,7 +41,7 @@ class Electricity(EnergyType):
         Compute hydropower production constraint so that 
         '''
         self.hydropower_constraint = pd.DataFrame(
-            {GlossaryCore.Years: self.production[GlossaryCore.Years]})
+            {GlossaryEnergy.Years: self.production[GlossaryEnergy.Years]})
 
         self.hydropower_constraint['hydropower_constraint'] = - (
             self.production_by_techno[f'{self.name} {self.hydropower_name} ({self.unit})'] - self.hydropower_production_current) / self.hydropower_constraint_ref
