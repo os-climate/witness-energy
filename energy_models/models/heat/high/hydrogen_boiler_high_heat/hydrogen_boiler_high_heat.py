@@ -13,6 +13,7 @@ class HydrogenBoilerHighHeat(highheattechno):
         """
         Compute primary costs to produce 1kWh of heat
         """
+
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs()
 
         self.cost_details[f'{GaseousHydrogen.name}'] = \

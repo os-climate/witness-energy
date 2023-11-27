@@ -11,6 +11,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 class HydrogenBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
     # ontology information
+    
     _ontology_data = {
         'label': 'Hydrogen Boiler Model',
         'type': 'Research',
