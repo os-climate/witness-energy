@@ -67,7 +67,7 @@ class Study(EnergyMixStudyManager):
                 len(l_ctrl)) * 0.001)
 
         if 'HydrogenBoilerLowHeat' in self.technologies_list:
-            invest_low_heat_mix_dict['CHPLowHeat'] = list(np.ones(
+            invest_low_heat_mix_dict['HydrogenBoilerLowHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
         if self.bspline:
