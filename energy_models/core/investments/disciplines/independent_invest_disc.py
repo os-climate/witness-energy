@@ -79,6 +79,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                 'heat.lowtemperatureheat.HeatPumpLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.GeothermalLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.CHPLowHeat': ('float', None, True),
+                                                'heat.lowtemperatureheat.HydrogenBoilerLowHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.NaturalGasBoilerMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.ElectricBoilerMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.HeatPumpMediumHeat': ('float', None, True),

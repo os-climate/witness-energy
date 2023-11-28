@@ -15,7 +15,6 @@ class HydrogenBoilerHighHeat(highheattechno):
         """
 
         self.cost_details[f'{GaseousHydrogen.name}_needs'] = self.get_theoretical_hydrogen_needs()
-
         self.cost_details[f'{GaseousHydrogen.name}'] = \
             self.prices[f'{GaseousHydrogen.name}'] * \
             self.cost_details[f'{GaseousHydrogen.name}_needs'] / \

@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                             'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
+                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                     'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
+                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerHighHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
+                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -65,6 +65,9 @@ class Study(EnergyMixStudyManager):
         if 'CHPHighHeat' in self.technologies_list:
             invest_high_heat_mix_dict['CHPHighHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
+        if 'HydrogenBoilerHighHeat' in self.technologies_list:
+            invest_high_heat_mix_dict['HydrogenBoilerHighHeat'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
 
         if self.bspline:
             invest_high_heat_mix_dict[GlossaryEnergy.Years] = self.years
@@ -89,7 +92,8 @@ class Study(EnergyMixStudyManager):
                                            'syngas': 80.0,
                                            'biogas': 70.0,
                                            'methane': 100,
-                                           'biomass_dry': 45
+                                           'biomass_dry': 45,
+                                           'hydrogen.gaseous_hydrogen': 60
                                         })
 
         # the value for invest_level is just set as an order of magnitude
@@ -120,11 +124,12 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.NaturalGasBoiler.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.ElectricBoiler.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.HeatPump.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.Geothermal.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.CHP.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.NaturalGasBoilerHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.ElectricBoilerHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.HeatPumpHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.GeothermalHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.CHPHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.HydrogenBoilerHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,

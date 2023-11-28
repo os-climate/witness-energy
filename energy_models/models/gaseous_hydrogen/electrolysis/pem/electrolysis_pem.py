@@ -22,7 +22,7 @@ from energy_models.core.stream_type.resources_models.dioxygen import Dioxygen
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.gaseous_hydrogen_techno import GaseousHydrogenTechno
-
+from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
 
 class ElectrolysisPEM(GaseousHydrogenTechno):
     """
@@ -165,6 +165,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
                                                                                          self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] # in Mt
 
         # Production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] \
-        #     - self.production[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+        self.production_detailed[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+            (self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] \
+            - self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] ) \
+            * self.techno_infos_dict['useful_heat_recovery_factor']  # in TWH

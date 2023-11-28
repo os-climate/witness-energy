@@ -20,7 +20,7 @@ import numpy as np
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.techno_type.base_techno_models.liquid_hydrogen_techno import LiquidHydrogenTechno
-
+from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 
 class HydrogenLiquefaction(LiquidHydrogenTechno):
     """
@@ -95,8 +95,8 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         #     self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})']/\
         #     self.techno_infos_dict['efficiency']
 
-        # self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = \
-        #     self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] * self.techno_infos_dict['heat_recovery_factor']
+        self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = \
+            self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] * self.techno_infos_dict['heat_recovery_factor']
 
         #
         # print('')

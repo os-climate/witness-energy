@@ -70,6 +70,7 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency evolution slope': 0.5,
                                  # electric efficiency that we will use to
                                  # compute elec needs
+                                 'useful_heat_recovery_factor': 0.8,
                                  'efficiency': 0.60,
                                  'efficiency_max': 0.70,
                                  GlossaryEnergy.ConstructionDelay: construction_delay}

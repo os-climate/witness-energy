@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                             'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
+                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                     'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
+                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerMediumHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
+                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -66,6 +66,10 @@ class Study(EnergyMixStudyManager):
             invest_medium_heat_mix_dict['CHPMediumHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
+        if 'HydrogenBoilerMediumHeat' in self.technologies_list:
+            invest_medium_heat_mix_dict['CHPMediumHeat'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
         if self.bspline:
             invest_medium_heat_mix_dict[GlossaryEnergy.Years] = self.years
 
@@ -89,7 +93,8 @@ class Study(EnergyMixStudyManager):
                                            'syngas': 80.0,
                                            'biogas': 70.0,
                                            'methane': 100,
-                                           'biomass_dry': 45})
+                                           'biomass_dry': 45,
+                                           'hydrogen.gaseous_hydrogen': 60})
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
@@ -118,11 +123,12 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.NaturalGasBoiler.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.ElectricBoiler.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.HeatPump.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.Geothermal.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.CHP.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.NaturalGasBoilerMediumHeat.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.ElectricBoilerMediumHeat.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.HeatPumpMediumHeat.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.GeothermalMediumHeat.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.CHPMediumHeat.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.HydrogenBoilerMediumHeat.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
