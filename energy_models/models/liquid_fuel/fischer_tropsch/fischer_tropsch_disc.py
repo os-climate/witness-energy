@@ -33,7 +33,7 @@ from energy_models.models.syngas.smr.smr_disc import SMRDiscipline
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
-
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
     # ontology information
