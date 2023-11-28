@@ -100,8 +100,8 @@ class Nuclear(ElectricityTechno):
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * 0.350000224 *\
-                                                                              self.power_production['new_power_production'] # in Mt
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * 0.350000224 \
+                                                                              * self.installed_power['new_power_production'] # in Mt
 
     def compute_CO2_emissions_from_input_resources(self):
         """
