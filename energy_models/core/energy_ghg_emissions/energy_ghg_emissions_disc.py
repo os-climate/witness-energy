@@ -70,7 +70,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'production fuel.ethanol (TWh)': ('float', None, True),
+                                                                'production fuel.ethanol (TWh)': (
+                                                                    'float', None, True),
                                                                 'production methane (TWh)': ('float', None, True),
                                                                 'production hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
                                                                 'production biogas (TWh)': ('float', None, True),
