@@ -13,27 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+from plotly import graph_objects as go
 
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-import plotly.graph_objects as go
-import plotly.colors as pc
-import numpy as np
-from matplotlib.pyplot import cm
-from plotly import graph_objects as go
-from plotly.subplots import make_subplots
-from plotly import figure_factory as ff
-from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
-import pandas as pd
-from plotly.express.colors import qualitative
-from climateeconomics.glossarycore import GlossaryCore
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
-from plotly import colors
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -67,7 +56,7 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
     for techno in techno_list:
         techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"    #"energy_detailed_techno_prices" for Hydrogen and Fuel
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
-        year_list = price_details[GlossaryCore.Years].tolist()
+        year_list = price_details[GlossaryEnergy.Years].tolist()
         capex_list = price_details['CAPEX_Part'].tolist()
         opex_list = price_details['OPEX_Part'].tolist()
         CO2tax_list = price_details['CO2Tax_Part'].tolist()

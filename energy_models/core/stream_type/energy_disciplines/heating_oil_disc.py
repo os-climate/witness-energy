@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/07-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,10 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.heating_oil import HeatingOil
-from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class HeatingOilDiscipline(EnergyDiscipline):
@@ -36,7 +35,7 @@ class HeatingOilDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {
-        GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': ['Refinery'],
+        GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': ['Refinery'],
                               'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                               'namespace': 'ns_liquid_fuel',
                               'structuring': True, 'unit': '-'},

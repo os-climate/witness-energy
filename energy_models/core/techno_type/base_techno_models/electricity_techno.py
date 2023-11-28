@@ -16,10 +16,9 @@ limitations under the License.
 '''
 from abc import abstractmethod
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.techno_type.techno_type import TechnoType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class ElectricityTechno(TechnoType):
@@ -30,7 +29,7 @@ class ElectricityTechno(TechnoType):
         # Electricity has no Calorific value overload
         # Warning transport cost unit must be in $/MWh
         transport_cost = self.transport_cost['transport'] * \
-            self.transport_margin[GlossaryCore.MarginValue] / 100.0
+            self.transport_margin[GlossaryEnergy.MarginValue] / 100.0
 
         return transport_cost
 

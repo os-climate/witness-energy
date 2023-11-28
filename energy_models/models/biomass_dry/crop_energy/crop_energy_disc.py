@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,15 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.techno_type.disciplines.biomass_dry_techno_disc import BiomassDryTechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.biomass_dry.crop_energy.crop_energy import CropEnergy
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 
 
 class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
@@ -86,7 +86,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                  'WACC': 0.07,  # ?
                                  'learning_rate':  0.0,  # augmentation of forests ha per year?
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # capex from
                                  # gov.mb.ca/agriculture/farm-management/production-economics/pubs/cop-crop-production.pdf
                                  # 237.95 euro/ha (717 $/acre)
@@ -104,10 +104,10 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                  'techno_evo_eff': 'no',
                                  'crop_residue_price_percent_dif': crop_residue_price_percent_dif,
 
-                                 'construction_delay': construction_delay}
+                                 GlossaryEnergy.ConstructionDelay: construction_delay}
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0]})
     # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
     # energy of all surfaces
     initial_production = 4.8 * density_per_ha * \
@@ -120,27 +120,27 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                                          2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
     # The increase in land is of 10Mha each year, in CAPEX and OPEX
-    land_surface_for_food = pd.DataFrame({GlossaryCore.Years: np.arange(2020, 2101),
+    land_surface_for_food = pd.DataFrame({GlossaryEnergy.Years: np.arange(2020, 2101),
                                           'Agriculture total (Gha)': np.ones(81) * 4.8})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True),
                                                                 }
                                        },
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int', [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float', None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float', None, True)},
                                         'dataframe_edition_locked': False},
                CropEnergy.LAND_SURFACE_FOR_FOOD_DF: {'type': 'dataframe', 'unit': 'Gha',
                                                      'visibility': BiomassDryTechnoDiscipline.SHARED_VISIBILITY,
                                                      'namespace': 'ns_witness',
                                                      'default': land_surface_for_food,
-                                                     'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
+                                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
                                                                               'Agriculture total (Gha)': ('float', None, True),},
                                                      'dataframe_edition_locked': False}}
     # -- add specific techno inputs to this
@@ -183,24 +183,24 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         scaling_factor_techno_consumption = self.get_sosdisc_inputs(
             'scaling_factor_techno_consumption')
         inputs_dict = self.get_sosdisc_inputs()
-        invest_level = inputs_dict[GlossaryCore.InvestLevelValue]
+        invest_level = inputs_dict[GlossaryEnergy.InvestLevelValue]
         scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
 
         d_prod_dland_for_food = self.techno_model.compute_grad_dprod_dland_for_food()
         d_conso_dland_for_food = self.techno_model.compute_grad_dconso_dland_for_food()
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_energy_unit})'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_prod_dland_for_food / scaling_factor_techno_production)
+            (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_energy_unit})'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_prod_dland_for_food / scaling_factor_techno_production)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.TechnoConsumptionValue, f'{CO2.name} (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
+            (GlossaryEnergy.TechnoConsumptionValue, f'{CO2.name} (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.TechnoConsumptionWithoutRatioValue, f'{CO2.name} (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
+            (GlossaryEnergy.TechnoConsumptionWithoutRatioValue, f'{CO2.name} (Mt)'), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_conso_dland_for_food / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoCapitalDfValue, GlossaryCore.Capital), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_prod_dland_for_food / scaling_factor_techno_production)
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), d_prod_dland_for_food / scaling_factor_techno_production)
 
         dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
-            invest_level.loc[invest_level[GlossaryCore.Years]
-                             <= self.techno_model.year_end][GlossaryCore.InvestValue].values * scaling_factor_invest_level, self.techno_model.techno_infos_dict, self.techno_model.initial_production)
+            invest_level.loc[invest_level[GlossaryEnergy.Years]
+                             <= self.techno_model.year_end][GlossaryEnergy.InvestValue].values * scaling_factor_invest_level, self.techno_model.techno_infos_dict, self.techno_model.initial_production)
 
         dnon_use_capital_dinvest, dtechnocapital_dinvest = self.techno_model.compute_dnon_usecapital_dinvest(
             dcapex_dinvest, d_prod_dland_for_food / scaling_factor_techno_production)
@@ -208,7 +208,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
             ('non_use_capital', self.techno_model.name), (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), dnon_use_capital_dinvest)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoCapitalDfValue, GlossaryCore.Capital),
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital),
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'), dtechnocapital_dinvest)
 
     def get_post_processing_list(self, filters=None):
@@ -251,8 +251,8 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         name_non_energy = f'{self.energy_name}_non_energy (TWh)'
         name_residue_non_energy = f'{self.energy_name}_residue_non_energy (TWh)'
 
-        year_start = min(production_mix_df[GlossaryCore.Years].values.tolist())
-        year_end = max(production_mix_df[GlossaryCore.Years].values.tolist())
+        year_start = min(production_mix_df[GlossaryEnergy.Years].values.tolist())
+        year_end = max(production_mix_df[GlossaryEnergy.Years].values.tolist())
 
         max1 = max(production_mix_df[name_residue].values.tolist())
         max2 = max(production_mix_df[name_crop].values.tolist())
@@ -267,31 +267,31 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         minimum = min(0, min1, min2, min3, min4) * 0.8
 
         chart_name = f'Production of Crop over the years'
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'Production of Crop (TWh)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Production of Crop (TWh)',
                                              [year_start, year_end], [
                                                  minimum, maximum],
                                              chart_name=chart_name, cumulative_surface=True)
 
         wood_serie = InstanciatedSeries(
-            production_mix_df[GlossaryCore.Years].values.tolist(),
+            production_mix_df[GlossaryEnergy.Years].values.tolist(),
             production_mix_df[name_crop].values.tolist(),
             f'biomass for energy from crop energy', 'lines')
         new_chart.series.append(wood_serie)
 
         residue_serie = InstanciatedSeries(
-            production_mix_df[GlossaryCore.Years].values.tolist(),
+            production_mix_df[GlossaryEnergy.Years].values.tolist(),
             production_mix_df[name_residue].values.tolist(),
             f'biomass for energy from crop residue', 'lines')
         new_chart.series.append(residue_serie)
 
         residue_non_energy_serie = InstanciatedSeries(
-            production_mix_df[GlossaryCore.Years].values.tolist(),
+            production_mix_df[GlossaryEnergy.Years].values.tolist(),
             production_mix_df[name_residue_non_energy].values.tolist(),
             f'biomass from residue for non energy production', 'lines')
         new_chart.series.append(residue_non_energy_serie)
 
         non_energy_serie = InstanciatedSeries(
-            production_mix_df[GlossaryCore.Years].values.tolist(),
+            production_mix_df[GlossaryEnergy.Years].values.tolist(),
             production_mix_df[name_non_energy].values.tolist(),
             f'biomass from crop for non energy production', 'lines')
         new_chart.series.append(non_energy_serie)
@@ -308,25 +308,25 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
 
         chart_name = f'Price of Crop energy technology over the years'
 
-        year_start = min(price_mix_df[GlossaryCore.Years].values.tolist())
-        year_end = max(price_mix_df[GlossaryCore.Years].values.tolist())
+        year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
+        year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
 
         max1 = max(price_mix_df[name_residue].values.tolist())
         max2 = max(price_mix_df[name_crop].values.tolist())
         maximum = max(max1, max2) * 1.2 * \
             self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'Price of Crop energy ($/t)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Price of Crop energy ($/t)',
                                              [year_start, year_end], [0.0, maximum], chart_name=chart_name)
 
         residue_serie = InstanciatedSeries(
-            price_mix_df[GlossaryCore.Years].values.tolist(),
+            price_mix_df[GlossaryEnergy.Years].values.tolist(),
             (price_mix_df[name_residue].values *
              self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']).tolist(),
             f'price of crop residue', 'lines')
         new_chart.series.append(residue_serie)
 
         wood_serie = InstanciatedSeries(
-            price_mix_df[GlossaryCore.Years].values.tolist(),
+            price_mix_df[GlossaryEnergy.Years].values.tolist(),
             (price_mix_df[name_crop].values *
              self.get_sosdisc_inputs('data_fuel_dict')['calorific_value']).tolist(),
             f'price of crop energy', 'lines')
@@ -343,23 +343,23 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         name_crop = f'{self.energy_name}_crop'
 
         chart_name = f'Price of Crop energy technology over the years'
-        year_start = min(price_mix_df[GlossaryCore.Years].values.tolist())
-        year_end = max(price_mix_df[GlossaryCore.Years].values.tolist())
+        year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
+        year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
 
         max1 = max(price_mix_df[name_residue].values.tolist())
         max2 = max(price_mix_df[name_crop].values.tolist())
         maximum = max(max1, max2) * 1.2
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'Price of Crop energy ($/MWh)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Price of Crop energy ($/MWh)',
                                              [year_start, year_end], [0.0, maximum], chart_name=chart_name)
 
         residue_serie = InstanciatedSeries(
-            price_mix_df[GlossaryCore.Years].values.tolist(),
+            price_mix_df[GlossaryEnergy.Years].values.tolist(),
             price_mix_df[name_residue].values.tolist(),
             f'price of crop residue', 'lines')
         new_chart.series.append(residue_serie)
 
         wood_serie = InstanciatedSeries(
-            price_mix_df[GlossaryCore.Years].values.tolist(),
+            price_mix_df[GlossaryEnergy.Years].values.tolist(),
             price_mix_df[name_crop].values.tolist(),
             f'price of crop energy', 'lines')
         new_chart.series.append(wood_serie)
@@ -372,7 +372,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
          energy part
         '''
         year_start = self.get_sosdisc_inputs(
-            GlossaryCore.YearStart)
+            GlossaryEnergy.YearStart)
         land_surface_for_food = self.get_sosdisc_inputs(
             CropEnergy.LAND_SURFACE_FOR_FOOD_DF)
         initial_production = self.get_sosdisc_inputs(
@@ -393,26 +393,26 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
             techno_infos_dict['residue_percentage_for_energy']
         initial_prod['energy (TWh)'] = initial_prod['distrib'] / \
             100.0 * initial_production
-        initial_prod[GlossaryCore.Years] = year_start - initial_prod['age']
-        initial_prod.sort_values(GlossaryCore.Years, inplace=True)
+        initial_prod[GlossaryEnergy.Years] = year_start - initial_prod['age']
+        initial_prod.sort_values(GlossaryEnergy.Years, inplace=True)
         initial_prod['cum energy (TWh)'] = initial_prod['energy (TWh)'].cumsum(
         )
         study_production = self.get_sosdisc_outputs(
-            GlossaryCore.TechnoDetailedProductionValue)
+            GlossaryEnergy.TechnoDetailedProductionValue)
         chart_name = f'{self.energy_name} World Production for energy via {self.techno_name}<br>with 2020 factories distribution'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'{self.energy_name} production for energy (TWh)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} production for energy (TWh)',
                                              chart_name=chart_name)
 
         serie = InstanciatedSeries(
-            initial_prod[GlossaryCore.Years].values.tolist(),
+            initial_prod[GlossaryEnergy.Years].values.tolist(),
             (initial_prod[f'cum energy (TWh)'].values +
              residue_food_production_init).tolist(),
             'Initial production for energy by 2020 factories', 'lines')
 
         study_prod = study_production[f'{self.energy_name} (TWh)'].values
         new_chart.series.append(serie)
-        years_study = study_production[GlossaryCore.Years].values.tolist()
+        years_study = study_production[GlossaryEnergy.Years].values.tolist()
         years_study.insert(0, year_start - 1)
         study_prod_l = study_prod.tolist()
         study_prod_l.insert(

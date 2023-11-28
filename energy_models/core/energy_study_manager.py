@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,97 +14,60 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sostrades_core.study_manager.study_manager import StudyManager
 from importlib import import_module
-from sostrades_core.tools.bspline.bspline_methods import bspline_method
 
+from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
+from energy_models.core.stream_type.energy_models.biogas import BioGas
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.ethanol import Ethanol
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
-from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
-from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.energy_models.biogas import BioGas
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
-from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
-from energy_models.core.stream_type.energy_models.ethanol import Ethanol
-from energy_models.core.stream_type.energy_models.syngas import Syngas
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
-
-from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import TECHNOLOGIES_LIST as Methane_technos
-from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as Methane_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.gaseous_hydrogen_mix.usecase import \
-    TECHNOLOGIES_LIST as GaseousHydrogen_technos
-from energy_models.sos_processes.energy.techno_mix.gaseous_hydrogen_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as GaseousHydrogen_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.biogas_mix.usecase import TECHNOLOGIES_LIST as BioGas_technos
-from energy_models.sos_processes.energy.techno_mix.biogas_mix.usecase import TECHNOLOGIES_LIST_DEV as BioGas_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.syngas_mix.usecase import TECHNOLOGIES_LIST as Syngas_technos
-from energy_models.sos_processes.energy.techno_mix.syngas_mix.usecase import TECHNOLOGIES_LIST_DEV as Syngas_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import \
-    TECHNOLOGIES_LIST as LiquidFuel_technos
-from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as LiquidFuel_technos_dev
-from energy_models.sos_processes.energy.techno_mix.hightemperatureheat_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as hightemperatureheat_technos_dev
-from energy_models.sos_processes.energy.techno_mix.mediumtemperatureheat_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as mediumtemperatureheat_technos_dev
-from energy_models.sos_processes.energy.techno_mix.lowtemperatureheat_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as lowtemperatureheat_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.hydrotreated_oil_fuel_mix.usecase import \
-    TECHNOLOGIES_LIST as HydrotreatedOilFuel_technos
-from energy_models.sos_processes.energy.techno_mix.hydrotreated_oil_fuel_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as HydrotreatedOilFuel_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import TECHNOLOGIES_LIST as SolidFuel_technos
-from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as SolidFuel_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.biomass_dry_mix.usecase import \
-    TECHNOLOGIES_LIST as BiomassDry_technos
-from energy_models.sos_processes.energy.techno_mix.biomass_dry_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as BiomassDry_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import \
-    TECHNOLOGIES_LIST as Electricity_technos
-from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as Electricity_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.biodiesel_mix.usecase import TECHNOLOGIES_LIST as BioDiesel_technos
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
+from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.sos_processes.energy.techno_mix.biodiesel_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as BioDiesel_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.ethanol_mix.usecase import TECHNOLOGIES_LIST as Ethanol_technos
-from energy_models.sos_processes.energy.techno_mix.ethanol_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as Ethanol_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase import \
-    TECHNOLOGIES_LIST as LiquidHydrogen_technos
-from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as LiquidHydrogen_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import \
-    TECHNOLOGIES_LIST as CarbonCapture_technos
+from energy_models.sos_processes.energy.techno_mix.biogas_mix.usecase import TECHNOLOGIES_LIST_DEV as BioGas_technos_dev
+from energy_models.sos_processes.energy.techno_mix.biomass_dry_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as BiomassDry_technos_dev
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as CarbonCapture_technos_dev
-
-from energy_models.sos_processes.energy.techno_mix.carbon_storage_mix.usecase import \
-    TECHNOLOGIES_LIST as CarbonStorage_technos
 from energy_models.sos_processes.energy.techno_mix.carbon_storage_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as CarbonStorage_technos_dev
-
+from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as Electricity_technos_dev
+from energy_models.sos_processes.energy.techno_mix.ethanol_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as Ethanol_technos_dev
+from energy_models.sos_processes.energy.techno_mix.gaseous_hydrogen_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as GaseousHydrogen_technos_dev
+from energy_models.sos_processes.energy.techno_mix.hightemperatureheat_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as hightemperatureheat_technos_dev
+from energy_models.sos_processes.energy.techno_mix.hydrotreated_oil_fuel_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as HydrotreatedOilFuel_technos_dev
+from energy_models.sos_processes.energy.techno_mix.liquid_fuel_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as LiquidFuel_technos_dev
+from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as LiquidHydrogen_technos_dev
+from energy_models.sos_processes.energy.techno_mix.lowtemperatureheat_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as lowtemperatureheat_technos_dev
+from energy_models.sos_processes.energy.techno_mix.mediumtemperatureheat_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as mediumtemperatureheat_technos_dev
+from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as Methane_technos_dev
+from energy_models.sos_processes.energy.techno_mix.solid_fuel_mix.usecase import \
+    TECHNOLOGIES_LIST_DEV as SolidFuel_technos_dev
+from energy_models.sos_processes.energy.techno_mix.syngas_mix.usecase import TECHNOLOGIES_LIST_DEV as Syngas_technos_dev
+from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.base_functions.specific_check import specific_check_years
+from sostrades_core.tools.bspline.bspline_methods import bspline_method
 
 ENERGY_TYPE = 'energy'
 CCUS_TYPE = 'CCUS'

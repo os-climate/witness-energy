@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/19-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/09/19-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@ limitations under the License.
 '''
 
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.solid_fuel.coal_extraction.coal_extraction import CoalExtraction
-from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import SolidFuelTechnoDiscipline
 from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import SolidFuelTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.solid_fuel.coal_extraction.coal_extraction import CoalExtraction
 
 
 class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
@@ -81,7 +81,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.0,  # 0.15,
                                  'lifetime': lifetime,  # should be modified
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Estimating average total cost of open pit coal mines in Australia
                                  # Average : 5Mtcoal/year for 258M Australian$
                                  #  -- 1AU$ = 0.77$
@@ -95,13 +95,13 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  'water_demand_unit': '',
                                  'produced_energy': 0.0,
                                  'direct_energy': 0.0,
-                                 GlossaryCore.TransportCostValue: 0.0,
+                                 GlossaryEnergy.TransportCostValue: 0.0,
                                  'transport_cost_unit': '$/kgcoal',
                                  'enthalpy': 0.0,
                                  'techno_evo_eff': 'no',
                                  'enthalpy_unit': 'kWh/m^3',
-                                 GlossaryCore.EnergyEfficiency: 1.0,
-                                 'construction_delay': construction_delay,
+                                 GlossaryEnergy.EnergyEfficiency: 1.0,
+                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'pourcentage_of_total': 0.09,
                                  'energy_burn': 'no'}
 
@@ -112,7 +112,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
     initial_production = 43752. - energy_own_use
     # First invest is zero to get exactly the initial production in 2020
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 7.8, 9.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 7.8, 9.0]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [2.49, 0.55, 0.0, 0.0, 2.64, 0.55, 6.75, 6.74, 0.0, 1.97, 7.87, 7.34, 10.19, 9.47, 11.9, 5.55, 2.3, 4.8, 0.89, 0.0, 0.0, 3.42, 1.02, 0.56, 0.71, 0.0, 0.0, 0.0, 1.39, 3.21, 3.0, 1.65, 3.04]
@@ -125,9 +125,9 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(SolidFuelTechnoDiscipline.DESC_IN)
@@ -153,6 +153,6 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
             'applied_ratio')['applied_ratio'].values
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.TechnoProductionValue,
-             f'{Methane.emission_name} ({self.techno_model.mass_unit})'), (GlossaryCore.InvestLevelValue, GlossaryCore.InvestValue),
+            (GlossaryEnergy.TechnoProductionValue,
+             f'{Methane.emission_name} ({self.techno_model.mass_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
             (self.dprod_dinvest.T * self.techno_model.emission_factor_mt_twh * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production)

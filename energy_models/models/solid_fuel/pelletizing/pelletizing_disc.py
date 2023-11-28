@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.techno_type.disciplines.solid_fuel_techno_disc import SolidFuelTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.solid_fuel.pelletizing.pelletizing import Pelletizing
 
 
@@ -64,7 +64,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                  'WACC': 0.01,
                                  'learning_rate':  0.2,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # Capex in $
                                  'Capex_init': 29287037.04,
                                  'Capex_init_unit': 'euro',
@@ -74,10 +74,10 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                  'available_power_unit': 'kg/year',
                                  'efficiency': 0.85,  # boiler efficiency
                                  'techno_evo_eff': 'no',  # yes or no
-                                 'construction_delay': construction_delay}
+                                 GlossaryEnergy.ConstructionDelay: construction_delay}
     # We do not invest on biomass gasification yet
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [7.6745661, 8.9729523, 104.91]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [7.6745661, 8.9729523, 104.91]})
     # initial production : 45,21 million tonnes => x calorific value and
     # conversion in TWh
     initial_production = 217.04
@@ -93,13 +93,13 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}}
     # -- add specific techno inputs to this
     DESC_IN.update(SolidFuelTechnoDiscipline.DESC_IN)

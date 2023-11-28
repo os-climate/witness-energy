@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/10/10-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/10/10-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.models.syngas.pyrolysis.pyrolysis import Pyrolysis
 from energy_models.core.techno_type.disciplines.syngas_techno_disc import SyngasTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.syngas.pyrolysis.pyrolysis import Pyrolysis
 
 
 class PyrolysisDiscipline(SyngasTechnoDiscipline):
@@ -52,7 +52,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  'CO2_from_production_unit': 'kg/kg',
                                  'WACC': 0.075,  # Weighted averaged cost of capital for the carbon capture plant
                                  'lifetime': lifetime,
-                                 'lifetime_unit': GlossaryCore.Years,
+                                 'lifetime_unit': GlossaryEnergy.Years,
                                  # 1600T/day of wood capacity, 180M$ of Capital
                                  # cost, 20 years lifetime, 70% syngas yield
                                  'Capex_init': 0.012,
@@ -62,7 +62,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  # https://www.sciencedirect.com/topics/earth-and-planetary-sciences/pyrolysis#:~:text=For%20slow%20pyrolysis%2C%20the%20heating,respectively%20%5B15%2C21%5D.
                                  'medium_heat_production_unit': 'TWh/kg',
                                  'efficiency': 1.0,  # No need of efficiency here
-                                 'construction_delay': construction_delay,
+                                 GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'learning_rate': 0.0,
                                  'techno_evo_eff': 'no',
                                  'syngas_yield': 0.7,  # with 1kg of wood
@@ -76,7 +76,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     techno_info_dict = techno_infos_dict_default
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: [0.0, 0.0]})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0]})
     # From Future of hydrogen : accounting for around three quarters of the
     # annual global dedicated hydrogen production of around 70 million tonnes.
     initial_production = 1e-12  # in TWh at year_start MT*kWh/kg = TWh
@@ -94,9 +94,9 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False}
                }
     # -- add specific techno outputs to this

@@ -13,22 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from plotly import figure_factory as ff
 
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-
-import numpy as np
-from matplotlib.pyplot import cm
-from plotly import graph_objects as go
-from plotly.subplots import make_subplots
-from plotly import figure_factory as ff
 from sostrades_core.tools.post_processing.tables.instanciated_table import InstanciatedTable
-import pandas as pd
-from plotly.express.colors import qualitative
-from climateeconomics.glossarycore import GlossaryCore
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
@@ -68,7 +59,7 @@ def get_techno_comparision_data(execution_engine, namespace, year):
     table_list = []
     disc = execution_engine.dm.get_disciplines_with_name(namespace)
     disc_input = disc[0].get_sosdisc_inputs()
-    energy_list = disc_input[GlossaryCore.energy_list]
+    energy_list = disc_input[GlossaryEnergy.energy_list]
 
     techno_list = []
     EnergyDict = {}
@@ -84,9 +75,9 @@ def get_techno_comparision_data(execution_engine, namespace, year):
             techno_list.extend(result)
             EnergyDict[f"{energ}"]['TechnoName'] = loc_techno_list
             loc_energyproduction_df= execution_engine.dm.get_value(var_energyproduction_name)
-            production_filtereddata = loc_energyproduction_df[loc_energyproduction_df[GlossaryCore.Years] == year]
+            production_filtereddata = loc_energyproduction_df[loc_energyproduction_df[GlossaryEnergy.Years] == year]
             for col in production_filtereddata.columns:
-                if col != GlossaryCore.Years:
+                if col != GlossaryEnergy.Years:
                     production_techno_name = col.replace(energ, '').replace('(TWh)', '').strip()
                     prod_value = production_filtereddata[col].iloc[0]
                     techno_production_dict[production_techno_name] = prod_value
@@ -115,7 +106,7 @@ def get_techno_comparision_data(execution_engine, namespace, year):
             techno_prices_f_name = f"{namespace}.{energyname}.{techno}.techno_detailed_prices" #	"energy_detailed_techno_prices" for Hydrogen and Fuel
             price_details = execution_engine.dm.get_value(techno_prices_f_name)
             techno_name_list.append(techno)
-            filtereddata = price_details[price_details[GlossaryCore.Years] == year]
+            filtereddata = price_details[price_details[GlossaryEnergy.Years] == year]
             capex_price = filtereddata['CAPEX_Part'].iloc[0]
             opex_price = filtereddata['OPEX_Part'].iloc[0]
             CO2tax_price = filtereddata['CO2Tax_Part'].iloc[0]

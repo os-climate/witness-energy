@@ -14,9 +14,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from .base_invest import BaseInvest
 import pandas as pd
+
+from energy_models.glossaryenergy import GlossaryEnergy
+from .base_invest import BaseInvest
 
 
 class OneInvest(BaseInvest):
@@ -38,19 +39,19 @@ class OneInvest(BaseInvest):
         '''
         Compute all invests with invest_mix coefficients
         '''
-        energy_investment = inputs_dict[GlossaryCore.EnergyInvestmentsValue]
+        energy_investment = inputs_dict[GlossaryEnergy.EnergyInvestmentsValue]
         self.rescaling_factor = inputs_dict['scaling_factor_energy_investment']
-        energy_invest_df = pd.DataFrame({GlossaryCore.Years: energy_investment[GlossaryCore.Years].values,
-                                         GlossaryCore.EnergyInvestmentsValue: energy_investment[GlossaryCore.EnergyInvestmentsValue].values * self.rescaling_factor})
+        energy_invest_df = pd.DataFrame({GlossaryEnergy.Years: energy_investment[GlossaryEnergy.Years].values,
+                                         GlossaryEnergy.EnergyInvestmentsValue: energy_investment[GlossaryEnergy.EnergyInvestmentsValue].values * self.rescaling_factor})
 
         self.compute_distribution_list(inputs_dict)
 
         all_invest_df, unit = self.get_invest_distrib(
             energy_invest_df,
-            inputs_dict[GlossaryCore.invest_mix],
+            inputs_dict[GlossaryEnergy.invest_mix],
             input_unit='G$',
             output_unit='G$',
-            column_name=GlossaryCore.EnergyInvestmentsValue
+            column_name=GlossaryEnergy.EnergyInvestmentsValue
         )
 
         return all_invest_df
@@ -63,7 +64,7 @@ class OneInvest(BaseInvest):
             raise TypeError('energy_list must be defined as a list')
         head_list = list(mix_df.columns)
         try:
-            head_list.remove(GlossaryCore.Years)
+            head_list.remove(GlossaryEnergy.Years)
         except:
             print('years not in dataframe')
         if sorted(head_list) == sorted(self.distribution_list):
@@ -72,7 +73,7 @@ class OneInvest(BaseInvest):
             raise ValueError(str(sorted(head_list)) +
                              ' should be equal to ' + str(sorted(self.distribution_list)))
 
-    def get_invest_distrib(self, invest_level, invest_mix, input_unit, output_unit, column_name=GlossaryCore.InvestValue):
+    def get_invest_distrib(self, invest_level, invest_mix, input_unit, output_unit, column_name=GlossaryEnergy.InvestValue):
         self.set_invest_level(invest_level, input_unit, column_name)
         self.set_invest_mix(invest_mix)
         self.energy_list = self.distribution_list

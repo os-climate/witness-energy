@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/04-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/09/04-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,20 +18,15 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from sostrades_core.tools.base_functions.s_curve import s_curve
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
-from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-
 from energy_models.core.stream_type.energy_models.hydrotreated_oil_fuel import HydrotreatedOilFuel
-from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.liquid_hydrogen import LiquidHydrogen
+from energy_models.core.stream_type.energy_models.methane import Methane
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.tools.base_functions.s_curve import s_curve
 
 
 class EnergyDemand(object):
@@ -72,27 +67,27 @@ class EnergyDemand(object):
         '''
         COnfigure paramters at the init execution (Does not change during the execution)
         '''
-        self.year_start = inputs_dict[GlossaryCore.YearStart]
-        self.year_end = inputs_dict[GlossaryCore.YearEnd]
+        self.year_start = inputs_dict[GlossaryEnergy.YearStart]
+        self.year_end = inputs_dict[GlossaryEnergy.YearEnd]
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.delta_years = self.year_end + 1 - self.year_start
         self.long_term_elec_machine_efficiency = inputs_dict['long_term_elec_machine_efficiency']
         self.initial_electricity_demand = inputs_dict['initial_electricity_demand']
         self.electricity_demand_constraint_ref = inputs_dict['electricity_demand_constraint_ref']
         self.transport_demand_constraint_ref = inputs_dict['transport_demand_constraint_ref']
-        self.transport_demand_df = inputs_dict[GlossaryCore.TransportDemandValue]
+        self.transport_demand_df = inputs_dict[GlossaryEnergy.TransportDemandValue]
         self.additional_demand_transport = inputs_dict['additional_demand_transport'] / 100.
         self.demand_elec_constraint = pd.DataFrame(
-            {GlossaryCore.Years: self.years})
+            {GlossaryEnergy.Years: self.years})
         self.elec_demand = pd.DataFrame(
-            {GlossaryCore.Years: self.years})
+            {GlossaryEnergy.Years: self.years})
 
     def configure_parameters_update(self, inputs_dict):
         '''
         Update parameters at each execution
         '''
-        self.energy_production_detailed = inputs_dict[GlossaryCore.EnergyProductionDetailedValue]
-        self.population_df = inputs_dict[GlossaryCore.PopulationDfValue]
+        self.energy_production_detailed = inputs_dict[GlossaryEnergy.EnergyProductionDetailedValue]
+        self.population_df = inputs_dict[GlossaryEnergy.PopulationDfValue]
 
     def compute(self):
         '''
@@ -119,9 +114,9 @@ class EnergyDemand(object):
         The demand is decreasing due to increase of techno efficiency (division)
         and increasing due to increase of population (multiply)
         '''
-        init_pop = self.population_df[GlossaryCore.PopulationValue].values[0]
+        init_pop = self.population_df[GlossaryEnergy.PopulationValue].values[0]
         self.improved_efficiency_factor = self.compute_improved_efficiency_factor()
-        pop_factor = self.population_df[GlossaryCore.PopulationValue].values / init_pop
+        pop_factor = self.population_df[GlossaryEnergy.PopulationValue].values / init_pop
 
         electricity_demand = (1. + self.additional_demand_transport) * self.initial_electricity_demand * \
                              pop_factor / self.improved_efficiency_factor
@@ -162,7 +157,7 @@ class EnergyDemand(object):
 
         self.net_transport_production = sum_production_wo_elec
         self.transport_demand_constraint = (sum_production_wo_elec - self.transport_demand_df[
-            GlossaryCore.TransportDemandValue].values) / self.transport_demand_constraint_ref
+            GlossaryEnergy.TransportDemandValue].values) / self.transport_demand_constraint_ref
 
     def get_elec_demand_constraint(self):
         '''
@@ -207,10 +202,10 @@ class EnergyDemand(object):
 
         elsewhere grad = 1/pop[0]
         '''
-        pop0 = self.population_df[GlossaryCore.PopulationValue].values[0]
+        pop0 = self.population_df[GlossaryEnergy.PopulationValue].values[0]
         grad = np.identity(self.delta_years) / pop0
 
-        grad[:, 0] = -self.population_df[GlossaryCore.PopulationValue].values / pop0 ** 2
+        grad[:, 0] = -self.population_df[GlossaryEnergy.PopulationValue].values / pop0 ** 2
         grad[0, 0] = 0.0
 
         return -grad * (

@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/06/14-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/06/14-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,21 +19,21 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
 
-from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 def get_static_CO2_emissions(years):
 
-    resources_CO2_emissions_dict = {GlossaryCore.Years: years}
+    resources_CO2_emissions_dict = {GlossaryEnergy.Years: years}
 
     resources_CO2_emissions_dict.update({ResourceGlossary.GlossaryDict[resource]['name']:
-                                         ResourceGlossary.GlossaryDict[resource][GlossaryCore.CO2EmissionsValue] for resource in ResourceGlossary.GlossaryDict.keys()})
+                                         ResourceGlossary.GlossaryDict[resource][GlossaryEnergy.CO2EmissionsValue] for resource in ResourceGlossary.GlossaryDict.keys()})
     return pd.DataFrame(resources_CO2_emissions_dict)
 
 
@@ -47,7 +47,7 @@ def get_static_prices(years):
     func = sc.interp1d(year_co2, price_co2,
                        kind='linear', fill_value='extrapolate')
 
-    resources_prices_default_dict = {GlossaryCore.Years: years,
+    resources_prices_default_dict = {GlossaryEnergy.Years: years,
                                      ResourceGlossary.GlossaryDict['CO2']['name']: func(years)}
 
     resources_prices_default_dict.update(
@@ -76,10 +76,10 @@ class ResourcesDisc(SoSWrapp):
 
     years = np.arange(year_start_default, year_end_default + 1)
 
-    DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               GlossaryCore.ResourcesPriceValue: {'type': 'dataframe', 'unit': '[$/t]',
-                                   'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
+    DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryEnergy.ResourcesPriceValue: {'type': 'dataframe', 'unit': '[$/t]',
+                                   'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
                                                             'uranium_resource': ('float', None, True),
                                                             'water_resource': ('float', None, True),
                                                             'sea_water_resource': ('float', None, True),
@@ -111,8 +111,8 @@ class ResourcesDisc(SoSWrapp):
                                                             'platinum_resource': ('float', None, True),                                                            },
                                    'dataframe_edition_locked': False,
                                    'default': get_static_prices(years)},
-               GlossaryCore.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': '[kgCO2/kg]',
-                                           'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
+               GlossaryEnergy.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': '[kgCO2/kg]',
+                                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
                                                                     'uranium_resource': ('float', None, True),
                                                                     'water_resource': ('float', None, True),
                                                                     'sea_water_resource': ('float', None, True),
@@ -149,45 +149,45 @@ class ResourcesDisc(SoSWrapp):
 
     DESC_OUT = {
 
-        GlossaryCore.ResourcesPriceValue: {'type': 'dataframe', 'unit': '[$/t]', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
-        GlossaryCore.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': '[kgCO2/kg]', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'}
+        GlossaryEnergy.ResourcesPriceValue: {'type': 'dataframe', 'unit': '[$/t]', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
+        GlossaryEnergy.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': '[kgCO2/kg]', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'}
     }
 
     def setup_sos_disciplines(self):
 
         if self.get_data_in() is not None:
-            if GlossaryCore.YearStart in self.get_data_in():
+            if GlossaryEnergy.YearStart in self.get_data_in():
                 year_start, year_end = self.get_sosdisc_inputs(
-                    [GlossaryCore.YearStart, GlossaryCore.YearEnd])
+                    [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
                 years = np.arange(year_start, year_end + 1)
                 resources_price = self.get_sosdisc_inputs(
-                    GlossaryCore.ResourcesPriceValue)
+                    GlossaryEnergy.ResourcesPriceValue)
                 new_default_prices = get_static_prices(years)
                 new_default_emissions = get_static_CO2_emissions(years)
 
                 # If the value of the df is the default we specified, we need to modify also the value
                 #(if the value is different it is a user value do not modify the value)
-                if resources_price is None or len(resources_price[GlossaryCore.Years].values) != len(years):
+                if resources_price is None or len(resources_price[GlossaryEnergy.Years].values) != len(years):
                     self.update_default_value(
-                        GlossaryCore.ResourcesPriceValue, self.IO_TYPE_IN, new_default_prices)
+                        GlossaryEnergy.ResourcesPriceValue, self.IO_TYPE_IN, new_default_prices)
                     self.update_default_value(
-                        GlossaryCore.RessourcesCO2EmissionsValue, self.IO_TYPE_IN, new_default_emissions)
+                        GlossaryEnergy.RessourcesCO2EmissionsValue, self.IO_TYPE_IN, new_default_emissions)
 
     def run(self):
         """
 
         """
-        year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
-        year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
+        year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
+        year_end = self.get_sosdisc_inputs(GlossaryEnergy.YearEnd)
 
         years = np.arange(year_start, year_end + 1)
 
-        resources_price = self.get_sosdisc_inputs(GlossaryCore.ResourcesPriceValue)
+        resources_price = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesPriceValue)
 
-        co2_emissions = self.get_sosdisc_inputs(GlossaryCore.RessourcesCO2EmissionsValue)
+        co2_emissions = self.get_sosdisc_inputs(GlossaryEnergy.RessourcesCO2EmissionsValue)
 
-        outputs_dict = {GlossaryCore.ResourcesPriceValue: resources_price,
-                        GlossaryCore.RessourcesCO2EmissionsValue: co2_emissions}
+        outputs_dict = {GlossaryEnergy.ResourcesPriceValue: resources_price,
+                        GlossaryEnergy.RessourcesCO2EmissionsValue: co2_emissions}
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
@@ -227,7 +227,7 @@ class ResourcesDisc(SoSWrapp):
     def get_chart_prices_in_dollar_kg(self):
 
         resources_price = self.get_sosdisc_outputs(
-            GlossaryCore.ResourcesPriceValue)
+            GlossaryEnergy.ResourcesPriceValue)
         chart_name = f'Resources prices'
 
         new_chart = TwoAxesInstanciatedChart('Years', 'Prices [$/t]',
@@ -235,10 +235,10 @@ class ResourcesDisc(SoSWrapp):
 
         columns = list(resources_price.columns)
         for column in columns:
-            if column != GlossaryCore.Years:
+            if column != GlossaryEnergy.Years:
                 values = resources_price[column].values
                 serie = InstanciatedSeries(
-                    resources_price[GlossaryCore.Years].values.tolist(),
+                    resources_price[GlossaryEnergy.Years].values.tolist(),
                     values.tolist(), f'{column} price', 'lines')
                 new_chart.series.append(serie)
 
@@ -247,7 +247,7 @@ class ResourcesDisc(SoSWrapp):
     def get_chart_CO2_emissions(self):
 
         resources_co2_emissions = self.get_sosdisc_outputs(
-            GlossaryCore.RessourcesCO2EmissionsValue)
+            GlossaryEnergy.RessourcesCO2EmissionsValue)
         chart_name = f'Resources CO2 emissions in kgCO2/kg'
 
         new_chart = TwoAxesInstanciatedChart('Years', 'CO2 emissions [kgCO2/kg]',
@@ -255,10 +255,10 @@ class ResourcesDisc(SoSWrapp):
 
         columns = list(resources_co2_emissions.columns)
         for column in columns:
-            if column != GlossaryCore.Years:
+            if column != GlossaryEnergy.Years:
                 values = resources_co2_emissions[column].values
                 serie = InstanciatedSeries(
-                    resources_co2_emissions[GlossaryCore.Years].values.tolist(),
+                    resources_co2_emissions[GlossaryEnergy.Years].values.tolist(),
                     values.tolist(), column, 'lines')
                 new_chart.series.append(serie)
 

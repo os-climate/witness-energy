@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/25-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/25-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,15 +16,13 @@ limitations under the License.
 '''
 import numpy as np
 
-from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.stream_type.resources_models.water import Water
-from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
-
+from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 
 
 class CoalGen(ElectricityTechno):
@@ -61,36 +59,35 @@ class CoalGen(ElectricityTechno):
         Compute the consumption and the production of the technology for a given investment
         """
 
-        self.compute_primary_energy_production()
+        
         elec_needs = self.get_electricity_needs()
 
         # Consumption
-        self.consumption[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
+        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
+                                                                                      self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
+                                                                        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
-        self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = self.production[
+        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = self.production_detailed[
             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
-        self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
-            self.consumption[f'{SolidFuel.name} ({self.product_energy_unit})'] - \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
+                                                                                        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
+            self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] - \
+            self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
 
         self.compute_ghg_emissions(N2O.name, related_to=SolidFuel.name)
 
-    def compute_consumption_and_power_production(self):
+    def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment
         """
-        self.compute_primary_power_production()
 
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.installed_power['new_power_production'] # in Mt
     
     @staticmethod
     def get_theoretical_copper_needs(self):
@@ -107,12 +104,12 @@ class CoalGen(ElectricityTechno):
         Need to take into account  CO2 from coal extraction and electricity production
         '''
 
-        self.carbon_emissions[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
-            self.cost_details['solid_fuel_needs']
-        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
-            self.cost_details['water_needs']
+        self.carbon_intensity[SolidFuel.name] = self.energy_CO2_emissions[SolidFuel.name] * \
+                                                self.cost_details['solid_fuel_needs']
+        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
+                                            self.cost_details['water_needs']
 
-        return self.carbon_emissions[SolidFuel.name] + self.carbon_emissions[Water.name]
+        return self.carbon_intensity[SolidFuel.name] + self.carbon_intensity[Water.name]
 
     def grad_price_vs_energy_price(self):
         '''

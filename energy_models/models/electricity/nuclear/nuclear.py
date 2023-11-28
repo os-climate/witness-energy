@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/25-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/25-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,11 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
-from energy_models.core.stream_type.resources_models.water import Water
+import numpy as np
+
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-import numpy as np
+from energy_models.core.stream_type.resources_models.water import Water
+from energy_models.core.techno_type.base_techno_models.electricity_techno import ElectricityTechno
 
 
 class Nuclear(ElectricityTechno):
@@ -55,7 +56,7 @@ class Nuclear(ElectricityTechno):
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ?
         """
-        self.compute_primary_energy_production()
+        
 
         # self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = (self.techno_infos_dict['heat_recovery_factor'] * \
         #       self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
@@ -78,28 +79,27 @@ class Nuclear(ElectricityTechno):
         '''
         # FOR ALL_RESOURCES DISCIPLINE
 
-        self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = \
-            (self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] / \
+        self.consumption_detailed[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})'] = \
+            (self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] / \
              self.techno_infos_dict['efficiency']) / (24000000.00)
 
         water_needs = self.get_theoretical_water_needs()
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = water_needs * \
-            self.production[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = water_needs * \
+                                                                        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
-        self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
-                                                                                      self.consumption[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 * \
+                                                                                               self.consumption_detailed[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
 
 
-    def compute_consumption_and_power_production(self):
+    def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment
         """
-        self.compute_primary_power_production()
 
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.power_production['new_power_production'] # in Mt
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.installed_power['new_power_production'] # in Mt
         
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -107,12 +107,12 @@ class Nuclear(ElectricityTechno):
         Need to take into account  CO2 from electricity/hydrogen production
         """
 
-        self.carbon_emissions[self.URANIUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.URANIUM_RESOURCE_NAME] * \
-            self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs']
-        self.carbon_emissions[Water.name] = self.resources_CO2_emissions[Water.name] * \
-            self.cost_details['water_needs']
+        self.carbon_intensity[self.URANIUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.URANIUM_RESOURCE_NAME] * \
+                                                            self.cost_details[f'{self.URANIUM_RESOURCE_NAME}_needs']
+        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
+                                            self.cost_details['water_needs']
 
-        return self.carbon_emissions[self.URANIUM_RESOURCE_NAME] + self.carbon_emissions[Water.name]
+        return self.carbon_intensity[self.URANIUM_RESOURCE_NAME] + self.carbon_intensity[Water.name]
 
     #@staticmethod
     def get_theoretical_uranium_fuel_needs(self):

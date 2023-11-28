@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/25-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/25-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,13 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
+import numpy as np
+
+from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.water import Water
-
-import numpy as np
-from energy_models.core.stream_type.energy_models.electricity import Electricity
-from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
+from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 
 
 class SMR(SyngasTechno):
@@ -88,19 +87,19 @@ class SMR(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_emissions[f'{Methane.name}'] = self.energy_CO2_emissions[f'{Methane.name}'] * \
-            self.cost_details['CH4_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{Methane.name}'] = self.energy_CO2_emissions[f'{Methane.name}'] * \
+                                                   self.cost_details['CH4_needs'] / \
+                                                   self.cost_details['efficiency']
 
-        self.carbon_emissions[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
-            self.cost_details['elec_needs']
+        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+                                                       self.cost_details['elec_needs']
 
-        self.carbon_emissions[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
-            self.cost_details[f'{Water.name}_needs'] / \
-            self.cost_details['efficiency']
+        self.carbon_intensity[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
+                                                 self.cost_details[f'{Water.name}_needs'] / \
+                                                 self.cost_details['efficiency']
 
-        return self.carbon_emissions[f'{Methane.name}'] + self.carbon_emissions[f'{Electricity.name}'] + \
-               self.carbon_emissions[f'{Water.name}']
+        return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[f'{Electricity.name}'] + \
+               self.carbon_intensity[f'{Water.name}']
 
     def get_theoretical_CH4_needs(self):
         ''' 
@@ -140,18 +139,18 @@ class SMR(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
         # Consumption
-        self.consumption[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['CH4_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['CH4_needs'] * \
+                                                                                    self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                    self.cost_details['efficiency']
 
-        self.consumption[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
-        self.consumption[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
-            self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-            self.cost_details['efficiency']
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
+                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                        self.cost_details['efficiency']
 
         # self.production[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
         #     self.techno_infos_dict['high_heat_production'] * \

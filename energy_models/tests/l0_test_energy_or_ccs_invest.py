@@ -15,17 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
+from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
 
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.investments.energy_or_ccsinvest import EnergyOrCCSInvest
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestEnergyorCCSInvest(unittest.TestCase):
@@ -44,14 +43,14 @@ class TestEnergyorCCSInvest(unittest.TestCase):
 
         self.years = np.arange(self.y_s, self.y_e + 1)
         dict2 = {}
-        dict2[GlossaryCore.Years] = self.years
+        dict2[GlossaryEnergy.Years] = self.years
         self.percentage = 0.1
         dict2['ccs_percentage'] = np.ones(
             len(self.years)) * self.percentage * 100.0
         self.ccs_percentage = pd.DataFrame(dict2)
 
         dict2 = {}
-        dict2[GlossaryCore.Years] = self.years
+        dict2[GlossaryEnergy.Years] = self.years
         dict2['carbon_capture'] = np.ones(len(self.years))
         dict2['carbon_storage'] = np.ones(len(self.years)) * 0.5
         self.ccs_mix = pd.DataFrame(dict2)
@@ -62,13 +61,13 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         for i in range(1, len(self.years)):
             invest[i] = 1.02 * invest[i - 1]
         self.invest_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, GlossaryCore.EnergyInvestmentsValue: invest})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.EnergyInvestmentsValue: invest})
 
-        self.input_dict = {GlossaryCore.EnergyInvestmentsValue: self.invest_df,
+        self.input_dict = {GlossaryEnergy.EnergyInvestmentsValue: self.invest_df,
                            'ccs_percentage': self.ccs_percentage,
                            'ccs_investment': self.invest_df,
-                           GlossaryCore.YearStart: self.y_s,
-                           GlossaryCore.YearEnd: self.y_e,
+                           GlossaryEnergy.YearStart: self.y_s,
+                           GlossaryEnergy.YearEnd: self.y_e,
                            'invest_ccs_mix': self.ccs_mix}
 
     def test_01_compute(self):
@@ -84,12 +83,12 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         energy_conversion_invest = self.energy_invest.get_energy_conversion_investment(
         )
 
-        self.assertListEqual(np.around(ccs_invest[GlossaryCore.EnergyInvestmentsValue].values / rescaling_factor + energy_conversion_invest[GlossaryCore.EnergyInvestmentsValue].values, 8).tolist(),
-                             np.around(self.invest_df[GlossaryCore.EnergyInvestmentsValue].values, 8).tolist())
+        self.assertListEqual(np.around(ccs_invest[GlossaryEnergy.EnergyInvestmentsValue].values / rescaling_factor + energy_conversion_invest[GlossaryEnergy.EnergyInvestmentsValue].values, 8).tolist(),
+                             np.around(self.invest_df[GlossaryEnergy.EnergyInvestmentsValue].values, 8).tolist())
         ccs_invest_theory = self.percentage * \
-            self.invest_df[GlossaryCore.EnergyInvestmentsValue].values
+            self.invest_df[GlossaryEnergy.EnergyInvestmentsValue].values
 
-        self.assertListEqual(np.around(ccs_invest[GlossaryCore.EnergyInvestmentsValue].values / rescaling_factor, 8).tolist(),
+        self.assertListEqual(np.around(ccs_invest[GlossaryEnergy.EnergyInvestmentsValue].values / rescaling_factor, 8).tolist(),
                              np.around(ccs_invest_theory, 8).tolist())
 
     def test_02_energy_invest_disc(self):
@@ -146,7 +145,7 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         self.ee.load_study_from_input_dict(namespaced_input_dict)
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.EnergyInvestmentsValue}',
+        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}',
                                                                           f'{self.name}.{self.model_name}.ccs_percentage'],
                                       outputs=[
             f'{self.name}.{self.model_name}.Energy.energy_investment',
@@ -221,7 +220,7 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.ccs_investment',
                                                                           f'{self.name}.{self.model_name}.invest_ccs_mix'],
                                       outputs=[
-            f'{self.name}.{self.model_name}.{ccs}.{GlossaryCore.InvestLevelValue}' for ccs in ccs_list],
+            f'{self.name}.{self.model_name}.{ccs}.{GlossaryEnergy.InvestLevelValue}' for ccs in ccs_list],
             input_data = disc.local_data,
             load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                f'jacobian_invest_ccs_disc.pkl'))

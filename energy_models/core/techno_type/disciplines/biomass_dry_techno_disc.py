@@ -14,9 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiomassDryTechnoDiscipline(TechnoDiscipline):
@@ -34,13 +34,13 @@ class BiomassDryTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {GlossaryCore.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_biomass_dry',
-                                  'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
+    DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_biomass_dry',
+                                  'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
                                                            'transport': ('float',  None, True)},
                                   'dataframe_edition_locked': False},
-               GlossaryCore.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_biomass_dry',
-                                    'dataframe_descriptor': {GlossaryCore.Years: ('int',  [1900, 2100], False),
-                                                             GlossaryCore.MarginValue: ('float',  None, True)},
+               GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_biomass_dry',
+                                    'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
+                                                             GlossaryEnergy.MarginValue: ('float',  None, True)},
                                     'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_biomass_dry', 'default': BiomassDry.data_energy_dict,

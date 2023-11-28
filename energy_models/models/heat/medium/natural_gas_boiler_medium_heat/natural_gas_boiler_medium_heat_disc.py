@@ -14,16 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.models.heat.medium.natural_gas_boiler_medium_heat.natural_gas_boiler_medium_heat import NaturalGasMediumHeat
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from energy_models.core.techno_type.disciplines.heat_techno_disc import MediumHeatTechnoDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.models.heat.medium.natural_gas_boiler_medium_heat.natural_gas_boiler_medium_heat import \
+    NaturalGasMediumHeat
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+
 
 class NaturalGasBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
@@ -64,9 +65,9 @@ class NaturalGasBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         'Opex_init': 10.565,
         'Opex_init_unit': '$/kW',
         'lifetime': lifetime,
-        'lifetime_unit': GlossaryCore.Years,
-        'construction_delay': construction_delay,
-        'construction_delay_unit': GlossaryCore.Years,
+        'lifetime_unit': GlossaryEnergy.Years,
+        GlossaryEnergy.ConstructionDelay: construction_delay,
+        'construction_delay_unit': GlossaryEnergy.Years,
         'efficiency': 0.8,    # consumptions and productions already have efficiency included
         'natural_gas_calorific_val': 53600,
         'natural_gas_calorific_val_unit': 'kJ/kg',
@@ -117,19 +118,19 @@ class NaturalGasBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
     # Renewable Methane Association [online]
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryCore.InvestValue: 199.8/(16 * 8760) * np.array([0, 561])})
+        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: 199.8/(16 * 8760) * np.array([0, 561])})
     flux_input_dict = {'land_rate': 13000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True),
                                                                 }
                                        },
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               GlossaryCore.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryCore.InvestValue: ('float',  None, True)},
+                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False},
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
@@ -148,7 +149,7 @@ class NaturalGasBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',
-                                        'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], True),
+                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], True),
                                                                  'heat_flux': ('float', [1.e-8, 1e30], True),
                                                                  },
                                         }
@@ -196,22 +197,11 @@ class NaturalGasBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
         return new_chart
 
-    def get_chart_filter_list(self):
-        chart_filters = MediumHeatTechnoDiscipline.get_chart_filter_list(self)
-
-        self.instanciated_charts = MediumHeatTechnoDiscipline.get_post_processing_list(self, chart_filters)
-
-        chart_list = ['heat_flux']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
-
-        return chart_filters
-
     def get_post_processing_list(self, filters=None):
         """
         Basic post processing method for the model
         """
-        instanciated_charts = self.instanciated_charts
+        instanciated_charts = super().get_post_processing_list(filters)
         charts = []
         # for pie charts Title
         unit_str = '$/MWh'
@@ -225,9 +215,9 @@ class NaturalGasBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         heat_flux = self.get_sosdisc_outputs('heat_flux')
 
         if 'heat_flux' in charts:
-            x_data = heat_flux[GlossaryCore.Years].values
+            x_data = heat_flux[GlossaryEnergy.Years].values
             y_data = heat_flux['heat_flux'].values
-            x_label = GlossaryCore.Years
+            x_label = GlossaryEnergy.Years
             y_label = 'heat_flux'
             series_name = y_label
             title = f'Detailed heat_flux over the years'

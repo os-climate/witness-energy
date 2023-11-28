@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/11/09-2023/11/14 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
+from energy_models.core.techno_type.base_techno_models.carbon_storage_techno import CSTechno
 
 
 class DepletedOilGas(CSTechno):
@@ -32,9 +33,9 @@ class DepletedOilGas(CSTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        self.compute_primary_energy_production()
+        
 
         # Consumption
 
-        self.consumption[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production[
+        self.consumption_detailed[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production_detailed[
             f'{CSTechno.energy_name} ({self.product_energy_unit})']
