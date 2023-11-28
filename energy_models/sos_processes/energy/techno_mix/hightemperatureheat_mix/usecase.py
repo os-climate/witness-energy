@@ -69,6 +69,10 @@ class Study(EnergyMixStudyManager):
             invest_high_heat_mix_dict['HydrogenBoilerHighHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
+        if 'HydrogenBoilerHighHeat' in self.technologies_list:
+            invest_high_heat_mix_dict['HydrogenBoilerHighHeat'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
         if self.bspline:
             invest_high_heat_mix_dict[GlossaryEnergy.Years] = self.years
 
