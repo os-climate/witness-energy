@@ -552,7 +552,7 @@ class FischerTropsch(LiquidFuelTechno):
             self.cost_details['syngas_needs_for_FT'] / \
             self.cost_details['efficiency']
 
-        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                        (self.cost_details['elec_needs'] + elec_needs_wgs)
 
         # needs of syngas in kWh syngasin/kWhsyngas_out
@@ -566,7 +566,7 @@ class FischerTropsch(LiquidFuelTechno):
             self.cost_details['efficiency']
 
         self.carbon_intensity[Syngas.name] = self.energy_CO2_emissions[
-            f'{Syngas.name}'] * syngas_needs
+            Syngas.name] * syngas_needs
 
         co2_needs = 0.0
         water_needs = 0.0
@@ -594,7 +594,7 @@ class FischerTropsch(LiquidFuelTechno):
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[
             ResourceGlossary.Water['name']] * water_needs
 
-        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[Syngas.name] + \
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Syngas.name] + \
                self.carbon_intensity[CO2.name] + self.carbon_intensity[Water.name]
 
     def compute_dco2_emissions_dsyngas_ratio(self):

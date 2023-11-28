@@ -32,14 +32,14 @@ class ElectricBoilerHighHeat(highheattechno):
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
 
 
-        self.cost_details[f'{Electricity.name}'] = \
+        self.cost_details[Electricity.name] = \
             self.prices[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
             self.cost_details['efficiency']
 
-        #print(self.cost_details[f'{Electricity.name}'])
+        #print(self.cost_details[Electricity.name])
 
-        return self.cost_details[f'{Electricity.name}']
+        return self.cost_details[Electricity.name]
 
     def configure_input(self, inputs_dict):
         '''

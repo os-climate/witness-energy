@@ -38,8 +38,8 @@ class BiomassGasification(SyngasTechno):
         self.cost_details['biomass_needs'] = self.techno_infos_dict['biomass_demand']
 
         # Cost of electricity for 1 kWH of syngas
-        self.cost_details[f'{Electricity.name}'] = list(
-            self.prices[f'{Electricity.name}'] * self.cost_details['elec_needs'])
+        self.cost_details[Electricity.name] = list(
+            self.prices[Electricity.name] * self.cost_details['elec_needs'])
 
         # Cost of biomass for 1 kWH of syngas
         # prices is in $/kg and needs in kWh/kWh
