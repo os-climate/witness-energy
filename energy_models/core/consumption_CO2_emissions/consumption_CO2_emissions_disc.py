@@ -172,9 +172,11 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_energy',
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                     'fuel.ethanol (TWh)': ('float', None, True),
                                                      'heat.hightemperatureheat (TWh)': ('float', None, True),
-                                                     'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                      'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                     'heat.mediumtemperatureheat (TWh)': (
+                                                     'float', None, True),
                                                      'hydrogen.gaseous_hydrogen': ('float', None, True),
                                                     'O2 (Mt)': ('float', None, True),
                                                     'carbon_resource (Mt)': ('float', None, True),

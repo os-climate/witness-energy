@@ -25,7 +25,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min, compute_dfunc_with_exp_min
-
+from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 
 class Refinery(LiquidFuelTechno):
     OIL_RESOURCE_NAME = ResourceGlossary.Oil['name']
@@ -126,14 +126,10 @@ class Refinery(LiquidFuelTechno):
                                                                                     self.production_detailed[
                                                                                         f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
-        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict[
-                                                                                                'hydrogen_demand'] * \
-                                                                                            self.production_detailed[
-                                                                                                f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWh
-
-        # self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['medium_heat_production'] *  \
-        #     self.production[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
-
+        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.techno_infos_dict['hydrogen_demand'] * \
+                                                                                            self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
+        self.production_detailed[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['useful_heat_recovery_factor'] * \
+                                                                                          self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})']      # in kWh
     def compute_ch4_emissions(self):
         '''
         Method to compute CH4 emissions from gas production

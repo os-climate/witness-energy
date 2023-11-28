@@ -137,6 +137,7 @@ class EnergyDiscipline(StreamDiscipline):
                                                  'HydrogenLiquefaction (Gha)': ('float', None, True),
                                                  }}
 
+                        # "dynamic_dataframe_columns": True}
         self.add_inputs(dynamic_inputs)
 
     def update_default_technology_list(self):

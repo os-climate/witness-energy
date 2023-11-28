@@ -32,7 +32,7 @@ from energy_models.models.syngas.pyrolysis.pyrolysis_disc import PyrolysisDiscip
 from energy_models.models.syngas.smr.smr_disc import SMRDiscipline
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-
+from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 
 class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
@@ -72,12 +72,13 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  'maximum_learning_capex_ratio': 0.5,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': GlossaryEnergy.Years,
-                                 # 'medium_heat_production': (165/28.01)*1000*2.77778e-13,
+                                 'medium_heat_production': (165/28.01)*1000*2.77778e-13,
                                  # # https://www.sciencedirect.com/science/article/pii/S1385894718309215, reaction enthalpy of −165 kJ/molCO
-                                 # 'medium_heat_production_unit': 'TWh/kg',
+                                 'medium_heat_production_unit': 'TWh/kg',
                                  # 60000 euro/bpd : 1 barrel = 1553,41kwh of
                                  # liquid_fuel per 24 hours
                                  # Capex initial at year 2020
+                                 'useful_heat_recovery_factor': 0.8,
                                  'Capex_init': 60000.0 / (1553.41 / 24.0 * 8000.0),
                                  'Capex_init_unit': '$/kWh',
                                  'efficiency': 0.65,
@@ -178,6 +179,20 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             key: value for key, value in grad_dict.items()}
         self.set_partial_derivatives_output_wr_input(
             GlossaryEnergy.TechnoProductionValue, 'syngas_ratio', grad_dict)
+
+        # Grad of heatproduction vs investment
+        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+        applied_ratio = self.get_sosdisc_outputs(
+            'applied_ratio')['applied_ratio'].values
+
+        dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+        consumption_gradient = self.techno_consumption_derivative[f'{CarbonCapture.name} ({self.techno_model.mass_unit})']
+        # # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
+        self.set_partial_derivative_for_other_types(
+            ('techno_production',
+             f'{mediumheattechno.energy_name} ({self.techno_model.product_energy_unit})'), ('invest_level', 'invest'),
+            (consumption_gradient - dprod_name_dinvest))
 
         # Grad of techno_consumption vs syngas_ratio
 

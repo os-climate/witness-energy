@@ -36,7 +36,7 @@ from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift impor
 from energy_models.models.gaseous_hydrogen.water_gas_shift.water_gas_shift_disc import WaterGasShiftDiscipline
 from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift import RWGS
 from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shift_disc import RWGSDiscipline
-
+from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 
 class FischerTropsch(LiquidFuelTechno):
 
@@ -537,9 +537,9 @@ class FischerTropsch(LiquidFuelTechno):
                                                                        self.production_detailed[
                                                                            f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']
 
-        # self.production[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = \
-        #     self.techno_infos_dict['medium_heat_production'] * \
-        #     self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] * 1000000000
+        self.production_detailed[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = \
+            self.techno_infos_dict['medium_heat_production'] * self.techno_infos_dict['useful_heat_recovery_factor'] * \
+            self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] * 1000000000
 
         self.consumption = self.consumption_detailed.fillna(0.0)
         self.production = self.production_detailed.fillna(0.0)
