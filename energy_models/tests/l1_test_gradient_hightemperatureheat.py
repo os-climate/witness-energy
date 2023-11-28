@@ -30,6 +30,7 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 import pickle
 
 
+
 class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     """
     High Temperature Heat technos prices test class
@@ -45,7 +46,7 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
             self.test_04_heat_pump_high_heat_discipline_analytic_grad,
             self.test_05_hydrogen_boiler_high_heat_discipline_analytic_grad,
             self.test_06_natural_gas_boiler_high_heat_discipline_analytic_grad,
-            self.test_07_hightemperatureheat_discipline_jacobian,
+            #self.test_07_hightemperatureheat_discipline_jacobian,
 
         ]
 
@@ -180,6 +181,7 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                                 f'{self.name}.{self.model_name}.techno_consumption_woratio',
                                 # f'{self.name}.{self.model_name}.techno_production',
                             ], )
+
 
     def test_02_electric_boiler_high_heat_discipline_analytic_grad(self):
         self.name = 'Test'
@@ -375,6 +377,8 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                                      #f'{self.name}.{self.model_name}.techno_production',
                                      ], )
 
+
+
     def test_06_natural_gas_boiler_high_heat_discipline_analytic_grad(self):
 
         self.name = 'Test'
@@ -490,7 +494,7 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     #     disc = self.ee.dm.get_disciplines_with_name(
     #         f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
     #
-    #
+
     #     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     #     self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
     #                         discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,

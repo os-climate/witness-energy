@@ -74,19 +74,20 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                 'heat.hightemperatureheat.HeatPumpHighHeat': ('float', None, True),
                                                 'heat.hightemperatureheat.GeothermalHighHeat': ('float', None, True),
                                                 'heat.hightemperatureheat.CHPHighHeat': ('float', None, True),
-                                                'heat.hightemperatureheat.HydrogenBoilerHighHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.NaturalGasBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.ElectricBoilerLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.HeatPumpLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.GeothermalLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.CHPLowHeat': ('float', None, True),
+<<<<<<< HEAD
                                                 'heat.lowtemperatureheat.HydrogenBoilerLowHeat': ('float', None, True),
+=======
+>>>>>>> parent of 4bd7e641 (Code for hydrogen boiler.)
                                                 'heat.mediumtemperatureheat.NaturalGasBoilerMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.ElectricBoilerMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.HeatPumpMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.GeothermalMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.CHPMediumHeat': ('float', None, True),
-                                                'heat.mediumtemperatureheat.HydrogenBoilerMediumHeat': ('float', None, True),
                                                 'biogas.AnaerobicDigestion': ('float', None, True),
                                                 'syngas.BiomassGasification': ('float', None, True),
                                                 'syngas.SMR': ('float', None, True),

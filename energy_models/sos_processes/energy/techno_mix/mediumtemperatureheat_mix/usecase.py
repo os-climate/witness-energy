@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                             'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
+                             'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                     'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
+                     'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerMediumHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
+                         'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -64,10 +64,6 @@ class Study(EnergyMixStudyManager):
 
         if 'CHPMediumHeat' in self.technologies_list:
             invest_medium_heat_mix_dict['CHPMediumHeat'] = list(np.ones(
-                len(l_ctrl)) * 0.001)
-
-        if 'HydrogenBoilerMediumHeat' in self.technologies_list:
-            invest_medium_heat_mix_dict['HydrogenBoilerMediumHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
         if self.bspline:

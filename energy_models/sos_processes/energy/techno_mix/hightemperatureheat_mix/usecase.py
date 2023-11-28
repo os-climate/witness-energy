@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                             'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                             'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                     'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                     'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerHighHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -65,10 +65,6 @@ class Study(EnergyMixStudyManager):
         if 'CHPHighHeat' in self.technologies_list:
             invest_high_heat_mix_dict['CHPHighHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
-        if 'HydrogenBoilerHighHeat' in self.technologies_list:
-            invest_high_heat_mix_dict['HydrogenBoilerHighHeat'] = list(np.ones(
-                len(l_ctrl)) * 0.001)
-
         if 'HydrogenBoilerHighHeat' in self.technologies_list:
             invest_high_heat_mix_dict['HydrogenBoilerHighHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
