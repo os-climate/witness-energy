@@ -79,10 +79,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                 'heat.lowtemperatureheat.HeatPumpLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.GeothermalLowHeat': ('float', None, True),
                                                 'heat.lowtemperatureheat.CHPLowHeat': ('float', None, True),
-<<<<<<< HEAD
                                                 'heat.lowtemperatureheat.HydrogenBoilerLowHeat': ('float', None, True),
-=======
->>>>>>> parent of 4bd7e641 (Code for hydrogen boiler.)
                                                 'heat.mediumtemperatureheat.NaturalGasBoilerMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.ElectricBoilerMediumHeat': ('float', None, True),
                                                 'heat.mediumtemperatureheat.HeatPumpMediumHeat': ('float', None, True),

@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                             'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                     'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerLowHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -63,6 +63,10 @@ class Study(EnergyMixStudyManager):
                 len(l_ctrl)) * 0.001)
 
         if 'CHPLowHeat' in self.technologies_list:
+            invest_low_heat_mix_dict['CHPLowHeat'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
+        if 'HydrogenBoilerLowHeat' in self.technologies_list:
             invest_low_heat_mix_dict['CHPLowHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
