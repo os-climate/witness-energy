@@ -23,7 +23,7 @@ from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.resources_models.monotethanolamine import Monotethanolamine
 from energy_models.core.techno_type.base_techno_models.methane_techno import MethaneTechno
-
+from energy_models.core.techno_type.base_techno_models.low_heat_techno import lowheattechno
 
 class UpgradingBiogas(MethaneTechno):
 
@@ -80,9 +80,9 @@ class UpgradingBiogas(MethaneTechno):
                                                                                     self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
         # production
-        # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
-        #     self.techno_infos_dict['low_heat_production'] * \
-        #     self.production[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+        self.production_detailed[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
+            self.techno_infos_dict['low_heat_production'] * self.techno_infos_dict['useful_heat_recovery_factor']  * \
+            self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 
     def get_biogas_needs(self):
         '''

@@ -21,7 +21,7 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
-
+from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
 
 class SMR(SyngasTechno):
 
@@ -152,7 +152,7 @@ class SMR(SyngasTechno):
                                                                         self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                         self.cost_details['efficiency']
 
-        # self.production[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
-        #     self.techno_infos_dict['high_heat_production'] * \
-        #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
+            self.techno_infos_dict['high_heat_production'] * self.techno_infos_dict['useful_heat_recovery_factor'] *  \
+            self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 

@@ -55,6 +55,7 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                  # hydrogen 33.33 * 1e-9 TWh/kg
                                  # https://www.sciencedirect.com/science/article/pii/S2666790822001574
                                  'high_heat_production_unit': 'TWh/TWh',
+                                 'useful_heat_recovery_factor': 0.8,
                                  # Diglio, G., Hanak, D.P., Bareschino, P., Mancusi, E., Pepe, F., Montagnaro, F. and Manovic, V., 2017.
                                  # Techno-economic analysis of sorption-enhanced steam methane reforming in a fixed bed reactor network integrated with fuel cell.
                                  # Journal of Power Sources, 364, pp.41-51.

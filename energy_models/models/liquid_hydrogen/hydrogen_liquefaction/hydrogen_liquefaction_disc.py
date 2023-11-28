@@ -53,7 +53,7 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                  'efficiency': 0.98,
                                  'techno_evo_eff': 'no',
                                  'WACC': 0.1,
-                                 #'heat_recovery_factor': 0.8,
+                                 'heat_recovery_factor': 0.8,
                                  'learning_rate':  0.2,
                                  'lifetime': lifetime,
                                  'lifetime_unit': GlossaryEnergy.Years,
