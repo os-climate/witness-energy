@@ -878,7 +878,7 @@ class Study(EnergyStudyManager):
         for energy_name, study in dict_energy_studies.items():
             if study is not None :
                 for techno_name in study.technologies_list:
-                    print(energy_name, techno_name)
+                    # print(energy_name, techno_name)
                     self.update_dspace_dict_with(f'{energy_name}_{techno_name}_utilization_ratio_array', start_value_utilization_ratio, lower_bound, upper_bound)
 
 

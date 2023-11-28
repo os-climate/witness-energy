@@ -30,7 +30,6 @@ from energy_models.core.stream_type.resources_models.resource_glossary import Re
 import pickle
 
 
-
 class LowTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     """
     High Temperature Heat technos prices test class
