@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                             'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                             'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                     'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                     'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
 TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerLowHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
+                         'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat']
 
 
 class Study(EnergyMixStudyManager):
@@ -66,6 +66,10 @@ class Study(EnergyMixStudyManager):
             invest_low_heat_mix_dict['CHPLowHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
 
+        if 'HydrogenBoilerLowHeat' in self.technologies_list:
+            invest_low_heat_mix_dict['HydrogenBoilerLowHeat'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+
         if self.bspline:
             invest_low_heat_mix_dict[GlossaryEnergy.Years] = self.years
 
@@ -89,7 +93,8 @@ class Study(EnergyMixStudyManager):
                                            'syngas': 80.0,
                                            'biogas': 70.0,
                                            'methane': 100,
-                                           'biomass_dry': 45})
+                                           'biomass_dry': 45,
+                                           'hydrogen.gaseous_hydrogen': 40})
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
@@ -123,6 +128,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.HeatPump.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.Geothermal.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.CHP.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.HydrogenBoiler.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,

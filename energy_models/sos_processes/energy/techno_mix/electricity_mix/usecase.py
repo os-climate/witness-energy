@@ -177,7 +177,7 @@ class Study(EnergyMixStudyManager):
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4,
              'biogas': 0.123 / 15.4, 'biomass_dry': - 0.64 / 4.86, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0,
-             'fuel.liquid_fuel': 0.64 / 4.86,
+             'fuel.liquid_fuel': 0.64 / 4.86, 'heat.hightemperatureheat': 0.56 / 3.18, 'heat.mediumtemperatureheat': 0.42 / 2.48, 'heat.lowtemperatureheat': 0.52 / 2.24
              })
 
         # the value for invest_level is just set as an order of magnitude

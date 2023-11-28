@@ -42,7 +42,7 @@ class GeothermalHeat(lowheattechno):
         return self.cost_details[f'{Electricity.name}']
 
 
-    def grad_price_vs_energy_price(self):
+    def grad_price_vs_energy_price_calc(self):
         elec_needs = self.get_theoretical_electricity_needs()
         heat_generated = elec_needs #self.get_theoretical_heat_generated()
         mean_temperature = self.techno_infos_dict['mean_temperature']
@@ -50,9 +50,10 @@ class GeothermalHeat(lowheattechno):
         COP = output_temperature / (output_temperature - mean_temperature)
         efficiency = COP
         #efficiency = self.techno_infos_dict['COP']
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-               lowtemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
-               }
+        # return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
+        #        lowtemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
+        #        }
+        return {}
 
     def compute_consumption_and_production(self):
         """
