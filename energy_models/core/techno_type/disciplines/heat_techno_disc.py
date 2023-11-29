@@ -68,10 +68,7 @@ class LowHeatTechnoDiscipline(TechnoDiscipline):
 
     def get_chart_filter_list(self):
         chart_filters = super().get_chart_filter_list()
-
-        chart_list = ['heat_flux']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters[0].extend(['heat_flux'])
 
         return chart_filters
 
@@ -123,10 +120,7 @@ class MediumHeatTechnoDiscipline(TechnoDiscipline):
 
     def get_chart_filter_list(self):
         chart_filters = super().get_chart_filter_list()
-
-        chart_list = ['heat_flux']
-        chart_filters.append(ChartFilter(
-            'Charts', chart_list, chart_list, 'charts'))
+        chart_filters[0].extend(['heat_flux'])
 
         return chart_filters
 
