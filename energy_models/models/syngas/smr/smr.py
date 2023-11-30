@@ -152,7 +152,7 @@ class SMR(SyngasTechno):
                                                                         self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                         self.cost_details['efficiency']
 
-        self.production_detailed[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
+        self.consumption_detailed[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
             self.techno_infos_dict['high_heat_production'] * self.techno_infos_dict['useful_heat_recovery_factor'] *  \
             self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
