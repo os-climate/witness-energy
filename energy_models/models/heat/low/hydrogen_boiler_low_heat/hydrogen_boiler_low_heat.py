@@ -53,8 +53,8 @@ class HydrogenBoilerLowHeat(lowheattechno):
 
         # Consumption
 
-        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[f'{GaseousHydrogen.name}_needs'] * \
-            self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})']
+        self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[f'{GaseousHydrogen.name}_needs'] * \
+            self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})']
 
         # CO2 production
         # self.production[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = GaseousHydrogen.data_energy_dict['CO2_per_use'] / \

@@ -38,8 +38,8 @@ class HydrogenBoilerHighHeat(highheattechno):
 
         # Consumption
 
-        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[f'{GaseousHydrogen.name}_needs'] * \
-            self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})']
+        self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[f'{GaseousHydrogen.name}_needs'] * \
+            self.production[f'{hightemperatureheat.name} ({self.product_energy_unit})']
         #self.carbon_emissions
         # print('')
         # print(self.carbon_emissions.to_string())
