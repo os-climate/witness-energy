@@ -90,10 +90,10 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     # in TWh
     initial_production = 1*8760/3  # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
 
-    distrib = [1.0, 1.52688172, 0,
-               1.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
-               13.97849462, 9.677419355,   7.52688172,   1.075268817,
-               2.150537634,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0]
+    distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
+               8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
+               3.0, 3.0, 3.0, 3.0,
+               ]
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
