@@ -101,7 +101,7 @@ class CoalExtraction(SolidFuelTechno):
         Need to take into account  CO2 from electricity/fuel production
         '''
 
-        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                        self.cost_details['elec_needs']
         self.carbon_intensity[self.COAL_RESOURCE_NAME] = self.resources_CO2_emissions[self.COAL_RESOURCE_NAME] * \
                                                          self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs']
@@ -112,7 +112,7 @@ class CoalExtraction(SolidFuelTechno):
         # else:
         #     self.carbon_emissions[LiquidFuel.name] = 25.33 * \
         #         self.cost_details['fuel_needs']
-        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[self.COAL_RESOURCE_NAME]
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[self.COAL_RESOURCE_NAME]
         #+ self.carbon_emissions[LiquidFuel.name]
 
     def compute_ch4_emissions(self):

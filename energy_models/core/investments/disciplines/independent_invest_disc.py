@@ -319,41 +319,49 @@ class IndependentInvestDiscipline(SoSWrapp):
                 if chart_filter.filter_key == 'charts_invest':
                     charts = chart_filter.selected_values
 
+        def pimp_string(val: str):
+            val = val.replace('_', ' ')
+            val = val.replace('.', ' - ')
+            val = val[0].upper() + val[1:]
+            return val
+
         if 'Invest Distribution' in charts:
             techno_invests = self.get_sosdisc_inputs(
                 GlossaryEnergy.invest_mix)
 
-            chart_name = f'Distribution of investments on each energy vs years'
+            chart_name = f'Distribution of investments on each energy'
 
             new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                         chart_name=chart_name, stacked_bar=True)
             energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
             ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
+
             for energy in energy_list + ccs_list:
                 techno_list = [
                     col for col in techno_invests.columns if col.startswith(f'{energy}.')]
                 short_df = techno_invests[techno_list]
-                chart_name = f'Distribution of investments for {energy} vs years'
+                chart_name = f'Distribution of investments for {pimp_string(energy)}'
                 new_chart_techno = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                             chart_name=chart_name, stacked_bar=True)
 
                 for techno in techno_list:
                     serie = InstanciatedSeries(
                         techno_invests[GlossaryEnergy.Years].values.tolist(),
-                        short_df[techno].values.tolist(), techno, 'bar')
+                        short_df[techno].values.tolist(), pimp_string(techno.replace(f'{energy}.','')), 'bar')
 
                     new_chart_techno.series.append(serie)
                 instanciated_charts.append(new_chart_techno)
                 invest = short_df.sum(axis=1).values
                 # Add total price
+
                 serie = InstanciatedSeries(
                     techno_invests[GlossaryEnergy.Years].values.tolist(),
-                    invest.tolist(), energy, 'bar')
+                    invest.tolist(), pimp_string(energy), 'bar')
 
                 new_chart_energy.series.append(serie)
 
             forest_investment = self.get_sosdisc_inputs(GlossaryEnergy.ForestInvestmentValue)
-            chart_name = f'Distribution of reforestation investments vs years'
+            chart_name = f'Distribution of reforestation investments'
             agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                          chart_name=chart_name, stacked_bar=True)
             serie_agriculture = InstanciatedSeries(
@@ -368,7 +376,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             new_chart_energy.series.append(serie)
 
             if BiomassDry.name in energy_list:
-                chart_name = f'Distribution of agriculture sector investments vs years'
+                chart_name = f'Distribution of agriculture sector investments'
                 agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                              chart_name=chart_name, stacked_bar=True)
 
@@ -387,4 +395,19 @@ class IndependentInvestDiscipline(SoSWrapp):
 
             instanciated_charts.insert(0, new_chart_energy)
 
+            series = [np.array(serie.ordinate) for serie in new_chart_energy.series]
+            total_invest = np.sum(series, axis=0)
+            chart_name = f'Distribution of investments [%]'
+
+            new_chart_energy_ratio = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Share of total invest [%]',
+                                                        chart_name=chart_name, stacked_bar=True)
+            for serie in new_chart_energy.series:
+                serie_ratio = InstanciatedSeries(
+                    serie.abscissa,
+                    list(np.array(serie.ordinate) / total_invest * 100),
+                    serie.series_name, 'bar'
+                )
+                new_chart_energy_ratio.add_series(serie_ratio)
+
+            instanciated_charts.insert(1, new_chart_energy_ratio)
         return instanciated_charts
