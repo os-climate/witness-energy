@@ -271,10 +271,10 @@ class RWGS(SyngasTechno):
             efficiency
 
         dco2_electricity_dsynags_ratio = -self.slope_elec_demand * \
-            self.energy_CO2_emissions[f'{Electricity.name}'].values
+            self.energy_CO2_emissions[Electricity.name].values
 
         dco2_syngas_dsynags_ratio = (self.compute_dsyngas_needs_dsyngas_ratio(
-        ) * self.energy_CO2_emissions[f'{Syngas.name}'].values / efficiency)
+        ) * self.energy_CO2_emissions[Syngas.name].values / efficiency)
 
         return dco2_syngas_dsynags_ratio - dco2_needs_dsyngas_ratio + dco2_electricity_dsynags_ratio
 
@@ -500,18 +500,18 @@ class RWGS(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_intensity[f'{Syngas.name}'] = self.energy_CO2_emissions[f'{Syngas.name}'] * \
+        self.carbon_intensity[Syngas.name] = self.energy_CO2_emissions[Syngas.name] * \
                                                   self.cost_details['syngas_needs'] / \
                                                   self.cost_details['efficiency']
 
-        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                        self.cost_details['elec_needs']
 
         self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2['name']] * \
                                                self.cost_details['CO2_needs'] / \
                                                self.cost_details['efficiency']
 
-        return self.carbon_intensity[f'{Syngas.name}'] + self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[f'{CO2.name}']
+        return self.carbon_intensity[Syngas.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[f'{CO2.name}']
 
     def compute_dco2_emissions_dsyngas_ratio(self):
         dco2_needs_dsyngas_ratio = self.compute_dco2_needs_dsyngas_ratio()

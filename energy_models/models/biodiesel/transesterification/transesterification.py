@@ -54,35 +54,35 @@ class Transesterification(BioDieselTechno):
 
         # Cost of methanol for 1 kWH of biodiesel
         # $/kWh
-        self.cost_details[f'{Methanol.name}'] = list(
-            self.resources_prices[f'{Methanol.name}'] * self.cost_details[f'{Methanol.name}_needs'] / self.cost_details['efficiency'])
+        self.cost_details[Methanol.name] = list(
+            self.resources_prices[Methanol.name] * self.cost_details[f'{Methanol.name}_needs'] / self.cost_details['efficiency'])
 
         # Cost of natural oil for 1 kWH of biodiesel
         # $/kwh
-        self.cost_details[f'{NaturalOil.name}'] = list(
-            self.resources_prices[f'{NaturalOil.name}'] * self.cost_details[f'{NaturalOil.name}_needs'] / self.cost_details['efficiency'])
+        self.cost_details[NaturalOil.name] = list(
+            self.resources_prices[NaturalOil.name] * self.cost_details[f'{NaturalOil.name}_needs'] / self.cost_details['efficiency'])
 
         # Cost of sodium hydroxyde for 1 kWH of biodiesel
         # $/kwh
         # as potassium hydroxide can also be used, the price of the catalyst is the average of
         # potassium hydroxide and sodium hydroxide price
-        catalyst_price = (self.resources_prices[f'{SodiumHydroxide.name}'] +
-                          self.resources_prices[f'{PotassiumHydroxide.name}']) / 2
-        self.cost_details[f'{SodiumHydroxide.name}'] = list(
+        catalyst_price = (self.resources_prices[SodiumHydroxide.name] +
+                          self.resources_prices[PotassiumHydroxide.name]) / 2
+        self.cost_details[SodiumHydroxide.name] = list(
             catalyst_price * self.cost_details[f'{SodiumHydroxide.name}_needs'] / self.cost_details['efficiency'])
 
         # Cost of 1kg of water for 1 kWH of biodiesel
         # $/kWh
-        self.cost_details[f'{Water.name}'] = list(
-            self.resources_prices[f'{Water.name}'] * self.cost_details[f'{Water.name}_needs'] / self.cost_details['efficiency'])
+        self.cost_details[Water.name] = list(
+            self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs'] / self.cost_details['efficiency'])
 
         # Cost of electricity for 1 kWH of biodiesel
-        self.cost_details[f'{Electricity.name}'] = list(
+        self.cost_details[Electricity.name] = list(
             self.prices[Electricity.name] * self.cost_details[f'{Electricity.name}_needs'] / self.cost_details['efficiency'])
 
-        return self.cost_details[f'{Methanol.name}'] + self.cost_details[f'{NaturalOil.name}'] \
-            + self.cost_details[f'{SodiumHydroxide.name}'] + self.cost_details[f'{Water.name}'] \
-            + self.cost_details[f'{Electricity.name}']
+        return self.cost_details[Methanol.name] + self.cost_details[NaturalOil.name] \
+            + self.cost_details[SodiumHydroxide.name] + self.cost_details[Water.name] \
+            + self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -149,7 +149,7 @@ class Transesterification(BioDieselTechno):
         Need to take into account  CO2 from electricity/fuel production
         '''
 
-        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                        self.cost_details[f'{Electricity.name}_needs'] / \
                                                        self.cost_details['efficiency']
 
@@ -157,7 +157,7 @@ class Transesterification(BioDieselTechno):
                                                       self.cost_details[f'{SodiumHydroxide.name}_needs'] / \
                                                       self.cost_details['efficiency']
 
-        self.carbon_intensity[f'{NaturalOil.name}'] = self.resources_CO2_emissions[f'{NaturalOil.name}'] * \
+        self.carbon_intensity[NaturalOil.name] = self.resources_CO2_emissions[NaturalOil.name] * \
                                                       self.cost_details[f'{NaturalOil.name}_needs'] / \
                                                       self.cost_details['efficiency']
 
@@ -169,8 +169,8 @@ class Transesterification(BioDieselTechno):
                                             self.cost_details[f'{Water.name}_needs'] / \
                                             self.cost_details['efficiency']
 
-        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[SodiumHydroxide.name] + \
-               self.carbon_intensity[f'{NaturalOil.name}'] + self.carbon_intensity[Methanol.name] + \
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[SodiumHydroxide.name] + \
+               self.carbon_intensity[NaturalOil.name] + self.carbon_intensity[Methanol.name] + \
                self.carbon_intensity[Water.name]
 
     def grad_co2_emissions_vs_resources_co2_emissions(self):

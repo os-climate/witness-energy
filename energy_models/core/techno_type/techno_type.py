@@ -482,7 +482,6 @@ class TechnoType:
         self.cost_details['CO2Tax_Part'] = self.cost_details[self.name] - \
                                            self.cost_details[f'{self.name}_wotaxes']
 
-
         return self.cost_details
 
     def add_percentage_to_total(self, part_of_total):

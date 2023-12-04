@@ -71,10 +71,10 @@ class TransesterificationPriceTestCase(unittest.TestCase):
                                                    'biomass_dry': 68.12,
                                                    'wet_biomass': 56,
                                                    'wood': years * [120],
-                                                   f'{NaturalOil.name}': 31 * [36.25],
-                                                   f'{Methanol.name}': 31 * [298],
-                                                   f'{SodiumHydroxide.name}': 31 * [425],
-                                                   f'{PotassiumHydroxide.name}': 31 * [772],
+                                                   NaturalOil.name: 31 * [36.25],
+                                                   Methanol.name: 31 * [298],
+                                                   SodiumHydroxide.name: 31 * [425],
+                                                   PotassiumHydroxide.name: 31 * [772],
                                                    })
         self.resources_prices = default_resources_price_df
 

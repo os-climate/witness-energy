@@ -43,23 +43,23 @@ class BiomassFermentation(EthanolTechno):
         self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
 
-        self.cost_details[f'{BiomassDry.name}'] = \
-            self.prices[f'{BiomassDry.name}'] * \
+        self.cost_details[BiomassDry.name] = \
+            self.prices[BiomassDry.name] * \
             self.cost_details[f'{BiomassDry.name}_needs'] / \
             self.cost_details['efficiency']
 
-        self.cost_details[f'{Water.name}'] = \
-            self.resources_prices[f'{Water.name}'] * \
+        self.cost_details[Water.name] = \
+            self.resources_prices[Water.name] * \
             self.cost_details[f'{Water.name}_needs'] / \
             self.cost_details['efficiency']
 
-        self.cost_details[f'{Electricity.name}'] = \
+        self.cost_details[Electricity.name] = \
             self.prices[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
             self.cost_details['efficiency']
 
-        return self.cost_details[f'{BiomassDry.name}'] + self.cost_details[f'{Water.name}'] + \
-               self.cost_details[f'{Electricity.name}']
+        return self.cost_details[BiomassDry.name] + self.cost_details[Water.name] + \
+               self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -113,7 +113,7 @@ class BiomassFermentation(EthanolTechno):
         Need to take into account CO2 from electricity/fuel production
         '''
 
-        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                        self.cost_details[f'{Electricity.name}_needs'] / \
                                                        self.cost_details['efficiency']
 
@@ -125,7 +125,7 @@ class BiomassFermentation(EthanolTechno):
                                             self.cost_details[f'{Water.name}_needs'] / \
                                             self.cost_details['efficiency']
 
-        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[f'{BiomassDry.name}'] + \
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[BiomassDry.name] + \
                self.carbon_intensity[Water.name]
 
     def get_theoretical_biomass_needs(self):

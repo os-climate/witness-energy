@@ -46,7 +46,7 @@ class CoElectrolysis(SyngasTechno):
                                            / self.cost_details['efficiency'])
 
         # Cost of H20 for 1 kWH of H2
-        self.cost_details[Water.name] = list(self.resources_prices[f'{Water.name}'] * self.cost_details['water_needs']
+        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs']
                                              / self.cost_details['efficiency'])
 
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
@@ -85,14 +85,14 @@ class CoElectrolysis(SyngasTechno):
                                                self.cost_details['CO2_needs'] / \
                                                self.cost_details['efficiency']
 
-        self.carbon_intensity[f'{Water.name}'] = self.resources_CO2_emissions[f'{Water.name}'] * \
+        self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
                                                  self.cost_details['water_needs'] / self.cost_details['efficiency']
 
-        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                        self.cost_details['elec_needs']
 
-        return self.carbon_intensity[f'{CO2.name}'] + self.carbon_intensity[f'{Water.name}'] + \
-               self.carbon_intensity[f'{Electricity.name}']
+        return self.carbon_intensity[f'{CO2.name}'] + self.carbon_intensity[Water.name] + \
+               self.carbon_intensity[Electricity.name]
 
     def grad_co2_emissions_vs_resources_co2_emissions(self):
         '''

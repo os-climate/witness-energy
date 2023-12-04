@@ -28,12 +28,12 @@ class HeatPump(highheattechno):
         Compute primary costs to produce 1kWh of Heat Pump Heat Generation
         """
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
-        self.cost_details[f'{Electricity.name}'] = \
+        self.cost_details[Electricity.name] = \
             self.prices[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
             self.cost_details['efficiency']
 
-        return self.cost_details[f'{Electricity.name}']
+        return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         elec_needs = self.get_theoretical_electricity_needs()

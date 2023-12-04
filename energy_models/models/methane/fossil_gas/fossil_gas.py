@@ -36,14 +36,14 @@ class FossilGas(MethaneTechno):
         # needs in [kg/kWh]
         self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'] = self.get_fuel_needs(
         ) / Methane.data_energy_dict['calorific_value']  # kg/kWh
-        self.cost_details[f'{Electricity.name}'] = list(
-            self.prices[f'{Electricity.name}'] * self.cost_details['elec_needs'])
+        self.cost_details[Electricity.name] = list(
+            self.prices[Electricity.name] * self.cost_details['elec_needs'])
         # resources price [$/t] since needs are in [kg/kWh] to have cost in
         # [$/MWh]
-        self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}'] = list(
-            self.resources_prices[f'{self.NATURAL_GAS_RESOURCE_NAME}'] * self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'])
+        self.cost_details[self.NATURAL_GAS_RESOURCE_NAME] = list(
+            self.resources_prices[self.NATURAL_GAS_RESOURCE_NAME] * self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'])
         # cost to produce 1Kwh of methane
-        return self.cost_details[f'{Electricity.name}'] + self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}']
+        return self.cost_details[Electricity.name] + self.cost_details[self.NATURAL_GAS_RESOURCE_NAME]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -94,11 +94,11 @@ class FossilGas(MethaneTechno):
         Need to take into account  CO2 from electricity production 
         '''
 
-        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                        self.cost_details['elec_needs']
 
         self.carbon_intensity[self.NATURAL_GAS_RESOURCE_NAME] = \
             self.resources_CO2_emissions[self.NATURAL_GAS_RESOURCE_NAME] * \
             self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']
 
-        return self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[self.NATURAL_GAS_RESOURCE_NAME]
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[self.NATURAL_GAS_RESOURCE_NAME]
