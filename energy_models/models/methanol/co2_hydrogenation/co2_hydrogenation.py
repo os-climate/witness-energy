@@ -35,28 +35,28 @@ class CO2Hydrogenation(MethanolTechno):
         self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
 
-        self.cost_details[f'{CarbonCapture.name}'] = \
-            self.prices[f'{CarbonCapture.name}'] * \
+        self.cost_details[CarbonCapture.name] = \
+            self.prices[CarbonCapture.name] * \
             self.cost_details[f'{CarbonCapture.name}_needs'] / \
             self.cost_details['efficiency']
 
-        self.cost_details[f'{GaseousHydrogen.name}'] = \
-            self.prices[f'{GaseousHydrogen.name}'] * \
+        self.cost_details[GaseousHydrogen.name] = \
+            self.prices[GaseousHydrogen.name] * \
             self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
             self.cost_details['efficiency']
 
-        self.cost_details[f'{Water.name}'] = \
-            self.resources_prices[f'{Water.name}'] * \
+        self.cost_details[Water.name] = \
+            self.resources_prices[Water.name] * \
             self.cost_details[f'{Water.name}_needs'] / \
             self.cost_details['efficiency']
 
-        self.cost_details[f'{Electricity.name}'] = \
+        self.cost_details[Electricity.name] = \
             self.prices[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
             self.cost_details['efficiency']
 
-        return self.cost_details[f'{CarbonCapture.name}'] + self.cost_details[f'{GaseousHydrogen.name}'] + \
-        self.cost_details[f'{Water.name}'] + self.cost_details[f'{Electricity.name}']
+        return self.cost_details[CarbonCapture.name] + self.cost_details[GaseousHydrogen.name] + \
+        self.cost_details[Water.name] + self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -127,8 +127,8 @@ class CO2Hydrogenation(MethanolTechno):
             self.cost_details[f'{GaseousHydrogen.name}_needs'] / \
             self.cost_details['efficiency']
 
-        self.carbon_intensity[f'{Electricity.name}'] = \
-            self.energy_CO2_emissions[f'{Electricity.name}'] * \
+        self.carbon_intensity[Electricity.name] = \
+            self.energy_CO2_emissions[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
             self.cost_details['efficiency']
 
@@ -137,8 +137,8 @@ class CO2Hydrogenation(MethanolTechno):
             self.cost_details[f'{Water.name}_needs'] / \
             self.cost_details['efficiency']
 
-        return self.carbon_intensity[f'{CarbonCapture.name}'] + self.carbon_intensity[f'{GaseousHydrogen.name}'] + \
-               self.carbon_intensity[f'{Electricity.name}'] + self.carbon_intensity[Water.name]
+        return self.carbon_intensity[CarbonCapture.name] + self.carbon_intensity[GaseousHydrogen.name] + \
+               self.carbon_intensity[Electricity.name] + self.carbon_intensity[Water.name]
 
     def get_theoretical_co2_needs(self):
         """

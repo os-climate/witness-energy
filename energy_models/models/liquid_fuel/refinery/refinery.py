@@ -200,18 +200,18 @@ class Refinery(LiquidFuelTechno):
         Need to take into account  CO2 from electricity/fuel production
         '''
 
-        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                        self.cost_details['elec_needs']
 
-        self.carbon_intensity[f'{GaseousHydrogen.name}'] = self.energy_CO2_emissions[f'{GaseousHydrogen.name}'] * \
+        self.carbon_intensity[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
                                                            self.techno_infos_dict['hydrogen_demand']
 
-        self.carbon_intensity[self.OIL_RESOURCE_NAME] = self.resources_CO2_emissions[f'{self.OIL_RESOURCE_NAME}'] * \
+        self.carbon_intensity[self.OIL_RESOURCE_NAME] = self.resources_CO2_emissions[self.OIL_RESOURCE_NAME] * \
                                                         self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs']
 
-        return self.carbon_intensity[f'{Electricity.name}'] + \
+        return self.carbon_intensity[Electricity.name] + \
                self.carbon_intensity[self.OIL_RESOURCE_NAME] + \
-               self.carbon_intensity[f'{GaseousHydrogen.name}']
+               self.carbon_intensity[GaseousHydrogen.name]
 
     def compute_prod_from_invest(self, construction_delay):
         '''

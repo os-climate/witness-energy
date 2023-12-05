@@ -59,11 +59,11 @@ class HEFAPriceTestCase(unittest.TestCase):
 
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
                                            'electricity': np.ones(len(years)) * 0.135 * 1000,
-                                           f'{GaseousHydrogen.name}': np.ones(len(years)) * 0.1266023955250543 * 1000,
+                                           GaseousHydrogen.name: np.ones(len(years)) * 0.1266023955250543 * 1000,
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.2, f'{GaseousHydrogen.name}': 0.0})
+            {GlossaryEnergy.Years: years, 'electricity': 0.2, GaseousHydrogen.name: 0.0})
         default_resources_price_df = pd.DataFrame({GlossaryEnergy.Years: years,
                                                    # 'water':  years * [2],
                                                    # 'uranium fuel': 1390000,
@@ -73,7 +73,7 @@ class HEFAPriceTestCase(unittest.TestCase):
                                                    # 'wood': years * [120],
                                                    # from
                                                    # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/3
-                                                   f'{NaturalOil.name}': np.ones(len(years)) * 1.054 * 1000,
+                                                   NaturalOil.name: np.ones(len(years)) * 1.054 * 1000,
                                                    })
         self.resources_prices = default_resources_price_df
 
