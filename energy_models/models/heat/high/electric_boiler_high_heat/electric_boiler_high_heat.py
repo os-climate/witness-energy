@@ -31,7 +31,6 @@ class ElectricBoilerHighHeat(highheattechno):
 
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
 
-
         self.cost_details[Electricity.name] = \
             self.prices[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
@@ -40,20 +39,6 @@ class ElectricBoilerHighHeat(highheattechno):
         #print(self.cost_details[Electricity.name])
 
         return self.cost_details[Electricity.name]
-
-    def configure_input(self, inputs_dict):
-        '''
-        Configure with inputs_dict from the discipline
-        '''
-        self.land_rate = inputs_dict['flux_input_dict']['land_rate']
-
-    def compute_heat_flux(self):
-        land_rate = self.land_rate
-        heat_price = self.compute_other_primary_energy_costs()
-        self.heat_flux = land_rate/heat_price
-        self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
-                                               'heat_flux': self.heat_flux})
-        return self.heat_flux_distribution
 
     def grad_price_vs_energy_price(self):
         '''

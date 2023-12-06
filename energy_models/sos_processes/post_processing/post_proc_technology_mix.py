@@ -93,6 +93,8 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
 
         # looping technos for each energies
         for techno in EnergyDict[energyname]['TechnoName']:
+            if 'naturalgasboiler' in techno.str.lower():
+                print(techno)
             # extracting price data from techno_detailed_prices
             techno_prices_f_name = f"{namespace}.{energyname}.{techno}.techno_detailed_prices"
             techno_disc = execution_engine.dm.get_disciplines_with_name(f'{namespace}.{energyname}.{techno}')[0]

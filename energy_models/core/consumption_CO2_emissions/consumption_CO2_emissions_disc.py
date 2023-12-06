@@ -203,7 +203,12 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                     'bio_oil (Mt)': ('float', None, True),
                                                     'water_resource (Mt)': ('float', None, True),
                                                     'dioxygen_resource (Mt)': ('float', None, True),
-                                                    'hydrogen.liquid_hydrogen': ('float', None, True),}}
+                                                    'hydrogen.liquid_hydrogen': ('float', None, True),
+                                                     'heat.lowtemperatureheat': ('float', None, True),
+                                                     'heat.mediumtemperatureheat': ('float', None, True),
+                                                     'heat.hightemperatureheat': ('float', None, True),
+                                                     'electricity (TWh)': ('float', None, True),
+                                                     }}
 
         if GlossaryEnergy.ccs_list in self.get_data_in():
             ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)

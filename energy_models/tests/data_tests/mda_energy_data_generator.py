@@ -41,10 +41,9 @@ def launch_data_pickle_generation(directory=''):
     full_values_dict = {}
     for dict_v in values_dict:
         full_values_dict.update(dict_v)
-
-    full_values_dict[f'{name}.epsilon0'] = 1.0
+    full_values_dict[f'{name}.epsilon0'] = 100.0
     full_values_dict[f'{name}.tolerance'] = 1.0e-8
-    full_values_dict[f'{name}.sub_mda_class'] = 'MDAGaussSeidel' #'GSNewtonMDA'  #'MDANewtonRaphson'  #'MDAGaussSeidel'
+    full_values_dict[f'{name}.sub_mda_class'] = 'GSNewtonMDA' #'GSNewtonMDA'  #'MDANewtonRaphson'  #'MDAGaussSeidel'
     full_values_dict[f'{name}.max_mda_iter'] = 200
 
     ee.load_study_from_input_dict(full_values_dict)
@@ -107,6 +106,7 @@ def launch_data_pickle_generation(directory=''):
         ################
         # Technologies #
         ################
+
         technologies_list = energy_disc.get_sosdisc_inputs(GlossaryEnergy.techno_list)
         for techno in technologies_list:
             # Loop on technologies

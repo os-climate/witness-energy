@@ -278,6 +278,10 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                      'water_resource (Mt)': ('float', None, True),
                                                      'dioxygen_resource (Mt)': ('float', None, True),
+                                                     'heat.lowtemperatureheat': ('float', None, True),
+                                                     'heat.mediumtemperatureheat': ('float', None, True),
+                                                     'heat.hightemperatureheat': ('float', None, True),
+                                                     'electricity (TWh)': ('float', None, True),
                                                      }
                         }
             if GlossaryEnergy.ccs_list in self.get_data_in():

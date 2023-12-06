@@ -43,7 +43,7 @@ class HeatPump(highheattechno):
         COP = output_temperature / (output_temperature - mean_temperature)
         efficiency = COP
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-               hightemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
+               # hightemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
                }
     def compute_consumption_and_production(self):
         """
@@ -69,16 +69,5 @@ class HeatPump(highheattechno):
 
         return electricity_needs
 
-    def configure_input(self, inputs_dict):
-        '''
-        Configure with inputs_dict from the discipline
-        '''
-        self.land_rate = inputs_dict['flux_input_dict']['land_rate']
 
-    def compute_heat_flux(self):
-        land_rate = self.land_rate
-        heat_price = self.compute_other_primary_energy_costs()
-        self.heat_flux = land_rate/heat_price
-        self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
-                                               'heat_flux': self.heat_flux})
-        return self.heat_flux_distribution
+

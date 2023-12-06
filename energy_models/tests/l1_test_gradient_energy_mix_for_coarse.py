@@ -30,7 +30,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
     Energy mix jacobian test class
     """
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return []
@@ -114,9 +114,9 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryEnergy.EnergyCapitalDfValue}',
                                      f'{self.name}.{self.model_name}.energy_prices_after_tax'
                                      ])
-        AbstractJacobianUnittest.DUMP_JACOBIAN = False
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = False
         path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls', 'jacobian_coarse_energymix_co2_emissions.pkl')
-        os.remove(path_pickle)
+        #os.remove(path_pickle)
 
     def test_02_energy_mix_co2_tax(self):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
@@ -130,7 +130,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                             discipline=self.disc, step=1.0e-12, derr_approx='complex_step', threshold=1e-5,
                             local_data=self.disc.local_data,
                             inputs=inputs_names, outputs=energy_mix_output)
-        AbstractJacobianUnittest.DUMP_JACOBIAN = False
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = False
         path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls',  'jacobian_coarse_energy_mix_co2_tax.pkl')
-        os.remove(path_pickle)
+        #os.remove(path_pickle)
         

@@ -210,6 +210,16 @@ class Refinery(LiquidFuelTechno):
         else:
             self.cost_details[f'{self.name}_wotaxes'] = self.cost_details[self.name]
 
+        # CAPEX in ($/MWh)
+        self.cost_details['CAPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * crf
+
+        # Running OPEX in ($/MWh)
+        self.cost_details['OPEX_Part'] = self.cost_details[f'Capex_{self.name}'] * \
+                                         (self.techno_infos_dict['Opex_percentage']) + \
+                                         self.cost_details['transport'] + self.cost_details['energy_costs']
+        # CO2 Tax in ($/MWh)
+        self.cost_details['CO2Tax_Part'] = self.cost_details[self.name] - \
+                                           self.cost_details[f'{self.name}_wotaxes']
         return self.cost_details
 
     def compute_CO2_emissions_from_input_resources(self):
