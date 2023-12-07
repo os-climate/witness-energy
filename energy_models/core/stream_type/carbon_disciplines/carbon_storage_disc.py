@@ -49,11 +49,11 @@ class CarbonStorageDiscipline(StreamDiscipline):
                                   'unit': 'defined in dict'},
                }
 
-    DESC_IN.update(StreamDiscipline.DESC_IN)
+    DESC_IN.update(StreamDiscipline.DESC_IN.copy())
 
     energy_name = CarbonStorage.name
 
-    DESC_OUT = StreamDiscipline.DESC_OUT  # -- add specific techno outputs to this
+    DESC_OUT = StreamDiscipline.DESC_OUT.copy()  # -- add specific techno outputs to this
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
