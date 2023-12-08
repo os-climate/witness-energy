@@ -76,11 +76,11 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                   'unit': 'defined in dict'},
                }
 
-    DESC_IN.update(StreamDiscipline.DESC_IN)
+    DESC_IN.update(StreamDiscipline.DESC_IN.copy())
 
     energy_name = CarbonCapture.name
 
-    DESC_OUT = StreamDiscipline.DESC_OUT
+    DESC_OUT = StreamDiscipline.DESC_OUT.copy()
 
     DESC_OUT.update({'carbon_captured_type': {'type': 'dataframe', 'unit': 'Mt'},
                 'carbon_captured_type_woratio': {'type': 'dataframe', 'unit': 'Mt'}})
