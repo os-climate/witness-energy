@@ -110,7 +110,7 @@ class NaturalGasBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
                3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0,
                2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0,
-               1.0, 1.0, 1.0, 1.0,
+               3.0, 3.0, 3.0, 3.0,
                ]
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),

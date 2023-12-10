@@ -43,8 +43,8 @@ def launch_data_pickle_generation(directory=''):
         full_values_dict.update(dict_v)
     full_values_dict[f'{name}.epsilon0'] = 100.0
     full_values_dict[f'{name}.tolerance'] = 1.0e-8
-    full_values_dict[f'{name}.sub_mda_class'] = 'GSNewtonMDA' #'GSNewtonMDA'  #'MDANewtonRaphson'  #'MDAGaussSeidel'
-    full_values_dict[f'{name}.max_mda_iter'] = 200
+    full_values_dict[f'{name}.sub_mda_class'] = 'MDAGaussSeidel' #'GSNewtonMDA'  #'MDANewtonRaphson'  #'MDAGaussSeidel'
+    full_values_dict[f'{name}.max_mda_iter'] = 2
 
     ee.load_study_from_input_dict(full_values_dict)
 
@@ -65,6 +65,14 @@ def launch_data_pickle_generation(directory=''):
     energy_list.remove('biomass_dry')
     for energy in energy_list:
         # Loop on energies
+        # if energy == 'biomass_dry':
+        #     model_name = 'AgricultureMix'
+        #     energy_disc = ee.dm.get_disciplines_with_name(
+        #         f'{name}.{model_name}.{energy}')[0]
+        # else:
+        #     energy_disc = ee.dm.get_disciplines_with_name(
+        #         f'{name}.{model_name}.{energy}')[0]
+
         energy_disc = ee.dm.get_disciplines_with_name(
             f'{name}.{model_name}.{energy}')[0]
         # Inputs
