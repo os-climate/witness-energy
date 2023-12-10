@@ -27,10 +27,10 @@ class WetCropResidues(WetBiomassTechno):
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
-        self.cost_details[f'{Electricity.name}'] = list(
-            self.prices[f'{Electricity.name}'] * self.cost_details['elec_needs'])
+        self.cost_details[Electricity.name] = list(
+            self.prices[Electricity.name] * self.cost_details['elec_needs'])
 
-        return self.cost_details[f'{Electricity.name}']
+        return self.cost_details[Electricity.name]
 
     def compute_consumption_and_production(self):
         """
@@ -51,7 +51,7 @@ class WetCropResidues(WetBiomassTechno):
         Need to take into account  CO2 from electricity/fuel production
         '''
 
-        self.carbon_intensity[f'{Electricity.name}'] = self.energy_CO2_emissions[f'{Electricity.name}'] * \
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
                                                        self.cost_details['elec_needs']
 
-        return self.carbon_intensity[f'{Electricity.name}']
+        return self.carbon_intensity[Electricity.name]

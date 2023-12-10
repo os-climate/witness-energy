@@ -36,7 +36,7 @@ class LowTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
     High Temperature Heat technos prices test class
     """
 
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -55,7 +55,7 @@ class LowTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
 
-        self.energy_name = 'lowtemperatureheat'
+        self.energy_name = 'heat.lowtemperatureheat'
         years = np.arange(2020, 2051)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
@@ -269,6 +269,7 @@ class LowTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-10, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
@@ -519,4 +520,4 @@ if '__main__' == __name__:
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = LowTemperatureHeatJacobianTestCase()
     cls.setUp()
-    cls.test_07_hightemperatureheat_discipline_jacobian()
+    #cls.test_07_hightemperatureheat_discipline_jacobian()

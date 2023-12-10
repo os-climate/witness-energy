@@ -14,6 +14,7 @@ but may not be economically viable in many cases (see: Biogas Fired technology).
 
 Production of high heat is calculated in TWh. Where, consumption of biomass dry(TWh) is more than production of electricity(TWh).
 
+
 ## Data
 The data used for this model is extracted from the IEA Data & statistics[^2] and from an IRENA Report[^3].
 

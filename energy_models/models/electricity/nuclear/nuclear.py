@@ -251,7 +251,7 @@ class Nuclear(ElectricityTechno):
         efficiency = self.configure_efficiency()
         return {
             Water.name: np.identity(
-                len(self.years)) * water_needs / efficiency[:, np.newaxis],
+                len(self.years)) * water_needs , #/ efficiency[:, np.newaxis]
             self.URANIUM_RESOURCE_NAME: np.identity(
-                len(self.years)) * uranium_needs / efficiency[:, np.newaxis],
+                len(self.years)) * uranium_needs , #/ efficiency[:, np.newaxis]
         }

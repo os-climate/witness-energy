@@ -23,7 +23,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.electricity.nuclear.nuclear import Nuclear
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
-
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 class NuclearDiscipline(ElectricityTechnoDiscipline):
     """**EnergyModelsDiscipline** is the :class:`~gems.core.discipline.MDODiscipline`

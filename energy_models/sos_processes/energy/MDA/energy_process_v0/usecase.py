@@ -66,7 +66,7 @@ CARBON_TO_BE_STORED_CONSTRAINT = PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT
 TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF = EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF
 INVEST_DISC_NAME = 'InvestmentDistribution'
 hydropower_name = Electricity.hydropower_name
-
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 class Study(EnergyStudyManager):
     def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
@@ -795,7 +795,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
                        f'{self.study_name}.is_stream_demand': True,
-                       f'{self.study_name}.max_mda_iter': 50,
+                       f'{self.study_name}.max_mda_iter': 2,
                        f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
                        f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.concatenate(
                            (np.ones(5) * 1e-4, np.ones(len(self.years) - 5) / 4), axis=None),
@@ -928,5 +928,15 @@ if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
     uc_cls.ee.display_treeview_nodes()
-    #uc_cls.test()
+    uc_cls.test()
 
+    # #uc_cls.load_data()
+    # uc_cls.run()
+    #
+    # ppf = PostProcessingFactory()
+    # filters = ppf.get_post_processing_filters_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
+    # graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
+    #                                                   filters, as_json=False)
+    #
+    # for graph in graph_list:
+    #     graph.to_plotly().show()
