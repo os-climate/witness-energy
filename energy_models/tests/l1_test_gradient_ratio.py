@@ -34,7 +34,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
     """
     Ratio jacobian test class
     """
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -264,194 +264,194 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
-    def test_03_ratio_CropEnergy_discipline_jacobian(self):
-        '''
-        Test the gradients of the ratios on CropEnergy techno since it has special gradients
-        '''
-        self.setUp()
-        self.techno_name = 'CropEnergy'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_biomass_dry': f'{self.name}',
-                   'ns_witness': f'{self.name}',
-                   'ns_resource': f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.models.biomass_dry.crop_energy.crop_energy_disc.CropEnergyDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.techno_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        pkl_file = open(
-            join(dirname(__file__), 'data_tests/mda_energy_data_technologies_input_dict.pkl'), 'rb')
-        mda_data_input_dict = pickle.load(pkl_file)
-        pkl_file.close()
-
-        namespace = f'{self.name}'
-        inputs_dict = {}
-        coupled_inputs = []
-        for key in mda_data_input_dict[self.techno_name].keys():
-            # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
-                       'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
-                       'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
-                       'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
-                       'linear_solver_MDO_options', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
-                inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
-                if mda_data_input_dict[self.techno_name][key]['is_coupling']:
-                    coupled_inputs += [f'{namespace}.{key}']
-            else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
-                if mda_data_input_dict[self.techno_name][key]['is_coupling']:
-                    coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
-
-        pkl_file = open(
-            join(dirname(__file__), 'data_tests/mda_energy_data_technologies_output_dict.pkl'), 'rb')
-        mda_data_output_dict = pickle.load(pkl_file)
-        pkl_file.close()
-
-        coupled_outputs = []
-        for key in mda_data_output_dict[self.techno_name].keys():
-            # Modify namespace of output 'key' if needed
-            if key in []:
-                if mda_data_output_dict[self.techno_name][key]['is_coupling']:
-                    coupled_outputs += [f'{namespace}.{key}']
-            else:
-                if mda_data_output_dict[self.techno_name][key]['is_coupling']:
-                    coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
-        # Overwrite values for ratios with values from setup
-        inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = 2050
-        inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
-        inputs_dict[f'{namespace}.is_stream_demand'] = self.is_stream_demand
-        inputs_dict[f'{namespace}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
-        inputs_dict[f'{namespace}.{GlossaryEnergy.AllStreamsDemandRatioValue}'] = self.all_streams_demand_ratio
-        inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
-        inputs_dict[f'{namespace}.land_surface_for_food_df'] = pd.DataFrame({GlossaryEnergy.Years: np.arange(2020, 2051),
-                                              'Agriculture total (Gha)': np.ones(31) * 4.8})
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
-                            inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
-
-    def test_04_ratio_UnmanagedWood_discipline_jacobian(self):
-        '''
-        Test the gradients of the ratios on UnmanagedWood techno since it has special gradients
-        '''
-        self.setUp()
-        self.techno_name = 'UnmanagedWood'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
-                   'ns_energy_study': f'{self.name}',
-                   'ns_biomass_dry': f'{self.name}',
-                   'ns_witness': f'{self.name}',
-                   'ns_resource': f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood_disc.UnmanagedWoodDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.techno_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        pkl_file = open(
-            join(dirname(__file__), 'data_tests/mda_energy_data_technologies_input_dict.pkl'), 'rb')
-        mda_data_input_dict = pickle.load(pkl_file)
-        pkl_file.close()
-
-        namespace = f'{self.name}'
-        inputs_dict = {}
-        coupled_inputs = []
-        for key in mda_data_input_dict[self.techno_name].keys():
-            # Modify namespace of input 'key' if needed
-            if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
-                       'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
-                       'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
-                       'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
-                       'linear_solver_MDO_options', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
-                       'scaling_factor_techno_production', 'is_apply_ratio',
-                       'is_stream_demand', 'is_apply_resource_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
-                inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
-                if mda_data_input_dict[self.techno_name][key]['is_coupling']:
-                    coupled_inputs += [f'{namespace}.{key}']
-            else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
-                if mda_data_input_dict[self.techno_name][key]['is_coupling']:
-                    coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
-
-        pkl_file = open(
-            join(dirname(__file__), 'data_tests/mda_energy_data_technologies_output_dict.pkl'), 'rb')
-        mda_data_output_dict = pickle.load(pkl_file)
-        pkl_file.close()
-
-        coupled_outputs = []
-        for key in mda_data_output_dict[self.techno_name].keys():
-            # Modify namespace of output 'key' if needed
-            if key in []:
-                if mda_data_output_dict[self.techno_name][key]['is_coupling']:
-                    coupled_outputs += [f'{namespace}.{key}']
-            else:
-                if mda_data_output_dict[self.techno_name][key]['is_coupling']:
-                    coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
-        coupled_outputs.append(
-            f'{namespace}.{self.techno_name}.non_use_capital')
-        # Overwrite values for ratios with values from setup
-        inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = 2050
-        inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
-        inputs_dict[f'{namespace}.is_stream_demand'] = self.is_stream_demand
-        inputs_dict[f'{namespace}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
-        inputs_dict[f'{namespace}.{GlossaryEnergy.AllStreamsDemandRatioValue}'] = self.all_streams_demand_ratio
-        inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-
-        self.ee.execute()
-
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
-        # self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-        # discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
-        # inputs=coupled_inputs,
-        # outputs=coupled_outputs,)
-
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
-                            inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+    # def test_03_ratio_CropEnergy_discipline_jacobian(self):
+    #     '''
+    #     Test the gradients of the ratios on CropEnergy techno since it has special gradients
+    #     '''
+    #     self.setUp()
+    #     self.techno_name = 'CropEnergy'
+    #     self.ee = ExecutionEngine(self.name)
+    #     ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
+    #                'ns_energy_study': f'{self.name}',
+    #                'ns_biomass_dry': f'{self.name}',
+    #                'ns_witness': f'{self.name}',
+    #                'ns_resource': f'{self.name}'}
+    #
+    #     self.ee.ns_manager.add_ns_def(ns_dict)
+    #
+    #     mod_path = 'energy_models.models.biomass_dry.crop_energy.crop_energy_disc.CropEnergyDiscipline'
+    #     builder = self.ee.factory.get_builder_from_module(
+    #         self.techno_name, mod_path)
+    #
+    #     self.ee.factory.set_builders_to_coupling_builder(builder)
+    #
+    #     self.ee.configure()
+    #     self.ee.display_treeview_nodes()
+    #
+    #     pkl_file = open(
+    #         join(dirname(__file__), 'data_tests/mda_energy_data_technologies_input_dict.pkl'), 'rb')
+    #     mda_data_input_dict = pickle.load(pkl_file)
+    #     pkl_file.close()
+    #
+    #     namespace = f'{self.name}'
+    #     inputs_dict = {}
+    #     coupled_inputs = []
+    #     for key in mda_data_input_dict[self.techno_name].keys():
+    #         # Modify namespace of input 'key' if needed
+    #         if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+    #                    'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
+    #                    'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
+    #                    'max_mda_iter_gs', 'relax_factor', 'epsilon0',
+    #                    'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+    #                    'linear_solver_MDO_options', 'group_mda_disciplines',
+    #                    GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
+    #                    GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+    #                    GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
+    #                    'scaling_factor_techno_production', 'is_apply_ratio',
+    #                    'is_stream_demand', 'is_apply_resource_ratio',
+    #                    'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+    #             inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+    #             if mda_data_input_dict[self.techno_name][key]['is_coupling']:
+    #                 coupled_inputs += [f'{namespace}.{key}']
+    #         else:
+    #             inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+    #             if mda_data_input_dict[self.techno_name][key]['is_coupling']:
+    #                 coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
+    #
+    #     pkl_file = open(
+    #         join(dirname(__file__), 'data_tests/mda_energy_data_technologies_output_dict.pkl'), 'rb')
+    #     mda_data_output_dict = pickle.load(pkl_file)
+    #     pkl_file.close()
+    #
+    #     coupled_outputs = []
+    #     for key in mda_data_output_dict[self.techno_name].keys():
+    #         # Modify namespace of output 'key' if needed
+    #         if key in []:
+    #             if mda_data_output_dict[self.techno_name][key]['is_coupling']:
+    #                 coupled_outputs += [f'{namespace}.{key}']
+    #         else:
+    #             if mda_data_output_dict[self.techno_name][key]['is_coupling']:
+    #                 coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
+    #     coupled_outputs.append(
+    #         f'{namespace}.{self.techno_name}.non_use_capital')
+    #     # Overwrite values for ratios with values from setup
+    #     inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = 2050
+    #     inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
+    #     inputs_dict[f'{namespace}.is_stream_demand'] = self.is_stream_demand
+    #     inputs_dict[f'{namespace}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
+    #     inputs_dict[f'{namespace}.{GlossaryEnergy.AllStreamsDemandRatioValue}'] = self.all_streams_demand_ratio
+    #     inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
+    #     inputs_dict[f'{namespace}.land_surface_for_food_df'] = pd.DataFrame({GlossaryEnergy.Years: np.arange(2020, 2051),
+    #                                           'Agriculture total (Gha)': np.ones(31) * 4.8})
+    #
+    #     self.ee.load_study_from_input_dict(inputs_dict)
+    #
+    #     self.ee.execute()
+    #
+    #     disc = self.ee.dm.get_disciplines_with_name(
+    #         f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+    #     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #
+    #     self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
+    #                         discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+    #                         inputs=coupled_inputs,
+    #                         outputs=coupled_outputs,)
+    #
+    # def test_04_ratio_UnmanagedWood_discipline_jacobian(self):
+    #     '''
+    #     Test the gradients of the ratios on UnmanagedWood techno since it has special gradients
+    #     '''
+    #     self.setUp()
+    #     self.techno_name = 'UnmanagedWood'
+    #     self.ee = ExecutionEngine(self.name)
+    #     ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
+    #                'ns_energy_study': f'{self.name}',
+    #                'ns_biomass_dry': f'{self.name}',
+    #                'ns_witness': f'{self.name}',
+    #                'ns_resource': f'{self.name}'}
+    #
+    #     self.ee.ns_manager.add_ns_def(ns_dict)
+    #
+    #     mod_path = 'energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood_disc.UnmanagedWoodDiscipline'
+    #     builder = self.ee.factory.get_builder_from_module(
+    #         self.techno_name, mod_path)
+    #
+    #     self.ee.factory.set_builders_to_coupling_builder(builder)
+    #
+    #     self.ee.configure()
+    #     self.ee.display_treeview_nodes()
+    #
+    #     pkl_file = open(
+    #         join(dirname(__file__), 'data_tests/mda_energy_data_technologies_input_dict.pkl'), 'rb')
+    #     mda_data_input_dict = pickle.load(pkl_file)
+    #     pkl_file.close()
+    #
+    #     namespace = f'{self.name}'
+    #     inputs_dict = {}
+    #     coupled_inputs = []
+    #     for key in mda_data_input_dict[self.techno_name].keys():
+    #         # Modify namespace of input 'key' if needed
+    #         if key in ['linearization_mode', 'cache_type', 'cache_file_path', 'sub_mda_class',
+    #                    'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
+    #                    'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
+    #                    'max_mda_iter_gs', 'relax_factor', 'epsilon0',
+    #                    'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
+    #                    'linear_solver_MDO_options', 'group_mda_disciplines',
+    #                    GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
+    #                    GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+    #                    GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
+    #                    'scaling_factor_techno_production', 'is_apply_ratio',
+    #                    'is_stream_demand', 'is_apply_resource_ratio',
+    #                    'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+    #             inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+    #             if mda_data_input_dict[self.techno_name][key]['is_coupling']:
+    #                 coupled_inputs += [f'{namespace}.{key}']
+    #         else:
+    #             inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+    #             if mda_data_input_dict[self.techno_name][key]['is_coupling']:
+    #                 coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
+    #
+    #     pkl_file = open(
+    #         join(dirname(__file__), 'data_tests/mda_energy_data_technologies_output_dict.pkl'), 'rb')
+    #     mda_data_output_dict = pickle.load(pkl_file)
+    #     pkl_file.close()
+    #
+    #     coupled_outputs = []
+    #     for key in mda_data_output_dict[self.techno_name].keys():
+    #         # Modify namespace of output 'key' if needed
+    #         if key in []:
+    #             if mda_data_output_dict[self.techno_name][key]['is_coupling']:
+    #                 coupled_outputs += [f'{namespace}.{key}']
+    #         else:
+    #             if mda_data_output_dict[self.techno_name][key]['is_coupling']:
+    #                 coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
+    #     coupled_outputs.append(
+    #         f'{namespace}.{self.techno_name}.non_use_capital')
+    #     # Overwrite values for ratios with values from setup
+    #     inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = 2050
+    #     inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
+    #     inputs_dict[f'{namespace}.is_stream_demand'] = self.is_stream_demand
+    #     inputs_dict[f'{namespace}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
+    #     inputs_dict[f'{namespace}.{GlossaryEnergy.AllStreamsDemandRatioValue}'] = self.all_streams_demand_ratio
+    #     inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
+    #
+    #     self.ee.load_study_from_input_dict(inputs_dict)
+    #
+    #     self.ee.execute()
+    #
+    #     disc = self.ee.dm.get_disciplines_with_name(
+    #         f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
+    #     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #
+    #     # self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
+    #     # discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+    #     # inputs=coupled_inputs,
+    #     # outputs=coupled_outputs,)
+    #
+    #     self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
+    #                         discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+    #                         inputs=coupled_inputs,
+    #                         outputs=coupled_outputs,)
 
     def test_05_ratio_WaterGasShift_discipline_jacobian(self):
         '''

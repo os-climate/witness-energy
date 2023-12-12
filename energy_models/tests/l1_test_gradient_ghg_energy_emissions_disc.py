@@ -59,25 +59,42 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            'fossil', 'renewable', 'biomass_dry','fuel.ethanol', 'carbon_capture', 'carbon_storage',
-            ]] #'heat.lowtemperatureheat', 'heat.mediumtemperatureheat', 'heat.hightemperatureheat'
+            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage',
+        ]]  # 'heat.lowtemperatureheat', 'heat.mediumtemperatureheat', 'heat.hightemperatureheat'
         self.ccs_list = ['carbon_capture', 'carbon_storage']
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)
         pkl_file.close()
 
+        pkl_file = open(
+            join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict_old.pkl'), 'rb')
+        streams_outputs_dict_old = pickle.load(pkl_file)
+        pkl_file.close()
         self.CO2_per_use = {}
         self.CH4_per_use = {}
         self.N2O_per_use = {}
         self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
-            self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
-            self.CH4_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CH4_per_use']['value']
-            self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
-                'value']
-            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
+            # We are using old pickle waiting for refactoring of pickle mda generator
+            if energy == 'biomass_dry':
+                self.CO2_per_use[f'{energy}'] = streams_outputs_dict_old[f'{energy}']['CO2_per_use']['value']
+                self.CH4_per_use[f'{energy}'] = streams_outputs_dict_old[f'{energy}']['CH4_per_use']['value']
+                self.N2O_per_use[f'{energy}'] = streams_outputs_dict_old[f'{energy}']['N2O_per_use']['value']
+                self.energy_production[f'{energy}'] = \
+                    streams_outputs_dict_old[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
+                        'value']
+                self.energy_consumption[f'{energy}'] = \
+                    streams_outputs_dict_old[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
+            else:
+                self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
+                self.CH4_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CH4_per_use']['value']
+                self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
+                self.energy_production[f'{energy}'] = \
+                    streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
+                        'value']
+                self.energy_consumption[f'{energy}'] = \
+                    streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
 
         for i, ccs_name in enumerate(self.ccs_list):
             self.energy_production[f'{ccs_name}'] = \
@@ -131,8 +148,9 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CO2_per_use'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CH4_per_use'] = self.CH4_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.N2O_per_use'] = self.N2O_per_use[energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[
-                    energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = \
+                    self.energy_production[
+                        energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = \
                     self.energy_consumption[energy]
             else:
@@ -140,8 +158,10 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.CH4_per_use'] = self.CH4_per_use[energy]
                 inputs_dict[f'{self.name}.{energy}.N2O_per_use'] = self.N2O_per_use[energy]
-                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
-                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[energy]
+                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[
+                    energy]
+                inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[
+                    energy]
 
         for energy in self.ccs_list:
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
@@ -177,7 +197,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs = [
             f'{self.name}.GHG_total_energy_emissions']
 
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.model_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,

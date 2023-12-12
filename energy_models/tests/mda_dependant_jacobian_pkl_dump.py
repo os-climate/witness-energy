@@ -31,7 +31,7 @@ if __name__ == '__main__':
     os.system('git push')
 
     AbstractJacobianUnittest.launch_all_pickle_generation(
-        jacobian_target, 'l1_test_gradient_biomass_dry.py', test_names=['test_04_biomass_dry_discipline_jacobian'])
+        jacobian_target, '_l1_test_gradient_biomass_dry.py', test_names=['test_04_biomass_dry_discipline_jacobian'])
     AbstractJacobianUnittest.launch_all_pickle_generation(
         jacobian_target, 'l1_test_gradient_carbon_capture.py', test_names=['test_04_carbon_capture_discipline_jacobian'])
     AbstractJacobianUnittest.launch_all_pickle_generation(
