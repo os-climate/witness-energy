@@ -324,18 +324,6 @@ class HeatDiscipline(SoSWrapp):
             new_chart.series.append(serie)
         return new_chart
 
-        # print(product_dict)
-        # for techno in techno_list:
-        #
-        #     display_techno_name = techno.split(".")[-1].replace("_", " ")
-        #     serie = InstanciatedSeries(
-        #         techno_prices[GlossaryEnergy.Years].values.tolist(),
-        #         techno_prices[techno].values.tolist(), f'{display_techno_name} mix price', 'lines')
-        #
-        #     new_chart.series.append(serie)
-        #
-        # return new_chart
-
     def get_charts_consumption_and_production(self):
         instanciated_charts = []
         # Charts for consumption and prod
@@ -479,25 +467,49 @@ class HeatDiscipline(SoSWrapp):
         energy_production = self.get_sosdisc_outputs(
             GlossaryEnergy.EnergyProductionDetailedValue)
 
+        techno_prices = self.get_sosdisc_outputs(
+            'energy_detailed_techno_prices')
+
         chart_name = f'Technology production for {self.energy_name}'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'Production (TWh)',
                                              chart_name=chart_name, stacked_bar=True)
 
-        techno_list = [
-            techno for techno in energy_production if techno != GlossaryEnergy.Years]
+        techno_list = [techno for techno in techno_prices if techno != GlossaryEnergy.Years]
 
+        techno_unique_list = []
         for techno in techno_list:
-            techno_prod = energy_production[techno].values
-            display_techno_name = techno.split(".")[-1].replace("_", " ")
+            if 'LowHeat' in techno:
+                techno_unique_list.append(techno.replace('LowHeat', ''))
 
+            if 'MediumHeat' in techno:
+                techno_unique_list.append(techno.replace('MediumHeat', ''))
+
+            if 'HighHeat' in techno:
+                techno_unique_list.append(techno.replace('HighHeat', ''))
+
+        techno_unique_list = set(techno_unique_list)
+        for techno in techno_unique_list:
+            total_techno_production = energy_production['heat.hightemperatureheat ' + techno + 'HighHeat (TWh)'] \
+                                      + energy_production['heat.lowtemperatureheat ' + techno + 'LowHeat (TWh)'] \
+                                      + energy_production['heat.mediumtemperatureheat ' + techno + 'MediumHeat (TWh)']
             serie = InstanciatedSeries(
                 energy_production[GlossaryEnergy.Years].values.tolist(),
-                techno_prod.tolist(), display_techno_name, 'bar')
+                total_techno_production.tolist(), f'{techno} mix production', 'bar')
+
             new_chart.series.append(serie)
 
-        instanciated_charts.append(new_chart)
+        # for techno in techno_list:
+        #     techno_prod = energy_production[techno].values
+        #     display_techno_name = techno.split(".")[-1].replace("_", " ")
+        #
+        #     serie = InstanciatedSeries(
+        #         energy_production[GlossaryEnergy.Years].values.tolist(),
+        #         techno_prod.tolist(), display_techno_name, 'bar')
+        #     new_chart.series.append(serie)
 
+        instanciated_charts.append(new_chart)
+        #print(instanciated_charts)
         return instanciated_charts
 
     def get_chart_technology_mix(self, years_list):
@@ -505,23 +517,64 @@ class HeatDiscipline(SoSWrapp):
 
         energy_production = self.get_sosdisc_outputs(
             GlossaryEnergy.EnergyProductionDetailedValue)
-        techno_list = [
-            techno for techno in energy_production if techno != GlossaryEnergy.Years]
-        display_techno_list = []
 
+        techno_prices = self.get_sosdisc_outputs(
+            'energy_detailed_techno_prices')
+
+        techno_list = [techno for techno in techno_prices if techno != GlossaryEnergy.Years]
+
+        techno_unique_list = []
         for techno in techno_list:
-            cut_techno_name = techno.split(".")
-            display_techno_name = cut_techno_name[len(
-                cut_techno_name) - 1].replace("_", " ")
-            display_techno_list.append(display_techno_name)
+            if 'LowHeat' in techno:
+                techno_unique_list.append(techno.replace('LowHeat', ''))
 
+            if 'MediumHeat' in techno:
+                techno_unique_list.append(techno.replace('MediumHeat', ''))
+
+            if 'HighHeat' in techno:
+                techno_unique_list.append(techno.replace('HighHeat', ''))
+
+        techno_unique_list = list(set(techno_unique_list))
         for year in years_list:
-            values = [energy_production.loc[energy_production[GlossaryEnergy.Years]
-                                            == year][techno].sum() for techno in techno_list]
+            total_techno_production = []
+            for techno in techno_unique_list:
+                total_techno_production.append(energy_production['heat.hightemperatureheat ' + techno + 'HighHeat (TWh)'] \
+                                              .loc[energy_production[GlossaryEnergy.Years] == year].iloc[0] \
+                                          + energy_production['heat.lowtemperatureheat ' + techno + 'LowHeat (TWh)'] \
+                                              .loc[energy_production[GlossaryEnergy.Years] == year].iloc[0] \
+                                          + energy_production['heat.mediumtemperatureheat ' + techno + 'MediumHeat (TWh)'] \
+                                              .loc[energy_production[GlossaryEnergy.Years] == year].iloc[0])
 
-            if sum(values) != 0.0:
+                m = energy_production['heat.hightemperatureheat ' + techno + 'HighHeat (TWh)'] \
+                                              .loc[energy_production[GlossaryEnergy.Years] == year].iloc[0] \
+                                          + energy_production['heat.lowtemperatureheat ' + techno + 'LowHeat (TWh)'] \
+                                              .loc[energy_production[GlossaryEnergy.Years] == year].iloc[0] \
+                                          + energy_production['heat.mediumtemperatureheat ' + techno + 'MediumHeat (TWh)'] \
+                                              .loc[energy_production[GlossaryEnergy.Years] == year].iloc[0]
+
+            if sum(total_techno_production) != 0.0:
                 pie_chart = InstanciatedPieChart(
-                    f'Technology productions in {year}', display_techno_list, values)
+                    f'Technology productions in {year}', techno_unique_list, total_techno_production)
                 instanciated_charts.append(pie_chart)
-
         return instanciated_charts
+
+        #########################################################################
+        # techno_list = [
+        #     techno for techno in energy_production if techno != GlossaryEnergy.Years]
+        # display_techno_list = []
+        # for techno in techno_list:
+        #     cut_techno_name = techno.split(".")
+        #     display_techno_name = cut_techno_name[len(
+        #         cut_techno_name) - 1].replace("_", " ")
+        #     display_techno_list.append(display_techno_name)
+        #
+        # for year in years_list:
+        #     values = [energy_production.loc[energy_production[GlossaryEnergy.Years]
+        #                                     == year][techno].sum() for techno in techno_list]
+        #
+        #     if sum(values) != 0.0:
+        #         pie_chart = InstanciatedPieChart(
+        #             f'Technology productions in {year}', display_techno_list, values)
+        #         instanciated_charts.append(pie_chart)
+        #
+        # return instanciated_charts
