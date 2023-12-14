@@ -177,8 +177,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         grad_dict = {
             key: value for key, value in grad_dict.items()}
-        print('')
-        print(grad_dict.keys())
         self.set_partial_derivatives_output_wr_input(
             GlossaryEnergy.TechnoProductionValue, 'syngas_ratio', grad_dict)
 
