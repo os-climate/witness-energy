@@ -182,11 +182,23 @@ class HeatDiscipline(SoSWrapp):
         energy_prices['heat'] = energy_prices['heat'] / \
                                 energy_prices['heat_production']
         energy_prices.drop('heat_production', axis=1)
-        energy_production = energy_production.groupby(level=0, axis=1).sum()
-        energy_consumption = energy_consumption.groupby(level=0, axis=1).sum()
+        energy_production = energy_production.groupby(level=0, axis=1).sum() #.reset_index()
+        energy_consumption = energy_consumption.groupby(level=0, axis=1).sum() #.reset_index()
         energy_production_detailed = energy_production_detailed.groupby(
             level=0, axis=1).sum()
         #energy_heat_flux_detailed = energy_heat_flux_detailed.groupby(level=0, axis=1).sum()
+        #energy_production = energy_production.insert(0, GlossaryEnergy.Years, energy_production)
+        cols = list(energy_production.columns)
+        cols = [cols[-1]] + cols[:-1]
+        energy_production = energy_production[cols]
+
+        cols = list(energy_consumption.columns)
+        cols = [cols[-1]] + cols[:-1]
+        energy_consumption = energy_consumption[cols]
+
+        cols = list(energy_production_detailed.columns)
+        cols = [cols[-1]] + cols[:-1]
+        energy_production_detailed = energy_production_detailed[cols]
 
         outputs_dict = {GlossaryEnergy.EnergyPricesValue: energy_prices,
                         'energy_detailed_techno_prices': energy_detailed_techno_prices,
