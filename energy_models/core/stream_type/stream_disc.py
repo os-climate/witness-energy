@@ -94,7 +94,9 @@ class StreamDiscipline(SoSWrapp):
                                                 'potassium (Mt)': ('float', None, True),
                                                 'biomass_dry (TWh)': ('float', None, True),
                                                 'carbon_capture (Mt)': ('float', None, True),
-                                                'carbon_resource (Mt)': ('float', None, True),}}
+                                                'carbon_resource (Mt)': ('float', None, True),
+                                                'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                'heat.lowtemperatureheat (TWh)': ('float', None, True)}}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
@@ -106,6 +108,8 @@ class StreamDiscipline(SoSWrapp):
                                                  'biomass_dry (TWh)': ('float', None, True),
                                                  'carbon_capture (Mt)': ('float', None, True),
                                                  'carbon_resource (Mt)': ('float', None, True),
+                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                  }}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
@@ -113,6 +117,8 @@ class StreamDiscipline(SoSWrapp):
                                                  'carbon_capture (Mt)': ('float', None, True),
                                                 'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                  'carbon_storage (Mt)': ('float', None, True),
+                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                 }}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
