@@ -30,18 +30,10 @@ class NaturalGasBoilerHighHeat(highheattechno):
         Compute primary costs to produce 1kWh of heat
         """
         self.cost_details[f'{Methane.name}_needs'] = self.get_theoretical_methane_needs()
-
         self.cost_details[f'{Methane.name}'] = \
             self.prices[f'{Methane.name}'] * \
             self.cost_details[f'{Methane.name}_needs'] / \
             self.cost_details['efficiency']
-
-        # methane_needs
-
-        # output needed in this method is in $/kwh of heat
-        # to do so I need to know how much methane is used to produce 1kwh of heat (i need this information in kwh) : methane_needs is in kwh of methane/kwh of heat
-        # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
-        # and then we divide by efficiency
         return self.cost_details[f'{Methane.name}']
 
     def grad_price_vs_energy_price(self):
@@ -51,24 +43,19 @@ class NaturalGasBoilerHighHeat(highheattechno):
         '''
         methane_needs = self.get_theoretical_methane_needs()
         efficiency = self.techno_infos_dict['efficiency']
-
+        efficiency = self.configure_efficiency()
         return {
-                Methane.name: np.identity(len(self.years)) * methane_needs / efficiency
+                Methane.name: np.identity(len(self.years)) * methane_needs / efficiency[:, np.newaxis]
                 }
 
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-
-        
-
-
         # Consumption
-
+        self.compute_other_primary_energy_costs()
         self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
                                                                                     self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})']
-
         # CO2 production
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
                                                                                         Methane.data_energy_dict['calorific_value'] * \
@@ -97,7 +84,6 @@ class NaturalGasBoilerHighHeat(highheattechno):
         heat_density = Methane.data_energy_dict['density']  # kg/m^3
         heat_calorific_value = Methane.data_energy_dict['calorific_value']  # kWh/kg
 
-        co2_prod = co2_captured__production / (heat_density * heat_calorific_value)
-
+        co2_prod =  co2_captured__production #co2_captured__production / (heat_density * heat_calorific_value)
         return co2_prod
 

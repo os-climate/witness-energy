@@ -19,7 +19,7 @@ import numpy as np
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 from energy_models.glossaryenergy import GlossaryEnergy
-
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 class PressureSwingAdsorption(CCTechno):
 
@@ -39,6 +39,7 @@ class PressureSwingAdsorption(CCTechno):
         Compute primary costs which depends on the technology
         """
         self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.cost_details['heat_needs'] = self.get_heat_needs()
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    / self.cost_details['efficiency'])
 
@@ -69,6 +70,9 @@ class PressureSwingAdsorption(CCTechno):
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
+                                                                                self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
+
+        self.production_detailed[f'{hightemperatureheat.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
                                                                                 self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
 
 

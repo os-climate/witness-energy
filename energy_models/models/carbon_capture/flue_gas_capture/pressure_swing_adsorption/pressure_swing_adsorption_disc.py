@@ -78,6 +78,9 @@ class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
                                  'elec_demand': elec_demand_capture * mj_to_kwh_factor / 1000,
                                  'elec_demand_unit': 'kWh/kgCO2',
 
+                                 'heat_demand': 0,
+                                 'heat_demand_unit': 'kWh/kgCO2',
+
                                  'CO2_capacity_peryear': c02_capacity_year,  # kg CO2 /year
                                  'CO2_capacity_peryear_unit': 'kg CO2/year',
 

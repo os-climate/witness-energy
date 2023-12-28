@@ -73,13 +73,13 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                                       0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
                                       0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
-                                      0.0928246539459331]) * 1000.0
+                                      0.0928246539459331]) * 2000.0
 
         # We take biomass price of methane/5.0
         self.energy_prices = pd.DataFrame({'years': years, #'electricity': electricity_price,
                                            'electricity': np.ones(len(years)) * 0.0,
-                                           'methane': np.ones(len(years)) * 100,
-                                           'hydrogen.gaseous_hydrogen': 0.0,
+                                           'methane': np.ones(len(years)) * 70,
+                                           'hydrogen.gaseous_hydrogen': 180.0,
                                            'biomass_dry': np.ones(len(years)) * 45.0,
                                            })
         self.resources_prices = pd.DataFrame({'years': years, ResourceGlossary.WetBiomass['name']: electricity_price / 100.0,
@@ -425,14 +425,15 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
                             discipline=disc_techno, step=1.0e-10, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.invest_level',
-                                    # f'{self.name}.energy_prices',
-                                    # f'{self.name}.energy_CO2_emissions',
-                                    # f'{self.name}.CO2_taxes',
-                                    # f'{self.name}.resources_price',
-                                    # f'{self.name}.resources_CO2_emissions',
+                                    f'{self.name}.energy_prices',
+                                    f'{self.name}.energy_CO2_emissions',
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.resources_price',
+                                    f'{self.name}.resources_CO2_emissions',
                                     ],
 
                             outputs=[
@@ -440,77 +441,79 @@ class HighTemperatureHeatJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.CO2_emissions',
                                      f'{self.name}.{self.model_name}.techno_consumption',
                                      f'{self.name}.{self.model_name}.techno_consumption_woratio',
-                                     #f'{self.name}.{self.model_name}.techno_production',
+                                     f'{self.name}.{self.model_name}.techno_production',
                                      ], )
 
-    # def test_07_hightemperatureheat_discipline_jacobian(self):
-    #
-    #     self.name = 'Test'
-    #     self.energy_name = 'heat.hightemperatureheat'
-    #     self.ee = ExecutionEngine(self.name)
-    #     ns_dict = {'ns_public': f'{self.name}',
-    #                'ns_electricity': f'{self.name}',
-    #                'ns_ref': f'{self.name}',
-    #                'ns_heat_high': f'{self.name}',
-    #                'ns_functions': f'{self.name}',
-    #                'ns_energy_study': f'{self.name}',
-    #                'ns_resource': f'{self.name}'}
-    #
-    #     self.ee.ns_manager.add_ns_def(ns_dict)
-    #     mod_path = 'energy_models.core.stream_type.energy_disciplines.high_heat_disc.HighHeatDiscipline'
-    #     builder = self.ee.factory.get_builder_from_module(
-    #         self.energy_name, mod_path)
-    #
-    #     self.ee.factory.set_builders_to_coupling_builder(builder)
-    #
-    #     self.ee.configure()
-    #     self.ee.display_treeview_nodes()
-    #
-    #     pkl_file = open(
-    #         join(dirname(__file__), 'data_tests/mda_energy_data_streams_input_dict.pkl'), 'rb')
-    #     mda_data_input_dict = pickle.load(pkl_file)
-    #     pkl_file.close()
-    #
-    #     namespace = f'{self.name}'
-    #     inputs_dict = {}
-    #     coupled_inputs = []
-    #     for key in mda_data_input_dict[self.energy_name].keys():
-    #         if key in ['technologies_list', 'CO2_taxes', 'year_start', 'year_end',
-    #                    'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
-    #                    'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
-    #             inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
-    #             if mda_data_input_dict[self.energy_name][key]['is_coupling']:
-    #                 coupled_inputs += [f'{namespace}.{key}']
-    #         else:
-    #             inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
-    #                 'value']
-    #             if mda_data_input_dict[self.energy_name][key]['is_coupling']:
-    #                 coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
-    #
-    #     pkl_file = open(
-    #         join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
-    #     mda_data_output_dict = pickle.load(pkl_file)
-    #     pkl_file.close()
-    #
-    #     coupled_outputs = []
-    #     for key in mda_data_output_dict[self.energy_name].keys():
-    #         if mda_data_output_dict[self.energy_name][key]['is_coupling']:
-    #             coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
-    #
-    #     self.ee.load_study_from_input_dict(inputs_dict)
-    #
-    #     self.ee.execute()
-    #
-    #     disc = self.ee.dm.get_disciplines_with_name(
-    #         f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-    #
-    #
-    #     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    #     self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-    #                         discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
-    #                         local_data=disc.local_data,
-    #                         inputs=coupled_inputs,
-    #                         outputs=coupled_outputs, )
+    def test_07_hightemperatureheat_discipline_jacobian(self):
+
+        self.name = 'Test'
+        self.energy_name = 'heat.hightemperatureheat'
+        self.ee = ExecutionEngine(self.name)
+        ns_dict = {'ns_public': f'{self.name}',
+                   #'ns_electricity': f'{self.name}',
+                   #'ns_energy': f'{self.name}',
+                   #'ns_ref': f'{self.name}',
+                   'ns_heat_high': f'{self.name}',
+                   #'ns_methane': f'{self.name}',
+                   #'ns_functions': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
+                   'ns_resource': f'{self.name}'}
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+        mod_path = 'energy_models.core.stream_type.energy_disciplines.high_heat_disc.HighHeatDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.energy_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        pkl_file = open(
+            join(dirname(__file__), 'data_tests/mda_energy_data_streams_input_dict.pkl'), 'rb')
+        mda_data_input_dict = pickle.load(pkl_file)
+        pkl_file.close()
+
+        namespace = f'{self.name}'
+        inputs_dict = {}
+        coupled_inputs = []
+        for key in mda_data_input_dict[self.energy_name].keys():
+
+            if key in ['technologies_list', 'CO2_taxes', 'year_start', 'year_end',
+                       'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
+                       'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
+                inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
+                if mda_data_input_dict[self.energy_name][key]['is_coupling']:
+                    coupled_inputs += [f'{namespace}.{key}']
+            else:
+                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
+                    'value']
+                if mda_data_input_dict[self.energy_name][key]['is_coupling']:
+                    coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
+
+        pkl_file = open(
+            join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
+        mda_data_output_dict = pickle.load(pkl_file)
+        pkl_file.close()
+
+        coupled_outputs = []
+        for key in mda_data_output_dict[self.energy_name].keys():
+            if mda_data_output_dict[self.energy_name][key]['is_coupling']:
+                coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+
+        self.ee.execute()
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
+
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
+                            inputs=coupled_inputs,
+                            outputs=coupled_outputs, )
 
 if '__main__' == __name__:
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
