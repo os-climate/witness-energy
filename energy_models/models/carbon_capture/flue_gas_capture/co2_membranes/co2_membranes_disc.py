@@ -77,6 +77,9 @@ class CO2MembranesDiscipline(CCTechnoDiscipline):
                                  'elec_demand': elec_demand_capture * mj_to_kwh_factor / 1000,
                                  'elec_demand_unit': 'kWh/kgCO2',
 
+                                 'heat_demand': 0.2485,   # page no. 24      # https://www.osti.gov/servlets/purl/1366433#:~:text=The%20least%20equivalent%20work%20is,from%20DOE%2FNETL%20report%20for
+                                 'heat_demand_unit': 'kWh/kgCO2',
+
                                  'CO2_capacity_peryear': c02_capacity_year,  # kg CO2 /year
                                  'CO2_capacity_peryear_unit': 'kg CO2/year',
 
