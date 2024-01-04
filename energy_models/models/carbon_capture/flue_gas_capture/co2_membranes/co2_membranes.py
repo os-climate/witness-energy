@@ -17,6 +17,7 @@ limitations under the License.
 import numpy as np
 
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -37,16 +38,14 @@ class CO2Membranes(CCTechno):
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs which depends on the technology
-
         """
         self.cost_details['elec_needs'] = self.get_electricity_needs()
+        self.cost_details['heat_needs'] = self.get_heat_needs()
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    / self.cost_details['efficiency'])
 
         self.cost_details[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
-
-
 
         return self.cost_details[Electricity.name]
 
@@ -65,12 +64,13 @@ class CO2Membranes(CCTechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
                                                                                 self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
 
+        self.consumption_detailed[f'{hightemperatureheat.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
+                                                                                self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)
