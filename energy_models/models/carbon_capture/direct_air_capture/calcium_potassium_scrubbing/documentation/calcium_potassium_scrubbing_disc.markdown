@@ -36,3 +36,4 @@ Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and 
 [^2]: Fasihi, M., Efimova, O. and Breyer, C., 2019. Techno-economic assessment of CO2 direct air capture plants. Journal of cleaner production, 224, pp.957-980.
 [^3]: Keith, D.W., Holmes, G., Angelo, D.S. and Heidel, K., 2018. A process for capturing CO2 from the atmosphere. Joule, 2(8), pp.1573-1594.
 [^4]: Vo, T.T., Wall, D.M., Ring, D., Rajendran, K. and Murphy, J.D., 2018. Techno-economic analysis of biogas upgrading via amine scrubber, carbon capture and ex-situ methanation. Applied energy, 212, pp.1191-1202.
+[^5]: calcium potassium scrubbing, https://www.sciencedirect.com/science/article/pii/S2588913318300152
