@@ -7,6 +7,8 @@ RNH2 + CO2  <-->  RNHCOO- + H+
 In all the molecule familly amine,  MonoEthanolamine C2H7NO (shortly called MEA) is usually used for amine scrubbing.
 In this case, Direct Air Capture (DAC) case is considered. In other words, carbone dioxyde is captured directly from ambiant air, with usual CO2 concentration. That is different from the "flue gas" case, which capture CO2 from a high CO2 concentrated gas. A specific section deals with flue gas case.
 
+Amine scrubbing with thermal regeneration will be an important technology for CO2 capture from fossil fuel combustion to manage global climate change. In this process, CO2 is absorbed in a countercurrent contactor at 40–70 °C. The solvent is heated to 100–150 °C and stripped with steam to produce pure CO2. 
+
 Different set-up can be used for the system. The following figure extracted from [^1] is an example
 ![](set_up.PNG)
 
@@ -21,9 +23,12 @@ Secondly, knowing CO2's molar mass is 44 kg/mol, an other way to formulate the q
 
 Amine scrubbing global efficientcy is 90% of CO2 capture. this is given in the comment at the bottom of the set up figure.
 
+**Calculation :**
+
+Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and CO2 from direct air is in Mt.
+
 [^1] gives more detail about the economical part. It assumed that MEA price is 1300$/ton
 Plus, detailed about the sharing of Capex and Opex are given
-
 
 
 
