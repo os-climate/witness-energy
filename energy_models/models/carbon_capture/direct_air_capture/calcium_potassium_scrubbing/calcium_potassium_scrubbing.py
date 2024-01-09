@@ -18,6 +18,7 @@ import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.energy_models.electricity import Electricity
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.calcium_oxide import CalciumOxide
 from energy_models.core.stream_type.resources_models.potassium_hydroxide import PotassiumHydroxide
@@ -112,6 +113,9 @@ class CalciumPotassium(CCTechno):
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
                                                                                 self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})'] # in kWH
 
+        self.consumption_detailed[f'{hightemperatureheat.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
+                                                                            self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in KWH                                                    
+                                                                            
         self.consumption_detailed[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
                                                                             self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
