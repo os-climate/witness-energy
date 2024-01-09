@@ -81,7 +81,7 @@ class RenewableSimpleTechnoDiscipline(RenewableTechnoDiscipline):
                                                          6.2195122, 4.14634140, 2.77439024, 2.5304878],
                                              })
 
-    invest_before_year_start_var = GlossaryEnergy.InvestmentBeforeYearStartDf
+    invest_before_year_start_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.InvestmentBeforeYearStartDf)
     invest_before_year_start_var['default'] = invest_before_year_start
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
