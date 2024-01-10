@@ -6,6 +6,7 @@ This section is dedicated to calcium potassium scrubbing (amine gets its own sec
 
 The full process is an addition of 4 chimical reactions as shown in the figure bellow, extracted from [^1].
 
+[^6]
 ![](set_up.PNG)
 
 The first reaction use potatium-oxide to capture CO2 from the air.
@@ -30,12 +31,19 @@ Note : Datas extracted from [^1] concerns a study about a 1Mt CO2/year DAC plant
 **Datas :**
 Technical data was found in [^1], [^2], [^3] and [^4].
 
-**Calculation :**
+**Calculation[^5] :**
+
 Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and CO2 from direct air is in Mt.
 
+
 [^1]: https://www.cell.com/joule/pdfExtended/S2542-4351(18)30225-3
+
 [^2]: Fasihi, M., Efimova, O. and Breyer, C., 2019. Techno-economic assessment of CO2 direct air capture plants. Journal of cleaner production, 224, pp.957-980.
+
 [^3]: Keith, D.W., Holmes, G., Angelo, D.S. and Heidel, K., 2018. A process for capturing CO2 from the atmosphere. Joule, 2(8), pp.1573-1594.
+
 [^4]: Vo, T.T., Wall, D.M., Ring, D., Rajendran, K. and Murphy, J.D., 2018. Techno-economic analysis of biogas upgrading via amine scrubber, carbon capture and ex-situ methanation. Applied energy, 212, pp.1191-1202.
+
 [^5]: Calcium potassium scrubbing, https://www.sciencedirect.com/science/article/pii/S2588913318300152
+
 [^6]: Calcium potassium scrubbing process, https://www.sciencedirect.com/topics/earth-and-planetary-sciences/wet-scrubber
