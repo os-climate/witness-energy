@@ -1,25 +1,26 @@
 # Combined Heat and Power (CHP)
-## What Is CHP?
-CHP is a technology that produces electricity and thermal energy at high efficiencies using a range of technologies and fuels.
+## What Is CHP? [^1]
+CHP is a technology that produces electricity and thermal energy at high efficiencies using a range of technologies and fuels. [^6]
 
-CHP is not a single technology, but an energy system of individual components that work together to generate electricity and to produce heat that can be utilized in a process.
+CHP is not a single technology, but an energy system of individual components that work together to generate electricity and to produce heat that can be utilized in a process. [^3]
 
 Low temperature heat in CHP technology, the temperature range is below 100 degree C.
 
-In Methane demand calculation, Methane is used to produce 1kwh of heat (this information in kwh) : methane_needs is in
+In Methane demand calculation, Methane is used to produce 1kwh of heat (this information in kwh)[^7] : [^8]methane_needs is in
 kwh of methane / kwh of heat
 
-price of methane is in $/kWh of heat.
+Price of methane is in $/kWh of heat.
 
-CO2 production is in Kg/KWh. That values from methane: CO2 per use(kg/kg) / calorific value(KWh/kg).
+CO2 production is in Kg/KWh. That values from methane: CO2 per use(kg/kg) / calorific value(KWh/kg). [^9]
 
-Combined production of electricity and production of heat are added while calculating the production.
+Combined production of electricity and production of heat are added while calculating the production. [^11]
 
-production in 2021 that is total heat produced by CHP = 117 TWh
+Production in 2021 that is total heat produced by CHP = 117 TWh
 
-initial production for low heat temp = 39 TWh
+[^12] 
+Initial production for low heat temp = 39 TWh
 
-## Working:
+## Working[^2] :
 CHP can use different fuels in the energy generation process, including fossil fuels and renewable fuels such as biofuels.
 
 CHP is a technology that is used on a local scale. The energy produced is distributed to adjacent communities or buildings. Well insulated pipes underground, distribute the energy to local houses, and commercial buildings. 
@@ -35,13 +36,14 @@ The two most common CHP system configurations are:
 Combustion turbine, or reciprocating engine, with heat recovery unit
 Steam boiler with steam turbine.
 
+[^2]
 ![img.png](img.png)
  
 Combustion turbine or reciprocating engine CHP systems burn fuel (natural gas, oil, or biogas) to turn generators to produce electricity and use heat recovery devices to capture the heat from the turbine or engine. This heat is converted into useful thermal energy, usually in the form of steam or hot water.
 
 ## Data
 
-The data used for this model is extracted from the EPA, IEA Data, ScienceDirect & First In Architechture.
+The data used for this model is extracted from the EPA, IEA Data, ScienceDirect & First In Architechture. [^4], [^5], [^10]
 
 [^1]: [About CHP and its configurations – EPA(United States Environmental Protection Agency)](https://www.epa.gov/chp/what-chp)
 
