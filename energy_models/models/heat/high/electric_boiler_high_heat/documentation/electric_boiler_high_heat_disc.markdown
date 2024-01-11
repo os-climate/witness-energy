@@ -1,21 +1,21 @@
 # Electric Boiler
 
-What is the Electric Boiler?
+What is the Electric Boiler? [^2]
 
 An Electric Boiler is a Boiler which operates using electricity rather than a combustible fossil fuel such as gas or oil boilers.
-Electrically heated boilers make use of electric current running through a heating element to create heat, to boil water into high-temperature and high-pressure steam. 
-They can be classified into the automatically controlled and the manually controlled types.
+Electrically heated boilers make use of electric current running through a heating element to create heat, to boil water into high-temperature and high-pressure steam. [^4]
+They can be classified into the automatically controlled and the manually controlled types. 
 
 High temperature heat in electric boiler technology, the temperature range is above 400 degree C.
 
 In electricity demand, Electricity is used to produce 1KWh of heat(this information in KWh): elec_demand is in
-KWh of electricity / KWh of heat.
+KWh of electricity / KWh of heat. [^9]
 
-Production in 2019 that is total heat produced by Electric boiler is 1.51 EJ = 419 TWh.
+Production in 2019 that is total heat produced by Electric boiler is 1.51 EJ = 419 TWh. [^5]
 
-Initial production for high heat temp = 139.67 TWh.
+Initial production for high heat temp = 139.67 TWh. [^10]
 
-Working:
+Working[^1] :
 
 Electric heating is the process of converting electrical current into heat energy. The heating element within an electric heater is called an electrical resistor, and when an electric current passes through the resistor, this is where the heat is created.
 
@@ -27,9 +27,11 @@ The cold water is passed over the metal heating element and heat is transferred,
 
 The exact way in which the boiler works in terms of heating and storing the water depends on the type of electric boiler/heater used.
 
+[^3]
 ![img.png](img.png)
+
 ## Data     
-The data used for this model is extracted from EHC, WBA, EHB Leaflet & Rio heating
+The data used for this model is extracted from EHC, WBA, EHB Leaflet & Rio heating. [^6], [^7], [^8]
 
 [^1]: [Electric boiler Working - rio heating](https://www.rioheating.com/how-do-electric-heaters-work/#:~:text=Electric%20heating%20is%20the%20process,where%20the%20heat%20is%20created.)
 
