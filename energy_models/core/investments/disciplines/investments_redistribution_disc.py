@@ -191,10 +191,13 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
         percentage_gdp_invest_energy = inputs_dict[GlossaryEnergy.EnergyInvestPercentageGDPName][
                                            GlossaryEnergy.EnergyInvestPercentageGDPName].values / 100.  # divide by 100 as it is percentage and *1e3 as we convert to G$
         techno_invest_percentage_df = inputs_dict[GlossaryEnergy.TechnoInvestPercentageName]
+        economics_df = inputs_dict[GlossaryEnergy.EconomicsDfValue]
 
         for energy, techno_list in self.invest_redistribution_model.techno_list_dict.items():
             for techno in techno_list:
                 grad_inv_level_wrt_economics = percentage_gdp_invest_energy * identity * techno_invest_percentage_df[
+                    techno].values / 100.
+                grad_inv_level_wrt_gdp_perc = identity * economics_df[GlossaryEnergy.OutputNetOfDamage].values * techno_invest_percentage_df[
                     techno].values / 100.
 
                 self.set_partial_derivative_for_other_types(
@@ -202,10 +205,20 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                     (GlossaryEnergy.EconomicsDfValue, GlossaryEnergy.OutputNetOfDamage),
                     grad_inv_level_wrt_economics * 1e3)
 
+                self.set_partial_derivative_for_other_types(
+                    (f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
+                    (GlossaryEnergy.EnergyInvestPercentageGDPName, GlossaryEnergy.EnergyInvestPercentageGDPName),
+                    grad_inv_level_wrt_gdp_perc * 1e3 / 100.)
+
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
             (GlossaryEnergy.EconomicsDfValue, GlossaryEnergy.OutputNetOfDamage),
             percentage_gdp_invest_energy * identity)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
+            (GlossaryEnergy.EnergyInvestPercentageGDPName, GlossaryEnergy.EnergyInvestPercentageGDPName),
+            economics_df[GlossaryEnergy.OutputNetOfDamage].values * identity / 100.)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
