@@ -195,7 +195,9 @@ class TestEnergyInvest(unittest.TestCase):
 
         succeed = disc.check_jacobian(derr_approx='complex_step',
                                       inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
-                                              f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}'],
+                                              f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}',
+                                              f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}'
+                                              ],
                                       outputs=
                                       [f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
                                        all_technos_list] + [f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'],
@@ -262,6 +264,7 @@ class TestEnergyInvest(unittest.TestCase):
         succeed = disc.check_jacobian(derr_approx='complex_step',
                                       inputs=[f'{self.name}.{GlossaryEnergy.EconomicsDfValue}',
                                               f'{self.name}.{self.model_name}.{GlossaryEnergy.ForestInvestmentValue}',
+                                              f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestPercentageGDPName}',
                                               f'{self.name}.managed_wood_investment',
                                               f'{self.name}.deforestation_investment',
                                               f'{self.name}.crop_investment'],
