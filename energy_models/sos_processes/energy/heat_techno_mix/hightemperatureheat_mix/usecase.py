@@ -30,12 +30,16 @@ TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerHighHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
                          'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
 
+from sostrades_core.study_manager.study_manager import StudyManager
 
+# class Study(EnergyMixStudyManager):
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST, bspline=True, main_study=True, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
+    # def __init__(self, execution_engine=None):
+    #     super().__init__(__file__, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
@@ -81,7 +85,7 @@ class Study(EnergyMixStudyManager):
         return high_heat_mix_invest_df
 
     def setup_usecase(self):
-        energy_mix_name = 'EnergyMix'
+        energy_mix_name = 'HeatMix'
         self.energy_name = hightemperatureheat.name
         energy_name = f'{energy_mix_name}.{self.energy_name}'
 

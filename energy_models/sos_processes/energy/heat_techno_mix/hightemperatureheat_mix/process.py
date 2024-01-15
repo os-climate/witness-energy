@@ -36,7 +36,7 @@ class ProcessBuilder(EnergyProcessBuilder):
 
         ns_study = self.ee.study_name
         heat_name = hightemperatureheat.name
-        energy_mix = 'EnergyMix'
+        energy_mix = 'HeatMix'
         ns_dict = {
                    'ns_heat_high': f'{ns_study}.{energy_mix}.{heat_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}', # .{energy_mix}
