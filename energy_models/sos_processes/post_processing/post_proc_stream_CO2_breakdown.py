@@ -490,7 +490,7 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
                         '<br>Production: %{customdata[2]: .2e}' + \
                         '<br>CO2 per kWh (color): %{customdata[3]: .2e}' + \
                         '<br>Total CO2 (thickness): %{customdata[4]: .2e}'
-        flux_temp = 0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)) if np.abs(flux_color) > 0. else 0.1
+        flux_temp = 0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)) if np.max(np.abs(flux_color)) > 0. else 0.1 + np.abs(flux_color)
         rgba_list_over = cmap_over(flux_temp)
         rgba_list_under = cmap_under(flux_temp)
         color_over = ['rgb' + str(tuple(int((255 * (x * 0.8 + 0.2)))
@@ -586,7 +586,7 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
                             '<br>Production: %{customdata[2]: .2e}' + \
                             '<br>CO2 per kWh (color): %{customdata[3]: .2e}' + \
                             '<br>Total CO2 (thickness): %{customdata[4]: .2e}'
-            flux_temp = 0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)) if np.abs(flux_color) > 0. else 0.1
+            flux_temp = 0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)) if np.max(np.abs(flux_color)) > 0. else 0.1 + np.abs(flux_color)
             rgba_list_over = cmap_over(flux_temp)
             rgba_list_under = cmap_under(flux_temp)
             color_over = ['rgb' + str(tuple(int((255 * (x * 0.8 + 0.2)))
