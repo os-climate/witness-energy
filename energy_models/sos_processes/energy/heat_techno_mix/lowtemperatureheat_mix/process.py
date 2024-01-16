@@ -15,7 +15,7 @@ limitations under the License.
 '''
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
-from energy_models.sos_processes.energy.techno_mix.lowtemperatureheat_mix.usecase import TECHNOLOGIES_LIST
+from energy_models.sos_processes.energy.heat_techno_mix.lowtemperatureheat_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -36,15 +36,14 @@ class ProcessBuilder(EnergyProcessBuilder):
 
         ns_study = self.ee.study_name
         heat_name = lowtemperatureheat.name
-        energy_mix = 'EnergyMix'
+        energy_mix = 'HeatMix'
         ns_dict = {'ns_heat_low': f'{ns_study}.{energy_mix}.{heat_name}',
                    'ns_energy': f'{ns_study}', # .{energy_mix}
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}', 'ns_resource': f'{ns_study}.{energy_mix}'}
 
         mods_dict = {}
-        mods_dict[f'{energy_mix}.{heat_name}'] = self.get_stream_disc_path(
-            'energy_disciplines', 'LowHeat')
+        mods_dict[f'{energy_mix}.{heat_name}'] = self.get_stream_disc_path('energy_disciplines', 'LowHeat')
         #to get sub dictionary
         for techno_name in self.techno_list:
             mods_dict[f'{energy_mix}.{heat_name}.{techno_name}'] = self.get_techno_disc_path(

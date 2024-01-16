@@ -46,6 +46,7 @@ class Study(EnergyMixStudyManager):
         self.energy_name = None
         self.bspline = bspline
 
+
     def get_investments(self):
         invest_high_heat_mix_dict = {}
         l_ctrl = np.arange(0, 8)
@@ -171,8 +172,6 @@ if '__main__' == __name__:
     logging.info('TEST')
     uc_cls = Study(main_study=True,
                    technologies_list=TECHNOLOGIES_LIST)
-    # print('')
-    # print(TECHNOLOGIES_LIST)
     uc_cls.load_data()
     print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
     uc_cls.run()

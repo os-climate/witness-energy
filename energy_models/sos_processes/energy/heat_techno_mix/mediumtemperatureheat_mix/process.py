@@ -15,7 +15,7 @@ limitations under the License.
 '''
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.sos_processes.energy.techno_mix.mediumtemperatureheat_mix.usecase import TECHNOLOGIES_LIST
+from energy_models.sos_processes.energy.heat_techno_mix.mediumtemperatureheat_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
@@ -37,7 +37,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_study = self.ee.study_name
         # heat = 'Heat'
         heat_name = mediumtemperatureheat.name
-        energy_mix = 'EnergyMix'
+        energy_mix = 'HeatMix'
         ns_dict = {'ns_heat_medium': f'{ns_study}.{energy_mix}.{heat_name}',
                    'ns_energy': f'{ns_study}', #.{energy_mix}
                    'ns_energy_study': f'{ns_study}',

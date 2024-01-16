@@ -82,9 +82,9 @@ class Study(EnergyMixStudyManager):
         return low_heat_mix_invest_df
 
     def setup_usecase(self):
-        energy_mix_name = 'EnergyMix'
+        energy_mix_name = 'HeatMix'
         self.energy_name = lowtemperatureheat.name
-        energy_name = f'EnergyMix.{self.energy_name}'
+        energy_name = f'{energy_mix_name}.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
         # energy_prices data came from test files  of corresponding technologies
