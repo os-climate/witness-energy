@@ -258,7 +258,6 @@ class TechnoType:
         """
         Compute the power installed (W) of the technology for a given investment
         """
-
     def select_resources_ratios(self):
         """! Select the ratios to be added to ratio_df and convert it from % to normal
              This function is to be overloaded in specific techno_models

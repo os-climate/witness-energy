@@ -96,6 +96,7 @@ class StreamDiscipline(SoSWrapp):
                                                 'carbon_capture (Mt)': ('float', None, True),
                                                 'carbon_resource (Mt)': ('float', None, True),
                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                 'heat.lowtemperatureheat (TWh)': ('float', None, True)}}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
@@ -109,6 +110,7 @@ class StreamDiscipline(SoSWrapp):
                                                  'carbon_capture (Mt)': ('float', None, True),
                                                  'carbon_resource (Mt)': ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                  'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                  }}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
@@ -118,6 +120,7 @@ class StreamDiscipline(SoSWrapp):
                                                 'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                  'carbon_storage (Mt)': ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                 'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                  'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                 }}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {

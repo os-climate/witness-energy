@@ -47,8 +47,6 @@ class CO2Membranes(CCTechno):
         self.cost_details[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
-
-
         return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):

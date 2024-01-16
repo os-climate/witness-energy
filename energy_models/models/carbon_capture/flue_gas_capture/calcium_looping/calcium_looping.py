@@ -65,7 +65,6 @@ class CalciumLooping(CCTechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
@@ -73,9 +72,6 @@ class CalciumLooping(CCTechno):
 
         self.consumption_detailed[f'{hightemperatureheat.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
                                                                             self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
-        # Production
-        self.production_detailed[f'{hightemperatureheat.name} ({self.energy_unit})'] = (1 - self.cost_details['efficiency']) * \
-                                                                            self.consumption_detailed[f'{hightemperatureheat.name} ({self.energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

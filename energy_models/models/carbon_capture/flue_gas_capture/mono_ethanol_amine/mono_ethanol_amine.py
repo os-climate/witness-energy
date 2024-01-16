@@ -48,8 +48,6 @@ class MonoEthanolAmine(CCTechno):
         self.cost_details[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
-
-
         return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
@@ -67,7 +65,6 @@ class MonoEthanolAmine(CCTechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
@@ -75,10 +72,7 @@ class MonoEthanolAmine(CCTechno):
 
         self.consumption_detailed[f'{lowtemperatureheat.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
                                                                                     self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
-        # Production
-        self.production_detailed[f'{lowtemperatureheat.name} ({self.energy_unit})'] = (1 - self.cost_details['efficiency']) * \
-                                                                                   self.consumption_detailed[f'{lowtemperatureheat.name} ({self.energy_unit})']
-
+      
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)
         capex_calc_list *= self.compute_capex_variation_from_fg_ratio(
