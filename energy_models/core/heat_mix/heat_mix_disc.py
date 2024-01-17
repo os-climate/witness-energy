@@ -133,8 +133,8 @@ class Heat_Mix_Discipline(SoSWrapp):
                                           'range': [0., 100.]}, }
 
     DESC_OUT = {
-        GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
-        GlossaryEnergy.EnergyCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
+        # GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
+        # GlossaryEnergy.EnergyCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
         'energy_CO2_emissions_after_use': {'type': 'dataframe', 'unit': 'kg/kWh'},
         'co2_emissions_by_energy': {'type': 'dataframe', 'unit': 'Mt'},
         GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
@@ -169,10 +169,10 @@ class Heat_Mix_Discipline(SoSWrapp):
         #     'type': 'dataframe', 'unit': 'TWh',
         #     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
         # },
-        HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC: {
-            'type': 'dataframe', 'unit': 'TWh',
-            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
-        },
+        # HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC: {
+        #     'type': 'dataframe', 'unit': 'TWh',
+        #     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
+        # },
 
         HeatMix.SYNGAS_PROD_OBJECTIVE: {'type': 'array', 'unit': 'TWh',
                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
@@ -408,7 +408,7 @@ class Heat_Mix_Discipline(SoSWrapp):
         outputs_dict = {
                         # GlossaryEnergy.EnergyPricesValue: self.energy_model.energy_prices,
                         'co2_emissions_by_energy': self.energy_model.emissions_by_energy,
-                        GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_model.total_carbon_emissions,
+                        # GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_model.total_carbon_emissions,
                         'energy_CO2_emissions_after_use': self.energy_model.carbon_emissions_after_use,
                         GlossaryEnergy.EnergyProductionValue: scaled_energy_production,
                         GlossaryEnergy.EnergyProductionDetailedValue: self.energy_model.production,
@@ -468,25 +468,25 @@ class Heat_Mix_Discipline(SoSWrapp):
         Update the agriculture name in the inputs dict with the correct energy name
 
         '''
-        energy_list = inputs_dict_orig[GlossaryEnergy.energy_list]
-        agri_name = AgricultureMixDiscipline.name
-        if 'biomass_dry' in energy_list:
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = inputs_dict_orig.pop(
-                f'{agri_name}.{GlossaryEnergy.EnergyConsumptionValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = inputs_dict_orig.pop(
-                f'{agri_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyProductionValue}'] = inputs_dict_orig.pop(
-                f'{agri_name}.{GlossaryEnergy.EnergyProductionValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyPricesValue}'] = inputs_dict_orig.pop(
-                f'{agri_name}.{GlossaryEnergy.EnergyPricesValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.LandUseRequiredValue}'] = inputs_dict_orig.pop(
-                f'{agri_name}.{GlossaryEnergy.LandUseRequiredValue}')
-            inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.CO2EmissionsValue}'] = inputs_dict_orig.pop(
-                f'{agri_name}.{GlossaryEnergy.CO2EmissionsValue}')
-            inputs_dict[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict_orig.pop(
-                f'{agri_name}.CO2_per_use')
-            inputs_dict[f'{BiomassDry.name}.losses_percentage'] = inputs_dict_orig.pop(
-                f'{agri_name}.losses_percentage')
+        # energy_list = inputs_dict_orig[GlossaryEnergy.energy_list]
+        # agri_name = AgricultureMixDiscipline.name
+        # if 'biomass_dry' in energy_list:
+        #     inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = inputs_dict_orig.pop(
+        #         f'{agri_name}.{GlossaryEnergy.EnergyConsumptionValue}')
+        #     inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = inputs_dict_orig.pop(
+        #         f'{agri_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}')
+        #     inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyProductionValue}'] = inputs_dict_orig.pop(
+        #         f'{agri_name}.{GlossaryEnergy.EnergyProductionValue}')
+        #     inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyPricesValue}'] = inputs_dict_orig.pop(
+        #         f'{agri_name}.{GlossaryEnergy.EnergyPricesValue}')
+        #     inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.LandUseRequiredValue}'] = inputs_dict_orig.pop(
+        #         f'{agri_name}.{GlossaryEnergy.LandUseRequiredValue}')
+        #     inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.CO2EmissionsValue}'] = inputs_dict_orig.pop(
+        #         f'{agri_name}.{GlossaryEnergy.CO2EmissionsValue}')
+        #     inputs_dict[f'{BiomassDry.name}.CO2_per_use'] = inputs_dict_orig.pop(
+        #         f'{agri_name}.CO2_per_use')
+        #     inputs_dict[f'{BiomassDry.name}.losses_percentage'] = inputs_dict_orig.pop(
+        #         f'{agri_name}.losses_percentage')
 
     def compute_sos_jacobian(self):
 
@@ -494,7 +494,7 @@ class Heat_Mix_Discipline(SoSWrapp):
         # -- biomass dry values are coming from agriculture mix discipline, but needs to be used in model with biomass dry name
         inputs_dict = {}
         inputs_dict.update(inputs_dict_orig)
-        energy_list = inputs_dict[GlossaryEnergy.energy_list] + inputs_dict[GlossaryEnergy.ccs_list]
+        energy_list = inputs_dict[GlossaryEnergy.energy_list] #+ inputs_dict[GlossaryEnergy.ccs_list]
         self.update_biomass_dry_name(inputs_dict_orig, inputs_dict)
         outputs_dict = self.get_sosdisc_outputs()
         stream_class_dict = HeatMix.stream_class_dict
@@ -532,7 +532,7 @@ class Heat_Mix_Discipline(SoSWrapp):
         # -------------------------------------------#
         # ---- Production / Consumption gradients----#
         # -------------------------------------------#
-        for energy in inputs_dict[GlossaryEnergy.energy_list] + inputs_dict[GlossaryEnergy.ccs_list]:
+        for energy in inputs_dict[GlossaryEnergy.energy_list]: #+ inputs_dict[GlossaryEnergy.ccs_list]:
             ns_energy = self.get_ns_energy(energy)
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.EnergyCapitalDfValue, GlossaryEnergy.Capital),
@@ -594,18 +594,18 @@ class Heat_Mix_Discipline(SoSWrapp):
                                                                     -scaling_factor_energy_production * primary_energy_percentage * dtotal_prod_denergy_prod)
 
                 # constraint solid_fuel + elec gradient
-                if energy in self.energy_model.energy_constraint_list:
-                    self.set_partial_derivative_for_other_types(
-                        (f'{HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                            f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy), (- scaling_factor_energy_production * ((
-                                                                                                                      1 - loss_percentage) - solid_fuel_elec_percentage * dtotal_prod_denergy_prod) / solid_fuel_elec_constraint_ref) * np.identity(
-                            len(years)))
-                else:
-                    self.set_partial_derivative_for_other_types(
-                        (f'{HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                            f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
-                        scaling_factor_energy_production * solid_fuel_elec_percentage * dtotal_prod_denergy_prod / solid_fuel_elec_constraint_ref * np.identity(
-                            len(years)))
+                # if energy in self.energy_model.energy_constraint_list:
+                #     self.set_partial_derivative_for_other_types(
+                #         (f'{HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
+                #             f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy), (- scaling_factor_energy_production * ((
+                #                                                                                                       1 - loss_percentage) - solid_fuel_elec_percentage * dtotal_prod_denergy_prod) / solid_fuel_elec_constraint_ref) * np.identity(
+                #             len(years)))
+                # else:
+                #     self.set_partial_derivative_for_other_types(
+                #         (f'{HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
+                #             f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                #         scaling_factor_energy_production * solid_fuel_elec_percentage * dtotal_prod_denergy_prod / solid_fuel_elec_constraint_ref * np.identity(
+                #             len(years)))
 
                 if energy == self.SYNGAS_NAME:
                     self.set_partial_derivative_for_other_types(
@@ -694,21 +694,21 @@ class Heat_Mix_Discipline(SoSWrapp):
                                     -scaling_factor_energy_consumption * primary_energy_percentage * dtotal_prod_denergy_cons)
                         # constraint solid_fuel + elec gradient
 
-                        if energy in self.energy_model.energy_constraint_list:
-                            self.set_partial_derivative_for_other_types(
-                                (f'{HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                                    f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                    f'{energy} ({stream_class_dict[energy].unit})'), (
-                                                                                             scaling_factor_energy_consumption * (
-                                                                                             1 + solid_fuel_elec_percentage * dtotal_prod_denergy_cons) / solid_fuel_elec_constraint_ref) * np.identity(
-                                    len(years)))
-                        else:
-                            self.set_partial_derivative_for_other_types(
-                                (f'{HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
-                                    f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
-                                    f'{energy} ({stream_class_dict[energy].unit})'),
-                                scaling_factor_energy_consumption * solid_fuel_elec_percentage * dtotal_prod_denergy_cons / solid_fuel_elec_constraint_ref * np.identity(
-                                    len(years)))
+                        # if energy in self.energy_model.energy_constraint_list:
+                        #     self.set_partial_derivative_for_other_types(
+                        #         (f'{HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
+                        #             f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
+                        #             f'{energy} ({stream_class_dict[energy].unit})'), (
+                        #                                                                      scaling_factor_energy_consumption * (
+                        #                                                                      1 + solid_fuel_elec_percentage * dtotal_prod_denergy_cons) / solid_fuel_elec_constraint_ref) * np.identity(
+                        #             len(years)))
+                        # else:
+                        #     self.set_partial_derivative_for_other_types(
+                        #         (f'{HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC}', 'constraint_solid_fuel_elec'), (
+                        #             f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
+                        #             f'{energy} ({stream_class_dict[energy].unit})'),
+                        #         scaling_factor_energy_consumption * solid_fuel_elec_percentage * dtotal_prod_denergy_cons / solid_fuel_elec_constraint_ref * np.identity(
+                        #             len(years)))
 
                         if energy == self.LIQUID_HYDROGEN_NAME:
                             self.set_partial_derivative_for_other_types(
@@ -767,10 +767,10 @@ class Heat_Mix_Discipline(SoSWrapp):
         for energy in energy_list:
             ns_energy = self.get_ns_energy(energy)
             if energy in energies:
-                self.set_partial_derivative_for_other_types(
-                    ('energy_prices_after_tax',
-                     energy), (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy),
-                    np.identity(len(years)))
+                # self.set_partial_derivative_for_other_types(
+                #     ('energy_prices_after_tax',
+                #      energy), (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy),
+                #     np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
                     ('energy_prices_after_tax', energy), (GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.CO2Tax),
                     inputs_dict[f'{energy}.CO2_per_use']['CO2_per_use'].values *
@@ -780,8 +780,8 @@ class Heat_Mix_Discipline(SoSWrapp):
                      energy), (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
                     inputs_dict[GlossaryEnergy.CO2TaxesValue][GlossaryEnergy.CO2Tax].values *
                     np.identity(len(years)))
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyPricesValue, energy), (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy), np.identity(len(years)))
+            # self.set_partial_derivative_for_other_types(
+            #     (GlossaryEnergy.EnergyPricesValue, energy), (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy), np.identity(len(years)))
 
         # -------------------------------#
         # ---Resource Demand gradients---#
@@ -815,10 +815,10 @@ class Heat_Mix_Discipline(SoSWrapp):
                 mix_weight_energy = mix_weight[energy].values
                 dmean_price_dco2_tax += inputs_dict[f'{energy}.CO2_per_use']['CO2_per_use'].values * \
                                         mix_weight_energy
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyMeanPriceValue,
-                     GlossaryEnergy.EnergyPriceValue), (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy),
-                    mix_weight_energy * np.identity(len(years)))
+                # self.set_partial_derivative_for_other_types(
+                #     (GlossaryEnergy.EnergyMeanPriceValue,
+                #      GlossaryEnergy.EnergyPriceValue), (f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}', energy),
+                #     mix_weight_energy * np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyMeanPriceValue,
                      GlossaryEnergy.EnergyPriceValue), (f'{ns_energy}.CO2_per_use', 'CO2_per_use'),
@@ -873,21 +873,23 @@ class Heat_Mix_Discipline(SoSWrapp):
             energy_prod_info = key.split(' vs ')[1]
             energy = energy_prod_info.split('#')[0]
             last_part_key = energy_prod_info.split('#')[1]
-            if energy in energy_list:
-                self.set_gradient_for_co2_emissions('co2_emissions_needed_by_energy_mix',
-                                                    co2_emissions_needed_by_energy_mix, co2_emission_column, energy,
-                                                    energy_prod_info, last_part_key, value, inputs_dict, years)
-                self.set_gradient_for_co2_emissions('carbon_capture_from_energy_mix',
-                                                    carbon_capture_from_energy_mix, co2_emission_column, energy,
-                                                    energy_prod_info, last_part_key, value, inputs_dict, years)
+            # if energy in energy_list:
+            #     self.set_gradient_for_co2_emissions('co2_emissions_needed_by_energy_mix',
+            #                                         co2_emissions_needed_by_energy_mix, co2_emission_column, energy,
+            #                                         energy_prod_info, last_part_key, value, inputs_dict, years)
+            #     self.set_gradient_for_co2_emissions('carbon_capture_from_energy_mix',
+            #                                         carbon_capture_from_energy_mix, co2_emission_column, energy,
+            #                                         energy_prod_info, last_part_key, value, inputs_dict, years)
+            #
         # -----------------------------------#
         # ---- Demand Violation gradients----#
         # -----------------------------------#
         for energy in energies:
             ns_energy = self.get_ns_energy(energy)
-            if energy in outputs_dict[GlossaryEnergy.EnergyCO2EmissionsValue].keys():
-                self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy), (f'{ns_energy}.{GlossaryEnergy.CO2EmissionsValue}', energy), np.identity(len(years)))
+            # if energy in outputs_dict[GlossaryEnergy.EnergyCO2EmissionsValue].keys():
+            #     self.set_partial_derivative_for_other_types(
+            #         (GlossaryEnergy.EnergyCO2EmissionsValue, energy), (f'{ns_energy}.{GlossaryEnergy.CO2EmissionsValue}', energy), np.identity(len(years)))
+            #
             for energy_input in energy_list:
                 ns_energy_input = self.get_ns_energy(energy_input)
                 list_columnsenergyprod = list(

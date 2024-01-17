@@ -754,7 +754,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{GlossaryEnergy.energy_list}': self.energy_list,
                        f'{self.study_name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
-                       f'{self.study_name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       # f'{self.study_name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        #f'{self.study_name}.land_surface_for_food_df': land_surface_for_food,
                        f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

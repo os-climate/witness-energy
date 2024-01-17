@@ -65,7 +65,7 @@ class NaturalGasBoilerHighHeat(highheattechno):
         '''
         Need to take into account CO2 from Methane production
         '''
-        
+
         self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
                                               self.cost_details[f'{Methane.name}_needs']
 
