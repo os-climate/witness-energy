@@ -686,6 +686,7 @@ class Study(EnergyStudyManager):
             {key: value for key, value in energy_carbon_emissions_dict.items() if
              key in self.techno_dict or key == GlossaryEnergy.Years})
         self.energy_carbon_emissions[methane_name] = 0.123 / 15.4
+        self.energy_carbon_emissions[electricity_name] = 0.0
         # --- resources price and co2 emissions
         self.resources_CO2_emissions = get_static_CO2_emissions(self.years)
         self.resources_prices = get_static_prices(self.years)
