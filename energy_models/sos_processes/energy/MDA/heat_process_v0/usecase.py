@@ -136,19 +136,16 @@ class Study(EnergyStudyManager):
         list_aggr_type = []
         list_ns = []
         # -- add objectives to func_manager
-        list_var.extend([f'energy_production_objective',
-                         'syngas_prod_objective'])
-        list_parent.extend(['objectives',
-                            'objectives'])
-        list_ftype.extend([OBJECTIVE, OBJECTIVE])
+        list_var.extend([f'energy_production_objective'])
+        list_parent.extend(['objectives'])
+        list_ftype.extend([OBJECTIVE])
         if Syngas.name in self.energy_list:
-            list_weight.extend([0., 0.])
+            list_weight.extend([0.])
         else:
-            list_weight.extend([0., 0.])
+            list_weight.extend([0.])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions',
-                        'ns_functions'])
+            [AGGR_TYPE_SUM])
+        list_ns.extend(['ns_functions'])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -190,35 +187,35 @@ class Study(EnergyStudyManager):
                 list_namespaces.append('ns_functions')
 
 
-        if hightemperatureheat.name in self.energy_list:
-            list_var.extend(
-                ['total_prod_high_temp'])
-            list_parent.extend(['Energy_constraints'])
-            list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([0.])
-            list_aggr_type.append(
-                AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
-
-        if mediumtemperatureheat.name in self.energy_list:
-            list_var.extend(
-                ['total_prod_medium_temp'])
-            list_parent.extend(['Energy_constraints'])
-            list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([0.])
-            list_aggr_type.append(
-                AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
-
-        if lowtemperatureheat.name in self.energy_list:
-            list_var.extend(
-                ['total_prod_low_temp'])
-            list_parent.extend(['Energy_constraints'])
-            list_ftype.extend([INEQ_CONSTRAINT])
-            list_weight.extend([0.])
-            list_aggr_type.append(
-                AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
+        # if hightemperatureheat.name in self.energy_list:
+        #     list_var.extend(
+        #         ['total_prod_high_heat'])
+        #     list_parent.extend(['Energy_constraints'])
+        #     list_ftype.extend([INEQ_CONSTRAINT])
+        #     list_weight.extend([0.])
+        #     list_aggr_type.append(
+        #         AGGR_TYPE_SMAX)
+        #     list_namespaces.append('ns_functions')
+        #
+        # if mediumtemperatureheat.name in self.energy_list:
+        #     list_var.extend(
+        #         ['total_prod_medium_heat'])
+        #     list_parent.extend(['Energy_constraints'])
+        #     list_ftype.extend([INEQ_CONSTRAINT])
+        #     list_weight.extend([0.])
+        #     list_aggr_type.append(
+        #         AGGR_TYPE_SMAX)
+        #     list_namespaces.append('ns_functions')
+        #
+        # if lowtemperatureheat.name in self.energy_list:
+        #     list_var.extend(
+        #         ['total_prod_low_heat'])
+        #     list_parent.extend(['Energy_constraints'])
+        #     list_ftype.extend([INEQ_CONSTRAINT])
+        #     list_weight.extend([0.])
+        #     list_aggr_type.append(
+        #         AGGR_TYPE_SMAX)
+        #     list_namespaces.append('ns_functions')
 
         if SolidFuel.name in self.energy_list:
             list_var.extend(
@@ -283,14 +280,6 @@ class Study(EnergyStudyManager):
                                 invest_mix_dict[energy].values)),
                 self.lower_bound_techno, self.upper_bound_techno)
 
-        # for ccs in self.ccs_list:
-        #     ccs_wo_dot = ccs.replace('.', '_')
-        #     self.update_dspace_dict_with(
-        #         f'{ccs}.{ccs_wo_dot}_array_mix',
-        #         list(np.maximum(self.lower_bound_techno,
-        #                         invest_ccs_mix_dict[ccs].values)),
-        #         self.lower_bound_techno, self.upper_bound_techno)
-
         dim_a = 8
 
         activated_elem_list = [False] + 7 * [True]
@@ -318,7 +307,6 @@ class Study(EnergyStudyManager):
             activated_elem = None
         for column in invest_mix_df_wo_years.columns:
             techno_wo_dot = column.replace('.', '_')
-            #print(f'{column}.{techno_wo_dot}_array_mix')
             self.update_dspace_dict_with(
                 f'{column}.{techno_wo_dot}_array_mix', np.minimum(np.maximum(
                     self.lower_bound_techno, invest_mix_df_wo_years[column].values), self.upper_bound_techno),

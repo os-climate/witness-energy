@@ -17,9 +17,9 @@ limitations under the License.
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
     COUPLING_NAME, EXTRA_NAME
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_optim_sub_usecase
-from energy_models.sos_processes.energy.MDA.heat_optim_sub_process_v0.usecase import Study as witness_optim_sub_usecase
+# from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+#     Study as witness_optim_sub_usecase
+from energy_models.sos_processes.energy.MDA.heat_optim_sub_process.usecase_witness_optim_sub import Study as witness_optim_sub_usecase
 # from energy_models.sos_processes.energy.MDA.heat_process_v0.usecase import Study as witness_optim_sub_usecase
 
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -145,10 +145,8 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "use_threading": False,
                                                                           "wait_time_between_fork": 0},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 2,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}': False}
-
-        # print("Design space dimension is ", dspace_size)
 
         return [values_dict] + [optim_values_dict]
 

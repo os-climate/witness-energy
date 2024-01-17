@@ -157,6 +157,18 @@ class Heat_Mix_Discipline(SoSWrapp):
             'type': 'dataframe', 'unit': 'TWh',
             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
         },
+        # HeatMix.CONSTRAINT_PROD_HIGH_HEAT: {
+        #     'type': 'dataframe', 'unit': 'TWh',
+        #     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
+        # },
+        # HeatMix.CONSTRAINT_PROD_LOW_HEAT: {
+        #     'type': 'dataframe', 'unit': 'TWh',
+        #     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
+        # },
+        # HeatMix.CONSTRAINT_PROD_MEDIUM_HEAT: {
+        #     'type': 'dataframe', 'unit': 'TWh',
+        #     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
+        # },
         HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC: {
             'type': 'dataframe', 'unit': 'TWh',
             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
@@ -392,8 +404,7 @@ class Heat_Mix_Discipline(SoSWrapp):
              GlossaryEnergy.TotalProductionValue: self.energy_model.production[GlossaryEnergy.TotalProductionValue].values /
                                                 inputs_dict[
                                                     'scaling_factor_energy_production']})
-        # print('')
-        # print(self.energy_model.energy_prices.to_string())
+
         outputs_dict = {
                         # GlossaryEnergy.EnergyPricesValue: self.energy_model.energy_prices,
                         'co2_emissions_by_energy': self.energy_model.emissions_by_energy,
@@ -411,6 +422,9 @@ class Heat_Mix_Discipline(SoSWrapp):
                         GlossaryEnergy.EnergyMeanPriceValue: self.energy_model.energy_mean_price,
                         'production_energy_net_positive': self.energy_model.net_positive_consumable_energy_production,
                         self.energy_model.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: self.energy_model.total_prod_minus_min_prod_constraint_df,
+                        # HeatMix.CONSTRAINT_PROD_HIGH_HEAT: self.energy_model.constraint_liquid_hydrogen,
+                        # HeatMix.CONSTRAINT_PROD_LOW_HEAT: self.energy_model.constraint_liquid_hydrogen,
+                        # HeatMix.CONSTRAINT_PROD_MEDIUM_HEAT: self.energy_model.constraint_liquid_hydrogen,
                         # HeatMix.CONSTRAINT_PROD_H2_LIQUID: self.energy_model.constraint_liquid_hydrogen,
                         # HeatMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC: self.energy_model.constraint_solid_fuel_elec,
                         # HeatMix.SYNGAS_PROD_OBJECTIVE: self.energy_model.syngas_prod_objective,

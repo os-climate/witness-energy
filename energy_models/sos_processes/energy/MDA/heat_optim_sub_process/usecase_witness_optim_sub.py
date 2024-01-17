@@ -77,7 +77,7 @@ class Study(ClimateEconomicsStudyManager):
         self.designvariable_name = "DesignVariables"
         self.func_manager_name = "FunctionsManager"
         self.extra_name = EXTRA_NAME
-        self.energy_mix_name = 'EnergyMix'
+        self.energy_mix_name = 'HeatMix'
         self.ccs_mix_name = 'CCUS'
         self.bspline = bspline
         self.invest_discipline = invest_discipline
@@ -106,19 +106,18 @@ class Study(ClimateEconomicsStudyManager):
         setup_data_list = setup_data_list + witness_data_list
 
         dspace_df = self.witness_uc.dspace
+
         values_dict = {}
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         dv_arrays_dict = {}
 
-        # print(dspace_df.keys())
         design_var_descriptor = {}
         years = np.arange(self.year_start, self.year_end + 1, self.time_step)
         for energy in self.witness_uc.energy_list:
             energy_wo_dot = energy.replace('.', '_')
             for technology in self.witness_uc.dict_technos[energy]:
                 technology_wo_dot = technology.replace('.', '_')
-                # print(f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
                 dvar_value = dspace_df[
                         f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 activated_dvar = dspace_df[
