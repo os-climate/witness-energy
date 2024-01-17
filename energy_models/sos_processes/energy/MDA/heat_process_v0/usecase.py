@@ -16,7 +16,7 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-
+from pandas import DataFrame, concat
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -51,11 +51,11 @@ from sostrades_core.execution_engine.func_manager.func_manager_disc import Funct
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.sos_processes.energy.techno_mix.hightemperatureheat_mix.usecase import \
+from energy_models.sos_processes.energy.heat_techno_mix.hightemperatureheat_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as hightemperatureheat_technos_dev
-from energy_models.sos_processes.energy.techno_mix.lowtemperatureheat_mix.usecase import \
+from energy_models.sos_processes.energy.heat_techno_mix.lowtemperatureheat_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as lowtemperatureheat_technos_dev
-from energy_models.sos_processes.energy.techno_mix.mediumtemperatureheat_mix.usecase import \
+from energy_models.sos_processes.energy.heat_techno_mix.mediumtemperatureheat_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as mediumtemperatureheat_technos_dev
 from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as Methane_technos_dev
@@ -189,6 +189,37 @@ class Study(EnergyStudyManager):
                     AGGR_TYPE_SMAX)
                 list_namespaces.append('ns_functions')
 
+
+        if hightemperatureheat.name in self.energy_list:
+            list_var.extend(
+                ['total_prod_high_temp'])
+            list_parent.extend(['Energy_constraints'])
+            list_ftype.extend([INEQ_CONSTRAINT])
+            list_weight.extend([0.])
+            list_aggr_type.append(
+                AGGR_TYPE_SMAX)
+            list_namespaces.append('ns_functions')
+
+        if mediumtemperatureheat.name in self.energy_list:
+            list_var.extend(
+                ['total_prod_medium_temp'])
+            list_parent.extend(['Energy_constraints'])
+            list_ftype.extend([INEQ_CONSTRAINT])
+            list_weight.extend([0.])
+            list_aggr_type.append(
+                AGGR_TYPE_SMAX)
+            list_namespaces.append('ns_functions')
+
+        if lowtemperatureheat.name in self.energy_list:
+            list_var.extend(
+                ['total_prod_low_temp'])
+            list_parent.extend(['Energy_constraints'])
+            list_ftype.extend([INEQ_CONSTRAINT])
+            list_weight.extend([0.])
+            list_aggr_type.append(
+                AGGR_TYPE_SMAX)
+            list_namespaces.append('ns_functions')
+
         if SolidFuel.name in self.energy_list:
             list_var.extend(
                 ['total_prod_solid_fuel_elec'])
@@ -228,7 +259,6 @@ class Study(EnergyStudyManager):
             list_aggr_type.extend(
                 [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
             list_namespaces.extend(['ns_functions', 'ns_functions'])
-
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype
@@ -272,6 +302,29 @@ class Study(EnergyStudyManager):
             'ccs_percentage_array', list(ccs_percentage), lbnd1, ubnd1, activated_elem=activated_elem_list)
 
         # add utilization ratios
+
+
+    def update_dv_arrays_technos(self, invest_mix_df):
+        """
+        Update design variable arrays for all technologies in the case where we have only one investment discipline
+        """
+        invest_mix_df_wo_years = invest_mix_df.drop(
+            GlossaryEnergy.Years, axis=1)
+
+        # check if we are in coarse usecase, in this case we deactivate first point of optim
+        if 'fossil' in self.energy_list:
+            activated_elem = [False] + [True]*(GlossaryEnergy.NB_POLES_COARSE - 1)
+        else:
+            activated_elem = None
+        for column in invest_mix_df_wo_years.columns:
+            techno_wo_dot = column.replace('.', '_')
+            #print(f'{column}.{techno_wo_dot}_array_mix')
+            self.update_dspace_dict_with(
+                f'{column}.{techno_wo_dot}_array_mix', np.minimum(np.maximum(
+                    self.lower_bound_techno, invest_mix_df_wo_years[column].values), self.upper_bound_techno),
+                self.lower_bound_techno, self.upper_bound_techno, activated_elem = activated_elem )
+
+
 
     def get_investments_mix_custom(self):
         """
@@ -508,8 +561,6 @@ class Study(EnergyStudyManager):
         instanced_sub_studies = []
         dspace_list = []
         for sub_study_name, sub_study in self.sub_study_dict.items():
-            print('')
-            print(sub_study_name)
             if self.techno_dict[sub_study_name]['type'] == CCUS_TYPE:
                 prefix_name = 'CCUS'
                 instance_sub_study = sub_study(
@@ -518,7 +569,7 @@ class Study(EnergyStudyManager):
                     invest_discipline=self.invest_discipline,
                     technologies_list=self.techno_dict[sub_study_name]['value'])
             elif self.techno_dict[sub_study_name]['type'] == ENERGY_TYPE:
-                prefix_name = 'EnergyMix'
+                prefix_name = 'HeatMix'
                 instance_sub_study = sub_study(
                     self.year_start, self.year_end, self.time_step, bspline=self.bspline, main_study=False,
                     execution_engine=self.execution_engine,
@@ -556,6 +607,20 @@ class Study(EnergyStudyManager):
                 # so it has no dedicated technology in the energy_mix
                 self.dict_technos[energy_name] = []
 
+    def add_utilization_ratio_dv(self, instanciated_studies):
+        """
+        Update design space with utilization ratio for each technology
+        """
+        dict_energy_studies = dict(zip(self.energy_list + self.ccs_list, instanciated_studies))
+        len_years= len(self.years)
+        start_value_utilization_ratio = np.ones(len_years) * 100.
+        lower_bound = np.ones(len_years) * 0.5
+        upper_bound = np.ones(len_years) * 100.
+        for energy_name, study in dict_energy_studies.items():
+            if study is not None :
+                for techno_name in study.technologies_list:
+                    self.update_dspace_dict_with(f'{energy_name}_{techno_name}_utilization_ratio_array', start_value_utilization_ratio, lower_bound, upper_bound)
+
     def setup_usecase(self):
 
         hydrogen_name = GaseousHydrogen.name
@@ -576,7 +641,7 @@ class Study(EnergyStudyManager):
         liquid_hydrogen_name = LiquidHydrogen.name
         renewable_name = Renewable.name
         fossil_name = Fossil.name
-        energy_mix_name = EnergyMix.name
+        energy_mix_name = 'HeatMix' #EnergyMix.name
         energy_price_dict = {GlossaryEnergy.Years: self.years,
                              electricity_name: 9.0,
                              biomass_dry_name: 68.12 / 3.36,
@@ -746,14 +811,15 @@ class Study(EnergyStudyManager):
                 instanciated_studies, ccs_percentage)
             values_dict.update(
                 {f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}': invest_mix_df})
-
+            self.add_utilization_ratio_dv(instanciated_studies)
+            self.update_dv_arrays_technos(invest_mix_df)
         elif self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[2]:
             invest_mix_df = self.get_absolute_total_mix(
                 instanciated_studies, ccs_percentage, invest_df, scaling_factor_energy_investment)
             values_dict.update(
                 {f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}': invest_mix_df})
-            # self.add_utilization_ratio_dv(instanciated_studies)
-
+            self.add_utilization_ratio_dv(instanciated_studies)
+            self.update_dv_arrays_technos(invest_mix_df)
             if not self.energy_invest_input_in_abs_value:
                 # if energy investments are expressed in percentage, the new corresponding inputs must be defined
                 values_dict.update(
@@ -764,6 +830,8 @@ class Study(EnergyStudyManager):
 
         values_dict_list.append(values_dict)
 
+        self.func_df = concat(
+            [self.setup_objectives(), self.setup_constraints()])
 
         self.create_technolist_per_energy(instanciated_studies)
 

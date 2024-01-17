@@ -29,11 +29,11 @@ from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubPr
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
-from energy_models.sos_processes.energy.techno_mix.hightemperatureheat_mix.usecase import \
+from energy_models.sos_processes.energy.heat_techno_mix.hightemperatureheat_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as hightemperatureheat_technos_dev
-from energy_models.sos_processes.energy.techno_mix.lowtemperatureheat_mix.usecase import \
+from energy_models.sos_processes.energy.heat_techno_mix.lowtemperatureheat_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as lowtemperatureheat_technos_dev
-from energy_models.sos_processes.energy.techno_mix.mediumtemperatureheat_mix.usecase import \
+from energy_models.sos_processes.energy.heat_techno_mix.mediumtemperatureheat_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as mediumtemperatureheat_technos_dev
 from energy_models.core.energy_study_manager import AGRI_TYPE, ENERGY_TYPE
 from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import \
@@ -53,7 +53,7 @@ DEFAULT_TECHNO_DICT = {
 class ProcessBuilder(WITNESSSubProcessBuilder):
     # ontology information
     _ontology_data = {
-        'label': 'Energy v0 Process',
+        'label': 'Heat v0 Process',
         'description': '',
         'category': '',
         'version': '',
@@ -63,7 +63,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         ns_study = self.ee.study_name
 
-        energy_mix = EnergyMix.name
+        energy_mix = 'HeatMix' #EnergyMix.name
         ccus_name = CCUS.name
         func_manager_name = "FunctionManagerDisc"
 
@@ -77,7 +77,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             short_name = dot_list[-1]
             if self.techno_dict[energy_name]['type'] != AGRI_TYPE:
                 energy_builder_list = self.ee.factory.get_builder_from_process(
-                    'energy_models.sos_processes.energy.techno_mix', f'{short_name}_mix',
+                    'energy_models.sos_processes.energy.heat_techno_mix', f'{short_name}_mix',
                     techno_list=self.techno_dict[energy_name]['value'], invest_discipline=self.invest_discipline,
                     associate_namespace=False
                 )

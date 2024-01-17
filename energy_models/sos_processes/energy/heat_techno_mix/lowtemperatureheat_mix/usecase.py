@@ -133,10 +133,8 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
-                       # f'{self.study_name}.{energy_name}.ElectricBoiler.flux_input_dict': land_rate,
-                       # f'{self.study_name}.{energy_name}.NaturalGasBoiler.flux_input_dict': land_rate,
-                       # f'{self.study_name}.{energy_name}.HeatPump.flux_input_dict': land_rate,
-                       # f'{self.study_name}.{energy_name}.Geothermal.flux_input_dict': land_rate,
+                       f'{self.study_name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                       f'{self.study_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        }
 
         if self.main_study:
