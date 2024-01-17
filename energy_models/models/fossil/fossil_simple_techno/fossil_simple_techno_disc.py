@@ -102,7 +102,7 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                              })
     FLUE_GAS_RATIO = np.array([0.12])
 
-    invest_before_year_start_var = GlossaryEnergy.InvestmentBeforeYearStartDf
+    invest_before_year_start_var = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.InvestmentBeforeYearStartDf)
     invest_before_year_start_var['default'] = invest_before_year_start
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
