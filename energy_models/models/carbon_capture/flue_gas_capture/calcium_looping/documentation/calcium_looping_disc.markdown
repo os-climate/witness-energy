@@ -20,15 +20,15 @@ An average CO2 concentration in flue gases is calculated (Flue_gas_capture model
 Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and CO2 from flue gas is in Mt.
 
 
-[^1]: The calcium looping cycle for CO2 capture from power generation, cement manufacture and hydrogen production, https://www.sciencedirect.com/science/article/pii/S0263876210003047
+[^1]: [The calcium looping cycle for CO2 capture from power generation, cement manufacture and hydrogen production](https://www.sciencedirect.com/science/article/pii/S0263876210003047)
 
-[^2]: Development of the calcium looping CO2 capture technology from lab to pilot scale at IFK, University of Stuttgart, https://www.sciencedirect.com/science/article/pii/S0016236114000738
+[^2]: [Development of the calcium looping CO2 capture technology from lab to pilot scale at IFK, University of Stuttgart](https://www.sciencedirect.com/science/article/pii/S0016236114000738)
 
-[^3]: A sequential approach for the economic evaluation of new CO2 capture technologies for power plants, https://www.sciencedirect.com/science/article/pii/S1750583618307461?via%3Dihub
+[^3]: [A sequential approach for the economic evaluation of new CO2 capture technologies for power plants](https://www.sciencedirect.com/science/article/pii/S1750583618307461?via%3Dihub)
 
-[^4]: Calcium Looping Process, https://www.frontiersin.org/articles/10.3389/frsus.2021.740105/full
+[^4]: [Calcium Looping Process](https://www.frontiersin.org/articles/10.3389/frsus.2021.740105/full)
 
-[^5]: Electricity used in Calcium Looping, https://en.wikipedia.org/wiki/Calcium_looping
+[^5]: Electricity used in Calcium Looping, [Wikipedia](https://en.wikipedia.org/wiki/Calcium_looping)
 
-[^6]: Produces some amount of heat, https://link.springer.com/article/10.1007/s43979-022-00034-4
+[^6]: Produces some amount of heat, [Heat](https://link.springer.com/article/10.1007/s43979-022-00034-4)
 

@@ -17,10 +17,10 @@ An average CO2 concentration in flue gases is calculated (Flue_gas_capture model
 Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and CO2 from flue gas is in Mt.
 
 
-[^1]: Membrane gas separation, Wikipedia, https://en.wikipedia.org/wiki/Membrane_gas_separation
+[^1]: Membrane gas separation, [Wikipedia](https://en.wikipedia.org/wiki/Membrane_gas_separation)
 
-[^2]: Passive CO2 Separation Membranes for Hot Flue Gases, https://www.netl.doe.gov/sites/default/files/2018-12/M-Merrill-Luna-Passive-Separation-Membranes_Aug%202018.pdf
+[^2]: Passive CO2 Separation Membranes for Hot Flue Gases, [CO2 Separation Membranes](https://www.netl.doe.gov/sites/default/files/2018-12/M-Merrill-Luna-Passive-Separation-Membranes_Aug%202018.pdf)
 
-[^3]: A sequential approach for the economic evaluation of new CO2 capture technologies for power plants, https://www.sciencedirect.com/science/article/pii/S1750583618307461?via%3Dihub
+[^3]: A sequential approach for the economic evaluation of new CO2 capture technologies for power plants, [Approach](https://www.sciencedirect.com/science/article/pii/S1750583618307461?via%3Dihub)
 
-[^4]: CO2 membrane working, Sciencedirect, https://www.sciencedirect.com/science/article/abs/pii/S0301479722014864#:~:text=For%20separation%20of%2090%25%20of,including%20final%20CO2%20compression.
+[^4]: CO2 membrane working, [Sciencedirect](https://www.sciencedirect.com/science/article/abs/pii/S0301479722014864#:~:text=For%20separation%20of%2090%25%20of,including%20final%20CO2%20compression)

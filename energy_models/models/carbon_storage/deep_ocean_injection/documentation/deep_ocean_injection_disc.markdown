@@ -8,6 +8,8 @@ The overall cost varies between 2.2$ / tCO2 for direct injection and up to 15.7$
 
 
 
-[^1]: IPCC, https://www.ipcc.ch/site/assets/uploads/2018/03/srccs_chapter6-1.pdf
-[^2]: Ocean Storage of CO2, The Liquid Grid, http://theliquidgrid.com/2018/07/22/ocean-storage-of-co2
-[^3]: Ocean Storage of CO2, The Liquid Grid, https://www.ipcc.ch/site/assets/uploads/2018/03/srccs_chapter6-1.pdf
+[^1]: [IPCC](https://www.ipcc.ch/site/assets/uploads/2018/03/srccs_chapter6-1.pdf)
+
+[^2]: Ocean Storage of CO2, [The Liquid Grid](http://theliquidgrid.com/2018/07/22/ocean-storage-of-co2)
+
+[^3]: Ocean Storage of CO2, [The Liquid Grid](https://www.ipcc.ch/site/assets/uploads/2018/03/srccs_chapter6-1.pdf)

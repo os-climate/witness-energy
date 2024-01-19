@@ -8,4 +8,4 @@ Oil & Gas companies such as Oxy or Total invest in CO2 capture and underground i
 
 
 
-[^1]: Energy.gov, https://www.energy.gov/fe/science-innovation/oil-gas-research/enhanced-oil-recoveryupdate_of_financial_data_for_coal_fired_chp_plants_may17_july17.pdf
+[^1]: [Energy.gov](https://www.energy.gov/fe/science-innovation/oil-gas-research/enhanced-oil-recoveryupdate_of_financial_data_for_coal_fired_chp_plants_may17_july17.pdf)
