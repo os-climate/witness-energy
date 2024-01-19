@@ -275,4 +275,5 @@ class Study(EnergyMixStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(main_study=True,
                    technologies_list=DEFAULT_TECHNOLOGIES_LIST)
+    uc_cls.ee.display_treeview_nodes()
     uc_cls.test()
