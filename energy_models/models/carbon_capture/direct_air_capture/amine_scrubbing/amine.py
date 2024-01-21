@@ -23,7 +23,7 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
-
+from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 
 class Amine(CCTechno):
 
@@ -34,7 +34,9 @@ class Amine(CCTechno):
         """
 
         self.cost_details['elec_needs'] = self.get_electricity_needs()
-        
+
+        self.cost_details['heat_needs'] = self.get_heat_needs()
+
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    )
 
@@ -94,12 +96,14 @@ class Amine(CCTechno):
         
         # Consumption
 
+        self.compute_other_primary_energy_costs()
+
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
                                                                                 self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        
+
         self.consumption_detailed[f'{mediumtemperatureheat.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
                                                                             self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})'] 
-                                                                                                                                              
+
         self.consumption_detailed[f'{Methane.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
                                                                             self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 

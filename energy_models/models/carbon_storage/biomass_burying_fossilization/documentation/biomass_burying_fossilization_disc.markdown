@@ -9,6 +9,6 @@ According to [^2], the cost to sequestrate CO2 captured by biomass varies betwee
 According to [^3], dry biomass is composed of 42.5% of carbon and using molar masses we know that in order to obtain 1 kg of C we need 3,67 kg of CO2. So store 1 kg of dry biomass is equivalent to store 1,56 kg of CO2.
 
 
-[^1]: The East Africa Sisal Company Ltd, http://www.eastafricasisal.com/peatland-restoration/
-[^2]: Carbon sequestration via wood burial, BMC,https://cbmjournal.biomedcentral.com/articles/10.1186/1750-0680-3-1
-[^3]: INTA, http://repo-desa.inta.gob.ar/xmlui/bitstream/handle/20.500.12123/1303/INTA_CRPatagoniaNorte-EEABariloche_WarrenRaffa_D_How_does_crop_residue_removal_affect_soil.pdf?sequence=3
+[^1]: The East Africa Sisal Company Ltd, [east africa sisal](http://www.eastafricasisal.com/peatland-restoration/)
+[^2]: Carbon sequestration via wood burial, [BMC](https://cbmjournal.biomedcentral.com/articles/10.1186/1750-0680-3-1)
+[^3]: [INTA](http://repo-desa.inta.gob.ar/xmlui/bitstream/handle/20.500.12123/1303/INTA_CRPatagoniaNorte-EEABariloche_WarrenRaffa_D_How_does_crop_residue_removal_affect_soil.pdf?sequence=3)

@@ -795,7 +795,7 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.{energy_mix_name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        f'{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix': co2_emissions_from_energy_mix,
                        f'{self.study_name}.is_stream_demand': True,
-                       f'{self.study_name}.max_mda_iter': 50,
+                       f'{self.study_name}.max_mda_iter': 2,
                        f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
                        f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.concatenate(
                            (np.ones(5) * 1e-4, np.ones(len(self.years) - 5) / 4), axis=None),
@@ -933,10 +933,10 @@ if '__main__' == __name__:
     # #uc_cls.load_data()
     # uc_cls.run()
     #
-    # ppf = PostProcessingFactory()
-    # filters = ppf.get_post_processing_filters_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
-    # graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
-    #                                                   filters, as_json=False)
-    #
-    # for graph in graph_list:
-    #     graph.to_plotly().show()
+    ppf = PostProcessingFactory()
+    filters = ppf.get_post_processing_filters_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
+    graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
+                                                      filters, as_json=False)
+
+    for graph in graph_list:
+        graph.to_plotly().show()

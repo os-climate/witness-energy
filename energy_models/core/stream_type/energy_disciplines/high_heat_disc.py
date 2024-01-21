@@ -44,9 +44,6 @@ class HighHeatDiscipline(EnergyDiscipline):
                                   'unit': 'defined in dict',
                                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
 
-               # 'flux_input_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-               #                    'unit': 'defined in dict',
-               #                    'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
     energy_name = hightemperatureheat.name
@@ -59,46 +56,6 @@ class HighHeatDiscipline(EnergyDiscipline):
         self.energy_model.configure_parameters(inputs_dict)
 
 
-    # def setup_sos_disciplines(self):
-    #     '''
-    #     Overload SoSDiscipline setup_sos_disciplines
-    #     '''
-    #
-    #     dynamic_inputs = {}
-    #     if GlossaryEnergy.techno_list in self.get_data_in():
-    #         self.techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
-    #         if self.techno_list is not None:
-    #             for techno in self.techno_list:
-    #                 #print(techno)
-    #                 dynamic_inputs[f'{techno}.heat_flux'] = {'type': 'dataframe',
-    #                                                              'unit': '$/MWh',
-    #                                                              'visibility': SoSWrapp.SHARED_VISIBILITY,
-    #                                                              'namespace': 'ns_heat_high'
-    #                                                              }
-    #     self.add_inputs(dynamic_inputs)
-    #
-    # def run(self):
-    #     '''
-    #     Overload SoSDiscipline run
-    #     '''
-    #
-    #     # init dataframes
-    #     year_start, year_end = self.get_sosdisc_inputs(
-    #         [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-    #     years = np.arange(year_start, year_end + 1)
-    #     techno_heat_fluxes = pd.DataFrame({GlossaryEnergy.Years: years})
-    #
-    #     for techno in self.techno_list:
-    #         techno_heat_flux = self.get_sosdisc_inputs(f'{techno}.heat_flux')
-    #         techno_heat_flux = techno_heat_flux.copy()
-    #
-    #         techno_heat_flux.rename(columns={'heat_flux': f'{techno}.heat_flux'}, inplace=True)
-    #
-    #         techno_heat_fluxes = pd.concat(
-    #             [techno_heat_fluxes, techno_heat_flux.drop(GlossaryEnergy.Years, axis=1)], axis=1)
-    #     outputs_dict = {'energy_heat_flux_detailed': techno_heat_flux
-    #                     }
-    #     self.store_sos_outputs_values(outputs_dict)
 
 
 

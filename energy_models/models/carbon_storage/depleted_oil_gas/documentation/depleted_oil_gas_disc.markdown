@@ -11,6 +11,8 @@ The cost of storage varies from 1$ / tCO2 to 7$ / tCO2 for on shore storage. How
 **Datas :**
 Technical data was found in [^3].
 
-[^1]: Scottish Centre for Carbon Storage, 2012, https://www.researchgate.net/figure/Injection-of-carbon-dioxide-into-depleted-oil-and-gas-reservoir-Image-source-Scottish_fig13_327750644
-[^2]: Global CCS institute, https://www.globalccsinstitute.com/archive/hub/publications/119816/costs-co2-storage-post-demonstration-ccs-eu.pdf
+[^1]: Scottish Centre for Carbon Storage, 2012, [Research gate](https://www.researchgate.net/figure/Injection-of-carbon-dioxide-into-depleted-oil-and-gas-reservoir-Image-source-Scottish_fig13_327750644)
+
+[^2]: Global CCS institute, [global ccs institute](https://www.globalccsinstitute.com/archive/hub/publications/119816/costs-co2-storage-post-demonstration-ccs-eu.pdf)
+
 [^3]: Fasihi, M., Efimova, O. and Breyer, C., 2019. Techno-economic assessment of CO2 direct air capture plants. Journal of cleaner production, 224, pp.957-980.
