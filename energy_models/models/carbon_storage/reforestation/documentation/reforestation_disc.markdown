@@ -43,9 +43,6 @@ Investments are taken to corresponds to actual trend of 1.6Mha new planted fores
 
 
 [^1]: [Food and Agriculture Organisation of the United Nations](http://www.fao.org/documents/card/en/c/ca8642en)
-
 [^2]: [ecotre](https://ecotree.green/en/how-much-co2-does-a-tree-absorb)
-
 [^3]: OurworldInData, Number of trees per km2, 2014, [OurworldInData](https://ourworldindata.org/grapher/number-of-trees-per-km?tab=chart&country=World+%28mean%29~FRA~RUS~USA)
-
 [^4]: OurworldInData, Primary vs. planted forest, [OurworldInData](https://ourworldindata.org/forest-area#primary-vs-planted-forest)
