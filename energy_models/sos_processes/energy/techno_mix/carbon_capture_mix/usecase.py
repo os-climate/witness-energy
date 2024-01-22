@@ -157,7 +157,9 @@ class Study(EnergyMixStudyManager):
         self.transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 7.0})
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'amine': 0.0, 'potassium': 0.0, 'electricity': 0.0, 'calcium': 0.0, 'methane':0.2})
+            {GlossaryEnergy.Years: years, 'amine': 0.0, 'potassium': 0.0, 'electricity': 0.0, 'calcium': 0.0,
+             # 'methane':0.2
+             })
 
         coal_gen_prod = pd.DataFrame({GlossaryEnergy.Years: years,
                                       f'{CarbonCapture.flue_gas_name} (Mt)': 0.1})
