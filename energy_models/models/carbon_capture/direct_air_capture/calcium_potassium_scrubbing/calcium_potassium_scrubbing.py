@@ -123,14 +123,13 @@ class CalciumPotassium(CCTechno):
                                                                    self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']   # in kWH
 
         self.consumption_detailed[f'potassium ({self.mass_unit})'] = self.cost_details['potassium_needs'] * \
-                                                                     self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+                                                                     self.production_detailed[f'{CCTechno.energy_name} ({self.mass_unit})']  # in kWH
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
-                                                                                        self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})'] \
-                                                                                   #      * \
-                                                                                   #      Methane.data_energy_dict['CO2_per_use'] / \
-                                                                                   #      Methane.data_energy_dict[
-                                                                                   # 'calorific_value']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
+                                                                                        self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                        self.consumption_detailed[f'calcium ({self.mass_unit})'] / \
+                                                                                        self.consumption_detailed[f'{hightemperatureheat.name} ({self.energy_unit})']
+
     def compute_potassium_need(self):
         """
         'reaction': 'CO2 + 2KOH --> H2O + K2CO3'

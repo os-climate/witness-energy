@@ -74,9 +74,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': ['hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen'],
                        f'{self.name}.electricity.CoalGen.{GlossaryEnergy.TechnoProductionValue}': self.electricity_CoalGen_production,
-                       f'{self.name}.electricity.CoalGen.{GlossaryEnergy.TechnoConsumptionValue}': self.electricity_CoalGen_production,
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoProductionValue}': self.hydrogen_WaterGasShift_production,
-                       f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoConsumptionValue}': self.hydrogen_WaterGasShift_production,
                        f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': np.array([0.2]),
                        f'{self.name}.{GlossaryEnergy.ccs_list}': ['carbon_capture'],
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': np.array([0.4]),
@@ -122,10 +120,6 @@ class FlueGasRatioTestCase(unittest.TestCase):
                        f'{self.name}.electricity.CoalGen.{GlossaryEnergy.TechnoProductionValue}': self.electricity_CoalGen_production,
                        f'{self.name}.carbon_capture.direct_air_capture.DirectAirCaptureTechno.{GlossaryEnergy.TechnoProductionValue}': self.electricity_CoalGen_production,
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoProductionValue}': self.hydrogen_WaterGasShift_production,
-                       f'{self.name}.electricity.CoalGen.{GlossaryEnergy.TechnoConsumptionValue}': self.electricity_CoalGen_production,
-                       f'{self.name}.carbon_capture.direct_air_capture.DirectAirCaptureTechno.{GlossaryEnergy.TechnoConsumptionValue}': self.electricity_CoalGen_production,
-                       f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoConsumptionValue}': self.hydrogen_WaterGasShift_production,
-
                        f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': np.array([0.2]),
                        f'{self.name}.carbon_capture.flue_gas_co2_ratio' : np.array([0.2]),
                        f'{self.name}.{GlossaryEnergy.ccs_list}': ['carbon_capture'],
@@ -145,7 +139,6 @@ class FlueGasRatioTestCase(unittest.TestCase):
                                                                                  f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio'],
                                              outputs=[
             f'{self.name}.{self.model_name}.{GlossaryEnergy.FlueGasMean}',
-            f'{self.name}.{self.model_name}.flue_gas_consumption',
             f'{self.name}.{self.model_name}.flue_gas_production',
             f'{self.name}.{self.model_name}.flue_gas_prod_ratio'],
             input_data = disc_techno.local_data,
