@@ -25,7 +25,6 @@ class FlueGas(BaseStream):
     name = CarbonCapture.flue_gas_name
     node_name = 'flue_gas_capture'
     unit = 'Mt'
-    product_energy_unit = 'TWh'
 
     def __init__(self, name):
         BaseStream.__init__(self, name)
@@ -41,15 +40,12 @@ class FlueGas(BaseStream):
             self.sub_production_dict[techno] = inputs_dict[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] * \
                 inputs_dict['scaling_factor_techno_production']
             self.flue_gas_ratio_dict[techno] = inputs_dict[f'{techno}.flue_gas_co2_ratio'][0]
-            self.sub_consumption_dict[techno] = inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] * \
-                                               inputs_dict['scaling_factor_techno_consumption']
 
     def compute_production(self):
         '''
         Compute energy production by summing all energy productions
         And compute the techno_mix_weights each year
         '''
-        print(self.production.to_string())
         self.production[f'{self.name}'] = 0.
         for element in self.subelements_list:
             self.production[f'{self.name} {element} ({self.unit})'] = self.sub_production_dict[
@@ -57,25 +53,11 @@ class FlueGas(BaseStream):
             self.production[
                 f'{self.name}'] += self.production[f'{self.name} {element} ({self.unit})']
 
-    def compute_consumption(self):
-        '''
-        Compute energy consumption by summing all energy consumption
-        And compute the techno_mix_weights each year
-        '''
-        # print(self.production.to_string())
-        self.consumption[f'{self.name}'] = 0.
-        for element in self.subelements_list:
-            self.consumption[f'{self.name} {element} ({self.unit})'] = self.sub_consumption_dict[
-                element][f'{self.name} ({self.unit})']
-            self.consumption[
-                f'{self.name}'] += self.consumption[f'{self.name} {element} ({self.unit})']
-
     def compute(self, inputs, exp_min=True):
         '''
         Compute function which compute flue gas production and flue gas mean ratio
         '''
         self.compute_production()
-        self.compute_consumption()
         self.compute_flue_gas_ratio()
 
         return self.flue_gas_ratio_mean
@@ -84,24 +66,11 @@ class FlueGas(BaseStream):
         '''
         Return a df with total flue gas production and years
         '''
-        print(self.production.to_string())
         return self.production[[GlossaryEnergy.Years, self.name]]
-
-    def get_total_flue_gas_consumption(self):
-        '''
-        Return a df with total flue gas consumption and years
-        '''
-        return self.consumption[[GlossaryEnergy.Years, self.name]]
 
     def get_total_flue_gas_prod_ratio(self):
         '''
         Return mix weights which is flue gas production ratio 
-        '''
-        return self.mix_weights
-
-    def get_total_flue_gas_cons_ratio(self):
-        '''
-        Return mix weights which is flue gas production ratio
         '''
         return self.mix_weights
 
