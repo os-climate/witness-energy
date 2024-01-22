@@ -118,6 +118,7 @@ class StreamDiscipline(SoSWrapp):
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  'carbon_capture (Mt)': ('float', None, True),
                                                 'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                 'CO2 from Flue Gas (TWh)': ('float', None, True),
                                                  'carbon_storage (Mt)': ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  'heat.mediumtemperatureheat (TWh)': ('float', None, True),
