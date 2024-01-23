@@ -78,8 +78,6 @@ class HeatMix(BaseStream):
                          lowtemperatureheat.name: lowtemperatureheat,
                          mediumtemperatureheat.name: mediumtemperatureheat,
                          hightemperatureheat.name: hightemperatureheat,
-
-
                          }
 
     # For simplified energy mix , raw_to_net factor is used to compute net
@@ -155,23 +153,23 @@ class HeatMix(BaseStream):
         self.production_threshold = inputs_dict['production_threshold']
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
-        self.solid_fuel_elec_percentage = inputs_dict['solid_fuel_elec_percentage']
-        self.solid_fuel_elec_constraint_ref = inputs_dict['solid_fuel_elec_constraint_ref']
-        self.liquid_hydrogen_percentage = inputs_dict['liquid_hydrogen_percentage']
-        self.liquid_hydrogen_constraint_ref = inputs_dict['liquid_hydrogen_constraint_ref']
-        self.syngas_prod_ref = inputs_dict['syngas_prod_ref']
-        self.syngas_prod_limit = inputs_dict['syngas_prod_constraint_limit']
+        # self.solid_fuel_elec_percentage = inputs_dict['solid_fuel_elec_percentage']
+        # self.solid_fuel_elec_constraint_ref = inputs_dict['solid_fuel_elec_constraint_ref']
+        # self.liquid_hydrogen_percentage = inputs_dict['liquid_hydrogen_percentage']
+        # self.liquid_hydrogen_constraint_ref = inputs_dict['liquid_hydrogen_constraint_ref']
+        # self.syngas_prod_ref = inputs_dict['syngas_prod_ref']
+        # self.syngas_prod_limit = inputs_dict['syngas_prod_constraint_limit']
         self.co2_for_food = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1),
              f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
 
-        self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
+        # self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
 
-        if self.subelements_list is not None:
-            for energy in self.subelements_list:
-                if f'{energy}.losses_percentage' in inputs_dict:
-                    self.losses_percentage_dict[energy] = inputs_dict[f'{energy}.losses_percentage']
+        # if self.subelements_list is not None:
+        #     for energy in self.subelements_list:
+        #         if f'{energy}.losses_percentage' in inputs_dict:
+        #             self.losses_percentage_dict[energy] = inputs_dict[f'{energy}.losses_percentage']
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -333,8 +331,7 @@ class HeatMix(BaseStream):
 
         # substract a percentage of raw production into net production
         self.consumable_energy_df[GlossaryEnergy.TotalProductionValue] -= self.production_raw[
-                                                                            GlossaryEnergy.TotalProductionValue] * \
-                                                                        self.heat_losses_percentage / 100.0
+                                                                            GlossaryEnergy.TotalProductionValue]
 
     def compute_net_energy_production(self):
         """
@@ -372,8 +369,7 @@ class HeatMix(BaseStream):
         self.production[GlossaryEnergy.TotalProductionValue] = self.production[columns_to_sum].sum(axis=1)
 
         self.production[GlossaryEnergy.TotalProductionValue] -= self.production_raw[
-                                                                  GlossaryEnergy.TotalProductionValue] * \
-                                                              self.heat_losses_percentage / 100.0
+                                                                  GlossaryEnergy.TotalProductionValue]
 
     def compute_energy_production_uncut(self):
         """maybe to delete"""
@@ -423,10 +419,10 @@ class HeatMix(BaseStream):
             {GlossaryEnergy.Years: self.total_carbon_emissions[GlossaryEnergy.Years].values})
         for energy in self.subelements_list:
             if energy in self.energy_class_dict:
+        # for energy in self.energy_class_dict:
                 self.total_carbon_emissions[energy] = self.sub_carbon_emissions[energy]
                 self.carbon_emissions_after_use[energy] = self.total_carbon_emissions[energy] + \
                                                           self.co2_emitted_by_energy[energy]['CO2_per_use']
-
     def compute_CO2_emissions(self):
         '''
         Compute CO2 total emissions

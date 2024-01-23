@@ -304,7 +304,7 @@ class HeatMixTestCase(unittest.TestCase):
 
     def test_01_energy_mix(self):
         """
-        Test energy mix class
+        Test heat mix class
 
         Returns
         -------
@@ -483,7 +483,7 @@ class HeatMixTestCase(unittest.TestCase):
 
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline'
+        mod_path = 'energy_models.core.heat_mix.heat_mix_disc.Heat_Mix_Discipline'
         builder = ee.factory.get_builder_from_module(model_name, mod_path)
 
         ee.factory.set_builders_to_coupling_builder(builder)

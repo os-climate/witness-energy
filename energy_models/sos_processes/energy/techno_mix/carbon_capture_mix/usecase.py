@@ -219,7 +219,8 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryEnergy.techno_list}': DEFAULT_FLUE_GAS_LIST,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{ccs_name}.flue_gas_capture.flue_gas_mean': self.flue_gas_mean,
+                       # f'{self.study_name}.{ccs_name}.flue_gas_capture.flue_gas_mean': self.flue_gas_mean,
+                       f'{self.study_name}.{ccs_name}.direct_air_capture.direct_air_mean': self.flue_gas_mean,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
@@ -298,6 +299,7 @@ class Study(EnergyMixStudyManager):
                     f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.carbon_capture.direct_air_capture.AmineScrubbing.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
                     f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.carbon_capture.direct_air_capture.CalciumPotassiumScrubbing.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
                     f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.carbon_capture.direct_air_capture.DirectAirCaptureTechno.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
+                    f'{self.study_name}.{ccs_name}.direct_air_capture.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
                 })
 
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
@@ -307,8 +309,10 @@ class Study(EnergyMixStudyManager):
                     invest_level_techno = pd.DataFrame({GlossaryEnergy.Years: self.invest_level[GlossaryEnergy.Years].values,
                                                         GlossaryEnergy.InvestValue: self.invest_level[GlossaryEnergy.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
                     values_dict[f'{self.study_name}.{ccs_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
+                    # print(f'{self.study_name}.{ccs_name}.{techno}.{GlossaryEnergy.InvestLevelValue}')
             else:
                 values_dict[f'{self.study_name}.{ccs_name}.{GlossaryEnergy.InvestLevelValue}'] = self.invest_level
+
         else:
             self.update_dv_arrays()
 
@@ -318,4 +322,5 @@ class Study(EnergyMixStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(main_study=True,
                    technologies_list=DEFAULT_TECHNOLOGIES_LIST)
+    uc_cls.ee.display_treeview_nodes()
     uc_cls.test()

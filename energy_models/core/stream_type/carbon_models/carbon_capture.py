@@ -53,6 +53,12 @@ class CarbonCapture(BaseStream):
         self.flue_gas_production = None
         self.flue_gas_prod_ratio = None
         self.fg_ratio = None
+        self.subelements_list_fgc = []
+        self.subelements_list_dac = []
+        self.production_fgc = None
+        self.consumption_fgc = None
+        self.production_dac = None
+        self.consumption_dac = None
 
     def configure_parameters_update(self, inputs_dict):
         self.subelements_list = inputs_dict[GlossaryEnergy.techno_list]
@@ -60,16 +66,22 @@ class CarbonCapture(BaseStream):
         self.flue_gas_production = inputs_dict['flue_gas_production'][self.flue_gas_name].values
         self.flue_gas_prod_ratio = inputs_dict['flue_gas_prod_ratio']
 
+        for itm in self.subelements_list:
+            if 'flue_gas' in itm:
+                self.subelements_list_fgc.append(itm)
+            else:
+                self.subelements_list_dac.append(itm)
+
     def compute(self, inputs, exp_min=True):
         '''
         Specific compute to handle the number of values in the return out of compute_production
         '''
-
         _, self.consumption_woratio, _, self.carbon_captured_type_woratio, self.flue_gas_percentage_woratio, self.fg_ratio_woratio = self.compute_production(
             self.sub_production_dict, self.sub_consumption_woratio_dict)
 
         self.production, self.consumption, self.production_by_techno, self.carbon_captured_type, self.flue_gas_percentage, self.fg_ratio = self.compute_production(
             self.sub_production_dict, self.sub_consumption_dict)
+
 
         self.compute_price(exp_min=exp_min)
 
@@ -89,6 +101,14 @@ class CarbonCapture(BaseStream):
         production = base_df.copy(deep=True)
         consumption = base_df.copy(deep=True)
         production_by_techno = base_df.copy(deep=True)
+
+        production_fgc = base_df.copy(deep=True)
+        consumption_fgc = base_df.copy(deep=True)
+        production_by_techno_fgc = base_df.copy(deep=True)
+
+        production_dac = base_df.copy(deep=True)
+        consumption_dac = base_df.copy(deep=True)
+        production_by_techno_dac = base_df.copy(deep=True)
         carbon_captured_type = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                              'flue gas': 0.0,
                                              'DAC': 0.0,
@@ -140,6 +160,24 @@ class CarbonCapture(BaseStream):
                 element][f'{self.name} ({self.unit})'].values * factor
             production, consumption = self.compute_other_consumption_production(
                 element, sub_production_dict, sub_consumption_dict, production, consumption, factor=factor)
+
+
+        for element in self.subelements_list_fgc:
+            if element.startswith('flue_gas_capture') and min(diff_flue_gas.real) < 0:
+                factor = flue_gas_percentage
+            else:
+                factor = 1.0
+            self.production_fgc, self.consumption_fgc = self.compute_other_consumption_production(
+                element, sub_production_dict, sub_consumption_dict, production_fgc, consumption_fgc, factor=factor)
+
+        for element in self.subelements_list_dac:
+            if element.startswith('flue_gas_capture') and min(diff_flue_gas.real) < 0:
+                factor = flue_gas_percentage
+            else:
+                factor = 1.0
+            self.production_dac, self.consumption_dac = self.compute_other_consumption_production(
+                element, sub_production_dict, sub_consumption_dict, production_dac, consumption_dac, factor=factor)
+
         return production, consumption, production_by_techno, carbon_captured_type, flue_gas_percentage, fg_ratio
 
     def compute_flue_gas_with_exp_min(self, fg_perc):
