@@ -22,8 +22,9 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class DirectAir(BaseStream):
+    # name = 'CO2 from Direct Air'
     name = CarbonCapture.flue_gas_name
-    node_name = 'flue_gas_capture'
+    node_name = 'direct_air_capture'
     unit = 'Mt'
 
     def __init__(self, name):

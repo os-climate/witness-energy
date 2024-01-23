@@ -61,17 +61,17 @@ class DirectAirDiscipline(SoSWrapp):
         'version': '',
     }
     POSSIBLE_FLUE_GAS_TECHNOS = {
-                                 'electricity.CoalGen': CoalGenDiscipline.FLUE_GAS_RATIO,
-                                 'electricity.GasTurbine': GasTurbineDiscipline.FLUE_GAS_RATIO,
-                                 'electricity.CombinedCycleGasTurbine': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
-                                 'hydrogen.gaseous_hydrogen.WaterGasShift': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
-                                 'liquid_fuel.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
-                                 'liquid_fuel.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
-                                 'methane.FossilGas': FossilGasDiscipline.FLUE_GAS_RATIO,
-                                 'solid_fuel.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
-                                 'syngas.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
-                                 'syngas.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
-                                 'fossil.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
+                                 # 'electricity.CoalGen': CoalGenDiscipline.FLUE_GAS_RATIO,
+                                 # 'electricity.GasTurbine': GasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 # 'electricity.CombinedCycleGasTurbine': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 # 'hydrogen.gaseous_hydrogen.WaterGasShift': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
+                                 # 'liquid_fuel.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
+                                 # 'liquid_fuel.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
+                                 # 'methane.FossilGas': FossilGasDiscipline.FLUE_GAS_RATIO,
+                                 # 'solid_fuel.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
+                                 # 'syngas.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
+                                 # 'syngas.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
+                                 # 'fossil.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
                                  'carbon_capture.direct_air_capture.AmineScrubbing': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
                                  'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
                                  'carbon_capture.direct_air_capture.DirectAirCaptureTechno': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
@@ -81,7 +81,7 @@ class DirectAirDiscipline(SoSWrapp):
                GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
-                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_direct_air',
                                      'structuring': True, 'unit': '-'},
                'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
                'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
@@ -96,13 +96,13 @@ class DirectAirDiscipline(SoSWrapp):
 
     DESC_OUT = {GlossaryEnergy.DirectAirMean: {'type': 'dataframe',
                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                  'namespace': 'ns_flue_gas', 'unit': '%'},
+                                  'namespace': 'ns_direct_air', 'unit': '%'},
                 'direct_air_production': {'type': 'dataframe',
                                         'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                        'namespace': 'ns_flue_gas', 'unit': 'Mt'},
+                                        'namespace': 'ns_direct_air', 'unit': 'Mt'},
                 'direct_air_prod_ratio': {'type': 'dataframe',
                                         'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                        'namespace': 'ns_flue_gas', 'unit': '%'}}
+                                        'namespace': 'ns_direct_air', 'unit': '%'}}
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -115,7 +115,6 @@ class DirectAirDiscipline(SoSWrapp):
         if GlossaryEnergy.techno_list in self.get_data_in() and GlossaryEnergy.ccs_list in self.get_data_in():
             techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
             ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
-
             if techno_list is not None and ccs_list is not None:
                 for techno in techno_list:
                     # check if techno not in ccs_list, namespace is
