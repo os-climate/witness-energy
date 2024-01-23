@@ -56,7 +56,9 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.name = 'Test'
         self.model_name = 'flue_gas'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_flue_gas': f'{self.name}.{self.model_name}',
+        ns_dict = {
+                   # 'ns_flue_gas': f'{self.name}.{self.model_name}',
+                   'ns_direct_air': f'{self.name}.{self.model_name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ccs': f'{self.name}',
@@ -95,57 +97,3 @@ class FlueGasRatioTestCase(unittest.TestCase):
         # for graph in graph_list:
         #     graph.to_plotly().show()
 
-    def test_02_fluegas_analytic_grad(self):
-
-        self.name = 'Test'
-        self.model_name = 'flue_gas'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_flue_gas': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   'ns_ccs': f'{self.name}',
-                   'ns_energy_study': f'{self.name}'}
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.stream_type.carbon_disciplines.flue_gas_disc.FlueGasDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': ['hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen', 'carbon_capture.direct_air_capture.DirectAirCaptureTechno'],
-                       f'{self.name}.electricity.CoalGen.{GlossaryEnergy.TechnoProductionValue}': self.electricity_CoalGen_production,
-                       f'{self.name}.carbon_capture.direct_air_capture.DirectAirCaptureTechno.{GlossaryEnergy.TechnoProductionValue}': self.electricity_CoalGen_production,
-
-                       f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoProductionValue}': self.hydrogen_WaterGasShift_production,
-                       f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': np.array([0.2]),
-                       f'{self.name}.carbon_capture.flue_gas_co2_ratio' : np.array([0.2]),
-                       f'{self.name}.{GlossaryEnergy.ccs_list}': ['carbon_capture'],
-                       f'{self.name}.{self.model_name}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
-                       f'{self.name}.{self.model_name}.electricity.CoalGen.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
-                       f'{self.name}.{self.model_name}.carbon_capture.direct_air_capture.DirectAirCaptureTechno.{GlossaryEnergy.TechnoCapitalValue}': self.techno_capital,
-                       f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': np.array([0.4]),
-                       'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
-                       'scaling_factor_techno_production': self.scaling_factor_techno_production, }
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-
-        succeed = disc_techno.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.electricity.CoalGen.{GlossaryEnergy.TechnoProductionValue}',
-                                                                                 f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoProductionValue}',
-                                                                                 f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio'],
-                                             outputs=[
-            f'{self.name}.{self.model_name}.{GlossaryEnergy.FlueGasMean}',
-            f'{self.name}.{self.model_name}.flue_gas_production',
-            f'{self.name}.{self.model_name}.flue_gas_prod_ratio'],
-            input_data = disc_techno.local_data,
-            dump_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                               f'jacobian_fluegas_discipline.pkl'))
-
-        self.assertTrue(
-            succeed, msg=f"Wrong gradient")

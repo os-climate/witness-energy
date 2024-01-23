@@ -46,6 +46,7 @@ TECHNOLOGIES_LIST_DEV = ['direct_air_capture.AmineScrubbing', 'direct_air_captur
                              'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine',
                              'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption']
 
+DIRECT_AIR_TECHNOLOGIES_LIST_DEV = ['carbon_capture.direct_air_capture.AmineScrubbing', 'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing']
 
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=2020, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST,
@@ -219,7 +220,8 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryEnergy.techno_list}': DEFAULT_FLUE_GAS_LIST,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       # f'{self.study_name}.{ccs_name}.flue_gas_capture.flue_gas_mean': self.flue_gas_mean,
+                       f'{self.study_name}.{ccs_name}.direct_air_capture.{GlossaryEnergy.techno_list}': DIRECT_AIR_TECHNOLOGIES_LIST_DEV,
+                       f'{self.study_name}.{ccs_name}.flue_gas_capture.flue_gas_mean': self.flue_gas_mean,
                        f'{self.study_name}.{ccs_name}.direct_air_capture.direct_air_mean': self.flue_gas_mean,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
