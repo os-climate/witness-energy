@@ -83,8 +83,14 @@ class CarbonCaptureDiscipline(StreamDiscipline):
     DESC_OUT = StreamDiscipline.DESC_OUT.copy()
 
     DESC_OUT.update({'carbon_captured_type': {'type': 'dataframe', 'unit': 'Mt'},
-                'carbon_captured_type_woratio': {'type': 'dataframe', 'unit': 'Mt'}})
+                     'carbon_captured_type_woratio': {'type': 'dataframe', 'unit': 'Mt'},
+                     'production_fgc': {'type': 'dataframe', 'unit': 'PWh'},
+                     'consumption_fgc': {'type': 'dataframe', 'unit': 'PWh'},
+                     'production_dac': {'type': 'dataframe', 'unit': 'PWh'},
+                     'consumption_dac': {'type': 'dataframe', 'unit': 'PWh'},
+                     })
 
+    # GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'}
     #DESC_OUT.update(StreamDiscipline.DESC_OUT)
 
     def init_execution(self):
@@ -102,6 +108,10 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         outputs_dict = {
             'carbon_captured_type': self.energy_model.carbon_captured_type,
             'carbon_captured_type_woratio': self.energy_model.carbon_captured_type_woratio,
+            'production_fgc': self.energy_model.production_fgc,
+            'consumption_fgc': self.energy_model.consumption_fgc,
+            'production_dac': self.energy_model.production_dac,
+            'consumption_dac': self.energy_model.consumption_dac,
         }
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
@@ -754,9 +764,12 @@ class CarbonCaptureDiscipline(StreamDiscipline):
     def get_charts_FGC_consumption_and_production_energy(self):
 
         instanciated_charts = []
+
+        outputs_dict = self.get_sosdisc_outputs()
+
         # Charts for consumption and prod
-        energy_consumption = self.energy_model.consumption_fgc  # self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
-        energy_production = self.energy_model.production_fgc  # self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
+        energy_consumption = outputs_dict['consumption_fgc']
+        energy_production = outputs_dict['production_fgc']
         new_chart = None
         # if energy_consumption != None and energy_production != None:
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
@@ -810,9 +823,12 @@ class CarbonCaptureDiscipline(StreamDiscipline):
     def get_charts_DAC_consumption_and_production_energy(self):
 
         instanciated_charts = []
+        outputs_dict = self.get_sosdisc_outputs()
+
         # Charts for consumption and prod
-        energy_consumption = self.energy_model.consumption_dac  # self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
-        energy_production = self.energy_model.production_dac  # self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
+        energy_consumption = outputs_dict['consumption_dac']
+        energy_production = outputs_dict['production_dac']
+
         new_chart = None
         # if energy_consumption != None and energy_production != None:
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(

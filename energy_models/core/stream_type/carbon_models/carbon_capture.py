@@ -82,6 +82,7 @@ class CarbonCapture(BaseStream):
         self.production, self.consumption, self.production_by_techno, self.carbon_captured_type, self.flue_gas_percentage, self.fg_ratio = self.compute_production(
             self.sub_production_dict, self.sub_consumption_dict)
 
+        self.production_fgc, self.consumption_fgc, self.production_dac, self.consumption_dac = self.compute_production_dac_fgc()
 
         self.compute_price(exp_min=exp_min)
 
@@ -91,6 +92,56 @@ class CarbonCapture(BaseStream):
 
         return self.total_prices, self.production, self.consumption, self.consumption_woratio, self.mix_weights
 
+
+
+    def compute_production_dac_fgc(self):
+        sub_production_dict = self.sub_production_dict
+        sub_consumption_dict = self.sub_consumption_dict
+        base_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
+        production_fgc = base_df.copy(deep=True)
+        consumption_fgc = base_df.copy(deep=True)
+        production_by_techno_fgc = base_df.copy(deep=True)
+
+        production_dac = base_df.copy(deep=True)
+        consumption_dac = base_df.copy(deep=True)
+        production_by_techno_dac = base_df.copy(deep=True)
+        carbon_captured_type = pd.DataFrame({GlossaryEnergy.Years: self.years,
+                                             'flue gas': 0.0,
+                                             'DAC': 0.0,
+                                             'flue_gas_limited': 0.0})
+        flue_gas_percentage = None
+        fg_ratio = None
+        diff_flue_gas = self.flue_gas_production - \
+                       carbon_captured_type['flue gas'].values
+        if min(diff_flue_gas.real) < 0:
+            if carbon_captured_type['flue gas'].values.dtype != self.flue_gas_production.dtype:
+                self.flue_gas_production = self.flue_gas_production.astype(
+                    carbon_captured_type['flue gas'].values.dtype)
+            fg_ratio = np.divide(
+                self.flue_gas_production, carbon_captured_type['flue gas'].values, where=carbon_captured_type['flue gas'].values != 0.0, out=np.zeros_like(self.flue_gas_production))
+            flue_gas_percentage = self.compute_flue_gas_with_exp_min(
+                fg_ratio)
+
+        else:
+            carbon_captured_type['flue gas limited'] = carbon_captured_type['flue gas']
+
+        for element in self.subelements_list_fgc:
+            if element.startswith('flue_gas_capture') and min(diff_flue_gas.real) < 0:
+                factor = flue_gas_percentage
+            else:
+                factor = 1.0
+            production_fgc, consumption_fgc = self.compute_other_consumption_production(
+                element, sub_production_dict, sub_consumption_dict, production_fgc, consumption_fgc, factor=factor)
+
+        for element in self.subelements_list_dac:
+            if element.startswith('flue_gas_capture') and min(diff_flue_gas.real) < 0:
+                factor = flue_gas_percentage
+            else:
+                factor = 1.0
+            production_dac, consumption_dac = self.compute_other_consumption_production(
+                element, sub_production_dict, sub_consumption_dict, production_dac, consumption_dac, factor=factor)
+
+        return production_fgc, consumption_fgc, production_dac, consumption_dac
     def compute_production(self, sub_production_dict, sub_consumption_dict):
         '''
         Specific compute energy production where we compute carbon captured from flue gas 
@@ -162,23 +213,11 @@ class CarbonCapture(BaseStream):
                 element, sub_production_dict, sub_consumption_dict, production, consumption, factor=factor)
 
 
-        for element in self.subelements_list_fgc:
-            if element.startswith('flue_gas_capture') and min(diff_flue_gas.real) < 0:
-                factor = flue_gas_percentage
-            else:
-                factor = 1.0
-            self.production_fgc, self.consumption_fgc = self.compute_other_consumption_production(
-                element, sub_production_dict, sub_consumption_dict, production_fgc, consumption_fgc, factor=factor)
 
-        for element in self.subelements_list_dac:
-            if element.startswith('flue_gas_capture') and min(diff_flue_gas.real) < 0:
-                factor = flue_gas_percentage
-            else:
-                factor = 1.0
-            self.production_dac, self.consumption_dac = self.compute_other_consumption_production(
-                element, sub_production_dict, sub_consumption_dict, production_dac, consumption_dac, factor=factor)
 
         return production, consumption, production_by_techno, carbon_captured_type, flue_gas_percentage, fg_ratio
+
+
 
     def compute_flue_gas_with_exp_min(self, fg_perc):
 
