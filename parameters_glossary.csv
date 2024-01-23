@@ -221,3 +221,4 @@ year_end,Ending year,year,Final year of the study.,,D - Nominal property
 year_start,Starting year,year,Initial year of the study.,,D - Nominal property
 yeart_end,Ending year,year,Final year of the study.,,
 yeart_start,Starting year,year,Initial year of the study.,,
+fluegas_emissions_technology_list, Flue gas emission list,,List of the flue gas emission technologies considered.,,

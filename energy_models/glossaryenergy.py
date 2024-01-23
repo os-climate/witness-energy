@@ -29,6 +29,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
 
     AllStreamsDemandRatioValue = "all_streams_demand_ratio"
     FlueGasMean = "flue_gas_mean"
+    DirectAirMean = "direct_air_mean"
     MarginValue = "margin"
     CO2EmissionsValue = "CO2_emissions"
     EnergyCO2EmissionsValue = "energy_CO2_emissions"
