@@ -135,8 +135,9 @@ class CarbonCaptureTestCase(unittest.TestCase):
             f'{self.name}.{energy_mix}.{carbon_capture_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
+
 
 
 if '__main__' == __name__:

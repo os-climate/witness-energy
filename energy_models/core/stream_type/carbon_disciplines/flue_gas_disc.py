@@ -81,7 +81,6 @@ class FlueGasDiscipline(SoSWrapp):
                                      'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
                                      'structuring': True, 'unit': '-'},
-               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
                'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
                GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
@@ -176,6 +175,11 @@ class FlueGasDiscipline(SoSWrapp):
                  GlossaryEnergy.FlueGasMean), (f'{techno}.flue_gas_co2_ratio',),
                 np.reshape(mix_weights[techno].values, (len_matrix, 1)))
 
+            # self.set_partial_derivative_for_other_types(
+            #     (GlossaryEnergy.FlueGasMean,
+            #      GlossaryEnergy.FlueGasMean), (f'{techno}.flue_gas_co2_ratio',),
+            #     np.reshape(mix_weights1[techno].values, (len_matrix, 1)))
+
             # An array of one value because GEMS needs array
             flue_gas_co2_ratio = self.get_sosdisc_inputs(
                 f'{techno}.flue_gas_co2_ratio')[0]
@@ -228,7 +232,8 @@ class FlueGasDiscipline(SoSWrapp):
         chart_filters = []
         chart_list = ['Average CO2 concentration in Flue gases',
                       'Technologies CO2 concentration',
-                      'Flue gas production']
+                      'Flue gas production'
+                      ]
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 

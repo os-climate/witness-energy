@@ -46,7 +46,6 @@ class FlueGas(BaseStream):
         Compute energy production by summing all energy productions
         And compute the techno_mix_weights each year
         '''
-
         self.production[f'{self.name}'] = 0.
         for element in self.subelements_list:
             self.production[f'{self.name} {element} ({self.unit})'] = self.sub_production_dict[

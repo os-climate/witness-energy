@@ -12,7 +12,8 @@ The cost varies 2$/tCO2 to 12$/tCO2 for on shore storage and between 6$ / tCO2 a
 **Datas :**
 Technical data was found in [^3].
 
-[^1]: Carbon Storage, Equinor.com, https://www.equinor.com/en/what-we-do/carbon-capture-and-storage.html
-[^2]: Carbon Storage, Global CCS Institute, https://www.globalccsinstitute.com/archive/hub/publications/119816/costs-co2-storage-post-demonstration-ccs-eu.pdf
+[^1]: Carbon Storage, [Equinor.com](https://www.equinor.com/en/what-we-do/carbon-capture-and-storage.html)
+
+[^2]: Carbon Storage, [Global CCS Institute](https://www.globalccsinstitute.com/archive/hub/publications/119816/costs-co2-storage-post-demonstration-ccs-eu.pdf)
 
 [^3]: Fasihi, M., Efimova, O. and Breyer, C., 2019. Techno-economic assessment of CO2 direct air capture plants. Journal of cleaner production, 224, pp.957-980.

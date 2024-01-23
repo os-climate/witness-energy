@@ -17,8 +17,8 @@ An average CO2 concentration in flue gases is calculated (Flue_gas_capture model
 Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and CO2 from flue gas is in Mt.
 
 
-[^1]: Chilled Ammonia Process at Technology Center Mongstad First Results, https://www.sciencedirect.com/science/article/pii/S1876610214008662
+[^1]: Chilled Ammonia Process at Technology Center Mongstad First Results, [Sciencedirect](https://www.sciencedirect.com/science/article/pii/S1876610214008662)
 
-[^2]: A sequential approach for the economic evaluation of new CO2 capture technologies for power plants, https://www.sciencedirect.com/science/article/pii/S1750583618307461?via%3Dihub
+[^2]: A sequential approach for the economic evaluation of new CO2 capture technologies for power plants, [Sciencedirect](https://www.sciencedirect.com/science/article/pii/S1750583618307461?via%3Dihub)
 
-[^3]: Chilled Ammonia Working Principle, https://www.google.com/search?q=electricity+required+in+chilled+ammonia+process&source=lmns&bih=595&biw=1280&rlz=1C1UEAD_enIN1000IN1000&hl=en&sa=X&ved=2ahUKEwj-ufXW-ImDAxXCTmwGHQn3D6sQ0pQJKAB6BAgBEAI
+[^3]: [Chilled Ammonia Working Principle](https://www.google.com/search?q=electricity+required+in+chilled+ammonia+process&source=lmns&bih=595&biw=1280&rlz=1C1UEAD_enIN1000IN1000&hl=en&sa=X&ved=2ahUKEwj-ufXW-ImDAxXCTmwGHQn3D6sQ0pQJKAB6BAgBEAI)
