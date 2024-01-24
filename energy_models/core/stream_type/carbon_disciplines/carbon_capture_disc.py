@@ -105,6 +105,9 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
         super().run()
 
+        print('')
+        # print(self.energy_model.consumption_fgc.to_string())
+
         outputs_dict = {
             'carbon_captured_type': self.energy_model.carbon_captured_type,
             'carbon_captured_type_woratio': self.energy_model.carbon_captured_type_woratio,
@@ -469,15 +472,15 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-        if 'FGC' in charts:
-            new_chart = self.get_charts_FGC_consumption_and_production_energy()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
-
-        if 'DAC' in charts:
-            new_chart = self.get_charts_DAC_consumption_and_production_energy()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
+        # if 'FGC' in charts:
+        #     new_chart = self.get_charts_FGC_consumption_and_production_energy()
+        #     if new_chart is not None:
+        #         instanciated_charts.append(new_chart)
+        #
+        # if 'DAC' in charts:
+        #     new_chart = self.get_charts_DAC_consumption_and_production_energy()
+        #     if new_chart is not None:
+        #         instanciated_charts.append(new_chart)
 
         if GlossaryEnergy.Capital in charts:
             chart = self.get_capital_breakdown_by_technos()

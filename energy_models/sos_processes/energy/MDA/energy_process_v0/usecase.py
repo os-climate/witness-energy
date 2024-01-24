@@ -818,7 +818,8 @@ class Study(EnergyStudyManager):
 
         if CarbonCapture.name in DEFAULT_TECHNO_DICT:
             values_dict[
-                f'{self.study_name}.{CCS_NAME}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}'] = flue_gas_list
+                #f'{self.study_name}.{CCS_NAME}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}'] = flue_gas_list
+                f'{self.study_name}.{CCS_NAME}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.flue_gas_emission_techno_list}'] = flue_gas_list
 
         # IF coarse process no need of heat loss percentage (raw prod is net prod)
         # IF renewable and fossil in energy_list then coarse process

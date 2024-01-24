@@ -296,6 +296,9 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'carbon_capture': ('float', None, True),
                                                      'carbon_storage': ('float', None, True),
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                     'heat.hightemperatureheat (TWh)': ('float', None, True),
+                                                     'heat.mediumtemperatureheat (TWh)': ('float', None, True),
+                                                     'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                      }
                         }
 

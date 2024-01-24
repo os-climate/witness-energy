@@ -72,7 +72,10 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': ['hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen'],
+        inputs_dict = {
+                       # f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': ['hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen'],
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.flue_gas_emission_techno_list}': [
+                           'hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen'],
                        f'{self.name}.electricity.CoalGen.{GlossaryEnergy.TechnoProductionValue}': self.electricity_CoalGen_production,
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoProductionValue}': self.hydrogen_WaterGasShift_production,
                        f'{self.name}.electricity.CoalGen.flue_gas_co2_ratio': np.array([0.2]),
@@ -116,7 +119,10 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': ['hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen', 'carbon_capture.direct_air_capture.DirectAirCaptureTechno'],
+                       # f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': ['hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen', 'carbon_capture.direct_air_capture.DirectAirCaptureTechno'],
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.flue_gas_emission_techno_list}': [
+                           'hydrogen.gaseous_hydrogen.WaterGasShift', 'electricity.CoalGen',
+                           'carbon_capture.direct_air_capture.DirectAirCaptureTechno'],
                        f'{self.name}.electricity.CoalGen.{GlossaryEnergy.TechnoProductionValue}': self.electricity_CoalGen_production,
                        f'{self.name}.carbon_capture.direct_air_capture.DirectAirCaptureTechno.{GlossaryEnergy.TechnoProductionValue}': self.electricity_CoalGen_production,
                        f'{self.name}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoProductionValue}': self.hydrogen_WaterGasShift_production,
