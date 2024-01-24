@@ -39,8 +39,8 @@ TECHNOLOGIES_LIST_COARSE = ['direct_air_capture.CalciumPotassiumScrubbing', 'flu
 TECHNOLOGIES_FLUE_GAS_LIST_COARSE = ['electricity.GasTurbine']
 DEFAULT_FLUE_GAS_LIST = ['electricity.CoalGen', 'electricity.GasTurbine', 'electricity.CombinedCycleGasTurbine',
                          'hydrogen.gaseous_hydrogen.WaterGasShift', 'liquid_fuel.FischerTropsch', 'liquid_fuel.Refinery', 'methane.FossilGas',
-                         'solid_fuel.Pelletizing', 'syngas.CoalGasification', 'fossil.FossilSimpleTechno', 'carbon_capture.direct_air_capture.AmineScrubbing',
-                         'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing', 'carbon_capture.direct_air_capture.DirectAirCaptureTechno']
+                         'solid_fuel.Pelletizing', 'syngas.CoalGasification', 'fossil.FossilSimpleTechno'] #, 'carbon_capture.direct_air_capture.AmineScrubbing',
+                         #'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing', 'carbon_capture.direct_air_capture.DirectAirCaptureTechno']
 TECHNOLOGIES_LIST_DEV = ['direct_air_capture.AmineScrubbing', 'direct_air_capture.CalciumPotassiumScrubbing',
                              'flue_gas_capture.CalciumLooping','flue_gas_capture.ChilledAmmoniaProcess',
                              'flue_gas_capture.CO2Membranes', 'flue_gas_capture.MonoEthanolAmine',
@@ -218,8 +218,10 @@ class Study(EnergyMixStudyManager):
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryEnergy.techno_list}': DEFAULT_FLUE_GAS_LIST,
+                       # f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryEnergy.techno_list}': DEFAULT_FLUE_GAS_LIST,
+                       f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryEnergy.flue_gas_emission_techno_list}': DEFAULT_FLUE_GAS_LIST,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
+                       # f'{self.study_name}.{ccs_name}.{GlossaryEnergy.flue_gas_emission_techno_list}': self.technologies_list,
                        f'{self.study_name}.{ccs_name}.direct_air_capture.{GlossaryEnergy.techno_list}': DIRECT_AIR_TECHNOLOGIES_LIST_DEV,
                        f'{self.study_name}.{ccs_name}.flue_gas_capture.flue_gas_mean': self.flue_gas_mean,
                        f'{self.study_name}.{ccs_name}.direct_air_capture.direct_air_mean': self.flue_gas_mean,

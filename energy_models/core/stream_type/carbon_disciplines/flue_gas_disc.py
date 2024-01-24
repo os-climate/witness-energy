@@ -77,7 +77,7 @@ class FlueGasDiscipline(SoSWrapp):
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+               GlossaryEnergy.flue_gas_emission_techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
                                      'structuring': True, 'unit': '-'},
@@ -109,8 +109,8 @@ class FlueGasDiscipline(SoSWrapp):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if GlossaryEnergy.techno_list in self.get_data_in() and GlossaryEnergy.ccs_list in self.get_data_in():
-            techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
+        if GlossaryEnergy.flue_gas_emission_techno_list in self.get_data_in() and GlossaryEnergy.ccs_list in self.get_data_in():
+            techno_list = self.get_sosdisc_inputs(GlossaryEnergy.flue_gas_emission_techno_list)
             ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
 
             if techno_list is not None and ccs_list is not None:
@@ -161,7 +161,7 @@ class FlueGasDiscipline(SoSWrapp):
              Compute gradient of coupling outputs vs coupling inputs
         '''
         inputs_dict = self.get_sosdisc_inputs()
-        technologies_list = inputs_dict[GlossaryEnergy.techno_list]
+        technologies_list = inputs_dict[GlossaryEnergy.flue_gas_emission_techno_list]
         ccs_list = inputs_dict[GlossaryEnergy.ccs_list]
         mix_weights = self.get_sosdisc_outputs('flue_gas_prod_ratio')
 
@@ -273,7 +273,7 @@ class FlueGasDiscipline(SoSWrapp):
         flue_gas_total = self.get_sosdisc_outputs(
             'flue_gas_production')[self.energy_name].values
         flue_gas_prod_ratio = self.get_sosdisc_outputs('flue_gas_prod_ratio')
-        technologies_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
+        technologies_list = self.get_sosdisc_inputs(GlossaryEnergy.flue_gas_emission_techno_list)
         years = flue_gas_prod_ratio[GlossaryEnergy.Years].values
         chart_name = f'Flue gas emissions by technology'
         new_chart = TwoAxesInstanciatedChart(
@@ -309,7 +309,7 @@ class FlueGasDiscipline(SoSWrapp):
 
     def get_table_technology_co2_concentration(self):
         table_name = 'Concentration of CO2 in all flue gas streams'
-        technologies_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
+        technologies_list = self.get_sosdisc_inputs(GlossaryEnergy.flue_gas_emission_techno_list)
 
         headers = ['Technology', 'CO2 concentration']
         cells = []

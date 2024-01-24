@@ -222,3 +222,7 @@ year_start,Starting year,year,Initial year of the study.,,D - Nominal property
 yeart_end,Ending year,year,Final year of the study.,,
 yeart_start,Starting year,year,Initial year of the study.,,
 fluegas_emissions_technology_list, Flue gas emission list,,List of the flue gas emission technologies considered.,,
+production_fgc,Production of flue gas carbon capture technologies,,Carbon capture production from flue gas technologies.,,
+consumption_fgc,Consumption of flue gas carbon capture technologies,,Carbon capture consumption from flue gas technologies.,,
+production_dac,Production of direct air carbon capture technologies,,Carbon capture production from direct air technologies.,,
+consumption_dac,Consumption of direct air carbon capture technologies,,Carbon capture consumption from direct air technologies.,,
