@@ -46,11 +46,11 @@ class SyngasBiomassGasificationTestCase(unittest.TestCase):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1.5 * 1000
 
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(2020, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))

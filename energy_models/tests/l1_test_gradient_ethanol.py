@@ -48,7 +48,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
         self.energy_name = 'ethanol'
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': np.ones(len(years)) * 0.135 * 1000,
@@ -125,8 +125,8 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051))}
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

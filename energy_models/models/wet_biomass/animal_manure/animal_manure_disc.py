@@ -94,7 +94,7 @@ class AnimalManureDiscipline(WetBiomassTechnoDiscipline):
                                      'default': techno_infos_dict_default},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True),
                                                                 }

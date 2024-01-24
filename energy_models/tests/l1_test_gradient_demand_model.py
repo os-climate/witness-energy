@@ -42,8 +42,8 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
-        self.year_end = 2100
+        self.year_start = GlossaryEnergy.YeartStartDefault
+        self.year_end = GlossaryEnergy.YeartEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
 
         self.energy_production_detailed = pd.DataFrame({GlossaryEnergy.Years: self.years,

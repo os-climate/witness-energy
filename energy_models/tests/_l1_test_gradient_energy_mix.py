@@ -57,7 +57,7 @@ limitations under the License.
 #         Initialize third data needed for testing
 #         '''
 #         self.disc_name = 'energy_mix'
-#         self.year_start = 2020
+#         self.year_start = GlossaryEnergy.YeartStartDefault
 #         self.year_end = 2050
 #         self.years = np.arange(self.year_start, self.year_end + 1)
 #         self.year_range = self.year_end - self.year_start + 1
@@ -253,7 +253,7 @@ limitations under the License.
 #             {GlossaryEnergy.Years: self.years, 'biomass_dry (Gha)': 0.0})
 #         self.land_use_required_methane = pd.DataFrame(
 #             {GlossaryEnergy.Years: self.years, 'mathane (Gha)': 0.0})
-#         years = np.arange(2020, 2051)
+#         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 #         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
 #         co2_taxes = [14.86, 17.22, 20.27,
 #                      29.01, 34.05, 39.08, 44.69, 50.29]

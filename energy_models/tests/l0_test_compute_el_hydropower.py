@@ -41,11 +41,11 @@ class HydropowerTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(2020, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -71,7 +71,7 @@ class HydropowerTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
 
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(2020, 2051), GlossaryEnergy.MarginValue: np.ones(len(np.arange(2020, 2051))) * 110})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1), GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 110})
 
         transport_cost = 11,
         # It is noteworthy that the cost of transmission has generally been held (and can
@@ -104,13 +104,13 @@ class HydropowerTestCase(unittest.TestCase):
 
     def test_01_compute_hydropower_price(self):
 
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         utilisation_ratio = pd.DataFrame({
             GlossaryEnergy.Years: years,
             GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
         })
         
-        inputs_dict = {GlossaryEnergy.YearStart: 2020,
+        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YeartStartDefault,
                        GlossaryEnergy.YearEnd: 2050,
                        GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': HydropowerDiscipline.techno_infos_dict_default,
@@ -125,7 +125,7 @@ class HydropowerTestCase(unittest.TestCase):
                        'initial_production': HydropowerDiscipline.initial_production,
                        'initial_age_distrib': HydropowerDiscipline.initial_age_distribution,
                        GlossaryEnergy.EnergyCO2EmissionsValue: pd.DataFrame(),
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,

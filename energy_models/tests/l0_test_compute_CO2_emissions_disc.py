@@ -34,7 +34,7 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
+        self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         print(EnergyMix.energy_list)

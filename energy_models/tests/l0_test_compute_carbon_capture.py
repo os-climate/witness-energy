@@ -33,7 +33,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
         self.name = 'Test'
         ee_data = ExecutionEngine(self.name)

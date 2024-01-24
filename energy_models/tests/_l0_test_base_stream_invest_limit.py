@@ -39,7 +39,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         '''
         self.energy_name = 'hydrogen'
 
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
 
         self.electrolysis_techno_prices = pd.DataFrame({'Electrolysis.PEM': np.linspace(100, 100 + len(years) - 1, len(years)),
