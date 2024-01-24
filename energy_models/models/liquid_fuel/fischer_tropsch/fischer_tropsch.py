@@ -42,7 +42,6 @@ class FischerTropsch(LiquidFuelTechno):
 
     def configure_parameters_update(self, inputs_dict):
         LiquidFuelTechno.configure_parameters_update(self, inputs_dict)
-        self.cost_details = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.syngas_ratio = np.array(inputs_dict['syngas_ratio']) / 100.0
 
         self.needed_syngas_ratio = self.techno_infos_dict['carbon_number'] / (
