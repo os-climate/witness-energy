@@ -28,5 +28,5 @@ Plus, detailed about the sharing of Capex and Opex are given
 
 
 
-[^1]: https://reader.elsevier.com/reader/sd/pii/S1876610212010934?token=1A3181CEE6756AFE741AAACDFC004EAA641316AEC4BE6238B4712D20B90F53690774128290A7E3032F7D5AF0F8CC38A9
-[^2]: https://pubs.acs.org/doi/pdf/10.1021/acs.iecr.7b02613
+[^1]: (https://reader.elsevier.com/reader/sd/pii/S1876610212010934?token=1A3181CEE6756AFE741AAACDFC004EAA641316AEC4BE6238B4712D20B90F53690774128290A7E3032F7D5AF0F8CC38A9)
+[^2]: (https://pubs.acs.org/doi/pdf/10.1021/acs.iecr.7b02613)

@@ -43,6 +43,6 @@ Plus, detailed about the sharing of Capex and Opex are given
 
 [^5]: Vo, T.T., Wall, D.M., Ring, D., Rajendran, K. and Murphy, J.D., 2018. Techno-economic analysis of biogas upgrading via amine scrubber, carbon capture and ex-situ methanation. Applied energy, 212, pp.1191-1202.
 
-[^6]: Amine scrubbing some amount of heat is required, https://www.sciencedirect.com/science/article/abs/pii/S2211339812000081#:~:text=Amine%20scrubbing%20will%20be%20an,performance%20of%20the%20solvent%20regeneration. 
+[^6]: Amine scrubbing some amount of heat is required,[science direct](https://www.sciencedirect.com/science/article/abs/pii/S2211339812000081#:~:text=Amine%20scrubbing%20will%20be%20an,performance%20of%20the%20solvent%20regeneration) 
 
-[^7]: Amine scrubbing, https://www.sciencedirect.com/science/article/abs/pii/S2211339812000081
+[^7]: Amine scrubbing, [heat](https://www.sciencedirect.com/science/article/abs/pii/S2211339812000081)
