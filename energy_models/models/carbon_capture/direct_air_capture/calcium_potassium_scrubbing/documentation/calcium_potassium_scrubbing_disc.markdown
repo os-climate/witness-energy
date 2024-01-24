@@ -44,6 +44,6 @@ Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and 
 
 [^4]: Vo, T.T., Wall, D.M., Ring, D., Rajendran, K. and Murphy, J.D., 2018. Techno-economic analysis of biogas upgrading via amine scrubber, carbon capture and ex-situ methanation. Applied energy, 212, pp.1191-1202.
 
-[^5]: Calcium potassium scrubbing, https://www.sciencedirect.com/science/article/pii/S2588913318300152
+[^5]: [Calcium potassium scrubbing, ](https://www.sciencedirect.com/science/article/pii/S2588913318300152)
 
-[^6]: Calcium potassium scrubbing process, https://www.sciencedirect.com/topics/earth-and-planetary-sciences/wet-scrubber
+[^6]: [Calcium potassium scrubbing process, ](https://www.sciencedirect.com/topics/earth-and-planetary-sciences/wet-scrubber)
