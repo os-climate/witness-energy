@@ -89,11 +89,11 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
     invest_before_year_start = pd.DataFrame({
         'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 0.0]})
 
-    CO2_credits = pd.DataFrame({GlossaryEnergy.Years: range(2020, 2051),
+    CO2_credits = pd.DataFrame({GlossaryEnergy.Years: range(GlossaryEnergy.YeartStartDefault, 2050 + 1),
                                 'CO2_credits': 50.})
 
     market_demand = pd.DataFrame(
-        {GlossaryEnergy.Years: range(2020, 2051), 'carbon_demand': 5e-2})
+        {GlossaryEnergy.Years: range(GlossaryEnergy.YeartStartDefault, 2050 + 1), 'carbon_demand': 5e-2})
 
 # DESC_IN.update(
     DESC_IN = {'techno_infos_dict': {'type': 'dict',

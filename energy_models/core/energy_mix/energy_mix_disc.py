@@ -172,7 +172,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         GlossaryEnergy.AllStreamsDemandRatioValue: {'type': 'dataframe', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                      'namespace': 'ns_energy',
-                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
                                                               GlossaryEnergy.CO2Tax: ('float', None, True)}
                                      },
         'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,

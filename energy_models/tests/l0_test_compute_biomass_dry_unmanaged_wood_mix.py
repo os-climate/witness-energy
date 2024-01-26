@@ -45,12 +45,12 @@ class UnmanagedWoodPriceTestCase(unittest.TestCase):
                                       0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1000
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(2020, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -58,7 +58,7 @@ class UnmanagedWoodPriceTestCase(unittest.TestCase):
         self.energy_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'electricity': electricity_price})
 
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'electricity': 0.0})
         # invest: plantation of 0.19Mha of forests each years (actual trend

@@ -42,7 +42,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         '''
         self.energy_name = 'electricity'
         logging.disable(logging.INFO)
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         
         self.years = years
 
