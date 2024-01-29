@@ -143,6 +143,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                               'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, False),
                                                        GlossaryEnergy.ForestInvestmentValue: ('float', None, False)}, 'namespace': 'ns_invest',
                               'dataframe_edition_locked': False},
+        GlossaryEnergy.MaxBudgetValue: GlossaryEnergy.MaxBudgetDf,
     }
 
     energy_name = "one_invest"
@@ -152,6 +153,7 @@ class IndependentInvestDiscipline(SoSWrapp):
         GlossaryEnergy.EnergyInvestmentsMinimizationObjective: {'type': 'array', 'unit': '-',
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                   'namespace': 'ns_functions'},
+        GlossaryEnergy.MaxBudgetConstraintValue: GlossaryEnergy.MaxBudgetConstraint,
     }
     _maturity = 'Research'
 
@@ -164,6 +166,14 @@ class IndependentInvestDiscipline(SoSWrapp):
         '''
         dynamic_outputs = {}
         dynamic_inputs = {}
+
+        if GlossaryEnergy.YearStart in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs(
+                [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+            years = np.arange(year_start, year_end + 1)
+            default_max_budget = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                      GlossaryEnergy.MaxBudgetValue: np.zeros_like(years)})
+            self.set_dynamic_default_values({GlossaryEnergy.MaxBudgetValue: default_max_budget})
 
         if GlossaryEnergy.energy_list in self.get_data_in():
             energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
@@ -227,11 +237,12 @@ class IndependentInvestDiscipline(SoSWrapp):
 
         input_dict = self.get_sosdisc_inputs()
 
-        energy_investment_wo_tax, energy_invest_objective = self.independent_invest_model.compute(
+        energy_investment_wo_tax, energy_invest_objective, max_budget_constraint = self.independent_invest_model.compute(
             input_dict)
 
         output_dict = {GlossaryEnergy.EnergyInvestmentsWoTaxValue: energy_investment_wo_tax,
-                       GlossaryEnergy.EnergyInvestmentsMinimizationObjective: energy_invest_objective, }
+                       GlossaryEnergy.EnergyInvestmentsMinimizationObjective: energy_invest_objective,
+                       GlossaryEnergy.MaxBudgetConstraintValue: max_budget_constraint}
 
         for energy in input_dict[GlossaryEnergy.energy_list] + input_dict[GlossaryEnergy.ccs_list]:
             if energy == BiomassDry.name:
@@ -266,6 +277,11 @@ class IndependentInvestDiscipline(SoSWrapp):
                 ones * 1e-3)
 
             self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.MaxBudgetConstraintValue,),
+                (GlossaryEnergy.invest_mix, techno),
+                - identity)
+
+            self.set_partial_derivative_for_other_types(
                 (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
                 (GlossaryEnergy.invest_mix, techno),
                 np.identity(len(years)))
@@ -280,6 +296,11 @@ class IndependentInvestDiscipline(SoSWrapp):
             (GlossaryEnergy.ForestInvestmentValue, GlossaryEnergy.ForestInvestmentValue),
             ones * 1e-3)
 
+        self.set_partial_derivative_for_other_types(
+            (GlossaryEnergy.MaxBudgetConstraintValue,),
+            (GlossaryEnergy.ForestInvestmentValue, GlossaryEnergy.ForestInvestmentValue),
+            - identity)
+
         energy_list = inputs_dict[GlossaryEnergy.energy_list]
         if BiomassDry.name in energy_list:
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
@@ -292,6 +313,11 @@ class IndependentInvestDiscipline(SoSWrapp):
                     (GlossaryEnergy.EnergyInvestmentsMinimizationObjective,),
                     (techno, GlossaryEnergy.InvestmentsValue),
                     ones * 1e-3)
+
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryEnergy.MaxBudgetConstraintValue,),
+                    (techno, GlossaryEnergy.InvestmentsValue),
+                    - identity)
 
     def get_chart_filter_list(self):
 
@@ -407,4 +433,24 @@ class IndependentInvestDiscipline(SoSWrapp):
                 new_chart_energy_ratio.add_series(serie_ratio)
 
             instanciated_charts.insert(1, new_chart_energy_ratio)
+
+        #max budget constraint charts
+        max_budget_df = self.get_sosdisc_inputs(GlossaryEnergy.MaxBudgetValue)
+        max_budget = max_budget_df[GlossaryEnergy.MaxBudgetValue].values
+        years = max_budget_df[GlossaryEnergy.Years].values
+        if max_budget.max() > 0 :
+
+            chart_max_budget = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.MaxBudgetDf['unit'],
+                                                              chart_name=GlossaryEnergy.MaxBudgetConstraintValue, stacked_bar=True)
+
+            serie_max_budget = InstanciatedSeries(list(years), list(max_budget), GlossaryEnergy.MaxBudgetValue, 'dash_lines')
+            chart_max_budget.add_series(serie_max_budget)
+
+            energy_invests = self.get_sosdisc_outputs(GlossaryEnergy.EnergyInvestmentsWoTaxValue)[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values  * 1000
+            serie_invests = InstanciatedSeries(list(years), list(energy_invests), "Invests",
+                                                  'bar')
+            chart_max_budget.add_series(serie_invests)
+            instanciated_charts.insert(1, chart_max_budget)
+
+
         return instanciated_charts
