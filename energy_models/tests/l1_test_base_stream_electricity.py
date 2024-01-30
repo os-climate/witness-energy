@@ -99,9 +99,9 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_electricity': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_energy_mix': self.name,
-                   'ns_ref': self.name}
+                   GlossaryEnergy.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
+                   GlossaryEnergy.NS_REFERENCE: self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.stream_type.energy_disciplines.electricity_disc.ElectricityDiscipline'

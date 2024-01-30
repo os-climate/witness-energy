@@ -80,13 +80,13 @@ class TestEnergyInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': self.name,
-                   'ns_ref': self.name,
+        ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
+                   GlossaryEnergy.NS_REFERENCE: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
-                   'ns_ccs': f'{self.name}.CCUS',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.CCUS',
                    'ns_energy': self.name,
-                   'ns_functions': self.name,
+                   GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_invest': f'{self.name}.{self.model_name}'
                    }
 
@@ -150,13 +150,13 @@ class TestEnergyInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': self.name,
-                   'ns_ref': self.name,
+        ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
+                   GlossaryEnergy.NS_REFERENCE: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
-                   'ns_ccs': f'{self.name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}',
                    'ns_energy': self.name,
-                   'ns_functions': self.name,
+                   GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_invest': f'{self.name}.{self.model_name}'
                    }
 
@@ -212,13 +212,13 @@ class TestEnergyInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': self.name,
-                   'ns_ref': self.name,
+        ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
+                   GlossaryEnergy.NS_REFERENCE: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
-                   'ns_ccs': f'{self.name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}',
                    'ns_energy': self.name,
-                   'ns_functions': self.name,
+                   GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_invest': f'{self.name}.{self.model_name}',
                    'ns_forest': self.name,
                    'ns_crop': self.name

@@ -955,8 +955,8 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_electricity': f'{self.name}',
-                   'ns_ref': f'{self.name}',
-                   'ns_functions': f'{self.name}',
+                   GlossaryEnergy.NS_REFERENCE: f'{self.name}',
+                   GlossaryEnergy.NS_FUNCTIONS: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_resource': f'{self.name}'}
 

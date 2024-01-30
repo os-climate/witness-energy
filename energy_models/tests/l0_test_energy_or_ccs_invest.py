@@ -96,9 +96,9 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': f'{self.name}.{self.model_name}',
-                   'ns_ccs': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}.{self.model_name}.Energy'}
+        ns_dict = {GlossaryEnergy.NS_WITNESS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}.{self.model_name}.Energy'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.investments.disciplines.energy_or_ccs_invest_disc.InvestCCSorEnergyDiscipline'
@@ -127,9 +127,9 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': f'{self.name}.{self.model_name}',
-                   'ns_ccs': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}.{self.model_name}.Energy'}
+        ns_dict = {GlossaryEnergy.NS_WITNESS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}.{self.model_name}.Energy'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.investments.disciplines.energy_or_ccs_invest_disc.InvestCCSorEnergyDiscipline'
@@ -162,9 +162,9 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': f'{self.name}.{self.model_name}',
-                   'ns_ccs': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}.{self.model_name}.Energy',
+        ns_dict = {GlossaryEnergy.NS_WITNESS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}.{self.model_name}.Energy',
                    'ns_public': f'{self.name}.{self.model_name}',
                    'ns_energy_study': f'{self.name}.{self.model_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -195,9 +195,9 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': f'{self.name}.{self.model_name}',
-                   'ns_ccs': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}.{self.model_name}.Energy',
+        ns_dict = {GlossaryEnergy.NS_WITNESS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}.{self.model_name}.Energy',
                    'ns_public': f'{self.name}.{self.model_name}',
                    'ns_energy_study': f'{self.name}.{self.model_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)

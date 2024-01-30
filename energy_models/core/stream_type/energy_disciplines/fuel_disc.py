@@ -98,27 +98,27 @@ class FuelDiscipline(SoSWrapp):
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyPricesValue}'] = {'type': 'dataframe',
                                                                  'unit': '$/MWh',
                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                 'namespace': 'ns_energy_mix'
+                                                                 'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                  }
                     dynamic_inputs[f'{energy}.energy_detailed_techno_prices'] = {'type': 'dataframe',
                                                                                  'unit': '$/MWh',
                                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                                 'namespace': 'ns_energy_mix'
+                                                                                 'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                                  }
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {'type': 'dataframe',
                                                                       'unit': 'PWh',
                                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                      'namespace': 'ns_energy_mix'
+                                                                      'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                       }
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] = {'type': 'dataframe',
                                                                      'unit': 'PWh',
                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                     'namespace': 'ns_energy_mix'
+                                                                     'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                      }
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionDetailedValue}'] = {'type': 'dataframe',
                                                                               'unit': 'TWh',
                                                                               'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                              'namespace': 'ns_energy_mix'
+                                                                              'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                               }
 
         self.add_inputs(dynamic_inputs)

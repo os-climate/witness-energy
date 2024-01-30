@@ -17,6 +17,7 @@ limitations under the License.
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.sos_processes.energy.techno_mix.carbon_storage_coarse_mix.usecase_coarse import TECHNOLOGIES_LIST
 
@@ -49,7 +50,7 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
-                   'ns_functions': f'{ns_study}.{func_manager_name}',
+                   GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}.{func_manager_name}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
 
         mods_dict = {}
