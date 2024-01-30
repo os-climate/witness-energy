@@ -69,7 +69,7 @@ hydropower_name = Electricity.hydropower_name
 
 
 class Study(EnergyStudyManager):
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
                  techno_dict=DEFAULT_TECHNO_DICT,
                  main_study=True, bspline=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT,
                  energy_invest_input_in_abs_value=True):

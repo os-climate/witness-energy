@@ -61,7 +61,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.name = 'Test_Ratio'
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
         #---Ratios---
         self.is_apply_ratio = True
@@ -341,7 +341,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict[f'{namespace}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
         inputs_dict[f'{namespace}.{GlossaryEnergy.AllStreamsDemandRatioValue}'] = self.all_streams_demand_ratio
         inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
-        inputs_dict[f'{namespace}.land_surface_for_food_df'] = pd.DataFrame({GlossaryEnergy.Years: np.arange(2020, 2051),
+        inputs_dict[f'{namespace}.land_surface_for_food_df'] = pd.DataFrame({GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
                                               'Agriculture total (Gha)': np.ones(31) * 4.8})
 
         self.ee.load_study_from_input_dict(inputs_dict)

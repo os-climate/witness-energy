@@ -92,7 +92,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                              })
 
     carbon_zero_quantity_to_be_stored = pd.DataFrame(
-        {GlossaryEnergy.Years: range(2020, 2051), 'carbon_storage': 0.})
+        {GlossaryEnergy.Years: range(GlossaryEnergy.YeartStartDefault, 2050 + 1), 'carbon_storage': 0.})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

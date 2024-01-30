@@ -33,7 +33,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
         self.electricity_CoalGen_production = pd.DataFrame({GlossaryEnergy.Years: years,
                                                             'CO2 from Flue Gas (Mt)': 10000.0})

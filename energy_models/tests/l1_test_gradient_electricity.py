@@ -58,7 +58,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.energy_name = 'electricity'
-        self.year_start = 2020
+        self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
 
         self.years = np.arange(self.year_start, self.year_end + 1)

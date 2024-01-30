@@ -49,13 +49,13 @@ class TechnoDiscipline(SoSWrapp):
         'version': '',
     }
 
-    years_default = np.arange(2020, 2051)
+    years_default = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
     DESC_IN = {
         GlossaryEnergy.YearStart: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
         GlossaryEnergy.YearEnd: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_END_DESC_IN),
         GlossaryEnergy.InvestLevelValue: {'type': 'dataframe', 'unit': 'G$',
-                         'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                         'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
                          'dataframe_edition_locked': False
                          },
@@ -180,7 +180,6 @@ class TechnoDiscipline(SoSWrapp):
         inputs_dict = self.get_sosdisc_inputs()
         # -- configure class with inputs
         self.techno_model.compute(inputs_dict)
-
 
         outputs_dict = {GlossaryEnergy.TechnoDetailedPricesValue: self.techno_model.cost_details,
                         GlossaryEnergy.TechnoPricesValue: self.techno_model.cost_details[[GlossaryEnergy.Years, self.techno_name, f'{self.techno_name}_wotaxes']],
