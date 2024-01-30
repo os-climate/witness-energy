@@ -76,10 +76,10 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.model_name = 'demand_model'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}',
-                   'ns_functions': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}',
-                   'ns_witness': f'{self.name}'}
+                   GlossaryEnergy.NS_REFERENCE: f'{self.name}',
+                   GlossaryEnergy.NS_FUNCTIONS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.demand.energy_demand_disc.EnergyDemandDiscipline'

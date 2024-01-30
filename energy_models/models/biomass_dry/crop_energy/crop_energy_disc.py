@@ -138,7 +138,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                         'dataframe_edition_locked': False},
                CropEnergy.LAND_SURFACE_FOR_FOOD_DF: {'type': 'dataframe', 'unit': 'Gha',
                                                      'visibility': BiomassDryTechnoDiscipline.SHARED_VISIBILITY,
-                                                     'namespace': 'ns_witness',
+                                                     'namespace': GlossaryEnergy.NS_WITNESS,
                                                      'default': land_surface_for_food,
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
                                                                               'Agriculture total (Gha)': ('float', None, True),},

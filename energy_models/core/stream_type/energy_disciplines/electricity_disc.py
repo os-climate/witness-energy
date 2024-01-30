@@ -54,13 +54,13 @@ class ElectricityDiscipline(EnergyDiscipline):
                                                  'unit': 'Twh',
                                                  'user_level': 2,
                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                 'namespace': 'ns_ref'},
+                                                 'namespace': GlossaryEnergy.NS_REFERENCE},
                'hydropower_constraint_ref': {'type': 'float',
                                              'default': 1000.,
                                              'unit': 'Twh',
                                              'user_level': 2,
                                              'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                             'namespace': 'ns_ref'},
+                                             'namespace': GlossaryEnergy.NS_REFERENCE},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_electricity',
@@ -86,7 +86,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                     dynamic_outputs['prod_hydropower_constraint'] = {'type': 'dataframe', 'user_level': 2,
                                                                      'unit': 'TWh',
                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                     'namespace': 'ns_functions'}
+                                                                     'namespace': GlossaryEnergy.NS_FUNCTIONS}
         self.add_outputs(dynamic_outputs)
 
     def init_execution(self):

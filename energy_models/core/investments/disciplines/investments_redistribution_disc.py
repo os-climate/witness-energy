@@ -122,7 +122,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                     techno_list_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoList)
                     techno_list_desc_dict.update(
                         {'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
-                         'namespace': 'ns_ccs'})
+                         'namespace': GlossaryEnergy.NS_CCS})
                     dynamic_inputs[f'{ccs}.{GlossaryEnergy.TechnoListName}'] = techno_list_desc_dict
                     # Add all invest_level outputs
                     if f'{ccs}.{GlossaryEnergy.techno_list}' in self.get_data_in():
@@ -136,7 +136,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                                 # use generic invest level from Glossary and update namespace
 
                                 invest_level_desc_dict = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.InvestLevel)
-                                invest_level_desc_dict.update({'namespace': 'ns_ccs'})
+                                invest_level_desc_dict.update({'namespace': GlossaryEnergy.NS_CCS})
                                 dynamic_outputs[
                                     f'{ccs}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_desc_dict
         # use updated informations for variable

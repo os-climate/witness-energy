@@ -323,7 +323,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_syngas': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -387,7 +387,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_carb': self.name,
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -464,7 +464,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -523,7 +523,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -582,7 +582,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -641,7 +641,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -716,7 +716,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_syngas': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 

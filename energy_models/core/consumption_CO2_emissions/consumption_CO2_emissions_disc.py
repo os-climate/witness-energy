@@ -83,10 +83,10 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
     DESC_OUT = {
         'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Gt',
                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                         'namespace': 'ns_ccs'},
+                                         'namespace': GlossaryEnergy.NS_CCS},
         'CO2_emissions_by_use_sinks': {'type': 'dataframe', 'unit': 'Gt',
                                        'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                       'namespace': 'ns_ccs'},
+                                       'namespace': GlossaryEnergy.NS_CCS},
     }
 
     model_name = ConsumptionCO2Emissions.name
@@ -107,19 +107,19 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                 for energy in energy_list:
                     if energy == BiomassDry.name:
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.CO2_per_use'] = {
-                            'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness',
+                            'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'CO2_per_use': ('float', None, True),}}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
+                            'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'electricity (TWh)': ('float', None, True),
                                                      'CO2_resource (Mt)': ('float', None, True),
                                                      }}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
+                            'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'biomass_dry': ('float', None, True),
@@ -199,7 +199,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                     dynamic_inputs[f'{ccs}.{GlossaryEnergy.EnergyProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'PWh',
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': 'ns_ccs',
+                        'namespace': GlossaryEnergy.NS_CCS,
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  'carbon_capture': ('float', None, True),
                                                  'carbon_storage': ('float', None, True),

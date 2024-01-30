@@ -16,6 +16,7 @@ limitations under the License.
 '''
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
@@ -51,7 +52,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         ns_dict = {'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_carb':  f'{ns_study}.{ccs_mix}.{carbon_storage}.PureCarbonSolidStorage',
-                   'ns_ref': f'{ns_study}.NormalizationReferences',
+                   GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
                    'ns_emissions': f'{ns_study}.{energy_mix}', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)

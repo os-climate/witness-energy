@@ -93,7 +93,7 @@ class PureCarbonSSPriceTestCase(unittest.TestCase):
                    'ns_electricity': self.name,
                    'ns_carbon_storage': self.name,
                    'ns_carb': self.name,
-                   'ns_functions': self.name,
+                   GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_resource': self.name
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)

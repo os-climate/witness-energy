@@ -19,6 +19,7 @@ from energy_models.core.energy_process_builder import EnergyProcessBuilder
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import TECHNOLOGIES_LIST
 
 
@@ -45,11 +46,11 @@ class ProcessBuilder(EnergyProcessBuilder):
         carbon_capture_name = CarbonCapture.name
         ns_dict = {'ns_carbon_capture': f'{ns_study}.{self.prefix_name}.{carbon_capture_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
-                   'ns_ccs': f'{ns_study}.CCUS',
+                   GlossaryEnergy.NS_CCS: f'{ns_study}.CCUS',
                    'ns_energy_study': f'{ns_study}',
                    'ns_flue_gas': f'{ns_study}.{self.prefix_name}.{carbon_capture_name}.{flue_gas_name}',
                    'ns_public': f'{ns_study}',
-                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
         mods_dict = {}
         mods_dict[f'{self.prefix_name}.{carbon_capture_name}'] = self.get_stream_disc_path(

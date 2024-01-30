@@ -118,7 +118,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
     # -- add specific techno outputs to this
     DESC_OUT = {
         PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT: {
-            'type': 'dataframe', 'unit': 'Mt', 'visibility': 'Shared', 'namespace': 'ns_functions'},
+            'type': 'dataframe', 'unit': 'Mt', 'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_FUNCTIONS},
     }
 
     DESC_OUT.update(CSTechnoDiscipline.DESC_OUT)
