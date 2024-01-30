@@ -109,10 +109,10 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
-                   'ns_ccs': self.name,
+                   GlossaryEnergy.NS_CCS: self.name,
                    'ns_energy_study': self.name,
-                   'ns_ref': self.name,
-                   'ns_functions': self.name,
+                   GlossaryEnergy.NS_REFERENCE: self.name,
+                   GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_carbon_capture': self.name,
                    'ns_carbon_storage': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)

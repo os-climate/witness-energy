@@ -92,8 +92,8 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_emissions': self.name,
                    'ns_energy': self.name + f'.{self.model_name}',
-                   'ns_witness': self.name,
-                   'ns_ccs': self.name,
+                   GlossaryEnergy.NS_WITNESS: self.name,
+                   GlossaryEnergy.NS_CCS: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -168,8 +168,8 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_emissions': self.name,
                    'ns_energy': self.name + f'.{self.model_name}',
-                   'ns_witness': self.name,
-                   'ns_ccs': self.name,
+                   GlossaryEnergy.NS_WITNESS: self.name,
+                   GlossaryEnergy.NS_CCS: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)

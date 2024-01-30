@@ -71,8 +71,8 @@ class CarbonCaptureTestCase(unittest.TestCase):
                    'ns_energy_study': f'{ns_study}',
                    'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
                    'ns_public': f'{ns_study}',
-                   'ns_ccs': f'{ns_study}',
-                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_CCS: f'{ns_study}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -110,7 +110,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
                    'ns_energy_study': f'{ns_study}',
                    'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
                    'ns_public': f'{ns_study}',
-                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 

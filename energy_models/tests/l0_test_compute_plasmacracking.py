@@ -130,7 +130,7 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_carb': self.name, 'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -182,7 +182,7 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_carb': self.name, 'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 

@@ -59,9 +59,9 @@ class CCUS_Discipline(SoSWrapp):
         'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'carbonstorage_limit': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2,
-                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
         'carbonstorage_constraint_ref': {'type': 'float', 'default': 12e6, 'unit': 'Mt', 'user_level': 2,
-                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
@@ -85,13 +85,13 @@ class CCUS_Discipline(SoSWrapp):
         'co2_emissions_ccus': {'type': 'dataframe', 'unit': 'Mt'},
         'carbon_storage_by_invest': {'type': 'array', 'unit': 'Mt'},
         'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                  'namespace': 'ns_ccs'},
+                                  'namespace': GlossaryEnergy.NS_CCS},
 
         'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                       'namespace': 'ns_energy_study'},
         EnergyMix.CARBON_STORAGE_CONSTRAINT: {'type': 'array', 'unit': '',
                                               'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                              'namespace': 'ns_functions'},
+                                              'namespace': GlossaryEnergy.NS_FUNCTIONS},
 
     }
 
@@ -112,22 +112,22 @@ class CCUS_Discipline(SoSWrapp):
                 for ccs_name in ccs_list:
                     dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': 'ns_ccs',
+                        'namespace': GlossaryEnergy.NS_CCS,
                         "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': 'ns_ccs',
+                        'namespace': GlossaryEnergy.NS_CCS,
                         "dynamic_dataframe_columns": True}
                     dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': 'ns_ccs',
+                        'namespace': GlossaryEnergy.NS_CCS,
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  'carbon_capture': ('float', None, True),
                                                 'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                 'carbon_storage': ('float', None, True),}}
                     dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': 'ns_ccs',
+                        'namespace': GlossaryEnergy.NS_CCS,
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  'carbon_capture': ('float', None, True),
                                                     'carbon_capture_wotaxes': ('float', None, True),
@@ -135,7 +135,7 @@ class CCUS_Discipline(SoSWrapp):
                                                     'carbon_storage_wotaxes': ('float', None, True),}}
                     dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                        'namespace': 'ns_ccs',
+                        'namespace': GlossaryEnergy.NS_CCS,
                         "dynamic_dataframe_columns": True}
 
         if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():

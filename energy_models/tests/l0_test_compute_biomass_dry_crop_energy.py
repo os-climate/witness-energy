@@ -96,7 +96,7 @@ class CropEnergyPriceTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_biomass_dry': f'{self.name}',
-                   'ns_witness': f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}',
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 

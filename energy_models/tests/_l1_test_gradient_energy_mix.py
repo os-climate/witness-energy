@@ -1154,13 +1154,13 @@ limitations under the License.
 #                    'ns_hydrogen': f'{name}',
 #                    'ns_methane': f'{name}',
 #                    'ns_energy_study': f'{name}',
-#                    'ns_energy_mix': f'{name}.{model_name}',
-#                    'ns_functions': f'{name}.{model_name}',
+#                    GlossaryEnergy.NS_ENERGY_MIX: f'{name}.{model_name}',
+#                    GlossaryEnergy.NS_FUNCTIONS: f'{name}.{model_name}',
 #                    'ns_resource': f'{name}.{model_name}.resource',
-#                    'ns_ccs': f'{name}.{model_name}',
-#                    'ns_ref': f'{name}.{model_name}',
+#                    GlossaryEnergy.NS_CCS: f'{name}.{model_name}',
+#                    GlossaryEnergy.NS_REFERENCE: f'{name}.{model_name}',
 #                    'ns_energy': f'{name}.{model_name}',
-#                    'ns_witness': f'{name}'}
+#                    GlossaryEnergy.NS_WITNESS: f'{name}'}
 #         self.ee.ns_manager.add_ns_def(ns_dict)
 #
 #         mod_path = 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline'
