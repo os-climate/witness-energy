@@ -97,7 +97,7 @@ class CCUS_Discipline(SoSWrapp):
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
-        self.ccus_model = CCUS('CCUS')
+        self.ccus_model = CCUS(GlossaryEnergy.CCUS)
         self.ccus_model.configure_parameters(inputs_dict)
 
     def setup_sos_disciplines(self):

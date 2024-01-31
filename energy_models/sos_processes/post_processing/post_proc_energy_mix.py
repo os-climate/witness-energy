@@ -119,9 +119,9 @@ def get_techno_comparision_data(execution_engine, namespace, year):
             energy_average_price = energy_average_price + price * techno_production_dict[techno]
 
 
-            capex_price_percentage = (capex_price) * 100 / price
-            opex_price_percentage = (opex_price) * 100 / price
-            CO2tax_price_percentage = (CO2tax_price) * 100 / price
+            capex_price_percentage = capex_price * 100 / price
+            opex_price_percentage = opex_price * 100 / price
+            CO2tax_price_percentage = CO2tax_price * 100 / price
 
             capex_list.append(str(round(capex_price, DECIMAL)) + ' (' + str(round(capex_price_percentage, DECIMAL)) + '%)')
             opex_list.append(str(round(opex_price, DECIMAL)) + ' (' + str(round(opex_price_percentage, DECIMAL)) + '%)')
@@ -134,9 +134,9 @@ def get_techno_comparision_data(execution_engine, namespace, year):
             average_CO2tax_value = CO2tax_average_price / total_stream_production
             average_price_value = energy_average_price / total_stream_production
 
-            average_capex_price_percentage = (average_capex_value) * 100 / average_price_value
-            average_opex_price_percentage = (average_opex_value) * 100 / average_price_value
-            average_CO2tax_price_percentage = (average_CO2tax_value) * 100 / average_price_value
+            average_capex_price_percentage = average_capex_value * 100 / average_price_value
+            average_opex_price_percentage = average_opex_value * 100 / average_price_value
+            average_CO2tax_price_percentage = average_CO2tax_value * 100 / average_price_value
             average_capex_list.append(str(round(average_capex_value, DECIMAL)) + ' (' + str(round(average_capex_price_percentage, DECIMAL)) + '%)')
             average_opex_list.append(str(round(average_opex_value, DECIMAL)) + ' (' + str(round(average_opex_price_percentage, DECIMAL)) + '%)')
             average_CO2tax_list.append(str(round(average_CO2tax_value, DECIMAL)) + ' (' + str(round(average_CO2tax_price_percentage, DECIMAL)) + '%)')
@@ -182,7 +182,7 @@ def post_processings(execution_engine, namespace, filters):
                 graphs_list.extend(chart_filter.selected_values)
     # Sometimes wrapper object is None, TODO Need to find another way to find energy_name
     wrapper_type = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper
-    if wrapper_type != None:
+    if wrapper_type is not None:
         energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
         absolute_value_table = []
         average_value_table = []

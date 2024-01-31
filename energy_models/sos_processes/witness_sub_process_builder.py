@@ -16,11 +16,11 @@ limitations under the License.
 
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT
 from energy_models.core.energy_study_manager import DEFAULT_ENERGY_LIST, DEFAULT_CCS_LIST, DEFAULT_TECHNO_DICT
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class WITNESSSubProcessBuilder(BaseProcessBuilder):
-
     def __init__(self, ee):
         super(WITNESSSubProcessBuilder, self).__init__(ee)
         self.energy_list = DEFAULT_ENERGY_LIST
@@ -32,18 +32,24 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         # and an the discipline Investment_redistribution_disc is introduced to translate invest in Gdollars
         self.energy_invest_input_in_abs_value = True
         self.use_resources_bool = True
+        self.associate_namespace = None
 
-    def setup_process(self, techno_dict, invest_discipline=INVEST_DISCIPLINE_DEFAULT, process_level='val',
-                      energy_invest_input_in_abs_value=True, associate_namespace=False, use_resources_bool=True):
+    def setup_process(
+        self,
+        techno_dict,
+        invest_discipline=INVEST_DISCIPLINE_DEFAULT,
+        process_level='val',
+        energy_invest_input_in_abs_value=True,
+        associate_namespace=False,
+        use_resources_bool=True,
+    ):
         '''
         Setup process function which will be called if the builder is retrieved with get_builder_from_process with args
         This allows to define instance variables inside the class as energy_list or one invest discipline
         '''
 
-        self.energy_list = [key for key,
-                            value in techno_dict.items() if value['type'] == 'energy']
-        self.ccs_list = [key for key,
-                         value in techno_dict.items() if value['type'] == 'CCUS']
+        self.energy_list = [key for key, value in techno_dict.items() if value['type'] == 'energy']
+        self.ccs_list = [key for key, value in techno_dict.items() if value['type'] == GlossaryEnergy.CCUS]
         self.techno_dict = techno_dict
         self.invest_discipline = invest_discipline
         self.process_level = process_level

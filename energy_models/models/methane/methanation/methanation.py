@@ -52,7 +52,6 @@ class Methanation(MethaneTechno):
         Compute the gradient of global price vs energy prices 
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
-        CO2_needs = self.get_theoretical_co2_needs()
         hydrogen_needs = self.get_theoretical_hydrogen_needs()
         efficiency = self.configure_efficiency()
         return {

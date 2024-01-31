@@ -159,8 +159,6 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources, grad_dict_resources_co2)
 
-        margin = self.techno_model.margin[GlossaryEnergy.MarginValue].values
-
         dprice_FT_dsyngas_ratio = self.techno_model.dprice_FT_dsyngas_ratio / \
             100.0  # now syngas is in % grad is divided by 100
 
@@ -328,10 +326,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
-        instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t', "$/USgallon"]
-        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
 
         # Overload default value with chart filter

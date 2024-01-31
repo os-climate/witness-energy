@@ -82,9 +82,9 @@ def get_comparision_data(execution_engine, namespace, year):
         CO2tax_price = filtereddata['CO2Tax_Part'].iloc[0]
         price = filtereddata[techno].iloc[0]
 
-        capex_price_percentage = (capex_price)*100/price
-        opex_price_percentage = (opex_price) * 100 / price
-        CO2tax_price_percentage = (CO2tax_price) * 100 / price
+        capex_price_percentage = capex_price*100/price
+        opex_price_percentage = opex_price * 100 / price
+        CO2tax_price_percentage = CO2tax_price * 100 / price
 
         capex_list.append(str(round(capex_price, DECIMAL)) + ' (' + str(round(capex_price_percentage, DECIMAL)) + '%)')
         opex_list.append(str(round(opex_price, DECIMAL)) + ' (' + str(round(opex_price_percentage, DECIMAL)) + '%)')
@@ -171,7 +171,6 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
     multilevel_df, years = get_multilevel_df(
         execution_engine, namespace, columns=['price_per_kWh', 'price_per_kWh_wotaxes',
                                               'CO2_per_kWh', 'production', GlossaryEnergy.InvestValue])
-    energy_list = list(set(multilevel_df.index.droplevel(1)))
     # Create Figure
     fig = go.Figure()
     # Get min and max CO2 emissions for colorscale and max of production for
@@ -388,7 +387,7 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     @param execution_engine: Execution engine object from which the data is gathered
     @param namespace: String containing the namespace to access the data
     @param chart_name:String, title of the post_proc
-    @param energy: String, name of the energy to display
+    @param energy_name: String, name of the energy to display
 
     @return new_chart: InstantiatedPlotlyNativeChart a Sankey Diagram
     '''

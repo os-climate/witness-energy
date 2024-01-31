@@ -227,7 +227,7 @@ def post_processings(execution_engine, namespace, filters):
     # ----
     # Sometimes wrapper object is None, TODO Need to find another way to find energy_name
     wrapper_type = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper
-    if wrapper_type != None:
+    if wrapper_type is not None:
         energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
         if f'{energy} Price data of all technologies' in graphs_list:
             capex_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace,

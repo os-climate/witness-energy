@@ -132,7 +132,3 @@ class CHPHighHeatDiscipline(HighHeatTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model.configure_parameters_update(inputs_dict)
         super().run()
-        Outputs_dict = self.get_sosdisc_outputs()
-
-
-

@@ -18,7 +18,6 @@ limitations under the License.
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.sos_processes.energy.techno_mix.carbon_storage_coarse_mix.usecase_coarse import TECHNOLOGIES_LIST
 
 
@@ -42,7 +41,6 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_study = self.ee.study_name
 
         carbon_storage_name = CarbonStorage.name
-        carbon_storage = PureCarbonSS.energy_name
         energy_mix = 'EnergyMix'
         func_manager_name = "FunctionManagerDisc"
 

@@ -46,7 +46,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'] = self.get_theoretical_platinum_needs()
         
 
-        self.data_config_creation = self.techno_infos_dict
+        
 
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
             self.prices[Electricity.name]
