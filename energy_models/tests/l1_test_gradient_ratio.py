@@ -571,7 +571,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_technologies_input_dict.pkl'), 'rb')
         mda_data_input_dict = pickle.load(pkl_file)

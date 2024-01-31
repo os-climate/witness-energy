@@ -57,8 +57,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
     def get_builders(self):
 
         optim_name = OPTIM_NAME
-
-
         # if one invest discipline then we need to setup all subprocesses
         # before get them
         techno_dict = DEFAULT_TECHNO_DICT
