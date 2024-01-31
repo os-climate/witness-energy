@@ -43,7 +43,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             builder_list = self.ee.factory.get_builder_from_process(
                 'energy_models.sos_processes.energy.MDA', 'energy_process_v0',
                 techno_dict=self.techno_dict, invest_discipline=self.invest_discipline,
-                energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value, process_level=self.process_level)
+                energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value, process_level=self.process_level,
+                use_resources_bool=self.use_resources_bool)
         else:
             # else we get them the old fashioned way
             builder_list = self.ee.factory.get_builder_from_process(
@@ -63,6 +64,4 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # self.ee.post_processing_manager.add_post_processing_module_to_namespace(
         #       'ns_energy', 'energy_models.sos_processes.post_processing.post_proc_capex_opex')
 
-
-        # return builder_list
         return builder_list

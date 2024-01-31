@@ -31,6 +31,8 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         # If true, inputs for energy invesments are in Gdollars. If False, they are in percentage
         # and an the discipline Investment_redistribution_disc is introduced to translate invest in Gdollars
         self.energy_invest_input_in_abs_value = True
+        self.use_resources_bool = True
+        self.associate_namespace = None
 
     def setup_process(
         self,
@@ -39,6 +41,7 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         process_level='val',
         energy_invest_input_in_abs_value=True,
         associate_namespace=False,
+        use_resources_bool=True,
     ):
         '''
         Setup process function which will be called if the builder is retrieved with get_builder_from_process with args
@@ -52,3 +55,4 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         self.process_level = process_level
         self.associate_namespace = associate_namespace
         self.energy_invest_input_in_abs_value = energy_invest_input_in_abs_value
+        self.use_resources_bool = use_resources_bool
