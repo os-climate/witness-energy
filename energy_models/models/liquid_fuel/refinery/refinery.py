@@ -147,6 +147,7 @@ class Refinery(LiquidFuelTechno):
                                                                                   self.production_detailed[
                                                                                       f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
 
+
     def compute_price(self):
         """
         Compute the detail price of the technology
@@ -221,6 +222,7 @@ class Refinery(LiquidFuelTechno):
         self.cost_details['CO2Tax_Part'] = self.cost_details[self.name] - \
                                            self.cost_details[f'{self.name}_wotaxes']
         return self.cost_details
+
 
     def compute_CO2_emissions_from_input_resources(self):
         '''

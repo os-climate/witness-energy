@@ -71,7 +71,7 @@ class ResourcesDisc(SoSWrapp):
         'icon': 'fas fa-cubes fa-fw',
         'version': '',
     }
-    year_start_default = 2020
+    year_start_default = GlossaryEnergy.YeartStartDefault
     year_end_default = 2050
 
     years = np.arange(year_start_default, year_end_default + 1)
@@ -79,7 +79,7 @@ class ResourcesDisc(SoSWrapp):
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                GlossaryEnergy.ResourcesPriceValue: {'type': 'dataframe', 'unit': '[$/t]',
-                                   'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
+                                   'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
                                                             'uranium_resource': ('float', None, True),
                                                             'water_resource': ('float', None, True),
                                                             'sea_water_resource': ('float', None, True),
@@ -112,7 +112,7 @@ class ResourcesDisc(SoSWrapp):
                                    'dataframe_edition_locked': False,
                                    'default': get_static_prices(years)},
                GlossaryEnergy.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': '[kgCO2/kg]',
-                                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
+                                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
                                                                     'uranium_resource': ('float', None, True),
                                                                     'water_resource': ('float', None, True),
                                                                     'sea_water_resource': ('float', None, True),

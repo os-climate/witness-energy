@@ -61,7 +61,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "visibility": "Shared",
         "namespace": "ns_ccs",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, 2100], False),
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
             "invest": ("float", None, True),
         },
     }
@@ -72,7 +72,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "visibility": "Shared",
         "namespace": "ns_energy",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, 2100], False),
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
             "invest": ("float", None, True),
         },
     }
@@ -82,7 +82,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "description": "Capital in G$ of the technology",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, 2100], False),
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
             GlossaryWitnessCore.Capital: ("float", None, False),
         },
     }
@@ -92,7 +92,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "type": "dataframe",
         "namespace": "ns_witness",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, 2100], False),
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
             GlossaryWitnessCore.UtilisationRatioValue: ("float", [0, 100], False),
         },
     }
@@ -107,7 +107,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         # 'visibility': 'Shared',
         "description": "Capital in G$ of the energy type",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, 2100], False),
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
             GlossaryWitnessCore.Capital: ("float", None, False),
         },
     }
@@ -116,7 +116,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TechnoInvestPercentage = {
         "var_name": TechnoInvestPercentageName,
         "type": "dataframe",
-        "dataframe_descriptor": {GlossaryWitnessCore.Years: ("int", [1900, 2100], False), },
+        "dataframe_descriptor": {GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False), },
         "unit": "%",
         "description": "Percentage of investments in each energy technology based on total energy investments",
     }

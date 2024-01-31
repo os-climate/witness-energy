@@ -34,7 +34,7 @@ class TestIndependentInvest(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.y_s = 2020
+        self.y_s = GlossaryEnergy.YeartStartDefault
         self.y_e = 2050
         self.y_step = 1
         self.energy_list = [
@@ -109,13 +109,13 @@ class TestIndependentInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': self.name,
-                   'ns_ref': self.name,
+        ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
+                   GlossaryEnergy.NS_REFERENCE: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
-                   'ns_ccs': f'{self.name}.CCUS',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.CCUS',
                    'ns_energy': self.name,
-                   'ns_functions': self.name,
+                   GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_invest': f'{self.name}.{self.model_name}'
                    }
 
@@ -177,13 +177,13 @@ class TestIndependentInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': self.name,
-                   'ns_ref': self.name,
+        ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
+                   GlossaryEnergy.NS_REFERENCE: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
-                   'ns_ccs': f'{self.name}.CCUS',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.CCUS',
                    'ns_energy': self.name,
-                   'ns_functions': self.name,
+                   GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_invest': self.name,
                    'ns_forest': f'{self.name}.Forest',
                    'ns_crop': f'{self.name}.Crop'
@@ -250,13 +250,13 @@ class TestIndependentInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': self.name,
-                   'ns_ref': self.name,
+        ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
+                   GlossaryEnergy.NS_REFERENCE: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
                    'ns_energy': self.name,
-                   'ns_ccs': f'{self.name}',
-                   'ns_functions': self.name,
+                   GlossaryEnergy.NS_CCS: f'{self.name}',
+                   GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_invest': self.name,
                    'ns_crop': self.name,
                    'ns_forest': self.name

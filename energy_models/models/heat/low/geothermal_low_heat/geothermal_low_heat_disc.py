@@ -108,16 +108,3 @@ class GeothermalLowHeatDiscipline(LowHeatTechnoDiscipline):
         self.techno_model = GeothermalHeat(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
-    # def setup_sos_disciplines(self):
-    #     super().setup_sos_disciplines()
-    #
-    #
-    # def run(self):
-    #     '''
-    #     Run for all energy disciplines
-    #     '''
-    #
-    #     inputs_dict = self.get_sosdisc_inputs()
-    #     self.techno_model.configure_parameters_update(inputs_dict)
-    #     super().run()
-    #

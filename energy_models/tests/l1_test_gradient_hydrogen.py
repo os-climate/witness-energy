@@ -56,7 +56,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         '''
         self.energy_name = 'hydrogen'
 
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
         
         self.electrolysis_techno_prices = pd.DataFrame(
@@ -323,7 +323,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_syngas': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -337,8 +337,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -388,7 +388,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_carb': self.name,
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -402,8 +402,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_plasmacracking,
@@ -465,7 +465,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -478,8 +478,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
@@ -524,7 +524,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -537,8 +537,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
@@ -583,7 +583,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -596,8 +596,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
@@ -642,7 +642,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -717,7 +717,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_syngas': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -729,7 +729,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1)
 
         invest_level_negative2 = pd.DataFrame({GlossaryEnergy.Years: years,
                                                GlossaryEnergy.InvestValue: np.array(
@@ -875,10 +875,10 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         resource_ratio_dict[GlossaryEnergy.Years] = years
         self.all_resource_ratio_usable_demand = pd.DataFrame(
             resource_ratio_dict)
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': 2020,
-                       f'{self.name}.{GlossaryEnergy.YearEnd}': 2100,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2101)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2101)),
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YeartStartDefault,
+                       f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YeartEndDefault,
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': invest_level_negative2,

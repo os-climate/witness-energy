@@ -94,10 +94,10 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         # full_values_dict[f'{cls.name}.is_dev'] = True
 
-        full_values_dict[f'{cls.name}.{GlossaryEnergy.CO2TaxesValue}'] = pd.DataFrame({GlossaryEnergy.Years: np.arange(2020, 2051),
-                                                                   GlossaryEnergy.CO2Tax: 20.0}, index=np.arange(2020, 2051))
+        full_values_dict[f'{cls.name}.{GlossaryEnergy.CO2TaxesValue}'] = pd.DataFrame({GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
+                                                                   GlossaryEnergy.CO2Tax: 20.0}, index=np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))
 
-        usecase_agri = agri_study_open(execution_engine=cls.ee, year_start=2020, year_end=2050, time_step=1)
+        usecase_agri = agri_study_open(execution_engine=cls.ee, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1)
         usecase_agri.study_name = cls.name
         usecase_agri.additional_ns = '.InvestmentDistribution'
         values_dict_agri = usecase_agri.setup_usecase()
@@ -145,7 +145,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
 
         computed_oil_production = energy_production['production fuel.liquid_fuel (TWh)'].loc[
-            energy_production[GlossaryEnergy.Years] == 2020].values[0]
+            energy_production[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0]
 
         # we compare in TWh and must be near 10% of error
         self.assertLessEqual(computed_oil_production,
@@ -159,7 +159,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         fossil_gas_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.methane.FossilGas.{GlossaryEnergy.TechnoProductionValue}')
         computed_gas_production = fossil_gas_prod['methane (TWh)'].loc[
-                                      fossil_gas_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+                                      fossil_gas_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
 
         # we compare in TWh and must be near 10% of error
         self.assertLessEqual(computed_gas_production,
@@ -173,7 +173,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         coal_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.solid_fuel.CoalExtraction.{GlossaryEnergy.TechnoProductionValue}')
         computed_coal_production = coal_prod['solid_fuel (TWh)'].loc[
-                                       coal_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+                                       coal_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
 
         # we compare in TWh and must be near 10% of error
         self.assertLessEqual(computed_coal_production,
@@ -187,7 +187,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
         #
         #         computed_biomass_production = energy_production['production biomass_dry (TWh)'].loc[
-        #             energy_production[GlossaryEnergy.Years] == 2020].values[0]
+        #             energy_production[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0]
         #
         #         # we compare in TWh and must be near 10% of error
         #         self.assertLessEqual(computed_biomass_production,
@@ -200,10 +200,10 @@ class TestGlobalEnergyValues(unittest.TestCase):
         '''
 
         computed_biodiesel_production = energy_production['production fuel.biodiesel (TWh)'].loc[
-            energy_production[GlossaryEnergy.Years] == 2020].values[0]
+            energy_production[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0]
 
         computed_biogas_production = energy_production['production biogas (TWh)'].loc[
-            energy_production[GlossaryEnergy.Years] == 2020].values[0]
+            energy_production[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0]
 
         computed_biofuel_production = computed_biodiesel_production + \
                                       computed_biogas_production
@@ -225,9 +225,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.SolarThermal.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_solar_production = elec_solar_prod['electricity (TWh)'].loc[
-                                        elec_solar_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0 + \
+                                        elec_solar_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0 + \
                                     elec_solarth_prod['electricity (TWh)'].loc[
-                                        elec_solarth_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+                                        elec_solarth_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
 
         # we compare in TWh and must be near 10% of error
         self.assertLessEqual(computed_solar_production,
@@ -244,9 +244,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.WindOffshore.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_wind_production = elec_windonshore_prod['electricity (TWh)'].loc[
-                                       elec_windonshore_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0 + \
+                                       elec_windonshore_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0 + \
                                    elec_windoffshore_prod['electricity (TWh)'].loc[
-                                       elec_windoffshore_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+                                       elec_windoffshore_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
 
         # we compare in TWh and must be near 10% of error
         self.assertLessEqual(computed_wind_production,
@@ -261,7 +261,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.Nuclear.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_nuclear_production = elec_nuclear_prod['electricity (TWh)'].loc[
-                                          elec_nuclear_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+                                          elec_nuclear_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
 
         # we compare in TWh and must be near 10% of error
         self.assertLessEqual(computed_nuclear_production,
@@ -276,7 +276,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.Hydropower.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_hydropower_production = elec_hydropower_prod['electricity (TWh)'].loc[
-                                             elec_hydropower_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000
+                                             elec_hydropower_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000
 
         # we compare in TWh and must be near 10% of error
         self.assertLessEqual(computed_hydropower_production,
@@ -315,20 +315,20 @@ class TestGlobalEnergyValues(unittest.TestCase):
         h2_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoDetailedProductionValue}')
         computed_methane_co2_emissions = \
-            co2_emissions_by_energy['methane'].loc[co2_emissions_by_energy[GlossaryEnergy.Years] == 2020].values[0] + \
+            co2_emissions_by_energy['methane'].loc[co2_emissions_by_energy[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] + \
             elec_gt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod[GlossaryEnergy.Years]
-                                                       == 2020].values[0] + \
+                                                       == GlossaryEnergy.YeartStartDefault].values[0] + \
             elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_cgt_prod[GlossaryEnergy.Years]
-                                                        == 2020].values[0] + \
+                                                        == GlossaryEnergy.YeartStartDefault].values[0] + \
             h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod[GlossaryEnergy.Years]
-                                                  == 2020].values[0] * 0.75
-        print('values', co2_emissions_by_energy['methane'].loc[co2_emissions_by_energy[GlossaryEnergy.Years] == 2020].values[0],
+                                                  == GlossaryEnergy.YeartStartDefault].values[0] * 0.75
+        print('values', co2_emissions_by_energy['methane'].loc[co2_emissions_by_energy[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0],
               elec_gt_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod[GlossaryEnergy.Years]
-                                                         == 2020].values[0],
+                                                         == GlossaryEnergy.YeartStartDefault].values[0],
               elec_cgt_prod['CO2 from Flue Gas (Mt)'].loc[elec_cgt_prod[GlossaryEnergy.Years]
-                                                          == 2020].values[0],
+                                                          == GlossaryEnergy.YeartStartDefault].values[0],
               h2_prod['CO2 from Flue Gas (Mt)'].loc[h2_prod[GlossaryEnergy.Years]
-                                                    == 2020].values[0] * 0.75)
+                                                    == GlossaryEnergy.YeartStartDefault].values[0] * 0.75)
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_methane_co2_emissions,
                              gas_co2_emissions * 1.1)
@@ -344,11 +344,11 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.CoalGen.{GlossaryEnergy.TechnoDetailedProductionValue}')
 
         computed_coal_co2_emissions = \
-            co2_emissions_by_energy['solid_fuel'].loc[co2_emissions_by_energy[GlossaryEnergy.Years] == 2020].values[0] + \
+            co2_emissions_by_energy['solid_fuel'].loc[co2_emissions_by_energy[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] + \
             elec_coal_prod['CO2 from Flue Gas (Mt)'].loc[elec_coal_prod[GlossaryEnergy.Years]
-                                                         == 2020].values[0] + \
+                                                         == GlossaryEnergy.YeartStartDefault].values[0] + \
             h2_prod['CO2 from Flue Gas (Mt)'].loc[elec_gt_prod[GlossaryEnergy.Years]
-                                                  == 2020].values[0] * 0.25
+                                                  == GlossaryEnergy.YeartStartDefault].values[0] * 0.25
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_coal_co2_emissions,
                              coal_co2_emissions * 1.1)
@@ -363,9 +363,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
         elec_oil_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.electricity.OilGen.{GlossaryEnergy.TechnoDetailedProductionValue}')
         computed_oil_co2_emissions = co2_emissions_by_energy['fuel.liquid_fuel'].loc[
-                                         co2_emissions_by_energy[GlossaryEnergy.Years] == 2020].values[0] + \
+                                         co2_emissions_by_energy[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] + \
                                      elec_oil_prod['CO2 from Flue Gas (Mt)'].loc[elec_oil_prod[GlossaryEnergy.Years]
-                                                                                 == 2020].values[0]
+                                                                                 == GlossaryEnergy.YeartStartDefault].values[0]
         # we compare in Mt and must be near 10% of error
         self.assertLessEqual(computed_oil_co2_emissions,
                              oil_co2_emissions * 1.1)
@@ -381,13 +381,13 @@ class TestGlobalEnergyValues(unittest.TestCase):
         #     'Test.GHGEmissions.Energy.CO2_emissions_sources')
         # sinks = self.ee.dm.get_value('Test.GHGEmissions.Energy.CO2_emissions_sinks')[
         #     'CO2_resource removed by energy mix (Gt)'].values[0]
-        # sources_sum = sources.loc[sources[GlossaryEnergy.Years] == 2020][[
+        # sources_sum = sources.loc[sources[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault][[
         #     col for col in sources.columns if col != GlossaryEnergy.Years]].sum(axis=1)[0]
         # computed_total_co2_emissions = (sources_sum - sinks) * 1000
         # # we compare in Mt and must be near 10% of error
         ghg_total_energy_emissions = self.ee.dm.get_value(
             'Test.GHG_total_energy_emissions')
-        computed_total_co2_emissions = ghg_total_energy_emissions.loc[ghg_total_energy_emissions[GlossaryEnergy.Years] == 2020][
+        computed_total_co2_emissions = ghg_total_energy_emissions.loc[ghg_total_energy_emissions[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault][
             'Total CO2 emissions'].values[0]
         print(
             f'Total CO2 emissions : ourworldindata {total_co2_emissions} Mt vs WITNESS {computed_total_co2_emissions} TWh')
@@ -593,7 +593,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.Hydropower.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_hydropower_production = elec_hydropower_prod['electricity (TWh)'].loc[
-                                             elec_hydropower_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000
+                                             elec_hydropower_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000
 
         error_hydropowerraw_prod = np.abs(
             energy_production_raw_hydro_iea - computed_hydropower_production) / energy_production_raw_hydro_iea * 100.0
@@ -612,9 +612,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.WindOffshore.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_wind_production = elec_windonshore_prod['electricity (TWh)'].loc[
-                                       elec_windonshore_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0 + \
+                                       elec_windonshore_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0 + \
                                    elec_windoffshore_prod['electricity (TWh)'].loc[
-                                       elec_windoffshore_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+                                       elec_windoffshore_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
 
         error_wind_prod = np.abs(
             energy_production_raw_wind_iea - computed_wind_production) / energy_production_raw_wind_iea * 100.0
@@ -629,7 +629,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.SolarPv.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_solarpv_production = elec_solar_prod['electricity (TWh)'].loc[
-                                          elec_solar_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000
+                                          elec_solar_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000
         energy_production_solarpv_iea = 680.9  # TWh
         error_solarpv_prod = np.abs(
             energy_production_solarpv_iea - computed_solarpv_production) / energy_production_solarpv_iea * 100.0
@@ -644,7 +644,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.SolarThermal.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_solarth_production = elec_solarth_prod['electricity (TWh)'].loc[
-                                          elec_solarth_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000
+                                          elec_solarth_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000
         energy_production_solarth_iea = 13.36  # TWh
         error_solarth_prod = np.abs(
             energy_production_solarth_iea - computed_solarth_production) / energy_production_solarth_iea * 100.0
@@ -659,7 +659,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.Geothermal.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_geoth_production = elec_geoth_prod['electricity (TWh)'].loc[
-                                        elec_geoth_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+                                        elec_geoth_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
 
         energy_production_geoth_iea = 91.09  # TWh
         error_geoth_prod = np.abs(
@@ -675,7 +675,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.CoalGen.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_coalgen_production = elec_coalgen_prod['electricity (TWh)'].loc[
-                                          elec_coalgen_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+                                          elec_coalgen_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
 
         energy_production_coalgen_iea = 9914.45  # TWh
         error_geoth_prod = np.abs(
@@ -693,9 +693,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.CombinedCycleGasTurbine.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_gasgen_production = elec_gt_prod['electricity (TWh)'].loc[
-                                         elec_gt_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0 + \
+                                         elec_gt_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0 + \
                                      elec_cgt_prod['electricity (TWh)'].loc[
-                                         elec_cgt_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+                                         elec_cgt_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
 
         energy_production_gasgen_iea = 6346  # TWh
         error_gasgen_prod = np.abs(
@@ -711,7 +711,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.electricity.Nuclear.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_nuclear_production = elec_nuclear_prod['electricity (TWh)'].loc[
-                                          elec_nuclear_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+                                          elec_nuclear_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
 
         energy_production_nuclear_iea = 2789.69  # TWh
         error_geoth_prod = np.abs(
@@ -742,19 +742,19 @@ class TestGlobalEnergyValues(unittest.TestCase):
         #             f'{self.name}.{self.energymixname}.biomass_dry.ManagedWood.{GlossaryEnergy.TechnoProductionValue}')
         #
         #         computed_managed_wood_prod = managed_wood_prod['biomass_dry (TWh)'].loc[
-        #             managed_wood_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+        #             managed_wood_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
         #
         #         unmanaged_wood_prod = self.ee.dm.get_value(
         #             f'{self.name}.{self.energymixname}.biomass_dry.UnmanagedWood.{GlossaryEnergy.TechnoProductionValue}')
         #
         #         computed_unmanaged_wood_prod = unmanaged_wood_prod['biomass_dry (TWh)'].loc[
-        #             unmanaged_wood_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+        #             unmanaged_wood_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
         #
         #         crop_energy_prod = self.ee.dm.get_value(
         #             f'{self.name}.{self.energymixname}.biomass_dry.CropEnergy.{GlossaryEnergy.TechnoProductionValue}')
         #
         #         computed_crop_energy_prod = crop_energy_prod['biomass_dry (TWh)'].loc[
-        #             crop_energy_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+        #             crop_energy_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
         #
         #         biomass_dry_net_prod = net_energy_production[
         #             'production biomass_dry (TWh)'][0] - computed_crop_energy_prod
@@ -786,19 +786,19 @@ class TestGlobalEnergyValues(unittest.TestCase):
         #             f'{self.name}.{self.energymixname}.biogas.{GlossaryEnergy.EnergyConsumptionValue}')
         #
         #         biomass_by_biogas_cons = biogas_cons['wet_biomass (Mt)'].loc[
-        #             biogas_cons[GlossaryEnergy.Years] == 2020].values[0] * 1000 * 3.6  # 3.6 is calorific value of biomass_dry
+        #             biogas_cons[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000 * 3.6  # 3.6 is calorific value of biomass_dry
         #
         #         syngas_cons = self.ee.dm.get_value(
         #             f'{self.name}.{self.energymixname}.solid_fuel.{GlossaryEnergy.EnergyConsumptionValue}')
         #
         #         biomass_by_syngas_cons = syngas_cons['biomass_dry (TWh)'].loc[
-        #             syngas_cons[GlossaryEnergy.Years] == 2020].values[0] * 1000
+        #             syngas_cons[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000
         #
         #         solid_fuel_cons = self.ee.dm.get_value(
         #             f'{self.name}.{self.energymixname}.solid_fuel.{GlossaryEnergy.EnergyConsumptionValue}')
         #
         #         biomass_by_solid_fuel_cons = solid_fuel_cons['biomass_dry (TWh)'].loc[
-        #             solid_fuel_cons[GlossaryEnergy.Years] == 2020].values[0] * 1000
+        #             solid_fuel_cons[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000
         #
         #         biomass_dry_otherrtransf_witness = biomass_by_solid_fuel_cons + biomass_by_syngas_cons
         #         biomass_dry_otherrtransf_with_ana = biomass_by_biogas_cons + \
@@ -833,7 +833,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.fuel.liquid_fuel.FischerTropsch.{GlossaryEnergy.TechnoProductionValue}')
 
         computed_ft_production = raw_fischertropsch_prod['fuel.liquid_fuel (TWh)'].loc[
-                                     raw_fischertropsch_prod[GlossaryEnergy.Years] == 2020].values[0] * 1000.0
+                                     raw_fischertropsch_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault].values[0] * 1000.0
 
         raw_liquid_fuel = raw_biodiesel_prod + \
                           raw_hydrotreated_oil_fuel_prod + computed_ft_production
@@ -894,7 +894,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
             f'{self.name}.{self.energymixname}.fuel.liquid_fuel.Refinery.{GlossaryEnergy.TechnoProductionValue}')
 
         raw_refinery_prod_2020 = raw_refinery_prod.loc[
-                                     raw_refinery_prod[GlossaryEnergy.Years] == 2020] * 1000.0
+                                     raw_refinery_prod[GlossaryEnergy.Years] == GlossaryEnergy.YeartStartDefault] * 1000.0
 
         for oil_name, oil_prod in iea_data_oil.items():
             oil_prod_witness = raw_refinery_prod_2020[

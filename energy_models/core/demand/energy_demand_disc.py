@@ -47,7 +47,7 @@ class EnergyDemandDiscipline(SoSWrapp):
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
-                                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
+                                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
                                                                        'demand': ('float',  None, True),
                                                                        'production fuel.ethanol (TWh)': ('float', None, True),
                                                                        'production heat.hightemperatureheat (TWh)': ('float', None, True),
@@ -62,22 +62,22 @@ class EnergyDemandDiscipline(SoSWrapp):
                                                                         'production fuel.hydrotreated_oil_fuel (TWh)': ('float', None, True),},
 
                                               'dataframe_edition_locked': False,
-                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix'},
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_ENERGY_MIX},
                # 'default': 22847.66
                # old value is 20900TWh
                'initial_electricity_demand': {'type': 'float', 'default': 18000., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': '-'},
-               'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
                GlossaryEnergy.PopulationDf['var_name']: GlossaryEnergy.PopulationDf,
-               GlossaryEnergy.TransportDemandValue: {'type': 'dataframe', 'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
+               GlossaryEnergy.TransportDemandValue: {'type': 'dataframe', 'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
                                                                                   GlossaryEnergy.TransportDemandValue: ('float',  None, True)},
                                     'dataframe_edition_locked': False, 'unit': 'TWh'},
-               'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
                'additional_demand_transport': {'type': 'float', 'default': 10., 'unit': '%'}}
 
-    DESC_OUT = {'electricity_demand_constraint': {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+    DESC_OUT = {'electricity_demand_constraint': {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
                 'electricity_demand': {'type': 'dataframe', 'unit': 'TWh'},
-                'transport_demand_constraint': {'type': 'array', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                'transport_demand_constraint': {'type': 'array', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
                 'net_transport_production': {'type': 'array', 'unit': 'TWh'},
                 }
     name = EnergyDemand.name

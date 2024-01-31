@@ -154,7 +154,7 @@ class IndependentInvestDiscipline(SoSWrapp):
         GlossaryEnergy.EnergyInvestmentsWoTaxValue: GlossaryEnergy.EnergyInvestmentsWoTax,
         GlossaryEnergy.EnergyInvestmentsMinimizationObjective: {'type': 'array', 'unit': '-',
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                  'namespace': 'ns_functions'},
+                                                  'namespace': GlossaryEnergy.NS_FUNCTIONS},
     }
     _maturity = 'Research'
 
@@ -212,7 +212,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                     # Add technologies_list to inputs
                     dynamic_inputs[f'{ccs}.{GlossaryEnergy.techno_list}'] = {
                         'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
-                        'visibility': 'Shared', 'namespace': 'ns_ccs',
+                        'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS,
                         'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list}
                     # Add all invest_level outputs
                     if f'{ccs}.{GlossaryEnergy.techno_list}' in self.get_data_in():
@@ -221,7 +221,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                         if technology_list is not None:
                             for techno in technology_list:
                                 dynamic_outputs[f'{ccs}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = {
-                                    'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_ccs'}
+                                    'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)

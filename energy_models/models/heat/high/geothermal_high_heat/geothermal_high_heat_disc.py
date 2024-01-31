@@ -121,21 +121,4 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
     #     self.techno_model.configure_parameters_update(inputs_dict)
     #     super().run()
 
-    def compute_sos_jacobian(self):
-        HighHeatTechnoDiscipline.compute_sos_jacobian(self)
 
-        # the generic gradient for production column is not working because of
-        # abandoned mines not proportional to production
-
-        scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-            ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-        applied_ratio = self.get_sosdisc_outputs(
-            'applied_ratio')['applied_ratio'].values
-
-        dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-        consumption_gradient = self.techno_consumption_derivative[f'{Electricity.name} ({self.techno_model.product_energy_unit})']
-        #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
-        self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue,
-             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
-            (consumption_gradient- dprod_name_dinvest))

@@ -34,7 +34,7 @@ class TestOneInvest(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.y_s = 2020
+        self.y_s = GlossaryEnergy.YeartStartDefault
         self.y_e = 2050
         self.y_step = 1
         self.energy_list = [
@@ -110,10 +110,10 @@ class TestOneInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': self.name,
+        ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
-                   'ns_ccs': f'{self.name}.CCUS',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.CCUS',
                    'ns_energy': self.name,
                    }
 
@@ -156,11 +156,11 @@ class TestOneInvest(unittest.TestCase):
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': self.name,
+        ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
                    'ns_energy': self.name,
-                   'ns_ccs': f'{self.name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}',
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
