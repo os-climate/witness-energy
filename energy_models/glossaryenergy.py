@@ -96,7 +96,6 @@ class GlossaryEnergy(GlossaryWitnessCore):
         },
     }
 
-
     EnergyTypeCapitalDfValue = "energy_type_capital"
     EnergyTypeCapitalDf = {
         "var_name": EnergyTypeCapitalDfValue,
@@ -115,7 +114,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TechnoInvestPercentage = {
         "var_name": TechnoInvestPercentageName,
         "type": "dataframe",
-        "dataframe_descriptor": {GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False), },
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False), },
         "unit": "%",
         "description": "Percentage of investments in each energy technology based on total energy investments",
     }

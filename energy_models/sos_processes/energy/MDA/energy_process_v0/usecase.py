@@ -1,4 +1,4 @@
-"""
+'''
 Copyright 2022 Airbus SAS
 Modifications on 2023/04/21-2023/11/16 Copyright 2023 Capgemini
 
@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-"""
+'''
 import numpy as np
 import pandas as pd
 
@@ -95,18 +95,18 @@ hydropower_name = Electricity.hydropower_name
 
 class Study(EnergyStudyManager):
     def __init__(
-        self,
-        year_start=GlossaryEnergy.YeartStartDefault,
-        year_end=2050,
-        time_step=1,
-        lower_bound_techno=1.0e-6,
-        upper_bound_techno=100.0,
-        techno_dict=DEFAULT_TECHNO_DICT,
-        main_study=True,
-        bspline=True,
-        execution_engine=None,
-        invest_discipline=INVEST_DISCIPLINE_DEFAULT,
-        energy_invest_input_in_abs_value=True,
+            self,
+            year_start=GlossaryEnergy.YeartStartDefault,
+            year_end=2050,
+            time_step=1,
+            lower_bound_techno=1.0e-6,
+            upper_bound_techno=100.0,
+            techno_dict=DEFAULT_TECHNO_DICT,
+            main_study=True,
+            bspline=True,
+            execution_engine=None,
+            invest_discipline=INVEST_DISCIPLINE_DEFAULT,
+            energy_invest_input_in_abs_value=True,
     ):
         self.year_start = year_start
         self.year_end = year_end
@@ -190,9 +190,9 @@ class Study(EnergyStudyManager):
         list_namespaces = []
 
         if (
-            LiquidFuel.name in self.energy_list
-            and GaseousHydrogen.name in self.energy_list
-            and LiquidHydrogen.name in self.energy_list
+                LiquidFuel.name in self.energy_list
+                and GaseousHydrogen.name in self.energy_list
+                and LiquidHydrogen.name in self.energy_list
         ):
             list_var.append("primary_energies_production")
             list_parent.append("Energy_constraints")
@@ -202,9 +202,9 @@ class Study(EnergyStudyManager):
             list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if (
-            hightemperatureheat.name in self.energy_list
-            and GaseousHydrogen.name in self.energy_list
-            and LiquidHydrogen.name in self.energy_list
+                hightemperatureheat.name in self.energy_list
+                and GaseousHydrogen.name in self.energy_list
+                and LiquidHydrogen.name in self.energy_list
         ):
             list_var.append("primary_energies_production")
             list_parent.append("Energy_constraints")
@@ -271,7 +271,7 @@ class Study(EnergyStudyManager):
             list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if set(EnergyDemandDiscipline.energy_constraint_list).issubset(
-            self.energy_list
+                self.energy_list
         ):
             list_var.extend(
                 ["electricity_demand_constraint", "transport_demand_constraint"]
@@ -404,7 +404,7 @@ class Study(EnergyStudyManager):
             3.15 * (1 - 0.1374) ** i for i in l_ctrl
         ]
         invest_energy_mix_dict[SolidFuel.name] = [0.00001, 0.0006] + [0.00005] * (
-            len(l_ctrl) - 2
+                len(l_ctrl) - 2
         )
         invest_energy_mix_dict[BioDiesel.name] = [0.02 * (1 - 0.1) ** i for i in l_ctrl]
         invest_energy_mix_dict[Syngas.name] = [1.0050 + 0.02 * i for i in l_ctrl]
@@ -682,17 +682,17 @@ class Study(EnergyStudyManager):
                 energy = study.energy_name
                 if energy in energy_mix.columns:
                     mix_energy = (
-                        energy_mix[energy].values
-                        / norm_energy_mix
-                        * (100.0 - ccs_percentage_array)
-                        / 100.0
+                            energy_mix[energy].values
+                            / norm_energy_mix
+                            * (100.0 - ccs_percentage_array)
+                            / 100.0
                     )
                 elif energy in ccs_mix.columns:
                     mix_energy = (
-                        ccs_mix[energy].values
-                        / norm_ccs_mix
-                        * ccs_percentage_array
-                        / 100.0
+                            ccs_mix[energy].values
+                            / norm_ccs_mix
+                            * ccs_percentage_array
+                            / 100.0
                     )
                 else:
                     raise Exception(f"{energy} not in investment_mixes")
@@ -706,7 +706,7 @@ class Study(EnergyStudyManager):
         return invest_mix_df
 
     def get_absolute_total_mix(
-        self, instanciated_studies, ccs_percentage, energy_invest, energy_invest_factor
+            self, instanciated_studies, ccs_percentage, energy_invest, energy_invest_factor
     ):
 
         invest_mix_df = self.get_total_mix(instanciated_studies, ccs_percentage)
@@ -724,22 +724,22 @@ class Study(EnergyStudyManager):
             ].values[sub_indexes]
         else:
             energy_invest_poles = energy_invest[
-                GlossaryEnergy.EnergyInvestmentsValue
-            ].values[
-                [
-                    i
-                    for i in range(
-                        len(energy_invest[GlossaryEnergy.EnergyInvestmentsValue].values)
-                    )
-                    if i % 10 == 0
-                ]
-            ][
-                0:-1
-            ]
+                                      GlossaryEnergy.EnergyInvestmentsValue
+                                  ].values[
+                                      [
+                                          i
+                                          for i in range(
+                                          len(energy_invest[GlossaryEnergy.EnergyInvestmentsValue].values)
+                                      )
+                                          if i % 10 == 0
+                                      ]
+                                  ][
+                                  0:-1
+                                  ]
         for column in invest_mix_df.columns:
             if column != GlossaryEnergy.Years:
                 if len(invest_mix_df[GlossaryEnergy.Years].values) == len(
-                    energy_invest_poles
+                        energy_invest_poles
                 ):
                     indep_invest_df[column] = invest_mix_df[column].values
                 else:
@@ -909,7 +909,7 @@ class Study(EnergyStudyManager):
             {
                 GlossaryEnergy.Years: self.years,
                 GlossaryEnergy.EnergyInvestmentsValue: 10.55
-                * (1.0 - 0.0253) ** np.arange(len(self.years)),
+                                                       * (1.0 - 0.0253) ** np.arange(len(self.years)),
             }
         )
         scaling_factor_energy_investment = 100.0

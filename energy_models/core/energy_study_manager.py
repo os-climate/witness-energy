@@ -1,4 +1,4 @@
-"""
+'''
 Copyright 2022 Airbus SAS
 Modifications on 2023/04/19-2023/11/16 Copyright 2023 Capgemini
 
@@ -13,7 +13,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-"""
+'''
 from importlib import import_module
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
@@ -189,12 +189,12 @@ class EnergyStudyManager(StudyManager):
     """
 
     def __init__(
-        self,
-        file_path,
-        run_usecase=True,
-        main_study=True,
-        execution_engine=None,
-        techno_dict=DEFAULT_TECHNO_DICT,
+            self,
+            file_path,
+            run_usecase=True,
+            main_study=True,
+            execution_engine=None,
+            techno_dict=DEFAULT_TECHNO_DICT,
     ):
         """
         Constructor
@@ -218,17 +218,17 @@ class EnergyStudyManager(StudyManager):
         lower_name = dot_split[-1].lower()
         if add_name is None:
             path = (
-                "energy_models.sos_processes.energy.techno_mix."
-                + lower_name
-                + "_mix.usecase"
+                    "energy_models.sos_processes.energy.techno_mix."
+                    + lower_name
+                    + "_mix.usecase"
             )
         else:
             path = (
-                "energy_models.sos_processes.energy.techno_mix."
-                + lower_name
-                + f"_{add_name}"
-                + "_mix.usecase"
-                + f"_{add_name}"
+                    "energy_models.sos_processes.energy.techno_mix."
+                    + lower_name
+                    + f"_{add_name}"
+                    + "_mix.usecase"
+                    + f"_{add_name}"
             )
         study_cls = getattr(import_module(path), "Study")
         return study_cls, path
