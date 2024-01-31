@@ -54,7 +54,6 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                  'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 600,
                                  'Capex_init_unit': '$/kW',
-                                 'efficiency': 0.8,
                                  'maturity': 5,
                                  'learning_rate': 0.2,
                                  'available_power': 50000,

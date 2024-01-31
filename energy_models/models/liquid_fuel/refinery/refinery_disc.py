@@ -257,10 +257,8 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
-        instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t', "$/USgallon"]
-        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
         other_fuel_dict = self.get_sosdisc_inputs('other_fuel_dict')
         # Overload default value with chart filter
@@ -310,9 +308,6 @@ class RefineryDiscipline(LiquidFuelTechnoDiscipline):
             techno_detailed_prices = self.get_sosdisc_outputs(
                 GlossaryEnergy.TechnoDetailedPricesValue)
             chart_name = f'Refinery breakdown price for {self.techno_name} technology over the years'
-            year_start = min(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
-            year_end = max(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
-
             new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/USgallon]',
                                                  chart_name=chart_name)
 

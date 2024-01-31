@@ -56,7 +56,6 @@ class CoalExtraction(SolidFuelTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
-        fuel_needs = self.get_fuel_needs()
         efficiency = self.techno_infos_dict['efficiency']
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
                 # LiquidFuel.name: np.identity(len(self.years)) * fuel_needs /
