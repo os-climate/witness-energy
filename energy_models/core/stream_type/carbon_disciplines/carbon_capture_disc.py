@@ -105,9 +105,6 @@ class CarbonCaptureDiscipline(StreamDiscipline):
 
         super().run()
 
-        print('')
-        # print(self.energy_model.consumption_fgc.to_string())
-
         outputs_dict = {
             'carbon_captured_type': self.energy_model.carbon_captured_type,
             'carbon_captured_type_woratio': self.energy_model.carbon_captured_type_woratio,

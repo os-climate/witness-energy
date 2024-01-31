@@ -102,16 +102,16 @@ class Heat_Mix_Discipline(SoSWrapp):
         'co2_emissions_by_energy': {'type': 'dataframe', 'unit': 'Mt'},
         GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
         GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh'},
-        'energy_production_brut': {'type': 'dataframe', 'unit': 'TWh'},
-        'energy_production_brut_detailed': {'type': 'dataframe', 'unit': 'TWh'},
+        # 'energy_production_brut': {'type': 'dataframe', 'unit': 'TWh'},
+        # 'energy_production_brut_detailed': {'type': 'dataframe', 'unit': 'TWh'},
         'energy_mix': {'type': 'dataframe', 'unit': '%'},
-        'energy_prices_after_tax': {'type': 'dataframe', 'unit': '$/MWh'},
+        # 'energy_prices_after_tax': {'type': 'dataframe', 'unit': '$/MWh'},
         'energy_production_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_functions'},
         'primary_energies_production': {'type': 'dataframe', 'unit': 'TWh',
                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
-        'land_demand_df': {'type': 'dataframe', 'unit': 'Gha'},
-        GlossaryEnergy.EnergyMeanPriceValue: GlossaryEnergy.EnergyMeanPrice,
+        # 'land_demand_df': {'type': 'dataframe', 'unit': 'Gha'},
+        # GlossaryEnergy.EnergyMeanPriceValue: GlossaryEnergy.EnergyMeanPrice,
         'production_energy_net_positive': {'type': 'dataframe', 'unit': 'TWh'},
         HeatMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: {
             'type': 'dataframe', 'unit': 'TWh',
@@ -127,15 +127,15 @@ class Heat_Mix_Discipline(SoSWrapp):
                                      },
         'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_functions'},
-        'resources_demand': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                             'namespace': 'ns_resource', 'unit': 'Mt'},
-        'resources_demand_woratio': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                     'namespace': 'ns_resource', 'unit': 'Mt'},
+        # 'resources_demand': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
+        #                      'namespace': 'ns_resource', 'unit': 'Mt'},
+        # 'resources_demand_woratio': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
+        #                              'namespace': 'ns_resource', 'unit': 'Mt'},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
-        GlossaryEnergy.EnergyCapitalDfValue: GlossaryEnergy.EnergyCapitalDf
+        # GlossaryEnergy.EnergyCapitalDfValue: GlossaryEnergy.EnergyCapitalDf
     }
 
     energy_name = HeatMix.name
@@ -266,21 +266,21 @@ class Heat_Mix_Discipline(SoSWrapp):
                         'energy_CO2_emissions_after_use': self.energy_model.carbon_emissions_after_use,
                         GlossaryEnergy.EnergyProductionValue: scaled_energy_production,
                         GlossaryEnergy.EnergyProductionDetailedValue: self.energy_model.production,
-                        'energy_production_brut': self.energy_model.production_raw[
-                            [GlossaryEnergy.Years, GlossaryEnergy.TotalProductionValue]],
-                        'energy_production_brut_detailed': self.energy_model.production_raw,
+                        # 'energy_production_brut': self.energy_model.production_raw[
+                        #     [GlossaryEnergy.Years, GlossaryEnergy.TotalProductionValue]],
+                        # 'energy_production_brut_detailed': self.energy_model.production_raw,
                         'energy_mix': self.energy_model.mix_weights,
-                        'energy_prices_after_tax': self.energy_model.price_by_energy,
+                        # 'energy_prices_after_tax': self.energy_model.price_by_energy,
                         'energy_production_objective': energy_production_objective,
-                        'land_demand_df': self.energy_model.land_use_required,
-                        GlossaryEnergy.EnergyMeanPriceValue: self.energy_model.energy_mean_price,
+                        # 'land_demand_df': self.energy_model.land_use_required,
+                        # GlossaryEnergy.EnergyMeanPriceValue: self.energy_model.energy_mean_price,
                         'production_energy_net_positive': self.energy_model.net_positive_consumable_energy_production,
                         self.energy_model.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: self.energy_model.total_prod_minus_min_prod_constraint_df,
                         GlossaryEnergy.AllStreamsDemandRatioValue: self.energy_model.all_streams_demand_ratio,
                         # 'ratio_objective': self.energy_model.ratio_objective,
-                        'resources_demand': self.energy_model.resources_demand,
-                        'resources_demand_woratio': self.energy_model.resources_demand_woratio,
-                        GlossaryEnergy.EnergyCapitalDfValue: self.energy_model.energy_capital
+                        # 'resources_demand': self.energy_model.resources_demand,
+                        # 'resources_demand_woratio': self.energy_model.resources_demand_woratio,
+                        # GlossaryEnergy.EnergyCapitalDfValue: self.energy_model.energy_capital
                         }
 
         # primary_energy_percentage = inputs_dict['primary_energy_percentage']
