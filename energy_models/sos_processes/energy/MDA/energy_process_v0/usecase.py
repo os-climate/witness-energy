@@ -365,63 +365,6 @@ class Study(EnergyStudyManager):
                 activated_elem=activated_elem,
             )
 
-    def get_investments_mix(self):
-
-        # Source for invest: IEA 2022; World Energy Investment,
-        # https://www.iea.org/reports/world-energy-investment-2020,
-        # License: CC BY 4.0.
-        # Take variation from 2015 to 2019 (2020 is a covid year)
-        # And assume a variation per year with this
-        # invest of ref are 1295-electricity_networks- crude oil (only liquid_fuel
-        # is taken into account)
-
-        # invest from WEI 2020 miss hydrogen
-        invest_energy_mix_dict = {}
-        l_ctrl = np.arange(0, 8)
-        invest_energy_mix_dict[GlossaryEnergy.Years] = l_ctrl
-
-        invest_energy_mix_dict[Electricity.name] = [4.490 + 0.4 * i for i in l_ctrl]
-
-        invest_energy_mix_dict[BioGas.name] = [0.05 * (1 + 0.054) ** i for i in l_ctrl]
-        invest_energy_mix_dict[BiomassDry.name] = [0.003 + 0.00025 * i for i in l_ctrl]
-        invest_energy_mix_dict[Methane.name] = np.linspace(
-            1.2, 0.5, len(l_ctrl)
-        ).tolist()
-        invest_energy_mix_dict[GaseousHydrogen.name] = [
-            0.02 * (1 + 0.03) ** i for i in l_ctrl
-        ]
-        # investment on refinery not in oil extraction !
-        invest_energy_mix_dict[LiquidFuel.name] = [
-            3.15 * (1 - 0.1374) ** i for i in l_ctrl
-        ]
-        invest_energy_mix_dict[hightemperatureheat.name] = [
-            3.15 * (1 - 0.1374) ** i for i in l_ctrl
-        ]
-        invest_energy_mix_dict[mediumtemperatureheat.name] = [
-            3.15 * (1 - 0.1374) ** i for i in l_ctrl
-        ]
-        invest_energy_mix_dict[lowtemperatureheat.name] = [
-            3.15 * (1 - 0.1374) ** i for i in l_ctrl
-        ]
-        invest_energy_mix_dict[SolidFuel.name] = [0.00001, 0.0006] + [0.00005] * (
-                len(l_ctrl) - 2
-        )
-        invest_energy_mix_dict[BioDiesel.name] = [0.02 * (1 - 0.1) ** i for i in l_ctrl]
-        invest_energy_mix_dict[Syngas.name] = [1.0050 + 0.02 * i for i in l_ctrl]
-        invest_energy_mix_dict[LiquidHydrogen.name] = [0.4 + 0.0006 * i for i in l_ctrl]
-
-        if self.bspline:
-
-            invest_energy_mix_dict[GlossaryEnergy.Years] = self.years
-            for energy in self.energy_list:
-                invest_energy_mix_dict[energy], _ = self.invest_bspline(
-                    invest_energy_mix_dict[energy], len(self.years)
-                )
-
-        energy_mix_invest_df = pd.DataFrame(invest_energy_mix_dict)
-
-        return energy_mix_invest_df
-
     def get_investments_mix_custom(self):
         """
         put a X0 tested on optim subprocess that satisfy all constraints
@@ -436,130 +379,31 @@ class Study(EnergyStudyManager):
         # is taken into account)
 
         # invest from WEI 2020 miss hydrogen
-        invest_energy_mix_dict = {}
         if set(self.energy_list) == set(DEFAULT_COARSE_ENERGY_LIST):
             years = np.arange(0, GlossaryEnergy.NB_POLES_COARSE)
         else:
             years = np.arange(0, 8)
-        invest_energy_mix_dict[GlossaryEnergy.Years] = years
-        invest_energy_mix_dict[Electricity.name] = [4.49, 35, 35, 35, 35, 35, 35, 35]
-        invest_energy_mix_dict[BioGas.name] = [
-            0.05,
-            2.0,
-            1.8,
-            1.3,
-            1.0,
-            0.1,
-            0.01,
-            0.01,
-        ]
-        invest_energy_mix_dict[BiomassDry.name] = [
-            0.003,
-            0.5,
-            1.0,
-            1.0,
-            1.0,
-            0.8,
-            0.8,
-            0.8,
-        ]
-        invest_energy_mix_dict[Methane.name] = [1.2, 0.5, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0]
-        invest_energy_mix_dict[GaseousHydrogen.name] = [
-            0.02,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-        ]
-        # investment on refinery not in oil extraction !
-        invest_energy_mix_dict[LiquidFuel.name] = [
-            3.15,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-        ]
-        invest_energy_mix_dict[hightemperatureheat.name] = [
-            3.15,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-        ]
-        invest_energy_mix_dict[mediumtemperatureheat.name] = [
-            3.15,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-        ]
-        invest_energy_mix_dict[lowtemperatureheat.name] = [
-            3.15,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-        ]
-        invest_energy_mix_dict[SolidFuel.name] = [
-            0.00001,
-            0.01,
-            0.01,
-            0.01,
-            0.01,
-            0.01,
-            0.01,
-            0.01,
-        ]
-        invest_energy_mix_dict[BioDiesel.name] = [
-            0.02,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-        ]
-        invest_energy_mix_dict[Syngas.name] = [1.005, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        invest_energy_mix_dict[LiquidHydrogen.name] = [
-            0.4,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-        ]
 
-        invest_energy_mix_dict[Renewable.name] = np.linspace(1000.0, 15.625, len(years))
-        invest_energy_mix_dict[Fossil.name] = np.linspace(1500.0, 77.5, len(years))
-        invest_energy_mix_dict[HydrotreatedOilFuel.name] = [
-            3.15,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-            0.0,
-        ]
-        invest_energy_mix_dict[Ethanol.name] = [0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        invest_energy_mix_dict = {
+            GlossaryEnergy.Years: years,
+            Electricity.name: [4.49, 35, 35, 35, 35, 35, 35, 35],
+            BioGas.name: [0.05, 2.0, 1.8, 1.3, 1.0, 0.1, 0.01, 0.01],
+            BiomassDry.name: [0.003, 0.5, 1.0, 1.0, 1.0, 0.8, 0.8, 0.8],
+            Methane.name: [1.2, 0.5, 0.2, 0.0, 0.0, 0.0, 0.0, 0.0],
+            GaseousHydrogen.name: [0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            LiquidFuel.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            hightemperatureheat.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            mediumtemperatureheat.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            lowtemperatureheat.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            SolidFuel.name: [0.00001, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01],
+            BioDiesel.name: [0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            Syngas.name: [1.005, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            LiquidHydrogen.name: [0.4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            HydrotreatedOilFuel.name: [3.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            Ethanol.name: [0.02, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+            Renewable.name: np.linspace(1000.0, 15.625, len(years)),
+            Fossil.name: np.linspace(1500.0, 77.5, len(years)),
+        }
 
         if self.bspline:
             invest_energy_mix_dict[GlossaryEnergy.Years] = self.years
@@ -569,82 +413,32 @@ class Study(EnergyStudyManager):
                     invest_energy_mix_dict[energy], len(self.years)
                 )
 
-        energy_mix_invest_df = pd.DataFrame(
-            {
-                key: value
-                for key, value in invest_energy_mix_dict.items()
-                if key in self.energy_list or key == GlossaryEnergy.Years
-            }
-        )
+        energy_mix_invest_df = pd.DataFrame({
+            key: value for key, value in invest_energy_mix_dict.items() if
+            key in self.energy_list or key == GlossaryEnergy.Years
+        })
 
         return energy_mix_invest_df
 
-    def get_investments_ccs_mix(self):
-
-        # Source for invest: IEA 2022; World Energy Investment,
-        # https://www.iea.org/reports/world-energy-investment-2020,
-        # License: CC BY 4.0.
-        # Take variation from 2015 to 2019 (2020 is a covid year)
-        # And assume a variation per year with this
-        # invest of ref are 1295-electricity_networks- crude oil (only liquid_fuel
-        # is taken into account)
-
-        # invest from WEI 2020 miss hydrogen
-        invest_ccs_mix_dict = {}
-
-        l_ctrl = np.arange(0, 8)
-        invest_ccs_mix_dict[GlossaryEnergy.Years] = l_ctrl
-        invest_ccs_mix_dict[CarbonCapture.name] = [2.0 + i for i in l_ctrl]
-        invest_ccs_mix_dict[CarbonStorage.name] = [0.003 + 0.00025 * i for i in l_ctrl]
-
-        if self.bspline:
-            invest_ccs_mix_dict[GlossaryEnergy.Years] = self.years
-
-            for ccs in self.ccs_list:
-                invest_ccs_mix_dict[ccs], _ = self.invest_bspline(
-                    invest_ccs_mix_dict[ccs], len(self.years)
-                )
-
-        ccs_mix_invest_df = pd.DataFrame(invest_ccs_mix_dict)
-
-        return ccs_mix_invest_df
-
     def get_investments_ccs_mix_custom(self):
-
-        # Source for invest: IEA 2022; World Energy Investment,
-        # https://www.iea.org/reports/world-energy-investment-2020,
-        # License: CC BY 4.0.
-        # Take variation from 2015 to 2019 (2020 is a covid year)
-        # And assume a variation per year with this
-        # invest of ref are 1295-electricity_networks- crude oil (only liquid_fuel
-        # is taken into account)
-
-        # invest from WEI 2020 miss hydrogen
-        invest_ccs_mix_dict = {}
-
         if set(self.energy_list) == set(DEFAULT_COARSE_ENERGY_LIST):
-            invest_ccs_mix_dict[GlossaryEnergy.Years] = np.arange(
-                0, GlossaryEnergy.NB_POLES_COARSE
-            )
+            invest_ccs_mix_dict = {
+                GlossaryEnergy.Years: np.arange(0, GlossaryEnergy.NB_POLES_COARSE),
+                CarbonCapture.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
+                CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLES_COARSE)
+            }
 
-            invest_ccs_mix_dict[CarbonCapture.name] = np.ones(
-                GlossaryEnergy.NB_POLES_COARSE
-            )
-            invest_ccs_mix_dict[CarbonStorage.name] = np.ones(
-                GlossaryEnergy.NB_POLES_COARSE
-            )
         else:
-            invest_ccs_mix_dict[GlossaryEnergy.Years] = np.arange(0, 8)
-            invest_ccs_mix_dict[CarbonCapture.name] = [2.0, 25, 25, 25, 25, 25, 25, 25]
-            invest_ccs_mix_dict[CarbonStorage.name] = [0.003, 5, 5, 5, 5, 5, 5, 5]
+            invest_ccs_mix_dict = {
+                GlossaryEnergy.Years: np.arange(8),
+                CarbonCapture.name: [2.0] + [25] * 7,
+                CarbonStorage.name: [0.003] + [5] * 7
+            }
 
         if self.bspline:
             invest_ccs_mix_dict[GlossaryEnergy.Years] = self.years
-
             for ccs in self.ccs_list:
-                invest_ccs_mix_dict[ccs], _ = self.invest_bspline(
-                    invest_ccs_mix_dict[ccs], len(self.years)
-                )
+                invest_ccs_mix_dict[ccs], _ = self.invest_bspline(invest_ccs_mix_dict[ccs], len(self.years))
 
         ccs_mix_invest_df = pd.DataFrame(invest_ccs_mix_dict)
 
