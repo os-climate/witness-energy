@@ -174,87 +174,6 @@ class Study(EnergyStudyManager):
             AGGR_TYPE_SMAX)
         list_namespaces.append('ns_functions')
 
-        # if Electricity.name in self.energy_list:
-        #     if hydropower_name in self.dict_technos[Electricity.name]:
-        #         list_var.extend(
-        #             ['prod_hydropower_constraint'])
-        #         list_parent.extend(['Energy_constraints'])
-        #         list_ftype.extend([INEQ_CONSTRAINT])
-        #         list_weight.extend([-1.])
-        #         list_aggr_type.append(
-        #             AGGR_TYPE_SMAX)
-        #         list_namespaces.append('ns_functions')
-
-
-        # if hightemperatureheat.name in self.energy_list:
-        #     list_var.extend(
-        #         ['total_prod_high_heat'])
-        #     list_parent.extend(['Energy_constraints'])
-        #     list_ftype.extend([INEQ_CONSTRAINT])
-        #     list_weight.extend([0.])
-        #     list_aggr_type.append(
-        #         AGGR_TYPE_SMAX)
-        #     list_namespaces.append('ns_functions')
-        #
-        # if mediumtemperatureheat.name in self.energy_list:
-        #     list_var.extend(
-        #         ['total_prod_medium_heat'])
-        #     list_parent.extend(['Energy_constraints'])
-        #     list_ftype.extend([INEQ_CONSTRAINT])
-        #     list_weight.extend([0.])
-        #     list_aggr_type.append(
-        #         AGGR_TYPE_SMAX)
-        #     list_namespaces.append('ns_functions')
-        #
-        # if lowtemperatureheat.name in self.energy_list:
-        #     list_var.extend(
-        #         ['total_prod_low_heat'])
-        #     list_parent.extend(['Energy_constraints'])
-        #     list_ftype.extend([INEQ_CONSTRAINT])
-        #     list_weight.extend([0.])
-        #     list_aggr_type.append(
-        #         AGGR_TYPE_SMAX)
-        #     list_namespaces.append('ns_functions')
-
-        # if SolidFuel.name in self.energy_list:
-        #     list_var.extend(
-        #         ['total_prod_solid_fuel_elec'])
-        #     list_parent.extend(['Energy_constraints'])
-        #     list_ftype.extend([INEQ_CONSTRAINT])
-        #     list_weight.extend([0.])
-        #     list_aggr_type.append(
-        #         AGGR_TYPE_SMAX)
-        #     list_namespaces.append('ns_functions')
-        #
-        # if LiquidHydrogen.name in self.energy_list:
-        #     list_var.extend(
-        #         ['total_prod_h2_liquid'])
-        #     list_parent.extend(['Energy_constraints'])
-        #     list_ftype.extend([INEQ_CONSTRAINT])
-        #     list_weight.extend([0.])
-        #     list_aggr_type.append(
-        #         AGGR_TYPE_SMAX)
-        #     list_namespaces.append('ns_functions')
-        #
-        # if Syngas.name in self.energy_list:
-        #     list_var.extend(
-        #         ['syngas_prod_constraint'])
-        #     list_parent.extend(['Energy_constraints'])
-        #     list_ftype.extend([INEQ_CONSTRAINT])
-        #     list_weight.extend([-1.0])
-        #     list_aggr_type.append(
-        #         AGGR_TYPE_SMAX)
-        #     list_namespaces.append('ns_functions')
-
-        # if set(EnergyDemandDiscipline.energy_constraint_list).issubset(self.energy_list):
-        #     list_var.extend(
-        #         ['electricity_demand_constraint', 'transport_demand_constraint'])
-        #     list_parent.extend(['demand_constraint', 'demand_constraint'])
-        #     list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-        #     list_weight.extend([-1., -1.])
-        #     list_aggr_type.extend(
-        #         [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
-        #     list_namespaces.extend(['ns_functions', 'ns_functions'])
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype
@@ -692,7 +611,7 @@ class Study(EnergyStudyManager):
         self.func_df = concat(
             [self.setup_objectives(), self.setup_constraints()])
 
-        # self.create_technolist_per_energy(instanciated_studies)
+        self.create_technolist_per_energy(instanciated_studies)
 
         return values_dict_list
 
