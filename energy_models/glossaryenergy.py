@@ -25,7 +25,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CO2Taxes = GlossaryWitnessCore.CO2Taxes
     CO2Taxes["namespace"] = "ns_energy_study"
 
-    NB_POLES_COARSE: int = 20
+    NB_POLES_COARSE: int = 20 # number of poles in witness coarse
+    NB_POLES_FULL: int = 8 # number of poles in witness full
 
     AllStreamsDemandRatioValue = "all_streams_demand_ratio"
     FlueGasMean = "flue_gas_mean"

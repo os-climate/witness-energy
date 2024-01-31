@@ -41,7 +41,7 @@ class ElectrolysisAWE(GaseousHydrogenTechno):
 
         self.cost_details['water_needs'] = self.get_water_needs()
 
-        self.data_config_creation = self.techno_infos_dict
+        
 
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
             self.prices[Electricity.name]

@@ -174,10 +174,7 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         """
         instanciated_charts = super().get_post_processing_list(filters)
         charts = []
-        # for pie charts Title
-        unit_str = '$/MWh'
-        var_str = 'Split up of Opex contributions'
-        # Overload default value with chart filter
+        
         if filters is not None:
             for chart_filter in filters:
                 if chart_filter.filter_key == 'charts':

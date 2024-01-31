@@ -94,7 +94,7 @@ from sostrades_core.tools.base_functions.specific_check import specific_check_ye
 from sostrades_core.tools.bspline.bspline_methods import bspline_method
 
 ENERGY_TYPE = "energy"
-CCUS_TYPE = "CCUS"
+CCUS_TYPE = GlossaryEnergy.CCUS
 AGRI_TYPE = "agriculture"
 DEFAULT_TECHNO_DICT = {
     Methane.name: {"type": ENERGY_TYPE, "value": Methane_technos_dev},
@@ -170,7 +170,7 @@ DEFAULT_ENERGY_LIST = [
     if value["type"] in ["energy", "agriculture"]
 ]
 DEFAULT_CCS_LIST = [
-    key for key, value in DEFAULT_TECHNO_DICT.items() if value["type"] == "CCUS"
+    key for key, value in DEFAULT_TECHNO_DICT.items() if value["type"] == GlossaryEnergy.CCUS
 ]
 
 DEFAULT_COARSE_ENERGY_LIST = [
@@ -179,7 +179,7 @@ DEFAULT_COARSE_ENERGY_LIST = [
     if value["type"] in ["energy", "agriculture"]
 ]
 DEFAULT_COARSE_CCS_LIST = [
-    key for key, value in DEFAULT_COARSE_TECHNO_DICT.items() if value["type"] == "CCUS"
+    key for key, value in DEFAULT_COARSE_TECHNO_DICT.items() if value["type"] == GlossaryEnergy.CCUS
 ]
 
 
@@ -209,8 +209,9 @@ class EnergyStudyManager(StudyManager):
             for key, value in self.techno_dict.items()
             if value["type"] in ["energy", "agriculture"]
         ]
+        self.coarse_mode: bool = set(self.energy_list) == set(DEFAULT_COARSE_ENERGY_LIST)
         self.ccs_list = [
-            key for key, value in self.techno_dict.items() if value["type"] == "CCUS"
+            key for key, value in self.techno_dict.items() if value["type"] == GlossaryEnergy.CCUS
         ]
 
     def get_energy_mix_study_cls(self, energy_name, add_name=None):

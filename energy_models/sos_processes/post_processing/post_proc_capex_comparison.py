@@ -17,19 +17,8 @@ limitations under the License.
 import numpy as np
 
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
-
-
-def post_processing_filters(execution_engine, namespace):
-    filters = []
-
-    chart_list = ['Factory']
-    filters.append(ChartFilter('Charts', filter_values=chart_list,
-                               selected_values=chart_list, filter_key='Charts', multiple_selection=True))
-
-    return filters
 
 
 def post_processings(execution_engine, namespace, filters):

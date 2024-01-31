@@ -24,7 +24,7 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min, compute_dfunc_with_exp_min
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
 
 
 class Refinery(LiquidFuelTechno):
@@ -193,8 +193,6 @@ class Refinery(LiquidFuelTechno):
         else:
             arr_type = 'float64'
         dprod_list_dinvest_list = np.zeros(
-            (nb_years, nb_years), dtype=arr_type)
-        dprod_list_dcapex_list = np.zeros(
             (nb_years, nb_years), dtype=arr_type)
         # We fill this jacobian column by column because it is the same element
         # in the entire column

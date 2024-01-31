@@ -42,8 +42,6 @@ class Study(EnergyMixStudyManager):
     def get_investments(self):
         invest_solid_fuel_mix_dict = {}
 
-        l_ctrl = np.arange(0, 8)
-
         if 'CoalExtraction' in self.technologies_list:
             #             invest_solid_fuel_mix_dict['CoalExtraction'] = [
             #                 99.9, 50.0] + [0.02] * (len(l_ctrl) - 2)
@@ -67,22 +65,22 @@ class Study(EnergyMixStudyManager):
 
         return solid_fuel_mix_invest_df
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         energy_mix_name = 'EnergyMix'
         self.energy_name = SolidFuel.name
         solid_fuel_name = f'{energy_mix_name}.{SolidFuel.name}'
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
+        energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                            'electricity': 16.0,
                                            'crude oil': 44.0,
                                            'biomass_dry': 68.12 / 3.36})
 
         # 2020 - 2025 www.globenewswire.com growth rate of 14,47%
-        # self.invest_level = pd.DataFrame(
+        # invest_level = pd.DataFrame(
         #    {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue:  13.0e9})
         # the value for invest_level is just set as an order of magnitude
-        self.invest_level = pd.DataFrame(
+        invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue:  10.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -90,49 +88,49 @@ class Study(EnergyMixStudyManager):
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
-        self.co2_taxes = pd.DataFrame(
+        co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
-        self.margin = pd.DataFrame(
+        margin = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: 110.0})
         # From future of hydrogen
-        self.transport = pd.DataFrame(
+        transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': 7.6})
 
-        self.resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2'])
-        self.resources_price[GlossaryEnergy.Years] = years
-        self.resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
+        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2'])
+        resources_price[GlossaryEnergy.Years] = years
+        resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
 
-        self.energy_carbon_emissions = pd.DataFrame(
+        energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'solid_fuel': 0.64 / 4.86, 'biomass_dry': - 0.425 * 44.01 / 12.0, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{solid_fuel_name}.CoalExtraction.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{solid_fuel_name}.Pelletizing.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.study_name}.{solid_fuel_name}.CoalExtraction.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{solid_fuel_name}.Pelletizing.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.TransportCostValue}': transport,
+                       f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.TransportMarginValue}': margin,
 
                        f'{self.study_name}.{solid_fuel_name}.invest_techno_mix': investment_mix,
                        }
 
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                 f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                {f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.InvestLevelValue}': invest_level,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
+                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
                  })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
                     columns=[GlossaryEnergy.Years]).sum(axis=1)
                 for techno in self.technologies_list:
-                    invest_level_techno = pd.DataFrame({GlossaryEnergy.Years: self.invest_level[GlossaryEnergy.Years].values,
-                                                        GlossaryEnergy.InvestValue: self.invest_level[GlossaryEnergy.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
+                    invest_level_techno = pd.DataFrame({GlossaryEnergy.Years: invest_level[GlossaryEnergy.Years].values,
+                                                        GlossaryEnergy.InvestValue: invest_level[GlossaryEnergy.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
                     values_dict[f'{self.study_name}.{solid_fuel_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
             else:
-                values_dict[f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.InvestLevelValue}'] = self.invest_level
+                values_dict[f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.InvestLevelValue}'] = invest_level
         else:
             self.update_dv_arrays()
         return [values_dict]

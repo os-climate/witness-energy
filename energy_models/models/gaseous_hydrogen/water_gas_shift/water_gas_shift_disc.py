@@ -21,7 +21,6 @@ import numpy as np
 import pandas as pd
 
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
 from energy_models.core.stream_type.energy_models.syngas import \
     compute_calorific_value as compute_syngas_calorific_value
 from energy_models.core.stream_type.energy_models.syngas import compute_molar_mass as compute_syngas_molar_mass
@@ -139,43 +138,6 @@ class WaterGasShiftDiscipline(GaseousHydrogenTechnoDiscipline):
 
         inputs_dict = self.get_sosdisc_inputs()
         ##############
-        gaseous_hydrogen_energy_dict = inputs_dict['data_fuel_dict']
-        calorific_value = (syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['calorific_value'] +
-                           gaseous_hydrogen_energy_dict['molar_mass'] * gaseous_hydrogen_energy_dict['calorific_value']) / (gaseous_hydrogen_energy_dict['molar_mass'] + syngas_ratio * CO.data_energy_dict['molar_mass'])
-
-        calup = (syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['calorific_value'] +
-                 gaseous_hydrogen_energy_dict['molar_mass'] * gaseous_hydrogen_energy_dict['calorific_value'])
-
-        caldown = (gaseous_hydrogen_energy_dict['molar_mass'] +
-                   syngas_ratio * CO.data_energy_dict['molar_mass'])
-
-        dcalup = CO.data_energy_dict['molar_mass'] * \
-            CO.data_energy_dict['calorific_value']
-
-        dcaldown = CO.data_energy_dict['molar_mass']
-
-        dcalorific_val_dsyngas = (
-            dcalup * caldown - dcaldown * calup) / (caldown ** 2)
-
-        molar_mass = (syngas_ratio * CO.data_energy_dict['molar_mass'] +
-                      gaseous_hydrogen_energy_dict['molar_mass']) / (1.0 + syngas_ratio)
-
-        molmassup = (syngas_ratio * CO.data_energy_dict['molar_mass'] +
-                     gaseous_hydrogen_energy_dict['molar_mass'])
-
-        molmassdown = (1.0 + syngas_ratio)
-
-        dmolmassup = CO.data_energy_dict['molar_mass']
-
-        dmolmassdown = 1.0
-
-        dmolarmass_dsyngas = (dmolmassup * molmassdown -
-                              dmolmassdown * molmassup) / molmassdown**2
-
-        mol_syngas = 1.0
-        mol_H2 = (1.0 + syngas_ratio) / \
-            (1.0 + self.techno_model.needed_syngas_ratio)
-
         needed_syngas_molar_mass = compute_syngas_molar_mass(
             self.techno_model.needed_syngas_ratio)
         needed_calorific_value = compute_syngas_calorific_value(

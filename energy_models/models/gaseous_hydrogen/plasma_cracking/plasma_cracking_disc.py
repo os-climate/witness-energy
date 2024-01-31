@@ -198,7 +198,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
                     dtechno_price_denergy_CO2_emission = np.array([
                         [0] * len(energy_CO2_emission)] * len(energy_CO2_emission))
 
-                if (dtechno_price_denergy_CO2_emission is not None):
+                if dtechno_price_denergy_CO2_emission is not None:
                     value = percentage_resource * dtechno_price_denergy_CO2_emission
                     self.set_partial_derivative_for_other_types(
                         (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy), value)
@@ -257,10 +257,6 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
         '''
         scaling_factor_invest_level = self.get_sosdisc_inputs(
             'scaling_factor_invest_level')
-        scaling_factor_techno_production = self.get_sosdisc_inputs(
-            'scaling_factor_techno_production')
-        scaling_factor_techno_consumption = self.get_sosdisc_inputs(
-            'scaling_factor_techno_consumption')
         dtechno_price_dinvest = self.dprice_dinvest * \
             scaling_factor_invest_level
         dtechno_price_dinvest_wotaxes = self.dprice_dinvest * \
@@ -283,10 +279,6 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
             y = np.array([techno_prices, ] * len(years)).transpose()
             y_wotaxes = np.array(
                 [techno_prices_wotaxes, ] * len(years)).transpose()
-            value = dtechno_price_denergy_prices * x + \
-                dpercentage_resources_denergy_prices * y / x
-            value_wotaxes = dtechno_price_denergy_prices_wotaxes * x + \
-                dpercentage_resources_denergy_prices * y_wotaxes / x
 
             value = dtechno_price_dinvest * x + \
                 dpercentage_resources_dinvest * y / x
