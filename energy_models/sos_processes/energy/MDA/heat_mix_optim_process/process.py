@@ -64,7 +64,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         techno_dict = DEFAULT_TECHNO_DICT
 
         coupling_builder = self.ee.factory.get_builder_from_process(
-            'witness-energy.energy_models.sos_processes.energy.MDA', 'heat_optim_sub_process', #_v0
+            'energy_models.sos_processes.energy.MDA', 'heat_optim_sub_process', #_v0
             techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
 
         # coupling_builder = self.ee.factory.get_builder_from_process(
