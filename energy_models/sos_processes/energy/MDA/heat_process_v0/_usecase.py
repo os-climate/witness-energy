@@ -80,7 +80,7 @@ AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
 FUNC_DF = FunctionManagerDisc.FUNC_DF
 CO2_TAX_MINUS_CCS_CONSTRAINT_DF = EnergyMix.CO2_TAX_MINUS_CCS_CONSTRAINT_DF
 CARBON_TO_BE_STORED_CONSTRAINT = PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT
-TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF = HeatMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF
+TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF = EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF
 INVEST_DISC_NAME = 'InvestmentDistribution'
 hydropower_name = Electricity.hydropower_name
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
@@ -174,6 +174,87 @@ class Study(EnergyStudyManager):
             AGGR_TYPE_SMAX)
         list_namespaces.append('ns_functions')
 
+        # if Electricity.name in self.energy_list:
+        #     if hydropower_name in self.dict_technos[Electricity.name]:
+        #         list_var.extend(
+        #             ['prod_hydropower_constraint'])
+        #         list_parent.extend(['Energy_constraints'])
+        #         list_ftype.extend([INEQ_CONSTRAINT])
+        #         list_weight.extend([-1.])
+        #         list_aggr_type.append(
+        #             AGGR_TYPE_SMAX)
+        #         list_namespaces.append('ns_functions')
+
+
+        # if hightemperatureheat.name in self.energy_list:
+        #     list_var.extend(
+        #         ['total_prod_high_heat'])
+        #     list_parent.extend(['Energy_constraints'])
+        #     list_ftype.extend([INEQ_CONSTRAINT])
+        #     list_weight.extend([0.])
+        #     list_aggr_type.append(
+        #         AGGR_TYPE_SMAX)
+        #     list_namespaces.append('ns_functions')
+        #
+        # if mediumtemperatureheat.name in self.energy_list:
+        #     list_var.extend(
+        #         ['total_prod_medium_heat'])
+        #     list_parent.extend(['Energy_constraints'])
+        #     list_ftype.extend([INEQ_CONSTRAINT])
+        #     list_weight.extend([0.])
+        #     list_aggr_type.append(
+        #         AGGR_TYPE_SMAX)
+        #     list_namespaces.append('ns_functions')
+        #
+        # if lowtemperatureheat.name in self.energy_list:
+        #     list_var.extend(
+        #         ['total_prod_low_heat'])
+        #     list_parent.extend(['Energy_constraints'])
+        #     list_ftype.extend([INEQ_CONSTRAINT])
+        #     list_weight.extend([0.])
+        #     list_aggr_type.append(
+        #         AGGR_TYPE_SMAX)
+        #     list_namespaces.append('ns_functions')
+
+        # if SolidFuel.name in self.energy_list:
+        #     list_var.extend(
+        #         ['total_prod_solid_fuel_elec'])
+        #     list_parent.extend(['Energy_constraints'])
+        #     list_ftype.extend([INEQ_CONSTRAINT])
+        #     list_weight.extend([0.])
+        #     list_aggr_type.append(
+        #         AGGR_TYPE_SMAX)
+        #     list_namespaces.append('ns_functions')
+        #
+        # if LiquidHydrogen.name in self.energy_list:
+        #     list_var.extend(
+        #         ['total_prod_h2_liquid'])
+        #     list_parent.extend(['Energy_constraints'])
+        #     list_ftype.extend([INEQ_CONSTRAINT])
+        #     list_weight.extend([0.])
+        #     list_aggr_type.append(
+        #         AGGR_TYPE_SMAX)
+        #     list_namespaces.append('ns_functions')
+        #
+        # if Syngas.name in self.energy_list:
+        #     list_var.extend(
+        #         ['syngas_prod_constraint'])
+        #     list_parent.extend(['Energy_constraints'])
+        #     list_ftype.extend([INEQ_CONSTRAINT])
+        #     list_weight.extend([-1.0])
+        #     list_aggr_type.append(
+        #         AGGR_TYPE_SMAX)
+        #     list_namespaces.append('ns_functions')
+
+        # if set(EnergyDemandDiscipline.energy_constraint_list).issubset(self.energy_list):
+        #     list_var.extend(
+        #         ['electricity_demand_constraint', 'transport_demand_constraint'])
+        #     list_parent.extend(['demand_constraint', 'demand_constraint'])
+        #     list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
+        #     list_weight.extend([-1., -1.])
+        #     list_aggr_type.extend(
+        #         [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+        #     list_namespaces.extend(['ns_functions', 'ns_functions'])
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype
@@ -442,16 +523,43 @@ class Study(EnergyStudyManager):
     def setup_usecase(self):
 
         hydrogen_name = GaseousHydrogen.name
+        # liquid_fuel_name = LiquidFuel.name
         high_heat_name = hightemperatureheat.name
         medium_heat_name = mediumtemperatureheat.name
         low_heat_name = lowtemperatureheat.name
+        # hvo_name = HydrotreatedOilFuel.name
         methane_name = Methane.name
+        # biogas_name = BioGas.name
+        # biomass_dry_name = BiomassDry.name
         electricity_name = Electricity.name
+        # solid_fuel_name = SolidFuel.name
+        # biodiesel_name = BioDiesel.name
+        # syngas_name = Syngas.name
+        # carbon_capture_name = CarbonCapture.name
+        # carbon_storage_name = CarbonStorage.name
+        # liquid_hydrogen_name = LiquidHydrogen.name
+        # renewable_name = Renewable.name
+        # fossil_name = Fossil.name
         energy_mix_name = 'HeatMix' #EnergyMix.name
         energy_price_dict = {GlossaryEnergy.Years: self.years,
+                             # electricity_name: 9.0,
+                             # biomass_dry_name: 68.12 / 3.36,
+                             # biogas_name: 90,
+                             # methane_name: 34.0,
+                             # solid_fuel_name: 8.6,
+                             # hydrogen_name: 90.0,
+                             # liquid_fuel_name: 70.0,
                              high_heat_name: 71.0,
                              medium_heat_name: 71.0,
                              low_heat_name: 71.0,
+                             # syngas_name: 40.0,
+                             # carbon_capture_name: 0.0,
+                             # carbon_storage_name: 0.0,
+                             # biodiesel_name: 210.0,
+                             # liquid_hydrogen_name: 120.0,
+                             # renewable_name: 90.0,
+                             # fossil_name: 110.0,
+                             # hvo_name: 70.0,
                              }
 
         # price in $/MWh
@@ -465,9 +573,24 @@ class Study(EnergyStudyManager):
         self.co2_taxes = self.get_co2_taxes_df_custom()
 
         energy_carbon_emissions_dict = {GlossaryEnergy.Years: self.years,
+                                        # electricity_name: 0.0,
+                                        # biomass_dry_name: - 0.425 * 44.01 / 12.0 / 3.36,
+                                        # biogas_name: -0.618,
+                                        # methane_name: 0.123 / 15.4,
+                                        # solid_fuel_name: 0.64 / 4.86,
+                                        # hydrogen_name: 0.0,
+                                        # liquid_fuel_name: 0.0,
                                         high_heat_name: 0.0,
                                         medium_heat_name: 0.0,
                                         low_heat_name: 0.0,
+                                        # syngas_name: 0.0,
+                                        # carbon_capture_name: 0.0,
+                                        # carbon_storage_name: 0.0,
+                                        # biodiesel_name: 0.0,
+                                        # liquid_hydrogen_name: 0.0,
+                                        # renewable_name: 0.0,
+                                        # fossil_name: 0.64 / 4.86,
+                                        # hvo_name: 0.0,
                                         }
         # price in $/MWh
         self.energy_carbon_emissions = pd.DataFrame(
@@ -562,14 +685,13 @@ class Study(EnergyStudyManager):
                        f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
                        # f'{self.study_name}.NormalizationReferences.liquid_hydrogen_percentage': np.concatenate(
                        #     (np.ones(5) * 1e-4, np.ones(len(self.years) - 5) / 4), axis=None),
-                       # f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': self.resources_CO2_emissions,
-                       # f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
-                       # f'{self.study_name}.{GlossaryEnergy.PopulationDfValue}': population_df,
-                       # f'{self.study_name}.Energy_demand.{GlossaryEnergy.TransportDemandValue}': transport_demand,
-                       # f'{self.study_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df,
+                       f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': self.resources_CO2_emissions,
+                       f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
+                       f'{self.study_name}.{GlossaryEnergy.PopulationDfValue}': population_df,
+                       f'{self.study_name}.Energy_demand.{GlossaryEnergy.TransportDemandValue}': transport_demand,
+                       f'{self.study_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df,
                        }
 
-        values_dict_list = []
         values_dict_list, dspace_list, instanciated_studies = self.setup_usecase_sub_study_list()
 
         # The flue gas list will depend on technologies present in the
@@ -613,7 +735,21 @@ class Study(EnergyStudyManager):
 
         self.create_technolist_per_energy(instanciated_studies)
 
+        # -- load data from resource
+
+        # dc_resource = datacase_resource(
+        #     self.year_start, self.year_end)
+        # dc_resource.study_name = self.study_name
+        # resource_input_list = dc_resource.setup_usecase()
+        # values_dict_list.extend(resource_input_list)
+        #
+        # agri_values_dict = self.get_input_value_from_agriculture_mix()
+        # values_dict_list.append(agri_values_dict)
+
         return values_dict_list
+
+
+
 
 
 if '__main__' == __name__:

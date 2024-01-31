@@ -97,7 +97,7 @@ class Heat_Mix_Discipline(SoSWrapp):
 
     DESC_OUT = {
         # GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
-        GlossaryEnergy.EnergyCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
+        # GlossaryEnergy.EnergyCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
         'energy_CO2_emissions_after_use': {'type': 'dataframe', 'unit': 'kg/kWh'},
         'co2_emissions_by_energy': {'type': 'dataframe', 'unit': 'Mt'},
         GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
@@ -262,7 +262,7 @@ class Heat_Mix_Discipline(SoSWrapp):
         outputs_dict = {
                         # GlossaryEnergy.EnergyPricesValue: self.energy_model.energy_prices,
                         'co2_emissions_by_energy': self.energy_model.emissions_by_energy,
-                        GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_model.total_carbon_emissions,
+                        # GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_model.total_carbon_emissions,
                         'energy_CO2_emissions_after_use': self.energy_model.carbon_emissions_after_use,
                         GlossaryEnergy.EnergyProductionValue: scaled_energy_production,
                         GlossaryEnergy.EnergyProductionDetailedValue: self.energy_model.production,
