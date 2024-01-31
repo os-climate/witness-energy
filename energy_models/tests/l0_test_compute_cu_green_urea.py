@@ -25,9 +25,9 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
-class BiomassBFPriceTestCase(unittest.TestCase):
+class GreenUreaPriceTestCase(unittest.TestCase):
     """
-    BiomassBF prices test class
+    GreenUrea prices test class
     """
 
     def setUp(self):
@@ -77,20 +77,20 @@ class BiomassBFPriceTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_03_biomass_bf_discipline(self):
+    def test_01_green_urea_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'BiomassBuryingFossilization'
+        self.model_name = 'GreenUrea'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    'ns_energy_study': self.name,
                    'ns_electricity': self.name,
-                   'ns_carbon_storage': self.name,
+                   'ns_carbon_utilization': self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.carbon_storage.biomass_burying_fossilization.biomass_burying_fossilization_disc.BiomassBuryingFossilizationDiscipline'
+        mod_path = 'energy_models.models.carbon_utilization.green_urea.green_urea_disc.GreenUreaDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -121,5 +121,5 @@ class BiomassBFPriceTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
