@@ -24,7 +24,7 @@ class ResourceGlossary():
     Prices [$/t]
     '''
 
-    UNITS={'production': 'Mt', 'consumption': 'Mt', 'price': '$/t', GlossaryEnergy.CO2EmissionsValue: 'kgCO2/kg'}
+    UNITS = {'production': 'Mt', 'consumption': 'Mt', 'price': '$/t', GlossaryEnergy.CO2EmissionsValue: 'kgCO2/kg'}
 
     ResourceList = ['Uranium', 'Water', 'SeaWater', 'CO2', 'BiomassDry', 'WetBiomass', 'NaturalOil', 'Methanol',
                     'SodiumHydroxide', 'Wood', 'Carbon', 'ManagedWood', 'Oxygen', 'CrudeOil', 'SolidFuel',
@@ -72,10 +72,10 @@ class ResourceGlossary():
                    'price': 37.5}
     Oxygen = {'name': 'oxygen_resource',
               GlossaryEnergy.CO2EmissionsValue: 0.0,
-              'price':  10.0}
+              'price': 10.0}
     Dioxygen = {'name': 'dioxygen_resource',
                 GlossaryEnergy.CO2EmissionsValue: 0.0,
-                'price':  10.0}
+                'price': 10.0}
     CrudeOil = {'name': 'crude_oil_resource',
                 GlossaryEnergy.CO2EmissionsValue: 0.02533,
                 'price': 44.0}
@@ -119,7 +119,7 @@ class ResourceGlossary():
     Copper = {'name': 'copper_resource',
               GlossaryEnergy.CO2EmissionsValue: 0.0,
               'price': 10057.0}
-            
+
     Platinum = {'name': 'platinum_resource',
                 GlossaryEnergy.CO2EmissionsValue: 0.0,
                 'price': 32825887.76}
@@ -132,5 +132,5 @@ class ResourceGlossary():
         'Calcium': Calcium, 'CalciumOxyde': CalciumOxyde, 'Potassium': Potassium,
         'PotassiumHydroxide': PotassiumHydroxide, 'Amine': Amine, 'EthanolAmine': EthanolAmine,
         'MonoEthanolAmine': MonoEthanolAmine, 'Glycerol': Glycerol, 'NaturalGas': NaturalGas,
-        'Coal': Coal, 'Oil': Oil, 'Copper' : Copper, 'Platinum': Platinum,
+        'Coal': Coal, 'Oil': Oil, 'Copper': Copper, 'Platinum': Platinum,
     }

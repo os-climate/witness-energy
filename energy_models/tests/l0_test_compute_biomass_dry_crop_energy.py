@@ -62,10 +62,11 @@ class CropEnergyPriceTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, 'electricity': 0.0})
         # invest: 1Mha of crop land each year
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(31) * 0})  # * 0.1*(0.001*237.95*1.52 + 0.2*237.95*0.52)})
+            {GlossaryEnergy.Years: years,
+             GlossaryEnergy.InvestValue: np.ones(31) * 0})  # * 0.1*(0.001*237.95*1.52 + 0.2*237.95*0.52)})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -89,7 +90,6 @@ class CropEnergyPriceTestCase(unittest.TestCase):
         pass
 
     def test_02_crop_residues_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'CropEnergy'
         self.ee = ExecutionEngine(self.name)
@@ -118,7 +118,7 @@ class CropEnergyPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

@@ -43,7 +43,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         self.energy_name = 'electricity'
         logging.disable(logging.INFO)
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-        
+
         self.years = years
 
         self.hydropower_techno_prices = pd.DataFrame({'Hydropower': np.linspace(100, 100 + len(years) - 1, len(years)),
@@ -121,7 +121,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
 
         gasturbine_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                               'electricity (TWh)': [low_prod] * years_low_prod + [100] * (
-                                                          len(self.years) - years_low_prod),
+                                                      len(self.years) - years_low_prod),
                                               'O2 (Mt)': [0.019217] * len(self.years)})
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': 2020,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,

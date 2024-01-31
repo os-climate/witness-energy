@@ -22,7 +22,6 @@ from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubPr
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy MDA v0 Process',
@@ -30,7 +29,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'category': '',
         'version': '',
     }
-
 
     def get_builders(self):
         ns_study = self.ee.study_name
@@ -43,7 +41,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             builder_list = self.ee.factory.get_builder_from_process(
                 'energy_models.sos_processes.energy.MDA', 'energy_process_v0',
                 techno_dict=self.techno_dict, invest_discipline=self.invest_discipline,
-                energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value, process_level=self.process_level,
+                energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value,
+                process_level=self.process_level,
                 use_resources_bool=self.use_resources_bool)
         else:
             # else we get them the old fashioned way
@@ -51,7 +50,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 'energy_models.sos_processes.energy.MDA', 'energy_process_v0')
 
         ns_dict = {'ns_energy': f'{ns_study}.{energy_mix}',
-                   'ns_carb':  f'{ns_study}.{ccs_mix}.{carbon_storage}.PureCarbonSolidStorage',
+                   'ns_carb': f'{ns_study}.{ccs_mix}.{carbon_storage}.PureCarbonSolidStorage',
                    GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
                    'ns_emissions': f'{ns_study}.{energy_mix}', }
 

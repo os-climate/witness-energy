@@ -51,11 +51,11 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
         self.energy_name = 'ethanol'
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': np.ones(len(years)) * 0.135 * 1000,
-                                           'biomass_dry': 45.0,
-                                           })
+        self.energy_prices = pd.DataFrame(
+            {GlossaryEnergy.Years: years, 'electricity': np.ones(len(years)) * 0.135 * 1000,
+             'biomass_dry': 45.0,
+             })
 
-        
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              'electricity': 0.0,
@@ -114,7 +114,7 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         utilisation_ratio = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                  GlossaryEnergy.UtilisationRatioValue: 50.0 * np.ones_like(self.years)})
+                                          GlossaryEnergy.UtilisationRatioValue: 50.0 * np.ones_like(self.years)})
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
@@ -125,8 +125,10 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))}
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

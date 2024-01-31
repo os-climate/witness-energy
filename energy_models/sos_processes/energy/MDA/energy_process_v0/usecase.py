@@ -410,7 +410,7 @@ class Study(EnergyStudyManager):
         """
         energy_mix = self.get_investments_mix()
         invest_mix_df = pd.DataFrame({GlossaryEnergy.Years: energy_mix[GlossaryEnergy.Years].values}
-        )
+                                     )
         for study in instanciated_studies:
             if study is not None:
                 invest_techno = study.get_investments()

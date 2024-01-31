@@ -66,7 +66,8 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.population = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                         GlossaryEnergy.PopulationValue: np.linspace(7794.79, 9000., len(self.years))})
         self.transport_demand = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                              GlossaryEnergy.TransportDemandValue: np.linspace(33600., 30000., len(self.years))})
+                                              GlossaryEnergy.TransportDemandValue: np.linspace(33600., 30000.,
+                                                                                               len(self.years))})
 
     def tearDown(self):
         pass

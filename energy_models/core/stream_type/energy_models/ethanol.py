@@ -51,7 +51,7 @@ class Ethanol(EnergyType):
                         # [Accessed 09/05/2022]
                         'lower_heating_value': 26.7,
                         'lower_heating_value_unit': 'MJ/kg',
-                        'higher_heating_value': 29.7	,
+                        'higher_heating_value': 29.7,
                         'higher_heating_value_unit': 'MJ/kg',
 
                         # Engineering ToolBox, (2003). Fuels - Higher and Lower Calorific Values. [online]

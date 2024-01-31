@@ -20,7 +20,6 @@ import pandas as pd
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import (
     Study as datacase_resource,
 )
-from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
     INVEST_DISCIPLINE_OPTIONS,
@@ -61,9 +60,6 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_static_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
-    PureCarbonSS,
-)
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
@@ -75,12 +71,12 @@ INVEST_DISC_NAME = "InvestmentDistribution"
 
 class Study(EnergyStudyManager):
     def __init__(
-        self,
-        year_start=GlossaryEnergy.YeartStartDefault,
-        year_end=2050,
-        main_study=True,
-        bspline=True,
-        execution_engine=None,
+            self,
+            year_start=GlossaryEnergy.YeartStartDefault,
+            year_end=2050,
+            main_study=True,
+            bspline=True,
+            execution_engine=None,
     ):
         super().__init__(
             file_path=__file__,
@@ -152,7 +148,6 @@ class Study(EnergyStudyManager):
         list_weight.extend([-1.0])
         list_aggr_type.append(FunctionManager.AGGR_TYPE_SMAX)
         list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
-
 
         func_df["variable"] = list_var
         func_df["parent"] = list_parent
@@ -326,7 +321,6 @@ class Study(EnergyStudyManager):
                 for techno in invest_techno.columns:
                     if techno != GlossaryEnergy.Years:
                         invest_mix_df[f"{energy}.{techno}"] = invest_techno[techno].values
-                        
 
         return invest_mix_df
 

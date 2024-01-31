@@ -209,5 +209,5 @@ class EnergyDemand(object):
         grad[0, 0] = 0.0
 
         return -grad * (
-                    1 + self.additional_demand_transport) * self.initial_electricity_demand / self.improved_efficiency_factor.reshape(
+                1 + self.additional_demand_transport) * self.initial_electricity_demand / self.improved_efficiency_factor.reshape(
             self.delta_years, 1) / self.electricity_demand_constraint_ref

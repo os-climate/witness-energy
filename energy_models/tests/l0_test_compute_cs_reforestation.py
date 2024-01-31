@@ -51,7 +51,7 @@ class ReforestationPriceTestCase(unittest.TestCase):
         # co2_taxes = [0.01486, 0.01722, 0.02027,
         #             0.02901,  0.03405,   0.03908,  0.04469,   0.05029]
         co2_taxes = [0, 0, 0,
-                     0,  0,   0,  0,   0]
+                     0, 0, 0, 0, 0]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -104,14 +104,15 @@ class ReforestationPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame({GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)}),
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

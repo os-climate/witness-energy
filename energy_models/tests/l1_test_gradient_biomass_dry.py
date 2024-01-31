@@ -63,7 +63,6 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1.5 * 1000.0
         self.years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-        
 
         self.energy_prices = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, 'electricity': electricity_price})
@@ -73,17 +72,18 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         # invest: 1Mha of crop land each year
 
         self.invest_level_managed_wood = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.array([1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
-                                                      1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
-                                                      1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
-                                                      1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
-                                                      1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
-                                                      1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
-                                                      1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
-                                                      1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
-                                                      1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
-                                                      1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
-                                                      1135081003.0 * 0.28]) * 1.0e-9})
+            {GlossaryEnergy.Years: self.years,
+             GlossaryEnergy.InvestValue: np.array([1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
+                                                   1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
+                                                   1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
+                                                   1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
+                                                   1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
+                                                   1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
+                                                   1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
+                                                   1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
+                                                   1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
+                                                   1135081003.0 * 0.28, 1135081003.0 * 0.28, 1135081003.0 * 0.28,
+                                                   1135081003.0 * 0.28]) * 1.0e-9})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestValue: np.linspace(0, 10, len(self.years))})
@@ -140,8 +140,10 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -198,8 +200,10 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -253,8 +257,10 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         np.set_printoptions(threshold=np.inf)
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -316,7 +322,8 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
+            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']

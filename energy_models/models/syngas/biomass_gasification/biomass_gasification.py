@@ -24,7 +24,6 @@ from energy_models.core.techno_type.base_techno_models.syngas_techno import Syng
 
 
 class BiomassGasification(SyngasTechno):
-
     syngas_COH2_ratio = 26.0 / 31.0 * 100.0  # in %
 
     def compute_other_primary_energy_costs(self):
@@ -67,16 +66,19 @@ class BiomassGasification(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details['biomass_needs'] * \
-                                                                                       self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            'elec_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                           'biomass_needs'] * \
+                                                                                       self.production_detailed[
+                                                                                           f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.techno_infos_dict['kgH20_perkgSyngas'] / \
                                                                         self.data_energy_dict['calorific_value'] * \
-                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kg
+                                                                        self.production_detailed[
+                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
         self.compute_ghg_emissions(Methane.emission_name)
 

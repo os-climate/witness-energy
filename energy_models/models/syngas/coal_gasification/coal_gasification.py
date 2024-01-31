@@ -23,7 +23,6 @@ from energy_models.core.techno_type.base_techno_models.syngas_techno import Syng
 
 
 class CoalGasification(SyngasTechno):
-
     syngas_COH2_ratio = 47.0 / 22.0 * 100.0  # in %
 
     def compute_other_primary_energy_costs(self):
@@ -66,14 +65,17 @@ class CoalGasification(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
-        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
-                                                                                      self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{SolidFuel.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                          'solid_fuel_needs'] * \
+                                                                                      self.production_detailed[
+                                                                                          f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details['solid_fuel_needs'] * \
         #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
-                                                                                        self.data_energy_dict['calorific_value'] * \
-                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+                                                                                            'CO2_from_production'] / \
+                                                                                        self.data_energy_dict[
+                                                                                            'calorific_value'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']

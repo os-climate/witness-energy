@@ -42,10 +42,11 @@ class ElectricityDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': Electricity.default_techno_list,
-                                     'default': Electricity.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_electricity',
-                                     'structuring': True, 'unit': '-'},
+                                            'possible_values': Electricity.default_techno_list,
+                                            'default': Electricity.default_techno_list,
+                                            'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                            'namespace': 'ns_electricity',
+                                            'structuring': True, 'unit': '-'},
                'hydropower_production_current': {'type': 'float',
                                                  'default': 6600.0,
                                                  # 4400TWh is total production,

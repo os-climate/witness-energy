@@ -233,10 +233,10 @@ def launch_data_pickle_generation(directory=''):
         GlossaryEnergy.EnergyProductionDetailedValue)
     mda_energy_data_streams_output_dict[GlossaryEnergy.EnergyProductionDetailedValue] = energy_production_detailed
 
-    if directory =='':
-        prefix='.'
+    if directory == '':
+        prefix = '.'
     else:
-        prefix=f'./{directory}'
+        prefix = f'./{directory}'
 
     output = open(f'{prefix}/mda_energy_data_streams_input_dict.pkl', 'wb')
     pickle.dump(mda_energy_data_streams_input_dict, output)

@@ -85,7 +85,8 @@ class TestOneInvest(unittest.TestCase):
                        'electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        'methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        'hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
-                       'carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
+                       'carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing',
+                                                            'flue_gas_capture.CalciumLooping'],
                        'carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        GlossaryEnergy.invest_mix: self.energy_mix,
                        GlossaryEnergy.EnergyInvestmentsValue: self.energy_investment,
@@ -100,7 +101,8 @@ class TestOneInvest(unittest.TestCase):
             if column != GlossaryEnergy.Years:
                 invest_techno = all_invest_df[column].values
                 invest_theory = self.energy_investment[
-                    GlossaryEnergy.EnergyInvestmentsValue].values * self.energy_mix[column] / norm_mix * scaling_factor_energy_investment
+                                    GlossaryEnergy.EnergyInvestmentsValue].values * self.energy_mix[
+                                    column] / norm_mix * scaling_factor_energy_investment
 
                 self.assertListEqual(np.round(invest_techno, 8).tolist(
                 ), np.round(invest_theory, 8).tolist())
@@ -134,9 +136,12 @@ class TestOneInvest(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
-                       f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
-                       f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift',
+                                                                                    'Electrolysis.AWE'],
+                       f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing',
+                                                                              'flue_gas_capture.CalciumLooping'],
+                       f'{self.name}.CCUS.carbon_storage.technologies_list': ['DeepSalineFormation',
+                                                                              'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
                        f'{self.name}.{GlossaryEnergy.EnergyInvestmentsValue}': self.energy_investment}
 
@@ -179,9 +184,12 @@ class TestOneInvest(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.electricity.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
-                       f'{self.name}.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing', 'flue_gas_capture.CalciumLooping'],
-                       f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
+                       f'{self.name}.hydrogen.gaseous_hydrogen.technologies_list': ['WaterGasShift',
+                                                                                    'Electrolysis.AWE'],
+                       f'{self.name}.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing',
+                                                                         'flue_gas_capture.CalciumLooping'],
+                       f'{self.name}.carbon_storage.technologies_list': ['DeepSalineFormation',
+                                                                         'GeologicMineralization'],
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
                        f'{self.name}.{GlossaryEnergy.EnergyInvestmentsValue}': self.energy_investment}
 
@@ -190,20 +198,22 @@ class TestOneInvest(unittest.TestCase):
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         all_technos_list = [
-            f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
+            f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
 
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{GlossaryEnergy.EnergyInvestmentsValue}',
-                                                                          f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}'],
+        succeed = disc.check_jacobian(derr_approx='complex_step',
+                                      inputs=[f'{self.name}.{GlossaryEnergy.EnergyInvestmentsValue}',
+                                              f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}'],
                                       outputs=[
-            f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in all_technos_list], input_data=disc.local_data,
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                               f'jacobian_all_invest_disc.pkl'))
+                                          f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
+                                          all_technos_list], input_data=disc.local_data,
+                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                                         f'jacobian_all_invest_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient")
 
 
 if '__main__' == __name__:
-
     cls = TestOneInvest()
     cls.setUp()
     cls.test_01_one_invest_model()

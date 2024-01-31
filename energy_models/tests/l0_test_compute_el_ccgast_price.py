@@ -61,7 +61,7 @@ class CCGasTPriceTestCase(unittest.TestCase):
         # co2_taxes = [0.01486, 0.01722, 0.02027,
         #             0.02901,  0.03405,   0.03908,  0.04469,   0.05029]
         co2_taxes = [0, 0, 0,
-                     0,  0,   0,  0,   0]
+                     0, 0, 0, 0, 0]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -104,7 +104,7 @@ class CCGasTPriceTestCase(unittest.TestCase):
             GlossaryEnergy.Years: years,
             GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
         })
-        
+
         inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YeartStartDefault,
                        GlossaryEnergy.YearEnd: 2050,
                        GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
@@ -112,7 +112,7 @@ class CCGasTPriceTestCase(unittest.TestCase):
                        GlossaryEnergy.InvestLevelValue: self.invest_level_2,
                        GlossaryEnergy.InvestmentBeforeYearStartValue: CombinedCycleGasTurbineDiscipline.invest_before_year_start,
                        GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.MarginValue:  self.margin,
+                       GlossaryEnergy.MarginValue: self.margin,
                        GlossaryEnergy.TransportCostValue: self.transport,
                        GlossaryEnergy.TransportMarginValue: self.margin,
                        GlossaryEnergy.ResourcesPriceValue: self.resources_price,
@@ -120,7 +120,8 @@ class CCGasTPriceTestCase(unittest.TestCase):
                        'initial_production': CombinedCycleGasTurbineDiscipline.initial_production,
                        'initial_age_distrib': CombinedCycleGasTurbineDiscipline.initial_age_distribution,
                        GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -185,7 +186,7 @@ class CCGasTPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -206,6 +207,8 @@ class CCGasTPriceTestCase(unittest.TestCase):
                                     'full_load_hours'] / 1000 * 0.999))
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
+
+
 #         for graph in graph_list:
 #             graph.to_plotly().show()
 if __name__ == "__main__":

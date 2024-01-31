@@ -77,23 +77,27 @@ class Methanation(MethaneTechno):
         """
 
         # compute CH4 production in kWh
-        
 
         # kg of H2O produced with 1kWh of CH4
         H2Oprod = self.get_h2o_production()
 
         # total H2O production
-        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * \
+        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = self.production_detailed[
+                                                                           f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                        H2Oprod
 
         # Consumption
         self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['dioxide_needs'] * \
-                                                                                self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                self.production_detailed[
+                                                                                    f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                 self.cost_details['efficiency']
 
-        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details['hydrogen_needs'] * \
-                                                                                            self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                                            self.cost_details['efficiency']
+        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                                'hydrogen_needs'] * \
+                                                                                            self.production_detailed[
+                                                                                                f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                            self.cost_details[
+                                                                                                'efficiency']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
@@ -101,8 +105,8 @@ class Methanation(MethaneTechno):
         '''
 
         self.carbon_intensity[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
-                                                           self.cost_details['hydrogen_needs'] / \
-                                                           self.cost_details['efficiency']
+                                                      self.cost_details['hydrogen_needs'] / \
+                                                      self.cost_details['efficiency']
         self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[f'{CO2.name}'] * \
                                                self.cost_details['dioxide_needs'] / \
                                                self.cost_details['efficiency']
@@ -119,9 +123,9 @@ class Methanation(MethaneTechno):
         mol_CH4 = 1.0
         water_data = Water.data_energy_dict
         production_for_1kg = mol_H20 * \
-            water_data['molar_mass'] / \
-            (mol_CH4 * self.data_energy_dict['molar_mass']
-             * self.data_energy_dict['calorific_value'])
+                             water_data['molar_mass'] / \
+                             (mol_CH4 * self.data_energy_dict['molar_mass']
+                              * self.data_energy_dict['calorific_value'])
 
         return production_for_1kg
 
@@ -136,8 +140,8 @@ class Methanation(MethaneTechno):
         mol_CH4 = 1.0
         h2_data = GaseousHydrogen.data_energy_dict
         h2_needs = mol_H2 * h2_data['molar_mass'] * h2_data['calorific_value'] / \
-            (mol_CH4 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                   (mol_CH4 * self.data_energy_dict['molar_mass'] *
+                    self.data_energy_dict['calorific_value'])
 
         return h2_needs
 
@@ -152,8 +156,8 @@ class Methanation(MethaneTechno):
         mol_CH4 = 1.0
         co2_data = CO2.data_energy_dict
         co2_needs = mol_CO2 * co2_data['molar_mass'] / \
-            (mol_CH4 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                    (mol_CH4 * self.data_energy_dict['molar_mass'] *
+                     self.data_energy_dict['calorific_value'])
 
         return co2_needs
 

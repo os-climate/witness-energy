@@ -111,7 +111,7 @@ class CarbonCapture(BaseStream):
                     f'{self.name} {element} ({self.unit})'].values
 
         diff_flue_gas = self.flue_gas_production - \
-            carbon_captured_type['flue gas'].values
+                        carbon_captured_type['flue gas'].values
 
         # Means that we capture more flue gas than available
         if min(diff_flue_gas.real) < 0:
@@ -119,13 +119,14 @@ class CarbonCapture(BaseStream):
                 self.flue_gas_production = self.flue_gas_production.astype(
                     carbon_captured_type['flue gas'].values.dtype)
             fg_ratio = np.divide(
-                self.flue_gas_production, carbon_captured_type['flue gas'].values, where=carbon_captured_type['flue gas'].values != 0.0, out=np.zeros_like(self.flue_gas_production))
+                self.flue_gas_production, carbon_captured_type['flue gas'].values,
+                where=carbon_captured_type['flue gas'].values != 0.0, out=np.zeros_like(self.flue_gas_production))
             flue_gas_percentage = self.compute_flue_gas_with_exp_min(
                 fg_ratio)
             carbon_captured_type['flue gas limited'] = carbon_captured_type['flue gas'] * \
-                flue_gas_percentage
+                                                       flue_gas_percentage
             production[f'{self.name}'] = carbon_captured_type['flue gas limited'] + \
-                carbon_captured_type['DAC']
+                                         carbon_captured_type['DAC']
 
         else:
             carbon_captured_type['flue gas limited'] = carbon_captured_type['flue gas']
@@ -137,7 +138,8 @@ class CarbonCapture(BaseStream):
             else:
                 factor = 1.0
             production_by_techno[f'{self.name} {element} ({self.unit})'] = sub_production_dict[
-                element][f'{self.name} ({self.unit})'].values * factor
+                                                                               element][
+                                                                               f'{self.name} ({self.unit})'].values * factor
             production, consumption = self.compute_other_consumption_production(
                 element, sub_production_dict, sub_consumption_dict, production, consumption, factor=factor)
         return production, consumption, production_by_techno, carbon_captured_type, flue_gas_percentage, fg_ratio
@@ -176,7 +178,7 @@ class CarbonCapture(BaseStream):
             for column_df in element_columns:
                 if column_df.startswith('flue_gas_capture') and self.flue_gas_percentage is not None:
                     self.land_use_required[column_df] = element[column_df] * \
-                        self.flue_gas_percentage
+                                                        self.flue_gas_percentage
                 else:
                     self.land_use_required[column_df] = element[column_df]
 
@@ -233,19 +235,19 @@ class CarbonCapture(BaseStream):
             dfluegas = self.compute_dflue_gas_with_exp_min(
                 self.fg_ratio)
             dfg_ratio = -1.0 * self.flue_gas_production / \
-                (self.carbon_captured_type['flue gas'].values)**2
+                        (self.carbon_captured_type['flue gas'].values) ** 2
             dfg_ratio_dfg_prod = 1.0 / \
-                self.carbon_captured_type['flue gas'].values
+                                 self.carbon_captured_type['flue gas'].values
         grad_element_mix_vs_prod = {}
 
         for element in elements_dict.keys():
 
             grad_element_mix_vs_prod[f'{element}'] = dprod_element_dict[element] * (
-                prod_total_for_mix_weight - prod_element_dict[element]) / prod_total_for_mix_weight**2
+                    prod_total_for_mix_weight - prod_element_dict[element]) / prod_total_for_mix_weight ** 2
 
             if self.flue_gas_percentage is not None:
                 if element.startswith('flue_gas_capture'):
-                    #(fexpp(fg_ratio) + prod1*f'expp(fg_ratio)*dfg_ratio
+                    # (fexpp(fg_ratio) + prod1*f'expp(fg_ratio)*dfg_ratio
                     prodi = self.sub_production_dict[element][
                         f'{self.name} ({self.unit})'].values
                     ratio_on_old = self.flue_gas_percentage + prodi * dfluegas * dfg_ratio
@@ -256,7 +258,7 @@ class CarbonCapture(BaseStream):
                     # dtechno_mix/dflue gas prod = dpi/ptot -pidpj/ptot**2 for j in flue gas capture
                     # first we add  dpi/ptot only if  if i in flue gas capture
                     grad_element_mix_vs_prod[f'fg_prod {element}'] = dprod_element_dict[element] * \
-                        prodi * dfluegas * dfg_ratio_dfg_prod / prod_total_for_mix_weight
+                                                                     prodi * dfluegas * dfg_ratio_dfg_prod / prod_total_for_mix_weight
                 else:
                     grad_element_mix_vs_prod[f'fg_prod {element}'] = np.zeros(
                         len(dfg_ratio_dfg_prod))
@@ -270,54 +272,56 @@ class CarbonCapture(BaseStream):
                     prodj = self.sub_production_dict[element_other][
                         f'{self.name} ({self.unit})'].values
                     grad_element_mix_vs_prod[f'fg_prod {element}'] -= dprod_element_dict[element_other] * prodj * \
-                        dfluegas * dfg_ratio_dfg_prod * \
-                        prod_element_dict[element] / \
-                        prod_total_for_mix_weight**2
+                                                                      dfluegas * dfg_ratio_dfg_prod * \
+                                                                      prod_element_dict[element] / \
+                                                                      prod_total_for_mix_weight ** 2
                 if element_other != element:
                     # dtechno_mix(p2)/dprod1 = -p2dp1/ptot**2
                     grad_element_mix_vs_prod[f'{element} {element_other}'] = -dprod_element_dict[element] * \
-                        prod_element_dict[element_other] / \
-                        prod_total_for_mix_weight**2
+                                                                             prod_element_dict[element_other] / \
+                                                                             prod_total_for_mix_weight ** 2
 
                     if element.startswith('flue_gas_capture') and self.flue_gas_percentage is not None:
 
-                        #(fexpp(fg_ratio) + prod1*f'expp(fg_ratio)*dfg_ratio
+                        # (fexpp(fg_ratio) + prod1*f'expp(fg_ratio)*dfg_ratio
                         prodi = self.sub_production_dict[element][
                             f'{self.name} ({self.unit})'].values
                         ratio_on_old = self.flue_gas_percentage + prodi * dfluegas * dfg_ratio
 
                         grad_element_mix_vs_prod[f'{element} {element_other}'] = grad_element_mix_vs_prod[
-                            f'{element} {element_other}'] * ratio_on_old
+                                                                                     f'{element} {element_other}'] * ratio_on_old
 
                         for element_bis in elements_dict:
-                            if element_bis not in [element, element_other] and element_bis.startswith('flue_gas_capture'):
+                            if element_bis not in [element, element_other] and element_bis.startswith(
+                                    'flue_gas_capture'):
                                 prodk = self.sub_production_dict[element_bis][
                                     f'{self.name} ({self.unit})'].values
                                 # dp2 = f'exp(pbis2)*prod2*dfluegas*dfg_ratio
                                 dp2 = dprod_element_dict[element_bis] * \
-                                    prodk * dfg_ratio * dfluegas
+                                      prodk * dfg_ratio * dfluegas
                                 new_grad = dp2 * prod_element_dict[element_other] / \
-                                    prod_total_for_mix_weight**2
+                                           prod_total_for_mix_weight ** 2
                                 grad_element_mix_vs_prod[f'{element} {element_other}'] = grad_element_mix_vs_prod[
-                                    f'{element} {element_other}'] - new_grad
+                                                                                             f'{element} {element_other}'] - new_grad
 
                     # dp2p1/ptot**2
                     # if more than one other flue gas disc then dp2 = sum(dpi)
-                    if element_other.startswith('flue_gas_capture') and element.startswith('flue_gas_capture') and self.flue_gas_percentage is not None:
+                    if element_other.startswith('flue_gas_capture') and element.startswith(
+                            'flue_gas_capture') and self.flue_gas_percentage is not None:
                         # for dpi/dpi
                         prodj = self.sub_production_dict[element_other][
                             f'{self.name} ({self.unit})'].values
                         # dp2 = f'exp(pbis2)*prod2*dfluegas*dfg_ratio
                         dp2 = dprod_element_dict[element_other] * \
-                            prodj * dfg_ratio * dfluegas
+                              prodj * dfg_ratio * dfluegas
                         new_grad = dp2 * prod_element_dict[element] / \
-                            prod_total_for_mix_weight**2
+                                   prod_total_for_mix_weight ** 2
                         grad_element_mix_vs_prod[f'{element}'] = grad_element_mix_vs_prod[f'{element}'] - new_grad
 
                         # for dpi/dpj
                         # p2dp2/ptot**2
                         new_grad = dp2 * (prod_total_for_mix_weight - prod_element_dict[element_other]) / \
-                            prod_total_for_mix_weight**2
+                                   prod_total_for_mix_weight ** 2
                         grad_element_mix_vs_prod[f'{element} {element_other}'] = grad_element_mix_vs_prod[
-                            f'{element} {element_other}'] + new_grad
+                                                                                     f'{element} {element_other}'] + new_grad
         return grad_element_mix_vs_prod

@@ -44,21 +44,19 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         self.cost_details['water_needs'] = self.get_water_needs()
 
         self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'] = self.get_theoretical_platinum_needs()
-        
-
-        
 
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
-            self.prices[Electricity.name]
+                                              self.prices[Electricity.name]
 
         # Cost of water for 1 kWH of H2
         self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details['water_needs']
                                              )
 
         self.cost_details[self.PLATINUM_RESOURCE_NAME] = list(self.resources_prices[self.PLATINUM_RESOURCE_NAME] *
-                                                    self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'])
+                                                              self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'])
 
-        return self.cost_details[Electricity.name] + self.cost_details[Water.name] + self.cost_details[self.PLATINUM_RESOURCE_NAME]
+        return self.cost_details[Electricity.name] + self.cost_details[Water.name] + self.cost_details[
+            self.PLATINUM_RESOURCE_NAME]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -78,7 +76,7 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         platinum_needs = self.get_theoretical_platinum_needs()
         return {
             Water.name: np.identity(len(self.years)) * water_needs,
-            self.PLATINUM_RESOURCE_NAME:  np.identity(len(self.years)) * platinum_needs
+            self.PLATINUM_RESOURCE_NAME: np.identity(len(self.years)) * platinum_needs
         }
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -94,7 +92,8 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         self.carbon_intensity[self.PLATINUM_RESOURCE_NAME] = self.resources_CO2_emissions[self.PLATINUM_RESOURCE_NAME] * \
                                                              self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs']
 
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Water.name] + self.carbon_intensity[self.PLATINUM_RESOURCE_NAME]
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Water.name] + self.carbon_intensity[
+            self.PLATINUM_RESOURCE_NAME]
 
     def get_water_needs(self):
         ''' 
@@ -107,8 +106,8 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         mol_H2 = 1.0
         water_data = Water.data_energy_dict
         water_needs = mol_H20 * water_data['molar_mass'] / \
-            (mol_H2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                      (mol_H2 * self.data_energy_dict['molar_mass'] *
+                       self.data_energy_dict['calorific_value'])
 
         return water_needs
 
@@ -123,8 +122,8 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         mol_H2 = 2.0
         oxygen_data = Dioxygen.data_energy_dict
         oxygen_needs = mol_O2 * oxygen_data['molar_mass'] / \
-            (mol_H2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                       (mol_H2 * self.data_energy_dict['molar_mass'] *
+                        self.data_energy_dict['calorific_value'])
 
         return oxygen_needs
 
@@ -137,7 +136,8 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
 
         Need to convert in kg/kWh ~ Mt/TWh
         """
-        platinum_needs = self.techno_infos_dict['platinum_needs'] /1000 /self.techno_infos_dict['full_load_hours']  # kg of platinum needed for 1 kWh of H2
+        platinum_needs = self.techno_infos_dict['platinum_needs'] / 1000 / self.techno_infos_dict[
+            'full_load_hours']  # kg of platinum needed for 1 kWh of H2
 
         return platinum_needs
 
@@ -147,22 +147,26 @@ class ElectrolysisPEM(GaseousHydrogenTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
         o2_needs = self.get_oxygen_produced()
         self.production_detailed[f'O2 ({self.mass_unit})'] = o2_needs / \
                                                              self.data_energy_dict['calorific_value'] * \
-                                                             self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+                                                             self.production_detailed[
+                                                                 f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            'elec_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in TWH
 
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
-                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in Mt
-        
-        self.consumption_detailed[f'{self.PLATINUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[f'{self.PLATINUM_RESOURCE_NAME}_needs'] * \
-                                                                                         self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] # in Mt
+                                                                        self.production_detailed[
+                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in Mt
+
+        self.consumption_detailed[f'{self.PLATINUM_RESOURCE_NAME} ({self.mass_unit})'] = self.cost_details[
+                                                                                             f'{self.PLATINUM_RESOURCE_NAME}_needs'] * \
+                                                                                         self.production_detailed[
+                                                                                             f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in Mt
 
         # Production
         # self.production[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \

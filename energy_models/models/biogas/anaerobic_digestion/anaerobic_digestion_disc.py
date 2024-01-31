@@ -24,7 +24,6 @@ from energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion import 
 
 
 class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Biogas Anaerobic Digestion Model',
@@ -66,7 +65,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                  # (Mbtu/kWh = 1/293)
                                  'Capex_init': 6.9 / 293.,
                                  'Capex_init_unit': '$/kWh',
-                                 'learning_rate':  0.2,  # not found
+                                 'learning_rate': 0.2,  # not found
                                  # move from medium to large digester to
                                  # decrease capex
                                  'maximum_learning_capex_ratio': 5.2 / 6.9,
@@ -89,8 +88,10 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
     # Age distribution can be computed with
     # http://task37.ieabioenergy.com/plant-list.html
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [10.12312, 10.12312, 10.12312, 7.113543, 7.113543, 12.9959, 7.387141, 7.387141, 3.556772,
-                                                         5.471956, 4.514364, 4.651163, 2.599179, 2.599179, 1.094391,  0.820793,  0.820793, 0.820793, 0.683994528
+                                             'distrib': [10.12312, 10.12312, 10.12312, 7.113543, 7.113543, 12.9959,
+                                                         7.387141, 7.387141, 3.556772,
+                                                         5.471956, 4.514364, 4.651163, 2.599179, 2.599179, 1.094391,
+                                                         0.820793, 0.820793, 0.820793, 0.683994528
                                                          ]})  # to review
     # Source for initial production: IEA 2022, Outlook for biogas and biomethane: Prospects for organic growth,
     # https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth
@@ -105,10 +106,12 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     DESC_IN.update(BiogasTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this

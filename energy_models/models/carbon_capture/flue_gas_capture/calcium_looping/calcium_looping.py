@@ -26,8 +26,9 @@ class CalciumLooping(CCTechno):
     def configure_parameters_update(self, inputs_dict):
 
         CCTechno.configure_parameters_update(self, inputs_dict)
-        self.flue_gas_ratio = inputs_dict[GlossaryEnergy.FlueGasMean].loc[inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.Years]
-                                                               <= self.year_end]
+        self.flue_gas_ratio = inputs_dict[GlossaryEnergy.FlueGasMean].loc[
+            inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.Years]
+            <= self.year_end]
         # To deal quickly with l0 test
         if 'fg_ratio_effect' in inputs_dict:
             self.fg_ratio_effect = inputs_dict['fg_ratio_effect']
@@ -55,27 +56,27 @@ class CalciumLooping(CCTechno):
         elec_needs = self.get_electricity_needs()
         heat_needs = self.get_heat_needs()
         efficiency = self.configure_efficiency()
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency * self.compute_electricity_variation_from_fg_ratio(
+        return {Electricity.name: np.identity(
+            len(self.years)) * elec_needs / efficiency * self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)}
 
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
-
+                                                                                self.production_detailed[
+                                                                                    f'{CCTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from Methane and electricity consumption
         '''
 
-
-        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs'] * self.compute_electricity_variation_from_fg_ratio(
+        self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details[
+            'elec_needs'] * self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
         return self.carbon_intensity[Electricity.name] - 1.0

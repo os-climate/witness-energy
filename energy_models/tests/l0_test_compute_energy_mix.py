@@ -197,12 +197,12 @@ class EnergyMixTestCase(unittest.TestCase):
                                                  2.08108035e+12, 2.13243727e+12, 2.17878808e+12, 2.22015293e+12,
                                                  2.25652610e+12, 2.29084262e+12, 2.32330155e+12]) / 1.0e9,
              GlossaryEnergy.InvestValue: np.array([8.87150e+09, 9.04400e+09, 9.21650e+09, 9.38900e+09, 9.56150e+09,
-                                 9.73400e+09, 9.93880e+09, 1.01436e+10, 1.03484e+10, 1.05532e+10,
-                                 1.07580e+10, 1.07294e+10, 1.07008e+10, 1.06722e+10, 1.06436e+10,
-                                 1.06150e+10, 1.05864e+10, 1.05578e+10, 1.05292e+10, 1.05006e+10,
-                                 1.04720e+10, 1.04434e+10, 1.04148e+10, 1.03862e+10, 1.03576e+10,
-                                 1.03290e+10, 1.03004e+10, 1.02718e+10, 1.02432e+10, 1.02146e+10,
-                                 1.01860e+10]) / 1.0e9,
+                                                   9.73400e+09, 9.93880e+09, 1.01436e+10, 1.03484e+10, 1.05532e+10,
+                                                   1.07580e+10, 1.07294e+10, 1.07008e+10, 1.06722e+10, 1.06436e+10,
+                                                   1.06150e+10, 1.05864e+10, 1.05578e+10, 1.05292e+10, 1.05006e+10,
+                                                   1.04720e+10, 1.04434e+10, 1.04148e+10, 1.03862e+10, 1.03576e+10,
+                                                   1.03290e+10, 1.03004e+10, 1.02718e+10, 1.02432e+10, 1.02146e+10,
+                                                   1.01860e+10]) / 1.0e9,
              'water (Mt)': np.array([4.20719806e+08, 4.06156873e+08, 3.95985935e+08, 8.16878967e+09,
                                      1.80123301e+10, 2.94688458e+10, 4.22765332e+10, 5.63035194e+10,
                                      7.14664343e+10, 8.78039430e+10, 1.05270118e+11, 1.23829961e+11,
@@ -333,8 +333,10 @@ class EnergyMixTestCase(unittest.TestCase):
                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
                        f'hydrogen.gaseous_hydrogen.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
                            {GlossaryEnergy.Years: self.years, 'hydrogen.gaseous_hydrogen': 0.0}),
-                       'methane.CO2_per_use': pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
-                       f'methane.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame({GlossaryEnergy.Years: self.years, 'methane': 0.0}),
+                       'methane.CO2_per_use': pd.DataFrame(
+                           {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
+                       f'methane.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
+                           {GlossaryEnergy.Years: self.years, 'methane': 0.0}),
                        GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
                        'minimum_energy_production': self.minimum_energy_production,
                        'total_prod_minus_min_prod_constraint_ref': self.total_prod_minus_min_prod_constraint_ref,
@@ -536,7 +538,7 @@ class EnergyMixTestCase(unittest.TestCase):
             disc, filters, as_json=False)
         for graph in graph_list:
             pass
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
 
     def test_04_energy_mix_resource(self):
         """

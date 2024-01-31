@@ -26,7 +26,6 @@ from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shi
 
 
 class RWGSDiscipline(SyngasTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Reversed Water Gas Shift Model',
@@ -55,7 +54,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
                                  # less constant 6.6 MW for WGS over the 8.6
 
                                  'WACC': 0.0878,  # Weighted averaged cost of capital for the carbon capture plant
-                                 'learning_rate':  0.2,
+                                 'learning_rate': 0.2,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': GlossaryEnergy.Years,
                                  # Capex at table 3 and 8
@@ -76,7 +75,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
                                  # 144, pp.354-369.
                                  'full_load_hours': 8240,  # p357 rezaei2019
 
-                                 'efficiency':  0.75,  # pump + compressor efficiency Rezaei2019
+                                 'efficiency': 0.75,  # pump + compressor efficiency Rezaei2019
                                  'techno_evo_eff': 'no',  # yes or no
                                  GlossaryEnergy.ConstructionDelay: construction_delay}
 
@@ -90,31 +89,35 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
 
     # Fake initial age distrib (not found in the litterature...)
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': np.array([3.317804973859207, 6.975128305927281, 4.333201737255864,
-                                                                  3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
-                                                                  4.208448479896288, 2.7398341887870643, 5.228582707722979,
-                                                                  10.057639166085064, 0.0, 2.313462297352473, 6.2755625737595535,
-                                                                  5.609159099363739, 6.3782076592711885, 8.704303197679629,
-                                                                  6.1950256610618135, 3.7836557445596464, 1.7560205289962763,
-                                                                  ]) + 0.82141})
+                                             'distrib': np.array(
+                                                 [3.317804973859207, 6.975128305927281, 4.333201737255864,
+                                                  3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
+                                                  4.208448479896288, 2.7398341887870643, 5.228582707722979,
+                                                  10.057639166085064, 0.0, 2.313462297352473, 6.2755625737595535,
+                                                  5.609159099363739, 6.3782076592711885, 8.704303197679629,
+                                                  6.1950256610618135, 3.7836557445596464, 1.7560205289962763,
+                                                  ]) + 0.82141})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False},
                'syngas_ratio': {'type': 'array', 'unit': '%'},
                'needed_syngas_ratio': {'type': 'float', 'unit': '%'}
                }
     # -- add specific techno inputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
     DESC_OUT = TechnoDiscipline.DESC_OUT
+
     # -- add specific techno outputs to this
 
     def init_execution(self):
@@ -124,9 +127,7 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
         self.techno_model.configure_parameters(inputs_dict)
 
     def run(self):
-
         TechnoDiscipline.run(self)
-
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
@@ -150,44 +151,52 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
         margin = self.techno_model.margin[GlossaryEnergy.MarginValue].values
         # now syngas is in % grad is divided by 100
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, 'syngas_needs'),  ('syngas_ratio',), np.identity(len(years)) * dsyngas_needs_dsyngas_ratio / 100.0)
+            (GlossaryEnergy.TechnoDetailedPricesValue, 'syngas_needs'), ('syngas_ratio',),
+            np.identity(len(years)) * dsyngas_needs_dsyngas_ratio / 100.0)
 
         # now syngas is in % grad is divided by 100
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, 'elec_needs'),  ('syngas_ratio',), -np.identity(
+            (GlossaryEnergy.TechnoDetailedPricesValue, 'elec_needs'), ('syngas_ratio',), -np.identity(
                 len(years)) * self.techno_model.slope_elec_demand / 100.0)
 
         dprice_techno_dsyngas_ratio = self.techno_model.compute_drwgs_dsyngas_ratio()
         # now syngas is in % grad is divided by 100
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}'),  ('syngas_ratio',), dprice_techno_dsyngas_ratio * np.split(margin, len(margin)) / 100.0 / 100.0)
+            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}'), ('syngas_ratio',),
+            dprice_techno_dsyngas_ratio * np.split(margin, len(margin)) / 100.0 / 100.0)
 
         dprice_techno_dsyngas_ratio_wo_taxes = self.techno_model.compute_drwgs_dsyngas_ratio_wo_taxes()
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),  ('syngas_ratio',), dprice_techno_dsyngas_ratio_wo_taxes * np.split(margin, len(margin)) / 100.0 / 100.0)
+            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'), ('syngas_ratio',),
+            dprice_techno_dsyngas_ratio_wo_taxes * np.split(margin, len(margin)) / 100.0 / 100.0)
 
         dprice_techno_wotaxes_dsyngas_ratio = self.techno_model.compute_drwgs_dsyngas_ratio()
         # now syngas is in % grad is divided by 100
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),  ('syngas_ratio',), dprice_techno_wotaxes_dsyngas_ratio * np.split(margin, len(margin)) / 100.0 / 100.0)
+            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'), ('syngas_ratio',),
+            dprice_techno_wotaxes_dsyngas_ratio * np.split(margin, len(margin)) / 100.0 / 100.0)
         # now syngas is in % grad is divided by 100
         drwgs_factory_dsyngas_ratio = self.techno_model.compute_drwgs_factory_dsyngas_ratio()
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, f'{self.techno_name}_factory'),  ('syngas_ratio',), drwgs_factory_dsyngas_ratio / 100.0)
+            (GlossaryEnergy.TechnoDetailedPricesValue, f'{self.techno_name}_factory'), ('syngas_ratio',),
+            drwgs_factory_dsyngas_ratio / 100.0)
         # now syngas is in % grad is divided by 100
         dprice_CO2 = self.techno_model.compute_dco2_needs_dsyngas_ratio()
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, 'CO2_needs'),  ('syngas_ratio',), np.identity(len(years)) * dprice_CO2 / 100.0)
+            (GlossaryEnergy.TechnoDetailedPricesValue, 'CO2_needs'), ('syngas_ratio',),
+            np.identity(len(years)) * dprice_CO2 / 100.0)
 
-#         self.set_partial_derivative_for_other_types(
-#             (GlossaryEnergy.CO2EmissionsValue, 'production'),  ('syngas_ratio',), np.zeros(len(years),))
+        #         self.set_partial_derivative_for_other_types(
+        #             (GlossaryEnergy.CO2EmissionsValue, 'production'),  ('syngas_ratio',), np.zeros(len(years),))
 
         capex = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)[
             f'Capex_{self.techno_name}'].values
 
         capex_grad = self.techno_model.compute_dcapex_dsyngas_ratio()
         dprodenergy_dsyngas_ratio = self.techno_model.compute_dprod_dsyngas_ratio(
-            capex, inputs_dict[GlossaryEnergy.InvestLevelValue][GlossaryEnergy.InvestValue].values, inputs_dict[GlossaryEnergy.InvestmentBeforeYearStartValue][GlossaryEnergy.InvestValue].values, inputs_dict['techno_infos_dict'], capex_grad)
+            capex, inputs_dict[GlossaryEnergy.InvestLevelValue][GlossaryEnergy.InvestValue].values,
+            inputs_dict[GlossaryEnergy.InvestmentBeforeYearStartValue][GlossaryEnergy.InvestValue].values,
+            inputs_dict['techno_infos_dict'], capex_grad)
         prod_energy = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoProductionValue)['syngas (TWh)'].to_numpy()
 
@@ -204,36 +213,43 @@ class RWGSDiscipline(SyngasTechnoDiscipline):
             'scaling_factor_techno_production')
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.CO2EmissionsValue, 'ReversedWaterGasShift'),  ('syngas_ratio',), np.identity(len(years)) / 100.0 * (dco2_emissions_dsyngas_ratio.to_numpy() +
-                                                                                                               dcons_syngas_dsyngas_ratio) / efficiency[:, np.newaxis]
+            (GlossaryEnergy.CO2EmissionsValue, 'ReversedWaterGasShift'), ('syngas_ratio',),
+            np.identity(len(years)) / 100.0 * (dco2_emissions_dsyngas_ratio.to_numpy() +
+                                               dcons_syngas_dsyngas_ratio) / efficiency[:, np.newaxis]
             + dcons_electricity_dsyngas_ratio)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoDetailedPricesValue, f'Capex_{self.techno_name}'),  ('syngas_ratio',), capex_grad / 100.0)
+            (GlossaryEnergy.TechnoDetailedPricesValue, f'Capex_{self.techno_name}'), ('syngas_ratio',),
+            capex_grad / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue, 'syngas (TWh)'),  ('syngas_ratio',), dprodenergy_dsyngas_ratio / 100.0 / scaling_factor_techno_production)
+            (GlossaryEnergy.TechnoProductionValue, 'syngas (TWh)'), ('syngas_ratio',),
+            dprodenergy_dsyngas_ratio / 100.0 / scaling_factor_techno_production)
 
         dwater_prod_dsyngas_ratio = self.techno_model.compute_dprod_water_dsyngas_ratio(
             dprodenergy_dsyngas_ratio, prod_energy)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoProductionValue, f"{ResourceGlossary.Water['name']} (Mt)"),  ('syngas_ratio',), dwater_prod_dsyngas_ratio / 100.0 / scaling_factor_techno_production)
+            (GlossaryEnergy.TechnoProductionValue, f"{ResourceGlossary.Water['name']} (Mt)"), ('syngas_ratio',),
+            dwater_prod_dsyngas_ratio / 100.0 / scaling_factor_techno_production)
 
         dcons_electricity_dsyngas_ratio = self.techno_model.compute_dcons_electricity_dsyngas_ratio(
             dprodenergy_dsyngas_ratio, prod_energy)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionValue, 'electricity (TWh)'),  ('syngas_ratio',), dcons_electricity_dsyngas_ratio / 100.0 / scaling_factor_techno_consumption)
+            (GlossaryEnergy.TechnoConsumptionValue, 'electricity (TWh)'), ('syngas_ratio',),
+            dcons_electricity_dsyngas_ratio / 100.0 / scaling_factor_techno_consumption)
 
         dcons_syngas_dsyngas_ratio = self.techno_model.compute_dcons_syngas_dsyngas_ratio(
             dprodenergy_dsyngas_ratio, prod_energy)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionValue, 'syngas (TWh)'),  ('syngas_ratio',), dcons_syngas_dsyngas_ratio / 100.0 / scaling_factor_techno_consumption)
+            (GlossaryEnergy.TechnoConsumptionValue, 'syngas (TWh)'), ('syngas_ratio',),
+            dcons_syngas_dsyngas_ratio / 100.0 / scaling_factor_techno_consumption)
 
         dcons_co2_dsyngas_ratio = self.techno_model.compute_dcons_co2_dsyngas_ratio(
             dprodenergy_dsyngas_ratio, prod_energy)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoConsumptionValue, 'carbon_capture (Mt)'),  ('syngas_ratio',), dcons_co2_dsyngas_ratio / 100.0 / scaling_factor_techno_consumption)
+            (GlossaryEnergy.TechnoConsumptionValue, 'carbon_capture (Mt)'), ('syngas_ratio',),
+            dcons_co2_dsyngas_ratio / 100.0 / scaling_factor_techno_consumption)

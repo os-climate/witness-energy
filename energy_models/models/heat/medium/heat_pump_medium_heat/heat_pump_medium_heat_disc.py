@@ -26,7 +26,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 
 class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Heat Pump Medium Heat Model',
@@ -44,7 +43,7 @@ class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     techno_name = 'HeatPumpMediumHeat'
     energy_name = mediumtemperatureheat.name
 
-    lifetime = 25           # years # https://www.energy.gov/energysaver/heat-pump-systems
+    lifetime = 25  # years # https://www.energy.gov/energysaver/heat-pump-systems
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.
     # Heat pump can reduce your electricity use for heating by approximately 50% compared to
     # electric resistance heating such as furnaces and baseboard heaters.
@@ -56,14 +55,16 @@ class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     construction_delay = 1  # years
 
     techno_infos_dict_default = {
-        'Capex_init': 718/(25*8760), #660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        'Capex_init': 718 / (25 * 8760),
+        # 660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'Capex_init_unit': '$/kWh',
-        'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        'Opex_percentage': 0.04,
+        ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
         GlossaryEnergy.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryEnergy.Years,
-        'efficiency': 1,    # consumptions and productions already have efficiency included
+        'efficiency': 1,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
         # 'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
@@ -72,27 +73,27 @@ class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         # 'heating_space_unit': 'm^2',
         # 'heat_required_per_meter_square': 0.00879, #https://carbonswitch.com/heat-pump-sizing-guide/#:~:text=If%20you%20Google%20%E2%80%9Cheat%20pump,a%2060%2C000%20BTU%20heat%20pump.
         # 'heat_required_per_meter_square_unit': 'kW/m^2',
-        #'maturity': 5,
+        # 'maturity': 5,
         'learning_rate': 0.00,
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
-        'output_temperature': 250, # Average Medium Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
+        'output_temperature': 250,
+        # Average Medium Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
         'mean_temperature': 20,
         'output_temperature_unit': '°C',
         'mean_temperature_unit': '°C',
     }
 
-
     # heat_pump_high_heat Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
     # in TWh
-    initial_production = 1*8760/3 # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
+    initial_production = 1 * 8760 / 3  # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
 
     distrib = [9.677419355, 7.52688172, 0,
                5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
-               13.97849462, 9.677419355,   7.52688172,   1.075268817,
-               2.150537634,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0]
+               13.97849462, 9.677419355, 7.52688172, 1.075268817,
+               2.150537634, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
@@ -100,19 +101,22 @@ class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     # Renewable Fuels Association [online]
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), GlossaryEnergy.InvestValue: 0 * np.array([(1*8760*0.5*0.5/3)])}) # Invest before year start is 0
+        {'past years': np.array(-construction_delay),
+         GlossaryEnergy.InvestValue: 0 * np.array([(1 * 8760 * 0.5 * 0.5 / 3)])})  # Invest before year start is 0
     flux_input_dict = {'land_rate': 14000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False},
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
     DESC_IN.update(MediumHeatTechnoDiscipline.DESC_IN)
@@ -131,9 +135,10 @@ class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
 
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',
-                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], True),
-                                                                 'heat_flux': ('float', [1.e-8, 1e30], True),
-                                                                 },
+                                        'dataframe_descriptor': {
+                                            GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], True),
+                                            'heat_flux': ('float', [1.e-8, 1e30], True),
+                                            },
                                         }
 
         self.add_outputs(dynamic_outputs)
@@ -185,7 +190,7 @@ class HeatPumpMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         """
         instanciated_charts = super().get_post_processing_list(filters)
         charts = []
-        
+
         if filters is not None:
             for chart_filter in filters:
                 if chart_filter.filter_key == 'charts':

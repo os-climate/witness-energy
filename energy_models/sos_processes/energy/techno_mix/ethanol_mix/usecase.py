@@ -31,10 +31,12 @@ TECHNOLOGIES_LIST_DEV = ['BiomassFermentation']
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST, bspline=True,  main_study=True, execution_engine=None,
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1,
+                 technologies_list=TECHNOLOGIES_LIST, bspline=True, main_study=True, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT, run_usecase=False):
         super().__init__(__file__, technologies_list=technologies_list,
-                         main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline, run_usecase=run_usecase)
+                         main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline,
+                         run_usecase=run_usecase)
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
@@ -68,9 +70,9 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'electricity': 10.0,
-                                           'syngas': 80.0,
-                                           'biomass_dry': 45.0})
+                                      'electricity': 10.0,
+                                      'syngas': 80.0,
+                                      'biomass_dry': 45.0})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -78,7 +80,7 @@ class Study(EnergyMixStudyManager):
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -123,8 +125,12 @@ class Study(EnergyMixStudyManager):
                     columns=[GlossaryEnergy.Years]).sum(axis=1)
                 for techno in self.technologies_list:
                     invest_level_techno = pd.DataFrame({GlossaryEnergy.Years: invest_level[GlossaryEnergy.Years].values,
-                                                        GlossaryEnergy.InvestValue: invest_level[GlossaryEnergy.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
-                    values_dict[f'{self.study_name}.{energy_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
+                                                        GlossaryEnergy.InvestValue: invest_level[
+                                                                                        GlossaryEnergy.InvestValue].values *
+                                                                                    investment_mix[
+                                                                                        techno].values / investment_mix_sum})
+                    values_dict[
+                        f'{self.study_name}.{energy_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
             else:
                 values_dict[f'{self.study_name}.{energy_name}.{GlossaryEnergy.InvestLevelValue}'] = invest_level
         else:

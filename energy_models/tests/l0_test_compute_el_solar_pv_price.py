@@ -55,7 +55,7 @@ class SolarPvPriceTestCase(unittest.TestCase):
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -99,7 +99,7 @@ class SolarPvPriceTestCase(unittest.TestCase):
             GlossaryEnergy.Years: years,
             GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
         })
-        
+
         inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YeartStartDefault,
                        GlossaryEnergy.YearEnd: 2050,
                        GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
@@ -107,7 +107,7 @@ class SolarPvPriceTestCase(unittest.TestCase):
                        GlossaryEnergy.InvestLevelValue: self.invest_level_2,
                        GlossaryEnergy.InvestmentBeforeYearStartValue: SolarPvDiscipline.invest_before_year_start,
                        GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.MarginValue:  self.margin,
+                       GlossaryEnergy.MarginValue: self.margin,
                        GlossaryEnergy.TransportCostValue: self.transport,
                        GlossaryEnergy.TransportMarginValue: self.margin,
                        GlossaryEnergy.ResourcesPriceValue: self.resources_price,
@@ -115,7 +115,8 @@ class SolarPvPriceTestCase(unittest.TestCase):
                        'initial_production': SolarPvDiscipline.initial_production,
                        'initial_age_distrib': SolarPvDiscipline.initial_age_distribution,
                        GlossaryEnergy.EnergyCO2EmissionsValue: pd.DataFrame(),
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -174,7 +175,7 @@ class SolarPvPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -189,7 +190,7 @@ class SolarPvPriceTestCase(unittest.TestCase):
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
             pass
 
         self.assertLessEqual(list(production_detailed['electricity (TWh)'].values),

@@ -58,7 +58,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
-        
+
         self.electrolysis_techno_prices = pd.DataFrame(
             {'Electrolysis': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                        0.089236536471781, 0.08899046935409588, 0.08874840310033885,
@@ -190,7 +190,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: years, 'PlasmaCracking': -0.243905, 'carbon storage': -0.327803, 'methane': 0.0,
              'electricity': 0.0, 'production': 0.0})
         self.smr_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'WaterGasShift': 0.366208, 'syngas': 0.0, 'electricity': 0.0, 'production': 0.366208})
+            {GlossaryEnergy.Years: years, 'WaterGasShift': 0.366208, 'syngas': 0.0, 'electricity': 0.0,
+             'production': 0.366208})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
                      0.02901, 0.03405, 0.03908, 0.04469, 0.05029]
@@ -272,16 +273,16 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.invest = pd.DataFrame({GlossaryEnergy.Years: years,
                                     GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
-                                                        4694500000.0, 4780750000.0, 4867000000.0,
-                                                        4969400000.0, 5071800000.0, 5174200000.0,
-                                                        5276600000.0, 5379000000.0, 5364700000.0,
-                                                        5350400000.0, 5336100000.0, 5321800000.0,
-                                                        5307500000.0, 5293200000.0, 5278900000.0,
-                                                        5264600000.0, 5250300000.0, 5236000000.0,
-                                                        5221700000.0, 5207400000.0, 5193100000.0,
-                                                        5178800000.0, 5164500000.0, 5150200000.0,
-                                                        5135900000.0, 5121600000.0, 5107300000.0,
-                                                        5093000000.0]) * 1.0e-9})
+                                                                          4694500000.0, 4780750000.0, 4867000000.0,
+                                                                          4969400000.0, 5071800000.0, 5174200000.0,
+                                                                          5276600000.0, 5379000000.0, 5364700000.0,
+                                                                          5350400000.0, 5336100000.0, 5321800000.0,
+                                                                          5307500000.0, 5293200000.0, 5278900000.0,
+                                                                          5264600000.0, 5250300000.0, 5236000000.0,
+                                                                          5221700000.0, 5207400000.0, 5193100000.0,
+                                                                          5178800000.0, 5164500000.0, 5150200000.0,
+                                                                          5135900000.0, 5121600000.0, 5107300000.0,
+                                                                          5093000000.0]) * 1.0e-9})
         self.land_use_required_mock = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'random techno (Gha)': 0.0})
 
@@ -293,7 +294,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: years, 'PlasmaCracking (Gha)': 0.0})
 
         self.invest_plasmacracking = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                   GlossaryEnergy.InvestValue: [1.0e-11] + list(np.linspace(0.001, 0.4, len(years) - 1))})
+                                                   GlossaryEnergy.InvestValue: [1.0e-11] + list(
+                                                       np.linspace(0.001, 0.4, len(years) - 1))})
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(100, 100, len(years))))
@@ -337,8 +339,10 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -401,14 +405,17 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_plasmacracking,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat([self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
-                                                                  axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
+                           [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
+                           axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -477,14 +484,17 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat([self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
-                                                                  axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
+                           [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
+                           axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -536,14 +546,17 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat([self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
-                                                                  axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
+                           [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
+                           axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -595,14 +608,17 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat([self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
-                                                                  axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
+                           [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
+                           axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -687,7 +703,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', local_data=disc.local_data,
                             inputs=[f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoPricesValue}',
@@ -769,7 +785,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                     -9.435997374668482e-05, -8.703097533026997e-05,
                                                     -7.959580181418732e-05, -7.205334764454085e-05,
                                                     -6.515432417398242e-05, -5.75540845705268e-05]
-                                                   )})
+                                               )})
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
@@ -876,55 +892,97 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
             resource_ratio_dict)
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YeartStartDefault,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YeartEndDefault,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': invest_level_negative2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': pd.DataFrame({GlossaryEnergy.Years: years,
-                                                               GlossaryEnergy.CO2Tax: [123.54384121665328, 114.7082570056495,
-                                                                           111.79900662991061, 112.3606560123489,
-                                                                           112.24318143946093, 108.5973365343437,
-                                                                           111.64328685134457, 113.73818514404302,
-                                                                           115.44107859484396, 117.29642045913171,
-                                                                           119.82439960611056, 121.464647487607,
-                                                                           122.5798798443514, 122.71077795239975,
-                                                                           -1.7955406835675085e-164,
-                                                                           -9.38522063906998e-05, 59.58305264461431,
-                                                                           42.666185997774306, 58.18945121886229,
-                                                                           77.59910169875373, 79.02437166207574,
-                                                                           56.846842881037986, 36.84087540937685,
-                                                                           8.375739638451805, -26.271722405364585,
-                                                                           -73.13382129365696, -126.22396480678202,
-                                                                           -216.74846182912307, -320.8891223045025,
-                                                                           -454.43147688511283, -592.8993534945333,
-                                                                           -755.2557919477246, -771.1848158848073,
-                                                                           -652.3226212321947, -530.2039192199904,
-                                                                           -53.28278546561114, 262.27957667462624,
-                                                                           -12389.602358460908, -16331.512721893621,
-                                                                           -25706.169003479095, -29335.130871510242,
-                                                                           -30839.9018083875, -30222.41584546385,
-                                                                           -29516.449359907347, -28378.57140441338,
-                                                                           -27161.3708567085, -28583.725076098905,
-                                                                           -25519.90979099596, -21284.997839858734,
-                                                                           -13030.47433106795, -1.796069506092857e-177,
-                                                                           -8.646541630835338e-50,
-                                                                           -0.006235676979016444, 7.577971430943959,
-                                                                           7.805235704875154, 8.043943276838133,
-                                                                           8.194668613555146, 8.350701949669254,
-                                                                           8.511980365280179, 190.31707811919773,
-                                                                           35.44528076658935, 110.84893364939308,
-                                                                           401.56773487563987, 433.883395822344,
-                                                                           455.0193279201958, 467.252737051429,
-                                                                           476.77566104458674, 484.77931831720707,
-                                                                           492.4141556543145, 499.85661992787936,
-                                                                           507.25923472515206, 514.7195372202477,
-                                                                           522.1622160510997, 528.0688453927651,
-                                                                           532.2967343650598, 535.4132571425507,
-                                                                           537.3738970934646, 539.1620166124048,
-                                                                           539.4654629652432, -538303.205284354,
-                                                                           -349711.48482286936]
-                                                               }),
+                                                                                    GlossaryEnergy.CO2Tax: [
+                                                                                        123.54384121665328,
+                                                                                        114.7082570056495,
+                                                                                        111.79900662991061,
+                                                                                        112.3606560123489,
+                                                                                        112.24318143946093,
+                                                                                        108.5973365343437,
+                                                                                        111.64328685134457,
+                                                                                        113.73818514404302,
+                                                                                        115.44107859484396,
+                                                                                        117.29642045913171,
+                                                                                        119.82439960611056,
+                                                                                        121.464647487607,
+                                                                                        122.5798798443514,
+                                                                                        122.71077795239975,
+                                                                                        -1.7955406835675085e-164,
+                                                                                        -9.38522063906998e-05,
+                                                                                        59.58305264461431,
+                                                                                        42.666185997774306,
+                                                                                        58.18945121886229,
+                                                                                        77.59910169875373,
+                                                                                        79.02437166207574,
+                                                                                        56.846842881037986,
+                                                                                        36.84087540937685,
+                                                                                        8.375739638451805,
+                                                                                        -26.271722405364585,
+                                                                                        -73.13382129365696,
+                                                                                        -126.22396480678202,
+                                                                                        -216.74846182912307,
+                                                                                        -320.8891223045025,
+                                                                                        -454.43147688511283,
+                                                                                        -592.8993534945333,
+                                                                                        -755.2557919477246,
+                                                                                        -771.1848158848073,
+                                                                                        -652.3226212321947,
+                                                                                        -530.2039192199904,
+                                                                                        -53.28278546561114,
+                                                                                        262.27957667462624,
+                                                                                        -12389.602358460908,
+                                                                                        -16331.512721893621,
+                                                                                        -25706.169003479095,
+                                                                                        -29335.130871510242,
+                                                                                        -30839.9018083875,
+                                                                                        -30222.41584546385,
+                                                                                        -29516.449359907347,
+                                                                                        -28378.57140441338,
+                                                                                        -27161.3708567085,
+                                                                                        -28583.725076098905,
+                                                                                        -25519.90979099596,
+                                                                                        -21284.997839858734,
+                                                                                        -13030.47433106795,
+                                                                                        -1.796069506092857e-177,
+                                                                                        -8.646541630835338e-50,
+                                                                                        -0.006235676979016444,
+                                                                                        7.577971430943959,
+                                                                                        7.805235704875154,
+                                                                                        8.043943276838133,
+                                                                                        8.194668613555146,
+                                                                                        8.350701949669254,
+                                                                                        8.511980365280179,
+                                                                                        190.31707811919773,
+                                                                                        35.44528076658935,
+                                                                                        110.84893364939308,
+                                                                                        401.56773487563987,
+                                                                                        433.883395822344,
+                                                                                        455.0193279201958,
+                                                                                        467.252737051429,
+                                                                                        476.77566104458674,
+                                                                                        484.77931831720707,
+                                                                                        492.4141556543145,
+                                                                                        499.85661992787936,
+                                                                                        507.25923472515206,
+                                                                                        514.7195372202477,
+                                                                                        522.1622160510997,
+                                                                                        528.0688453927651,
+                                                                                        532.2967343650598,
+                                                                                        535.4132571425507,
+                                                                                        537.3738970934646,
+                                                                                        539.1620166124048,
+                                                                                        539.4654629652432,
+                                                                                        -538303.205284354,
+                                                                                        -349711.48482286936]
+                                                                                    }),
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
@@ -1011,7 +1069,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
+            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']

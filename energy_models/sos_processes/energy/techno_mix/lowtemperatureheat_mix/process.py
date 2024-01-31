@@ -19,7 +19,6 @@ from energy_models.sos_processes.energy.techno_mix.lowtemperatureheat_mix.usecas
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Low Heat Mix',
@@ -33,7 +32,6 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
         heat_name = lowtemperatureheat.name
         energy_mix = 'EnergyMix'
@@ -45,10 +43,11 @@ class ProcessBuilder(EnergyProcessBuilder):
         mods_dict = {}
         mods_dict[f'{energy_mix}.{heat_name}'] = self.get_stream_disc_path(
             'energy_disciplines', 'LowHeat')
-        #to get sub dictionary
+        # to get sub dictionary
         for techno_name in self.techno_list:
             mods_dict[f'{energy_mix}.{heat_name}.{techno_name}'] = self.get_techno_disc_path(
                 'heat', techno_name, sub_dir='low')
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

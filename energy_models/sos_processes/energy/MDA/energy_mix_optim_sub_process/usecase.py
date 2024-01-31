@@ -75,12 +75,12 @@ INVEST_DISC_NAME = "InvestmentDistribution"
 
 class Study(EnergyStudyManager):
     def __init__(
-        self,
-        year_start=GlossaryEnergy.YeartStartDefault,
-        year_end=2050,
-        main_study=True,
-        bspline=True,
-        execution_engine=None,
+            self,
+            year_start=GlossaryEnergy.YeartStartDefault,
+            year_end=2050,
+            main_study=True,
+            bspline=True,
+            execution_engine=None,
     ):
         super().__init__(
             file_path=__file__,
@@ -139,9 +139,9 @@ class Study(EnergyStudyManager):
         list_namespaces = []
 
         if (
-            LiquidFuel.name in self.energy_list
-            and GaseousHydrogen.name in self.energy_list
-            and LiquidHydrogen.name in self.energy_list
+                LiquidFuel.name in self.energy_list
+                and GaseousHydrogen.name in self.energy_list
+                and LiquidHydrogen.name in self.energy_list
         ):
             list_var.append("primary_energies_production")
             list_parent.append("Energy_constraints")
@@ -151,9 +151,9 @@ class Study(EnergyStudyManager):
             list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if (
-            hightemperatureheat.name in self.energy_list
-            and GaseousHydrogen.name in self.energy_list
-            and LiquidHydrogen.name in self.energy_list
+                hightemperatureheat.name in self.energy_list
+                and GaseousHydrogen.name in self.energy_list
+                and LiquidHydrogen.name in self.energy_list
         ):
             list_var.append("primary_energies_production")
             list_parent.append("Energy_constraints")
@@ -399,7 +399,6 @@ class Study(EnergyStudyManager):
                 for techno in invest_techno.columns:
                     if techno != GlossaryEnergy.Years:
                         invest_mix_df[f"{energy}.{techno}"] = invest_techno[techno].values
-                        
 
         return invest_mix_df
 

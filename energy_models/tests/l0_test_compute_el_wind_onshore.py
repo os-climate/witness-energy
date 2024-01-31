@@ -52,24 +52,25 @@ class WindOnshoreTestCase(unittest.TestCase):
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([22.0, 22.0, 22.0, 22.0,
-                                                 22.0, 22.0, 22.0, 22.0,
-                                                 22.0, 22.0, 31.0, 31.0,
-                                                 31.0, 31.0, 31.0, 31.0,
-                                                 31.0, 31.0, 31.0, 31.0,
-                                                 31.0, 31.0, 31.0, 31.0,
-                                                 31.0, 31.0, 31.0, 31.0,
-                                                 31.0, 31.0, 31.0]) * 1e-3})
+                                                                                22.0, 22.0, 22.0, 22.0,
+                                                                                22.0, 22.0, 31.0, 31.0,
+                                                                                31.0, 31.0, 31.0, 31.0,
+                                                                                31.0, 31.0, 31.0, 31.0,
+                                                                                31.0, 31.0, 31.0, 31.0,
+                                                                                31.0, 31.0, 31.0, 31.0,
+                                                                                31.0, 31.0, 31.0]) * 1e-3})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
 
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1), GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 110})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
+             GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 110})
 
         transport_cost = 11,
         # It is noteworthy that the cost of transmission has generally been held (and can
@@ -102,24 +103,24 @@ class WindOnshoreTestCase(unittest.TestCase):
         pass
 
     def test_01_compute_wind_onshore_price(self):
-
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         utilisation_ratio = pd.DataFrame({
             GlossaryEnergy.Years: years,
             GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
         })
-        
+
         inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YeartStartDefault,
                        GlossaryEnergy.YearEnd: 2050,
                        GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': WindOnshoreDiscipline.techno_infos_dict_default,
                        GlossaryEnergy.InvestLevelValue: self.invest_level,
                        GlossaryEnergy.InvestmentBeforeYearStartValue: WindOnshoreDiscipline.invest_before_year_start,
-                       GlossaryEnergy.MarginValue:  self.margin,
+                       GlossaryEnergy.MarginValue: self.margin,
                        GlossaryEnergy.TransportCostValue: self.transport,
                        GlossaryEnergy.ResourcesPriceValue: self.resources_price,
                        GlossaryEnergy.EnergyCO2EmissionsValue: pd.DataFrame(),
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        GlossaryEnergy.EnergyPricesValue: self.energy_prices,
                        GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
                        GlossaryEnergy.TransportMarginValue: self.margin,
@@ -159,7 +160,6 @@ class WindOnshoreTestCase(unittest.TestCase):
         # plt.savefig('WindOnshore_COMP.png')
 
     def test_03_wind_on_shore_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'Wind_Electricity'
         self.ee = ExecutionEngine(self.name)
@@ -187,7 +187,7 @@ class WindOnshoreTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

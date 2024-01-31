@@ -16,7 +16,6 @@ limitations under the License.
 from energy_models.core.stream_type.energy_type import EnergyType
 
 
-
 class lowtemperatureheat(EnergyType):
     name = 'heat' + '.' + 'lowtemperatureheat'
     short_name = 'low heat'

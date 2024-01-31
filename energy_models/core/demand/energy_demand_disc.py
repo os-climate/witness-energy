@@ -29,7 +29,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 
 class EnergyDemandDiscipline(SoSWrapp):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Demand Model',
@@ -47,39 +46,56 @@ class EnergyDemandDiscipline(SoSWrapp):
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
-                                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                                       'demand': ('float',  None, True),
-                                                                       'production electricity (TWh)': ('float',  None, True),
-                                                                       'production hydrogen.liquid_hydrogen (TWh)': ('float', None, True),
-                                                                        'production fuel.liquid_fuel (TWh)': ('float', None, True),
-                                                                       'production fuel.biodiesel (TWh)': ('float', None, True),
-                                                                        'production methane (TWh)': ('float', None, True),
-                                                                        'production biogas (TWh)': ('float', None, True),
-                                                                        'production fuel.hydrotreated_oil_fuel (TWh)': ('float', None, True),},
+                                                              'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                                              'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                                                       'demand': ('float', None, True),
+                                                                                       'production electricity (TWh)': (
+                                                                                       'float', None, True),
+                                                                                       'production hydrogen.liquid_hydrogen (TWh)': (
+                                                                                       'float', None, True),
+                                                                                       'production fuel.liquid_fuel (TWh)': (
+                                                                                       'float', None, True),
+                                                                                       'production fuel.biodiesel (TWh)': (
+                                                                                       'float', None, True),
+                                                                                       'production methane (TWh)': (
+                                                                                       'float', None, True),
+                                                                                       'production biogas (TWh)': (
+                                                                                       'float', None, True),
+                                                                                       'production fuel.hydrotreated_oil_fuel (TWh)': (
+                                                                                       'float', None, True), },
 
-                                              'dataframe_edition_locked': False,
-                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_ENERGY_MIX},
+                                                              'dataframe_edition_locked': False,
+                                                              'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                              'namespace': GlossaryEnergy.NS_ENERGY_MIX},
                # 'default': 22847.66
                # old value is 20900TWh
                'initial_electricity_demand': {'type': 'float', 'default': 18000., 'unit': 'TWh'},
                'long_term_elec_machine_efficiency': {'type': 'float', 'default': 0.985, 'unit': '-'},
-               'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
+               'electricity_demand_constraint_ref': {'type': 'float', 'default': 2500.0, 'unit': 'TWh',
+                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                     'namespace': GlossaryEnergy.NS_REFERENCE},
                GlossaryEnergy.PopulationDf['var_name']: GlossaryEnergy.PopulationDf,
-               GlossaryEnergy.TransportDemandValue: {'type': 'dataframe', 'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                                                  GlossaryEnergy.TransportDemandValue: ('float',  None, True)},
-                                    'dataframe_edition_locked': False, 'unit': 'TWh'},
-               'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
+               GlossaryEnergy.TransportDemandValue: {'type': 'dataframe', 'dataframe_descriptor': {
+                   GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                   GlossaryEnergy.TransportDemandValue: ('float', None, True)},
+                                                     'dataframe_edition_locked': False, 'unit': 'TWh'},
+               'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh',
+                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                   'namespace': GlossaryEnergy.NS_REFERENCE},
                'additional_demand_transport': {'type': 'float', 'default': 10., 'unit': '%'}}
 
-    DESC_OUT = {'electricity_demand_constraint': {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
-                'electricity_demand': {'type': 'dataframe', 'unit': 'TWh'},
-                'transport_demand_constraint': {'type': 'array', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
-                'net_transport_production': {'type': 'array', 'unit': 'TWh'},
-                }
+    DESC_OUT = {
+        'electricity_demand_constraint': {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                          'namespace': GlossaryEnergy.NS_FUNCTIONS},
+        'electricity_demand': {'type': 'dataframe', 'unit': 'TWh'},
+        'transport_demand_constraint': {'type': 'array', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                        'namespace': GlossaryEnergy.NS_FUNCTIONS},
+        'net_transport_production': {'type': 'array', 'unit': 'TWh'},
+        }
     name = EnergyDemand.name
     # The list of all energy constraints implemented in the discipline
     energy_constraint_list = [Electricity.name] + \
-        EnergyDemand.energy_list_transport
+                             EnergyDemand.energy_list_transport
     elec_prod_column = EnergyDemand.elec_prod_column
 
     def init_execution(self):
@@ -88,12 +104,12 @@ class EnergyDemandDiscipline(SoSWrapp):
         self.demand_model.configure_parameters(inputs_dict)
 
     def run(self):
-        #-- get inputs
+        # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
 
-        #-- configure class with inputs
+        # -- configure class with inputs
         self.demand_model.configure_parameters_update(inputs_dict)
-        #-- compute informations
+        # -- compute informations
         self.demand_model.compute()
 
         self.store_sos_outputs_values(
@@ -108,18 +124,19 @@ class EnergyDemandDiscipline(SoSWrapp):
         '''
         delec_demand_cosntraint_delec_prod = self.demand_model.compute_delec_demand_constraint_delec_prod()
         self.set_partial_derivative_for_other_types(
-            ('electricity_demand_constraint', 'elec_demand_constraint'), (GlossaryEnergy.EnergyProductionDetailedValue, self.elec_prod_column),  delec_demand_cosntraint_delec_prod)
+            ('electricity_demand_constraint', 'elec_demand_constraint'),
+            (GlossaryEnergy.EnergyProductionDetailedValue, self.elec_prod_column), delec_demand_cosntraint_delec_prod)
 
         delec_demand_cosntraint_dpop = self.demand_model.compute_delec_demand_constraint_dpop()
         self.set_partial_derivative_for_other_types(
-            ('electricity_demand_constraint', 'elec_demand_constraint'), (GlossaryEnergy.PopulationDfValue, GlossaryEnergy.PopulationValue),  delec_demand_cosntraint_dpop)
+            ('electricity_demand_constraint', 'elec_demand_constraint'),
+            (GlossaryEnergy.PopulationDfValue, GlossaryEnergy.PopulationValue), delec_demand_cosntraint_dpop)
         dtransport_demand_denergy_prod = self.demand_model.compute_dtransport_demand_dprod()
 
         for energy_name in self.demand_model.energy_list_transport:
-
             self.set_partial_derivative_for_other_types(
-                ('transport_demand_constraint',),  (GlossaryEnergy.EnergyProductionDetailedValue,
-                                                    f"production {energy_name} ({EnergyMix.stream_class_dict[energy_name].unit})"),
+                ('transport_demand_constraint',), (GlossaryEnergy.EnergyProductionDetailedValue,
+                                                   f"production {energy_name} ({EnergyMix.stream_class_dict[energy_name].unit})"),
                 dtransport_demand_denergy_prod)
 
     def get_chart_filter_list(self):

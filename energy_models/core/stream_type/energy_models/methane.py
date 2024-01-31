@@ -25,7 +25,7 @@ class Methane(EnergyType):
                         # Engineering ToolBox, (2009).
                         # Combustion of Fuels - Carbon Dioxide Emission. [online]
                         # Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
-                        #[Accessed 17 12 2021].
+                        # [Accessed 17 12 2021].
                         'CO2_per_use': 2.75,
                         'CO2_per_use_unit': 'kg/kg',
                         # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
@@ -44,7 +44,7 @@ class Methane(EnergyType):
                         # Engineering ToolBox, (2003).
                         # Fuels - Higher and Lower Calorific Values. [online]
                         # Available at: https://www.engineeringtoolbox.com/fuels-higher-calorific-values-d_169.html
-                        #[Accessed 17 12 2021].
+                        # [Accessed 17 12 2021].
                         'calorific_value': 13.9,
                         'calorific_value_unit': 'kWh/kg',
                         'high_calorific_value': 15.4,

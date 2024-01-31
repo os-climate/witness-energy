@@ -43,10 +43,10 @@ class HeatingOil(EnergyType):
                         'molar_mass_unit': 'g/mol',
                         # Source for [calorific value]: IEA 2022, Energy Statistics Manual,
                         # https://www.iea.org/reports/energy-statistics-manual-2
-                        #License: CC BY 4.0.
+                        # License: CC BY 4.0.
                         # Calorific value = (cal_val Naphtha + cal_val Gas
                         # oil)/2.0 * (277.778/1000) [GJ/t to kWh/kg conversion]
-                        'calorific_value': 12.47,   #
+                        'calorific_value': 12.47,  #
                         'calorific_value_unit': 'kWh/kg',
                         'high_calorific_value': 13.36,  #
                         'high_calorific_value_unit': 'kWh/kg'}

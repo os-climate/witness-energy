@@ -62,7 +62,9 @@ class TestEnergyInvest(unittest.TestCase):
 
         self.invest_percentage_per_techno = pd.DataFrame(data=data_invest)
         self.invest_percentage_gdp = pd.DataFrame(data={GlossaryEnergy.Years: self.years,
-                                                        GlossaryEnergy.EnergyInvestPercentageGDPName: np.linspace(10., 20., len(self.years))})
+                                                        GlossaryEnergy.EnergyInvestPercentageGDPName: np.linspace(10.,
+                                                                                                                  20.,
+                                                                                                                  len(self.years))})
         forest_invest = np.linspace(5, 8, len(self.years))
         self.forest_invest_df = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: forest_invest})
@@ -120,7 +122,9 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.execute()
 
         # assert that for fossil techno and direct air capture, investment is 10% * 130 * 20% at 2020 and 20% * 190 * 20%
-        fossil_invest_level = self.ee.dm.get_value(f'{self.name}.fossil.FossilSimpleTechno.{GlossaryEnergy.InvestLevelValue}')[GlossaryEnergy.InvestValue].values
+        fossil_invest_level = \
+        self.ee.dm.get_value(f'{self.name}.fossil.FossilSimpleTechno.{GlossaryEnergy.InvestLevelValue}')[
+            GlossaryEnergy.InvestValue].values
         fossil_invest_2020 = fossil_invest_level[0]
         fossil_invest_2050 = fossil_invest_level[-1]
         error_message = 'Error in investment, it is not equal to expected'
@@ -144,7 +148,7 @@ class TestEnergyInvest(unittest.TestCase):
 
         for graph in graph_list:
             pass
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
 
     def test_02_redistribution_invest_disc_gradient(self):
         self.name = 'Energy'
@@ -200,7 +204,8 @@ class TestEnergyInvest(unittest.TestCase):
                                               ],
                                       outputs=
                                       [f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
-                                       all_technos_list] + [f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'],
+                                       all_technos_list] + [
+                                          f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'],
                                       input_data=disc.local_data,
                                       load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                          f'jacobian_redistribution_invest_disc_wo_biomass.pkl'),
@@ -270,7 +275,8 @@ class TestEnergyInvest(unittest.TestCase):
                                               f'{self.name}.crop_investment'],
                                       outputs=
                                       [f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
-                                       all_technos_list] + [f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'],
+                                       all_technos_list] + [
+                                          f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}'],
                                       input_data=disc.local_data,
                                       load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                          f'jacobian_redistribution_invest_disc_w_biomass.pkl'),

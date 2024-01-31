@@ -56,7 +56,7 @@ class CO2Hydrogenation(MethanolTechno):
             self.cost_details['efficiency']
 
         return self.cost_details[CarbonCapture.name] + self.cost_details[GaseousHydrogen.name] + \
-        self.cost_details[Water.name] + self.cost_details[Electricity.name]
+               self.cost_details[Water.name] + self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -71,7 +71,7 @@ class CO2Hydrogenation(MethanolTechno):
             CarbonCapture.name: np.identity(len(self.years)) * co2_needs / efficiency,
             GaseousHydrogen.name: np.identity(len(self.years)) * hydrogen_needs / efficiency,
             Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-                }
+        }
 
     def grad_price_vs_resources_price(self):
         '''
@@ -87,8 +87,6 @@ class CO2Hydrogenation(MethanolTechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-
-        
 
         # Consumption
 
@@ -147,34 +145,34 @@ class CO2Hydrogenation(MethanolTechno):
         carbon_capture_calorific_value = CarbonCapture.data_energy_dict['calorific_value']  # kWh/kg
         methanol_calorific_value = Methanol.data_energy_dict['calorific_value']  # kWh/kg
 
-        carbon_capture_needs = carbon_capture_demand * carbon_capture_calorific_value / methanol_calorific_value #kWh/kWh
+        carbon_capture_needs = carbon_capture_demand * carbon_capture_calorific_value / methanol_calorific_value  # kWh/kWh
         return carbon_capture_needs
 
     def get_theoretical_hydrogen_needs(self):
         """
         """
-        hydrogen_demand = self.techno_infos_dict['hydrogen_demand'] # kg/kg
+        hydrogen_demand = self.techno_infos_dict['hydrogen_demand']  # kg/kg
         hydrogen_calorific_value = GaseousHydrogen.data_energy_dict['calorific_value']  # kWh/kg
         methanol_calorific_value = Methanol.data_energy_dict['calorific_value']  # kWh/kg
 
-        hydrogen_needs = hydrogen_demand * hydrogen_calorific_value / methanol_calorific_value # kWh/kWh
+        hydrogen_needs = hydrogen_demand * hydrogen_calorific_value / methanol_calorific_value  # kWh/kWh
         return hydrogen_needs
 
     def get_theoretical_water_needs(self):
         """
         """
-        water_demand = self.techno_infos_dict['water_demand']                    # kg/kg
-        methanol_calorific_value = Methanol.data_energy_dict['calorific_value']   # kWh/kg
+        water_demand = self.techno_infos_dict['water_demand']  # kg/kg
+        methanol_calorific_value = Methanol.data_energy_dict['calorific_value']  # kWh/kg
 
-        water_needs = water_demand / methanol_calorific_value #kg/kWh = Mt/TWh
+        water_needs = water_demand / methanol_calorific_value  # kg/kWh = Mt/TWh
         return water_needs
 
     def get_theoretical_electricity_needs(self):
         """
         """
-        elec_demand = self.techno_infos_dict['elec_demand']                       # kWh/kg
-        methanol_calorific_value = Methanol.data_energy_dict['calorific_value']   # kWh/kg
+        elec_demand = self.techno_infos_dict['elec_demand']  # kWh/kg
+        methanol_calorific_value = Methanol.data_energy_dict['calorific_value']  # kWh/kg
 
-        electricity_needs = elec_demand / methanol_calorific_value #kWh/kWh
+        electricity_needs = elec_demand / methanol_calorific_value  # kWh/kWh
 
         return electricity_needs

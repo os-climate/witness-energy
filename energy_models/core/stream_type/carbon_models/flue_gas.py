@@ -38,7 +38,7 @@ class FlueGas(BaseStream):
     def configure_parameters_update(self, inputs_dict):
         for techno in self.subelements_list:
             self.sub_production_dict[techno] = inputs_dict[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] * \
-                inputs_dict['scaling_factor_techno_production']
+                                               inputs_dict['scaling_factor_techno_production']
             self.flue_gas_ratio_dict[techno] = inputs_dict[f'{techno}.flue_gas_co2_ratio'][0]
 
     def compute_production(self):
@@ -84,6 +84,6 @@ class FlueGas(BaseStream):
 
         for techno in self.subelements_list:
             self.mix_weights[techno] = self.production[f'{self.name} {techno} (Mt)'] / \
-                self.production[f'{self.name}']
-            self.flue_gas_ratio_mean[GlossaryEnergy.FlueGasMean] += self.flue_gas_ratio_dict[techno] *  \
-                self.mix_weights[techno].values
+                                       self.production[f'{self.name}']
+            self.flue_gas_ratio_mean[GlossaryEnergy.FlueGasMean] += self.flue_gas_ratio_dict[techno] * \
+                                                                    self.mix_weights[techno].values

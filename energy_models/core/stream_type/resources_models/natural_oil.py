@@ -25,22 +25,23 @@ class NaturalOil(BaseStream):
     at room temperature are fats – whether derived from animal or
     plants)"""
     name = ResourceGlossary.NaturalOil['name']
-    data_energy_dict = {'reference': 'https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth/an-introduction-to-biogas-and-biomethane ',
-                        'maturity': 5,
+    data_energy_dict = {
+        'reference': 'https://www.iea.org/reports/outlook-for-biogas-and-biomethane-prospects-for-organic-growth/an-introduction-to-biogas-and-biomethane ',
+        'maturity': 5,
 
-                        # https://www.aceitedelasvaldesas.com/en/faq/varios/densidad-del-aceite/
-                        'density': 917.44,
-                        'density_unit': 'kg/m^3',
+        # https://www.aceitedelasvaldesas.com/en/faq/varios/densidad-del-aceite/
+        'density': 917.44,
+        'density_unit': 'kg/m^3',
 
-                        # https://www.chem.wilkes.edu/~mencer/pdf_docs/Biodiesel_RF.pdf
-                        'molar_mass': 876.6,
-                        'molar_mass_unit': 'g/mol',
+        # https://www.chem.wilkes.edu/~mencer/pdf_docs/Biodiesel_RF.pdf
+        'molar_mass': 876.6,
+        'molar_mass_unit': 'g/mol',
 
-                        # https://www.engineeringtoolbox.com/fuels-higher-calorific-values-d_169.html
-                        # 1 MJ/kg = 1000 J/g = 1 GJ/t  = 238.85 kcal/kg = 429.9
-                        # Btu(IT)/lb = 0.2778 kWh/kg
-                        'calorific_value': 10.5,
-                        'calorific_value_unit': 'kWh/kg',
-                        'high_calorific_value': 11.25,
-                        'high_calorific_value_unit': 'kWh/kg'
-                        }
+        # https://www.engineeringtoolbox.com/fuels-higher-calorific-values-d_169.html
+        # 1 MJ/kg = 1000 J/g = 1 GJ/t  = 238.85 kcal/kg = 429.9
+        # Btu(IT)/lb = 0.2778 kWh/kg
+        'calorific_value': 10.5,
+        'calorific_value_unit': 'kWh/kg',
+        'high_calorific_value': 11.25,
+        'high_calorific_value_unit': 'kWh/kg'
+        }

@@ -31,7 +31,8 @@ TECHNOLOGIES_LIST_DEV = []
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST,
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1,
+                 technologies_list=TECHNOLOGIES_LIST,
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -47,11 +48,11 @@ class Study(EnergyMixStudyManager):
 
         if 'ManagedWood' in self.technologies_list:
             invest_biomass_dry_mix_dict['ManagedWood'] = [
-                (1 + 0.03)**i for i in l_ctrl]
+                (1 + 0.03) ** i for i in l_ctrl]
 
         if 'UnmanagedWood' in self.technologies_list:
             invest_biomass_dry_mix_dict['UnmanagedWood'] = [
-                (1 - 0.04)**i for i in l_ctrl]
+                (1 - 0.04) ** i for i in l_ctrl]
 
         if 'CropEnergy' in self.technologies_list:
             invest_biomass_dry_mix_dict['CropEnergy'] = np.linspace(1.0, .4, GlossaryEnergy.NB_POLES_FULL)
@@ -74,7 +75,7 @@ class Study(EnergyMixStudyManager):
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'electricity': 16.0})
+                                      'electricity': 16.0})
 
         # We use the IEA H2 demand to fake the invest level through years
 
@@ -87,7 +88,7 @@ class Study(EnergyMixStudyManager):
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -102,9 +103,10 @@ class Study(EnergyMixStudyManager):
         resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
         resources_price[GlossaryEnergy.Years] = years
         resources_price['CO2'] = np.linspace(
-            50.0, 100.0, len(years))         # biomass_dry price in $/kg
+            50.0, 100.0, len(years))  # biomass_dry price in $/kg
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+            {GlossaryEnergy.Years: years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0,
+             'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 
         # define invest mix
         investment_mix = self.get_investments()
@@ -132,8 +134,12 @@ class Study(EnergyMixStudyManager):
                     columns=[GlossaryEnergy.Years]).sum(axis=1)
                 for techno in self.technologies_list:
                     invest_level_techno = pd.DataFrame({GlossaryEnergy.Years: invest_level[GlossaryEnergy.Years].values,
-                                                        GlossaryEnergy.InvestValue: invest_level[GlossaryEnergy.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
-                    values_dict[f'{self.study_name}.{energy_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
+                                                        GlossaryEnergy.InvestValue: invest_level[
+                                                                                        GlossaryEnergy.InvestValue].values *
+                                                                                    investment_mix[
+                                                                                        techno].values / investment_mix_sum})
+                    values_dict[
+                        f'{self.study_name}.{energy_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
             else:
                 values_dict[f'{self.study_name}.{energy_name}.{GlossaryEnergy.InvestLevelValue}'] = invest_level
         else:

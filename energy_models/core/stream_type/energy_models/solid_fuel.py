@@ -37,7 +37,7 @@ class SolidFuel(EnergyType):
                         # Engineering ToolBox, (2009).
                         # Combustion of Fuels - Carbon Dioxide Emission. [online]
                         # Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
-                        #[Accessed 17 12 2021].
+                        # [Accessed 17 12 2021].
                         'CO2_per_use': 2.42,
                         'CO2_per_use_unit': 'kg/kg',
                         # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR55-GAINS-N2O.pdf
@@ -52,8 +52,8 @@ class SolidFuel(EnergyType):
                         # doi:http://dx.doi.org/10.14288/1.0135651.
                         # Calorific Value of Wood pellets (HCV=5.46; NCV=5.39)
                         # Engineering ToolBox, (2003). Fuels - Higher and Lower Calorific Values.
-                        #[online] Available at: https://www.engineeringtoolbox.com/fuels-higher-calorific-values-d_169.html
-                        #[Accessed 17 12 2021].
+                        # [online] Available at: https://www.engineeringtoolbox.com/fuels-higher-calorific-values-d_169.html
+                        # [Accessed 17 12 2021].
                         # Calorific Value of Coal (HCV=8.39; NCV=8.06)
                         'calorific_value': 4.86,
                         # lower value for electricity use
@@ -84,21 +84,22 @@ class SolidFuel(EnergyType):
         # Source: IEA 2022, Iron and Steel technology roadmap,
         # https://www.iea.org/reports/iron-and-steel-technology-roadmap,
         # License: CC BY 4.0.
-#         kgcoal_per_kgsteel = 1 / 1.7
-#         kgcoal_per_kgcement = 0.25
-#
-#         kgco2_per_kgsteel = 1.852
-#         kgco2_per_kgcement = 0.9
-#
-#         co2_per_use_steel = kgco2_per_kgsteel / kgcoal_per_kgsteel
-#         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
+        #         kgcoal_per_kgsteel = 1 / 1.7
+        #         kgcoal_per_kgcement = 0.25
+        #
+        #         kgco2_per_kgsteel = 1.852
+        #         kgco2_per_kgcement = 0.9
+        #
+        #         co2_per_use_steel = kgco2_per_kgsteel / kgcoal_per_kgsteel
+        #         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
         if ghg_type == 'CO2':
             co2_per_use_kgkg = self.data_energy_dict_input['CO2_per_use'] * \
-                (1.0 - self.data_energy_dict_input['ironsteel_use_part'] -
-                 self.data_energy_dict_input['cement_use_part'] - self.data_energy_dict_input['chemicals_use_part'])
+                               (1.0 - self.data_energy_dict_input['ironsteel_use_part'] -
+                                self.data_energy_dict_input['cement_use_part'] - self.data_energy_dict_input[
+                                    'chemicals_use_part'])
 
             ghg_per_use = co2_per_use_kgkg / \
-                self.data_energy_dict_input['high_calorific_value']
+                          self.data_energy_dict_input['high_calorific_value']
 
         else:
             ghg_per_use = EnergyType.compute_ghg_per_use(self, ghg_type)

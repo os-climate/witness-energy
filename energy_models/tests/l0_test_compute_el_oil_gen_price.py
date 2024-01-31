@@ -47,19 +47,29 @@ class OilGenPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
-                                                                                    0.089236536471781, 0.08899046935409588, 0.08874840310033885,
-                                                                                    0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
-                                                                                    0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
-                                                                                    0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
-                                                                                    0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
-                                                                                    0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
-                                                                                    0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
-                                                                                    0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
-                                                                                    0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
-                                                                                    0.0928246539459331]) * 1000.0,
-                                           'fuel.liquid_fuel': liquid_fuel_price
-                                           })
+        self.energy_prices = pd.DataFrame(
+            {GlossaryEnergy.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+                                                                   0.089236536471781, 0.08899046935409588,
+                                                                   0.08874840310033885,
+                                                                   0.08875044941298937, 0.08875249600769718,
+                                                                   0.08875454288453355,
+                                                                   0.08875659004356974, 0.0887586374848771,
+                                                                   0.08893789675406477,
+                                                                   0.08911934200930778, 0.08930302260662477,
+                                                                   0.08948898953954933,
+                                                                   0.08967729551117891, 0.08986799501019029,
+                                                                   0.09006114439108429,
+                                                                   0.09025680195894345, 0.09045502805900876,
+                                                                   0.09065588517140537,
+                                                                   0.0908594380113745, 0.09106575363539733,
+                                                                   0.09127490155362818,
+                                                                   0.09148695384909017, 0.0917019853041231,
+                                                                   0.0919200735346165,
+                                                                   0.09214129913260598, 0.09236574581786147,
+                                                                   0.09259350059915213,
+                                                                   0.0928246539459331]) * 1000.0,
+             'fuel.liquid_fuel': liquid_fuel_price
+             })
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'fuel.liquid_fuel': 0.64 / 4.86, 'electricity': 0.0})
@@ -70,7 +80,7 @@ class OilGenPriceTestCase(unittest.TestCase):
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -93,7 +103,7 @@ class OilGenPriceTestCase(unittest.TestCase):
             columns=[GlossaryEnergy.Years, ResourceGlossary.Water['name']])
         self.resources_price[GlossaryEnergy.Years] = years
         self.resources_price[ResourceGlossary.Water['name']
-                             ] = Water.data_energy_dict['cost_now']
+        ] = Water.data_energy_dict['cost_now']
 
         biblio_data_path = join(
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
@@ -146,7 +156,7 @@ class OilGenPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

@@ -56,7 +56,7 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
         # co2_taxes = [0.01486, 0.01722, 0.02027,
         #             0.02901,  0.03405,   0.03908,  0.04469,   0.05029]
         co2_taxes = [0, 0, 0,
-                     0,  0,   0,  0,   0]
+                     0, 0, 0, 0, 0]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -89,7 +89,7 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
             GlossaryEnergy.Years: years,
             GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
         })
-        
+
         inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YeartStartDefault,
                        GlossaryEnergy.YearEnd: 2050,
                        GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
@@ -97,15 +97,17 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
                        GlossaryEnergy.InvestLevelValue: self.invest_level_2,
                        GlossaryEnergy.InvestmentBeforeYearStartValue: DepletedOilGasDiscipline.invest_before_year_start,
                        GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.MarginValue:  self.margin,
+                       GlossaryEnergy.MarginValue: self.margin,
                        GlossaryEnergy.TransportCostValue: self.transport,
                        GlossaryEnergy.TransportMarginValue: self.margin,
                        GlossaryEnergy.ResourcesPriceValue: self.resources_price,
-                       GlossaryEnergy.EnergyPricesValue: pd.DataFrame({GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)}),
+                       GlossaryEnergy.EnergyPricesValue: pd.DataFrame(
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)}),
                        'initial_production': DepletedOilGasDiscipline.initial_storage,
                        'initial_age_distrib': DepletedOilGasDiscipline.initial_age_distribution,
                        GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -163,14 +165,15 @@ class DepletedOilGasPriceTestCase(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame({GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)}),
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
+                           {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
