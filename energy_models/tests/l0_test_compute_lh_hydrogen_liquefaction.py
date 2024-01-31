@@ -50,11 +50,11 @@ class LiquefactionPriceTestCase(unittest.TestCase):
                                       0.0928246539459331]) * 1000
 
         # We take biomass price of methane/5.0
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(2020, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -81,7 +81,7 @@ class LiquefactionPriceTestCase(unittest.TestCase):
         self.transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 500.0})
 
-        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: np.arange(2020, 2051),
+        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
                                              'water': 31 * [0.002],
                                              'uranium fuel': 1390,
                                              'CO2': [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119],
@@ -131,7 +131,7 @@ class LiquefactionPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051))}
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -168,7 +168,7 @@ class LiquefactionPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051))}
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

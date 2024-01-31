@@ -35,7 +35,7 @@ class CCUSDiscTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
+        self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
@@ -86,10 +86,10 @@ class CCUSDiscTestCase(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
-                   'ns_ccs': self.name,
+                   GlossaryEnergy.NS_CCS: self.name,
                    'ns_energy_study': self.name,
-                   'ns_ref': self.name,
-                   'ns_functions': self.name,
+                   GlossaryEnergy.NS_REFERENCE: self.name,
+                   GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_carbon_capture': self.name,
                    'ns_carbon_storage': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)

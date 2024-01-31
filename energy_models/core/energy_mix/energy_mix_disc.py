@@ -99,17 +99,17 @@ class Energy_Mix_Discipline(SoSWrapp):
                'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
                'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8,
-                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
                'normalization_value_demand_constraints': {'type': 'float', 'default': 1000.0, 'unit': 'Twh',
                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                          'namespace': 'ns_ref'},
+                                                          'namespace': GlossaryEnergy.NS_REFERENCE},
                GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
                'minimum_energy_production': {'type': 'float', 'default': 1e4,
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
                                              'unit': 'TWh'},
                'total_prod_minus_min_prod_constraint_ref': {'type': 'float', 'default': 1e4, 'unit': 'Twh',
                                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                            'namespace': 'ns_ref'},
+                                                            'namespace': GlossaryEnergy.NS_REFERENCE},
                'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
                'production_threshold': {'type': 'float', 'default': 1e-3, 'unit': 'Twh'},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
@@ -119,20 +119,20 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                      'namespace': 'ns_public'},
                'solid_fuel_elec_percentage': {'type': 'float', 'default': 0.75, 'unit': '-', 'user_level': 2,
-                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
                'solid_fuel_elec_constraint_ref': {'type': 'float', 'default': 10000., 'unit': 'Twh', 'user_level': 2,
-                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
                'liquid_hydrogen_percentage': {'type': 'array', 'user_level': 2, 'unit': '%',
-                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
                'liquid_hydrogen_constraint_ref': {'type': 'float', 'default': 1000., 'unit': 'Twh', 'user_level': 2,
-                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
                'syngas_prod_ref': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
-                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
                'syngas_prod_constraint_limit': {'type': 'float', 'default': 10000., 'unit': 'TWh', 'user_level': 2,
-                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
 
                'ratio_ref': {'type': 'float', 'default': 500., 'unit': '-', 'user_level': 2,
-                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_REFERENCE},
                'heat_losses_percentage': {'type': 'float', 'default': heat_losses_percentage_default, 'unit': '%',
                                           'range': [0., 100.]}, }
 
@@ -148,35 +148,35 @@ class Energy_Mix_Discipline(SoSWrapp):
         'energy_mix': {'type': 'dataframe', 'unit': '%'},
         'energy_prices_after_tax': {'type': 'dataframe', 'unit': '$/MWh'},
         'energy_production_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                        'namespace': 'ns_functions'},
+                                        'namespace': GlossaryEnergy.NS_FUNCTIONS},
         'primary_energies_production': {'type': 'dataframe', 'unit': 'TWh',
-                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
         'land_demand_df': {'type': 'dataframe', 'unit': 'Gha'},
         GlossaryEnergy.EnergyMeanPriceValue: GlossaryEnergy.EnergyMeanPrice,
         'production_energy_net_positive': {'type': 'dataframe', 'unit': 'TWh'},
         EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: {
             'type': 'dataframe', 'unit': 'TWh',
-            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
         EnergyMix.CONSTRAINT_PROD_H2_LIQUID: {
             'type': 'dataframe', 'unit': 'TWh',
-            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
+            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS
         },
         EnergyMix.CONSTRAINT_PROD_SOLID_FUEL_ELEC: {
             'type': 'dataframe', 'unit': 'TWh',
-            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'
+            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS
         },
 
         EnergyMix.SYNGAS_PROD_OBJECTIVE: {'type': 'array', 'unit': 'TWh',
-                                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
         EnergyMix.SYNGAS_PROD_CONSTRAINT: {'type': 'array', 'unit': 'TWh',
-                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_FUNCTIONS},
         GlossaryEnergy.AllStreamsDemandRatioValue: {'type': 'dataframe', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                      'namespace': 'ns_energy',
-                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
                                                               GlossaryEnergy.CO2Tax: ('float', None, True)}
                                      },
         'ratio_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_functions'},
+                            'namespace': GlossaryEnergy.NS_FUNCTIONS},
         'resources_demand': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                              'namespace': 'ns_resource', 'unit': 'Mt'},
         'resources_demand_woratio': {'type': 'dataframe', 'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -244,7 +244,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                         for new_var in [f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}', f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
                                         f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}',
                                         f'{ns_energy}.{GlossaryEnergy.LandUseRequiredValue}']:
-                            dynamic_inputs[new_var].update({'namespace': 'ns_witness',
+                            dynamic_inputs[new_var].update({'namespace': GlossaryEnergy.NS_WITNESS,
                                                             'visibility': SoSWrapp.SHARED_VISIBILITY})
 
                     if energy in self.energy_class_dict:
@@ -270,7 +270,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                             for new_var in [f'{ns_energy}.{GlossaryEnergy.CO2EmissionsValue}',
                                             f'{ns_energy}.CO2_per_use',
                                             f'{ns_energy}.losses_percentage']:
-                                dynamic_inputs[new_var].update({'namespace': 'ns_witness',
+                                dynamic_inputs[new_var].update({'namespace': GlossaryEnergy.NS_WITNESS,
                                                                 'visibility': SoSWrapp.SHARED_VISIBILITY})
 
                 if 'syngas' in energy_list:
@@ -289,28 +289,28 @@ class Energy_Mix_Discipline(SoSWrapp):
 
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs',
+                            'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'renewable (TWh)': ('float', None, True),
                                                      'fossil (TWh)': ('float', None, True),
                                                      'carbon_capture (Mt)': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs',
+                            'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'renewable (TWh)': ('float', None, True),
                                                      'fossil (TWh)': ('float', None, True),
                                                      'carbon_capture (Mt)': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs',
+                            'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'carbon_capture': ('float', None, True),
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                      'carbon_storage': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs',
+                            'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'carbon_capture': ('float', None, True),
                                                      'carbon_capture_wotaxes': ('float', None, True),
@@ -318,7 +318,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                      'carbon_storage_wotaxes': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs',
+                            'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'direct_air_capture': ('float', None, True),
                                                      'flue_gas_capture.FlueGasTechno (Gha)': ('float', None, True),

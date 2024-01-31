@@ -53,14 +53,14 @@ class OneInvestDiscipline(SoSWrapp):
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe', 'unit': '100G$',
-                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
                                                        GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True)},
                               'dataframe_edition_locked': False,
-                              'visibility': 'Shared', 'namespace': 'ns_witness'},
+                              'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_WITNESS},
         'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
                                              'namespace': 'ns_public'},
         GlossaryEnergy.invest_mix: {'type': 'dataframe',
-                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
                                                 'electricity.SolarPv': ('float', None, True),
                                                 'electricity.WindOnshore': ('float', None, True),
                                                 'electricity.CoalGen': ('float', None, True),
@@ -197,7 +197,7 @@ class OneInvestDiscipline(SoSWrapp):
                     # Add technologies_list to inputs
                     dynamic_inputs[f'{ccs}.{GlossaryEnergy.techno_list}'] = {
                         'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
-                        'visibility': 'Shared', 'namespace': 'ns_ccs',
+                        'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS,
                         'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
                         'default': EnergyMix.stream_class_dict[ccs].default_techno_list}
                     # Add all invest_level outputs
@@ -207,7 +207,7 @@ class OneInvestDiscipline(SoSWrapp):
                         if technology_list is not None:
                             for techno in technology_list:
                                 dynamic_outputs[f'{ccs}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = {
-                                    'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_ccs'}
+                                    'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)

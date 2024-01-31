@@ -46,12 +46,12 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.energy_name = 'biogas'
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(2020, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -140,8 +140,8 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051))
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

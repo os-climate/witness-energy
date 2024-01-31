@@ -41,7 +41,7 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
 
         func = sc.interp1d(list(self.hydro_techno_margin[GlossaryEnergy.Years]), self.hydro_techno_margin['H2plasmacracking'],
                            kind='linear', fill_value='extrapolate')
-        years = np.arange(2020, 2050 + 1)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'electricity': 0.0, 'methane': 0.123 / 15.4})
@@ -130,7 +130,7 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_carb': self.name, 'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -154,8 +154,8 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': invest_before_year_start,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051))}
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -182,7 +182,7 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': self.name,
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_carb': self.name, 'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -207,8 +207,8 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': invest_before_year_start,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(2020, 2051)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(2020, 2051))}
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

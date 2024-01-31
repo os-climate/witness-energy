@@ -61,7 +61,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.name = 'Test_Ratio'
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
         #---Ratios---
         self.is_apply_ratio = True
@@ -264,6 +264,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
+
     # def test_03_ratio_CropEnergy_discipline_jacobian(self):
     #     '''
     #     Test the gradients of the ratios on CropEnergy techno since it has special gradients
@@ -464,7 +465,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_syngas': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_resource': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -570,7 +571,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_technologies_input_dict.pkl'), 'rb')
         mda_data_input_dict = pickle.load(pkl_file)
@@ -824,7 +824,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.setUp()
         self.energy_name = 'carbon_capture'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_flue_gas': f'{self.name}',
                    'ns_carbon_capture': f'{self.name}',
                    'ns_public': f'{self.name}'}
@@ -903,7 +903,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.setUp()
         self.model_name = 'EnergyMix'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -974,7 +974,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.setUp()
         self.model_name = 'EnergyMix'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -1080,7 +1080,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.setUp()
         self.model_name = 'EnergyMix'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

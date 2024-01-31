@@ -33,7 +33,7 @@ class FlueGasRatioTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
         self.electricity_CoalGen_production = pd.DataFrame({GlossaryEnergy.Years: years,
                                                             'CO2 from Flue Gas (Mt)': 10000.0})
@@ -57,9 +57,9 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.model_name = 'flue_gas'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_flue_gas': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_ccs': f'{self.name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}',
                    'ns_energy_study': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -103,9 +103,9 @@ class FlueGasRatioTestCase(unittest.TestCase):
         self.model_name = 'flue_gas'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_flue_gas': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_ccs': f'{self.name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}',
                    'ns_energy_study': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 

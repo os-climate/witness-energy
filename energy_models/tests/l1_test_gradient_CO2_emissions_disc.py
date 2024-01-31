@@ -51,7 +51,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
+        self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
@@ -107,8 +107,8 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_emissions': self.name,
                    'ns_energy': self.name + f'.{self.model_name}',
-                   'ns_witness': self.name,
-                   'ns_ccs': self.name,
+                   GlossaryEnergy.NS_WITNESS: self.name,
+                   GlossaryEnergy.NS_CCS: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -187,8 +187,8 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_emissions': self.name,
                    'ns_energy': self.name + f'.{self.model_name}',
-                   'ns_witness': self.name,
-                   'ns_ccs': self.name,
+                   GlossaryEnergy.NS_WITNESS: self.name,
+                   GlossaryEnergy.NS_CCS: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)

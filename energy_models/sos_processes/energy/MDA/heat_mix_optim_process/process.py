@@ -57,14 +57,12 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
     def get_builders(self):
 
         optim_name = OPTIM_NAME
-
-
         # if one invest discipline then we need to setup all subprocesses
         # before get them
         techno_dict = DEFAULT_TECHNO_DICT
 
         coupling_builder = self.ee.factory.get_builder_from_process(
-            'witness-energy.energy_models.sos_processes.energy.MDA', 'heat_optim_sub_process', #_v0
+            'energy_models.sos_processes.energy.MDA', 'heat_optim_sub_process', #_v0
             techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
 
         # coupling_builder = self.ee.factory.get_builder_from_process(
@@ -73,7 +71,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            optim_name, after_name=self.ee.study_name, clean_namespaces = True, clean_all_ns_with_name = True)  # optim_name
+            optim_name, after_name=self.ee.study_name, clean_existing = True,)  # optim_name
 
         #-- set optim builder
         opt_builder = self.ee.factory.create_optim_builder(

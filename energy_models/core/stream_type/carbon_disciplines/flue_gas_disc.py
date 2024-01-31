@@ -118,17 +118,17 @@ class FlueGasDiscipline(SoSWrapp):
                     # check if techno not in ccs_list, namespace is
                     # ns_energy_mix
                     if techno.split('.')[0] not in ccs_list:
-                        ns_variable = 'ns_energy_mix'
+                        ns_variable = GlossaryEnergy.NS_ENERGY_MIX
 
                     # techno in ccs_list, use different namespace
                     else:
-                        ns_variable = 'ns_ccs'
+                        ns_variable = GlossaryEnergy.NS_CCS
 
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': ns_variable,
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                        'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
                                                  'CO2 from Flue Gas (Mt)': ('float', None, False),
                                                  }
                     }

@@ -41,22 +41,22 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
     }
     DESC_IN = {
         GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe', 'unit': '100G$',
-                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
+                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
                                                        GlossaryEnergy.EnergyInvestmentsValue: ('float',  None, True)},
                               'dataframe_edition_locked': False,
-                              'visibility': 'Shared', 'namespace': 'ns_witness'},
+                              'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_WITNESS},
         'ccs_percentage': {'type': 'dataframe',
-                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
+                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
                                                     'ccs_percentage': ('float',  [0., 100.], True)},
                            'dataframe_edition_locked': False,
-                           'visibility': 'Shared', 'namespace': 'ns_ccs'}
+                           'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS}
     }
 
     DESC_OUT = {
         GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe', 'unit': '100G$',
-                              'visibility': 'Shared', 'namespace': 'ns_energy_mix'},
+                              'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_ENERGY_MIX},
         'ccs_investment': {'type': 'dataframe', 'unit': 'G$',
-                           'visibility': 'Shared', 'namespace': 'ns_ccs'}
+                           'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS}
     }
     _maturity = 'Research'
     rescaling_factor = 1e2

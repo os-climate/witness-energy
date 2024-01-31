@@ -55,7 +55,7 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
+        self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
@@ -117,10 +117,10 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_emissions': self.name,
                    'ns_energy': self.name,
-                   'ns_ccs': self.name,
+                   GlossaryEnergy.NS_CCS: self.name,
                    'ns_public': self.name,
                    'ns_energy_study': self.name,
-                   'ns_witness': self.name}
+                   GlossaryEnergy.NS_WITNESS: self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'

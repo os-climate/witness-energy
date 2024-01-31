@@ -33,7 +33,7 @@ class TestBaseInvest(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.base_invest = BaseInvest('Test')
-        self.y_s = 2020
+        self.y_s = GlossaryEnergy.YeartStartDefault
         self.y_e = 2050
         self.y_step = 1
 

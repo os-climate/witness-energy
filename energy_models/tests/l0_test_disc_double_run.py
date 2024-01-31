@@ -17,6 +17,7 @@ limitations under the License.
 import unittest
 from copy import deepcopy
 
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as StudyMDA
 from gemseo.utils.compare_data_manager_tooling import compare_dict
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -31,7 +32,7 @@ class DiscDoubleRunTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
+        self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
 
     def test_01_run_disc_twice_and_compare_dm(self):
