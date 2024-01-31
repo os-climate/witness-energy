@@ -34,7 +34,7 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
+        self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
@@ -70,7 +70,7 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
-                   'ns_ccs': self.name,
+                   GlossaryEnergy.NS_CCS: self.name,
                    'ns_energy_study': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 

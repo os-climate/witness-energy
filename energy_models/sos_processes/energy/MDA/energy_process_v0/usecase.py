@@ -69,7 +69,7 @@ hydropower_name = Electricity.hydropower_name
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 class Study(EnergyStudyManager):
-    def __init__(self, year_start=2020, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
                  techno_dict=DEFAULT_TECHNO_DICT,
                  main_study=True, bspline=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT,
                  energy_invest_input_in_abs_value=True):
@@ -129,8 +129,8 @@ class Study(EnergyStudyManager):
             list_weight.extend([0., 0.])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions',
-                        'ns_functions'])
+        list_ns.extend([GlossaryEnergy.NS_FUNCTIONS,
+                        GlossaryEnergy.NS_FUNCTIONS])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -158,7 +158,7 @@ class Study(EnergyStudyManager):
             list_weight.append(0.)
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
+            list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if hightemperatureheat.name in self.energy_list and GaseousHydrogen.name in self.energy_list and LiquidHydrogen.name in self.energy_list:
             list_var.append('primary_energies_production')
@@ -167,7 +167,7 @@ class Study(EnergyStudyManager):
             list_weight.append(0.)
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
+            list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if GaseousHydrogen.name in self.energy_list:
             if 'PlasmaCracking' in self.dict_technos[GaseousHydrogen.name]:
@@ -178,7 +178,7 @@ class Study(EnergyStudyManager):
                 list_weight.extend([0.])
                 list_aggr_type.append(
                     AGGR_TYPE_SMAX)
-                list_namespaces.append('ns_functions')
+                list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if CarbonStorage.name in self.ccs_list:
             list_var.extend(
@@ -188,7 +188,7 @@ class Study(EnergyStudyManager):
             list_weight.extend([0.])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
+            list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         list_var.extend(
             [TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF])
@@ -197,7 +197,7 @@ class Study(EnergyStudyManager):
         list_weight.extend([-1.])
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
-        list_namespaces.append('ns_functions')
+        list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if Electricity.name in self.energy_list:
             if hydropower_name in self.dict_technos[Electricity.name]:
@@ -208,7 +208,7 @@ class Study(EnergyStudyManager):
                 list_weight.extend([-1.])
                 list_aggr_type.append(
                     AGGR_TYPE_SMAX)
-                list_namespaces.append('ns_functions')
+                list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if SolidFuel.name in self.energy_list:
             list_var.extend(
@@ -218,7 +218,7 @@ class Study(EnergyStudyManager):
             list_weight.extend([0.])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
+            list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if LiquidHydrogen.name in self.energy_list:
             list_var.extend(
@@ -228,7 +228,7 @@ class Study(EnergyStudyManager):
             list_weight.extend([0.])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
+            list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if Syngas.name in self.energy_list:
             list_var.extend(
@@ -238,7 +238,7 @@ class Study(EnergyStudyManager):
             list_weight.extend([-1.0])
             list_aggr_type.append(
                 AGGR_TYPE_SMAX)
-            list_namespaces.append('ns_functions')
+            list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if set(EnergyDemandDiscipline.energy_constraint_list).issubset(self.energy_list):
             list_var.extend(
@@ -248,7 +248,7 @@ class Study(EnergyStudyManager):
             list_weight.extend([-1., -1.])
             list_aggr_type.extend(
                 [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
-            list_namespaces.extend(['ns_functions', 'ns_functions'])
+            list_namespaces.extend([GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent

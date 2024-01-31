@@ -39,7 +39,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         '''
         self.energy_name = 'hydrogen'
 
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
 
         self.electrolysis_techno_prices = pd.DataFrame({'Electrolysis.PEM': np.linspace(100, 100 + len(years) - 1, len(years)),
@@ -93,7 +93,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -166,7 +166,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
-                   'ns_energy_mix': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 

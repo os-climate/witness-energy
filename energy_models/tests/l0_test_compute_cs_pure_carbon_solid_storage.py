@@ -34,11 +34,11 @@ class PureCarbonSSPriceTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(2020, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -67,7 +67,7 @@ class PureCarbonSSPriceTestCase(unittest.TestCase):
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years})
 
         self.carbon_quantity_to_be_stored = pd.DataFrame(
-            {GlossaryEnergy.Years: range(2020, 2051), 'carbon_storage': 10.})
+            {GlossaryEnergy.Years: range(GlossaryEnergy.YeartStartDefault, 2050 + 1), 'carbon_storage': 10.})
 
         self.scaling_factor_invest_level = 1e3
         self.scaling_factor_techno_consumption = 1e3
@@ -93,7 +93,7 @@ class PureCarbonSSPriceTestCase(unittest.TestCase):
                    'ns_electricity': self.name,
                    'ns_carbon_storage': self.name,
                    'ns_carb': self.name,
-                   'ns_functions': self.name,
+                   GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_resource': self.name
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -114,10 +114,10 @@ class PureCarbonSSPriceTestCase(unittest.TestCase):
         carbon = [0.0, 0.8651783141413611, 1.7845680696378616, 2.70525797662332, 3.6258387241643946, 4.545445236338747, 5.463461182612219, 6.3793970326745875, 7.293107469201024, 8.200999856054061, 9.100399893483209, 9.98929061188071, 10.866138061016379, 11.729770619165382, 12.57929297278459, 13.414023343767314,
                   14.233446783229535, 15.037179855774266, 15.824946381059533, 16.596567148338323, 17.351944905009482, 18.091049892900365, 18.81390807653675, 19.52059149020655, 20.21121027018144, 20.88590603982225, 20.629668075861527, 20.353652183454564, 20.060976034308823, 19.75326948534016, 19.431629541578427]
         carbon_to_be_stored = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(2020, 2051), 'carbon_storage': np.array(carbon) / 2})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1), 'carbon_storage': np.array(carbon) / 2})
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame({GlossaryEnergy.Years: np.arange(2020, 2051)}),
+                       f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame({GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)}),
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,

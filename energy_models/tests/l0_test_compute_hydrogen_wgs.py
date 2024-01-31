@@ -52,11 +52,11 @@ class WGSPriceTestCase(unittest.TestCase):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1000
         # We take biomass price of methane/5.0
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(2020, 2050 + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
@@ -94,7 +94,7 @@ class WGSPriceTestCase(unittest.TestCase):
                                      'CoElectrolysis': 100.0,
                                      'BiomassGasification': 200.0
                                      }
-        self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: np.arange(2020, 2051),
+        self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
                                               ResourceGlossary.Water['name']: 31 * [0.002],
                                               ResourceGlossary.Uranium['name']: 1390,
                                               ResourceGlossary.CO2['name']: [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119],
@@ -117,13 +117,13 @@ class WGSPriceTestCase(unittest.TestCase):
 
     def test_01_compute_wgs_price_vssyngas_ratio(self):
 
-        years = np.arange(2020, 2051)
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         utilisation_ratio = pd.DataFrame({
             GlossaryEnergy.Years: years,
             GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
         })
         
-        inputs_dict = {GlossaryEnergy.YearStart: 2020,
+        inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YeartStartDefault,
                        GlossaryEnergy.YearEnd: 2050,
                        GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
                        'techno_infos_dict': WaterGasShiftDiscipline.techno_infos_dict_default,
@@ -137,7 +137,7 @@ class WGSPriceTestCase(unittest.TestCase):
                        GlossaryEnergy.TransportMarginValue: self.margin,
                        'initial_production': WaterGasShiftDiscipline.initial_production,
                        'initial_age_distrib': WaterGasShiftDiscipline.initial_age_distribution,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(2020, 2051)),
+                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        GlossaryEnergy.ResourcesPriceValue: self.resources_prices,
                        'syngas_ratio': self.syngas_ratio,
                        'needed_syngas_ratio': 0.0,

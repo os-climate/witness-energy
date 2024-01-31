@@ -318,7 +318,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         design_var_path = 'energy_models.core.design_variables_translation_bspline.design_var_disc.Design_Var_Discipline'
         design_var_builder = self.ee.factory.get_builder_from_module(
             f'{designvariable_name}', design_var_path)
-        ns_dict = {'ns_witness': f'{self.ee.study_name}',
+        ns_dict = {GlossaryEnergy.NS_WITNESS: f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
         builder.append(design_var_builder)
@@ -396,7 +396,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 #         design_var_path = 'energy_models.core.design_variables_translation_bspline.design_var_disc.Design_Var_Discipline'
 #         design_var_builder = self.ee.factory.get_builder_from_module(
 #             f'{designvariable_name}', design_var_path)
-#         ns_dict = {'ns_witness': f'{self.ee.study_name}',
+#         ns_dict = {GlossaryEnergy.NS_WITNESS: f'{self.ee.study_name}',
 #                    'ns_optim': f'{self.ee.study_name}'}
 #         self.ee.ns_manager.add_ns_def(ns_dict)
 #         builder.append(design_var_builder)

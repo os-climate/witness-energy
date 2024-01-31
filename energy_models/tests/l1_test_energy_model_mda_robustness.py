@@ -48,7 +48,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
         self.dirs_to_del = []
         self.namespace = 'MyCase'
         self.study_name = f'{self.namespace}'
-        self.year_start = 2020
+        self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
         logging.disable(logging.INFO)
 

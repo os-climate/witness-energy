@@ -23,6 +23,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import AGRI_TYPE
 from energy_models.core.stream_type.energy_disciplines.fuel_disc import FuelDiscipline
 from energy_models.core.stream_type.energy_disciplines.heat_disc import HeatDiscipline
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import CCS_NAME, INVEST_DISC_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
@@ -62,12 +63,12 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # Needed namespaces for the 3 disciplines below
         # All other namespaces are specified in each subprocess
-        ns_dict = {'ns_functions': f'{ns_study}.{func_manager_name}',
+        ns_dict = {GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}.{func_manager_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
-                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
                    'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
                    'ns_resource': f'{ns_study}.{energy_mix}.resource',
-                   'ns_ref': f'{ns_study}.NormalizationReferences',
+                   GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
         emissions_mod_dict = {
@@ -88,16 +89,17 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         builder_other_list = self.create_builder_list(
             mods_dict, ns_dict=ns_dict, associate_namespace=False)
         builder_list.extend(builder_other_list)
-        chain_builders_resource = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'resources_process', associate_namespace=False)
-        builder_list.extend(chain_builders_resource)
+        if self.use_resources_bool:
+            chain_builders_resource = self.ee.factory.get_builder_from_process(
+                'climateeconomics.sos_processes.iam.witness', 'resources_process', associate_namespace=False)
+            builder_list.extend(chain_builders_resource)
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
             ns_dict = {'ns_public': f'{ns_study}',
                        'ns_energy_study': f'{ns_study}',
-                       'ns_witness': f'{ns_study}',
+                       GlossaryEnergy.NS_WITNESS: f'{ns_study}',
                        'ns_energy': f'{ns_study}.{energy_mix}',
-                       'ns_ccs': f'{ns_study}.{CCS_NAME}'}
+                       GlossaryEnergy.NS_CCS: f'{ns_study}.{CCS_NAME}'}
             mods_dict = {
                 INVEST_DISC_NAME: 'energy_models.core.investments.disciplines.one_invest_disc.OneInvestDiscipline',
             }
@@ -111,10 +113,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                        'ns_energy_study': f'{ns_study}',
                        'ns_emissions': f'{ns_study}',
                        'ns_energy': f'{ns_study}',
-                       'ns_witness': f'{ns_study}',
-                       'ns_ccs': f'{ns_study}',
-                       'ns_ref': f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
-                       'ns_functions': f'{ns_study}.{func_manager_name}', }
+                       GlossaryEnergy.NS_WITNESS: f'{ns_study}',
+                       GlossaryEnergy.NS_CCS: f'{ns_study}',
+                       GlossaryEnergy.NS_REFERENCE: f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
+                       GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}.{func_manager_name}', }
             if not self.energy_invest_input_in_abs_value:
                 # add a discipline to handle correct investment split in case of mda (ie no optimizer to handle the split properly)
                 mods_dict = {
@@ -150,13 +152,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         #if energy_mix == 'EnergyMix':
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-            f'ns_energy_mix',
+            GlossaryEnergy.NS_ENERGY_MIX,
             post_proc_mod)
 
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_technology_mix'
         # if energy_mix == 'EnergyMix':
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-            f'ns_energy_mix',
+            GlossaryEnergy.NS_ENERGY_MIX,
             post_proc_mod)
 
         post_proc_mod = 'energy_models.sos_processes.post_processing.post_proc_stream_CO2_breakdown'

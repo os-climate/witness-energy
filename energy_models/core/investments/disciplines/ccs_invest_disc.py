@@ -46,17 +46,17 @@ class InvestCCSDiscipline(SoSWrapp):
         'version': '',
     }
     DESC_IN = {
-        GlossaryEnergy.YearStart: {'type': 'int', 'default': 2020, 'unit': '[-]',
+        GlossaryEnergy.YearStart: {'type': 'int', 'default': GlossaryEnergy.YeartStartDefault, 'unit': '[-]',
                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         GlossaryEnergy.YearEnd: {'type': 'int', 'default': 2050, 'unit': '[-]',
                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
 
         'ccs_investment': {'type': 'dataframe', 'unit': 'G$',
-                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
                                                     GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True)},
                            'dataframe_edition_locked': False},
         'invest_ccs_mix': {'type': 'dataframe',
-                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
                                                     'carbon_capture': ('float', None, False),
                                                     'carbon_storage': ('float', None, False),},
                            'dataframe_edition_locked': False},

@@ -62,11 +62,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         'GHG_global_warming_potential20': {'type': 'dict','subtype_descriptor':{'dict':'float'}, 'unit': 'kgCO2eq/kg',
                                            'default': ClimateEcoDiscipline.GWP_20_default,
                                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                           'namespace': 'ns_witness', 'user_level': 3},
+                                           'namespace': GlossaryEnergy.NS_WITNESS, 'user_level': 3},
         'GHG_global_warming_potential100': {'type': 'dict','subtype_descriptor':{'dict':'float'}, 'unit': 'kgCO2eq/kg',
                                             'default': ClimateEcoDiscipline.GWP_100_default,
                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                            'namespace': 'ns_witness', 'user_level': 3},
+                                            'namespace': GlossaryEnergy.NS_WITNESS, 'user_level': 3},
         GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
@@ -97,7 +97,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                                 },
               },
         'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt',
-                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs',
+                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_CCS,
                                   'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                            'carbon_storage Limited by capture (Gt)': (
                                                            'float', None, True), },}
@@ -116,7 +116,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         'CO2_emissions_sources': {'type': 'dataframe', 'unit': 'Gt'},
         'CO2_emissions_sinks': {'type': 'dataframe', 'unit': 'Gt'},
         'GHG_total_energy_emissions': {'type': 'dataframe', 'unit': 'Gt',
-                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_WITNESS},
         'GHG_emissions_per_energy': {'type': 'dict', 'subtype_descriptor': {'dict': 'dataframe'}, 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'},
     }
@@ -140,21 +140,21 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     if energy == BiomassDry.name:
                         for ghg in GHGEmissions.GHG_TYPE_LIST:
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.{ghg}_per_use'] = {
-                                'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': 'ns_witness',
+                                'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'N2O_per_use': ('float', None, True),
                                                      'CO2_per_use': ('float', None, True),
                                                      'CH4_per_use': ('float', None, True),}}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
+                            'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'electricity (TWh)': ('float', None, True),
                                                      'CO2_resource (Mt)': ('float', None, True),}}
 
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = {
-                            'type': 'dataframe', 'unit': 'PWh', 'namespace': 'ns_witness',
+                            'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'biomass_dry': ('float', None, True),
@@ -291,7 +291,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                         dynamic_inputs[f'{ccs}.{GlossaryEnergy.EnergyProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'namespace': 'ns_ccs',
+                            'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'carbon_capture': ('float', None, True),
                                                      'carbon_storage': ('float', None, True),
