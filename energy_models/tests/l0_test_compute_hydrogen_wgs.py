@@ -60,12 +60,12 @@ class WGSPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price,
-                                           'syngas': np.ones(len(years)) * 33.
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price,
+                                           GlossaryEnergy.syngas: np.ones(len(years)) * 33.
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.2, 'syngas': 0.2})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.2, GlossaryEnergy.syngas: 0.2})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.1715})
@@ -176,14 +176,14 @@ class WGSPriceTestCase(unittest.TestCase):
             price_list.append(price_details['WGS'].values[0])
 
     #         plt.figure()
-    #         plt.xlabel('syngas ratio')
+    #         plt.xlabel(f'{GlossaryEnergy.syngas} ratio')
     #         plt.plot(sg_ratio_list,
     #                  price_list)
     #         plt.ylabel('Price ($/kWh)')
     #         plt.show()
 
     #         plt.figure()
-    #         plt.xlabel('syngas ratio')
+    #         plt.xlabel(f'{GlossaryEnergy.syngas} ratio')
     #         plt.plot(sg_ratio_list,
     #                  syngas_needs_list)
     #         plt.ylabel('Needs (kWh/kWh)')

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class SolidFuel(EnergyType):
@@ -29,7 +30,7 @@ class SolidFuel(EnergyType):
         coal_needed = 627*11.63 = 7292 TWh
         iron_use_part = 7292/20000 = 0.364
     '''
-    name = 'solid_fuel'
+    name = GlossaryEnergy.solid_fuel
     ironsteel_use_part = 627 * 11.63 / (44000 - 24000)
     default_techno_list = ['CoalExtraction', 'Pelletizing']
     data_energy_dict = {'maturity': 5,

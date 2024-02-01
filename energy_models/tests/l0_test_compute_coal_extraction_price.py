@@ -45,7 +45,7 @@ class CoalPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                                                    0.159236536471781, 0.15899046935409588,
                                                                    0.15874840310033885,
                                                                    0.15875044941298937, 0.15875249600769718,
@@ -69,7 +69,7 @@ class CoalPriceTestCase(unittest.TestCase):
              })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -100,7 +100,7 @@ class CoalPriceTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'solid_fuel.CoalExtraction']
+                                                == f'{GlossaryEnergy.solid_fuel}.CoalExtraction']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(

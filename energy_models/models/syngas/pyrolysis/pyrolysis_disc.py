@@ -46,7 +46,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     lifetime = 20
     construction_delay = 2
     techno_infos_dict_default = {'maturity': 0,
-                                 'product': 'syngas',
+                                 'product': GlossaryEnergy.syngas,
                                  'Opex_percentage': 0.06,
                                  'CO2_from_production': 0.2,
                                  'CO2_from_production_unit': 'kg/kg',

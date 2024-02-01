@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class BiomassDry(EnergyType):
-    name = 'biomass_dry'
+    name = GlossaryEnergy.biomass_dry
     default_techno_list = ['ManagedWood', 'UnmanagedWood', 'CropEnergy']
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,

@@ -45,7 +45,7 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'biogas'
+        self.energy_name = GlossaryEnergy.biogas
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
         self.resource_list = [
@@ -67,14 +67,14 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1000.0
         # We take biomass price of methane/5.0
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
                                            })
         self.resources_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years, ResourceGlossary.WetBiomass['name']: electricity_price / 100.0
              })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
@@ -116,7 +116,7 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
 
     def test_01_biomass_gas_discipline_analytic_grad(self):
         self.name = 'Test'
-        self.model_name = 'AnaerobicDigestion'
+        self.model_name = GlossaryEnergy.AnaerobicDigestion
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -124,7 +124,7 @@ class BiogasJacobianTestCase(AbstractJacobianUnittest):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion_disc.AnaerobicDigestionDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biogas}.anaerobic_digestion.anaerobic_digestion_disc.AnaerobicDigestionDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

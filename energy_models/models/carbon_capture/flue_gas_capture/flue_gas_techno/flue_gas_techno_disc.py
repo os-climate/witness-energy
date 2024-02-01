@@ -41,7 +41,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         'icon': 'fa-solid fa-cloud fa-fw',
         'version': '',
     }
-    techno_name = 'flue_gas_capture.FlueGasTechno'
+    techno_name = f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno'
     lifetime = 25
     construction_delay = 1
 
@@ -138,4 +138,4 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         self.set_partial_derivatives_techno(
             grad_dict, None)
 
-        self.set_partial_derivatives_flue_gas('renewable')
+        self.set_partial_derivatives_flue_gas(GlossaryEnergy.renewable)

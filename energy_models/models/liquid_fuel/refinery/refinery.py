@@ -94,7 +94,7 @@ class Refinery(LiquidFuelTechno):
         Maybe add efficiency in consumption computation ?
 
         liquid_fuel is the total production
-        the break down is made with self.production['kerosene'] ... ect 
+        the break down is made with self.production[GlossaryEnergy.kerosene] ... ect 
         """
 
         for energy in self.other_energy_dict:

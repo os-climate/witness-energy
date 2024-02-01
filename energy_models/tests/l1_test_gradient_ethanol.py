@@ -41,7 +41,6 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
     def analytic_grad_entry(self):
         return [
             self.test_01_biomass_fermentation_discipline_analytic_grad,
-            self.test_02_ethanol_discipline_jacobian,
         ]
 
     def setUp(self):
@@ -52,14 +51,14 @@ class EthanolJacobianCase(AbstractJacobianUnittest):
         self.years = years
         self.energy_name = 'ethanol'
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.ones(len(years)) * 0.135 * 1000,
-             'biomass_dry': 45.0,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.ones(len(years)) * 0.135 * 1000,
+             GlossaryEnergy.biomass_dry: 45.0,
              })
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             'electricity': 0.0,
-             'biomass_dry': - 0.64 / 4.86,
+             GlossaryEnergy.electricity: 0.0,
+             GlossaryEnergy.biomass_dry: - 0.64 / 4.86,
              })
 
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,

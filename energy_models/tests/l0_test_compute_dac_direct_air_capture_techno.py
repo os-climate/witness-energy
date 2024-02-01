@@ -45,7 +45,7 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'renewable': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.renewable: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                                                  0.159236536471781, 0.15899046935409588,
                                                                  0.15874840310033885,
                                                                  0.15875044941298937, 0.15875249600769718,
@@ -64,11 +64,11 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
                                                                  0.1619200735346165,
                                                                  0.16214129913260598, 0.16236574581786147,
                                                                  0.16259350059915213,
-                                                                 0.1628246539459331]) * 1000.0, 'fossil': 100.
+                                                                 0.1628246539459331]) * 1000.0, GlossaryEnergy.fossil: 100.
              })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'renewable': 0.0, 'fossil': 0.2})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.renewable: 0.0, GlossaryEnergy.fossil: 0.2})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -109,7 +109,7 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
 
     def test_03_direct_air_capture_techno_discipline(self):
         self.name = 'Test'
-        self.model_name = 'direct_air_capture.DirectAirCaptureTechno'
+        self.model_name = f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',

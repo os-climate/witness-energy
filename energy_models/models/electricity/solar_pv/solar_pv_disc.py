@@ -51,7 +51,7 @@ class SolarPvDiscipline(ElectricityTechnoDiscipline):
     # https://www.iea.org/reports/world-energy-outlook-2019, License: CC BY
     # 4.0.
     techno_infos_dict_default = {'maturity': 0,
-                                 'product': 'electricity',
+                                 'product': GlossaryEnergy.electricity,
                                  'Opex_percentage': 0.021,  # Mean of IEA 2019, EOLES data and others
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',

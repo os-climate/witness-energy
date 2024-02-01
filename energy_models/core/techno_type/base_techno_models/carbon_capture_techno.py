@@ -22,6 +22,7 @@ from scipy.stats import linregress
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.techno_type import TechnoType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CCTechno(TechnoType):
@@ -148,7 +149,7 @@ class CCTechno(TechnoType):
 
         return real_ratio
 
-    def compute_delec_dfg_ratio(self, fg_mean_ratio, fg_ratio_effect, energy_name='electricity'):
+    def compute_delec_dfg_ratio(self, fg_mean_ratio, fg_ratio_effect, energy_name=GlossaryEnergy.electricity):
 
         if fg_ratio_effect:
             co2_concentration_list = [0.035, 0.092, 0.13, 0.186, 0.44, 0.99]

@@ -45,12 +45,12 @@ class RWGSPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': 110.,
-                                           'syngas': np.ones(len(years)) * 90.
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 110.,
+                                           GlossaryEnergy.syngas: np.ones(len(years)) * 90.
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.02, 'syngas': 0.02})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.02, GlossaryEnergy.syngas: 0.02})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.1715})

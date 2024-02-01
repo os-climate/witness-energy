@@ -41,8 +41,8 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage', 'heat.lowtemperatureheat',
-            'heat.mediumtemperatureheat', 'heat.hightemperatureheat']]
+            GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.ethanol', GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, f'{GlossaryEnergy.heat}.lowtemperatureheat',
+            f'{GlossaryEnergy.heat}.mediumtemperatureheat', f'{GlossaryEnergy.heat}.hightemperatureheat']]
         # print(GlossaryEnergy.energy_list, self.energy_list)
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
@@ -50,7 +50,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
         # print('streams_outputs_dict', streams_outputs_dict.keys())
         # print('pkl_file', pkl_file)
         pkl_file.close()
-        self.ccs_list = ['carbon_capture', 'carbon_storage']
+        self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
 
         self.CO2_per_use = {}
         self.CH4_per_use = {}
@@ -121,7 +121,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
         }
 
         for energy in self.energy_list:
-            if energy == 'biomass_dry':
+            if energy == GlossaryEnergy.biomass_dry:
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CO2_per_use'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CH4_per_use'] = self.CH4_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.N2O_per_use'] = self.N2O_per_use[energy]

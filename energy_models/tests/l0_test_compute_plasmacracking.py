@@ -45,7 +45,7 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'methane': 0.123 / 15.4})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4})
         hydro_margin = list(func(list(years)))
 
         self.margin = pd.DataFrame({GlossaryEnergy.Years: years,
@@ -88,7 +88,7 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
                                        'transport': H2_transport})
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                    0.089236536471781, 0.08899046935409588,
                                                                    0.08874840310033885,
                                                                    0.08875044941298937, 0.08875249600769718,
@@ -108,7 +108,7 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
                                                                    0.09214129913260598, 0.09236574581786147,
                                                                    0.09259350059915213,
                                                                    0.0928246539459331]) * 1000,
-             'methane': np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
+             GlossaryEnergy.methane: np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
                                   0.0557845721244601, 0.05435665353332419, 0.05225877624361548,
                                   0.05045797192512811, 0.04888746457113824, 0.04750006564084081,
                                   0.04626130284326101, 0.044848110567750024, 0.043596892851567724,
@@ -118,7 +118,7 @@ class PlasmaCrackingPriceTestCase(unittest.TestCase):
                                   0.03581750135963429, 0.03530598876014997, 0.03482320115289285,
                                   0.03436642036567466, 0.03393328183670935, 0.033521717015978045,
                                   0.03312990690071806, 0.032756244237772174, 0.03239930253734476]) * 1000 / 1.5,
-             'hydrogen.gaseous_hydrogen': [94.39744156, 94.53049211, 95.3084315, 96.14172434, 97.07583326, 98.1816908,
+             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': [94.39744156, 94.53049211, 95.3084315, 96.14172434, 97.07583326, 98.1816908,
                                            100.4999642, 103.1650511, 105.7810733, 108.2881198, 112.3278769, 115.498708,
                                            118.3399036, 121.7401092, 124.4554085, 127.2076686, 130.6775094, 134.686383,
                                            140.5627809, 144.2504245, 145.5922496, 147.085805, 148.963262, 151.1350341,

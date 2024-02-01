@@ -39,9 +39,9 @@ class CO2EmissionsDiscTestCase(unittest.TestCase):
         self.years = np.arange(self.year_start, self.year_end + 1)
         print(EnergyMix.energy_list)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage', 'heat.lowtemperatureheat', \
-            'heat.mediumtemperatureheat', 'heat.hightemperatureheat', 'biomass_dry']]
-        self.ccs_list = ['carbon_capture', 'carbon_storage']
+            GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.ethanol', GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, f'{GlossaryEnergy.heat}.lowtemperatureheat', \
+            f'{GlossaryEnergy.heat}.mediumtemperatureheat', f'{GlossaryEnergy.heat}.hightemperatureheat', GlossaryEnergy.biomass_dry]]
+        self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)

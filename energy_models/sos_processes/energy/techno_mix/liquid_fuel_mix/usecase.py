@@ -73,11 +73,11 @@ class Study(EnergyMixStudyManager):
         years = np.arange(self.year_start, self.year_end + 1)
 
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      'electricity': 16.0,
+                                      GlossaryEnergy.electricity: 16.0,
                                       'CO2': 0.0,
                                       'crude oil': 38.0,
-                                      'hydrogen.gaseous_hydrogen': 15.,
-                                      'syngas': 50.0})
+                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
+                                      GlossaryEnergy.syngas: 50.0})
 
         self.syngas_detailed_prices = pd.DataFrame({'CoalGasification': np.ones(len(years)) * 50.0,
                                                     'CoElectrolysis': 2.0 * 50.0,
@@ -101,8 +101,8 @@ class Study(EnergyMixStudyManager):
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 200.0})
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4,
-             'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.solid_fuel: 0.64 / 4.86, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4,
+             GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, 'crude oil': 0.02533})
 
         # define invest mix
         investment_mix = self.get_investments()

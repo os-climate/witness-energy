@@ -38,7 +38,7 @@ class AnaerobicDigestionDiscipline(BiogasTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'AnaerobicDigestion'
+    techno_name = GlossaryEnergy.AnaerobicDigestion
     lifetime = 20
     construction_delay = 3  # years Not Found
     techno_infos_dict_default = {'maturity': 3,

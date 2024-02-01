@@ -51,8 +51,8 @@ class TestEnergyorCCSInvest(unittest.TestCase):
 
         dict2 = {}
         dict2[GlossaryEnergy.Years] = self.years
-        dict2['carbon_capture'] = np.ones(len(self.years))
-        dict2['carbon_storage'] = np.ones(len(self.years)) * 0.5
+        dict2[GlossaryEnergy.carbon_capture] = np.ones(len(self.years))
+        dict2[GlossaryEnergy.carbon_storage] = np.ones(len(self.years)) * 0.5
         self.ccs_mix = pd.DataFrame(dict2)
 
         invest_ref = 1.0e3  # G$ means 1 milliard of dollars

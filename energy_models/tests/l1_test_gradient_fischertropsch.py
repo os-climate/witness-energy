@@ -50,12 +50,12 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'liquid_fuel'
+        self.energy_name = GlossaryEnergy.liquid_fuel
 
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': np.ones(len(years)) * 20,
-                                           'syngas': 34
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.ones(len(years)) * 20,
+                                           GlossaryEnergy.syngas: 34
                                            })
         self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34,
                                                     # price to be updated for
@@ -68,7 +68,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                                      'BiomassGasification': 200.0
                                      }
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.2, 'syngas': 0.2})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.2, GlossaryEnergy.syngas: 0.2})
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
                                           GlossaryEnergy.InvestValue: np.array(
                                               [4435750000.0, 4522000000.0, 4608250000.0,

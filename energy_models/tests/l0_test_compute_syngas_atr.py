@@ -46,7 +46,7 @@ class ATRPriceTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'methane': 0.034
+                                           GlossaryEnergy.methane: 0.034
                                            })
 
         self.resources_prices = pd.DataFrame(
@@ -58,7 +58,7 @@ class ATRPriceTestCase(unittest.TestCase):
 
              })
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'methane': 0.123 / 15.4})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.methane: 0.123 / 15.4})
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: len(years) * [1.0]})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]

@@ -62,9 +62,9 @@ class InvestEnergyDiscipline(SoSWrapp):
                               'dataframe_descriptor': {
                                   GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
                                   GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True),
-                                  'methane': ('float', None, True),
-                                  'electricity': ('float', None, True),
-                                  'hydrogen.gaseous_hydrogen': ('float', None, True)},
+                                  GlossaryEnergy.methane: ('float', None, True),
+                                  GlossaryEnergy.electricity: ('float', None, True),
+                                  f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': ('float', None, True)},
                               'dataframe_edition_locked': False},
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': EnergyMix.energy_list,

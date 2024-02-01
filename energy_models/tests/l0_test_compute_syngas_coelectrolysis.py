@@ -45,7 +45,7 @@ class CoelectrolysisPriceTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                    0.089236536471781, 0.08899046935409588,
                                                                    0.08874840310033885,
                                                                    0.08875044941298937, 0.08875249600769718,
@@ -75,7 +75,7 @@ class CoelectrolysisPriceTestCase(unittest.TestCase):
                                               ResourceGlossary.Water['name']: 1.4
                                               })
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: len(years) * [1.0]})

@@ -57,10 +57,10 @@ class ManagedWoodPriceTestCase(unittest.TestCase):
                                       0.0928246539459331]) * 1.5 * 1e-3
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': electricity_price})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         # invest: plantation of 0.19Mha of forests each years (actual trend
         # since 2017)
         self.invest_level = pd.DataFrame(
@@ -111,7 +111,7 @@ class ManagedWoodPriceTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biomass_dry.managed_wood.managed_wood_disc.ManagedWoodDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biomass_dry}.managed_wood.managed_wood_disc.ManagedWoodDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

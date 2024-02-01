@@ -59,11 +59,11 @@ class TransesterificationPriceTestCase(unittest.TestCase):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1000
         # We take biomass price of methane/5.0
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         default_resources_price_df = pd.DataFrame({GlossaryEnergy.Years: years,
                                                    'water': years * [2],
                                                    'uranium fuel': 1390000,
@@ -73,8 +73,8 @@ class TransesterificationPriceTestCase(unittest.TestCase):
                                                                     0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784,
                                                                     0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052,
                                                                     0.1098, 0.1144, 0.119]) * 1000,
-                                                   'biomass_dry': 68.12,
-                                                   'wet_biomass': 56,
+                                                   GlossaryEnergy.biomass_dry: 68.12,
+                                                   GlossaryEnergy.wet_biomass: 56,
                                                    'wood': years * [120],
                                                    NaturalOil.name: 31 * [36.25],
                                                    Methanol.name: 31 * [298],
@@ -123,7 +123,7 @@ class TransesterificationPriceTestCase(unittest.TestCase):
 
     def test_01_transesterification_discipline(self):
         self.name = 'Test'
-        self.model_name = 'Transesterification'
+        self.model_name = GlossaryEnergy.Transesterification
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -132,7 +132,7 @@ class TransesterificationPriceTestCase(unittest.TestCase):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biodiesel.transesterification.transesterification_disc.TransesterificationDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biodiesel}.transesterification.transesterification_disc.TransesterificationDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

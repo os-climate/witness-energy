@@ -65,7 +65,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
     energy_name = CarbonCapture.name
 
-    def set_partial_derivatives_flue_gas(self, energy_name='electricity'):
+    def set_partial_derivatives_flue_gas(self, energy_name=GlossaryEnergy.electricity):
 
         inputs_dict = self.get_sosdisc_inputs()
         scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']

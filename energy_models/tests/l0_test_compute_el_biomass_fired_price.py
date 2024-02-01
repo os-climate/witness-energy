@@ -50,10 +50,10 @@ class GasTurbinePriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'biomass_dry': np.ones(len(years)) * 11.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.biomass_dry: np.ones(len(years)) * 11.0})
         # From CO2 prod of methane fossil
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'methane': 0.123 / 15.4, 'biomass_dry': - 0.64 / 4.86})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.biomass_dry: - 0.64 / 4.86})
         #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
 
         self.invest_level_2 = pd.DataFrame(
@@ -86,7 +86,7 @@ class GasTurbinePriceTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'electricity.BiomassFired']
+                                                == f'{GlossaryEnergy.electricity}.BiomassFired']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -201,10 +201,10 @@ class GasTurbinePriceTestCase(unittest.TestCase):
         power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
-        self.assertLessEqual(list(production_detailed['electricity (TWh)'].values),
+        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
                              list(power_production['total_installed_power'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
-        self.assertGreaterEqual(list(production_detailed[f'electricity (TWh)'].values),
+        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
                                 list(power_production['total_installed_power'] * techno_infos_dict[
                                     'full_load_hours'] / 1000 * 0.999))
 

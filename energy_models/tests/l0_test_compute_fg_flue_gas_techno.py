@@ -54,7 +54,7 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
 
         self.energy_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             'renewable': np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0})
+             GlossaryEnergy.renewable: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
@@ -79,7 +79,7 @@ class FGFlueGasTechnoTestCase(unittest.TestCase):
              GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 100})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'renewable': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.renewable: 0.0})
 
         transport_cost = 0,
 

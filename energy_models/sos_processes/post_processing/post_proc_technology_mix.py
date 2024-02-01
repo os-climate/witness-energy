@@ -65,7 +65,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
         var_f_name = f"{namespace}.{energ}.technologies_list"
         var_energyproduction_name = f"{namespace}.{energ}.energy_production_detailed"
         # biomass_dry not having techno list and other than biomass we are extracting energy list
-        if 'biomass_dry' not in var_f_name:
+        if GlossaryEnergy.biomass_dry not in var_f_name:
             EnergyDict[f"{energ}"] = {}
             loc_techno_list = execution_engine.dm.get_value(var_f_name)
             result = [f"{energ}." + direction for direction in loc_techno_list]

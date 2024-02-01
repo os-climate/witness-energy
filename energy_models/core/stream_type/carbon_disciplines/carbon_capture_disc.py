@@ -54,23 +54,23 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                        'namespace': 'ns_flue_gas', 'unit': '-',
                                        'dataframe_descriptor': {
                                            GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                           'electricity.CoalGen': ('float', None, True),
-                                           'electricity.GasTurbine': ('float', None, True),
-                                           'electricity.CombinedCycleGasTurbine': (
+                                           f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),
+                                           f'{GlossaryEnergy.electricity}.GasTurbine': ('float', None, True),
+                                           f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine': (
                                                'float', None, True),
-                                           'hydrogen.gaseous_hydrogen.WaterGasShift': (
+                                           f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': (
                                                'float', None, True),
-                                           'liquid_fuel.FischerTropsch': ('float', None, True),
-                                           'liquid_fuel.Refinery': ('float', None, True),
-                                           'methane.FossilGas': ('float', None, True),
-                                           'solid_fuel.Pelletizing': ('float', None, True),
-                                           'syngas.CoalGasification': ('float', None, True),
-                                           'fossil.FossilSimpleTechno': ('float', None, True),
-                                           'carbon_capture.direct_air_capture.AmineScrubbing': (
+                                           f'{GlossaryEnergy.liquid_fuel}.FischerTropsch': ('float', None, True),
+                                           f'{GlossaryEnergy.liquid_fuel}.Refinery': ('float', None, True),
+                                           f'{GlossaryEnergy.methane}.FossilGas': ('float', None, True),
+                                           f'{GlossaryEnergy.solid_fuel}.Pelletizing': ('float', None, True),
+                                           f'{GlossaryEnergy.syngas}.CoalGasification': ('float', None, True),
+                                           f'{GlossaryEnergy.fossil}.FossilSimpleTechno': ('float', None, True),
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': (
                                                'float', None, True),
-                                           'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing': (
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': (
                                                'float', None, True),
-                                           'carbon_capture.direct_air_capture.DirectAirCaptureTechno': (
+                                           f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno': (
                                                'float', None, True),
                                            }},
                'data_fuel_dict': {'type': 'dict', 'visibility': 'Shared',

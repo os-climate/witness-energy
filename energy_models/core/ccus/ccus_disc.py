@@ -68,9 +68,9 @@ class CCUS_Discipline(SoSWrapp):
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                        'carbon_capture': ('float', None, True),
+                                                                        GlossaryEnergy.carbon_capture: ('float', None, True),
                                                                         'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                                        'carbon_storage': ('float', None, True),
+                                                                        GlossaryEnergy.carbon_storage: ('float', None, True),
                                                                         'carbon_capture from energy mix (Gt)': (
                                                                         'float', None, True),
                                                                         'carbon_capture needed by energy mix (Gt)': (
@@ -79,9 +79,9 @@ class CCUS_Discipline(SoSWrapp):
         'carbon_capture_from_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                    'carbon_capture': ('float', None, True),
+                                                                    GlossaryEnergy.carbon_capture: ('float', None, True),
                                                                     'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                                    'carbon_storage': ('float', None, True),
+                                                                    GlossaryEnergy.carbon_storage: ('float', None, True),
                                                                     'carbon_capture from energy mix (Gt)': (
                                                                     'float', None, True), }, }
     }
@@ -127,16 +127,16 @@ class CCUS_Discipline(SoSWrapp):
                         'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': GlossaryEnergy.NS_CCS,
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 'carbon_capture': ('float', None, True),
+                                                 GlossaryEnergy.carbon_capture: ('float', None, True),
                                                  'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                 'carbon_storage': ('float', None, True), }}
+                                                 GlossaryEnergy.carbon_storage: ('float', None, True), }}
                     dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': GlossaryEnergy.NS_CCS,
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                 'carbon_capture': ('float', None, True),
+                                                 GlossaryEnergy.carbon_capture: ('float', None, True),
                                                  'carbon_capture_wotaxes': ('float', None, True),
-                                                 'carbon_storage': ('float', None, True),
+                                                 GlossaryEnergy.carbon_storage: ('float', None, True),
                                                  'carbon_storage_wotaxes': ('float', None, True), }}
                     dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,

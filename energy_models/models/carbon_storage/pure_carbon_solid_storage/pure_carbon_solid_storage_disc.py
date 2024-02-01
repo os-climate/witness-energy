@@ -93,7 +93,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                              })
 
     carbon_zero_quantity_to_be_stored = pd.DataFrame(
-        {GlossaryEnergy.Years: range(GlossaryEnergy.YeartStartDefault, 2050 + 1), 'carbon_storage': 0.})
+        {GlossaryEnergy.Years: range(GlossaryEnergy.YeartStartDefault, 2050 + 1), GlossaryEnergy.carbon_storage: 0.})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -112,7 +112,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                                 'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb',
                                                 'visibility': 'Shared', 'structuring': True,
                                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('int', None, False),
-                                                                         'carbon_storage': ('float', None, False),
+                                                                         GlossaryEnergy.carbon_storage: ('float', None, False),
                                                                          }
                                                 }}
     # -- add specific techno outputs to this
@@ -145,7 +145,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                         GlossaryEnergy.Years].values.tolist() != list(years):
                         self.update_default_value(
                             'carbon_quantity_to_be_stored', self.IO_TYPE_IN,
-                            pd.DataFrame({GlossaryEnergy.Years: years, 'carbon_storage': 0.}))
+                            pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_storage: 0.}))
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -217,7 +217,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'),
-            ('carbon_quantity_to_be_stored', 'carbon_storage'),
+            ('carbon_quantity_to_be_stored', GlossaryEnergy.carbon_storage),
             - np.identity(len(self.techno_model.carbon_to_be_stored_constraint))
         )
 
@@ -305,7 +305,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
         for var in var_list:
             type = 'bar'
-            if var == 'carbon_storage':
+            if var == GlossaryEnergy.carbon_storage:
                 title = 'Plasmacracking_carbon_to_be_stored'
             if var == 'carbon (Mt)':
                 title = 'Consumption'

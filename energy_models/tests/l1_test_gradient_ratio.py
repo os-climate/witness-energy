@@ -292,7 +292,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biomass_dry.crop_energy.crop_energy_disc.CropEnergyDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biomass_dry}.crop_energy.crop_energy_disc.CropEnergyDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.techno_name, mod_path)
 
@@ -392,7 +392,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood_disc.UnmanagedWoodDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biomass_dry}.unmanaged_wood.unmanaged_wood_disc.UnmanagedWoodDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.techno_name, mod_path)
 
@@ -682,7 +682,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         Test the gradients of the ratios on CalciumLooping techno since CarbonCapture technos have special gradients
         '''
         self.setUp()
-        self.techno_name = 'flue_gas_capture.CalciumLooping'
+        self.techno_name = f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -779,7 +779,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         Test the gradients of the ratios on Gaseous Hydrogen energy to test the gradients on a stream
         '''
         self.setUp()
-        self.energy_name = 'hydrogen.gaseous_hydrogen'
+        self.energy_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
@@ -869,7 +869,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         Also, set the inputs so that the limited flue gas case is tested.
         '''
         self.setUp()
-        self.energy_name = 'carbon_capture'
+        self.energy_name = GlossaryEnergy.carbon_capture
         self.ee = ExecutionEngine(self.name)
         ns_dict = {GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_flue_gas': f'{self.name}',
@@ -930,8 +930,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # Overwrite CalciumLooping techno production to test the flue_gas
         # limited case
         inputs_dict[
-            f'{namespace}.{self.energy_name}.flue_gas_capture.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
-            'carbon_capture (Mt)'] *= np.linspace(1.0, 5.0, len(self.years))
+            f'{namespace}.{self.energy_name}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
+            f'{GlossaryEnergy.carbon_capture} (Mt)'] *= np.linspace(1.0, 5.0, len(self.years))
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()

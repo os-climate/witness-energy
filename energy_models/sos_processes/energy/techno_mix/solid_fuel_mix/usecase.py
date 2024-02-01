@@ -73,9 +73,9 @@ class Study(EnergyMixStudyManager):
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                      'electricity': 16.0,
+                                      GlossaryEnergy.electricity: 16.0,
                                       'crude oil': 44.0,
-                                      'biomass_dry': 68.12 / 3.36})
+                                      GlossaryEnergy.biomass_dry: 68.12 / 3.36})
 
         # 2020 - 2025 www.globenewswire.com growth rate of 14,47%
         # invest_level = pd.DataFrame(
@@ -102,8 +102,8 @@ class Study(EnergyMixStudyManager):
         resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
 
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'solid_fuel': 0.64 / 4.86, 'biomass_dry': - 0.425 * 44.01 / 12.0,
-             'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.solid_fuel: 0.64 / 4.86, GlossaryEnergy.biomass_dry: - 0.425 * 44.01 / 12.0,
+             GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
              'crude oil': 0.02533})
 
         investment_mix = self.get_investments()

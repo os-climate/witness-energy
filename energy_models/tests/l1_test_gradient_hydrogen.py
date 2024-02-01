@@ -54,7 +54,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'hydrogen'
+        self.energy_name = GlossaryEnergy.hydrogen
 
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
@@ -154,43 +154,43 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                           })
 
         self.smr_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                             'hydrogen.gaseous_hydrogen (TWh)': [230.779470] * len(years),
-                                             'electricity (TWh)': [82.649011] * len(years),
-                                             'syngas (TWh)': [3579.828092] * len(years),
+                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [230.779470] * len(years),
+                                             f'{GlossaryEnergy.electricity} (TWh)': [82.649011] * len(years),
+                                             f'{GlossaryEnergy.syngas} (TWh)': [3579.828092] * len(years),
                                              f"{ResourceGlossary.Water['name']} (Mt)": [381.294427] * len(years)})
 
         self.smr_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                            'hydrogen.gaseous_hydrogen (TWh)': [2304.779470] * len(years),
+                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [2304.779470] * len(years),
                                             'CO2 from Flue Gas (Mt)': [844.027980] * len(years)})
 
         self.plasmacracking_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                       'hydrogen.gaseous_hydrogen (TWh)': np.linspace(1e-5, 1,
+                                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': np.linspace(1e-5, 1,
                                                                                                       len(years)),
                                                        f"{ResourceGlossary.Carbon['name']} (Mt)": [0.008622] * len(
                                                            years)})
 
         self.plasmacracking_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                        'electricity (TWh)': [0.019325] * len(years),
-                                                        'methane (TWh)': [0.213945] * len(years)})
+                                                        f'{GlossaryEnergy.electricity} (TWh)': [0.019325] * len(years),
+                                                        f'{GlossaryEnergy.methane} (TWh)': [0.213945] * len(years)})
 
         self.electrolysis_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                      'electricity (TWh)': [4.192699] * len(years),
+                                                      f'{GlossaryEnergy.electricity} (TWh)': [4.192699] * len(years),
                                                       f"{ResourceGlossary.Water['name']} (Mt)": [0.021638] * len(
                                                           years)})
 
         self.electrolysis_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                     'hydrogen.gaseous_hydrogen (TWh)': [2.684940] * len(years),
+                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [2.684940] * len(years),
                                                      f"{ResourceGlossary.Dioxygen['name']} (Mt)": [0.019217] * len(
                                                          years)})
 
         self.electrolysis_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'Electrolysis': 0.0, 'electricity': 0.0, 'production': 0.0})
+            {GlossaryEnergy.Years: years, 'Electrolysis': 0.0, GlossaryEnergy.electricity: 0.0, 'production': 0.0})
 
         self.plasma_cracking_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'PlasmaCracking': -0.243905, 'carbon storage': -0.327803, 'methane': 0.0,
-             'electricity': 0.0, 'production': 0.0})
+            {GlossaryEnergy.Years: years, 'PlasmaCracking': -0.243905, 'carbon storage': -0.327803, GlossaryEnergy.methane: 0.0,
+             GlossaryEnergy.electricity: 0.0, 'production': 0.0})
         self.smr_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'WaterGasShift': 0.366208, 'syngas': 0.0, 'electricity': 0.0,
+            {GlossaryEnergy.Years: years, 'WaterGasShift': 0.366208, GlossaryEnergy.syngas: 0.0, GlossaryEnergy.electricity: 0.0,
              'production': 0.366208})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
@@ -213,9 +213,9 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1000
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price,
-                                           'syngas': np.ones(len(years)) * 33.,
-                                           'methane': np.array(
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price,
+                                           GlossaryEnergy.syngas: np.ones(len(years)) * 33.,
+                                           GlossaryEnergy.methane: np.array(
                                                [0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
                                                 0.0557845721244601, 0.05435665353332419, 0.05225877624361548,
                                                 0.05045797192512811, 0.04888746457113824, 0.04750006564084081,
@@ -227,11 +227,11 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                 0.03436642036567466, 0.03393328183670935, 0.033521717015978045,
                                                 0.03312990690071806, 0.032756244237772174,
                                                 0.03239930253734476]) * 1000 / 1.5,
-                                           'hydrogen.gaseous_hydrogen': 50
+                                           f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 50
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.02, 'syngas': 0.2, 'methane': -0.1})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.02, GlossaryEnergy.syngas: 0.2, GlossaryEnergy.methane: -0.1})
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.1715})
 
@@ -302,9 +302,9 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         demand_ratio_dict[GlossaryEnergy.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
-        self.all_streams_demand_ratio['syngas'] = np.linspace(
+        self.all_streams_demand_ratio[GlossaryEnergy.syngas] = np.linspace(
             100, 50, len(years))
-        self.all_streams_demand_ratio['electricity'] = np.linspace(
+        self.all_streams_demand_ratio[GlossaryEnergy.electricity] = np.linspace(
             60, 40, len(years))
 
         resource_ratio_dict = dict(
@@ -652,7 +652,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
     def test_06_hydrogen_jacobian(self):
 
         self.name = 'Test'
-        self.model_name = 'hydrogen.gaseous_hydrogen'
+        self.model_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
@@ -793,7 +793,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 500.0})
 
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'electricity': [173.742946887766, 161.84399453690324, 151.0934568827067,
+                                           GlossaryEnergy.electricity: [173.742946887766, 161.84399453690324, 151.0934568827067,
                                                            145.6720973278901, 139.49228409317507, 134.44503997718164,
                                                            132.45608774522722, 130.3584078226701, 127.52060230536652,
                                                            124.30846852212048, 121.876714113205, 118.62252128746763,
@@ -821,7 +821,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                            71.50963387473212, 71.1772779622413, 71.03516293997427,
                                                            69.38040456950807, 70.4079758082903, 71.08045334986878,
                                                            -3584275.060458262, -2329800.890993138],
-                                           'syngas': [42.028563729469255, 40.35463927282826, 29.575202670848103,
+                                           GlossaryEnergy.syngas: [42.028563729469255, 40.35463927282826, 29.575202670848103,
                                                       27.981919244567436, 28.4608102544913, 28.316848016389194,
                                                       28.452220125409035, 28.518772400245417, 28.501110014065095,
                                                       27.802297099840523, 27.54682646939144, 27.40656801644799,
@@ -848,7 +848,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                       -437160.30903796665, -447053.30091864016, -450237.3621336989,
                                                       -449052.56334736367, -444609.502771713, -437862.4445371982,
                                                       -425706.8529415283, -7278394.372789974, -4730642.794054429],
-                                           'methane': [36.24200626025384, 36.037823693272635, 37.922057939185905,
+                                           GlossaryEnergy.methane: [36.24200626025384, 36.037823693272635, 37.922057939185905,
                                                        37.90938443561647, 37.71337829342477, 37.615460321755776,
                                                        37.596894718251846, 37.60924247396737, 37.609470425462696,
                                                        37.60927931634897, 37.62597197711281, 37.59995375203008,
@@ -875,10 +875,10 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                        121.95161931317762, 157.0563442922703, 161.15421153352872,
                                                        165.15600888621702, 168.89473198397354, 172.84836967336923,
                                                        176.61716464734127, -253334.87584684434, -164597.48887207167],
-                                           'hydrogen.gaseous_hydrogen': 50
+                                           f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 50
                                            })
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.02, 'syngas': 0.2, 'methane': 0.1})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.02, GlossaryEnergy.syngas: 0.2, GlossaryEnergy.methane: 0.1})
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(0.2, 0.8, len(years))))
@@ -1042,7 +1042,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
     def test_08_gaseous_hydrogen_discipline_jacobian(self):
 
         self.name = 'Test'
-        self.energy_name = 'hydrogen.gaseous_hydrogen'
+        self.energy_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',

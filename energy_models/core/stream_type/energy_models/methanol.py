@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Methanol(EnergyType):
@@ -23,7 +24,7 @@ class Methanol(EnergyType):
     # It can also be used as an alternative fuel through combustion reaction
     # Source: J.M.K.C. Donev et al. (2018). Energy Education - Methanol [Online].
     # Available: https://energyeducation.ca/encyclopedia/Methanol. [Accessed: June 20, 2022].
-    name = 'fuel.methanol'
+    name = f'{GlossaryEnergy.fuel}.methanol'
     short_name = 'methanol'
     default_techno_list = ['CO2Hydrogenation']
     data_energy_dict = {'maturity': 5,

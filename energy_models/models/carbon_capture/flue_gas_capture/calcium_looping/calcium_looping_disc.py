@@ -39,7 +39,7 @@ class CalciumLoopingDiscipline(CCTechnoDiscipline):
         'icon': 'fas fa-cloud fa-fw',
         'version': '',
     }
-    techno_name = 'flue_gas_capture.CalciumLooping'
+    techno_name = f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'
     lifetime = 25  # SAEECCT Coal USC plant lifetime
     construction_delay = 1
 

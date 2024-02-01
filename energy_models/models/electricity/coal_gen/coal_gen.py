@@ -50,7 +50,7 @@ class CoalGen(ElectricityTechno):
         self.cost_details[Water.name] = list(
             self.resources_prices[Water.name] * self.cost_details['water_needs'])
 
-        # + self.cost_details['electricity']
+        # + self.cost_details[GlossaryEnergy.electricity]
         return self.cost_details[SolidFuel.name] + self.cost_details[Water.name]
 
     def compute_consumption_and_production(self):

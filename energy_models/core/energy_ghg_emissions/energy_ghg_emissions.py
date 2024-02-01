@@ -72,7 +72,7 @@ class EnergyGHGEmissions(BaseStream):
         self.sub_consumption_dict = {}
 
         for energy in self.energy_list:
-            if energy == 'biomass_dry':
+            if energy == GlossaryEnergy.biomass_dry:
 
                 for ghg in self.GHG_TYPE_LIST:
                     self.ghg_per_use_dict[ghg][energy] = inputs_dict[

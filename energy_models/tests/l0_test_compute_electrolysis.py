@@ -46,9 +46,9 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 100, 100, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 60.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 60.0})
         self.energy_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         # price of 1 kg of wood
         self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: years, ResourceGlossary.Water['name']: 0.0,
                                               ResourceGlossary.Platinum['name']: 32825887})

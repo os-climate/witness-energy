@@ -52,7 +52,7 @@ class CoalGenDiscipline(ElectricityTechnoDiscipline):
     # goals. Nature communications, 10(1), pp.1-9.
     construction_delay = 5  # For 1000MW hypercritical in Korea
     techno_infos_dict_default = {'maturity': 0,
-                                 'product': 'electricity',
+                                 'product': GlossaryEnergy.electricity,
                                  # Lorenczik, S., Kim, S., Wanner, B., Bermudez Menendez, J.M., Remme, U., Hasegawa,
                                  # T., Keppler, J.H., Mir, L., Sousa, G., Berthelemy, M. and Vaya Soler, A., 2020.
                                  # Projected Costs of Generating Electricity-2020 Edition (No. NEA--7531).

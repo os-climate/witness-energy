@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class HydrotreatedOilFuel(EnergyType):
@@ -26,8 +27,8 @@ class HydrotreatedOilFuel(EnergyType):
     oil can also be blended with conventional diesel or processed into biodiesel, HVO or bioliquids for use
     under a wider range of conditions. (Source: https://en.wikipedia.org/wiki/Vegetable_oil_fuel)
     """
-    name = 'fuel.hydrotreated_oil_fuel'
-    short_name = 'hydrotreated_oil_fuel'
+    name = f'{GlossaryEnergy.fuel}.hydrotreated_oil_fuel'
+    short_name = GlossaryEnergy.hydrotreated_oil_fuel
     default_techno_list = ['HefaDecarboxylation', 'HefaDeoxygenation']
     data_energy_dict = {'maturity': 5,
                         # Ref: The swedish knowledge centre for renewable transportation fuels (f3)

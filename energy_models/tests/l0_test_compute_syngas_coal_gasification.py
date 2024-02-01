@@ -46,11 +46,11 @@ class SyngasCoalGasificationTestCase(unittest.TestCase):
 
         # per kWh
         self.energy_prices = pd.DataFrame({
-            GlossaryEnergy.Years: years, 'solid_fuel': np.ones(len(years)) * 48
+            GlossaryEnergy.Years: years, GlossaryEnergy.solid_fuel: np.ones(len(years)) * 48
         })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'solid_fuel': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.solid_fuel: 0.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,

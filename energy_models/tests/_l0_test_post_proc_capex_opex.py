@@ -16,6 +16,7 @@ limitations under the License.
 import unittest
 
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as Study
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
@@ -47,14 +48,14 @@ class PostProcessEnergy(unittest.TestCase):
         """
         All energy list
         """
-        energylist = ['methane', 'hydrogen.gaseous_hydrogen', 'biogas', 'syngas', 'fuel.liquid_fuel', \
-                      'fuel.hydrotreated_oil_fuel', 'solid_fuel', 'biomass_dry', \
-                      'electricity', 'fuel.biodiesel', 'fuel.ethanol', 'hydrogen.liquid_hydrogen']
+        energylist = [GlossaryEnergy.methane, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.biogas, GlossaryEnergy.syngas, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}', \
+                      f'{GlossaryEnergy.fuel}.hydrotreated_oil_fuel', GlossaryEnergy.solid_fuel, GlossaryEnergy.biomass_dry, \
+                      GlossaryEnergy.electricity, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}', f'{GlossaryEnergy.fuel}.ethanol', f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}']
         self.namespace_list = []
         """
         All energy list with study name for post processing
         """
-        energylist = ['heat.hightemperatureheat']
+        energylist = [f'{GlossaryEnergy.heat}.hightemperatureheat']
         for energy in energylist:
             self.namespace_list.append(f'{self.study_name}.EnergyMix.{energy}')
 

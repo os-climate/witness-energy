@@ -56,11 +56,11 @@ class UnmanagedWoodPriceTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': electricity_price})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price})
 
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         # invest: plantation of 0.19Mha of forests each years (actual trend
         # since 2017)
         self.scaling_factor_invest_level = 1e3
@@ -112,7 +112,7 @@ class UnmanagedWoodPriceTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood_disc.UnmanagedWoodDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biomass_dry}.unmanaged_wood.unmanaged_wood_disc.UnmanagedWoodDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

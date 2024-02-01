@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class GaseousHydrogen(EnergyType):
-    name = 'hydrogen' + '.' + 'gaseous_hydrogen'
-    short_name = 'gaseous_hydrogen'
+    name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
+    short_name = GlossaryEnergy.gaseous_hydrogen
     default_techno_list = ['Electrolysis.PEM', 'Electrolysis.AWE',
                            'Electrolysis.SOEC', 'WaterGasShift', 'PlasmaCracking']
     data_energy_dict = {'maturity': 10,

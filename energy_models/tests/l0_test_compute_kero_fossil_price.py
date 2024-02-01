@@ -52,7 +52,7 @@ class RefineryPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                                                    0.159236536471781, 0.15899046935409588,
                                                                    0.15874840310033885,
                                                                    0.15875044941298937, 0.15875249600769718,
@@ -72,12 +72,12 @@ class RefineryPriceTestCase(unittest.TestCase):
                                                                    0.16214129913260598, 0.16236574581786147,
                                                                    0.16259350059915213,
                                                                    0.1628246539459331]) * 1000.0,
-             'hydrogen.gaseous_hydrogen': 15.0 * np.ones(len(years))
+             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.0 * np.ones(len(years))
 
              })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'hydrogen.gaseous_hydrogen': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -108,7 +108,7 @@ class RefineryPriceTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'liquid_fuel.Refinery']
+                                                == f'{GlossaryEnergy.liquid_fuel}.Refinery']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(

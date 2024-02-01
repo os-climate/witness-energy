@@ -55,8 +55,8 @@ class FGPressureSwingAdsorptionTestCase(unittest.TestCase):
 
         self.energy_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             'electricity': np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0,
-             'methane': np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0})
+             GlossaryEnergy.electricity: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0,
+             GlossaryEnergy.methane: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
@@ -81,7 +81,7 @@ class FGPressureSwingAdsorptionTestCase(unittest.TestCase):
              GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 100})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
 
         transport_cost = 0,
 

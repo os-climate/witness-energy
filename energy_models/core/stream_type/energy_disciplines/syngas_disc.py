@@ -250,7 +250,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
         serie = InstanciatedSeries(
             years.tolist(),
-            syngas_ratio.tolist(), 'syngas mix', 'lines')
+            syngas_ratio.tolist(), f'{GlossaryEnergy.syngas} mix', 'lines')
 
         new_chart.series.append(serie)
 

@@ -43,7 +43,7 @@ class PelletsPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                    0.089236536471781, 0.08899046935409588,
                                                                    0.08874840310033885,
                                                                    0.08875044941298937, 0.08875249600769718,
@@ -63,10 +63,10 @@ class PelletsPriceTestCase(unittest.TestCase):
                                                                    0.09214129913260598, 0.09236574581786147,
                                                                    0.09259350059915213,
                                                                    0.0928246539459331]) * 1000.0,
-             'biomass_dry': np.ones(len(years)) * 68.12 / 3.36})
+             GlossaryEnergy.biomass_dry: np.ones(len(years)) * 68.12 / 3.36})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'biomass_dry': - 0.425 * 44.01 / 12.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.biomass_dry: - 0.425 * 44.01 / 12.0})
         # 2020 - 2025 www.globenewswire.com growth rate of 14,47%
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
@@ -104,7 +104,7 @@ class PelletsPriceTestCase(unittest.TestCase):
              0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916,
              0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
         # biomass_dry price in $/kg
-        # self.resources_price['biomass_dry'] = 68.12
+        # self.resources_price[GlossaryEnergy.biomass_dry] = 68.12
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(

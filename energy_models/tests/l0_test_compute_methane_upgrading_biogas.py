@@ -43,7 +43,7 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                    0.089236536471781, 0.08899046935409588,
                                                                    0.08874840310033885,
                                                                    0.08875044941298937, 0.08875249600769718,
@@ -63,7 +63,7 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
                                                                    0.09214129913260598, 0.09236574581786147,
                                                                    0.09259350059915213,
                                                                    0.0928246539459331]) * 1000,
-             'biogas': np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
+             GlossaryEnergy.biogas: np.array([0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
                                  0.0557845721244601, 0.05435665353332419, 0.05225877624361548,
                                  0.05045797192512811, 0.04888746457113824, 0.04750006564084081,
                                  0.04626130284326101, 0.044848110567750024, 0.043596892851567724,
@@ -76,7 +76,7 @@ class UpgradingBiogasPriceTestCase(unittest.TestCase):
              })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'biogas': -0.51})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.biogas: -0.51})
         # Use the same inest as SMR techno
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
                                           GlossaryEnergy.InvestValue: np.array(

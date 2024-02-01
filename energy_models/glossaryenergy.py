@@ -28,6 +28,39 @@ class GlossaryEnergy(GlossaryWitnessCore):
     NB_POLES_COARSE: int = 20  # number of poles in witness coarse
     NB_POLES_FULL: int = 8  # number of poles in witness full
 
+    biogas = "biogas"
+    biodiesel = "biodiesel"
+    biomass_dry = "biomass_dry"
+    electricity = "electricity"
+    fossil = "fossil"
+    fuel = "fuel"
+    gasoline = "gasoline"
+    heating_oil = "heating_oil"
+    hydrogen = "hydrogen"
+    kerosene = "kerosene"
+    liquid_fuel = "liquid_fuel"
+    liquid_hydrogen = "liquid_hydrogen"
+    gaseous_hydrogen = "gaseous_hydrogen"
+    liquefied_petroleum_gas = "liquefied_petroleum_gas"
+    hydrotreated_oil_fuel = "hydrotreated_oil_fuel"
+    methane = "methane"
+    renewable = "renewable"
+    solid_fuel = "solid_fuel"
+    syngas = "syngas"
+    ultra_low_sulfur_diesel = "ultra_low_sulfur_diesel"
+    wet_biomass = "wet_biomass"
+    carbon_capture = "carbon_capture"
+    carbon_storage = "carbon_storage"
+    direct_air_capture = "direct_air_capture"
+    flue_gas_capture = "flue_gas_capture"
+    heat = "heat"
+    lowtemperatureheat = "lowtemperatureheat"
+    mediumtemperatureheat = "mediumtemperatureheat"
+    hightemperatureheat = "hightemperatureheat"
+
+    Transesterification = "Transesterification"
+    AnaerobicDigestion = "AnaerobicDigestion"
+
     AllStreamsDemandRatioValue = "all_streams_demand_ratio"
     FlueGasMean = "flue_gas_mean"
     MarginValue = "margin"
@@ -53,7 +86,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CarbonCaptureAndStorageTechno = 'CarbonCaptureAndStorageTechno'
     CarbonStorageTechno = 'CarbonStorageTechno'
     DirectAirCapture = 'direct_air_capture.DirectAirCaptureTechno'
-    FlueGasCapture = 'flue_gas_capture.FlueGasTechno'
+    FlueGasCapture = f'{flue_gas_capture}.FlueGasTechno'
 
     CCSTechnoInvest = {
         "type": "dataframe",

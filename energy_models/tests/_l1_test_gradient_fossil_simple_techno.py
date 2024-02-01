@@ -63,11 +63,11 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                                              0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                              0.0928246539459331])[:len(years)]
         # We take biomass price of methane/5.0
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 10.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 10.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,

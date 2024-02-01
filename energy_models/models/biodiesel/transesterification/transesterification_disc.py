@@ -39,7 +39,7 @@ class TransesterificationDiscipline(BioDieselTechnoDiscipline):
         'version': '',
     }
     # -- add specific techno inputs to this
-    techno_name = 'Transesterification'
+    techno_name = GlossaryEnergy.Transesterification
     energy_name = BioDiesel.name
     lifetime = 15
     construction_delay = 3  # years

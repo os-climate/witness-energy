@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Methane(EnergyType):
-    name = 'methane'
+    name = GlossaryEnergy.methane
     emission_name = 'CH4'
     default_techno_list = ['Methanation', 'UpgradingBiogas', 'FossilGas']
     data_energy_dict = {'maturity': 5,

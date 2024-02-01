@@ -84,11 +84,11 @@ class Study(EnergyMixStudyManager):
         years = np.arange(self.year_start, self.year_end + 1)
         # energy_prices data came from test files  of corresponding technologies
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      'electricity': 148.0,
-                                      'syngas': 80.0,
-                                      'biogas': 70.0,
-                                      'methane': 100,
-                                      'biomass_dry': 45})
+                                      GlossaryEnergy.electricity: 148.0,
+                                      GlossaryEnergy.syngas: 80.0,
+                                      GlossaryEnergy.biogas: 70.0,
+                                      GlossaryEnergy.methane: 100,
+                                      GlossaryEnergy.biomass_dry: 45})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -111,7 +111,7 @@ class Study(EnergyMixStudyManager):
         resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.0,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.0,
              'water': 0.0})
         investment_mix = self.get_investments()
         # land_rate = {'land_rate': 5000.0, 'land_rate_unit': '$/Gha', }
