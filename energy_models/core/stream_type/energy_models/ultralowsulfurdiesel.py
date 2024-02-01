@@ -24,8 +24,8 @@ class UltraLowSulfurDiesel(EnergyType):
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # Engineering ToolBox, (2009). Combustion of Fuels - Carbon Dioxide Emission.
-                        #[online] Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
-                        #[Accessed 17 12 2021]. Value for diesel
+                        # [online] Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
+                        # [Accessed 17 12 2021]. Value for diesel
                         'CO2_per_use': 3.13,
                         'CO2_per_use_unit': 'kg/kg',
                         # Source: U.S. Energy Information Administration (13/12/2021)
@@ -37,9 +37,9 @@ class UltraLowSulfurDiesel(EnergyType):
                         'molar_mass': 108.099,  #
                         'molar_mass_unit': 'g/mol',
                         # Engineering ToolBox, (2003). Fuels - Higher and Lower Calorific Values.
-                        #[online] Available at: https://www.engineeringtoolbox.com/fuels-higher-calorific-values-d_169.html
-                        #[Accessed 17/12/2021]. Value for diesel
-                        'calorific_value': 11.86,   #
+                        # [online] Available at: https://www.engineeringtoolbox.com/fuels-higher-calorific-values-d_169.html
+                        # [Accessed 17/12/2021]. Value for diesel
+                        'calorific_value': 11.86,  #
                         'calorific_value_unit': 'kWh/kg',
                         'high_calorific_value': 11.86,  #
                         'high_calorific_value_unit': 'kWh/kg'}

@@ -67,9 +67,9 @@ class HeatDiscipline(SoSWrapp):
                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_public', 'user_level': 2},
                GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                               'possible_values': EnergyMix.energy_list,
-                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                               'editable': False, 'structuring': True},
+                                            'possible_values': EnergyMix.energy_list,
+                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                                            'editable': False, 'structuring': True},
                }
 
     DESC_OUT = {GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
@@ -77,7 +77,7 @@ class HeatDiscipline(SoSWrapp):
                 GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh'},
-                #'energy_heat_flux_detailed': {'type': 'dataframe', 'unit': 'TWh/Gha'},
+                # 'energy_heat_flux_detailed': {'type': 'dataframe', 'unit': 'TWh/Gha'},
                 }
 
     def setup_sos_disciplines(self):
@@ -94,30 +94,30 @@ class HeatDiscipline(SoSWrapp):
                     set(HeatDiscipline.heat_list).intersection(set(energy_mix_list)))
                 for energy in self.energy_list:
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyPricesValue}'] = {'type': 'dataframe',
-                                                                 'unit': '$/MWh',
-                                                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                 'namespace': GlossaryEnergy.NS_ENERGY_MIX
-                                                                 }
+                                                                                      'unit': '$/MWh',
+                                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                                      'namespace': GlossaryEnergy.NS_ENERGY_MIX
+                                                                                      }
                     dynamic_inputs[f'{energy}.energy_detailed_techno_prices'] = {'type': 'dataframe',
                                                                                  'unit': '$/MWh',
                                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                  'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                                  }
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {'type': 'dataframe',
-                                                                      'unit': 'PWh',
-                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                      'namespace': GlossaryEnergy.NS_ENERGY_MIX
-                                                                      }
+                                                                                           'unit': 'PWh',
+                                                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                                           'namespace': GlossaryEnergy.NS_ENERGY_MIX
+                                                                                           }
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] = {'type': 'dataframe',
-                                                                     'unit': 'PWh',
-                                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                     'namespace': GlossaryEnergy.NS_ENERGY_MIX
-                                                                     }
+                                                                                          'unit': 'PWh',
+                                                                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                                          'namespace': GlossaryEnergy.NS_ENERGY_MIX
+                                                                                          }
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionDetailedValue}'] = {'type': 'dataframe',
-                                                                              'unit': 'TWh',
-                                                                              'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                              'namespace': GlossaryEnergy.NS_ENERGY_MIX
-                                                                              }
+                                                                                                  'unit': 'TWh',
+                                                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                                                  'namespace': GlossaryEnergy.NS_ENERGY_MIX
+                                                                                                  }
                     # dynamic_inputs[f'{energy}.energy_heat_flux_detailed'] = {'type': 'dataframe',
                     #                                                           'unit': 'TWh/Gha',
                     #                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -186,6 +186,7 @@ class HeatDiscipline(SoSWrapp):
         energy_consumption = energy_consumption.groupby(level=0, axis=1).sum() #.reset_index()
         energy_production_detailed = energy_production_detailed.groupby(
             level=0, axis=1).sum()
+
         #energy_heat_flux_detailed = energy_heat_flux_detailed.groupby(level=0, axis=1).sum()
         #energy_production = energy_production.insert(0, GlossaryEnergy.Years, energy_production)
         cols = list(energy_production.columns)
@@ -205,7 +206,7 @@ class HeatDiscipline(SoSWrapp):
                         GlossaryEnergy.EnergyProductionValue: energy_production,
                         GlossaryEnergy.EnergyConsumptionValue: energy_consumption,
                         GlossaryEnergy.EnergyProductionDetailedValue: energy_production_detailed,
-                        #'energy_heat_flux_detailed': energy_heat_flux_detailed,
+                        # 'energy_heat_flux_detailed': energy_heat_flux_detailed,
                         }
 
         self.store_sos_outputs_values(outputs_dict)

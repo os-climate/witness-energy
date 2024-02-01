@@ -31,6 +31,7 @@ class LiquidFuelTechno(TechnoType):
         '''
         Compute other energy costs which will depend on the techno reaction (elec for electrolysis or methane for SMR by example)
         '''
+
     @abstractmethod
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 

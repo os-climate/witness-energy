@@ -76,7 +76,7 @@ class TestEnergyInvest(unittest.TestCase):
         dict1['electricity'] = np.ones(len(self.years))
         mix_df1 = pd.DataFrame(dict1)
 
-        #-- assert fail if not enough information
+        # -- assert fail if not enough information
         fail = False
         try:
             self.energy_invest.set_invest_mix(mix_df1)
@@ -109,8 +109,8 @@ class TestEnergyInvest(unittest.TestCase):
         expected_output = pd.DataFrame()
         for energy in self.energy_list:
             expected_output[energy] = self.energy_mix[energy] * self.invest_df_techno[GlossaryEnergy.InvestValue] / \
-                np.linalg.norm(
-                    self.energy_mix[self.energy_list], ord=1, axis=1)
+                                      np.linalg.norm(
+                                          self.energy_mix[self.energy_list], ord=1, axis=1)
         diff = np.linalg.norm(
             invest_distrib[self.energy_list] - expected_output)
         self.assertEqual(diff, 0.)
@@ -130,8 +130,9 @@ class TestEnergyInvest(unittest.TestCase):
             self.invest_df_techno, self.energy_mix, input_unit='M$', output_unit='$')
         expected_output = {GlossaryEnergy.Years: list(self.years)}
         for energy in self.energy_list:
-            expected_output[energy] = list(self.energy_mix[energy].values * self.invest_df_techno[GlossaryEnergy.InvestValue].values /
-                                           np.linalg.norm(self.energy_mix[self.energy_list], ord=1, axis=1) * 1.0e6)
+            expected_output[energy] = list(
+                self.energy_mix[energy].values * self.invest_df_techno[GlossaryEnergy.InvestValue].values /
+                np.linalg.norm(self.energy_mix[self.energy_list], ord=1, axis=1) * 1.0e6)
         self.maxDiff = None
         self.assertEqual(invest_dict, expected_output)
         self.assertEqual(runit, '$')
@@ -158,7 +159,8 @@ class TestEnergyInvest(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
-                       f'{self.name}.{GlossaryEnergy.energy_list}': ['electricity', 'methane', 'hydrogen.gaseous_hydrogen'],
+                       f'{self.name}.{GlossaryEnergy.energy_list}': ['electricity', 'methane',
+                                                                     'hydrogen.gaseous_hydrogen'],
                        f'{self.name}.{self.model_name}.invest_energy_mix': self.energy_mix,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}': self.invest_df}
 
@@ -170,8 +172,9 @@ class TestEnergyInvest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+
+    #         for graph in graph_list:
+    #             graph.to_plotly().show()
 
     def test_05_techno_invest_disc(self):
 
@@ -192,7 +195,8 @@ class TestEnergyInvest(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': ['SMR', 'Electrolysis', 'CoalGasification'],
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.techno_list}': ['SMR', 'Electrolysis',
+                                                                                       'CoalGasification'],
                        f'{self.name}.{self.model_name}.invest_techno_mix': self.techno_mix,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_df_techno}
 
@@ -204,8 +208,9 @@ class TestEnergyInvest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+
+    #         for graph in graph_list:
+    #             graph.to_plotly().show()
 
     def test_06_techno_invest_disc_check_jacobian(self):
 
@@ -237,9 +242,12 @@ class TestEnergyInvest(unittest.TestCase):
         succeed = disc.check_jacobian(derr_approx='complex_step',
                                       inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                               f'{self.name}.{self.model_name}.invest_techno_mix'],
-                                      outputs=[f'{self.name}.{self.model_name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in technology_list],
-                                      input_data = disc.local_data,
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls', f'jacobian_techno_invest_disc.pkl'))
+                                      outputs=[
+                                          f'{self.name}.{self.model_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'
+                                          for techno in technology_list],
+                                      input_data=disc.local_data,
+                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                                         f'jacobian_techno_invest_disc.pkl'))
 
         self.assertTrue(
             succeed, msg=f"Wrong gradient")
@@ -272,13 +280,15 @@ class TestEnergyInvest(unittest.TestCase):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}',
-                                                                          f'{self.name}.{self.model_name}.invest_energy_mix'],
+        succeed = disc.check_jacobian(derr_approx='complex_step',
+                                      inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}',
+                                              f'{self.name}.{self.model_name}.invest_energy_mix'],
                                       outputs=[
-            f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.InvestLevelValue}' for energy in energy_list],
-            input_data = disc.local_data,
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                               f'jacobian_energy_invest_disc.pkl'))
+                                          f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.InvestLevelValue}'
+                                          for energy in energy_list],
+                                      input_data=disc.local_data,
+                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                                         f'jacobian_energy_invest_disc.pkl'))
 
         self.assertTrue(
             succeed, msg=f"Wrong gradient")

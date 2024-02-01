@@ -31,10 +31,19 @@ FUNC_DF = FunctionManagerDisc.FUNC_DF
 
 
 class Study(StudyManager):
-
-    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1, lower_bound_techno=1.0e-6, upper_bound_techno=100.,
-                 techno_dict=DEFAULT_TECHNO_DICT, bspline=True, invest_discipline=INVEST_DISCIPLINE_DEFAULT,
-                 energy_invest_input_in_abs_value=True, execution_engine=None):
+    def __init__(
+            self,
+            year_start=GlossaryEnergy.YeartStartDefault,
+            year_end=2050,
+            time_step=1,
+            lower_bound_techno=1.0e-6,
+            upper_bound_techno=100.0,
+            techno_dict=DEFAULT_TECHNO_DICT,
+            bspline=True,
+            invest_discipline=INVEST_DISCIPLINE_DEFAULT,
+            energy_invest_input_in_abs_value=True,
+            execution_engine=None,
+    ):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -46,15 +55,22 @@ class Study(StudyManager):
         self.energy_invest_input_in_abs_value = energy_invest_input_in_abs_value
         self.lower_bound_techno = lower_bound_techno
         self.upper_bound_techno = upper_bound_techno
+        self.energy_usecase = None
 
         # -- Call class constructor after attributes have been set for setup_process usage
         super().__init__(__file__, execution_engine=execution_engine)
 
         self.study_v0 = Study_v0(
-            self.year_start, self.year_end, self.time_step, main_study=False, bspline=self.bspline,
+            self.year_start,
+            self.year_end,
+            self.time_step,
+            main_study=False,
+            bspline=self.bspline,
             execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value,
-            techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline,
+            energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value,
+            techno_dict=techno_dict,
+        )
         self.sub_study_path_dict = self.study_v0.sub_study_path_dict
 
     def setup_objectives(self):
@@ -65,7 +81,7 @@ class Study(StudyManager):
         func_df = Study_v0.setup_constraints(self)
         return func_df
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         values_dict_list = []
 
         self.study_v0.study_name = self.study_name
@@ -82,7 +98,8 @@ class Study(StudyManager):
             f'{self.study_name}.tolerance': 1.0e-7,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel'}
+            f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
+        }
         values_dict_list.append(numerical_values_dict)
 
         return values_dict_list

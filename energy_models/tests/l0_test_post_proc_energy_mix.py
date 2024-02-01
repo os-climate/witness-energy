@@ -47,7 +47,7 @@ class PostProcessEnergy(unittest.TestCase):
         """
         All energy list
         """
-        energylist= ['methane', 'hydrogen.gaseous_hydrogen', 'biogas', 'syngas', 'fuel.liquid_fuel', \
+        energylist = ['methane', 'hydrogen.gaseous_hydrogen', 'biogas', 'syngas', 'fuel.liquid_fuel', \
                       'fuel.hydrotreated_oil_fuel', 'solid_fuel', 'biomass_dry', \
                       'electricity', 'fuel.biodiesel', 'fuel.ethanol', 'hydrogen.liquid_hydrogen']
         self.namespace_list = []
@@ -77,10 +77,10 @@ class PostProcessEnergy(unittest.TestCase):
 
             # for graph in graph_list:
             #     graph.to_plotly().show()
+
             #     if 'InstanciatedTable' in str(graph.__class__):  # Plotting only  capex, opex, CO2 tax and prices Tables
             #         #if graph.chart_name == '':
             #         graph.to_plotly().show()
-
 
 
 if '__main__' == __name__:

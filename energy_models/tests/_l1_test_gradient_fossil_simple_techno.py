@@ -30,7 +30,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
     """FossilSimpleTechnoJacobianTestCase"""
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -52,16 +52,16 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         electricity_price = 1000 * np.array([0.09, 0.08974117039450046, 0.08948672733558984,
-                                      0.089236536471781, 0.08899046935409588, 0.08874840310033885,
-                                      0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
-                                      0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
-                                      0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
-                                      0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
-                                      0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
-                                      0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
-                                      0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
-                                      0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
-                                      0.0928246539459331])[:len(years)]
+                                             0.089236536471781, 0.08899046935409588, 0.08874840310033885,
+                                             0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
+                                             0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
+                                             0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
+                                             0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
+                                             0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
+                                             0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
+                                             0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
+                                             0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
+                                             0.0928246539459331])[:len(years)]
         # We take biomass price of methane/5.0
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price
                                            })
@@ -74,7 +74,7 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
              GlossaryEnergy.InvestValue: 33.0 * 1.10 ** (years - 2020)})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -98,7 +98,6 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         pass
 
     def test_01_discipline_analytic_grad(self):
-
         self.name = 'Test'
         self.model_name = 'FossilSimpleTechno'
         self.ee = ExecutionEngine(self.name)
@@ -149,9 +148,11 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, self.year_end + 1)),
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, self.year_end + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, self.year_end + 1)),
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
                        f'{self.name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_ystart,
                        }
@@ -160,7 +161,8 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}.pkl',
-                            discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', local_data=disc_techno.local_data,
+                            discipline=disc_techno, step=1.0e-18, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
@@ -176,7 +178,6 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                                      ], )
 
     def test_02_discipline_analytic_grad_construction_delay_0(self):
-
         self.name = 'Test'
         self.model_name = 'FossilSimpleTechno'
         self.ee = ExecutionEngine(self.name)
@@ -196,25 +197,25 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         techno_infos_dict = {'maturity': 0,
-                                     'Opex_percentage': 0.024,
-                                     'WACC': 0.058,
-                                     'learning_rate': 0.00,
-                                     'lifetime': 25,
-                                     'lifetime_unit': GlossaryEnergy.Years,
-                                     'Capex_init': 100.,
-                                     'Capex_init_unit': '$/MWh',
-                                     'techno_evo_eff': 'no',
-                                     'efficiency': 1.0,
-                                     'CO2_from_production': 0.37077040550222284,
-                                     'CO2_from_production_unit': 'kg/kg',
-                                     GlossaryEnergy.ConstructionDelay: 0,
-                                     'resource_price': 75.0,
-                                     'resource_price_unit': '$/MWh',
-                                     'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,
-                                     'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
-                                     'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
-                                     'CH4_emission_factor_unit': 'Mt/TWh',
-                                     }
+                             'Opex_percentage': 0.024,
+                             'WACC': 0.058,
+                             'learning_rate': 0.00,
+                             'lifetime': 25,
+                             'lifetime_unit': GlossaryEnergy.Years,
+                             'Capex_init': 100.,
+                             'Capex_init_unit': '$/MWh',
+                             'techno_evo_eff': 'no',
+                             'efficiency': 1.0,
+                             'CO2_from_production': 0.37077040550222284,
+                             'CO2_from_production_unit': 'kg/kg',
+                             GlossaryEnergy.ConstructionDelay: 0,
+                             'resource_price': 75.0,
+                             'resource_price_unit': '$/MWh',
+                             'CH4_venting_emission_factor': (21.9 + 7.2) / 50731.,
+                             'CH4_flaring_emission_factor': (1.4 + 6.9) / 50731.,
+                             'CH4_unintended_leakage_emission_factor': (0.6 + 1.7) / 50731.,
+                             'CH4_emission_factor_unit': 'Mt/TWh',
+                             }
 
         invest_before_ystart = pd.DataFrame(
             {'past years': [], GlossaryEnergy.InvestValue: []})
@@ -226,9 +227,11 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, self.year_end + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, self.year_end + 1)),
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, self.year_end + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, self.year_end + 1)),
                        f'{self.name}.techno_infos_dict': techno_infos_dict,
                        f'{self.name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}': invest_before_ystart,
                        }
@@ -236,8 +239,10 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}_{self.model_name}_construction_delay_0.pkl',
-                            discipline=disc_techno, step=1.0e-18, derr_approx='complex_step', local_data=disc_techno.local_data,
+        self.check_jacobian(location=dirname(__file__),
+                            filename=f'jacobian_{self.energy_name}_{self.model_name}_construction_delay_0.pkl',
+                            discipline=disc_techno, step=1.0e-18, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
                                     f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
@@ -251,4 +256,3 @@ class FossilSimpleTechnoJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoProductionValue}',
                                      ], )
-

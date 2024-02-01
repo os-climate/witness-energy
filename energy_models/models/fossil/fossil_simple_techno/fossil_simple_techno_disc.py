@@ -54,12 +54,12 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     prod_liquid_fuel = 53000.  # TWh
     prod_methane = 39106.77  # TWh
     prod_fossil = prod_solid_fuel + prod_liquid_fuel + prod_methane
-#     capex_coal = 8.3
-#     capex_oil = 42.4
-#     capex_methane = 32.2
-#     capex = (capex_coal * prod_solid_fuel +
-#              capex_oil * prod_liquid_fuel +
-#              capex_methane * prod_methane) / prod_fossil
+    #     capex_coal = 8.3
+    #     capex_oil = 42.4
+    #     capex_methane = 32.2
+    #     capex = (capex_coal * prod_solid_fuel +
+    #              capex_oil * prod_liquid_fuel +
+    #              capex_methane * prod_methane) / prod_fossil
     co2_from_prod = (RefineryDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_liquid_fuel +
                      CoalExtractionDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_solid_fuel +
                      FossilGasDiscipline.techno_infos_dict_default['CO2_from_production'] * prod_methane) / prod_fossil
@@ -92,7 +92,6 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0.0, 1483.79, 1489.95]})
 
-
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [5.12627214, 7.68940822, 3.43007916, 8.5563513, 8.5563513,
                                                          4.25932906, 3.43007916, 2.56313607, 5.99321523, 4.25932906,
@@ -109,8 +108,8 @@ class FossilSimpleTechnoDiscipline(FossilTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
                GlossaryEnergy.InvestmentBeforeYearStartValue: invest_before_year_start_var,
                }

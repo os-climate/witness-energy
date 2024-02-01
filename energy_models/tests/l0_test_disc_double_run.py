@@ -68,21 +68,20 @@ class DiscDoubleRunTestCase(unittest.TestCase):
         output_error = ''
         test_passed = True
         for disc in self.ee.factory.proxy_disciplines:
-            # print(disc.get_disc_full_name())
-            if disc.get_disc_full_name() == 'Test.CCUS.carbon_capture':
-                local_data = disc.mdo_discipline_wrapp.mdo_discipline.local_data
-                # RUN 1
-                local_data1 = deepcopy(disc.mdo_discipline_wrapp.mdo_discipline.execute(deepcopy(local_data)))
-                # RUN 2
-                local_data2 = deepcopy(disc.mdo_discipline_wrapp.mdo_discipline.execute(deepcopy(local_data)))
-                # COMPARE DICT
-                dict_error = {}
-                compare_dict(local_data1, local_data2, '', dict_error)
-                if dict_error != {}:
-                    test_passed = False
-                    for error in dict_error:
-                        output_error += f'Error while runing twice { usecase }:\n'
-                        output_error += f'Mismatch in {error} for disc {disc.get_disc_full_name()}: {dict_error.get(error)}'
-                        output_error += '\n---------------------------------------------------------\n'
+            local_data = disc.mdo_discipline_wrapp.mdo_discipline.local_data
+            # RUN 1
+            local_data1 = deepcopy(disc.mdo_discipline_wrapp.mdo_discipline.execute(deepcopy(local_data)))
+            # RUN 2
+            local_data2 = deepcopy(disc.mdo_discipline_wrapp.mdo_discipline.execute(deepcopy(local_data)))
+            # COMPARE DICT
+            dict_error = {}
+            compare_dict(local_data1, local_data2, '', dict_error)
+            if dict_error != {}:
+                test_passed = False
+                for error in dict_error:
+                    output_error += f'Error while runing twice {usecase}:\n'
+                    output_error += f'Mismatch in {error} for disc {disc.name}: {dict_error.get(error)}'
+                    output_error += '\n---------------------------------------------------------\n'
+
         if not test_passed:
             raise Exception(f'{output_error}')

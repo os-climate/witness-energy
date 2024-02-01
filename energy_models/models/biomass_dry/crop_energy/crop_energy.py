@@ -57,14 +57,11 @@ class CropEnergy(BiomassDryTechno):
         Compute part for energy and details for crop and residues
         """
 
-        
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_crop = f'{self.energy_name}_crop (TWh)'
         name_non_energy = f'{self.energy_name}_non_energy (TWh)'
         name_residue_non_energy = f'{self.energy_name}_residue_non_energy (TWh)'
         name_tot = f'{self.energy_name}_tot (TWh)'
-
-
 
         self.production_mix = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
@@ -75,35 +72,38 @@ class CropEnergy(BiomassDryTechno):
         # production of residue is the production from food surface and from
         # crop energy
         self.residue_prod_from_food_surface = self.compute_residue_from_food_investment()
-        self.production_mix[name_residue] = self.residue_prod_from_food_surface +  \
-            self.techno_infos_dict['residue_density_percentage'] * \
-            crop_residue_energy_production
+        self.production_mix[name_residue] = self.residue_prod_from_food_surface + \
+                                            self.techno_infos_dict['residue_density_percentage'] * \
+                                            crop_residue_energy_production
 
         # compute production dedicated to energy from crop
         self.production_mix[name_crop] = crop_residue_energy_production * \
-            (1 - self.techno_infos_dict['residue_density_percentage'])
+                                         (1 - self.techno_infos_dict['residue_density_percentage'])
 
         # compute production dedicated to non energy
         self.production_mix[name_non_energy] = self.land_surface_for_food['Agriculture total (Gha)'] * \
-            self.techno_infos_dict['density_per_ha'] * \
-            self.data_energy_dict['high_calorific_value'] *\
-            (1 - self.techno_infos_dict['residue_density_percentage'])
+                                               self.techno_infos_dict['density_per_ha'] * \
+                                               self.data_energy_dict['high_calorific_value'] * \
+                                               (1 - self.techno_infos_dict['residue_density_percentage'])
         self.production_mix[name_residue_non_energy] = self.land_surface_for_food['Agriculture total (Gha)'] * \
-            self.techno_infos_dict['density_per_ha'] * \
-            self.data_energy_dict['high_calorific_value'] *\
-            (1 - self.techno_infos_dict['residue_percentage_for_energy']) *\
-            self.techno_infos_dict['residue_density_percentage']
+                                                       self.techno_infos_dict['density_per_ha'] * \
+                                                       self.data_energy_dict['high_calorific_value'] * \
+                                                       (1 - self.techno_infos_dict['residue_percentage_for_energy']) * \
+                                                       self.techno_infos_dict['residue_density_percentage']
 
         self.production_mix[name_tot] = self.production_mix[name_non_energy] + \
-            self.production_mix[name_crop] + self.production_mix[name_residue]
+                                        self.production_mix[name_crop] + self.production_mix[name_residue]
 
         # compute output production dedicated to energy
-        self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'] = self.production_mix[name_residue] + \
-                                                                                                   self.production_mix[name_crop]
+        self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'] = self.production_mix[
+                                                                                                       name_residue] + \
+                                                                                                   self.production_mix[
+                                                                                                       name_crop]
 
         self.consumption_detailed[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
                                                                       self.data_energy_dict['high_calorific_value'] * \
-                                                                      self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
+                                                                      self.production_detailed[
+                                                                          f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_land_use(self):
         """
@@ -135,15 +135,15 @@ class CropEnergy(BiomassDryTechno):
         # Price_residue = Price_crop * crop_residue_price_percent_dif
         price_tot = self.cost_details[self.name]
         price_crop = price_tot / \
-            (1 + self.techno_infos_dict['residue_density_percentage'] *
-             (self.techno_infos_dict['crop_residue_price_percent_dif'] - 1))
+                     (1 + self.techno_infos_dict['residue_density_percentage'] *
+                      (self.techno_infos_dict['crop_residue_price_percent_dif'] - 1))
 
         price_residue = price_crop * \
-            self.techno_infos_dict['crop_residue_price_percent_dif']
+                        self.techno_infos_dict['crop_residue_price_percent_dif']
 
         # Price_residue = crop_residue_ratio * Price_crop
 
-        #=> Price_crop = Price_tot / ((1-ratio_prices)*crop_residue_ratio + ratio_prices)
+        # => Price_crop = Price_tot / ((1-ratio_prices)*crop_residue_ratio + ratio_prices)
         self.price_mix = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.price_mix[f'{BiomassDryTechno.energy_name}_crop'] = price_crop
         self.price_mix[f'{BiomassDryTechno.energy_name}_residue'] = price_residue
@@ -157,10 +157,10 @@ class CropEnergy(BiomassDryTechno):
         '''
         # compute residue part from food land surface for energy sector in Twh
         residue_production = self.land_surface_for_food['Agriculture total (Gha)'] * \
-            self.techno_infos_dict['residue_density_percentage'] *\
-            self.techno_infos_dict['density_per_ha'] * \
-            self.data_energy_dict['high_calorific_value'] *\
-            self.techno_infos_dict['residue_percentage_for_energy']
+                             self.techno_infos_dict['residue_density_percentage'] * \
+                             self.techno_infos_dict['density_per_ha'] * \
+                             self.data_energy_dict['high_calorific_value'] * \
+                             self.techno_infos_dict['residue_percentage_for_energy']
 
         return residue_production
 
@@ -172,11 +172,11 @@ class CropEnergy(BiomassDryTechno):
         '''
         # production = residue production from food + crop energy production
         # residue production from food = compute_residue_from_food_investment
-        d_prod_dland_for_food = np.identity(len(self.years)) *\
-            self.techno_infos_dict['residue_density_percentage'] *\
-            self.techno_infos_dict['density_per_ha'] * \
-            self.data_energy_dict['high_calorific_value'] *\
-            self.techno_infos_dict['residue_percentage_for_energy']
+        d_prod_dland_for_food = np.identity(len(self.years)) * \
+                                self.techno_infos_dict['residue_density_percentage'] * \
+                                self.techno_infos_dict['density_per_ha'] * \
+                                self.data_energy_dict['high_calorific_value'] * \
+                                self.techno_infos_dict['residue_percentage_for_energy']
         return d_prod_dland_for_food
 
     def compute_grad_dconso_dland_for_food(self):
@@ -187,11 +187,11 @@ class CropEnergy(BiomassDryTechno):
         '''
         # production = residue production from food + crop energy production
         # residue production from food = compute_residue_from_food_investment
-        d_condo_dland_for_food = np.identity(len(self.years)) *\
-            -self.techno_infos_dict['CO2_from_production'] *\
-            self.techno_infos_dict['residue_density_percentage'] *\
-            self.techno_infos_dict['density_per_ha'] * \
-            self.techno_infos_dict['residue_percentage_for_energy']
+        d_condo_dland_for_food = np.identity(len(self.years)) * \
+                                 -self.techno_infos_dict['CO2_from_production'] * \
+                                 self.techno_infos_dict['residue_density_percentage'] * \
+                                 self.techno_infos_dict['density_per_ha'] * \
+                                 self.techno_infos_dict['residue_percentage_for_energy']
         return d_condo_dland_for_food
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
@@ -210,9 +210,9 @@ class CropEnergy(BiomassDryTechno):
         for key in self.land_use:
             if key.startswith(self.name):
                 if not (self.land_use[key] == np.array([0] * len(self.years))).all():
-                    dlanduse_dinvest = self.dprod_dinvest *\
-                        (1 - self.techno_infos_dict['residue_density_percentage']) / \
-                        self.data_energy_dict['calorific_value'] / \
-                        self.techno_infos_dict['density_per_ha']
+                    dlanduse_dinvest = self.dprod_dinvest * \
+                                       (1 - self.techno_infos_dict['residue_density_percentage']) / \
+                                       self.data_energy_dict['calorific_value'] / \
+                                       self.techno_infos_dict['density_per_ha']
 
         return dlanduse_dinvest

@@ -69,15 +69,21 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         self.energy_production, self.energy_consumption, self.land_use_required = {}, {}, {}
         for i, energy in enumerate(self.energy_list):
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
+            self.energy_production[f'{energy}'] = \
+            streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
                 'value']
-            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
+            self.energy_consumption[f'{energy}'] = \
+            streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
         for energy in ['carbon_capture', 'carbon_storage']:
-            self.land_use_required[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.LandUseRequiredValue]['value']
-            self.energy_production[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
+            self.land_use_required[f'{energy}'] = \
+            streams_outputs_dict[f'{energy}'][GlossaryEnergy.LandUseRequiredValue]['value']
+            self.energy_production[f'{energy}'] = \
+            streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
                 'value']
-            self.energy_consumption[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
-            self.energy_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyPricesValue]['value']
+            self.energy_consumption[f'{energy}'] = \
+            streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
+            self.energy_prices[f'{energy}'] = streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyPricesValue][
+                'value']
             self.energy_consumption_woratio[f'{energy}'] = streams_outputs_dict[
                 f'{energy}'][GlossaryEnergy.EnergyConsumptionWithoutRatioValue]['value']
 
@@ -138,14 +144,17 @@ class CCUSDiscJacobianTestCase(AbstractJacobianUnittest):
         for energy in self.energy_list:
             inputs_dict[f'{self.name}.{energy}.CO2_per_use'] = self.CO2_per_use[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[
+                energy]
 
         for energy in ['carbon_capture', 'carbon_storage']:
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[
+                energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyPricesValue}'] = self.energy_prices[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.LandUseRequiredValue}'] = self.land_use_required[energy]
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = self.energy_consumption_woratio[energy]
+            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = \
+            self.energy_consumption_woratio[energy]
             inputs_dict[f'{self.name}.{energy}.co2_emissions'] = self.co2_emissions
         inputs_dict[f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'] = self.CO2_taxes
         inputs_dict[f'{self.name}.carbon_capture_from_energy_mix'] = self.carbon_capture_from_energy_mix

@@ -32,14 +32,12 @@ class Testheader(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.pp = pprint.PrettyPrinter(indent=4, compact=True)
-        self.ExtensionToIgnore = ["pkl", "png", "jpg", "csv", "md", "markdown", "avif", "json", "in", "gitignore", "cfg", "puml", "pdf", "txt", "ipynb", "zip", "rst"]
-        #Add here the files to ignore       
+        self.ExtensionToIgnore = ["pkl", "png", "jpg", "csv", "md", "markdown", "avif", "json", "in", "gitignore",
+                                  "cfg", "puml", "pdf", "txt", "ipynb", "zip", "rst"]
+        # Add here the files to ignore
         self.FilesToIgnore = ["default_process_rights.yaml"]
-        #commit from where to compare added, modeified deleted ...
+        # commit from where to compare added, modeified deleted ...
         self.airbus_rev_commit = "37fb4ae"
 
     def test_Headers(self):
-        check_headers(self.ExtensionToIgnore,self.FilesToIgnore,self.airbus_rev_commit)
-
-        
-
+        check_headers(self.ExtensionToIgnore, self.FilesToIgnore, self.airbus_rev_commit)

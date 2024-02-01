@@ -28,6 +28,8 @@ from sostrades_core.tools.post_processing.tables.instanciated_table import Insta
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
+
+
 def post_processing_filters(execution_engine, namespace):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the filters
@@ -48,6 +50,7 @@ def post_processing_filters(execution_engine, namespace):
 
     return filters
 
+
 def get_figures_table(table, title):
     '''
     Table chart where Capex, Opex, CO2_Tax and total price comparison
@@ -58,9 +61,7 @@ def get_figures_table(table, title):
     return new_chart
 
 
-
 def get_comparision_data(execution_engine, namespace, year):
-
     '''
     Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
     '''
@@ -73,22 +74,23 @@ def get_comparision_data(execution_engine, namespace, year):
     CO2tax_list = []
     energy_costs_List = []
     for techno in techno_list:
-        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices" #	"energy_detailed_techno_prices" for Hydrogen and Fuel
+        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"  # "energy_detailed_techno_prices" for Hydrogen and Fuel
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
 
-        filtereddata = price_details[price_details[GlossaryEnergy.Years] == year] # Filtering data for a year of 2023
+        filtereddata = price_details[price_details[GlossaryEnergy.Years] == year]  # Filtering data for a year of 2023
         capex_price = filtereddata['CAPEX_Part'].iloc[0]
         opex_price = filtereddata['OPEX_Part'].iloc[0]
         CO2tax_price = filtereddata['CO2Tax_Part'].iloc[0]
         price = filtereddata[techno].iloc[0]
 
-        capex_price_percentage = (capex_price)*100/price
-        opex_price_percentage = (opex_price) * 100 / price
-        CO2tax_price_percentage = (CO2tax_price) * 100 / price
+        capex_price_percentage = capex_price * 100 / price
+        opex_price_percentage = opex_price * 100 / price
+        CO2tax_price_percentage = CO2tax_price * 100 / price
 
         capex_list.append(str(round(capex_price, DECIMAL)) + ' (' + str(round(capex_price_percentage, DECIMAL)) + '%)')
         opex_list.append(str(round(opex_price, DECIMAL)) + ' (' + str(round(opex_price_percentage, DECIMAL)) + '%)')
-        CO2tax_list.append(str(round(CO2tax_price, DECIMAL)) + ' (' + str(round(CO2tax_price_percentage, DECIMAL)) + '%)')
+        CO2tax_list.append(
+            str(round(CO2tax_price, DECIMAL)) + ' (' + str(round(CO2tax_price_percentage, DECIMAL)) + '%)')
         energy_costs_List.append(round(price, DECIMAL))
 
     headers = ['Technology', 'CAPEX ($/MWh)', 'OPEX ($/MWh)', 'CO2Tax ($/MWh)', 'Price ($/MWh)']
@@ -98,14 +100,15 @@ def get_comparision_data(execution_engine, namespace, year):
     cells.append(opex_list)
     cells.append(CO2tax_list)
     cells.append(energy_costs_List)
-    table = InstanciatedTable('Capex/Opex/CO2Tax Price and Percentage Data Comparison for Year ' + str(year), headers, cells)
+    table = InstanciatedTable('Capex/Opex/CO2Tax Price and Percentage Data Comparison for Year ' + str(year), headers,
+                              cells)
     return table
+
 
 def post_processings(execution_engine, namespace, filters):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
-
 
     instanciated_charts = []
 
@@ -121,9 +124,8 @@ def post_processings(execution_engine, namespace, filters):
     if f'{energy} Figures table' in graphs_list:
         for year in YEAR_COMPARISON:
             new_table = get_comparision_data(execution_engine, namespace, year)
-            #new_table = get_figures_table(price_comparision_table_data, str(year))
+            # new_table = get_figures_table(price_comparision_table_data, str(year))
             instanciated_charts.append(new_table)
-
 
     if f'{energy} CO2 intensity' in graphs_list:
         chart_name = f'{energy} CO2 intensity summary'
@@ -151,7 +153,6 @@ def post_processings(execution_engine, namespace, filters):
         if new_chart is not None:
             instanciated_charts.append(new_chart)
 
-
     return instanciated_charts
 
 
@@ -171,7 +172,6 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
     multilevel_df, years = get_multilevel_df(
         execution_engine, namespace, columns=['price_per_kWh', 'price_per_kWh_wotaxes',
                                               'CO2_per_kWh', 'production', GlossaryEnergy.InvestValue])
-    energy_list = list(set(multilevel_df.index.droplevel(1)))
     # Create Figure
     fig = go.Figure()
     # Get min and max CO2 emissions for colorscale and max of production for
@@ -187,18 +187,18 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
     if summary:
         # Create a graph to aggregate the informations on all years
         price_per_kWh, price_per_kWh_wotaxes, CO2_per_kWh, label, production, invest, total_CO2 = [
-        ], [], [], [], [], [], []
+                                                                                                  ], [], [], [], [], [], []
         energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
             0]
         CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs(GlossaryEnergy.CO2TaxesValue)[
-            GlossaryEnergy.CO2Tax].values, []
+                                         GlossaryEnergy.CO2Tax].values, []
         for i, row in multilevel_df.iterrows():
             # skip techno that do not produce the selected energy
             if i[0] != energy_name:
                 continue
             price_per_kWh += [np.mean(row['price_per_kWh']), ]
             price_per_kWh_wotaxes += [np.mean(row['price_per_kWh_wotaxes']), ]
-            CO2_per_kWh  += [np.mean(row['CO2_per_kWh']), ]
+            CO2_per_kWh += [np.mean(row['CO2_per_kWh']), ]
             label += [i, ]
             production += [np.sum(row['production']), ]
             invest += [np.sum(row[GlossaryEnergy.InvestValue]), ]
@@ -237,11 +237,11 @@ def get_chart_green_technologies(execution_engine, namespace, energy_name, chart
             # -technology level-#
             ################
             price_per_kWh, price_per_kWh_wotaxes, CO2_per_kWh, label, production, invest, total_CO2 = [
-            ], [], [], [], [], [], []
+                                                                                                      ], [], [], [], [], [], []
             energy_disc = execution_engine.dm.get_disciplines_with_name(namespace)[
                 0]
             CO2_taxes, CO2_taxes_array = energy_disc.get_sosdisc_inputs(GlossaryEnergy.CO2TaxesValue)[
-                GlossaryEnergy.CO2Tax].values, []
+                                             GlossaryEnergy.CO2Tax].values, []
             for i, row in multilevel_df.iterrows():
                 # skip techno that do not produce the selected energy
                 if i[0] != energy_name:
@@ -388,7 +388,7 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     @param execution_engine: Execution engine object from which the data is gathered
     @param namespace: String containing the namespace to access the data
     @param chart_name:String, title of the post_proc
-    @param energy: String, name of the energy to display
+    @param energy_name: String, name of the energy to display
 
     @return new_chart: InstantiatedPlotlyNativeChart a Sankey Diagram
     '''
@@ -490,7 +490,8 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
                         '<br>Production: %{customdata[2]: .2e}' + \
                         '<br>CO2 per kWh (color): %{customdata[3]: .2e}' + \
                         '<br>Total CO2 (thickness): %{customdata[4]: .2e}'
-        flux_temp = 0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)) if np.max(np.abs(flux_color)) > 0. else 0.1 + np.abs(flux_color)
+        flux_temp = 0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)) if np.max(
+            np.abs(flux_color)) > 0. else 0.1 + np.abs(flux_color)
         rgba_list_over = cmap_over(flux_temp)
         rgba_list_under = cmap_under(flux_temp)
         color_over = ['rgb' + str(tuple(int((255 * (x * 0.8 + 0.2)))
@@ -586,7 +587,8 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
                             '<br>Production: %{customdata[2]: .2e}' + \
                             '<br>CO2 per kWh (color): %{customdata[3]: .2e}' + \
                             '<br>Total CO2 (thickness): %{customdata[4]: .2e}'
-            flux_temp = 0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)) if np.max(np.abs(flux_color)) > 0. else 0.1 + np.abs(flux_color)
+            flux_temp = 0.1 + np.abs(flux_color) / np.max(np.abs(flux_color)) if np.max(
+                np.abs(flux_color)) > 0. else 0.1 + np.abs(flux_color)
             rgba_list_over = cmap_over(flux_temp)
             rgba_list_under = cmap_under(flux_temp)
             color_over = ['rgb' + str(tuple(int((255 * (x * 0.8 + 0.2)))

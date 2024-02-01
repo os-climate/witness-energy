@@ -50,20 +50,20 @@ class EnergyProcessBuilder(BaseProcessBuilder):
     def get_techno_disc_path(self, energy_name, techno_name, sub_dir=None):
         list_name = re.findall('[A-Z][^A-Z]*', techno_name)
         test = [len(l) for l in list_name]
-        #-- in case only one letter is capital, support all are capital and don't add _
+        # -- in case only one letter is capital, support all are capital and don't add _
         if 1 in test:
             mod_name = "".join(l.lower() for l in list_name)
         else:
             mod_name = "_".join(l.lower() for l in list_name)
-        #--case of CO2... to be generalized
+        # --case of CO2... to be generalized
         if '2' in mod_name:
             mod_name = "2_".join(mod_name.split('2'))
-        #-- try to find rule for electrolysis case
-        #-- get correct disc name in case of dot in name
+        # -- try to find rule for electrolysis case
+        # -- get correct disc name in case of dot in name
         dot_plit = mod_name.split('.')
         dot_name = "_".join(dot_plit)
         disc_name = f'{dot_name}_disc'
-        #-- fix techno name in case of dot in name
+        # -- fix techno name in case of dot in name
         dot_tech_split = techno_name.split('.')
         mod_techno_name = "".join(dot_tech_split)
 

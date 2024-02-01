@@ -40,12 +40,11 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
         self.cost_details['fuel_needs'] = self.get_theoretical_methane_needs()
 
-        self.data_config_creation = self.techno_infos_dict
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
-            self.prices[Electricity.name]
+                                              self.prices[Electricity.name]
 
-        self.cost_details[Methane.name] = self.cost_details['fuel_needs'] * self.prices[Methane.name]  \
-            / self.cost_details['efficiency']
+        self.cost_details[Methane.name] = self.cost_details['fuel_needs'] * self.prices[Methane.name] \
+                                          / self.cost_details['efficiency']
 
         return self.cost_details[Electricity.name] + self.cost_details[Methane.name]
 
@@ -66,20 +65,23 @@ class PlasmaCracking(GaseousHydrogenTechno):
         Maybe add efficiency in consumption computation ?
         """
 
-        
-
         C_per_h2 = self.get_theoretical_graphene_production()
 
         self.production_detailed[f'{Carbon.name} ({self.mass_unit})'] = C_per_h2 * \
-                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
+                                                                        self.production_detailed[
+                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                        self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            'elec_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['fuel_needs'] * \
-                                                                                    self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                                    self.cost_details['efficiency']  # in kWH
+                                                                                    self.production_detailed[
+                                                                                        f'{GaseousHydrogenTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                    self.cost_details[
+                                                                                        'efficiency']  # in kWH
 
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
@@ -98,7 +100,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
         self.carbon_intensity['carbon storage'] = -C_per_h2 * \
                                                   CO2.data_energy_dict['molar_mass'] / \
                                                   Carbon.data_energy_dict['molar_mass']
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Methane.name] + self.carbon_intensity['carbon storage']
+        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[Methane.name] + self.carbon_intensity[
+            'carbon storage']
 
     def get_theoretical_graphene_production(self):
         ''' 
@@ -112,8 +115,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
         carbon_data = Carbon.data_energy_dict
         methane_needs = mol_C * carbon_data['molar_mass'] / \
-            (mol_H2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                        (mol_H2 * self.data_energy_dict['molar_mass'] *
+                         self.data_energy_dict['calorific_value'])
 
         return methane_needs
 
@@ -129,8 +132,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
         methane_data = Methane.data_energy_dict
         methane_needs = mol_CH4 * methane_data['molar_mass'] * methane_data['calorific_value'] / \
-            (mol_H2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                        (mol_H2 * self.data_energy_dict['molar_mass'] *
+                         self.data_energy_dict['calorific_value'])
 
         return methane_needs
 
@@ -147,10 +150,10 @@ class PlasmaCracking(GaseousHydrogenTechno):
             CO2_credits, carbon_market_demand)
 
         percentage_resource['total_revenues'] = percentage_resource['hydrogen_sales_revenues'] + \
-            percentage_resource['carbon_sales_revenues'] + \
-            percentage_resource['carbon_storage_revenues']
+                                                percentage_resource['carbon_sales_revenues'] + \
+                                                percentage_resource['carbon_storage_revenues']
         percentage_resource[GaseousHydrogenTechno.energy_name] = percentage_resource['hydrogen_sales_revenues'] / \
-            percentage_resource['total_revenues'] * 100.
+                                                                 percentage_resource['total_revenues'] * 100.
 
         return percentage_resource[[GlossaryEnergy.Years, GaseousHydrogenTechno.energy_name]]
 
@@ -159,8 +162,10 @@ class PlasmaCracking(GaseousHydrogenTechno):
         Carbon storage for carbon production higher than carbon demand
         '''
         quantity = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                 'carbon_production': self.production_detailed[f'{Carbon.name} ({self.mass_unit})'].values * self.scaling_factor_techno_production,
-                                 'hydrogen_production': self.production_detailed[f'{GaseousHydrogenTechno.energy_name} ({EnergyType.unit})'] * self.scaling_factor_techno_production,
+                                 'carbon_production': self.production_detailed[
+                                                          f'{Carbon.name} ({self.mass_unit})'].values * self.scaling_factor_techno_production,
+                                 'hydrogen_production': self.production_detailed[
+                                                            f'{GaseousHydrogenTechno.energy_name} ({EnergyType.unit})'] * self.scaling_factor_techno_production,
                                  'carbon_demand': carbon_market_demand['carbon_demand'].values,
                                  'CO2_credits': CO2_credits['CO2_credits'].values,
                                  'hydrogen_price': self.prices[GaseousHydrogenTechno.energy_name],
@@ -176,18 +181,16 @@ class PlasmaCracking(GaseousHydrogenTechno):
             (quantity['carbon_production'] - quantity['carbon_demand']), 0.)
 
         quantity['carbon_sales_revenues'] = quantity['carbon_sales'] * \
-            quantity['carbon_price']
+                                            quantity['carbon_price']
         quantity['carbon_storage_revenues'] = quantity['carbon_storage'] * \
-            Carbon.data_energy_dict['molar_mass'] / \
-            CO2.data_energy_dict['molar_mass'] * quantity['CO2_credits']
+                                              Carbon.data_energy_dict['molar_mass'] / \
+                                              CO2.data_energy_dict['molar_mass'] * quantity['CO2_credits']
 
         quantity['hydrogen_sales_revenues'] = quantity['hydrogen_production'] * \
-            quantity['hydrogen_price']
+                                              quantity['hydrogen_price']
 
-        quantity['carbon_demand_sales_revenues'] = self.compute_revenue_gradient(
-            quantity, True)
-        quantity['carbon_storage_sales_revenues'] = self.compute_revenue_gradient(
-            quantity, False)
+        quantity['carbon_demand_sales_revenues'] = self.compute_revenue_gradient(quantity)
+        quantity['carbon_storage_sales_revenues'] = self.compute_revenue_gradient(quantity)
 
         quantity.loc[quantity['carbon_production'] <=
                      quantity['carbon_demand'], 'is_prod_inf_demand'] = True
@@ -198,7 +201,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
    GRADIENT PERCENTAGE RESOURCE
     '''
 
-    def compute_revenue_gradient(self, quantity, is_storage_inf_storage_max):
+    def compute_revenue_gradient(self, quantity):
         a = quantity['carbon_production'] * Carbon.data_energy_dict['molar_mass'] * \
             quantity['CO2_credits'] / CO2.data_energy_dict['molar_mass']
         b = quantity['carbon_demand'] * (quantity['carbon_price'] - Carbon.data_energy_dict['molar_mass']
@@ -247,7 +250,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
                          out=np.zeros_like((dhydrogen_price_denergy_prices * x)), where=z != 0)
         return grad
 
-    def grad_percentage_resource_vs_invest(self, CO2_credits, carbon_market_demand, dhydro_prod_dinvest, dcarbon_prod_dinvest):
+    def grad_percentage_resource_vs_invest(self, CO2_credits, carbon_market_demand, dhydro_prod_dinvest,
+                                           dcarbon_prod_dinvest):
 
         quantity = self.compute_revenues(
             CO2_credits, carbon_market_demand)
@@ -268,7 +272,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
         # if carbon_production > carbon_demand
         # carbon_storage
         quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity['CO2_credits']
+                     'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity[
+            'CO2_credits']
 
         a = hydrogen_price.values * quantity['A_value'].values
         x = np.array([a, ] * len(self.years)).transpose()
@@ -286,7 +291,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
         grad_wratio = (grad.T * list(self.applied_ratio['applied_ratio'])).T
         return grad_wratio
 
-    def grad_percentage_resource_vs_ratio(self, CO2_credits, carbon_market_demand, dhydro_prod_dratio, dcarbon_prod_dratio):
+    def grad_percentage_resource_vs_ratio(self, CO2_credits, carbon_market_demand, dhydro_prod_dratio,
+                                          dcarbon_prod_dratio):
 
         quantity = self.compute_revenues(
             CO2_credits, carbon_market_demand)
@@ -307,7 +313,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
         # if carbon_production > carbon_demand
         # carbon_storage
         quantity.loc[(quantity['is_prod_inf_demand'] == False),
-                     'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity['CO2_credits']
+                     'B_value'] = Carbon.data_energy_dict['molar_mass'] / CO2.data_energy_dict['molar_mass'] * quantity[
+            'CO2_credits']
 
         a = hydrogen_price.values * quantity['A_value'].values
         x = np.array([a, ] * len(self.years)).transpose()
@@ -324,7 +331,8 @@ class PlasmaCracking(GaseousHydrogenTechno):
                          out=np.zeros_like((dhydro_prod_dratio * x - dcarbon_prod_dratio * y)), where=z != 0)
         return grad
 
-    def grad_percentage_resource_vs_resources_price(self, CO2_credits, carbon_market_demand, dcarbon_price_dresources_price):
+    def grad_percentage_resource_vs_resources_price(self, CO2_credits, carbon_market_demand,
+                                                    dcarbon_price_dresources_price):
 
         quantity = self.compute_revenues(
             CO2_credits, carbon_market_demand)

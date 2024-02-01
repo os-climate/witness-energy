@@ -35,7 +35,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Fischer Tropsch Kerosene Model',
@@ -53,7 +52,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
     techno_name = 'FischerTropsch'
     lifetime = 30
     construction_delay = 3
-    #'reaction1 if r1<n/(2n+1)': 'H2 + r1CO + aH20  <--> H2 + n/(2n+1)CO +bCO2',
+    # 'reaction1 if r1<n/(2n+1)': 'H2 + r1CO + aH20  <--> H2 + n/(2n+1)CO +bCO2',
     #          'reaction2': '(2n+1)H2 + nCO --> CnH_2n+1 + nH20 ',
 
     techno_infos_dict_default = {'maturity': 0,
@@ -68,7 +67,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                  #                                  'fuel_demand_unit': 'kWh/kWh',
                                  'syngas_demand': 106.6 * 14.47 / (146 + 348 + 81),
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
-                                 'learning_rate':  0.15,
+                                 'learning_rate': 0.15,
                                  'maximum_learning_capex_ratio': 0.5,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': GlossaryEnergy.Years,
@@ -114,14 +113,17 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                                      'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
-               'syngas_ratio': {'type': 'array', 'unit': '%', 'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False},
+               'syngas_ratio': {'type': 'array', 'unit': '%',
+                                'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_syngas'},
 
                'hydrogen.gaseous_hydrogen.data_fuel_dict': {'type': 'dict',
                                                             'visibility': LiquidFuelTechnoDiscipline.SHARED_VISIBILITY,
@@ -160,20 +162,20 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources, grad_dict_resources_co2)
 
-        margin = self.techno_model.margin[GlossaryEnergy.MarginValue].values
-
         dprice_FT_dsyngas_ratio = self.techno_model.dprice_FT_dsyngas_ratio / \
-            100.0  # now syngas is in % grad is divided by 100
+                                  100.0  # now syngas is in % grad is divided by 100
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}'),  ('syngas_ratio',), dprice_FT_dsyngas_ratio)
+            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}'), ('syngas_ratio',), dprice_FT_dsyngas_ratio)
 
         # Grad of techno_production vs syngas_ratio
 
         capex = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)[
             f'Capex_{self.techno_name}'].values
         grad_dict = self.techno_model.grad_techno_producion_vs_syngas_ratio(
-            capex, self.techno_model.invest_level[GlossaryEnergy.InvestValue].values,  self.techno_model.invest_before_ystart[GlossaryEnergy.InvestValue].values,  self.techno_model.techno_infos_dict)
+            capex, self.techno_model.invest_level[GlossaryEnergy.InvestValue].values,
+            self.techno_model.invest_before_ystart[GlossaryEnergy.InvestValue].values,
+            self.techno_model.techno_infos_dict)
 
         grad_dict = {
             key: value for key, value in grad_dict.items()}
@@ -197,21 +199,27 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         # Grad of techno_consumption vs syngas_ratio
 
         grad_dict = self.techno_model.grad_techno_consumption_vs_syngas_ratio(
-            capex,  self.techno_model.invest_level[GlossaryEnergy.InvestValue].values,  self.techno_model.invest_before_ystart[GlossaryEnergy.InvestValue].values,  self.techno_model.techno_infos_dict)
+            capex, self.techno_model.invest_level[GlossaryEnergy.InvestValue].values,
+            self.techno_model.invest_before_ystart[GlossaryEnergy.InvestValue].values,
+            self.techno_model.techno_infos_dict)
         grad_dict = {
-            key: value * scaling_factor_techno_production / scaling_factor_techno_consumption for key, value in grad_dict.items()}
+            key: value * scaling_factor_techno_production / scaling_factor_techno_consumption for key, value in
+            grad_dict.items()}
         self.set_partial_derivatives_output_wr_input(
             GlossaryEnergy.TechnoConsumptionValue, 'syngas_ratio', grad_dict)
 
         grad_dict = {
-            key: value / self.techno_model.applied_ratio['applied_ratio'].values * scaling_factor_techno_production / scaling_factor_techno_consumption for key, value in grad_dict.items()}
+            key: value / self.techno_model.applied_ratio[
+                'applied_ratio'].values * scaling_factor_techno_production / scaling_factor_techno_consumption for
+            key, value in grad_dict.items()}
         self.set_partial_derivatives_output_wr_input(
             GlossaryEnergy.TechnoConsumptionWithoutRatioValue, 'syngas_ratio', grad_dict)
 
         dco2_emissions_dsyngas_ratio = self.techno_model.compute_dco2_emissions_dsyngas_ratio()
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryEnergy.CO2EmissionsValue, self.techno_name), ('syngas_ratio',), dco2_emissions_dsyngas_ratio / 100.0)  # now syngas is in % grad is divided by 100
+            (GlossaryEnergy.CO2EmissionsValue, self.techno_name), ('syngas_ratio',),
+            dco2_emissions_dsyngas_ratio / 100.0)  # now syngas is in % grad is divided by 100
 
         dprice_FT_wotaxes_dsyngas_ratio = self.techno_model.dprice_FT_wotaxes_dsyngas_ratio
         self.set_partial_derivative_for_other_types(
@@ -219,7 +227,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
              f'{self.techno_name}_wotaxes'), ('syngas_ratio',),
             dprice_FT_wotaxes_dsyngas_ratio / 100.0)  # now syngas is in % grad is divided by 100
 
-    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={}, grad_dict_resources_co2={}):
+    def set_partial_derivatives_techno(self, grad_dict, carbon_emissions, grad_dict_resources={},
+                                       grad_dict_resources_co2={}):
         """
         Generic method to set partial derivatives of techno_prices / energy_prices, energy_CO2_emissions and dco2_emissions/denergy_co2_emissions
         """
@@ -227,60 +236,82 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         self.grad_total = {}
         for energy, value in grad_dict.items():
             self.grad_total[energy] = value * \
-                self.techno_model.margin[GlossaryEnergy.MarginValue].values / 100.0
+                                      self.techno_model.margin[GlossaryEnergy.MarginValue].values / 100.0
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyPricesValue, energy), self.grad_total[energy])
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyPricesValue, energy),
+                self.grad_total[energy])
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryEnergy.EnergyPricesValue, energy), self.grad_total[energy])
+                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
+                (GlossaryEnergy.EnergyPricesValue, energy), self.grad_total[energy])
             # Means it has no sense to compute carbon emissions as for CC and
             # CS
             if carbon_emissions is not None:
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.CO2EmissionsValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy), value)
+                    (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
+                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy), value)
 
                 # to manage gradient when carbon_emissions is null:
                 # sign_carbon_emissions = 1 if carbon_emissions >=0, -1 if
                 # carbon_emissions < 0
                 sign_carbon_emissions = np.sign(
-                    carbon_emissions.loc[carbon_emissions[GlossaryEnergy.Years] <= self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions[GlossaryEnergy.Years] <= self.techno_model.year_end][self.techno_name])**2
+                    carbon_emissions.loc[carbon_emissions[GlossaryEnergy.Years] <= self.techno_model.year_end][
+                        self.techno_name]) + 1 - np.sign(
+                    carbon_emissions.loc[carbon_emissions[GlossaryEnergy.Years] <= self.techno_model.year_end][
+                        self.techno_name]) ** 2
                 grad_on_co2_tax = value * \
-                    self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years] <= self.techno_model.year_end][GlossaryEnergy.CO2Tax].values[:, np.newaxis] * np.maximum(
-                        0, sign_carbon_emissions).values
+                                  self.techno_model.CO2_taxes.loc[
+                                      self.techno_model.CO2_taxes[GlossaryEnergy.Years] <= self.techno_model.year_end][
+                                      GlossaryEnergy.CO2Tax].values[:, np.newaxis] * np.maximum(
+                    0, sign_carbon_emissions).values
 
                 self.dprices_demissions[energy] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.EnergyCO2EmissionsValue, energy), self.dprices_demissions[energy])
+                    (GlossaryEnergy.TechnoPricesValue, self.techno_name),
+                    (GlossaryEnergy.EnergyCO2EmissionsValue, energy), self.dprices_demissions[energy])
         if carbon_emissions is not None:
-            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <= self.techno_model.carbon_intensity[GlossaryEnergy.Years].max(
-            )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values
+            dCO2_taxes_factory = (self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
+                                  self.techno_model.carbon_intensity[GlossaryEnergy.Years].max(
+                                  )) * self.techno_model.carbon_intensity[self.techno_name].clip(0).values
             dtechno_prices_dCO2_taxes = dCO2_taxes_factory
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.CO2Tax), dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name),
+                (GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.CO2Tax),
+                dtechno_prices_dCO2_taxes.values * np.identity(len(self.techno_model.years)))
 
         for resource, value in grad_dict_resources.items():
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.ResourcesPriceValue, resource), value *
+                (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.ResourcesPriceValue, resource),
+                value *
                 self.techno_model.margin[GlossaryEnergy.MarginValue].values / 100.0)
             self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryEnergy.ResourcesPriceValue, resource), value *
-                self.techno_model.margin[GlossaryEnergy.MarginValue].values / 100.0)
+                (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'),
+                (GlossaryEnergy.ResourcesPriceValue, resource), value *
+                                                                self.techno_model.margin[
+                                                                    GlossaryEnergy.MarginValue].values / 100.0)
 
         for resource, value in grad_dict_resources_co2.items():
             if carbon_emissions is not None:
                 # resources carbon emissions
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.CO2EmissionsValue, self.techno_name), (GlossaryEnergy.RessourcesCO2EmissionsValue, resource), value)
+                    (GlossaryEnergy.CO2EmissionsValue, self.techno_name),
+                    (GlossaryEnergy.RessourcesCO2EmissionsValue, resource), value)
 
                 sign_carbon_emissions = np.sign(carbon_emissions.loc[carbon_emissions[GlossaryEnergy.Years] <=
-                                                                     self.techno_model.year_end][self.techno_name]) + 1 - np.sign(carbon_emissions.loc[carbon_emissions[GlossaryEnergy.Years] <=
-                                                                                                                                                       self.techno_model.year_end][self.techno_name]) ** 2
-                grad_on_co2_tax = value * self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
-                                                                          self.techno_model.year_end][GlossaryEnergy.CO2Tax].values[:, np.newaxis] * np.maximum(0, sign_carbon_emissions).values
+                                                                     self.techno_model.year_end][
+                                                    self.techno_name]) + 1 - np.sign(
+                    carbon_emissions.loc[carbon_emissions[GlossaryEnergy.Years] <=
+                                         self.techno_model.year_end][self.techno_name]) ** 2
+                grad_on_co2_tax = value * \
+                                  self.techno_model.CO2_taxes.loc[self.techno_model.CO2_taxes[GlossaryEnergy.Years] <=
+                                                                  self.techno_model.year_end][
+                                      GlossaryEnergy.CO2Tax].values[:, np.newaxis] * np.maximum(0,
+                                                                                                sign_carbon_emissions).values
 
                 self.dprices_demissions[resource] = grad_on_co2_tax
                 self.set_partial_derivative_for_other_types(
-                    (GlossaryEnergy.TechnoPricesValue, self.techno_name), (GlossaryEnergy.RessourcesCO2EmissionsValue, resource), self.dprices_demissions[resource])
+                    (GlossaryEnergy.TechnoPricesValue, self.techno_name),
+                    (GlossaryEnergy.RessourcesCO2EmissionsValue, resource), self.dprices_demissions[resource])
 
     def set_partial_derivatives_output_wr_input(self, output_name, input_name, grad_dict):
         """
@@ -303,7 +334,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             if techno != GlossaryEnergy.Years:
                 techno_model = FischerTropsch(self.techno_name)
                 # Update init values syngas price and syngas_ratio
-                inputs_dict[GlossaryEnergy.EnergyPricesValue]['syngas'] = inputs_dict['energy_detailed_techno_prices'][techno]
+                inputs_dict[GlossaryEnergy.EnergyPricesValue]['syngas'] = inputs_dict['energy_detailed_techno_prices'][
+                    techno]
                 inputs_dict['syngas_ratio'] = np.ones(
                     len(years)) * inputs_dict['syngas_ratio_technos'][techno]
                 # -- configure class with inputs
@@ -343,10 +375,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         return chart_filters
 
     def get_post_processing_list(self, filters=None):
-        instanciated_charts = []
         charts = []
         price_unit_list = ['$/MWh', '$/t', "$/USgallon"]
-        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
 
         # Overload default value with chart filter
@@ -372,18 +402,18 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             if 'part_of_total' in self.get_data_in():
                 part_of_total = self.get_sosdisc_inputs('part_of_total')
                 new_chart.annotation_upper_left = {
-                    'Percentage of total price': f'{part_of_total[0]*100.0} %'}
-                tot_price = techno_detailed_prices[self.techno_name].values *  \
-                    data_fuel_dict['calorific_value'] / \
-                    part_of_total
+                    'Percentage of total price': f'{part_of_total[0] * 100.0} %'}
+                tot_price = techno_detailed_prices[self.techno_name].values * \
+                            data_fuel_dict['calorific_value'] / \
+                            part_of_total
                 serie = InstanciatedSeries(
                     techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                     tot_price.tolist(), 'Total price without percentage', 'lines')
                 new_chart.series.append(serie)
             # Add total price
-            techno_gallon_price = techno_detailed_prices[self.techno_name].values *  \
-                data_fuel_dict['calorific_value'] * \
-                data_fuel_dict['density'] / 1e6 * 3.78
+            techno_gallon_price = techno_detailed_prices[self.techno_name].values * \
+                                  data_fuel_dict['calorific_value'] * \
+                                  data_fuel_dict['density'] / 1e6 * 3.78
 
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
@@ -405,7 +435,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         maximum = max(
             techno_detailed_prices[self.techno_name].values.tolist()) * 1.2
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/kWh]', [year_start, year_end], [minimum, maximum],
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/kWh]', [year_start, year_end],
+                                             [minimum, maximum],
                                              chart_name=chart_name)
 
         # Add total price
@@ -424,7 +455,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         serie = InstanciatedSeries(
             techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-            techno_detailed_prices['syngas before transformation'].values.tolist(), 'syngas before transformation', 'lines')
+            techno_detailed_prices['syngas before transformation'].values.tolist(), 'syngas before transformation',
+            'lines')
 
         new_chart.series.append(serie)
 
@@ -436,8 +468,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         # Transport price
         if 'WGS' in techno_detailed_prices:
             WGS_cost = techno_detailed_prices['syngas'].values - \
-                techno_detailed_prices['syngas before transformation'].values
-        # Factory price
+                       techno_detailed_prices['syngas before transformation'].values
+            # Factory price
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                 WGS_cost.tolist(), 'WGS', 'lines')
@@ -445,8 +477,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             new_chart.series.append(serie)
         if 'RWGS' in techno_detailed_prices:
             WGS_cost = techno_detailed_prices['syngas'].values - \
-                techno_detailed_prices['syngas before transformation'].values
-        # Factory price
+                       techno_detailed_prices['syngas before transformation'].values
+            # Factory price
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                 WGS_cost.tolist(), 'RWGS', 'lines')
@@ -454,8 +486,8 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
             new_chart.series.append(serie)
         if 'WGS or RWGS' in techno_detailed_prices:
             WGS_cost = techno_detailed_prices['syngas'].values - \
-                techno_detailed_prices['syngas before transformation'].values
-        # Factory price
+                       techno_detailed_prices['syngas before transformation'].values
+            # Factory price
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                 WGS_cost.tolist(), 'WGS or RWGS', 'lines')
@@ -486,14 +518,15 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         year_end = max(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
         minimum = 0
         max_price = techno_detailed_prices[self.techno_name].values * \
-            calorific_value
+                    calorific_value
         maximum = max(max_price.tolist()) * 1.2
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/t]', [year_start, year_end], [minimum, maximum],
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/t]', [year_start, year_end],
+                                             [minimum, maximum],
                                              chart_name=chart_name)
 
         total_price_kg = techno_detailed_prices[self.techno_name].values * \
-            calorific_value
+                         calorific_value
         # Add total price
         serie = InstanciatedSeries(
             techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
@@ -517,7 +550,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
 
         new_chart.series.append(serie)
         total_price_kg = techno_detailed_prices['electricity'].values * \
-            calorific_value
+                         calorific_value
 
         serie = InstanciatedSeries(
             techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
@@ -526,10 +559,9 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         new_chart.series.append(serie)
         # Transport price
         if 'WGS' in techno_detailed_prices:
-
             WGS_cost = (techno_detailed_prices['syngas'].values -
                         techno_detailed_prices['syngas before transformation'].values) * calorific_value
-        # Factory price
+            # Factory price
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                 WGS_cost.tolist(), 'WGS', 'lines')
@@ -538,7 +570,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         if 'RWGS' in techno_detailed_prices:
             WGS_cost = (techno_detailed_prices['syngas'].values -
                         techno_detailed_prices['syngas before transformation'].values) * calorific_value
-        # Factory price
+            # Factory price
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                 WGS_cost.tolist(), 'RWGS', 'lines')
@@ -547,14 +579,14 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         if 'WGS or RWGS' in techno_detailed_prices:
             WGS_cost = (techno_detailed_prices['syngas'].values -
                         techno_detailed_prices['syngas before transformation'].values) * calorific_value
-        # Factory price
+            # Factory price
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                 WGS_cost.tolist(), 'WGS or RWGS', 'lines')
 
             new_chart.series.append(serie)
         total_price_kg = techno_detailed_prices['transport'].values * \
-            calorific_value
+                         calorific_value
         # Transport price
         serie = InstanciatedSeries(
             techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
@@ -563,7 +595,7 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
         new_chart.series.append(serie)
         # CO2 taxes
         total_price_kg = techno_detailed_prices['CO2_taxes_factory'].values * \
-            calorific_value
+                         calorific_value
         serie = InstanciatedSeries(
             techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
             total_price_kg.tolist(), 'CO2 taxes due to production', 'lines')

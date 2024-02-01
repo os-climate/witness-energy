@@ -85,6 +85,7 @@ class Nuclear(ElectricityTechno):
         self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = 24000000.00 *  self.techno_infos_dict['useful_heat_recovery_factor'] \
                                                                                       * self.consumption_detailed[f'{self.URANIUM_RESOURCE_NAME} ({self.mass_unit})']
 
+
     def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment

@@ -30,7 +30,7 @@ class OneInvest(BaseInvest):
         Constructor
         '''
         BaseInvest.__init__(self, name)
-        #-- default value, can be changed if necessary
+        # -- default value, can be changed if necessary
         self.distribution_list = None
         self.invest_mix = None
         self.rescaling_factor = 1e2
@@ -42,7 +42,8 @@ class OneInvest(BaseInvest):
         energy_investment = inputs_dict[GlossaryEnergy.EnergyInvestmentsValue]
         self.rescaling_factor = inputs_dict['scaling_factor_energy_investment']
         energy_invest_df = pd.DataFrame({GlossaryEnergy.Years: energy_investment[GlossaryEnergy.Years].values,
-                                         GlossaryEnergy.EnergyInvestmentsValue: energy_investment[GlossaryEnergy.EnergyInvestmentsValue].values * self.rescaling_factor})
+                                         GlossaryEnergy.EnergyInvestmentsValue: energy_investment[
+                                                                                    GlossaryEnergy.EnergyInvestmentsValue].values * self.rescaling_factor})
 
         self.compute_distribution_list(inputs_dict)
 
@@ -73,7 +74,8 @@ class OneInvest(BaseInvest):
             raise ValueError(str(sorted(head_list)) +
                              ' should be equal to ' + str(sorted(self.distribution_list)))
 
-    def get_invest_distrib(self, invest_level, invest_mix, input_unit, output_unit, column_name=GlossaryEnergy.InvestValue):
+    def get_invest_distrib(self, invest_level, invest_mix, input_unit, output_unit,
+                           column_name=GlossaryEnergy.InvestValue):
         self.set_invest_level(invest_level, input_unit, column_name)
         self.set_invest_mix(invest_mix)
         self.energy_list = self.distribution_list

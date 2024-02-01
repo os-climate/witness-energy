@@ -31,7 +31,8 @@ TECHNOLOGIES_LIST_DEV = []
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST,
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1,
+                 technologies_list=TECHNOLOGIES_LIST,
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
@@ -43,21 +44,18 @@ class Study(EnergyMixStudyManager):
 
     def get_investments(self):
         invest_biomass_dry_mix_dict = {}
-        l_ctrl = np.arange(0, 8)
+        l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
         if 'ManagedWood' in self.technologies_list:
             invest_biomass_dry_mix_dict['ManagedWood'] = [
-                (1 + 0.03)**i for i in l_ctrl]
+                (1 + 0.03) ** i for i in l_ctrl]
 
         if 'UnmanagedWood' in self.technologies_list:
             invest_biomass_dry_mix_dict['UnmanagedWood'] = [
-                (1 - 0.04)**i for i in l_ctrl]
+                (1 - 0.04) ** i for i in l_ctrl]
 
         if 'CropEnergy' in self.technologies_list:
-            #             invest_biomass_dry_mix_dict['CropEnergy'] = [
-            #                 (1 + 0.0)**i for i in l_ctrl]
-            invest_biomass_dry_mix_dict['CropEnergy'] = np.array([
-                1.0, 1.0, 0.8, 0.6, 0.4, 0.4, 0.4, 0.4])
+            invest_biomass_dry_mix_dict['CropEnergy'] = np.linspace(1.0, .4, GlossaryEnergy.NB_POLES_FULL)
 
         if self.bspline:
             invest_biomass_dry_mix_dict[GlossaryEnergy.Years] = self.years
@@ -70,19 +68,19 @@ class Study(EnergyMixStudyManager):
 
         return biomass_dry_mix_invest_df
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         energy_mix = 'EnergyMix'
         self.energy_name = BiomassDry.name
         energy_name = f'{energy_mix}.{self.energy_name}'
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'electricity': 16.0})
+        energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
+                                      'electricity': 16.0})
 
         # We use the IEA H2 demand to fake the invest level through years
 
         # the value for invest_level is just set as an order of magnitude
-        self.invest_level = pd.DataFrame(
+        invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 1e4})
 
         land_surface_for_food = pd.DataFrame({GlossaryEnergy.Years: years,
@@ -90,24 +88,25 @@ class Study(EnergyMixStudyManager):
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
-        self.co2_taxes = pd.DataFrame(
+        co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
-        self.margin = pd.DataFrame(
+        margin = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
-        self.transport = pd.DataFrame(
+        transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 7.6})
 
-        self.resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
-        self.resources_price[GlossaryEnergy.Years] = years
-        self.resources_price['CO2'] = np.linspace(
-            50.0, 100.0, len(years))         # biomass_dry price in $/kg
-        self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+        resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
+        resources_price[GlossaryEnergy.Years] = years
+        resources_price['CO2'] = np.linspace(
+            50.0, 100.0, len(years))  # biomass_dry price in $/kg
+        energy_carbon_emissions = pd.DataFrame(
+            {GlossaryEnergy.Years: years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0,
+             'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 
         # define invest mix
         investment_mix = self.get_investments()
@@ -115,30 +114,34 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.ManagedWood.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.UnmanagedWood.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.CropEnergy.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.ManagedWood.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.UnmanagedWood.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.CropEnergy.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
                        }
         if self.main_study:
             values_dict.update(
                 {f'{self.study_name}.land_surface_for_food_df': land_surface_for_food,
-                 f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
+                 f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
                  })
 
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
                     columns=[GlossaryEnergy.Years]).sum(axis=1)
                 for techno in self.technologies_list:
-                    invest_level_techno = pd.DataFrame({GlossaryEnergy.Years: self.invest_level[GlossaryEnergy.Years].values,
-                                                        GlossaryEnergy.InvestValue: self.invest_level[GlossaryEnergy.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
-                    values_dict[f'{self.study_name}.{energy_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
+                    invest_level_techno = pd.DataFrame({GlossaryEnergy.Years: invest_level[GlossaryEnergy.Years].values,
+                                                        GlossaryEnergy.InvestValue: invest_level[
+                                                                                        GlossaryEnergy.InvestValue].values *
+                                                                                    investment_mix[
+                                                                                        techno].values / investment_mix_sum})
+                    values_dict[
+                        f'{self.study_name}.{energy_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
             else:
-                values_dict[f'{self.study_name}.{energy_name}.{GlossaryEnergy.InvestLevelValue}'] = self.invest_level
+                values_dict[f'{self.study_name}.{energy_name}.{GlossaryEnergy.InvestLevelValue}'] = invest_level
         else:
             self.update_dv_arrays()
         return [values_dict]

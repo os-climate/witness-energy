@@ -50,17 +50,16 @@ class ElectricBoilerLowHeat(lowheattechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
+
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-                                                                                        self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{lowtemperatureheat.name} ({self.product_energy_unit})']
 
     def get_theoretical_electricity_needs(self):
         # we need as output kwh/kwh
         elec_demand = self.techno_infos_dict['elec_demand']
 
         return elec_demand
-
-
-
 

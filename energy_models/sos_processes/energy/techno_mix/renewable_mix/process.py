@@ -22,7 +22,6 @@ from energy_models.sos_processes.energy.techno_mix.renewable_mix.usecase import 
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Renewable Mix',
@@ -36,7 +35,6 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
 
         renewable_name = Renewable.name
@@ -52,10 +50,10 @@ class ProcessBuilder(EnergyProcessBuilder):
         mods_dict[f'{energy_mix}.{renewable_name}'] = self.get_stream_disc_path(
             'energy_disciplines', 'Renewable')
         for techno_name in self.techno_list:
-
             sub_dir = None
             mods_dict[f'{energy_mix}.{renewable_name}.{techno_name}'] = self.get_techno_disc_path(
                 renewable_name, techno_name, sub_dir)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

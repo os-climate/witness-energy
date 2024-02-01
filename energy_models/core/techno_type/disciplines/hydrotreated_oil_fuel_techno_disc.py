@@ -20,7 +20,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class HydrotreatedOilFuelTechnoDiscipline(TechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Hydrotreated Oil Fuel Technology Model',
@@ -34,14 +33,21 @@ class HydrotreatedOilFuelTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_hydrotreated_oil_fuel',
-                                  'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                           'transport': ('float',  None, True)},
-                                  'dataframe_edition_locked': False},
-               GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_hydrotreated_oil_fuel',
-                                    'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                             GlossaryEnergy.MarginValue: ('float',  None, True)},
-                                    'dataframe_edition_locked': False},
+    DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t',
+                                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                   'namespace': 'ns_hydrotreated_oil_fuel',
+                                                   'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                                   'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                                            'transport': ('float', None, True)},
+                                                   'dataframe_edition_locked': False},
+               GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
+                                                     'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                     'namespace': 'ns_hydrotreated_oil_fuel',
+                                                     'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                                     'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                                              GlossaryEnergy.MarginValue: (
+                                                                              'float', None, True)},
+                                                     'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_hydrotreated_oil_fuel',
@@ -55,7 +61,6 @@ class HydrotreatedOilFuelTechnoDiscipline(TechnoDiscipline):
     energy_name = HydrotreatedOilFuel.name
 
     def compute_sos_jacobian(self):
-
         TechnoDiscipline.compute_sos_jacobian(self)
         grad_dict = self.techno_model.grad_price_vs_energy_price()
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)

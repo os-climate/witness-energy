@@ -81,7 +81,7 @@ class HEFAPriceTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 347.5 / 1000})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -105,7 +105,6 @@ class HEFAPriceTestCase(unittest.TestCase):
         pass
 
     def test_02_hefa_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'Hefa'
         self.ee = ExecutionEngine(self.name)
@@ -133,7 +132,7 @@ class HEFAPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -148,7 +147,6 @@ class HEFAPriceTestCase(unittest.TestCase):
         # graph.to_plotly().show()
 
     def test_04_hefa_green_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'HefaGreen'
         self.ee = ExecutionEngine(self.name)
@@ -176,7 +174,7 @@ class HEFAPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

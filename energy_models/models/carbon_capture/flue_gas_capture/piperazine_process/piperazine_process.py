@@ -27,8 +27,9 @@ class PiperazineProcess(CCTechno):
     def configure_parameters_update(self, inputs_dict):
 
         CCTechno.configure_parameters_update(self, inputs_dict)
-        self.flue_gas_ratio = inputs_dict[GlossaryEnergy.FlueGasMean].loc[inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.Years]
-                                                               <= self.year_end]
+        self.flue_gas_ratio = inputs_dict[GlossaryEnergy.FlueGasMean].loc[
+            inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.Years]
+            <= self.year_end]
         if 'fg_ratio_effect' in inputs_dict:
             self.fg_ratio_effect = inputs_dict['fg_ratio_effect']
         else:
@@ -47,8 +48,6 @@ class PiperazineProcess(CCTechno):
         self.cost_details[Electricity.name] *= self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)
 
-
-
         return self.cost_details[Electricity.name]
 
     def grad_price_vs_energy_price(self):
@@ -59,14 +58,14 @@ class PiperazineProcess(CCTechno):
         elec_needs = self.get_electricity_needs()
         heat_needs = self.get_heat_needs()
 
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs / self.techno_infos_dict['efficiency'] * self.compute_electricity_variation_from_fg_ratio(
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs / self.techno_infos_dict[
+            'efficiency'] * self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect)}
 
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
 
         # Consumption
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \

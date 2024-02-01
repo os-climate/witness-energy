@@ -156,6 +156,7 @@ def generate_dict_from_usecase(usecase):
 
     return out_dict
 
+
 def dump_json_file_from_dict(dict_to_dump):
     with open("mda_v0.json", "w") as outfile:
         json.dump(dict_to_dump, outfile, indent=4)

@@ -36,10 +36,10 @@ class MethanolDiscipline(EnergyDiscipline):
     # -- add specific techno inputs to this
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': Methanol.default_techno_list,
-                                     'default': Methanol.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_methanol', 'structuring': True},
+                                            'possible_values': Methanol.default_techno_list,
+                                            'default': Methanol.default_techno_list,
+                                            'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                            'namespace': 'ns_methanol', 'structuring': True},
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_methanol', 'default': Methanol.data_energy_dict},
                }

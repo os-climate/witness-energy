@@ -51,18 +51,19 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years})
         self.invest_level[GlossaryEnergy.InvestValue] = 33.0 * \
-            1.10 ** (self.invest_level[GlossaryEnergy.Years] - 2020)
+                                                        1.10 ** (self.invest_level[GlossaryEnergy.Years] - 2020)
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
 
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1), GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 110})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
+             GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 110})
 
         self.transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.zeros(len(years))})
@@ -82,7 +83,6 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
         pass
 
     def test_03_renewable_simple_techno_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'RenewableSimpleTechno'
         self.ee = ExecutionEngine(self.name)
@@ -110,7 +110,7 @@ class RenewableSimpleTechnoTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

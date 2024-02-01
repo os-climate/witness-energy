@@ -35,7 +35,8 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
     """
     SoSDiscipline test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -92,10 +93,12 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         output_prices = [
             f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in output_columns]
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_price_test.pkl',
-                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
-                            inputs=[f'{self.name}.EnergyMix.syngas.SMR.invest_level'], outputs=output_prices + [f'{self.name}.EnergyMix.energy_mean_price'], parallel=True)
+                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_mda.local_data,
+                            inputs=[f'{self.name}.EnergyMix.syngas.SMR.invest_level'],
+                            outputs=output_prices + [f'{self.name}.EnergyMix.energy_mean_price'], parallel=True)
 
     def test_02_check_gradient_price_vs_invests(self):
 
@@ -130,10 +133,12 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
             f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in output_columns]
 
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_invest.pkl',
-                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
+                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_mda.local_data,
                             inputs=[
                                 f'{self.name}.EnergyMix.energy_investment'],
-                            outputs=output_prices + [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}'], parallel=True)
+                            outputs=output_prices + [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}'],
+                            parallel=True)
 
     def test_03_check_gradient_of_price_vs_co2_emissions_open_loop(self):
 
@@ -149,7 +154,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
-        #values_dict[0][f'{usecase.study_name}.chain_linearize'] = 'True'
+        # values_dict[0][f'{usecase.study_name}.chain_linearize'] = 'True'
         self.ee.display_treeview_nodes()
         full_values_dict = {}
         for dict_v in values_dict:
@@ -174,19 +179,22 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         hydrogen_techno = ['Electrolysis.SOEC', 'Electrolysis.PEM', 'PlasmaCracking', 'WaterGasShift'
                            ]
         output_hydrogen_prices = [
-            f'{self.name}.EnergyMix.hydrogen.gaseous_hydrogen.{techno}.{GlossaryEnergy.TechnoPricesValue}' for techno in hydrogen_techno]
+            f'{self.name}.EnergyMix.hydrogen.gaseous_hydrogen.{techno}.{GlossaryEnergy.TechnoPricesValue}' for techno in
+            hydrogen_techno]
         liquid_fuel_techno = ['Refinery', 'FischerTropsch']
         output_lf_prices = [
-            f'{self.name}.EnergyMix.liquid_fuel.{techno}.{GlossaryEnergy.TechnoPricesValue}' for techno in liquid_fuel_techno]
+            f'{self.name}.EnergyMix.liquid_fuel.{techno}.{GlossaryEnergy.TechnoPricesValue}' for techno in
+            liquid_fuel_techno]
         output_co2_emissions = [
             f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in output_columns[:-2]]
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_price_vs_CO2_emissions.pkl',
-                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
+                            discipline=disc_mda, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_mda.local_data,
                             inputs=[f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}'],
                             outputs=output_prices + output_co2_emissions + output_hydrogen_prices + output_lf_prices +
-                            [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}',
-                             f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyCO2EmissionsValue}'], parallel=True)
+                                    [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}',
+                                     f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyCO2EmissionsValue}'], parallel=True)
 
     def test_04_check_gradient_energymixoutputs_vs_energy_investment(self):
 
@@ -217,13 +225,19 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         disc_mda = self.ee.root_process
 
-        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyProductionValue}', f'{self.name}.EnergyMix.co2_emissions_Gt',
-                             f'{self.name}.FunctionManagerDisc.energy_production_objective', f'{self.name}.FunctionManagerDisc.co2_emissions_objective', f'{self.name}.EnergyMix.energy_mean_price',
+        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyProductionValue}',
+                             f'{self.name}.EnergyMix.co2_emissions_Gt',
+                             f'{self.name}.FunctionManagerDisc.energy_production_objective',
+                             f'{self.name}.FunctionManagerDisc.co2_emissions_objective',
+                             f'{self.name}.EnergyMix.energy_mean_price',
                              f'{self.name}.EnergyMix.land_demand_df',
-                             f'{self.name}.FunctionManagerDisc.primary_energies_production', f'{self.name}.EnergyMix.CCS_price']
+                             f'{self.name}.FunctionManagerDisc.primary_energies_production',
+                             f'{self.name}.EnergyMix.CCS_price']
 
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_energymixoutputs_vs_energy_investment.pkl',
-                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
+        self.check_jacobian(location=dirname(__file__),
+                            filename='jacobian_open_loop_energymixoutputs_vs_energy_investment.pkl',
+                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_mda.local_data,
                             inputs=[
                                 f'{self.name}.EnergyMix.energy_investment'],
                             outputs=energy_mix_output, parallel=True)
@@ -287,7 +301,8 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         exec_eng2.load_study_from_input_dict(full_values_dict)
         energy_list = ['methane', 'solid_fuel', 'syngas', 'electricity', 'liquid_fuel',
-                       'carbon_capture', 'carbon_storage', 'biogas', 'biomass_dry', 'biodiesel', 'hydrogen.gaseous_hydrogen', 'hydrogen.liquid_hydrogen']
+                       'carbon_capture', 'carbon_storage', 'biogas', 'biomass_dry', 'biodiesel',
+                       'hydrogen.gaseous_hydrogen', 'hydrogen.liquid_hydrogen']
 
         disc_mda = exec_eng2.root_process
         energy_price_outputs = []
@@ -299,12 +314,14 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
             for techno in techno_list:
                 energy_price_outputs.append(
                     f'{usecase.study_name}.EnergyMix.{energy}.{techno}.{GlossaryEnergy.TechnoPricesValue}')
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename='jacobian_open_loop_after_MDA_results.pkl',
-                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
+                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_mda.local_data,
                             inputs=[
                                 f'{self.name}.EnergyMix.energy_investment'],
-                            outputs=energy_price_outputs + [f'{usecase.study_name}.EnergyMix.energy_mean_price'], parallel=True)
+                            outputs=energy_price_outputs + [f'{usecase.study_name}.EnergyMix.energy_mean_price'],
+                            parallel=True)
 
     def test_06_check_gradient_energymixoutputs_vs_energy_mixes(self):
 
@@ -374,15 +391,23 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
 
         disc_mda = self.ee.root_process
 
-        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyProductionValue}', f'{self.name}.EnergyMix.co2_emissions_Gt',
-                             f'{self.name}.FunctionManagerDisc.energy_production_objective', f'{self.name}.FunctionManagerDisc.co2_emissions_objective', f'{self.name}.EnergyMix.energy_mean_price',
+        energy_mix_output = [f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyProductionValue}',
+                             f'{self.name}.EnergyMix.co2_emissions_Gt',
+                             f'{self.name}.FunctionManagerDisc.energy_production_objective',
+                             f'{self.name}.FunctionManagerDisc.co2_emissions_objective',
+                             f'{self.name}.EnergyMix.energy_mean_price',
                              f'{self.name}.EnergyMix.land_demand_df',
-                             f'{self.name}.FunctionManagerDisc.primary_energies_production', f'{self.name}.EnergyMix.CCS_price']
+                             f'{self.name}.FunctionManagerDisc.primary_energies_production',
+                             f'{self.name}.EnergyMix.CCS_price']
 
-        self.check_jacobian(location=dirname(__file__), filename='jacobian_gradient_energymixoutputs_vs_energy_mixes.pkl',
-                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,local_data=disc_mda.local_data,
+        self.check_jacobian(location=dirname(__file__),
+                            filename='jacobian_gradient_energymixoutputs_vs_energy_mixes.pkl',
+                            discipline=disc_mda, step=1.0e-14, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc_mda.local_data,
                             inputs=input_full_names,
                             outputs=energy_mix_output, parallel=True)
+
+
 #
 #     def test_06_check_gradient_energymixoutputs_vs_energy_mixes(self):
 #

@@ -77,7 +77,8 @@ class DatabaseWitnessEnergy:
         value=4.0,
         unit="G$",
         description="Investment in all CCUS technos in 2020 in G US$",
-        link="https://iea.blob.core.windows.net/assets/181b48b4-323f-454d-96fb-0bb1889d96a9/CCUS_in_clean_energy_transitions.pdf",  # page 13
+        link="https://iea.blob.core.windows.net/assets/181b48b4-323f-454d-96fb-0bb1889d96a9/CCUS_in_clean_energy_transitions.pdf",
+        # page 13
         source="CCUS in clean energy transitions - IEA",
         last_update_date=date(2023, 10, 26),
     )

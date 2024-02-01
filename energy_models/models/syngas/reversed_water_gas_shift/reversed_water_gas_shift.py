@@ -79,17 +79,16 @@ class RWGS(SyngasTechno):
             data_config['available_power']) * syngas_molar_mass / 1000.0 * syngas_calorific_value
         # Need to convertcapex_list in $/kWh
         capex_list = capex_list / self.available_power / \
-            data_config['full_load_hours']
+                     data_config['full_load_hours']
 
         initial_syngas_ratio = 0.0
         delta_syngas_ratio = final_syngas_ratio - initial_syngas_ratio
 
         self.slope_capex = (
-            capex_list[0] - capex_list[1]) / (delta_syngas_ratio[0] - delta_syngas_ratio[1])
+                                   capex_list[0] - capex_list[1]) / (delta_syngas_ratio[0] - delta_syngas_ratio[1])
         b = capex_list[0] - self.slope_capex * delta_syngas_ratio[0]
 
         def func_capex(delta_sg_ratio):
-
             return self.slope_capex * delta_sg_ratio + b
 
         # func_capex = sc.interp1d(delta_sg_ratio, capex_list,
@@ -110,7 +109,8 @@ class RWGS(SyngasTechno):
         capex_init = self.check_capex_unity(
             self.techno_infos_dict)
 
-        if 'complex128' in [type(self.initial_production), type(self.slope_capex), capex_init.dtype, self.cost_details[GlossaryEnergy.InvestValue].values.dtype]:
+        if 'complex128' in [type(self.initial_production), type(self.slope_capex), capex_init.dtype,
+                            self.cost_details[GlossaryEnergy.InvestValue].values.dtype]:
             arr_type = 'complex128'
         else:
             arr_type = 'float64'
@@ -139,10 +139,10 @@ class RWGS(SyngasTechno):
 
                 q = ((invest_sum + invest) / invest_sum) ** (-expo_factor)
 
-#                 dq = -expo_factor * ((invest_sum + invest) / invest_sum) ** (-expo_factor -
-# 1.0) * (-dinvest_sum * invest / (invest_sum * invest_sum))
+                #                 dq = -expo_factor * ((invest_sum + invest) / invest_sum) ** (-expo_factor -
+                # 1.0) * (-dinvest_sum * invest / (invest_sum * invest_sum))
                 dq = dinvest_sum * expo_factor * invest * \
-                    q / (invest_sum * (invest_sum + invest))
+                     q / (invest_sum * (invest_sum + invest))
                 if q.real < 0.95:
                     dq = 0.05 * np.exp(q - 0.9) * dq
                     q = 0.9 + 0.05 * np.exp(q - 0.9)
@@ -160,21 +160,23 @@ class RWGS(SyngasTechno):
         else:
             maximum_learning_capex_ratio = 0.9
 
-        #dcapex = maximum_learning_capex_ratio*dcapex_init + (1.0 - maximum_learning_capex_ratio)*dcapex
-        capex_grad = maximum_learning_capex_ratio * capex_grad[0][0] * np.insert(np.zeros((len(self.years), len(self.years) - 1)), 0, np.ones(len(self.years)), axis=1) + \
-            (1.0 - maximum_learning_capex_ratio) * capex_grad
+        # dcapex = maximum_learning_capex_ratio*dcapex_init + (1.0 - maximum_learning_capex_ratio)*dcapex
+        capex_grad = maximum_learning_capex_ratio * capex_grad[0][0] * np.insert(
+            np.zeros((len(self.years), len(self.years) - 1)), 0, np.ones(len(self.years)), axis=1) + \
+                     (1.0 - maximum_learning_capex_ratio) * capex_grad
         return capex_grad
 
         return capex_grad
 
-    def compute_dprod_dsyngas_ratio(self,  capex_list, invest_list, invest_before_year_start, techno_dict, dcapexdsyngas):
+    def compute_dprod_dsyngas_ratio(self, capex_list, invest_list, invest_before_year_start, techno_dict,
+                                    dcapexdsyngas):
 
-        #dpprod_dpfluegas = np.zeros(dcapexdfluegas.shape())
+        # dpprod_dpfluegas = np.zeros(dcapexdfluegas.shape())
 
         dprod_dcapex = self.compute_dprod_dcapex(
             capex_list, invest_list, techno_dict, invest_before_year_start)
         dcapex_syngas = self.compute_dcapex_dsyngas_ratio()
-        #dprod_dfluegas = dpprod_dpfluegas + dprod_dcapex * dcapexdfluegas
+        # dprod_dfluegas = dpprod_dpfluegas + dprod_dcapex * dcapexdfluegas
         dprod_dfluegas = np.zeros(dprod_dcapex.shape)
         if 'complex128' in [capex_list.dtype, invest_list.dtype, invest_before_year_start.dtype, dcapexdsyngas.dtype]:
             arr_type = 'complex128'
@@ -201,8 +203,8 @@ class RWGS(SyngasTechno):
         margin = self.margin[GlossaryEnergy.MarginValue].values
 
         denergy_cost_dsyngas_ratio = dsyngas_price_dsyngas_ratio + \
-            delectricity_price_dsyngas_ratio + \
-            dco2_price_dsyngas_ratio / (margin / 100)
+                                     delectricity_price_dsyngas_ratio + \
+                                     dco2_price_dsyngas_ratio / (margin / 100)
         # compute d rwgs_factory
         drwgs_factory_dsyngas_ratio = self.compute_drwgs_factory_dsyngas_ratio()
 
@@ -222,7 +224,7 @@ class RWGS(SyngasTechno):
         dco2_price_dsyngas_ratio = self.compute_dco2_price_dsyngas_ratio()
 
         denergy_cost_dsyngas_ratio = dsyngas_price_dsyngas_ratio + \
-            delectricity_price_dsyngas_ratio
+                                     delectricity_price_dsyngas_ratio
         # compute d rwgs_factory
         drwgs_factory_dsyngas_ratio = self.compute_drwgs_factory_dsyngas_ratio()
 
@@ -237,7 +239,7 @@ class RWGS(SyngasTechno):
 
         crf = self.compute_crf(self.techno_infos_dict)
         factory_grad = capex_grad * \
-            (crf + self.techno_infos_dict['Opex_percentage'])
+                       (crf + self.techno_infos_dict['Opex_percentage'])
 
         return factory_grad
 
@@ -257,7 +259,7 @@ class RWGS(SyngasTechno):
             len(self.years)) * self.slope_elec_demand
 
         delectricity_price_dsyngas_ratio = delectricity_needs_dsyngas_ratio * \
-            self.prices[Electricity.name].to_numpy()
+                                           self.prices[Electricity.name].to_numpy()
 
         return delectricity_price_dsyngas_ratio
 
@@ -268,10 +270,10 @@ class RWGS(SyngasTechno):
         efficiency = self.configure_efficiency()
 
         dco2_needs_dsyngas_ratio = self.compute_dco2_needs_dsyngas_ratio() / \
-            efficiency
+                                   efficiency
 
         dco2_electricity_dsynags_ratio = -self.slope_elec_demand * \
-            self.energy_CO2_emissions[Electricity.name].values
+                                         self.energy_CO2_emissions[Electricity.name].values
 
         dco2_syngas_dsynags_ratio = (self.compute_dsyngas_needs_dsyngas_ratio(
         ) * self.energy_CO2_emissions[Syngas.name].values / efficiency)
@@ -292,14 +294,15 @@ class RWGS(SyngasTechno):
         efficiency = self.configure_efficiency()
 
         dco2_price_dsyngas_ratio = np.identity(len(
-            self.years)) * dco2_needs_dsyngas_ratio * self.resources_prices[ResourceGlossary.CO2['name']].to_numpy() / efficiency[:, np.newaxis]
+            self.years)) * dco2_needs_dsyngas_ratio * self.resources_prices[
+                                       ResourceGlossary.CO2['name']].to_numpy() / efficiency[:, np.newaxis]
 
         return dco2_price_dsyngas_ratio
 
     def compute_dco2_needs_dsyngas_ratio(self):
         mol_H2 = 1.0
         mol_CO2 = self.needed_syngas_ratio - self.syngas_ratio * (1.0 + self.needed_syngas_ratio) / \
-            (1.0 + self.syngas_ratio)
+                  (1.0 + self.syngas_ratio)
 
         mol_CO2_up = - self.syngas_ratio * (1.0 + self.needed_syngas_ratio)
         dmol_CO2_up = - (1.0 + self.needed_syngas_ratio)
@@ -308,7 +311,7 @@ class RWGS(SyngasTechno):
         dmol_CO2_down = 1.0
 
         dmol_CO2_dsyngas_ratio = (
-            dmol_CO2_up * mol_CO2_down - dmol_CO2_down * mol_CO2_up) / mol_CO2_down**2
+                                         dmol_CO2_up * mol_CO2_down - dmol_CO2_down * mol_CO2_up) / mol_CO2_down ** 2
 
         co2_data = CO2.data_energy_dict
 
@@ -319,8 +322,8 @@ class RWGS(SyngasTechno):
             self.needed_syngas_ratio)
 
         dco2_needs_dsyngas_ratio = dmol_CO2_dsyngas_ratio * co2_data['molar_mass'] / \
-            (mol_H2 * needed_syngas_molar_mass *
-             needed_calorific_value)
+                                   (mol_H2 * needed_syngas_molar_mass *
+                                    needed_calorific_value)
 
         return dco2_needs_dsyngas_ratio
 
@@ -332,7 +335,7 @@ class RWGS(SyngasTechno):
         factory_grad = self.compute_drwgs_factory_dsyngas_ratio()
 
         dsyngas_dsyngas_ratio = np.identity(len(years)) * self.compute_dsyngas_needs_dsyngas_ratio() * \
-            self.prices[Syngas.name].to_numpy() / efficiency[:, np.newaxis]
+                                self.prices[Syngas.name].to_numpy() / efficiency[:, np.newaxis]
 
         dprice_dco2_price_dsyngas_ratio = np.identity(
             len(years)) * self.compute_dco2_price_dsyngas_ratio()
@@ -340,8 +343,9 @@ class RWGS(SyngasTechno):
         delectricity_price_dsyngas_ratio = np.identity(
             len(years)) * self.compute_delectricity_price_dsyngas_ratio()
         # now syngas is in % grad is divided by 100
-        dprice_dsyngas = (factory_grad + dsyngas_dsyngas_ratio + dprice_dco2_price_dsyngas_ratio + delectricity_price_dsyngas_ratio) \
-            * np.split(margin, len(margin)) / 100.0
+        dprice_dsyngas = (
+                                     factory_grad + dsyngas_dsyngas_ratio + dprice_dco2_price_dsyngas_ratio + delectricity_price_dsyngas_ratio) \
+                         * np.split(margin, len(margin)) / 100.0
 
         return dprice_dsyngas
 
@@ -353,7 +357,7 @@ class RWGS(SyngasTechno):
         factory_grad = self.compute_drwgs_factory_dsyngas_ratio()
 
         dsyngas_dsyngas_ratio = np.identity(len(years)) * self.compute_dsyngas_needs_dsyngas_ratio() * \
-            self.prices[Syngas.name].to_numpy() / efficiency[:, np.newaxis]
+                                self.prices[Syngas.name].to_numpy() / efficiency[:, np.newaxis]
 
         dprice_dco2_price_dsyngas_ratio = np.identity(
             len(years)) * self.compute_dco2_price_dsyngas_ratio()
@@ -361,25 +365,25 @@ class RWGS(SyngasTechno):
         delectricity_price_dsyngas_ratio = np.identity(
             len(years)) * self.compute_delectricity_price_dsyngas_ratio()
         # now syngas is in % grad is divided by 100
-        dprice_dsyngas = (factory_grad + dsyngas_dsyngas_ratio + dprice_dco2_price_dsyngas_ratio + delectricity_price_dsyngas_ratio) \
-            * np.split(margin, len(margin)) / 100.0
+        dprice_dsyngas = (
+                                     factory_grad + dsyngas_dsyngas_ratio + dprice_dco2_price_dsyngas_ratio + delectricity_price_dsyngas_ratio) \
+                         * np.split(margin, len(margin)) / 100.0
 
         return dprice_dsyngas
 
     def get_electricity_needs(self):
 
         elec_demand = self.techno_infos_dict['elec_demand'] / \
-            self.available_power / self.techno_infos_dict['full_load_hours']
+                      self.available_power / self.techno_infos_dict['full_load_hours']
         final_syngas_ratio = np.array(self.techno_infos_dict['CO_H2_ratio'])
         initial_syngas_ratio = 0.0
         delta_syngas_ratio = final_syngas_ratio - initial_syngas_ratio
 
         self.slope_elec_demand = (elec_demand[0] - elec_demand[1]) / \
-            (delta_syngas_ratio[0] - delta_syngas_ratio[1])
+                                 (delta_syngas_ratio[0] - delta_syngas_ratio[1])
         b = elec_demand[0] - self.slope_elec_demand * delta_syngas_ratio[0]
 
         def func_elec_demand(syngas_ratio):
-
             return self.slope_elec_demand * syngas_ratio + b
 
         # func_elec_demand = sc.interp1d(delta_syngas_ratio, elec_demand,
@@ -409,9 +413,10 @@ class RWGS(SyngasTechno):
         self.cost_details[Syngas.name] = list(self.prices[Syngas.name] * self.cost_details['syngas_needs']
                                               / self.cost_details['efficiency'])
 
-#         # Cost of CO2 for 1 kWH of H2
-        self.cost_details[CO2.name] = list(self.resources_prices[ResourceGlossary.CO2['name']] * self.cost_details['CO2_needs']
-                                           / self.cost_details['efficiency'])
+        #         # Cost of CO2 for 1 kWH of H2
+        self.cost_details[CO2.name] = list(
+            self.resources_prices[ResourceGlossary.CO2['name']] * self.cost_details['CO2_needs']
+            / self.cost_details['efficiency'])
 
         # self.cost_details[CO2.name]
         return self.cost_details[Electricity.name] + self.cost_details[Syngas.name] + self.cost_details[CO2.name]
@@ -428,7 +433,7 @@ class RWGS(SyngasTechno):
 
         return {Electricity.name: np.identity(len(self.years)) * elec_needs,
                 Syngas.name: np.identity(
-                len(self.years)) * syngas_needs / efficiency[:, np.newaxis]
+                    len(self.years)) * syngas_needs / efficiency[:, np.newaxis]
                 }
 
     def compute_consumption_and_production(self):
@@ -437,28 +442,34 @@ class RWGS(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
         th_water_prod = self.get_theoretical_water_prod()
 
         self.production_detailed[f'{Water.name} ({self.mass_unit})'] = th_water_prod * \
-                                                                       self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+                                                                       self.production_detailed[
+                                                                           f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            'elec_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         self.consumption_detailed[f'{Syngas.name} ({self.product_energy_unit})'] = self.cost_details['syngas_needs'] * \
-                                                                                   self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
-                                                                                   self.cost_details['efficiency']  # in kWH
+                                                                                   self.production_detailed[
+                                                                                       f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                   self.cost_details[
+                                                                                       'efficiency']  # in kWH
 
         self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
-                                                                                self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                self.production_detailed[
+                                                                                    f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                 self.cost_details['efficiency']  # in kg
 
     def compute_dprod_water_dsyngas_ratio(self, dprodenergy_dsyngas_ratio, prod_energy):
         dwater_prod_dsyngas_ratio = self.compute_dwater_prod_dsynags_ratio()
         th_water_prod = self.get_theoretical_water_prod()
-        return th_water_prod * dprodenergy_dsyngas_ratio + np.identity(len(self.years)) * dwater_prod_dsyngas_ratio * prod_energy
+        return th_water_prod * dprodenergy_dsyngas_ratio + np.identity(
+            len(self.years)) * dwater_prod_dsyngas_ratio * prod_energy
 
     def compute_dcons_electricity_dsyngas_ratio(self, dprodenergy_dsyngas_ratio, prod_energy):
         delectricity_needs_dsyngas_ratio = - np.identity(
@@ -471,7 +482,7 @@ class RWGS(SyngasTechno):
         delectricity_needs_dsyngas_ratio = - np.identity(
             len(self.years)) * self.slope_elec_demand
         dco2_emissions_dsyngas_ratio = delectricity_needs_dsyngas_ratio * self.energy_CO2_emissions[
-            Electricity.name][:, np.newaxis]
+                                                                              Electricity.name][:, np.newaxis]
 
         return dco2_emissions_dsyngas_ratio
 
@@ -479,18 +490,22 @@ class RWGS(SyngasTechno):
         dcons_needs_dsyngas_ratio = self.compute_dco2_needs_dsyngas_ratio()
         co2_prod = self.get_theoretical_co2_needs()
         efficiency = self.configure_efficiency()
-        return (np.identity(len(self.years)) * dcons_needs_dsyngas_ratio * prod_energy + co2_prod * dprodenergy_dsyngas_ratio) / efficiency[:np.newaxis]
+        return (np.identity(
+            len(self.years)) * dcons_needs_dsyngas_ratio * prod_energy + co2_prod * dprodenergy_dsyngas_ratio) / efficiency[
+                                                                                                                 :np.newaxis]
 
     def compute_dcons_syngas_dsyngas_ratio(self, dprodenergy_dsyngas_ratio, prod_energy):
         dcons_syngas_dsyngas_ratio = self.compute_dsyngas_needs_dsyngas_ratio()
         syngas_prod = self.get_theoretical_syngas_needs(self.syngas_ratio)
         efficiency = self.configure_efficiency()
-        return (np.identity(len(self.years)) * dcons_syngas_dsyngas_ratio * prod_energy + syngas_prod * dprodenergy_dsyngas_ratio) / efficiency[:np.newaxis]
+        return (np.identity(
+            len(self.years)) * dcons_syngas_dsyngas_ratio * prod_energy + syngas_prod * dprodenergy_dsyngas_ratio) / efficiency[
+                                                                                                                     :np.newaxis]
 
     def compute_dco2_emissions_syngas_dsyngas_ratio(self, dprodenergy_dsyngas_ratio, prod_energy):
         dcons_syngas_dsyngas_ratio = self.compute_dsyngas_needs_dsyngas_ratio()
         dco2_emissions_dsyngas_ratio = dcons_syngas_dsyngas_ratio * self.energy_CO2_emissions[
-            Syngas.name][:, np.newaxis]
+                                                                        Syngas.name][:, np.newaxis]
 
         return dco2_emissions_dsyngas_ratio
 
@@ -501,22 +516,23 @@ class RWGS(SyngasTechno):
         '''
 
         self.carbon_intensity[Syngas.name] = self.energy_CO2_emissions[Syngas.name] * \
-                                                  self.cost_details['syngas_needs'] / \
-                                                  self.cost_details['efficiency']
+                                             self.cost_details['syngas_needs'] / \
+                                             self.cost_details['efficiency']
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                       self.cost_details['elec_needs']
+                                                  self.cost_details['elec_needs']
 
         self.carbon_intensity[f'{CO2.name}'] = self.resources_CO2_emissions[ResourceGlossary.CO2['name']] * \
                                                self.cost_details['CO2_needs'] / \
                                                self.cost_details['efficiency']
 
-        return self.carbon_intensity[Syngas.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[f'{CO2.name}']
+        return self.carbon_intensity[Syngas.name] + self.carbon_intensity[Electricity.name] + self.carbon_intensity[
+            f'{CO2.name}']
 
     def compute_dco2_emissions_dsyngas_ratio(self):
         dco2_needs_dsyngas_ratio = self.compute_dco2_needs_dsyngas_ratio()
         dco2_emissions_dsyngas_ratio = self.resources_CO2_emissions[
-            ResourceGlossary.CO2['name']] * dco2_needs_dsyngas_ratio
+                                           ResourceGlossary.CO2['name']] * dco2_needs_dsyngas_ratio
 
         return dco2_emissions_dsyngas_ratio
 
@@ -529,7 +545,7 @@ class RWGS(SyngasTechno):
         d = r2 - r1(1+r2)/(1+r1)
         '''
         mol_syngas_in = (1.0 + self.needed_syngas_ratio) / \
-            (1.0 + syngas_ratio)
+                        (1.0 + syngas_ratio)
         mol_syngas_out = 1.0
 
         syngas_molar_mass_in = compute_syngas_molar_mass(syngas_ratio)
@@ -543,8 +559,8 @@ class RWGS(SyngasTechno):
             self.needed_syngas_ratio)
 
         syngas_needs = mol_syngas_in * syngas_molar_mass_in * syngas_calorific_value_in / \
-            (mol_syngas_out * syngas_molar_mass_out *
-             calorific_value_out)
+                       (mol_syngas_out * syngas_molar_mass_out *
+                        calorific_value_out)
 
         return syngas_needs
 
@@ -552,10 +568,10 @@ class RWGS(SyngasTechno):
 
         #############
         mol_syngas_in = (1.0 + self.needed_syngas_ratio) / \
-            (1.0 + self.syngas_ratio)
+                        (1.0 + self.syngas_ratio)
 
         dmol_syngas_in_dsyngas_ratio = - \
-            (1.0 + self.needed_syngas_ratio) / (1.0 + self.syngas_ratio)**2
+                                           (1.0 + self.needed_syngas_ratio) / (1.0 + self.syngas_ratio) ** 2
 
         ####
         syngas_molar_mass_in = compute_syngas_molar_mass(self.syngas_ratio)
@@ -572,37 +588,40 @@ class RWGS(SyngasTechno):
         dsyngas_molar_mass_in_down_dsyngas_ratio = 1.0
 
         dsyngas_molar_mass_in_dsyngas_ratio = (dsyngas_molar_mass_in_up_dsynags_ratio * syngas_molar_mass_in_down -
-                                               syngas_molar_mass_in_up * dsyngas_molar_mass_in_down_dsyngas_ratio) / syngas_molar_mass_in_down**2
+                                               syngas_molar_mass_in_up * dsyngas_molar_mass_in_down_dsyngas_ratio) / syngas_molar_mass_in_down ** 2
 
         ######
         syngas_calorific_value_in = compute_syngas_calorific_value(
             self.syngas_ratio)
-        #(syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['calorific_value'] +
+        # (syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['calorific_value'] +
         # Hydrogen.data_energy_dict['molar_mass'] *
         # Hydrogen.data_energy_dict['calorific_value']) /
         # (Hydrogen.data_energy_dict['molar_mass'] + syngas_ratio *
         # CO.data_energy_dict['molar_mass'])
 
-        syngas_calorific_value_in_up = (self.syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['calorific_value'] +
-                                        GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict['calorific_value'])
+        syngas_calorific_value_in_up = (
+                    self.syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['calorific_value'] +
+                    GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict[
+                        'calorific_value'])
 
         dsyngas_calorific_value_in_up_dsyngas_ratio = CO.data_energy_dict[
-            'molar_mass'] * CO.data_energy_dict['calorific_value']
+                                                          'molar_mass'] * CO.data_energy_dict['calorific_value']
 
         syngas_calorific_value_in_down = (
-            GaseousHydrogen.data_energy_dict['molar_mass'] + self.syngas_ratio * CO.data_energy_dict['molar_mass'])
+                GaseousHydrogen.data_energy_dict['molar_mass'] + self.syngas_ratio * CO.data_energy_dict['molar_mass'])
 
         dsyngas_calorific_value_in_down_dsyngas_ratio = CO.data_energy_dict['molar_mass']
 
-        dsyngas_calorific_value_in_dysngas_ratio = (dsyngas_calorific_value_in_up_dsyngas_ratio * syngas_calorific_value_in_down -
-                                                    syngas_calorific_value_in_up * dsyngas_calorific_value_in_down_dsyngas_ratio) / syngas_calorific_value_in_down**2
+        dsyngas_calorific_value_in_dysngas_ratio = (
+                                                               dsyngas_calorific_value_in_up_dsyngas_ratio * syngas_calorific_value_in_down -
+                                                               syngas_calorific_value_in_up * dsyngas_calorific_value_in_down_dsyngas_ratio) / syngas_calorific_value_in_down ** 2
 
         ########
 
         syngas_needs = self.get_theoretical_syngas_needs(self.syngas_ratio)
 
         mol_syngas_in = (1.0 + self.needed_syngas_ratio) / \
-            (1.0 + self.syngas_ratio)
+                        (1.0 + self.syngas_ratio)
         mol_syngas_out = 1.0
 
         syngas_molar_mass_in = compute_syngas_molar_mass(self.syngas_ratio)
@@ -616,13 +635,15 @@ class RWGS(SyngasTechno):
             self.needed_syngas_ratio)
 
         syngas_needs = mol_syngas_in * syngas_molar_mass_in * syngas_calorific_value_in / \
-            (mol_syngas_out * syngas_molar_mass_out *
-             calorific_value_out)
+                       (mol_syngas_out * syngas_molar_mass_out *
+                        calorific_value_out)
 
-        dsyngas_needs_dsyngas_ratio = (dmol_syngas_in_dsyngas_ratio * syngas_molar_mass_in * syngas_calorific_value_in + mol_syngas_in *
-                                       dsyngas_molar_mass_in_dsyngas_ratio * syngas_calorific_value_in +
-                                       mol_syngas_in * syngas_molar_mass_in * dsyngas_calorific_value_in_dysngas_ratio) / (mol_syngas_out * syngas_molar_mass_out *
-                                                                                                                           calorific_value_out)
+        dsyngas_needs_dsyngas_ratio = (
+                                                  dmol_syngas_in_dsyngas_ratio * syngas_molar_mass_in * syngas_calorific_value_in + mol_syngas_in *
+                                                  dsyngas_molar_mass_in_dsyngas_ratio * syngas_calorific_value_in +
+                                                  mol_syngas_in * syngas_molar_mass_in * dsyngas_calorific_value_in_dysngas_ratio) / (
+                                                  mol_syngas_out * syngas_molar_mass_out *
+                                                  calorific_value_out)
 
         return dsyngas_needs_dsyngas_ratio
 
@@ -636,7 +657,7 @@ class RWGS(SyngasTechno):
         '''
 
         mol_H20 = (self.needed_syngas_ratio - self.syngas_ratio) / \
-            (1.0 + self.syngas_ratio)
+                  (1.0 + self.syngas_ratio)
         mol_H2 = 1.0
 
         # needed syngas_ratio could be 0 in this case syngas is H2
@@ -647,14 +668,14 @@ class RWGS(SyngasTechno):
 
         water_data = Water.data_energy_dict
         water_needs = mol_H20 * water_data['molar_mass'] / \
-            (mol_H2 * needed_syngas_molar_mass *
-             needed_calorific_value)
+                      (mol_H2 * needed_syngas_molar_mass *
+                       needed_calorific_value)
 
         return water_needs
 
     def compute_dwater_prod_dsynags_ratio(self):
         mol_H20 = (self.needed_syngas_ratio - self.syngas_ratio) / \
-            (1.0 + self.syngas_ratio)
+                  (1.0 + self.syngas_ratio)
 
         mol_H20_up = (self.needed_syngas_ratio - self.syngas_ratio)
 
@@ -665,7 +686,7 @@ class RWGS(SyngasTechno):
         dmol_H20_down = 1.0
 
         dmol_H20_dsyngas_ratio = (
-            dmol_H20_up * mol_H20_down - dmol_H20_down * mol_H20_up) / mol_H20_down ** 2
+                                         dmol_H20_up * mol_H20_down - dmol_H20_down * mol_H20_up) / mol_H20_down ** 2
 
         mol_H2 = 1.0
 
@@ -677,12 +698,12 @@ class RWGS(SyngasTechno):
 
         water_data = Water.data_energy_dict
         water_needs = mol_H20 * water_data['molar_mass'] / \
-            (mol_H2 * needed_syngas_molar_mass *
-             needed_calorific_value)
+                      (mol_H2 * needed_syngas_molar_mass *
+                       needed_calorific_value)
 
         dwater_needs_dsyngas_ratio = dmol_H20_dsyngas_ratio * water_data['molar_mass'] / \
-            (mol_H2 * needed_syngas_molar_mass *
-             needed_calorific_value)
+                                     (mol_H2 * needed_syngas_molar_mass *
+                                      needed_calorific_value)
 
         return dwater_needs_dsyngas_ratio
 
@@ -697,7 +718,7 @@ class RWGS(SyngasTechno):
 
         mol_H2 = 1.0
         mol_CO2 = self.needed_syngas_ratio - self.syngas_ratio * (1.0 + self.needed_syngas_ratio) / \
-            (1.0 + self.syngas_ratio)
+                  (1.0 + self.syngas_ratio)
 
         co2_data = CO2.data_energy_dict
 
@@ -709,10 +730,10 @@ class RWGS(SyngasTechno):
 
         if unit == 'kg/kWh':
             co2_needs = mol_CO2 * co2_data['molar_mass'] / \
-                (mol_H2 * needed_syngas_molar_mass *
-                 needed_calorific_value)
+                        (mol_H2 * needed_syngas_molar_mass *
+                         needed_calorific_value)
         elif unit == 'kg/kg':
             co2_needs = mol_CO2 * co2_data['molar_mass'] / \
-                (mol_H2 * needed_syngas_molar_mass)
+                        (mol_H2 * needed_syngas_molar_mass)
 
         return co2_needs

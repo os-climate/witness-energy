@@ -24,8 +24,10 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.liquid_fuel_techno import LiquidFuelTechno
 from energy_models.glossaryenergy import GlossaryEnergy
+
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min, compute_dfunc_with_exp_min
 from energy_models.core.techno_type.base_techno_models.medium_heat_techno import mediumheattechno
+
 
 class Refinery(LiquidFuelTechno):
     OIL_RESOURCE_NAME = ResourceGlossary.Oil['name']
@@ -130,6 +132,7 @@ class Refinery(LiquidFuelTechno):
                                                                                             self.production_detailed[f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})']     # in kWh
         self.production_detailed[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = self.techno_infos_dict['useful_heat_recovery_factor'] * \
                                                                                           self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})']      # in kWh
+
     def compute_ch4_emissions(self):
         '''
         Method to compute CH4 emissions from gas production
@@ -146,7 +149,6 @@ class Refinery(LiquidFuelTechno):
         self.production_detailed[f'{Methane.emission_name} ({self.mass_unit})'] = emission_factor * \
                                                                                   self.production_detailed[
                                                                                       f'{LiquidFuelTechno.energy_name} ({self.product_energy_unit})'].values
-
 
     def compute_price(self):
         """
@@ -230,10 +232,10 @@ class Refinery(LiquidFuelTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                       self.cost_details['elec_needs']
+                                                  self.cost_details['elec_needs']
 
         self.carbon_intensity[GaseousHydrogen.name] = self.energy_CO2_emissions[GaseousHydrogen.name] * \
-                                                           self.techno_infos_dict['hydrogen_demand']
+                                                      self.techno_infos_dict['hydrogen_demand']
 
         self.carbon_intensity[self.OIL_RESOURCE_NAME] = self.resources_CO2_emissions[self.OIL_RESOURCE_NAME] * \
                                                         self.cost_details[f'{self.OIL_RESOURCE_NAME}_needs']
@@ -286,8 +288,6 @@ class Refinery(LiquidFuelTechno):
         else:
             arr_type = 'float64'
         dprod_list_dinvest_list = np.zeros(
-            (nb_years, nb_years), dtype=arr_type)
-        dprod_list_dcapex_list = np.zeros(
             (nb_years, nb_years), dtype=arr_type)
         # We fill this jacobian column by column because it is the same element
         # in the entire column

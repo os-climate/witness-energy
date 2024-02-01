@@ -85,23 +85,22 @@ class LiquidFuel(EnergyType):
         --> CO2 per use petrochemical and construction will be used in an industrial co2 emissions model 
         '''
 
-
-#         kgcoal_per_kgsteel = 1 / 1.7
-#         kgcoal_per_kgcement = 0.25
-#
-#         kgco2_per_kgsteel = 1.852
-#         kgco2_per_kgcement = 0.9
-#
-#         co2_per_use_steel = kgco2_per_kgsteel / kgcoal_per_kgsteel
-#         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
+        #         kgcoal_per_kgsteel = 1 / 1.7
+        #         kgcoal_per_kgcement = 0.25
+        #
+        #         kgco2_per_kgsteel = 1.852
+        #         kgco2_per_kgcement = 0.9
+        #
+        #         co2_per_use_steel = kgco2_per_kgsteel / kgcoal_per_kgsteel
+        #         co2_per_use_cement = kgco2_per_kgcement / kgcoal_per_kgcement
 
         if ghg_type == 'CO2':
             co2_per_use_kgkg = self.data_energy_dict_input['CO2_per_use'] * \
-                (1.0 - self.data_energy_dict_input['petrochemical_use_part'] -
-                 self.data_energy_dict_input['construction_use_part'])
+                               (1.0 - self.data_energy_dict_input['petrochemical_use_part'] -
+                                self.data_energy_dict_input['construction_use_part'])
 
             ghg_per_use = co2_per_use_kgkg / \
-                self.data_energy_dict_input['high_calorific_value']
+                          self.data_energy_dict_input['high_calorific_value']
         else:
             ghg_per_use = EnergyType.compute_ghg_per_use(self, ghg_type)
 

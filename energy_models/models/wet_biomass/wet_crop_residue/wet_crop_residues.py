@@ -38,9 +38,9 @@ class WetCropResidues(WetBiomassTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
         self.consumption_detailed[f'{Electricity.name} (kWh)'] = self.cost_details['elec_needs'] * \
-                                                                 self.production_detailed[f'{WetBiomassTechno.energy_name} (kWh)']  # in kWH
+                                                                 self.production_detailed[
+                                                                     f'{WetBiomassTechno.energy_name} (kWh)']  # in kWH
 
         self.production_detailed[f'{CO2.name} (kg)'] = self.techno_infos_dict['CO2_from_production'] / \
                                                        self.data_energy_dict['calorific_value'] * \
@@ -52,6 +52,6 @@ class WetCropResidues(WetBiomassTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                       self.cost_details['elec_needs']
+                                                  self.cost_details['elec_needs']
 
         return self.carbon_intensity[Electricity.name]

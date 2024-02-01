@@ -78,19 +78,21 @@ class EnergyGHGEmissions(BaseStream):
                     self.ghg_per_use_dict[ghg][energy] = inputs_dict[
                         f'{AgricultureMixDiscipline.name}.{ghg}_per_use'][f'{ghg}_per_use'].values
 
-                self.sub_production_dict[energy] = inputs_dict[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] * \
-                    self.scaling_factor_energy_production
-                self.sub_consumption_dict[energy] = inputs_dict[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
-                    self.scaling_factor_energy_consumption
+                self.sub_production_dict[energy] = inputs_dict[
+                                                       f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] * \
+                                                   self.scaling_factor_energy_production
+                self.sub_consumption_dict[energy] = inputs_dict[
+                                                        f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
+                                                    self.scaling_factor_energy_consumption
             else:
                 for ghg in self.GHG_TYPE_LIST:
                     self.ghg_per_use_dict[ghg][energy] = inputs_dict[
                         f'{energy}.{ghg}_per_use'][f'{ghg}_per_use'].values
 
                 self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
-                    self.scaling_factor_energy_production
+                                                   self.scaling_factor_energy_production
                 self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
-                    self.scaling_factor_energy_consumption
+                                                    self.scaling_factor_energy_consumption
 
         for energy in self.ccs_list:
             self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
@@ -123,7 +125,6 @@ class EnergyGHGEmissions(BaseStream):
         # Aggregate CO2 production and consumption columns from sub_production
         # and sub_consumption df
         for energy in self.energy_list:
-
             self.aggregate_all_ghg_emissions_in_energy(energy)
 
             self.compute_ghg_emissions_by_use(energy)
@@ -147,7 +148,8 @@ class EnergyGHGEmissions(BaseStream):
         '''
         for ghg in self.GHG_TYPE_LIST:
             self.ghg_sources[f'Total {ghg} by use {self.ghg_input_unit}'] = self.ghg_production_dict[ghg][[
-                col for col in self.ghg_production_dict[ghg] if col.endswith(f'{ghg} by use {self.ghg_input_unit}')]].sum(axis=1)
+                col for col in self.ghg_production_dict[ghg] if
+                col.endswith(f'{ghg} by use {self.ghg_input_unit}')]].sum(axis=1)
 
     def compute_other_co2_emissions(self):
         ''' CO2 from energy mix    
@@ -172,11 +174,13 @@ class EnergyGHGEmissions(BaseStream):
          Amien scrubbing)
         '''
         energy_producing_carbon_capture = self.ghg_production_dict['CO2'][[
-            col for col in self.ghg_production_dict['CO2'] if col.endswith(f'{CarbonCapture.name} {self.ghg_input_unit}')]]
+            col for col in self.ghg_production_dict['CO2'] if
+            col.endswith(f'{CarbonCapture.name} {self.ghg_input_unit}')]]
         energy_producing_carbon_capture_list = [key.replace(
             f' {CarbonCapture.name} {self.ghg_input_unit}', '') for key in energy_producing_carbon_capture]
         if len(energy_producing_carbon_capture_list) != 0:
-            self.CO2_sources[f'{CarbonCapture.name} from energy mix {self.ghg_input_unit}'] = energy_producing_carbon_capture.sum(
+            self.CO2_sources[
+                f'{CarbonCapture.name} from energy mix {self.ghg_input_unit}'] = energy_producing_carbon_capture.sum(
                 axis=1).values
         else:
             self.CO2_sources[
@@ -201,8 +205,10 @@ class EnergyGHGEmissions(BaseStream):
             sum of all production of flue gas
             it could be equal to carbon capture from CC technos if enough investment but not sure
         '''
-        self.CO2_sources[f'Total {CarbonCapture.flue_gas_name} {self.ghg_input_unit}'] = self.ghg_production_dict['CO2'][[
-            col for col in self.ghg_production_dict['CO2'] if col.endswith(f'{CarbonCapture.flue_gas_name} {self.ghg_input_unit}')]].sum(axis=1)
+        self.CO2_sources[f'Total {CarbonCapture.flue_gas_name} {self.ghg_input_unit}'] = \
+        self.ghg_production_dict['CO2'][[
+            col for col in self.ghg_production_dict['CO2'] if
+            col.endswith(f'{CarbonCapture.flue_gas_name} {self.ghg_input_unit}')]].sum(axis=1)
 
     def update_emissions_in_gt(self):
         # update values to Gt
@@ -240,14 +246,16 @@ class EnergyGHGEmissions(BaseStream):
             for col, consumption in self.sub_consumption_dict[energy].items():
                 if col in self.CO2_list:
                     self.CO2_consumption[f'{energy} {col}'] = consumption.values
-# , co2_emissions):
+
+    # , co2_emissions):
 
     def compute_ghg_emissions_by_use(self, energy):
         # Compute the CO2 emitted during the use of the net energy
         # If net energy is negative, CO2 by use is equals to zero
         for ghg in self.GHG_TYPE_LIST:
             if energy in self.ghg_per_use_dict[ghg]:
-                self.ghg_production_dict[ghg][f'{energy} {ghg} by use {self.ghg_input_unit}'] = self.ghg_per_use_dict[ghg][energy] * np.maximum(
+                self.ghg_production_dict[ghg][f'{energy} {ghg} by use {self.ghg_input_unit}'] = \
+                self.ghg_per_use_dict[ghg][energy] * np.maximum(
                     0.0, self.energy_production_detailed[f'production {energy} (TWh)'].values)
 
     def compute_total_ghg_emissions(self):
@@ -271,11 +279,11 @@ class EnergyGHGEmissions(BaseStream):
             GlossaryEnergy.Years, axis=1).iloc[:, 0].values
 
         sum_sinks = limited_by_capture_wo_years + \
-            needed_by_energy_mix_wo_years + sinks_df
+                    needed_by_energy_mix_wo_years + sinks_df
 
         total_CO2_emissions = sum_sources + \
-            self.ghg_sources[f'Total CO2 by use {self.ghg_input_unit}'].values / \
-            1e3 - sum_sinks
+                              self.ghg_sources[f'Total CO2 by use {self.ghg_input_unit}'].values / \
+                              1e3 - sum_sinks
 
         total_n2O_emissions = self.ghg_production_dict['N2O'].drop(
             GlossaryEnergy.Years, axis=1).sum(axis=1).values
@@ -290,7 +298,6 @@ class EnergyGHGEmissions(BaseStream):
     def compute_gwp(self):
 
         for ghg in self.GHG_TYPE_LIST:
-
             self.gwp_emissions[f'{ghg}_20'] = self.ghg_total_emissions[f'Total {ghg} emissions'] * self.gwp_20[ghg]
             self.gwp_emissions[f'{ghg}_100'] = self.ghg_total_emissions[f'Total {ghg} emissions'] * self.gwp_100[ghg]
 
@@ -301,14 +308,15 @@ class EnergyGHGEmissions(BaseStream):
             net_prod = net_production[
                 f'production {energy} (TWh)'].values
 
-        # Specific case when net prod is equal to zero
-        # if we increase the prod of an energy the net prod will react
-        # however if we decrease the cons it does nothing
+            # Specific case when net prod is equal to zero
+            # if we increase the prod of an energy the net prod will react
+            # however if we decrease the cons it does nothing
             net_prod_sign = net_prod.copy()
             net_prod_sign[net_prod_sign == 0] = 1
             for ghg in self.GHG_TYPE_LIST:
-                dtot_CO2_emissions[f'Total {ghg} emissions vs prod{energy}'] = self.ghg_per_use_dict[ghg][energy].values * \
-                    np.maximum(0, np.sign(net_prod_sign))
+                dtot_CO2_emissions[f'Total {ghg} emissions vs prod{energy}'] = self.ghg_per_use_dict[ghg][
+                                                                                   energy].values * \
+                                                                               np.maximum(0, np.sign(net_prod_sign))
         return dtot_CO2_emissions
 
     def compute_grad_CO2_emissions_sources(self, net_production):
@@ -349,8 +357,9 @@ class EnergyGHGEmissions(BaseStream):
             net_prod_sign = net_prod.copy()
             net_prod_sign[net_prod_sign == 0] = 1
             for ghg in self.GHG_TYPE_LIST:
-                dtot_CO2_emissions[f'Total {ghg} by use (Gt) vs {energy}#prod'] = self.ghg_per_use_dict[ghg][energy].values * \
-                    np.maximum(0, np.sign(net_prod_sign))
+                dtot_CO2_emissions[f'Total {ghg} by use (Gt) vs {energy}#prod'] = self.ghg_per_use_dict[ghg][
+                                                                                      energy].values * \
+                                                                                  np.maximum(0, np.sign(net_prod_sign))
 
         for energy in self.ccs_list:
             for col, production in self.sub_production_dict[energy].items():
@@ -369,12 +378,13 @@ class EnergyGHGEmissions(BaseStream):
         if len(energy_producing_carbon_capture_list) != 0:
             for energy1 in energy_producing_carbon_capture_list:
                 dtot_CO2_emissions[
-                    f'{CarbonCapture.name} from energy mix (Mt) vs {energy1}#{CarbonCapture.name} {self.ghg_input_unit}#prod'] = np.ones(len_years)
-#             self.total_co2_emissions[f'{CarbonCapture.name} from energy mix {self.ghg_input_unit}'] = energy_producing_carbon_capture.sum(
-#                 axis=1).values
-#         else:
-#             self.total_co2_emissions[
-# f'{CarbonCapture.name} from energy mix {self.ghg_input_unit}'] = 0.0
+                    f'{CarbonCapture.name} from energy mix (Mt) vs {energy1}#{CarbonCapture.name} {self.ghg_input_unit}#prod'] = np.ones(
+                    len_years)
+        #             self.total_co2_emissions[f'{CarbonCapture.name} from energy mix {self.ghg_input_unit}'] = energy_producing_carbon_capture.sum(
+        #                 axis=1).values
+        #         else:
+        #             self.total_co2_emissions[
+        # f'{CarbonCapture.name} from energy mix {self.ghg_input_unit}'] = 0.0
 
         ''' CO2 from energy mix       
          CO2 expelled by energy mix technologies during the process 
@@ -387,13 +397,14 @@ class EnergyGHGEmissions(BaseStream):
         if len(energy_producing_co2_list) != 0:
             for energy1 in energy_producing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} from energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#prod'] = np.ones(len_years)
+                    f'{CO2.name} from energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#prod'] = np.ones(
+                    len_years)
 
-#             self.total_co2_emissions[f'{CO2.name} from energy mix {self.ghg_input_unit}'] = energy_producing_co2.sum(
-#                 axis=1).values
-#         else:
-#             self.total_co2_emissions[
-#                 f'{CO2.name} from energy mix {self.ghg_input_unit}'] = 0.0
+        #             self.total_co2_emissions[f'{CO2.name} from energy mix {self.ghg_input_unit}'] = energy_producing_co2.sum(
+        #                 axis=1).values
+        #         else:
+        #             self.total_co2_emissions[
+        #                 f'{CO2.name} from energy mix {self.ghg_input_unit}'] = 0.0
 
         ''' CO2 removed by energy mix       
          CO2 removed by energy mix technologies during the process 
@@ -406,26 +417,28 @@ class EnergyGHGEmissions(BaseStream):
         if len(energy_removing_co2_list) != 0:
             for energy1 in energy_removing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(len_years)
-#             self.total_co2_emissions[f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
-#                 axis=1).values
-#         else:
-#             self.total_co2_emissions[
-#                 f'{CO2.name} removed energy mix {self.ghg_input_unit}'] = 0.0
+                    f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(
+                    len_years)
+        #             self.total_co2_emissions[f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
+        #                 axis=1).values
+        #         else:
+        #             self.total_co2_emissions[
+        #                 f'{CO2.name} removed energy mix {self.ghg_input_unit}'] = 0.0
 
         ''' Total C02 from Flue gas
             sum of all production of flue gas 
             it could be equal to carbon capture from CC technos if enough investment but not sure
         '''
-#         self.total_co2_emissions[f'Total {CarbonCapture.flue_gas_name} {self.ghg_input_unit}'] = self.co2_production[[
-# col for col in self.co2_production if
-# col.endswith(f'{CarbonCapture.flue_gas_name}
-# {self.ghg_input_unit}')]].sum(axis=1)
+        #         self.total_co2_emissions[f'Total {CarbonCapture.flue_gas_name} {self.ghg_input_unit}'] = self.co2_production[[
+        # col for col in self.co2_production if
+        # col.endswith(f'{CarbonCapture.flue_gas_name}
+        # {self.ghg_input_unit}')]].sum(axis=1)
         for col in co2_production:
             if col.endswith(f'{CarbonCapture.flue_gas_name} {self.ghg_input_unit}'):
                 energy1 = col.replace(
                     f' {CarbonCapture.flue_gas_name} {self.ghg_input_unit}', '')
-                dtot_CO2_emissions[f'Total {CarbonCapture.flue_gas_name} (Mt) vs {energy1}#{CarbonCapture.flue_gas_name} {self.ghg_input_unit}#prod'] = np.ones(
+                dtot_CO2_emissions[
+                    f'Total {CarbonCapture.flue_gas_name} (Mt) vs {energy1}#{CarbonCapture.flue_gas_name} {self.ghg_input_unit}#prod'] = np.ones(
                     len_years)
 
         return dtot_CO2_emissions
@@ -471,11 +484,12 @@ class EnergyGHGEmissions(BaseStream):
         if len(energy_removing_co2_list) != 0:
             for energy1 in energy_removing_co2_list:
                 dtot_CO2_emissions[
-                    f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(len_years)
-#             self.total_co2_emissions[f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
-#                 axis=1).values
-#         else:
-#             self.total_co2_emissions[
-#                 f'{CO2.name} removed energy mix {self.ghg_input_unit}'] = 0.0
+                    f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(
+                    len_years)
+        #             self.total_co2_emissions[f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
+        #                 axis=1).values
+        #         else:
+        #             self.total_co2_emissions[
+        #                 f'{CO2.name} removed energy mix {self.ghg_input_unit}'] = 0.0
 
         return dtot_CO2_emissions

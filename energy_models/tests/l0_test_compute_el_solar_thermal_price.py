@@ -53,7 +53,7 @@ class SolarThermalPriceTestCase(unittest.TestCase):
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -99,14 +99,15 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                             GlossaryEnergy.InvestLevelValue: self.invest_level_2,
                             GlossaryEnergy.InvestmentBeforeYearStartValue: SolarThermalDiscipline.invest_before_year_start,
                             GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                            GlossaryEnergy.MarginValue:  self.margin,
+                            GlossaryEnergy.MarginValue: self.margin,
                             GlossaryEnergy.TransportCostValue: self.transport,
                             GlossaryEnergy.TransportMarginValue: self.margin,
                             GlossaryEnergy.ResourcesPriceValue: self.resources_price,
                             GlossaryEnergy.EnergyPricesValue: self.energy_prices,
                             'initial_production': SolarThermalDiscipline.initial_production,
                             'initial_age_distrib': SolarThermalDiscipline.initial_age_distribution,
-                            GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                            GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
+                                np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                             GlossaryEnergy.EnergyCO2EmissionsValue: pd.DataFrame(),
                             'scaling_factor_invest_level': 1e3,
                             'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
@@ -123,7 +124,6 @@ class SolarThermalPriceTestCase(unittest.TestCase):
         pass
 
     def test_03_solar_Thermal_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'Solar_Electricity'
         self.ee = ExecutionEngine(self.name)
@@ -149,7 +149,7 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

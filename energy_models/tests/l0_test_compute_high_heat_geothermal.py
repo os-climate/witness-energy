@@ -48,14 +48,15 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
                                            'biomass_dry': np.ones(len(years)) * 45.0,
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': 0.0, 'biomass_dry': - 0.64 / 4.86})
+        self.energy_carbon_emissions = pd.DataFrame(
+            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'biomass_dry': - 0.64 / 4.86})
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, 'water_resource': 2.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 10.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -85,7 +86,6 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
         pass
 
     def test_02_GeothermalHigh_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'Geothermal'
         self.ee = ExecutionEngine(self.name)
@@ -113,7 +113,7 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -131,7 +131,4 @@ class GeothermalHeatHighTemperatureTestCase(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main()
 
-
 # Cost:- https://www.google.com/search?q=geothermal+energy+cost+%24%2FMWh&rlz=1C1UEAD_enIN1001IN1001&oq=geothermal+energy+cost+%24%2FMWh&aqs=chrome..69i57j0i22i30l2j0i390i650l5.16214j0j7&sourceid=chrome&ie=UTF-8
-
-

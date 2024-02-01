@@ -54,16 +54,19 @@ class TechnoDiscipline(SoSWrapp):
         GlossaryEnergy.YearStart: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
         GlossaryEnergy.YearEnd: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_END_DESC_IN),
         GlossaryEnergy.InvestLevelValue: {'type': 'dataframe', 'unit': 'G$',
-                         'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                  GlossaryEnergy.InvestValue: ('float', None, True)},
-                         'dataframe_edition_locked': False
-                         },
-        GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-                          "dynamic_dataframe_columns": True
-                          },
-        GlossaryEnergy.EnergyCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-                                 "dynamic_dataframe_columns": True
-                                 },
+                                          'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                          'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                          'dataframe_edition_locked': False
+                                          },
+        GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh',
+                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
+                                           "dynamic_dataframe_columns": True
+                                           },
+        GlossaryEnergy.EnergyCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh',
+                                                 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
+                                                 "dynamic_dataframe_columns": True
+                                                 },
 
         GlossaryEnergy.MarginValue: {'type': 'dataframe', 'unit': '%',
                                      'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),

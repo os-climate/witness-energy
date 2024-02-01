@@ -76,25 +76,14 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.N2O_per_use = {}
         self.energy_production, self.energy_consumption = {}, {}
         for i, energy in enumerate(self.energy_list):
-            # We are using old pickle waiting for refactoring of pickle mda generator
-            if energy == 'biomass_dry':
-                self.CO2_per_use[f'{energy}'] = streams_outputs_dict_old[f'{energy}']['CO2_per_use']['value']
-                self.CH4_per_use[f'{energy}'] = streams_outputs_dict_old[f'{energy}']['CH4_per_use']['value']
-                self.N2O_per_use[f'{energy}'] = streams_outputs_dict_old[f'{energy}']['N2O_per_use']['value']
-                self.energy_production[f'{energy}'] = \
-                    streams_outputs_dict_old[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
-                        'value']
-                self.energy_consumption[f'{energy}'] = \
-                    streams_outputs_dict_old[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
-            else:
-                self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
-                self.CH4_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CH4_per_use']['value']
-                self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
-                self.energy_production[f'{energy}'] = \
-                    streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
-                        'value']
-                self.energy_consumption[f'{energy}'] = \
-                    streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
+            self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
+            self.CH4_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CH4_per_use']['value']
+            self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
+            self.energy_production[f'{energy}'] = \
+            streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue][
+                'value']
+            self.energy_consumption[f'{energy}'] = \
+            streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
 
         for i, ccs_name in enumerate(self.ccs_list):
             self.energy_production[f'{ccs_name}'] = \
@@ -148,9 +137,8 @@ class GHGEnergyEmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CO2_per_use'] = self.CO2_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.CH4_per_use'] = self.CH4_per_use[energy]
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.N2O_per_use'] = self.N2O_per_use[energy]
-                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = \
-                    self.energy_production[
-                        energy]
+                inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
+
                 inputs_dict[f'{self.name}.{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = \
                     self.energy_consumption[energy]
             else:

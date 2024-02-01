@@ -49,16 +49,19 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                        'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                        'editable': False, 'structuring': True},
-        GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
-                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
-                     'structuring': True},
+                                     'possible_values': EnergyMix.energy_list,
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                                     'editable': False, 'structuring': True},
+        GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                  'possible_values': CCUS.ccs_list,
+                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                                  'editable': False,
+                                  'structuring': True},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+
         GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                        'namespace': 'ns_energy',
                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
@@ -115,7 +118,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                             'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'CO2_per_use': ('float', None, True),}}
+                                                     'CO2_per_use': ('float', None, True), }}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -128,14 +131,14 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'biomass_dry': ('float', None, True),
-                                                     'CO2_resource (Mt)': ('float', None, True),}}
+                                                     'CO2_resource (Mt)': ('float', None, True), }}
                     else:
                         dynamic_inputs[f'{energy}.CO2_per_use'] = {
                             'type': 'dataframe', 'unit': 'kg/kWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': 'ns_energy',
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'CO2_per_use': ('float', None, True),}}
+                                                     'CO2_per_use': ('float', None, True), }}
                         dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -160,13 +163,13 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                     'coal_resource (Mt)': ('float', None, True),
                                                     'biomass_dry (TWh)': ('float', None, True),
                                                      'water_resource (Mt)': ('float', None, True),
-                                                    'methane (TWh)': ('float', None, True),
-                                                    'solid_fuel (TWh)': ('float', None, True),
-                                                    'wood (Mt)': ('float', None, True),
-                                                    'carbon_capture (Mt)': ('float', None, True),
-                                                    'dioxygen_resource (Mt)': ('float', None, True),
-                                                    'electricity (TWh)': ('float', None, True),
-                                                    'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),}}
+                                                     'methane (TWh)': ('float', None, True),
+                                                     'solid_fuel (TWh)': ('float', None, True),
+                                                     'wood (Mt)': ('float', None, True),
+                                                     'carbon_capture (Mt)': ('float', None, True),
+                                                     'dioxygen_resource (Mt)': ('float', None, True),
+                                                     'electricity (TWh)': ('float', None, True),
+                                                     'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True), }}
                         dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -210,6 +213,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                      'electricity (TWh)': ('float', None, True),
                                                      }}
 
+
         if GlossaryEnergy.ccs_list in self.get_data_in():
             ccs_list = self.get_sosdisc_inputs(GlossaryEnergy.ccs_list)
             if ccs_list is not None:
@@ -227,8 +231,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                  'heat.lowtemperatureheat (TWh)': ('float', None, True),
 
                                                  }
-                                                 }
-
+                    }
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -290,7 +293,8 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                     if 'Total CO2 by use' in co2_emission_column:
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_by_use_sources',
-                             co2_emission_column), (GlossaryEnergy.EnergyProductionDetailedValue, f'production {energy} (TWh)'),
+                             co2_emission_column),
+                            (GlossaryEnergy.EnergyProductionDetailedValue, f'production {energy} (TWh)'),
                             np.identity(len(years)) * value / 1e3)
                     else:
                         self.set_partial_derivative_for_other_types(

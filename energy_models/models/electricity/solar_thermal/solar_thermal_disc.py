@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-
 import numpy as np
 import pandas as pd
 
@@ -55,14 +54,15 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
                                  'Opex_percentage': 0.015,
                                  # WACC : mean of Frauhofer / IRENA / ATB NREL
                                  'WACC': 0.062,
-                                 'learning_rate':  0.07,  # JRC
+                                 'learning_rate': 0.07,  # JRC
                                  'lifetime': lifetime,
                                  'lifetime_unit': GlossaryEnergy.Years,
                                  # Capex : mean of JRC / IRENA /ATB NREL / ...
                                  'Capex_init': 5000,
                                  'Capex_init_unit': '$/kW',
                                  'techno_evo_eff': 'no',
-                                 'efficiency': 0.25, # considered average   # https://www.volker-quaschning.de/articles/fundamentals2/index.php#:~:text=The%20efficiency%20of%20a%20solar,losses%20are%20usually%20below%2010%25.
+                                 'efficiency': 0.25,
+                                 # considered average   # https://www.volker-quaschning.de/articles/fundamentals2/index.php#:~:text=The%20efficiency%20of%20a%20solar,losses%20are%20usually%20below%2010%25.
                                  'full_load_hours': 8760,  # max value
                                  # capacity factor actual mean JRC / ATC NREL
                                  # and reverse calculation from IRENA values
@@ -74,7 +74,8 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'copper_needs': 1100,  #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
+                                 'copper_needs': 1100,
+                                 # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
     techno_info_dict = techno_infos_dict_default
@@ -90,22 +91,25 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
     # only commercial or production
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [9.677419355, 7.52688172, 0,
-                                                         5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
-                                                         13.97849462, 9.677419355,   7.52688172,   1.075268817,
-                                                         2.150537634,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0]
+                                                         5.376344086, 4.301075269, 5.376344086, 11.82795699,
+                                                         21.50537634,
+                                                         13.97849462, 9.677419355, 7.52688172, 1.075268817,
+                                                         2.150537634, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
                                              })
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
@@ -128,7 +132,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
-                if ResourceGlossary.Copper['name'] in product :
+                if ResourceGlossary.Copper['name'] in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
@@ -137,11 +141,11 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
             if ResourceGlossary.Copper['name'] in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
-                mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
+                mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
                     techno_consumption[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)
-        
+
         return instanciated_chart

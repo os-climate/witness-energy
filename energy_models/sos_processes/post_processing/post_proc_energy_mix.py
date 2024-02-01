@@ -23,6 +23,8 @@ from sostrades_core.tools.post_processing.tables.instanciated_table import Insta
 
 YEAR_COMPARISON = [2023, 2050]
 DECIMAL = 2
+
+
 def post_processing_filters(execution_engine, namespace):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the filters
@@ -40,6 +42,7 @@ def post_processing_filters(execution_engine, namespace):
 
     return filters
 
+
 def get_figures_table(table, title):
     '''
     Table chart where Capex, Opex, CO2_Tax and total price comparison
@@ -51,7 +54,6 @@ def get_figures_table(table, title):
 
 
 def get_techno_comparision_data(execution_engine, namespace, year):
-
     '''
     Extracting Capex, Opex, CO2_Tax and total price from data manager for all technologies in the techno list
     '''
@@ -74,7 +76,7 @@ def get_techno_comparision_data(execution_engine, namespace, year):
             result = [f"{energ}." + direction for direction in loc_techno_list]
             techno_list.extend(result)
             EnergyDict[f"{energ}"]['TechnoName'] = loc_techno_list
-            loc_energyproduction_df= execution_engine.dm.get_value(var_energyproduction_name)
+            loc_energyproduction_df = execution_engine.dm.get_value(var_energyproduction_name)
             production_filtereddata = loc_energyproduction_df[loc_energyproduction_df[GlossaryEnergy.Years] == year]
             for col in production_filtereddata.columns:
                 if col != GlossaryEnergy.Years:
@@ -86,7 +88,7 @@ def get_techno_comparision_data(execution_engine, namespace, year):
     opex_list = []
     CO2tax_list = []
     energy_costs_List = []
-    techno_name_list =[]
+    techno_name_list = []
     energy_name_list = []
 
     average_capex_list = []
@@ -103,7 +105,7 @@ def get_techno_comparision_data(execution_engine, namespace, year):
         energy_name_list.append(energyname)
 
         for techno in EnergyDict[energyname]['TechnoName']:
-            techno_prices_f_name = f"{namespace}.{energyname}.{techno}.techno_detailed_prices" #	"energy_detailed_techno_prices" for Hydrogen and Fuel
+            techno_prices_f_name = f"{namespace}.{energyname}.{techno}.techno_detailed_prices"  # "energy_detailed_techno_prices" for Hydrogen and Fuel
             price_details = execution_engine.dm.get_value(techno_prices_f_name)
             techno_name_list.append(techno)
             filtereddata = price_details[price_details[GlossaryEnergy.Years] == year]
@@ -118,30 +120,33 @@ def get_techno_comparision_data(execution_engine, namespace, year):
             CO2tax_average_price = CO2tax_average_price + CO2tax_price * techno_production_dict[techno]
             energy_average_price = energy_average_price + price * techno_production_dict[techno]
 
+            capex_price_percentage = capex_price * 100 / price
+            opex_price_percentage = opex_price * 100 / price
+            CO2tax_price_percentage = CO2tax_price * 100 / price
 
-            capex_price_percentage = (capex_price) * 100 / price
-            opex_price_percentage = (opex_price) * 100 / price
-            CO2tax_price_percentage = (CO2tax_price) * 100 / price
-
-            capex_list.append(str(round(capex_price, DECIMAL)) + ' (' + str(round(capex_price_percentage, DECIMAL)) + '%)')
+            capex_list.append(
+                str(round(capex_price, DECIMAL)) + ' (' + str(round(capex_price_percentage, DECIMAL)) + '%)')
             opex_list.append(str(round(opex_price, DECIMAL)) + ' (' + str(round(opex_price_percentage, DECIMAL)) + '%)')
-            CO2tax_list.append(str(round(CO2tax_price, DECIMAL)) + ' (' + str(round(CO2tax_price_percentage, DECIMAL)) + '%)')
+            CO2tax_list.append(
+                str(round(CO2tax_price, DECIMAL)) + ' (' + str(round(CO2tax_price_percentage, DECIMAL)) + '%)')
             energy_costs_List.append(round(price, DECIMAL))
 
         if total_stream_production != 0:
-            average_capex_value = capex_average_price/total_stream_production
+            average_capex_value = capex_average_price / total_stream_production
             average_opex_value = opex_average_price / total_stream_production
             average_CO2tax_value = CO2tax_average_price / total_stream_production
             average_price_value = energy_average_price / total_stream_production
 
-            average_capex_price_percentage = (average_capex_value) * 100 / average_price_value
-            average_opex_price_percentage = (average_opex_value) * 100 / average_price_value
-            average_CO2tax_price_percentage = (average_CO2tax_value) * 100 / average_price_value
-            average_capex_list.append(str(round(average_capex_value, DECIMAL)) + ' (' + str(round(average_capex_price_percentage, DECIMAL)) + '%)')
-            average_opex_list.append(str(round(average_opex_value, DECIMAL)) + ' (' + str(round(average_opex_price_percentage, DECIMAL)) + '%)')
-            average_CO2tax_list.append(str(round(average_CO2tax_value, DECIMAL)) + ' (' + str(round(average_CO2tax_price_percentage, DECIMAL)) + '%)')
+            average_capex_price_percentage = average_capex_value * 100 / average_price_value
+            average_opex_price_percentage = average_opex_value * 100 / average_price_value
+            average_CO2tax_price_percentage = average_CO2tax_value * 100 / average_price_value
+            average_capex_list.append(str(round(average_capex_value, DECIMAL)) + ' (' + str(
+                round(average_capex_price_percentage, DECIMAL)) + '%)')
+            average_opex_list.append(str(round(average_opex_value, DECIMAL)) + ' (' + str(
+                round(average_opex_price_percentage, DECIMAL)) + '%)')
+            average_CO2tax_list.append(str(round(average_CO2tax_value, DECIMAL)) + ' (' + str(
+                round(average_CO2tax_price_percentage, DECIMAL)) + '%)')
             average_energy_costs_List.append(round(average_price_value, DECIMAL))
-
 
     # Technology price detail table
     headers = ['Technology', 'CAPEX ($/MWh)', 'OPEX ($/MWh)', 'CO2Tax ($/MWh)', 'Price ($/MWh)']
@@ -152,20 +157,25 @@ def get_techno_comparision_data(execution_engine, namespace, year):
     cells.append(CO2tax_list)
     cells.append(energy_costs_List)
 
-    table = InstanciatedTable('Capex/Opex/CO2Tax Price and Percentage Production Average Data Comparison for Year ' + str(year), headers, cells)
+    table = InstanciatedTable(
+        'Capex/Opex/CO2Tax Price and Percentage Production Average Data Comparison for Year ' + str(year), headers,
+        cells)
     table_list.append(table)
 
     headers_average = ['Energy', 'CAPEX ($/MWh)', 'OPEX ($/MWh)', 'CO2Tax ($/MWh)', 'Price ($/MWh)']
-    cells_average  = []
+    cells_average = []
     cells_average.append(energy_name_list)
     cells_average.append(average_capex_list)
     cells_average.append(average_opex_list)
     cells_average.append(average_CO2tax_list)
     cells_average.append(average_energy_costs_List)
-    table_average = InstanciatedTable('Capex/Opex/CO2Tax Price and Percentage Production Average Data Comparison for Year ' + str(year), headers_average, cells_average)
+    table_average = InstanciatedTable(
+        'Capex/Opex/CO2Tax Price and Percentage Production Average Data Comparison for Year ' + str(year),
+        headers_average, cells_average)
     table_list.append(table_average)
 
     return table_list
+
 
 def post_processings(execution_engine, namespace, filters):
     '''
@@ -182,17 +192,16 @@ def post_processings(execution_engine, namespace, filters):
                 graphs_list.extend(chart_filter.selected_values)
     # Sometimes wrapper object is None, TODO Need to find another way to find energy_name
     wrapper_type = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper
-    if wrapper_type != None:
+    if wrapper_type is not None:
         energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
         absolute_value_table = []
         average_value_table = []
-        if f'{energy} Figures table' in graphs_list: #
+        if f'{energy} Figures table' in graphs_list:  #
             for year in YEAR_COMPARISON:
                 new_table = get_techno_comparision_data(execution_engine, namespace, year)
-                #new_table = get_figures_table(price_comparision_table_data, str(year))
+                # new_table = get_figures_table(price_comparision_table_data, str(year))
                 absolute_value_table.append(new_table[0])
                 average_value_table.append(new_table[1])
 
         instanciated_charts = absolute_value_table + average_value_table
     return instanciated_charts
-

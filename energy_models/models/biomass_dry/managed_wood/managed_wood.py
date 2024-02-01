@@ -52,7 +52,6 @@ class ManagedWood(BiomassDryTechno):
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
         """
-        
 
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_wood = f'{self.energy_name}_wood (TWh)'
@@ -66,36 +65,41 @@ class ManagedWood(BiomassDryTechno):
 
         # compute production for non energy at year start with percentages
         residue_year_start_production = managed_production[0] * self.techno_infos_dict['residue_density_percentage'] * \
-            (1 - self.techno_infos_dict['residue_percentage_for_energy'])
+                                        (1 - self.techno_infos_dict['residue_percentage_for_energy'])
         wood_year_start_production = managed_production[0] * self.techno_infos_dict['non_residue_density_percentage'] * \
-            (1 - self.techno_infos_dict['wood_percentage_for_energy'])
+                                     (1 - self.techno_infos_dict['wood_percentage_for_energy'])
 
         # compute production dedicated to energy from residue
-        self.production_mix[name_residue] = managed_production *\
-            self.techno_infos_dict['residue_density_percentage'] - \
-            residue_year_start_production
+        self.production_mix[name_residue] = managed_production * \
+                                            self.techno_infos_dict['residue_density_percentage'] - \
+                                            residue_year_start_production
         # compute production dedicated to energy from wood
-        self.production_mix[name_wood] = managed_production *\
-            self.techno_infos_dict['non_residue_density_percentage'] - \
-            wood_year_start_production
+        self.production_mix[name_wood] = managed_production * \
+                                         self.techno_infos_dict['non_residue_density_percentage'] - \
+                                         wood_year_start_production
         # compute production dedicated to non energy
         self.production_mix[name_non_energy] = managed_production - \
-            self.production_mix[name_residue] - \
-            self.production_mix[name_wood]
+                                               self.production_mix[name_residue] - \
+                                               self.production_mix[name_wood]
 
         self.production_mix[name_tot] = managed_production
 
         # compute output production dedicated to energy
-        self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'] = self.production_mix[name_residue] + \
-                                                                                                   self.production_mix[name_wood]
+        self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})'] = self.production_mix[
+                                                                                                       name_residue] + \
+                                                                                                   self.production_mix[
+                                                                                                       name_wood]
 
         # compute electricity and consumption CO2 from biomass_dry for energy
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                        self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            'elec_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         self.consumption_detailed[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
                                                                       self.data_energy_dict['high_calorific_value'] * \
-                                                                      self.production_detailed[f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
+                                                                      self.production_detailed[
+                                                                          f'{BiomassDryTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
@@ -103,7 +107,7 @@ class ManagedWood(BiomassDryTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                       self.cost_details['elec_needs']
+                                                  self.cost_details['elec_needs']
 
         return self.carbon_intensity[Electricity.name]
 
@@ -120,30 +124,30 @@ class ManagedWood(BiomassDryTechno):
         # Price_residue = %res_wood * Price_wood
         self.price_mix = pd.DataFrame({GlossaryEnergy.Years: self.years})
         self.price_mix[f'{BiomassDryTechno.energy_name}_wood'] = managed_price / \
-            (wood_residue_percent * residue_percent + wood_percent)
+                                                                 (wood_residue_percent * residue_percent + wood_percent)
         self.price_mix[f'{BiomassDryTechno.energy_name}_residue'] = wood_residue_percent * \
-            self.price_mix[f'{BiomassDryTechno.energy_name}_wood']
+                                                                    self.price_mix[
+                                                                        f'{BiomassDryTechno.energy_name}_wood']
 
         return prices
 
     def get_mean_age_over_years(self):
-
         mean_age_df = pd.DataFrame({GlossaryEnergy.Years: self.years})
 
         self.age_distrib_prod_df['age_x_prod'] = self.age_distrib_prod_df['age'] * \
-            self.age_distrib_prod_df[f'distrib_prod ({self.product_energy_unit})']
+                                                 self.age_distrib_prod_df[f'distrib_prod ({self.product_energy_unit})']
 
         production = self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})']
 
         # compute production for non energy at year start with percentages
         residue_year_start_production = production[0] * self.techno_infos_dict['residue_density_percentage'] * \
-            (1 - self.techno_infos_dict['residue_percentage_for_energy'])
+                                        (1 - self.techno_infos_dict['residue_percentage_for_energy'])
         wood_year_start_production = production[0] * self.techno_infos_dict['non_residue_density_percentage'] * \
-            (1 - self.techno_infos_dict['wood_percentage_for_energy'])
+                                     (1 - self.techno_infos_dict['wood_percentage_for_energy'])
 
         mean_age_df['mean age'] = self.age_distrib_prod_df.groupby(
             [GlossaryEnergy.Years], as_index=False).agg({'age_x_prod': 'sum'})['age_x_prod'] / \
-            (production + residue_year_start_production + wood_year_start_production)
+                                  (production + residue_year_start_production + wood_year_start_production)
         mean_age_df.replace([np.inf, -np.inf], np.nan, inplace=True)
         mean_age_df.fillna(0.0, inplace=True)
         self.mean_age_df = mean_age_df

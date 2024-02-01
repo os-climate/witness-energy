@@ -971,13 +971,13 @@ class TechnoType:
         # Need to multiply by * 1.0e3 to put it in $/MWh$
         if 'calorific_value' in self.data_energy_dict.keys():
             return transport_cost / \
-                self.data_energy_dict['calorific_value']
+                   self.data_energy_dict['calorific_value']
         else:
             keys = list(self.data_energy_dict.keys())
             calorific_value = self.data_energy_dict[keys[
                 0]]['calorific_value']
             return transport_cost / \
-                calorific_value
+                   calorific_value
 
     def compute_carbon_emissions(self):
         '''

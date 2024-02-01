@@ -100,7 +100,7 @@ class TestIndependentInvest(unittest.TestCase):
                        'carbon_storage.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
                        GlossaryEnergy.invest_mix: self.energy_mix,
                        GlossaryEnergy.ForestInvestmentValue: self.forest_invest_df,
-                       'scaling_factor_energy_investment': scaling_factor_energy_investment,}
+                       'scaling_factor_energy_investment': scaling_factor_energy_investment, }
         one_invest_model = IndependentInvest()
         energy_investment_wo_tax = one_invest_model.compute(inputs_dict)
 
@@ -156,7 +156,8 @@ class TestIndependentInvest(unittest.TestCase):
 
                 if 'carbon_capture' in column or 'carbon_storage' in column:
                     invest_techno_out = self.ee.dm.get_value(
-                        f'{self.name}.CCUS.{column}.{GlossaryEnergy.InvestLevelValue}')[GlossaryEnergy.InvestValue].values
+                        f'{self.name}.CCUS.{column}.{GlossaryEnergy.InvestLevelValue}')[
+                        GlossaryEnergy.InvestValue].values
                 else:
                     invest_techno_out = self.ee.dm.get_value(
                         f'{self.name}.{column}.{GlossaryEnergy.InvestLevelValue}')[GlossaryEnergy.InvestValue].values
@@ -170,7 +171,7 @@ class TestIndependentInvest(unittest.TestCase):
 
         for graph in graph_list:
             pass
-            #graph.to_plotly().show()
+            # graph.to_plotly().show()
 
     def test_03_independent_invest_with_forest_disc(self):
 
@@ -228,7 +229,8 @@ class TestIndependentInvest(unittest.TestCase):
 
                 if 'carbon_capture' in column or 'carbon_storage' in column:
                     invest_techno_out = self.ee.dm.get_value(
-                        f'{self.name}.CCUS.{column}.{GlossaryEnergy.InvestLevelValue}')[GlossaryEnergy.InvestValue].values
+                        f'{self.name}.CCUS.{column}.{GlossaryEnergy.InvestLevelValue}')[
+                        GlossaryEnergy.InvestValue].values
                 else:
                     invest_techno_out = self.ee.dm.get_value(
                         f'{self.name}.{column}.{GlossaryEnergy.InvestLevelValue}')[GlossaryEnergy.InvestValue].values
@@ -242,8 +244,7 @@ class TestIndependentInvest(unittest.TestCase):
 
         for graph in graph_list:
             pass
-            #graph.to_plotly().show()
-
+            # graph.to_plotly().show()
 
     def test_04_independent_invest_disc_check_jacobian(self):
 
@@ -298,13 +299,15 @@ class TestIndependentInvest(unittest.TestCase):
         all_technos_list = [
             f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}',
-                                                                          f'{self.name}.{GlossaryEnergy.ForestInvestmentValue}',
-                                                                          f'{self.name}.managed_wood_investment',
-                                                                          f'{self.name}.deforestation_investment',
-                                                                          f'{self.name}.crop_investment'],
+        succeed = disc.check_jacobian(derr_approx='complex_step',
+                                      inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}',
+                                              f'{self.name}.{GlossaryEnergy.ForestInvestmentValue}',
+                                              f'{self.name}.managed_wood_investment',
+                                              f'{self.name}.deforestation_investment',
+                                              f'{self.name}.crop_investment'],
                                       outputs=[
-                                                  f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno in
+                                                  f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno
+                                                  in
                                                   all_technos_list] +
                                               [f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}',
                                                f'{self.name}.{GlossaryEnergy.EnergyInvestmentsMinimizationObjective}'],

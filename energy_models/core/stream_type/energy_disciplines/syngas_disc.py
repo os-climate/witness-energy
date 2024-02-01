@@ -44,11 +44,11 @@ class SyngasDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': Syngas.default_techno_list,
-                                     'default': Syngas.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_syngas', 'structuring': True,
-                                     'unit': '-'},
+                                            'possible_values': Syngas.default_techno_list,
+                                            'default': Syngas.default_techno_list,
+                                            'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                            'namespace': 'ns_syngas', 'structuring': True,
+                                            'unit': '-'},
 
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
@@ -102,7 +102,7 @@ class SyngasDiscipline(EnergyDiscipline):
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] =\
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = \
                         GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
 
         self.add_inputs(dynamic_inputs)
