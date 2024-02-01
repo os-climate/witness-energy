@@ -1,2 +1,2 @@
-label="Energy - MDO Sub-Processes Repository"
-description=""
+label = "Energy - MDO Sub-Processes Repository"
+description = ""

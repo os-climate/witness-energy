@@ -42,13 +42,14 @@ class BiomassDryTechno(TechnoType):
 
         if 'recyle_part' in self.techno_infos_dict:
             self.land_use[f'{self.name} (Gha)'] *= (
-                1 - self.techno_infos_dict['recyle_part'])
+                    1 - self.techno_infos_dict['recyle_part'])
 
     @abstractmethod
     def compute_other_primary_energy_costs(self):
         '''
         Compute other energy costs which will depend on the techno reaction (elec for electrolysis or methane for SMR by example)
         '''
+
     @abstractmethod
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 

@@ -71,13 +71,14 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'waste_disposal_levy': 0.1 * 1e-2 * 1e3,   # conversion from c/kWh to $/MWh
+                                 'waste_disposal_levy': 0.1 * 1e-2 * 1e3,  # conversion from c/kWh to $/MWh
                                  'waste_disposal_levy_unit': '$/MWh',
                                  'decommissioning_cost': 1000,
                                  'decommissioning_cost_unit': '$/kW',
                                  # World Nuclear Waste Report 2019, Chapter 6 (https://worldnuclearwastereport.org)
                                  # average of 1000 $/kW
-                                 'copper_needs': 1473, #IEA Executive summary - Role of critical minerals in clean energy transitions 2022
+                                 'copper_needs': 1473,
+                                 # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
     techno_info_dict = techno_infos_dict_default
@@ -87,7 +88,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
     # Invest in 2019 => 29.6 bn
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [30.0, 29.0, 33.0,
-                                                                     34.0, 33.0, 39.0]})
+                                                                                       34.0, 33.0, 39.0]})
 
     # Age distribution => IAEA OPEX Nuclear 2020 - Number of Reactors by Age
     # (as of 1 January 2020)
@@ -98,20 +99,22 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
                                                  1.13, 2.04, 1.36, 0.91, 2.27, 2.49, 3.17, 4.76, 5.22, 7.26, 6.80, 3.85,
                                                  3.40, 4.31, 4.08, 1.13, 2.04, 1.59, 3.17, 2.27, 3.40, 2.04, 1.59, 1.36,
                                                  0.68, 1.15, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    ]
-    })
+                                             ]
+                                             })
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
@@ -124,7 +127,6 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         self.techno_model = Nuclear(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
-    
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
         instanciated_chart = super().get_charts_consumption_and_production()
@@ -135,7 +137,7 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
-                if ResourceGlossary.Copper['name'] in product :
+                if ResourceGlossary.Copper['name'] in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
@@ -144,15 +146,14 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
             if ResourceGlossary.Copper['name'] in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
-                mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
+                mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
                     techno_consumption[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)
-        
+
         return instanciated_chart
-    
 
     def get_chart_detailed_price_in_dollar_kwh(self):
         """
@@ -167,9 +168,9 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         techno_detailed_prices = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedPricesValue)
         ratio = techno_infos_dict['decommissioning_cost'] / \
-            techno_infos_dict['Capex_init']
+                techno_infos_dict['Capex_init']
         decommissioning_price = ratio * \
-            techno_detailed_prices[f'{self.techno_name}_factory'].values
+                                techno_detailed_prices[f'{self.techno_name}_factory'].values
 
         serie = InstanciatedSeries(
             techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
@@ -185,5 +186,3 @@ class NuclearDiscipline(ElectricityTechnoDiscipline):
         new_chart.series.append(serie)
 
         return new_chart
-
-    

@@ -56,7 +56,8 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224,
                                  # pp.957-980.
-                                 'Capex_init': 0.0175,  # 730 euro/tCO2 in Fashi2019 Capex initial at year 2020 1.11 euro/$
+                                 'Capex_init': 0.0175,
+                                 # 730 euro/tCO2 in Fashi2019 Capex initial at year 2020 1.11 euro/$
                                  'Capex_init_unit': '$/kgCO2',
                                  'efficiency': 1,
                                  'CO2_capacity_peryear': 3.6E+8,  # kg CO2 /year
@@ -92,24 +93,28 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                                              })
 
     carbon_zero_quantity_to_be_stored = pd.DataFrame(
-        {GlossaryEnergy.Years: range(GlossaryEnergy.YeartStartDefault, 2050 + 1), 'carbon_storage': 0.})
+        {GlossaryEnergy.Years: range(GlossaryEnergy.YeartStartDefault, 2050 + 1), GlossaryEnergy.carbon_storage: 0.})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_storage},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
-               'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt', 'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb', 'visibility': 'Shared', 'structuring': True,
-                                                'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  None, False),
-                                                                   'carbon_storage': ('float', None, False),
-                                                                   }
-    }}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False},
+               'carbon_quantity_to_be_stored': {'type': 'dataframe', 'unit': 'Mt',
+                                                'default': carbon_zero_quantity_to_be_stored, 'namespace': 'ns_carb',
+                                                'visibility': 'Shared', 'structuring': True,
+                                                'dataframe_descriptor': {GlossaryEnergy.Years: ('int', None, False),
+                                                                         GlossaryEnergy.carbon_storage: ('float', None, False),
+                                                                         }
+                                                }}
     # -- add specific techno outputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)
 
@@ -136,9 +141,11 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
                 years = np.arange(year_start, year_end + 1)
 
                 if self.get_sosdisc_inputs('carbon_quantity_to_be_stored') is not None:
-                    if self.get_sosdisc_inputs('carbon_quantity_to_be_stored')[GlossaryEnergy.Years].values.tolist() != list(years):
+                    if self.get_sosdisc_inputs('carbon_quantity_to_be_stored')[
+                        GlossaryEnergy.Years].values.tolist() != list(years):
                         self.update_default_value(
-                            'carbon_quantity_to_be_stored', self.IO_TYPE_IN, pd.DataFrame({GlossaryEnergy.Years: years, 'carbon_storage': 0.}))
+                            'carbon_quantity_to_be_stored', self.IO_TYPE_IN,
+                            pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.carbon_storage: 0.}))
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -158,13 +165,13 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         Retrieve specific outputs
         '''
 
-        #-- get inputs
+        # -- get inputs
         inputs = list(self.DESC_IN.keys())
         inputs += list(self.inst_desc_in.keys())
-        inputs_dict = self.get_sosdisc_inputs()#inputs, in_dict=True)
+        inputs_dict = self.get_sosdisc_inputs()  # inputs, in_dict=True)
 
         outputs = list(self.DESC_OUT.keys())
-        outputs_dict = self.get_sosdisc_outputs()#outputs, in_dict=True)
+        outputs_dict = self.get_sosdisc_outputs()  # outputs, in_dict=True)
 
         # -- configure class with inputs
         self.techno_model.configure_parameters_update(inputs_dict)
@@ -210,7 +217,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             ('carbon_to_be_stored_constraint', 'carbon_to_be_stored_constraint'),
-            ('carbon_quantity_to_be_stored', 'carbon_storage'),
+            ('carbon_quantity_to_be_stored', GlossaryEnergy.carbon_storage),
             - np.identity(len(self.techno_model.carbon_to_be_stored_constraint))
         )
 
@@ -258,13 +265,13 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         return instanciated_charts
 
     def get_chart_constraint(self):
-                #-- get inputs
+        # -- get inputs
         inputs = list(self.DESC_IN.keys())
         inputs += list(self.inst_desc_in.keys())
-        inputs_dict = self.get_sosdisc_inputs()#inputs, in_dict=True)
+        inputs_dict = self.get_sosdisc_inputs()  # inputs, in_dict=True)
 
         outputs = list(self.DESC_OUT.keys())
-        outputs_dict = self.get_sosdisc_outputs()#outputs, in_dict=True)
+        outputs_dict = self.get_sosdisc_outputs()  # outputs, in_dict=True)
 
         # -- configure class with inputs
         self.techno_model.configure_parameters_update(inputs_dict)
@@ -293,11 +300,12 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
             min_value = min(min(all_var[var].values.tolist()), min_value)
 
         new_chart = TwoAxesInstanciatedChart(
-            GlossaryEnergy.Years, 'carbon storage [Mt]', primary_ordinate_axis_range=[min_value, max_value], chart_name=chart_name)
+            GlossaryEnergy.Years, 'carbon storage [Mt]', primary_ordinate_axis_range=[min_value, max_value],
+            chart_name=chart_name)
 
         for var in var_list:
             type = 'bar'
-            if var == 'carbon_storage':
+            if var == GlossaryEnergy.carbon_storage:
                 title = 'Plasmacracking_carbon_to_be_stored'
             if var == 'carbon (Mt)':
                 title = 'Consumption'

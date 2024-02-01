@@ -21,10 +21,11 @@ import numpy as np
 from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Syngas(EnergyType):
-    name = 'syngas'
+    name = GlossaryEnergy.syngas
     default_techno_list = ['Pyrolysis', 'SMR', 'AutothermalReforming',
                            'CoElectrolysis', 'BiomassGasification', 'CoalGasification']
     data_energy_dict = {
@@ -39,14 +40,14 @@ class Syngas(EnergyType):
         'CO2_per_use_unit': 'kg/kg',
         'NOx_per_energy': 0.0,
         'NOX_per_energy_unit': 'mg/kg',
-        #'density': (2 / 71 + 28 / 1.14) / 30,
+        # 'density': (2 / 71 + 28 / 1.14) / 30,
         'density_unit': 'kg/m^3',
-        #'molar_mass': 30,
+        # 'molar_mass': 30,
         'molar_mass_unit': 'g/mol',
-                        # (considering 1 mol of H2 : 33.3 * 2/30 and 1 mol of CO 11.79 * 28/30)
-        #'calorific_value': 13.22,
+        # (considering 1 mol of H2 : 33.3 * 2/30 and 1 mol of CO 11.79 * 28/30)
+        # 'calorific_value': 13.22,
         'calorific_value_unit': 'kWh/kg',
-        #'high_calorific_value': 13.22,
+        # 'high_calorific_value': 13.22,
         'high_calorific_value_unit': 'kWh/kg',
     }
 
@@ -61,7 +62,7 @@ class Syngas(EnergyType):
         EnergyType.configure_parameters_update(self, inputs_dict)
         for techno in self.subelements_list:
             self.syngas_ratio[techno] = inputs_dict[f'{techno}.syngas_ratio'][0]
-        #Added to overwrite the definition of data energy dict input from energy type but with a deepcopy
+        # Added to overwrite the definition of data energy dict input from energy type but with a deepcopy
         self.data_energy_dict_input = deepcopy(inputs_dict['data_fuel_dict'])
 
     def compute_syngas_ratio(self):
@@ -98,7 +99,10 @@ def compute_calorific_value(syngas_ratio):
     syngas_ratio must be between 0 and 1 (not in %)
     '''
     calorific_value = (syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['calorific_value'] +
-                       GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict['calorific_value']) / (GaseousHydrogen.data_energy_dict['molar_mass'] + syngas_ratio * CO.data_energy_dict['molar_mass'])
+                       GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict[
+                           'calorific_value']) / (
+                                  GaseousHydrogen.data_energy_dict['molar_mass'] + syngas_ratio * CO.data_energy_dict[
+                              'molar_mass'])
 
     return calorific_value
 
@@ -112,13 +116,15 @@ def compute_high_calorific_value(syngas_ratio):
     syngas_ratio must be between 0 and 1 (not in %)
     '''
     calorific_value = (syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['high_calorific_value'] +
-                       GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict['high_calorific_value']) / (GaseousHydrogen.data_energy_dict['molar_mass'] + syngas_ratio * CO.data_energy_dict['molar_mass'])
+                       GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict[
+                           'high_calorific_value']) / (
+                                  GaseousHydrogen.data_energy_dict['molar_mass'] + syngas_ratio * CO.data_energy_dict[
+                              'molar_mass'])
 
     return calorific_value
 
 
 def compute_dcal_val_dsyngas_ratio(syngas_ratio, type_cal='calorific_value'):
-
     calup = (syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict[type_cal] +
              GaseousHydrogen.data_energy_dict['molar_mass'] * GaseousHydrogen.data_energy_dict[type_cal])
 
@@ -126,12 +132,12 @@ def compute_dcal_val_dsyngas_ratio(syngas_ratio, type_cal='calorific_value'):
                syngas_ratio * CO.data_energy_dict['molar_mass'])
 
     dcalup = CO.data_energy_dict['molar_mass'] * \
-        CO.data_energy_dict[type_cal]
+             CO.data_energy_dict[type_cal]
 
     dcaldown = CO.data_energy_dict['molar_mass']
 
     dcalorific_val_dsyngas = (
-        dcalup * caldown - dcaldown * calup) / (caldown ** 2)
+                                     dcalup * caldown - dcaldown * calup) / (caldown ** 2)
 
     return dcalorific_val_dsyngas
 
@@ -144,6 +150,8 @@ def compute_density(syngas_ratio):
     if ratio is equal to zero syngas is h2
     '''
     density = (syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['density'] +
-               GaseousHydrogen.data_energy_dict['molar_mass'] * CO.data_energy_dict['density']) / (GaseousHydrogen.data_energy_dict['molar_mass'] + syngas_ratio * CO.data_energy_dict['molar_mass'])
+               GaseousHydrogen.data_energy_dict['molar_mass'] * CO.data_energy_dict['density']) / (
+                          GaseousHydrogen.data_energy_dict['molar_mass'] + syngas_ratio * CO.data_energy_dict[
+                      'molar_mass'])
 
     return density

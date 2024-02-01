@@ -79,7 +79,7 @@ class DiscDoubleRunTestCase(unittest.TestCase):
             if dict_error != {}:
                 test_passed = False
                 for error in dict_error:
-                    output_error += f'Error while runing twice { usecase }:\n'
+                    output_error += f'Error while runing twice {usecase}:\n'
                     output_error += f'Mismatch in {error} for disc {disc.name}: {dict_error.get(error)}'
                     output_error += '\n---------------------------------------------------------\n'
         if not test_passed:

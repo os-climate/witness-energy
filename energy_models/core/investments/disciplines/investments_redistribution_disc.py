@@ -197,8 +197,9 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             for techno in techno_list:
                 grad_inv_level_wrt_economics = percentage_gdp_invest_energy * identity * techno_invest_percentage_df[
                     techno].values / 100.
-                grad_inv_level_wrt_gdp_perc = identity * economics_df[GlossaryEnergy.OutputNetOfDamage].values * techno_invest_percentage_df[
-                    techno].values / 100.
+                grad_inv_level_wrt_gdp_perc = identity * economics_df[GlossaryEnergy.OutputNetOfDamage].values * \
+                                              techno_invest_percentage_df[
+                                                  techno].values / 100.
 
                 self.set_partial_derivative_for_other_types(
                     (f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
@@ -317,7 +318,8 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                     invest = self.get_sosdisc_inputs(techno)
                     serie_agriculture = InstanciatedSeries(
                         invest[GlossaryEnergy.Years].values.tolist(),
-                        invest[GlossaryEnergy.InvestmentsValue].values.tolist(), techno.replace("_investment", ""), 'bar')
+                        invest[GlossaryEnergy.InvestmentsValue].values.tolist(), techno.replace("_investment", ""),
+                        'bar')
                     agriculture_chart.series.append(serie_agriculture)
                     serie = InstanciatedSeries(
                         invest[GlossaryEnergy.Years].values.tolist(),

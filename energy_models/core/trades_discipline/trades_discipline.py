@@ -47,7 +47,7 @@ class TradesDiscipline(SoSWrapp):
                                      SoSWrapp.SHARED_VISIBILITY, SoSWrapp.NAMESPACE: 'ns_scatter_scenario',
                                  'structuring': True},
                GlossaryEnergy.YearEnd: {'type': 'int', 'default': 2050, 'unit': '[-]',
-                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2,
                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_public'}}
@@ -67,7 +67,8 @@ class TradesDiscipline(SoSWrapp):
                 for scenario in scenario_list:
                     inputs[f'{scenario}{ns_value_long.split(ns_value_short)[1]}.co2_emissions'] = {
                         'type': 'dataframe', 'unit': 'Mt', 'visibility': 'Shared', 'namespace': 'ns_scatter_scenario'}
-                    inputs[f'{scenario}{ns_value_long.split(ns_value_short)[1]}.{GlossaryEnergy.EnergyProductionValue}'] = {
+                    inputs[
+                        f'{scenario}{ns_value_long.split(ns_value_short)[1]}.{GlossaryEnergy.EnergyProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'MWh', 'visibility': 'Shared', 'namespace': 'ns_scatter_scenario'}
 
                 self.add_inputs(inputs)

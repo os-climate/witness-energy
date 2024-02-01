@@ -24,7 +24,6 @@ from energy_models.models.methane.fossil_gas.fossil_gas import FossilGas
 
 
 class FossilGasDiscipline(MethaneTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Fossil Gas Model',
@@ -69,7 +68,8 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                  'techno_evo_eff': 'no',
                                  'learning_rate': 0,
                                  'WACC': 0.0878,
-                                 'efficiency': 0.4, # https://geospatial.blogs.com/geospatial/2010/01/energy-efficiency-of-fossil-fuel-power-generation.html#:~:text=The%20average%20efficiencies%20of%20power,up%20the%20stack%22%20as%20heat.
+                                 'efficiency': 0.4,
+                                 # https://geospatial.blogs.com/geospatial/2010/01/energy-efficiency-of-fossil-fuel-power-generation.html#:~:text=The%20average%20efficiencies%20of%20power,up%20the%20stack%22%20as%20heat.
                                  GlossaryEnergy.ConstructionDelay: construction_delay,  # in kWh/kg
                                  'maturity': 5
                                  }
@@ -101,10 +101,12 @@ class FossilGasDiscipline(MethaneTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
 

@@ -26,7 +26,6 @@ from energy_models.core.techno_type.base_techno_models.syngas_techno import Syng
 
 
 class AuthothermalReforming(SyngasTechno):
-
     syngas_COH2_ratio = 100.0  # in %
 
     def compute_other_primary_energy_costs(self):
@@ -44,8 +43,9 @@ class AuthothermalReforming(SyngasTechno):
         self.cost_details['oxygen_needs'] = self.get_theoretical_O2_needs()
 
         # Cost of oxygen for 1 kWH of H2
-        self.cost_details[Oxygen.name] = list(self.resources_prices[f'{Oxygen.name}'] * self.cost_details['oxygen_needs']
-                                              / self.cost_details['efficiency'])
+        self.cost_details[Oxygen.name] = list(
+            self.resources_prices[f'{Oxygen.name}'] * self.cost_details['oxygen_needs']
+            / self.cost_details['efficiency'])
         # Cost of methane for 1 kWH of H2
         self.cost_details[f'{Methane.name}'] = list(self.prices[f'{Methane.name}'] * self.cost_details['methane_needs']
                                                     / self.cost_details['efficiency'])
@@ -97,7 +97,8 @@ class AuthothermalReforming(SyngasTechno):
         self.carbon_intensity[Oxygen.name] = self.resources_CO2_emissions[Oxygen.name] * \
                                              self.cost_details['oxygen_needs'] / self.cost_details['efficiency']
 
-        return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[CO2.name] + self.carbon_intensity[Oxygen.name]
+        return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[CO2.name] + self.carbon_intensity[
+            Oxygen.name]
 
     def grad_co2_emissions_vs_resources_co2_emissions(self):
         '''
@@ -108,7 +109,6 @@ class AuthothermalReforming(SyngasTechno):
         return {
             CO2.name: np.identity(len(self.years)) * co2_needs / efficiency[:, np.newaxis],
         }
-
 
     def get_theoretical_CH4_needs(self):
         """
@@ -121,8 +121,8 @@ class AuthothermalReforming(SyngasTechno):
         mol_COH2 = 3.0
         methane_data = Methane.data_energy_dict
         methane_needs = mol_CH4 * methane_data['molar_mass'] * methane_data['calorific_value'] / \
-            (mol_COH2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                        (mol_COH2 * self.data_energy_dict['molar_mass'] *
+                         self.data_energy_dict['calorific_value'])
 
         return methane_needs
 
@@ -137,8 +137,8 @@ class AuthothermalReforming(SyngasTechno):
         mol_COH2 = 3.0
         water_data = CO2.data_energy_dict
         water_needs = mol_CO2 * water_data['molar_mass'] / \
-            (mol_COH2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                      (mol_COH2 * self.data_energy_dict['molar_mass'] *
+                       self.data_energy_dict['calorific_value'])
 
         return water_needs
 
@@ -153,8 +153,8 @@ class AuthothermalReforming(SyngasTechno):
         mol_COH2 = 3.0
         oxygen_data = Oxygen.data_energy_dict
         water_needs = mol_O2 * oxygen_data['molar_mass'] / \
-            (mol_COH2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                      (mol_COH2 * self.data_energy_dict['molar_mass'] *
+                       self.data_energy_dict['calorific_value'])
 
         return water_needs
 
@@ -164,26 +164,28 @@ class AuthothermalReforming(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
         # kg of H2O produced with 1kg of CH4
         H2Oprod = self.get_h2o_production()
 
         # total H2O production
-        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
+        self.production_detailed[f'{Water.name} ({self.mass_unit})'] = self.production_detailed[
+                                                                           f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                        H2Oprod
 
         # Consumption
         self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
-                                                                                self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                self.production_detailed[
+                                                                                    f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                 self.cost_details['efficiency']
 
         self.consumption_detailed[f'{Dioxygen.name} ({self.mass_unit})'] = self.cost_details['oxygen_needs'] * \
-                                                                           self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                           self.production_detailed[
+                                                                               f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                            self.cost_details['efficiency']
 
         self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['methane_needs'] * \
-                                                                                    self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                    self.production_detailed[
+                                                                                        f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                     self.cost_details['efficiency']
 
         # self.consumption[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.cost_details['methane_needs'] * \
@@ -200,8 +202,8 @@ class AuthothermalReforming(SyngasTechno):
         mol_syngas = 3.0
         water_data = Water.data_energy_dict
         production_for_1kg = mol_H20 * \
-            water_data['molar_mass'] / \
-            (mol_syngas * self.data_energy_dict['molar_mass']
-             * self.data_energy_dict['calorific_value'])
+                             water_data['molar_mass'] / \
+                             (mol_syngas * self.data_energy_dict['molar_mass']
+                              * self.data_energy_dict['calorific_value'])
 
         return production_for_1kg

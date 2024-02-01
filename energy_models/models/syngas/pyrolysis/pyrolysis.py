@@ -54,27 +54,30 @@ class Pyrolysis(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+                                                                                            'CO2_from_production'] / \
+                                                                                        self.data_energy_dict[
+                                                                                            'calorific_value'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
-                                                                                        self.data_energy_dict['calorific_value'] * \
-                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
-
-        self.production_detailed[f'char ({self.mass_unit})'] = self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
+        self.production_detailed[f'char ({self.mass_unit})'] = self.production_detailed[
+                                                                   f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                self.techno_infos_dict['char_yield'] / \
                                                                self.techno_infos_dict['syngas_yield']
 
-        self.production_detailed[f'bio_oil ({self.mass_unit})'] = self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
+        self.production_detailed[f'bio_oil ({self.mass_unit})'] = self.production_detailed[
+                                                                      f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                   self.techno_infos_dict['bio_oil_yield'] / \
                                                                   self.techno_infos_dict['syngas_yield']
 
         self.consumption_detailed[f'wood ({self.mass_unit})'] = self.cost_details['wood_needs'] * \
-                                                                self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+                                                                self.production_detailed[
+                                                                    f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
         # self.consumption[f'{mediumheattechno.energy_name} ({self.product_energy_unit})'] = \
         #     self.techno_infos_dict['medium_heat_production'] * \
         #     self.production[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']  # in TWH
-
 
     def compute_CO2_emissions_from_input_resources(self):
         ''' 
@@ -82,7 +85,8 @@ class Pyrolysis(SyngasTechno):
         Oxygen is not taken into account
         '''
 
-        self.carbon_intensity[ResourceGlossary.Wood['name']] = self.resources_CO2_emissions[ResourceGlossary.Wood['name']] * \
+        self.carbon_intensity[ResourceGlossary.Wood['name']] = self.resources_CO2_emissions[
+                                                                   ResourceGlossary.Wood['name']] * \
                                                                self.cost_details['wood_needs']
 
         return self.carbon_intensity[ResourceGlossary.Wood['name']]

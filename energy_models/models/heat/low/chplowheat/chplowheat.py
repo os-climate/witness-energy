@@ -51,28 +51,32 @@ class CHPLowHeat(lowheattechno):
         efficiency = self.techno_infos_dict['efficiency']
 
         return {
-                Methane.name: np.identity(len(self.years)) * methane_needs / efficiency
-                }
+            Methane.name: np.identity(len(self.years)) * methane_needs / efficiency
+        }
 
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
 
-        
-
         # Consumption
-        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
-                                                                                    self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                        f'{Methane.name}_needs'] * \
+                                                                                    self.production_detailed[
+                                                                                        f'{lowtemperatureheat.name} ({self.product_energy_unit})']
 
         # CO2 production
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
-                                                                                        Methane.data_energy_dict['calorific_value'] * \
-                                                                                        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
+                                                                                            'CO2_per_use'] / \
+                                                                                        Methane.data_energy_dict[
+                                                                                            'calorific_value'] * \
+                                                                                        self.consumption_detailed[
+                                                                                            f'{Methane.name} ({self.product_energy_unit})']
 
         self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
             (self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] /
-             (1 - self.techno_infos_dict['efficiency'])) - self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})']
+             (1 - self.techno_infos_dict['efficiency'])) - self.production_detailed[
+                f'{lowtemperatureheat.name} ({self.product_energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
@@ -106,5 +110,3 @@ class CHPLowHeat(lowheattechno):
         co2_prod = co2_captured__production / (heat_density * heat_calorific_value)
 
         return co2_prod
-
-

@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Methane(EnergyType):
-    name = 'methane'
+    name = GlossaryEnergy.methane
     emission_name = 'CH4'
     default_techno_list = ['Methanation', 'UpgradingBiogas', 'FossilGas']
     data_energy_dict = {'maturity': 5,
@@ -25,7 +26,7 @@ class Methane(EnergyType):
                         # Engineering ToolBox, (2009).
                         # Combustion of Fuels - Carbon Dioxide Emission. [online]
                         # Available at: https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html
-                        #[Accessed 17 12 2021].
+                        # [Accessed 17 12 2021].
                         'CO2_per_use': 2.75,
                         'CO2_per_use_unit': 'kg/kg',
                         # https://previous.iiasa.ac.at/web/home/research/researchPrograms/air/IR54-GAINS-CH4.pdf
@@ -44,7 +45,7 @@ class Methane(EnergyType):
                         # Engineering ToolBox, (2003).
                         # Fuels - Higher and Lower Calorific Values. [online]
                         # Available at: https://www.engineeringtoolbox.com/fuels-higher-calorific-values-d_169.html
-                        #[Accessed 17 12 2021].
+                        # [Accessed 17 12 2021].
                         'calorific_value': 13.9,
                         'calorific_value_unit': 'kWh/kg',
                         'high_calorific_value': 15.4,

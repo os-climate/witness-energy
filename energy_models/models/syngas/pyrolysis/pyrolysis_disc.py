@@ -46,7 +46,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
     lifetime = 20
     construction_delay = 2
     techno_infos_dict_default = {'maturity': 0,
-                                 'product': 'syngas',
+                                 'product': GlossaryEnergy.syngas,
                                  'Opex_percentage': 0.06,
                                  'CO2_from_production': 0.2,
                                  'CO2_from_production_unit': 'kg/kg',
@@ -57,7 +57,7 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                  # cost, 20 years lifetime, 70% syngas yield
                                  'Capex_init': 0.012,
                                  'Capex_init_unit': '$/kWh',
-                                 'medium_heat_production': (131/(28.01 + 2.016)) * 1000 * 2.77778e-13,
+                                 'medium_heat_production': (131 / (28.01 + 2.016)) * 1000 * 2.77778e-13,
                                  # C+H2O→H2+CO   ΔH =+131kJ/mol  # Co(28.01 g/mol),H2(2.016 g/mol)
                                  # https://www.sciencedirect.com/topics/earth-and-planetary-sciences/pyrolysis#:~:text=For%20slow%20pyrolysis%2C%20the%20heating,respectively%20%5B15%2C21%5D.
                                  'medium_heat_production_unit': 'TWh/kg',
@@ -91,13 +91,15 @@ class PyrolysisDiscipline(SyngasTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}
                }
     # -- add specific techno outputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)

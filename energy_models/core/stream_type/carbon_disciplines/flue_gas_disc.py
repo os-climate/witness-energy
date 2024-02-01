@@ -59,42 +59,47 @@ class FlueGasDiscipline(SoSWrapp):
         'icon': 'fas fa-cloud fa-fw',
         'version': '',
     }
-    POSSIBLE_FLUE_GAS_TECHNOS = {'electricity.CoalGen': CoalGenDiscipline.FLUE_GAS_RATIO,
-                                 'electricity.GasTurbine': GasTurbineDiscipline.FLUE_GAS_RATIO,
-                                 'electricity.CombinedCycleGasTurbine': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
-                                 'hydrogen.gaseous_hydrogen.WaterGasShift': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
-                                 'liquid_fuel.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
-                                 'liquid_fuel.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
-                                 'methane.FossilGas': FossilGasDiscipline.FLUE_GAS_RATIO,
-                                 'solid_fuel.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
-                                 'syngas.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
-                                 'syngas.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
-                                 'fossil.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
-                                 'carbon_capture.direct_air_capture.AmineScrubbing': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
-                                 'carbon_capture.direct_air_capture.DirectAirCaptureTechno': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
+    POSSIBLE_FLUE_GAS_TECHNOS = {f'{GlossaryEnergy.electricity}.CoalGen': CoalGenDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.electricity}.GasTurbine': GasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.liquid_fuel}.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.liquid_fuel}.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.methane}.FossilGas': FossilGasDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.solid_fuel}.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.syngas}.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.syngas}.Pyrolysis': PyrolysisDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fossil}.FossilSimpleTechno': FossilSimpleTechnoDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': AmineScrubbingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': CalciumPotassiumScrubbingDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno': DirectAirCaptureTechnoDiscipline.FLUE_GAS_RATIO
                                  }
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
-                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
-                                     'structuring': True, 'unit': '-'},
-               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-               GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
-                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                            'editable': False,
-                            'structuring': True,
-                            'unit': '-'},
+                                            'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
+                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
+                                            'structuring': True, 'unit': '-'},
+               'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-',
+                                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
+                                                     'user_level': 2},
+               'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-',
+                                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
+                                                    'user_level': 2},
+               GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                         'possible_values': CCUS.ccs_list,
+                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                                         'editable': False,
+                                         'structuring': True,
+                                         'unit': '-'},
                }
 
     energy_name = FlueGas.name
 
     DESC_OUT = {GlossaryEnergy.FlueGasMean: {'type': 'dataframe',
-                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                  'namespace': 'ns_flue_gas', 'unit': '%'},
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                             'namespace': 'ns_flue_gas', 'unit': '%'},
                 'flue_gas_production': {'type': 'dataframe',
                                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_flue_gas', 'unit': 'Mt'},
@@ -129,12 +134,13 @@ class FlueGasDiscipline(SoSWrapp):
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': ns_variable,
-                        'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                 'CO2 from Flue Gas (Mt)': ('float', None, False),
-                                                 }
+                        'dataframe_descriptor': {
+                            GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                            'CO2 from Flue Gas (Mt)': ('float', None, False),
+                            }
                     }
 
-                    #dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
+                    # dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalDfValue}'] = GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
                     dynamic_inputs[f'{techno}.flue_gas_co2_ratio'] = {'type': 'array',
                                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                       'namespace': ns_variable, 'unit': '',
@@ -181,8 +187,8 @@ class FlueGasDiscipline(SoSWrapp):
                 f'{techno}.flue_gas_co2_ratio')[0]
 
             grad_prod = (
-                total_prod - self.energy_model.production[
-                    f'{self.energy_model.name} {techno} (Mt)'].values) / total_prod ** 2
+                                total_prod - self.energy_model.production[
+                            f'{self.energy_model.name} {techno} (Mt)'].values) / total_prod ** 2
 
             self.set_partial_derivative_for_other_types(
                 ('flue_gas_prod_ratio', techno),
@@ -198,7 +204,7 @@ class FlueGasDiscipline(SoSWrapp):
 
                     grad_flue_gas_prod_ratio = -self.energy_model.production[
                         f'{self.energy_model.name} {techno} (Mt)'].values / \
-                        total_prod ** 2
+                                               total_prod ** 2
                     self.set_partial_derivative_for_other_types(
                         ('flue_gas_prod_ratio', techno),
                         (f'{techno_other}.{GlossaryEnergy.TechnoProductionValue}',
@@ -297,7 +303,8 @@ class FlueGasDiscipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             flue_gas_co2_concentration[GlossaryEnergy.Years].values.tolist(),
-            (flue_gas_co2_concentration[GlossaryEnergy.FlueGasMean].values * 100).tolist(), f'CO2 concentration', 'lines')
+            (flue_gas_co2_concentration[GlossaryEnergy.FlueGasMean].values * 100).tolist(), f'CO2 concentration',
+            'lines')
 
         new_chart.series.append(serie)
         return new_chart

@@ -24,7 +24,6 @@ from energy_models.models.solid_fuel.pelletizing.pelletizing import Pelletizing
 
 
 class PelletizingDiscipline(SolidFuelTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Solid Fuel Pelletizing Model',
@@ -62,7 +61,7 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                  'elec_demand': 0.1062,
                                  'elec_demand_unit': 'kWh/kg',
                                  'WACC': 0.01,
-                                 'learning_rate':  0.2,
+                                 'learning_rate': 0.2,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
                                  'lifetime_unit': GlossaryEnergy.Years,
                                  # Capex in $
@@ -97,10 +96,12 @@ class PelletizingDiscipline(SolidFuelTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     # -- add specific techno inputs to this
     DESC_IN.update(SolidFuelTechnoDiscipline.DESC_IN)
 

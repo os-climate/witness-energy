@@ -34,8 +34,6 @@ class Reforestation(CSTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
         # Consumption
 
         self.consumption_detailed[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production_detailed[
@@ -47,7 +45,8 @@ class Reforestation(CSTechno):
             to be overloaded in sub class
         '''
 
-        self.land_use[f'{self.name} (Gha)'] = self.production_detailed[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
+        self.land_use[f'{self.name} (Gha)'] = self.production_detailed[
+                                                  f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
                                               (0.0067621) / 1.0e9
 
     def compute_dlanduse_dinvest(self):
@@ -60,6 +59,6 @@ class Reforestation(CSTechno):
             if key.startswith(self.name):
                 if not (self.land_use[key] == np.array([0] * len(self.years))).all():
                     dlanduse_dinvest = self.dprod_dinvest / self.data_energy_dict['calorific_value'] / \
-                        (0.0067621) / 1.0e9
+                                       (0.0067621) / 1.0e9
 
         return dlanduse_dinvest

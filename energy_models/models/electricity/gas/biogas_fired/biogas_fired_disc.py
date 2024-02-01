@@ -29,8 +29,9 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
 from energy_models.core.stream_type.energy_models.biogas import BioGas
-class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
 
+
+class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
     # ontology information
     _ontology_data = {
         'label': 'Biogas Fired Model',
@@ -46,7 +47,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
     }
 
     techno_name = 'BiogasFired'
-    lifetime = 20   # Value for CHP units
+    lifetime = 20  # Value for CHP units
     construction_delay = 2  # years
 
     # IEA 2022, Data Tables,
@@ -77,7 +78,8 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
                                  'techno_evo_eff': 'no',  # yes or no
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'full_load_hours': 8760,
-                                 'copper_needs': 1100,  #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
+                                 'copper_needs': 1100,
+                                 # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
     # Source: IEA 2022, Data and Statistics,
@@ -85,7 +87,8 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
     # License: CC BY 4.0.
     # (17.7-9.4)/8 = 1.0375 GW per year increase
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [1.0375 * 2141 / 1000, 1.0375 * 2141 / 1000]})
+        {'past years': np.arange(-construction_delay, 0),
+         GlossaryEnergy.InvestValue: [1.0375 * 2141 / 1000, 1.0375 * 2141 / 1000]})
     # In G$
 
     # Source for Initial prod in TWh (2019):
@@ -109,13 +112,15 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False},
                }
     # -- add specific techno inputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
@@ -124,7 +129,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = BiogasFired(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
-    
+
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
         instanciated_chart = super().get_charts_consumption_and_production()
@@ -135,7 +140,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
-                if ResourceGlossary.Copper['name'] in product :
+                if ResourceGlossary.Copper['name'] in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
@@ -144,7 +149,7 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
             if ResourceGlossary.Copper['name'] in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
-                mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
+                mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
                     techno_consumption[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
@@ -152,7 +157,6 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
         instanciated_chart.append(new_chart_copper)
 
         return instanciated_chart
-
 
     def compute_sos_jacobian(self):
         ElectricityTechnoDiscipline.compute_sos_jacobian(self)
@@ -165,10 +169,13 @@ class BiogasFiredDiscipline(ElectricityTechnoDiscipline):
         applied_ratio = self.get_sosdisc_outputs(
             'applied_ratio')['applied_ratio'].values
 
-        dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-        consumption_gradient = self.techno_consumption_derivative[f'{BioGas.name} ({self.techno_model.product_energy_unit})']
-        #self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
+        dprod_name_dinvest = (
+                                         self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+        consumption_gradient = self.techno_consumption_derivative[
+            f'{BioGas.name} ({self.techno_model.product_energy_unit})']
+        # self.techno_consumption_derivative[f'{SolidFuel.name} ({self.product_energy_unit})']
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TechnoProductionValue,
-             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
-            (consumption_gradient- dprod_name_dinvest))
+             f'{hightemperatureheat.name} ({self.techno_model.product_energy_unit})'),
+            (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
+            (consumption_gradient - dprod_name_dinvest))

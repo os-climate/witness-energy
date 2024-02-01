@@ -35,7 +35,7 @@ class EnergyDemand(object):
     In the V0, only elec demand constraint is implemented
     '''
     name = 'Energy_demand'
-    elec_prod_column = f"production electricity ({EnergyMix.stream_class_dict['electricity'].unit})"
+    elec_prod_column = f"production electricity ({EnergyMix.stream_class_dict[GlossaryEnergy.electricity].unit})"
     # energy_list_transport = [LiquidHydrogen.name,
     #                      LiquidFuel.name, hightemperatureheat.name, mediumtemperatureheat.name, lowtemperatureheat.name,
     #                          BioDiesel.name, Methane.name, BioGas.name , HydrotreatedOilFuel.name]
@@ -209,5 +209,5 @@ class EnergyDemand(object):
         grad[0, 0] = 0.0
 
         return -grad * (
-                    1 + self.additional_demand_transport) * self.initial_electricity_demand / self.improved_efficiency_factor.reshape(
+                1 + self.additional_demand_transport) * self.initial_electricity_demand / self.improved_efficiency_factor.reshape(
             self.delta_years, 1) / self.electricity_demand_constraint_ref

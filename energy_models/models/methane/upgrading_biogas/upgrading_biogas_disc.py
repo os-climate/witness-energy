@@ -24,7 +24,6 @@ from energy_models.models.methane.upgrading_biogas.upgrading_biogas import Upgra
 
 
 class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Methane Upgrading Biogas Model',
@@ -43,7 +42,7 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
     techno_name = 'UpgradingBiogas'
     lifetime = 20
     construction_delay = 2  # years
-    #'reaction': 'CnHaOb + (n-a/4-b/2)H20 = (n/2+a/8-b/4) CH4 + (n/2-a/8+b/4) CO2',
+    # 'reaction': 'CnHaOb + (n-a/4-b/2)H20 = (n/2+a/8-b/4) CH4 + (n/2-a/8+b/4) CO2',
 
     techno_infos_dict_default = {'Opex_percentage': 0.04,
                                  'lifetime': lifetime,  # for now constant in time but should increase with time
@@ -56,13 +55,14 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
                                  'efficiency': 0.83,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'low_heat_production': ((663.2 * 3600) / 2.393) * 1e-9, # https://www.sciencedirect.com/science/article/abs/pii/S0957582021002469
+                                 'low_heat_production': ((663.2 * 3600) / 2.393) * 1e-9,
+                                 # https://www.sciencedirect.com/science/article/abs/pii/S0957582021002469
                                  'low_heat_production_unit': 'TWh/kg',
                                  # biogas demand represent needed biogas to obtain 1 m^3 of methane here 6201 t of biogas for 3.44
-                                 #p25 in graphs
+                                 # p25 in graphs
                                  'biogas_demand': 6.46 / 3.44,
                                  'biogas_demand_unit': 'm^3/m^3',
-                                 #MEA : MonoEthanolAmine
+                                 # MEA : MonoEthanolAmine
                                  'MEA_needs': 205.0 / 3440.0,
                                  'MEA_needs_unit': 'kg/m^3',
                                  'elec_demand': 1.0,
@@ -80,7 +80,8 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
     # Same as anaerobic digestion since most of biogas from anaerobic
     # digestion is converted into bioCH4
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.085787594423131, 11.083221775965836, 9.906291833479699,
+                                             'distrib': [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 4.085787594423131,
+                                                         11.083221775965836, 9.906291833479699,
                                                          11.264502455357881, 15.372601517593951, 10.940986166952394,
                                                          6.682284695273031, 3.1012940652355083, 7.711401160086531,
                                                          5.848393573822739, 2.2088353407762535, 3.162650601721087,
@@ -96,10 +97,12 @@ class UpgradingBiogasDiscipline(MethaneTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

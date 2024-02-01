@@ -21,7 +21,6 @@ from energy_models.sos_processes.energy.techno_mix.liquid_hydrogen_mix.usecase i
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Liquid Hydrogen Mix',
@@ -35,14 +34,13 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
 
         liquid_hydrogen_name = LiquidHydrogen.name
         energy_mix = 'EnergyMix'
 
         ns_dict = {'ns_liquid_hydrogen': f'{ns_study}.{energy_mix}.{liquid_hydrogen_name}',
-                   #'ns_hydrogen': f'{ns_study}.EnergyMix.{hydrogen_name}',
+                   # 'ns_hydrogen': f'{ns_study}.EnergyMix.{hydrogen_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
@@ -55,5 +53,6 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{energy_mix}.{liquid_hydrogen_name}.{techno_name}'] = self.get_techno_disc_path(
                 LiquidHydrogen.short_name, techno_name)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

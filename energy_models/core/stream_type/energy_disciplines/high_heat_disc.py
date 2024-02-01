@@ -35,11 +35,12 @@ class HighHeatDiscipline(EnergyDiscipline):
     # -- add specific techno inputs to this
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': hightemperatureheat.default_techno_list,
-                                     'default': hightemperatureheat.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_heat_high',
-                                     'structuring': True, 'unit': '-'
-                                     },
+                                            'possible_values': hightemperatureheat.default_techno_list,
+                                            'default': hightemperatureheat.default_techno_list,
+                                            'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                            'namespace': 'ns_heat_high',
+                                            'structuring': True, 'unit': '-'
+                                            },
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'unit': 'defined in dict',
                                   'namespace': 'ns_heat_high', 'default': hightemperatureheat.data_energy_dict},
@@ -57,7 +58,6 @@ class HighHeatDiscipline(EnergyDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = hightemperatureheat(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
-
 
     # def setup_sos_disciplines(self):
     #     '''
@@ -99,9 +99,3 @@ class HighHeatDiscipline(EnergyDiscipline):
     #     outputs_dict = {'energy_heat_flux_detailed': techno_heat_flux
     #                     }
     #     self.store_sos_outputs_values(outputs_dict)
-
-
-
-
-
-

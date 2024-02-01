@@ -36,15 +36,16 @@ class AnaerobicDigestion(BioGasTechno):
         biomass_data = WetBiomass.data_energy_dict
         # Wet biomass_needs are in kg/m^3
         self.cost_details['wet_biomass_needs'] = self.techno_infos_dict['wet_biomass_needs'] / \
-            self.data_energy_dict['density'] / \
-            self.data_energy_dict['calorific_value']
+                                                 self.data_energy_dict['density'] / \
+                                                 self.data_energy_dict['calorific_value']
 
         # Cost of electricity for 1 kWH of H2
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    )
         # Cost of biomass is in $/kg
-        self.cost_details[WetBiomass.name] = list(self.resources_prices[ResourceGlossary.WetBiomass['name']] * self.cost_details['wet_biomass_needs']
-                                                  )
+        self.cost_details[WetBiomass.name] = list(
+            self.resources_prices[ResourceGlossary.WetBiomass['name']] * self.cost_details['wet_biomass_needs']
+            )
 
         return self.cost_details[Electricity.name] + self.cost_details[WetBiomass.name]
 
@@ -62,8 +63,8 @@ class AnaerobicDigestion(BioGasTechno):
         Compute the gradient of global price vs resources prices
         '''
         wet_biomass_needs = self.techno_infos_dict['wet_biomass_needs'] / \
-            self.data_energy_dict['density'] / \
-            self.data_energy_dict['calorific_value']
+                            self.data_energy_dict['density'] / \
+                            self.data_energy_dict['calorific_value']
         return {ResourceGlossary.WetBiomass['name']: np.identity(len(self.years)) * wet_biomass_needs}
 
     def compute_consumption_and_production(self):
@@ -72,20 +73,22 @@ class AnaerobicDigestion(BioGasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
         # Consumption
         self.consumption_detailed[f'{WetBiomass.name} ({self.mass_unit})'] = self.cost_details['wet_biomass_needs'] * \
-                                                                             self.production_detailed[f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                        self.production_detailed[f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+                                                                             self.production_detailed[
+                                                                                 f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            'elec_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{BioGasTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
         Need to take into account  CO2 from electricity production and negative CO2 from biomass
         '''
 
-        self.carbon_intensity[f'{WetBiomass.name}'] = self.resources_CO2_emissions[ResourceGlossary.WetBiomass['name']] * \
+        self.carbon_intensity[f'{WetBiomass.name}'] = self.resources_CO2_emissions[
+                                                          ResourceGlossary.WetBiomass['name']] * \
                                                       self.cost_details['wet_biomass_needs']
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \

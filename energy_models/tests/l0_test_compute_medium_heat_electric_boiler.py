@@ -29,6 +29,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
     """
     Electric Boiler test class
     """
+
     def setUp(self):
         '''
         Initialize third data needed for testing
@@ -43,18 +44,18 @@ class ElectricBoilerTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'electricity': np.ones(len(years)) * 181.0,  #$/MWh
-                                                                                        #https://tradingeconomics.com/france/electricity-price
+                                           GlossaryEnergy.electricity: np.ones(len(years)) * 181.0,  # $/MWh
+                                           # https://tradingeconomics.com/france/electricity-price
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': 0.0, 'water': 0.0})
+        self.energy_carbon_emissions = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, 'water': 0.0})
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, 'water_resource': 2.0})
         self.resources_CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: years, 'water': 0.0})
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 10.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01, 34.05, 39.08, 44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -78,13 +79,12 @@ class ElectricBoilerTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'electricity.ElectricBoiler']
+                                                == f'{GlossaryEnergy.electricity}.ElectricBoiler']
 
     def tearDown(self):
         pass
 
     def test_02_electric_boiler_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'Electric Boiler'
         self.ee = ExecutionEngine(self.name)
@@ -112,7 +112,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

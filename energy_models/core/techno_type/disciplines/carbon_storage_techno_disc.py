@@ -25,7 +25,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 
 class CSTechnoDiscipline(TechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Carbon Storage Technology Model',
@@ -39,14 +38,21 @@ class CSTechnoDiscipline(TechnoDiscipline):
         'icon': 'fas fa-truck-loading fa-fw',
         'version': '',
     }
-    DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_carbon_storage',
-                                  'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                           'transport': ('float',  None, True)},
-                                  'dataframe_edition_locked': False},
-               GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_carbon_storage',
-                                    'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                             GlossaryEnergy.MarginValue: ('float',  None, True)},
-                                    'dataframe_edition_locked': False},
+    DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t',
+                                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                   'namespace': 'ns_carbon_storage',
+                                                   'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                                   'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                                            'transport': ('float', None, True)},
+                                                   'dataframe_edition_locked': False},
+               GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
+                                                     'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                     'namespace': 'ns_carbon_storage',
+                                                     'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                                     'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                                              GlossaryEnergy.MarginValue: (
+                                                                              'float', None, True)},
+                                                     'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_carbon_storage', 'default': CarbonStorage.data_energy_dict,
                                   'unit': 'defined in dict'},
@@ -118,7 +124,6 @@ class CSTechnoDiscipline(TechnoDiscipline):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-
         return instanciated_charts
 
     def get_chart_detailed_price_in_dollar_ton(self):
@@ -132,7 +137,8 @@ class CSTechnoDiscipline(TechnoDiscipline):
         maximum = max(
             (techno_detailed_prices[self.techno_name].values).tolist()) * 1.2
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/tCO2]', [year_start, year_end], [minimum, maximum],
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/tCO2]', [year_start, year_end],
+                                             [minimum, maximum],
                                              chart_name=chart_name)
 
         if 'percentage_resource' in self.get_data_in():
@@ -141,7 +147,7 @@ class CSTechnoDiscipline(TechnoDiscipline):
             new_chart.annotation_upper_left = {
                 'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
             tot_price = (techno_detailed_prices[self.techno_name].values) / \
-                (percentage_resource[self.energy_name] / 100.)
+                        (percentage_resource[self.energy_name] / 100.)
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
                 tot_price.tolist(), 'Total price without percentage', 'lines')
@@ -247,7 +253,7 @@ class CSTechnoDiscipline(TechnoDiscipline):
         initial_prod = pd.DataFrame({'age': initial_age_distrib['age'].values,
                                      'distrib': initial_age_distrib['distrib'].values, })
         initial_prod['CO2 (Mt)'] = initial_prod['distrib'] / \
-            100.0 * initial_production
+                                   100.0 * initial_production
         initial_prod[GlossaryEnergy.Years] = year_start - initial_prod['age']
         initial_prod.sort_values(GlossaryEnergy.Years, inplace=True)
         initial_prod['cum CO2 (Mt)'] = initial_prod['CO2 (Mt)'].cumsum()

@@ -26,7 +26,6 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 
 
 class OilGen(ElectricityTechno):
-
     COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
 
     def compute_other_primary_energy_costs(self):
@@ -36,7 +35,7 @@ class OilGen(ElectricityTechno):
 
         # in kwh of fuel by kwh of electricity
         self.cost_details['liquid_fuel_needs'] = self.techno_infos_dict['fuel_demand'] / \
-            self.cost_details['efficiency']
+                                                 self.cost_details['efficiency']
 
         # need in kg/kWh
         self.cost_details['water_needs'] = self.techno_infos_dict['water_demand']
@@ -51,7 +50,7 @@ class OilGen(ElectricityTechno):
         self.cost_details[Water.name] = list(
             self.resources_prices[Water.name] * self.cost_details['water_needs'])
 
-        # + self.cost_details['electricity']
+        # + self.cost_details[GlossaryEnergy.electricity]
         return self.cost_details[LiquidFuel.name] + self.cost_details[Water.name]
 
     def compute_consumption_and_production(self):
@@ -59,25 +58,31 @@ class OilGen(ElectricityTechno):
         Compute the consumption and the production of the technology for a given investment
         """
 
-        
-        #self.compute_power_production()
+        # self.compute_power_production()
         elec_needs = self.get_electricity_needs()
 
         # Consumption
-        self.consumption_detailed[f'{LiquidFuel.name} ({self.product_energy_unit})'] = self.cost_details['liquid_fuel_needs'] * \
-                                                                                       self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{LiquidFuel.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                           'liquid_fuel_needs'] * \
+                                                                                       self.production_detailed[
+                                                                                           f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
-                                                                        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
+                                                                        self.production_detailed[
+                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']  # in kg
 
-        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = self.production_detailed[
+        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] = \
+        self.production_detailed[
             f'{ElectricityTechno.energy_name} ({self.product_energy_unit})'] * (1.0 - elec_needs)
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] * \
-                                                                                        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
-        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = self.consumption_detailed[f'{LiquidFuel.name} ({self.product_energy_unit})'] - \
-                                                                                               self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+                                                                                            'CO2_from_production'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
+        self.consumption_detailed[f'{LiquidFuel.name} ({self.product_energy_unit})'] - \
+        self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']
 
         self.compute_ghg_emissions(N2O.name, related_to=LiquidFuel.name)
-    
+
     def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment
@@ -86,7 +91,9 @@ class OilGen(ElectricityTechno):
         # FOR ALL_RESOURCES DISCIPLINE
 
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.installed_power['new_power_production'] # in Mt
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * \
+                                                                                       self.installed_power[
+                                                                                           'new_power_production']  # in Mt
 
     @staticmethod
     def get_theoretical_copper_needs(self):
@@ -127,8 +134,8 @@ class OilGen(ElectricityTechno):
         water_needs = self.techno_infos_dict['water_demand']
         return {Water.name: np.identity(len(self.years)) * water_needs}
 
-    def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapex_list_dinvest_list):
-
+    def compute_dprod_dinvest(self, capex_list, invest_list, invest_before_year_start, techno_dict,
+                              dcapex_list_dinvest_list):
         dprod_dinvest = ElectricityTechno.compute_dprod_dinvest(
             self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapex_list_dinvest_list)
         elec_needs = self.get_electricity_needs()

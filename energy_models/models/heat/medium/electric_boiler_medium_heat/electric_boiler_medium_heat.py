@@ -50,10 +50,12 @@ class ElectricBoilerMediumHeat(mediumheattechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
+
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-                                                                                        self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{mediumtemperatureheat.name} ({self.product_energy_unit})']
 
     def get_theoretical_electricity_needs(self):
         # we need as output kwh/kwh
@@ -70,10 +72,7 @@ class ElectricBoilerMediumHeat(mediumheattechno):
     def compute_heat_flux(self):
         land_rate = self.land_rate
         heat_price = self.compute_other_primary_energy_costs()
-        self.heat_flux = land_rate/heat_price
+        self.heat_flux = land_rate / heat_price
         self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
-                                               'heat_flux': self.heat_flux})
+                                                    'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
-
-
-

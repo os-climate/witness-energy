@@ -18,6 +18,7 @@ from energy_models.core.stream_type.energy_models.liquid_fuel import LiquidFuel
 from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.energy_models.solid_fuel import SolidFuel
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 def compute_fossil_data(data_name):
@@ -36,7 +37,7 @@ def compute_fossil_data(data_name):
 
 
 class Fossil(EnergyType):
-    name = 'fossil'
+    name = GlossaryEnergy.fossil
     default_techno_list = ['FossilSimpleTechno']
     data_energy_dict = {'CO2_per_use': compute_fossil_data('CO2_per_use'),  # mean of CO2 per use of fossil energies
                         'CO2_per_use_unit': 'kg/kg',
