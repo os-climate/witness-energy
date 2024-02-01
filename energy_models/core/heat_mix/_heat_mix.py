@@ -59,20 +59,22 @@ class HeatMix(BaseStream):
     CO2_TAX_MINUS_CCS_CONSTRAINT_DF = 'CO2_tax_minus_CCS_constraint_df'
     TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF = 'total_prod_minus_min_prod_constraint_df'
     TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT = 'total_prod_minus_min_prod_constraint'
-    # CONSTRAINT_PROD_H2_LIQUID = 'total_prod_h2_liquid'
+    CONSTRAINT_PROD_H2_LIQUID = 'total_prod_h2_liquid'
     # CONSTRAINT_PROD_HIGH_HEAT = 'total_prod_high_heat'
     # CONSTRAINT_PROD_LOW_HEAT = 'total_prod_low_heat'
     # CONSTRAINT_PROD_MEDIUM_HEAT = 'total_prod_medium_heat'
-    # CONSTRAINT_PROD_SOLID_FUEL_ELEC = 'total_prod_solid_fuel_elec'
-    # CONSTRAINT_PROD_HYDROELECTRIC = 'total_prod_hydroelectric'
-    # CO2_TAX_OBJECTIVE = 'CO2_tax_objective'
-    # SYNGAS_PROD_OBJECTIVE = 'syngas_prod_objective'
-    # SYNGAS_PROD_CONSTRAINT = 'syngas_prod_constraint'
-    # RESOURCE_LIST = ['natural_gas_resource', 'uranium_resource',
-    #                  'coal_resource', 'oil_resource', 'copper_resource']  # , 'platinum_resource',]
-    # RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
-    # CARBON_STORAGE_CONSTRAINT = 'carbon_storage_constraint'
+    CONSTRAINT_PROD_SOLID_FUEL_ELEC = 'total_prod_solid_fuel_elec'
+    CONSTRAINT_PROD_HYDROELECTRIC = 'total_prod_hydroelectric'
+    CO2_TAX_OBJECTIVE = 'CO2_tax_objective'
+    SYNGAS_PROD_OBJECTIVE = 'syngas_prod_objective'
+    SYNGAS_PROD_CONSTRAINT = 'syngas_prod_constraint'
+    RESOURCE_LIST = ['natural_gas_resource', 'uranium_resource',
+                     'coal_resource', 'oil_resource', 'copper_resource']  # , 'platinum_resource',]
+    RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
+    CARBON_STORAGE_CONSTRAINT = 'carbon_storage_constraint'
     energy_class_dict = {
+                         GaseousHydrogen.name: GaseousHydrogen,
+                         Methane.name: Methane,
                          lowtemperatureheat.name: lowtemperatureheat,
                          mediumtemperatureheat.name: mediumtemperatureheat,
                          hightemperatureheat.name: hightemperatureheat,
@@ -91,26 +93,27 @@ class HeatMix(BaseStream):
     stream_class_dict.update(energy_class_dict)
 
     energy_list = list(stream_class_dict.keys())
-    # resource_list = RESOURCE_LIST
+    resource_list = RESOURCE_LIST
     CO2_list = [f'{CarbonCapture.name} (Mt)',
                 f'{CarbonCapture.flue_gas_name} (Mt)',
                 f'{CarbonStorage.name} (Mt)',
                 f'{CO2.name} (Mt)',
                 f'{Carbon.name} (Mt)']
-    # solidFuel_name = SolidFuel.name
-    # electricity_name = Electricity.name
-    # gaseousHydrogen_name = GaseousHydrogen.name
-    # liquidHydrogen_name = LiquidHydrogen.name
-    # biomass_name = BiomassDry.name
-    # syngas_name = Syngas.name
+    solidFuel_name = SolidFuel.name
+    electricity_name = Electricity.name
+    gaseousHydrogen_name = GaseousHydrogen.name
+    liquidHydrogen_name = LiquidHydrogen.name
+    biomass_name = BiomassDry.name
+    syngas_name = Syngas.name
     lowtemperatureheat_name = lowtemperatureheat.name
     mediumtemperatureheat_name = mediumtemperatureheat.name
     hightemperatureheat_name = hightemperatureheat.name
 
-    energy_constraint_list = [lowtemperatureheat_name, mediumtemperatureheat_name,
+    energy_constraint_list = [solidFuel_name,
+                              electricity_name, biomass_name, lowtemperatureheat_name, mediumtemperatureheat_name,
                               hightemperatureheat_name]
-    # movable_fuel_list = [liquidHydrogen_name,
-    #                      LiquidFuel.name, BioDiesel.name, Methane.name]
+    movable_fuel_list = [liquidHydrogen_name,
+                         LiquidFuel.name, BioDiesel.name, Methane.name]
 
     def __init__(self, name):
         '''
@@ -156,9 +159,9 @@ class HeatMix(BaseStream):
         # self.liquid_hydrogen_constraint_ref = inputs_dict['liquid_hydrogen_constraint_ref']
         # self.syngas_prod_ref = inputs_dict['syngas_prod_ref']
         # self.syngas_prod_limit = inputs_dict['syngas_prod_constraint_limit']
-        # self.co2_for_food = pd.DataFrame(
-        #     {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1),
-        #      f'{CO2.name} for food (Mt)': 0.0})
+        self.co2_for_food = pd.DataFrame(
+            {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1),
+             f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
 
         # self.heat_losses_percentage = inputs_dict['heat_losses_percentage']
@@ -185,14 +188,13 @@ class HeatMix(BaseStream):
 
         for energy in self.subelements_list:
             self.sub_prices[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyPricesValue}'][energy]
-
             self.sub_production_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] * \
                                                self.scaling_factor_energy_production
             self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
                                                 self.scaling_factor_energy_consumption
             self.sub_consumption_woratio_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] * \
                                                         self.scaling_factor_energy_consumption
-            # self.sub_land_use_required_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.LandUseRequiredValue}']
+            self.sub_land_use_required_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.LandUseRequiredValue}']
 
             if energy in self.energy_class_dict:
                 self.sub_carbon_emissions[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.CO2EmissionsValue}'][energy]
@@ -208,23 +210,23 @@ class HeatMix(BaseStream):
             {GlossaryEnergy.Years: self.energy_prices[GlossaryEnergy.Years].values})
         self.resources_demand_woratio = pd.DataFrame(
             {GlossaryEnergy.Years: self.energy_prices[GlossaryEnergy.Years].values})
-        # for elements in self.resource_list:
-        #     if elements in self.resource_list:
-        #         self.resources_demand[elements] = np.linspace(
-        #             0, 0, len(self.resources_demand.index)) * 100.
-        #         self.resources_demand_woratio[elements] = np.linspace(
-        #             0, 0, len(self.resources_demand.index)) * 100.
-        # for energy in self.subelements_list:
-        #     for resource in self.resource_list:
-        #         if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.sub_consumption_dict[energy].columns:
-        #             self.resources_demand[resource] = self.resources_demand[resource] + \
-        #                                               inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'][
-        #                                                   f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
-        #                                               self.scaling_factor_energy_consumption
-        #             self.resources_demand_woratio[resource] = self.resources_demand_woratio[resource] + \
-        #                                                       inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'][
-        #                                                           f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
-        #                                                       self.scaling_factor_energy_consumption
+        for elements in self.resource_list:
+            if elements in self.resource_list:
+                self.resources_demand[elements] = np.linspace(
+                    0, 0, len(self.resources_demand.index)) * 100.
+                self.resources_demand_woratio[elements] = np.linspace(
+                    0, 0, len(self.resources_demand.index)) * 100.
+        for energy in self.subelements_list:
+            for resource in self.resource_list:
+                if f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})' in self.sub_consumption_dict[energy].columns:
+                    self.resources_demand[resource] = self.resources_demand[resource] + \
+                                                      inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'][
+                                                          f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
+                                                      self.scaling_factor_energy_consumption
+                    self.resources_demand_woratio[resource] = self.resources_demand_woratio[resource] + \
+                                                              inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'][
+                                                                  f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
+                                                              self.scaling_factor_energy_consumption
 
         # DataFrame stream demand
         self.all_streams_demand_ratio = pd.DataFrame(
@@ -415,18 +417,12 @@ class HeatMix(BaseStream):
         '''
         self.carbon_emissions_after_use = pd.DataFrame(
             {GlossaryEnergy.Years: self.total_carbon_emissions[GlossaryEnergy.Years].values})
-
-        energy_columns = self.sub_carbon_emissions.columns.difference([GlossaryEnergy.Years])
-        self.total_carbon_emissions['energy'] = self.sub_carbon_emissions[energy_columns].sum(axis=1)
-
-        # for energy in self.subelements_list:
-        #     if energy in self.energy_class_dict:
-        # # for energy in self.energy_class_dict:
-        #         self.total_carbon_emissions[energy] = self.sub_carbon_emissions[energy]
-        #         self.carbon_emissions_after_use[energy] = self.total_carbon_emissions[energy] + \
-        #                                                   self.co2_emitted_by_energy[energy]['CO2_per_use']
-        #         self.carbon_emissions_after_use[energy] = self.total_carbon_emissions[energy] + \
-        #                                           self.co2_emitted_by_energy[energy]['CO2_per_use']
+        for energy in self.subelements_list:
+            if energy in self.energy_class_dict:
+        # for energy in self.energy_class_dict:
+                self.total_carbon_emissions[energy] = self.sub_carbon_emissions[energy]
+                self.carbon_emissions_after_use[energy] = self.total_carbon_emissions[energy] + \
+                                                          self.co2_emitted_by_energy[energy]['CO2_per_use']
     def compute_CO2_emissions(self):
         '''
         Compute CO2 total emissions
@@ -599,8 +595,8 @@ class HeatMix(BaseStream):
         self.constraint_liquid_hydrogen = pd.DataFrame(
             {GlossaryEnergy.Years: self.production[GlossaryEnergy.Years].values})
         self.constraint_liquid_hydrogen['constraint_liquid_hydrogen'] = 0.
-        # hydrogen_name_list = [
-        #     self.gaseousHydrogen_name, self.liquidHydrogen_name]
+        hydrogen_name_list = [
+            self.gaseousHydrogen_name, self.liquidHydrogen_name]
         # compute total H2 production
         # for energy in hydrogen_name_list:
         #     if f'{self.PRODUCTION} {energy} ({self.energy_class_dict[energy].unit})' in self.production.columns:
@@ -898,7 +894,7 @@ class HeatMix(BaseStream):
         self.compute_CO2_emissions()
         self.compute_CO2_emissions_ratio()
         self.aggregate_land_use_required()
-        # self.compute_energy_capital()
+        self.compute_energy_capital()
         self.compute_total_prod_minus_min_prod_constraint()
         self.compute_constraint_solid_fuel_elec()
         self.compute_constraint_h2()
