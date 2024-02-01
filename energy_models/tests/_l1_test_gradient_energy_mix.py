@@ -61,9 +61,9 @@ limitations under the License.
 #         self.year_end = 2050
 #         self.years = np.arange(self.year_start, self.year_end + 1)
 #         self.year_range = self.year_end - self.year_start + 1
-#         self.energy_list = ['hydrogen.gaseous_hydrogen', 'methane']
+#         self.energy_list = [f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane]
 #         self.consumption_hydro = pd.DataFrame(
-#             {'electricity (TWh)': np.array([5.79262302e+09, 5.96550630e+09, 6.13351314e+09, 6.29771389e+09,
+#             {f'{GlossaryEnergy.electricity} (TWh)': np.array([5.79262302e+09, 5.96550630e+09, 6.13351314e+09, 6.29771389e+09,
 #                                             6.45887954e+09, 6.61758183e+09, 6.81571547e+09, 7.00833095e+09,
 #                                             7.19662898e+09, 7.38146567e+09, 7.56347051e+09, 7.58525158e+09,
 #                                             7.60184181e+09, 7.61413788e+09, 7.62282699e+09, 7.62844682e+09,
@@ -71,7 +71,7 @@ limitations under the License.
 #                                             7.62303081e+09, 7.61658967e+09, 7.60887892e+09, 7.60002116e+09,
 #                                             7.59012249e+09, 7.57927528e+09, 7.56756653e+09, 7.55506132e+09,
 #                                             7.54182260e+09, 7.52790631e+09, 7.51336234e+09]) / 1.0e9,
-#              'methane (TWh)': np.array([1.30334018e+10, 1.34223892e+10, 1.38004046e+10, 1.41698563e+10,
+#              f'{GlossaryEnergy.methane} (TWh)': np.array([1.30334018e+10, 1.34223892e+10, 1.38004046e+10, 1.41698563e+10,
 #                                         1.45324790e+10, 1.48895591e+10, 1.53353598e+10, 1.57687446e+10,
 #                                         1.61924152e+10, 1.66082977e+10, 1.70178086e+10, 1.70668161e+10,
 #                                         1.71041441e+10, 1.71318102e+10, 1.71513607e+10, 1.71640053e+10,
@@ -89,7 +89,7 @@ limitations under the License.
 #                                      1.07165222e+10, 1.06967480e+10, 1.06760818e+10]) / 1.0e9})
 #
 #         self.production_hydro = pd.DataFrame(
-#             {'hydrogen.gaseous_hydrogen': np.array([2.89631151e+10, 2.98275315e+10, 3.06675657e+10, 3.14885694e+10,
+#             {f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.array([2.89631151e+10, 2.98275315e+10, 3.06675657e+10, 3.14885694e+10,
 #                                                     3.22943977e+10, 3.30879091e+10, 3.40785773e+10, 3.50416548e+10,
 #                                                     3.59831449e+10, 3.69073283e+10, 3.78173526e+10, 3.79262579e+10,
 #                                                     3.80092091e+10, 3.80706894e+10, 3.81141349e+10, 3.81422341e+10,
@@ -97,7 +97,7 @@ limitations under the License.
 #                                                     3.81151541e+10, 3.80829483e+10, 3.80443946e+10, 3.80001058e+10,
 #                                                     3.79506125e+10, 3.78963764e+10, 3.78378327e+10, 3.77753066e+10,
 #                                                     3.77091130e+10, 3.76395315e+10, 3.75668117e+10]) / 1.0e9,
-#              'hydrogen.gaseous_hydrogen SMR (TWh)': np.array(
+#              f'{GlossaryEnergy.hydrogen}.gaseous_hydrogen SMR (TWh)': np.array(
 #                  [1.44815575e+10, 1.49137658e+10, 1.53337829e+10, 1.57442847e+10,
 #                   1.61471989e+10, 1.65439546e+10, 1.70392887e+10, 1.75208274e+10,
 #                   1.79915724e+10, 1.84536642e+10, 1.89086763e+10, 1.89631289e+10,
@@ -114,7 +114,7 @@ limitations under the License.
 #                                    1.91148070e+09, 1.90986558e+09, 1.90793210e+09, 1.90571101e+09,
 #                                    1.90322891e+09, 1.90050897e+09, 1.89757299e+09, 1.89443730e+09,
 #                                    1.89111768e+09, 1.88762816e+09, 1.88398125e+09]) / 1.0e9,
-#              'hydrogen.gaseous_hydrogen Electrolysis (TWh)': np.array(
+#              f'{GlossaryEnergy.hydrogen}.gaseous_hydrogen Electrolysis (TWh)': np.array(
 #                  [1.44815575e+10, 1.49137658e+10, 1.53337829e+10, 1.57442847e+10,
 #                   1.61471989e+10, 1.65439546e+10, 1.70392887e+10, 1.75208274e+10,
 #                   1.79915724e+10, 1.84536642e+10, 1.89086763e+10, 1.89631289e+10,
@@ -133,7 +133,7 @@ limitations under the License.
 #                                   1.89111768e+09, 1.88762816e+09, 1.88398125e+09]) / 1.0e9})
 #
 #         self.prices_hydro = pd.DataFrame(
-#             {'hydrogen.gaseous_hydrogen': np.array([0.076815, 0.07549102, 0.07433427, 0.07330841, 0.07238752,
+#             {f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.array([0.076815, 0.07549102, 0.07433427, 0.07330841, 0.07238752,
 #                                                     0.07155253, 0.07050461, 0.06960523, 0.068821, 0.06812833,
 #                                                     0.06750997, 0.066893, 0.06635812, 0.06589033, 0.06547834,
 #                                                     0.06511344, 0.06478879, 0.06449895, 0.06423948, 0.06400678,
@@ -150,7 +150,7 @@ limitations under the License.
 #                                    9.00230650e+11, 9.35836743e+11, 9.68739031e+11, 9.99135391e+11,
 #                                    1.02697781e+12, 1.05232158e+12, 1.07519492e+12, 1.09560777e+12,
 #                                    1.11355731e+12, 1.13049193e+12, 1.14650986e+12]) / 1.0e9,
-#              'hydrogen.gaseous_hydrogen (TWh)': np.array(
+#              f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': np.array(
 #                  [7.83846196e+09, 7.56713887e+09, 7.37764337e+09, 1.52193327e+11,
 #                   3.35589060e+11, 5.49036255e+11, 7.87657231e+11, 1.04899505e+12,
 #                   1.33149645e+12, 1.63588179e+12, 1.96129539e+12, 2.30708521e+12,
@@ -159,7 +159,7 @@ limitations under the License.
 #                   5.49251596e+12, 5.70975699e+12, 5.91050148e+12, 6.09595672e+12,
 #                   6.26582979e+12, 6.42045801e+12, 6.56001356e+12, 6.68455710e+12,
 #                   6.79407140e+12, 6.89739345e+12, 6.99512256e+12]) / 1.0e9,
-#              'electricity (TWh)': np.array([1.24834354e+10, 2.26888500e+10, 3.13224798e+10, 4.16183686e+10,
+#              f'{GlossaryEnergy.electricity} (TWh)': np.array([1.24834354e+10, 2.26888500e+10, 3.13224798e+10, 4.16183686e+10,
 #                                             5.33137316e+10, 6.65015094e+10, 8.07396503e+10, 9.59308386e+10,
 #                                             1.12076605e+11, 1.29500242e+11, 1.48068984e+11, 1.67664859e+11,
 #                                             1.88614872e+11, 2.10307763e+11, 2.32534190e+11, 2.55258218e+11,
@@ -167,7 +167,7 @@ limitations under the License.
 #                                             3.66620834e+11, 3.81434383e+11, 3.98191584e+11, 4.13453346e+11,
 #                                             4.27540649e+11, 4.40613006e+11, 4.52762555e+11, 4.64046630e+11,
 #                                             4.74445226e+11, 4.83975687e+11, 4.92647562e+11]) / 1.0e9,
-#              'biogas (TWh)': np.array([1.49773000e+11, 2.72214901e+11, 3.75798938e+11, 4.99326325e+11,
+#              f'{GlossaryEnergy.biogas} (TWh)': np.array([1.49773000e+11, 2.72214901e+11, 3.75798938e+11, 4.99326325e+11,
 #                                        6.39644238e+11, 7.97867754e+11, 9.68693252e+11, 1.15095316e+12,
 #                                        1.34466585e+12, 1.55371011e+12, 1.77649302e+12, 2.01159922e+12,
 #                                        2.26295200e+12, 2.52321765e+12, 2.78988452e+12, 3.06252149e+12,
@@ -185,7 +185,7 @@ limitations under the License.
 #                                    2.82736254e+10, 2.88415743e+10, 2.93583576e+10]) / 1.0e9})
 #
 #         self.production = pd.DataFrame(
-#             {'methane': np.array([1.16605879e+11, 2.09714671e+11, 2.88496631e+11, 4.30619647e+11,
+#             {GlossaryEnergy.methane: np.array([1.16605879e+11, 2.09714671e+11, 2.88496631e+11, 4.30619647e+11,
 #                                   5.98336737e+11, 7.89664048e+11, 9.98944599e+11, 1.22447365e+12,
 #                                   1.46574928e+12, 1.72596317e+12, 2.00361864e+12, 2.29742180e+12,
 #                                   2.61049046e+12, 2.93708922e+12, 3.27218360e+12, 3.61517937e+12,
@@ -193,7 +193,7 @@ limitations under the License.
 #                                   5.17232979e+12, 5.37976418e+12, 5.59946957e+12, 5.80044012e+12,
 #                                   5.98550982e+12, 6.15624743e+12, 6.31355157e+12, 6.45796597e+12,
 #                                   6.58930224e+12, 6.71065379e+12, 6.82230688e+12]) / 1.0e9,
-#              'methane Emethane (TWh)': np.array([2.60340125e+09, 2.51328627e+09, 2.45034882e+09, 5.05482199e+10,
+#              f'{GlossaryEnergy.methane} Emethane (TWh)': np.array([2.60340125e+09, 2.51328627e+09, 2.45034882e+09, 5.05482199e+10,
 #                                                  1.11459746e+11, 1.82352314e+11, 2.61605891e+11, 3.48404451e+11,
 #                                                  4.42232103e+11, 5.43328106e+11, 6.51408261e+11, 7.66256003e+11,
 #                                                  8.88002867e+11, 1.01649564e+12, 1.14861161e+12, 1.28408474e+12,
@@ -216,7 +216,7 @@ limitations under the License.
 #                                      2.94804040e+11, 3.06464185e+11, 3.17238898e+11, 3.27192980e+11,
 #                                      3.36310708e+11, 3.44610188e+11, 3.52100660e+11, 3.58785381e+11,
 #                                      3.64663427e+11, 3.70209111e+11, 3.75454601e+11]) / 1.0e9,
-#              'methane UpgradingBiogas (TWh)': np.array([1.14002477e+11, 2.07201385e+11, 2.86046282e+11, 3.80071427e+11,
+#              f'{GlossaryEnergy.methane} UpgradingBiogas (TWh)': np.array([1.14002477e+11, 2.07201385e+11, 2.86046282e+11, 3.80071427e+11,
 #                                                         4.86876991e+11, 6.07311734e+11, 7.37338708e+11, 8.76069197e+11,
 #                                                         1.02351718e+12, 1.18263506e+12, 1.35221038e+12, 1.53116579e+12,
 #                                                         1.72248759e+12, 1.92059358e+12, 2.12357198e+12, 2.33109463e+12,
@@ -233,7 +233,7 @@ limitations under the License.
 #                                    1.92676964e+11, 1.98568198e+11, 2.04043557e+11, 2.09128877e+11,
 #                                    2.13815145e+11, 2.18110176e+11, 2.22018273e+11]) / 1.0e9})
 #
-#         self.cost_details = pd.DataFrame({'methane': np.array([0.19333753, 0.1874625, 0.18467199, 0.21320619, 0.2308158,
+#         self.cost_details = pd.DataFrame({GlossaryEnergy.methane: np.array([0.19333753, 0.1874625, 0.18467199, 0.21320619, 0.2308158,
 #                                                                0.24196874, 0.25146023, 0.25909781, 0.26565857,
 #                                                                0.27142873,
 #                                                                0.27673861, 0.27989425, 0.28277203, 0.28558565,
@@ -274,12 +274,12 @@ limitations under the License.
 #
 #         energy_production_biomass = np.linspace(15, 16, self.year_range)
 #         self.energy_production_biomass = pd.DataFrame(
-#             {GlossaryEnergy.Years: self.years, 'biomass_dry': energy_production_biomass})
+#             {GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: energy_production_biomass})
 #
 #         energy_prices_biomass = np.linspace(9, 9, self.year_range)
 #         energy_prices_wotaxes_biomass = np.linspace(9, 9, self.year_range)
 #         self.energy_prices_biomass = pd.DataFrame(
-#             {GlossaryEnergy.Years: self.years, 'biomass_dry': energy_prices_biomass,
+#             {GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: energy_prices_biomass,
 #              'biomass_dry_wotaxes': energy_prices_wotaxes_biomass})
 #
 #         CO2_per_use_biomass = np.linspace(0, 1, self.year_range)
@@ -288,7 +288,7 @@ limitations under the License.
 #
 #         CO2_emissions_biomass = np.linspace(0, -1, self.year_range)
 #         self.CO2_emissions_biomass = pd.DataFrame(
-#             {GlossaryEnergy.Years: self.years, 'biomass_dry': CO2_emissions_biomass})
+#             {GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: CO2_emissions_biomass})
 #
 #         # ---Ratios---
 #         demand_ratio_dict = dict(
@@ -338,22 +338,22 @@ limitations under the License.
 #
 #         inputs_names = [
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']]
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
 #         inputs_names.extend([
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']])
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend([
-#             f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.syngas.syngas_ratio'])
 #         inputs_names.extend(
@@ -405,22 +405,22 @@ limitations under the License.
 #
 #         inputs_names = [
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']]
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
 #         inputs_names.extend([
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']])
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend([
-#             f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.syngas.syngas_ratio'])
 #         inputs_names.extend(
@@ -469,22 +469,22 @@ limitations under the License.
 #
 #         inputs_names = [
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']]
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
 #         inputs_names.extend([
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']])
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend([
-#             f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.syngas.syngas_ratio'])
 #         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
@@ -528,19 +528,19 @@ limitations under the License.
 #
 #         inputs_names = [
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']]
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
 #         inputs_names.extend([
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']])
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend([
-#             f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.syngas.syngas_ratio'])
 #         outputs_names = [f'{name}.{model_name}.energy_mean_price']
@@ -585,19 +585,19 @@ limitations under the License.
 #
 #         inputs_names = [
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']]
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
 #         inputs_names.extend([
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']])
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend([
-#             f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.syngas.syngas_ratio'])
 #
@@ -749,14 +749,14 @@ limitations under the License.
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in energy_list])
 #         inputs_names = [
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']]
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.syngas.syngas_ratio'])
 #         energy_mix_output = [f'{name}.{model_name}.{GlossaryEnergy.EnergyProductionValue}',
@@ -894,14 +894,14 @@ limitations under the License.
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in energy_list])
 #         inputs_names = [
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']]
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.syngas.syngas_ratio'])
 #         energy_mix_output = [f'{name}.{model_name}.{GlossaryEnergy.EnergyProductionValue}',
@@ -1002,14 +1002,14 @@ limitations under the License.
 #
 #         inputs_names = [
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']]
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 #
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_detailed_co2_emissions.pkl',
@@ -1066,7 +1066,7 @@ limitations under the License.
 #
 #         inputs_names = [
 #             f'{name}.{model_name}.{energy}.CO2_per_use' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']]
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
 #
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energymix_mix_co2_per_use_gradients.pkl',
 #                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
@@ -1120,14 +1120,14 @@ limitations under the License.
 #
 #         inputs_names = [
 #             f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in energy_list if
-#             energy not in ['carbon_capture', 'carbon_storage']]
+#             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]]
 #         inputs_names.extend(
 #             [f'{name}.{model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in energy_list if
-#              energy not in ['carbon_capture', 'carbon_storage']])
+#              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #         inputs_names.extend(
-#             [f'{name}.CCUS.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in ['carbon_capture', 'carbon_storage']])
+#             [f'{name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 #
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_with_losses.pkl',
 #                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
@@ -1174,12 +1174,12 @@ limitations under the License.
 #
 #         inputs_dict = {f'{name}.{model_name}.{GlossaryEnergy.YearStart}': self.year_start,
 #                        f'{name}.{model_name}.{GlossaryEnergy.YearEnd}': self.year_end,
-#                        f'{name}.{GlossaryEnergy.energy_list}': ['methane', 'biomass_dry'],
+#                        f'{name}.{GlossaryEnergy.energy_list}': [GlossaryEnergy.methane, GlossaryEnergy.biomass_dry],
 #                        f'{name}.{GlossaryEnergy.ccs_list}': [],
 #                        f'{name}.is_dev': True,
 #                        f'{name}.{model_name}.{GlossaryEnergy.EnergyPricesValue}': pd.DataFrame(
-#                            {'hydrogen.gaseous_hydrogen': self.prices_hydro['hydrogen.gaseous_hydrogen'],
-#                             'methane': self.cost_details['methane']}),
+#                            {f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': self.prices_hydro[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'],
+#                             GlossaryEnergy.methane: self.cost_details[GlossaryEnergy.methane]}),
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyConsumptionValue}': self.energy_consumption_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.energy_consumption_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyProductionValue}': self.energy_production_biomass,
@@ -1187,19 +1187,19 @@ limitations under the License.
 #                        f'{name}.{agriculture_mix}.CO2_per_use': self.CO2_per_use_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.CO2EmissionsValue}': self.CO2_emissions_biomass,
 #                        f'{name}.{agriculture_mix}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_biomass,
-#                        f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption,
-#                        f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.consumption,
-#                        f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyProductionValue}': self.production,
-#                        f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production,
-#                        f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyPricesValue}': self.cost_details,
-#                        f'{name}.{model_name}.methane.CO2_per_use': pd.DataFrame(
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption,
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.consumption,
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProductionValue}': self.production,
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production,
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}': self.cost_details,
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.CO2_per_use': pd.DataFrame(
 #                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.CO2Tax: 0.0, 'CO2_per_use': 0.0}),
-#                        f'{name}.{model_name}.methane.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
-#                            {GlossaryEnergy.Years: self.years, 'methane': 0.0}),
-#                        f'{name}.{model_name}.methane.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_methane,
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2EmissionsValue}': pd.DataFrame(
+#                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.0}),
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_methane,
 #                        f'{name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-#                        f'{name}.{model_name}.hydrogen.gaseous_hydrogen.loss_percentage': 1.0,
-#                        f'{name}.{model_name}.methane.loss_percentage': 2.0,
+#                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.loss_percentage': 1.0,
+#                        f'{name}.{model_name}.{GlossaryEnergy.methane}.loss_percentage': 2.0,
 #                        }
 #
 #         self.ee.load_study_from_input_dict(inputs_dict)
@@ -1211,13 +1211,13 @@ limitations under the License.
 #
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_energy_mix_agriculture_mix.pkl',
 #                             discipline=disc, step=1.0e-16, derr_approx='complex_step',
-#                             inputs=[f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyConsumptionValue}',
-#                                     f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
-#                                     f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyProductionValue}',
-#                                     f'{name}.{model_name}.methane.{GlossaryEnergy.EnergyPricesValue}',
-#                                     f'{name}.{model_name}.methane.CO2_per_use',
-#                                     f'{name}.{model_name}.methane.{GlossaryEnergy.CO2EmissionsValue}',
-#                                     f'{name}.{model_name}.methane.{GlossaryEnergy.LandUseRequiredValue}',
+#                             inputs=[f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionValue}',
+#                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
+#                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProductionValue}',
+#                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}',
+#                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.CO2_per_use',
+#                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.CO2EmissionsValue}',
+#                                     f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}',
 #                                     f'{name}.AgricultureMix.{GlossaryEnergy.EnergyConsumptionValue}',
 #                                     f'{name}.AgricultureMix.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
 #                                     f'{name}.AgricultureMix.{GlossaryEnergy.EnergyProductionValue}',

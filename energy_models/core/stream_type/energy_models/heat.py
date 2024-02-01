@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
-
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class lowtemperatureheat(EnergyType):
-    name = 'heat' + '.' + 'lowtemperatureheat'
+    name = GlossaryEnergy.heat + '.' + 'lowtemperatureheat'
     short_name = 'low heat'
     default_techno_list = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
                            'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat']
@@ -29,7 +29,7 @@ class lowtemperatureheat(EnergyType):
 
 
 class mediumtemperatureheat(EnergyType):
-    name = 'heat' + '.' + 'mediumtemperatureheat'
+    name = GlossaryEnergy.heat + '.' + 'mediumtemperatureheat'
     short_name = 'medium heat'
     default_techno_list = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
                            'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat']
@@ -41,7 +41,7 @@ class mediumtemperatureheat(EnergyType):
 
 
 class hightemperatureheat(EnergyType):
-    name = 'heat' + '.' + 'hightemperatureheat'
+    name = GlossaryEnergy.heat + '.' + 'hightemperatureheat'
     short_name = 'high heat'
     default_techno_list = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
                            'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat']

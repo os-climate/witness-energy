@@ -22,7 +22,6 @@ from energy_models.sos_processes.energy.techno_mix.carbon_storage_coarse_mix.use
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Carbon Storage Coarse Mix',
@@ -37,7 +36,6 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.prefix_name = 'EnergyMix'
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
 
         carbon_storage_name = CarbonStorage.name
@@ -58,5 +56,6 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{self.prefix_name}.{carbon_storage_name}.{techno_name}'] = self.get_techno_disc_path(
                 carbon_storage_name, techno_name)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

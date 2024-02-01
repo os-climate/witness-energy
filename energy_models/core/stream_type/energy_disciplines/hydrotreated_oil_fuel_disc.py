@@ -36,11 +36,11 @@ class HydrotreatedOilFuelDiscipline(EnergyDiscipline):
     # -- add specific techno inputs to this
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': HydrotreatedOilFuel.default_techno_list,
-                                     'default': HydrotreatedOilFuel.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_hydrotreated_oil_fuel',
-                                     'structuring': True, 'unit': '-'},
+                                            'possible_values': HydrotreatedOilFuel.default_techno_list,
+                                            'default': HydrotreatedOilFuel.default_techno_list,
+                                            'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                            'namespace': 'ns_hydrotreated_oil_fuel',
+                                            'structuring': True, 'unit': '-'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_hydrotreated_oil_fuel',

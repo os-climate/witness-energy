@@ -53,7 +53,7 @@ class SolarThermalPriceTestCase(unittest.TestCase):
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -77,7 +77,7 @@ class SolarThermalPriceTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'electricity.SolarThermal']
+                                                == f'{GlossaryEnergy.electricity}.SolarThermal']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -99,14 +99,15 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                             GlossaryEnergy.InvestLevelValue: self.invest_level_2,
                             GlossaryEnergy.InvestmentBeforeYearStartValue: SolarThermalDiscipline.invest_before_year_start,
                             GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                            GlossaryEnergy.MarginValue:  self.margin,
+                            GlossaryEnergy.MarginValue: self.margin,
                             GlossaryEnergy.TransportCostValue: self.transport,
                             GlossaryEnergy.TransportMarginValue: self.margin,
                             GlossaryEnergy.ResourcesPriceValue: self.resources_price,
                             GlossaryEnergy.EnergyPricesValue: self.energy_prices,
                             'initial_production': SolarThermalDiscipline.initial_production,
                             'initial_age_distrib': SolarThermalDiscipline.initial_age_distribution,
-                            GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                            GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
+                                np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                             GlossaryEnergy.EnergyCO2EmissionsValue: pd.DataFrame(),
                             'scaling_factor_invest_level': 1e3,
                             'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
@@ -123,7 +124,6 @@ class SolarThermalPriceTestCase(unittest.TestCase):
         pass
 
     def test_03_solar_Thermal_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'Solar_Electricity'
         self.ee = ExecutionEngine(self.name)
@@ -149,7 +149,7 @@ class SolarThermalPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -162,10 +162,10 @@ class SolarThermalPriceTestCase(unittest.TestCase):
         power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
-        self.assertLessEqual(list(production_detailed['electricity (TWh)'].values),
+        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
                              list(power_production['total_installed_power'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
-        self.assertGreaterEqual(list(production_detailed[f'electricity (TWh)'].values),
+        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
                                 list(power_production['total_installed_power'] * techno_infos_dict[
                                     'full_load_hours'] / 1000 * 0.999))
         filters = disc.get_chart_filter_list()

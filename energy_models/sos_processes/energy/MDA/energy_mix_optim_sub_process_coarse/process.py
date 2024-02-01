@@ -20,10 +20,12 @@ from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import En
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import AGRI_TYPE
+from energy_models.core.energy_study_manager import DEFAULT_COARSE_ENERGY_LIST, DEFAULT_COARSE_TECHNO_DICT, \
+    DEFAULT_COARSE_CCS_LIST
 from energy_models.glossaryenergy import GlossaryEnergy
+from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.process import \
+    ProcessBuilder as ProcessBuilderEnergyMixOptimSubProcessFull
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INVEST_DISC_NAME
-from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.process import ProcessBuilder as ProcessBuilderEnergyMixOptimSubProcessFull
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_ENERGY_LIST, DEFAULT_COARSE_TECHNO_DICT, DEFAULT_COARSE_CCS_LIST
 
 
 class ProcessBuilder(ProcessBuilderEnergyMixOptimSubProcessFull):

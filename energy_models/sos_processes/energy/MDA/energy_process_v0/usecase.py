@@ -305,7 +305,7 @@ class Study(EnergyStudyManager):
         invest_mix_df_wo_years = invest_mix_df.drop(GlossaryEnergy.Years, axis=1)
 
         # check if we are in coarse usecase, in this case we deactivate first point of optim
-        if "fossil" in self.energy_list:
+        if GlossaryEnergy.fossil in self.energy_list:
             activated_elem = [False] + [True] * (GlossaryEnergy.NB_POLES_COARSE - 1)
         else:
             activated_elem = None
@@ -410,7 +410,7 @@ class Study(EnergyStudyManager):
         """
         energy_mix = self.get_investments_mix()
         invest_mix_df = pd.DataFrame({GlossaryEnergy.Years: energy_mix[GlossaryEnergy.Years].values}
-        )
+                                     )
         for study in instanciated_studies:
             if study is not None:
                 invest_techno = study.get_investments()
@@ -731,13 +731,11 @@ class Study(EnergyStudyManager):
         """
         Update design space with utilization ratio for each technology
         """
-        dict_energy_studies = dict(
-            zip(self.energy_list + self.ccs_list, instanciated_studies)
-        )
-        len_years = len(self.years)
-        start_value_utilization_ratio = np.ones(len_years) * 100.0
-        lower_bound = np.ones(len_years) * 0.5
-        upper_bound = np.ones(len_years) * 100.0
+        dict_energy_studies = dict(zip(self.energy_list + self.ccs_list, instanciated_studies))
+        len_utilization_ratio = GlossaryEnergy.NB_POLES_UTILIZATION_RATIO
+        start_value_utilization_ratio = np.ones(len_utilization_ratio) * 100.
+        lower_bound = np.ones(len_utilization_ratio) * 0.5
+        upper_bound = np.ones(len_utilization_ratio) * 100.
         for energy_name, study in dict_energy_studies.items():
             if study is not None:
                 for techno_name in study.technologies_list:
@@ -765,12 +763,12 @@ class Study(EnergyStudyManager):
             {GlossaryEnergy.Years: self.years, "CO2_resource (Mt)": 3.5}
         )
         energy_production = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "biomass_dry": 12.5}
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: 12.5}
         )
         energy_prices = pd.DataFrame(
             {
                 GlossaryEnergy.Years: self.years,
-                "biomass_dry": 9.8,
+                GlossaryEnergy.biomass_dry: 9.8,
                 "biomass_dry_wotaxes": 9.8,
             }
         )
@@ -780,7 +778,7 @@ class Study(EnergyStudyManager):
         )
 
         CO2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, "biomass_dry": -0.277}
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: -0.277}
         )
 
         energy_type_capital = pd.DataFrame(

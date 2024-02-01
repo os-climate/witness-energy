@@ -42,37 +42,48 @@ class PelletsPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
-                                                                                    0.089236536471781, 0.08899046935409588, 0.08874840310033885,
-                                                                                    0.08875044941298937, 0.08875249600769718, 0.08875454288453355,
-                                                                                    0.08875659004356974, 0.0887586374848771, 0.08893789675406477,
-                                                                                    0.08911934200930778, 0.08930302260662477, 0.08948898953954933,
-                                                                                    0.08967729551117891, 0.08986799501019029, 0.09006114439108429,
-                                                                                    0.09025680195894345, 0.09045502805900876, 0.09065588517140537,
-                                                                                    0.0908594380113745, 0.09106575363539733, 0.09127490155362818,
-                                                                                    0.09148695384909017, 0.0917019853041231, 0.0919200735346165,
-                                                                                    0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
-                                                                                    0.0928246539459331]) * 1000.0,
-                                           'biomass_dry': np.ones(len(years)) * 68.12 / 3.36})
+        self.energy_prices = pd.DataFrame(
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+                                                                   0.089236536471781, 0.08899046935409588,
+                                                                   0.08874840310033885,
+                                                                   0.08875044941298937, 0.08875249600769718,
+                                                                   0.08875454288453355,
+                                                                   0.08875659004356974, 0.0887586374848771,
+                                                                   0.08893789675406477,
+                                                                   0.08911934200930778, 0.08930302260662477,
+                                                                   0.08948898953954933,
+                                                                   0.08967729551117891, 0.08986799501019029,
+                                                                   0.09006114439108429,
+                                                                   0.09025680195894345, 0.09045502805900876,
+                                                                   0.09065588517140537,
+                                                                   0.0908594380113745, 0.09106575363539733,
+                                                                   0.09127490155362818,
+                                                                   0.09148695384909017, 0.0917019853041231,
+                                                                   0.0919200735346165,
+                                                                   0.09214129913260598, 0.09236574581786147,
+                                                                   0.09259350059915213,
+                                                                   0.0928246539459331]) * 1000.0,
+             GlossaryEnergy.biomass_dry: np.ones(len(years)) * 68.12 / 3.36})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'biomass_dry': - 0.425 * 44.01 / 12.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.biomass_dry: - 0.425 * 44.01 / 12.0})
         # 2020 - 2025 www.globenewswire.com growth rate of 14,47%
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue:  np.array([12009047700.0, 13746756900.0, 15735912630.0,
-                                                  18012899180.0, 20619365690.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0, 23602987910.0, 23602987910.0,
-                                                  23602987910.0]) * 1e-9})
+            {GlossaryEnergy.Years: years,
+             GlossaryEnergy.InvestValue: np.array([12009047700.0, 13746756900.0, 15735912630.0,
+                                                   18012899180.0, 20619365690.0, 23602987910.0,
+                                                   23602987910.0, 23602987910.0, 23602987910.0,
+                                                   23602987910.0, 23602987910.0, 23602987910.0,
+                                                   23602987910.0, 23602987910.0, 23602987910.0,
+                                                   23602987910.0, 23602987910.0, 23602987910.0,
+                                                   23602987910.0, 23602987910.0, 23602987910.0,
+                                                   23602987910.0, 23602987910.0, 23602987910.0,
+                                                   23602987910.0, 23602987910.0, 23602987910.0,
+                                                   23602987910.0, 23602987910.0, 23602987910.0,
+                                                   23602987910.0]) * 1e-9})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -87,10 +98,13 @@ class PelletsPriceTestCase(unittest.TestCase):
 
         self.resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
         self.resources_price[GlossaryEnergy.Years] = years
-        self.resources_price['CO2'] = np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542,
-                                                0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
+        self.resources_price['CO2'] = np.array(
+            [0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052,
+             0.0542,
+             0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916,
+             0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000.0
         # biomass_dry price in $/kg
-        #self.resources_price['biomass_dry'] = 68.12
+        # self.resources_price[GlossaryEnergy.biomass_dry] = 68.12
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -104,7 +118,6 @@ class PelletsPriceTestCase(unittest.TestCase):
         pass
 
     def test_02_pellets_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'pelletizing'
         self.ee = ExecutionEngine(self.name)
@@ -128,7 +141,7 @@ class PelletsPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price}
 
         self.ee.load_study_from_input_dict(inputs_dict)

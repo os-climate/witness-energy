@@ -24,7 +24,6 @@ from energy_models.models.syngas.smr.smr import SMR
 
 
 class SMRDiscipline(SyngasTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Syngas SMR Model',
@@ -49,7 +48,8 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                  'elec_demand': 0.23,
                                  'elec_demand_unit': 'kWh/kg',
                                  'Opex_percentage': 0.05,
-                                 'high_heat_production':  (206 / (28.01 + 3*2.016)) * 1000 * 2.77778e-13/33.33 * 1e-9,
+                                 'high_heat_production': (206 / (
+                                             28.01 + 3 * 2.016)) * 1000 * 2.77778e-13 / 33.33 * 1e-9,
                                  # CH4 + H2O → CO + 3H2  ΔH°= 206 kJ/mol
                                  # Total power demand of 0.1 kWh/kg H2
                                  # hydrogen 33.33 * 1e-9 TWh/kg
@@ -86,7 +86,7 @@ class SMRDiscipline(SyngasTechnoDiscipline):
     # 12000 BPD in Malaysia GtL
     # BPD to TWh per year = 1700/1e9*365
     initial_production = 70.0 * 33.3 * 1.639 * 0.75 + \
-        (140000 + 34000 + 12000) * 1700 / 1e9 * 365
+                         (140000 + 34000 + 12000) * 1700 / 1e9 * 365
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [3.317804973859207, 6.975128305927281, 4.333201737255864,
                                                          3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
@@ -104,19 +104,21 @@ class SMRDiscipline(SyngasTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
+
     # -- add specific techno outputs to this
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = SMR(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
-
 
     # def compute_sos_jacobian(self):
     #     SyngasTechnoDiscipline.compute_sos_jacobian(self)

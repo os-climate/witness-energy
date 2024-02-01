@@ -21,23 +21,21 @@ from energy_models.core.techno_type.base_techno_models.electricity_techno import
 
 
 class Geothermal(ElectricityTechno):
-
     COPPER_RESOURCE_NAME = ResourceGlossary.Copper['name']
 
     def compute_other_primary_energy_costs(self):
         return 0
 
-
-
     def compute_consumption_and_installed_power(self):
         """
         Compute the resource consumption and the power installed (MW) of the technology for a given investment
         """
-        
 
         # FOR ALL_RESOURCES DISCIPLINE
         copper_needs = self.get_theoretical_copper_needs(self)
-        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * self.installed_power['new_power_production'] # in Mt
+        self.consumption_detailed[f'{self.COPPER_RESOURCE_NAME} ({self.mass_unit})'] = copper_needs * \
+                                                                                       self.installed_power[
+                                                                                           'new_power_production']  # in Mt
 
     @staticmethod
     def get_theoretical_copper_needs(self):
@@ -54,7 +52,11 @@ class Geothermal(ElectricityTechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
-        self.consumption_detailed[f'{mediumtemperatureheat.name}({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
-                                                                                                  self.production_detailed[f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
-                                                                                                 self.techno_infos_dict['efficiency']
+
+        self.consumption_detailed[f'{mediumtemperatureheat.name}({self.product_energy_unit})'] = ((1 -
+                                                                                                   self.techno_infos_dict[
+                                                                                                       'efficiency']) * \
+                                                                                                  self.production_detailed[
+                                                                                                      f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
+                                                                                                 self.techno_infos_dict[
+                                                                                                     'efficiency']

@@ -24,7 +24,6 @@ class SimpleTest(AbstractJacobianUnittest):
     '''
 
     def setUp(self):
-
         self.name = 'Test'
 
     def analytic_grad_entry(self):
@@ -33,7 +32,6 @@ class SimpleTest(AbstractJacobianUnittest):
         ]
 
     def test_01_simple(self):
-
         self.name = 'Test'
         A = 2 + 2
         B = 4

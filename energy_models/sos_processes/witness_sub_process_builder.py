@@ -35,13 +35,13 @@ class WITNESSSubProcessBuilder(BaseProcessBuilder):
         self.associate_namespace = None
 
     def setup_process(
-        self,
-        techno_dict,
-        invest_discipline=INVEST_DISCIPLINE_DEFAULT,
-        process_level='val',
-        energy_invest_input_in_abs_value=True,
-        associate_namespace=False,
-        use_resources_bool=True,
+            self,
+            techno_dict,
+            invest_discipline=INVEST_DISCIPLINE_DEFAULT,
+            process_level='val',
+            energy_invest_input_in_abs_value=True,
+            associate_namespace=False,
+            use_resources_bool=True,
     ):
         '''
         Setup process function which will be called if the builder is retrieved with get_builder_from_process with args

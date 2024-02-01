@@ -44,21 +44,31 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'renewable': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                                                  0.159236536471781, 0.15899046935409588, 0.15874840310033885,
-                                                                                  0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
-                                                                                  0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
-                                                                                  0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
-                                                                                  0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
-                                                                                  0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
-                                                                                  0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
-                                                                                  0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
-                                                                                  0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                                                                  0.1628246539459331]) * 1000.0, 'fossil': 100.
-                                           })
+        self.energy_prices = pd.DataFrame(
+            {GlossaryEnergy.Years: years, GlossaryEnergy.renewable: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+                                                                 0.159236536471781, 0.15899046935409588,
+                                                                 0.15874840310033885,
+                                                                 0.15875044941298937, 0.15875249600769718,
+                                                                 0.15875454288453355,
+                                                                 0.15875659004356974, 0.1587586374848771,
+                                                                 0.15893789675406477,
+                                                                 0.15911934200930778, 0.15930302260662477,
+                                                                 0.15948898953954933,
+                                                                 0.15967729551117891, 0.15986799501019029,
+                                                                 0.16006114439108429,
+                                                                 0.16025680195894345, 0.16045502805900876,
+                                                                 0.16065588517140537,
+                                                                 0.1608594380113745, 0.16106575363539733,
+                                                                 0.16127490155362818,
+                                                                 0.16148695384909017, 0.1617019853041231,
+                                                                 0.1619200735346165,
+                                                                 0.16214129913260598, 0.16236574581786147,
+                                                                 0.16259350059915213,
+                                                                 0.1628246539459331]) * 1000.0, GlossaryEnergy.fossil: 100.
+             })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'renewable': 0.0, 'fossil':0.2})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.renewable: 0.0, GlossaryEnergy.fossil: 0.2})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -75,7 +85,7 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: invest})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -98,9 +108,8 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
         pass
 
     def test_03_direct_air_capture_techno_discipline(self):
-
         self.name = 'Test'
-        self.model_name = 'direct_air_capture.DirectAirCaptureTechno'
+        self.model_name = f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -124,9 +133,9 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
-                       DirectAirCaptureTechnoDiscipline.invest_before_year_start,
+                           DirectAirCaptureTechnoDiscipline.invest_before_year_start,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        }
 
@@ -140,6 +149,3 @@ class DirectAirCaptureTechnoTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filters)
         # for graph in graph_list:
         # graph.to_plotly().show()
-
-
-

@@ -81,7 +81,7 @@ def create_chart_factory_comparison_energy(execution_engine, namespace, energy_l
     mean_factory = {}
 
     for energy in energy_list:
-        if energy == 'biomass_dry':
+        if energy == GlossaryEnergy.biomass_dry:
             continue
         ns_energy = f'{namespace}.{energy}'
         energy_production = execution_engine.dm.get_value(f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}')

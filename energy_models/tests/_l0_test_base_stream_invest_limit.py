@@ -37,33 +37,35 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'hydrogen'
+        self.energy_name = GlossaryEnergy.hydrogen
 
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
 
-        self.electrolysis_techno_prices = pd.DataFrame({'Electrolysis.PEM': np.linspace(100, 100 + len(years) - 1, len(years)),
-                                                        'Electrolysis.PEM_wotaxes': np.linspace(100, 100 + len(years) - 1, len(years))})
+        self.electrolysis_techno_prices = pd.DataFrame(
+            {'Electrolysis.PEM': np.linspace(100, 100 + len(years) - 1, len(years)),
+             'Electrolysis.PEM_wotaxes': np.linspace(100, 100 + len(years) - 1, len(years))})
 
         self.wgs_techno_prices = pd.DataFrame({'WaterGasShift': np.linspace(10, 10 + len(years) - 1, len(years)),
                                                'WaterGasShift_wotaxes': np.linspace(10, 10 + len(years) - 1, len(years))
                                                })
 
         self.wgs_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                             'hydrogen.gaseous_hydrogen (TWh)': [230.779470] * len(years),
-                                             'electricity (TWh)': [82.649011] * len(years),
-                                             'syngas (TWh)': [3579.828092] * len(years),
+                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [230.779470] * len(years),
+                                             f'{GlossaryEnergy.electricity} (TWh)': [82.649011] * len(years),
+                                             f'{GlossaryEnergy.syngas} (TWh)': [3579.828092] * len(years),
                                              'water (Mt)': [381.294427] * len(years)})
 
         self.electrolysis_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                      'electricity (TWh)': [4.192699] * len(years),
+                                                      f'{GlossaryEnergy.electricity} (TWh)': [4.192699] * len(years),
                                                       'water (Mt)': [0.021638] * len(years)})
 
         self.electrolysis_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'Electrolysis.PEM': 0.0, 'electricity': 0.0, 'production': 0.0})
+            {GlossaryEnergy.Years: years, 'Electrolysis.PEM': 0.0, GlossaryEnergy.electricity: 0.0, 'production': 0.0})
 
         self.wgs_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'WaterGasShift': 0.366208, 'syngas': 0.0, 'electricity': 0.0, 'production': 0.366208})
+            {GlossaryEnergy.Years: years, 'WaterGasShift': 0.366208, GlossaryEnergy.syngas: 0.0, GlossaryEnergy.electricity: 0.0,
+             'production': 0.366208})
 
         self.land_use_required_WaterGasShift = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'WaterGasShift (Gha)': 0.0})
@@ -71,7 +73,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: years, 'Electrolysis.PEM (Gha)': 0.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
-                     0.02901,  0.03405,   0.03908,  0.04469,   0.05029]
+                     0.02901, 0.03405, 0.03908, 0.04469, 0.05029]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -88,7 +90,7 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         We want to kill the low influence to reduce gradients
         '''
         self.name = 'Test'
-        self.model_name = 'hydrogen.gaseous_hydrogen'
+        self.model_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
@@ -109,11 +111,12 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         low_prod = 1.e-2
         years_low_prod = 10
         wgs_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                       'hydrogen.gaseous_hydrogen (TWh)': np.linspace(100, 100, len(self.years)),
+                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': np.linspace(100, 100, len(self.years)),
                                        'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
         electrolysis_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                'hydrogen.gaseous_hydrogen (TWh)': [low_prod] * years_low_prod + [100] * (len(self.years) - years_low_prod),
+                                                f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [low_prod] * years_low_prod + [
+                                                    100] * (len(self.years) - years_low_prod),
                                                 'O2 (Mt)': [0.019217] * len(self.years)})
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': 2020,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': 2050,
@@ -144,24 +147,27 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         # We erase the influence of low prod to the price BUT the mix weight is
         # not 100% for the other techno
 
-        self.assertListEqual(np.around(energy_prices['hydrogen.gaseous_hydrogen'].values[0:10].tolist(), 2).tolist(),
+        self.assertListEqual(np.around(energy_prices[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'].values[0:10].tolist(), 2).tolist(),
                              np.around(
-                                 (self.wgs_techno_prices['WaterGasShift'].values[0:10] * (100 - low_prod) / 100), 2).tolist()
+                                 (self.wgs_techno_prices['WaterGasShift'].values[0:10] * (100 - low_prod) / 100),
+                                 2).tolist()
                              )
-        self.assertListEqual(np.around(co2_emissions['hydrogen.gaseous_hydrogen'].values[0:10].tolist(), 2).tolist(),
+        self.assertListEqual(np.around(co2_emissions[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'].values[0:10].tolist(), 2).tolist(),
                              np.around(
-                                 (self.wgs_carbon_emissions['WaterGasShift'].values[0:10] * (100 - low_prod) / 100), 2).tolist()
+                                 (self.wgs_carbon_emissions['WaterGasShift'].values[0:10] * (100 - low_prod) / 100),
+                                 2).tolist()
                              )
 
-        self.assertEqual(energy_prices['hydrogen.gaseous_hydrogen'].values[-1],
-                         (self.wgs_techno_prices['WaterGasShift'].values[-1] + self.electrolysis_techno_prices['Electrolysis.PEM'].values[-1]) / 2.0)
+        self.assertEqual(energy_prices[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'].values[-1],
+                         (self.wgs_techno_prices['WaterGasShift'].values[-1] +
+                          self.electrolysis_techno_prices['Electrolysis.PEM'].values[-1]) / 2.0)
 
     def test_02_low_prod_for_both_technos(self):
         '''
         The objective is to test the energy price and co2 emissions when all technos prod are low
         '''
         self.name = 'Test'
-        self.model_name = 'hydrogen.gaseous_hydrogen'
+        self.model_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
@@ -182,11 +188,12 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         low_prod = 1.e-5
         years_low_prod = 10
         wgs_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                       'hydrogen.gaseous_hydrogen (TWh)': np.linspace(1e-6, 1e-6, len(self.years)),
+                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': np.linspace(1e-6, 1e-6, len(self.years)),
                                        'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
         electrolysis_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                                'hydrogen.gaseous_hydrogen (TWh)': [low_prod] * years_low_prod + [100] * (len(self.years) - years_low_prod),
+                                                f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [low_prod] * years_low_prod + [
+                                                    100] * (len(self.years) - years_low_prod),
                                                 'O2 (Mt)': [0.019217] * len(self.years)})
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': 2020,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': 2050,
@@ -217,11 +224,12 @@ class InvestLimitsTestCase(AbstractJacobianUnittest):
         # Twe two low prods are reduced to 1e-3 and they have both  almost same effect
         # on price and CO2 emissions ( the exponential is here to smooth the
         # cut off)
-        self.assertListEqual(np.round(energy_prices['hydrogen.gaseous_hydrogen'].values[0:10], 1).tolist(),
+        self.assertListEqual(np.round(energy_prices[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'].values[0:10], 1).tolist(),
                              ((self.wgs_techno_prices['WaterGasShift'].values[0:10] +
                                self.electrolysis_techno_prices['Electrolysis.PEM'].values[0:10]) / 2.0).tolist()
                              )
-        self.assertListEqual(np.round(co2_emissions['hydrogen.gaseous_hydrogen'].values[0:10], 4).tolist(),
+        self.assertListEqual(np.round(co2_emissions[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'].values[0:10], 4).tolist(),
                              np.round((self.wgs_carbon_emissions['WaterGasShift'].values[0:10] +
-                                       self.electrolysis_carbon_emissions['Electrolysis.PEM'].values[0:10]) / 2.0, 4).tolist()
+                                       self.electrolysis_carbon_emissions['Electrolysis.PEM'].values[0:10]) / 2.0,
+                                      4).tolist()
                              )

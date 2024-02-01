@@ -153,7 +153,7 @@ DEFAULT_TECHNO_DICT_DEV = {
 
 DEFAULT_COARSE_TECHNO_DICT = {
     "renewable": {"type": ENERGY_TYPE, "value": [GlossaryEnergy.RenewableSimpleTechno]},
-    "fossil": {"type": ENERGY_TYPE, "value": [GlossaryEnergy.FossilSimpleTechno]},
+    GlossaryEnergy.fossil: {"type": ENERGY_TYPE, "value": [GlossaryEnergy.FossilSimpleTechno]},
     "carbon_capture": {
         "type": CCUS_TYPE,
         "value": [GlossaryEnergy.DirectAirCapture, GlossaryEnergy.FlueGasCapture],

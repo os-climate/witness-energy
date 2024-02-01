@@ -34,6 +34,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
     """
     Ratio jacobian test class
     """
+
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
@@ -46,7 +47,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             self.test_06_ratio_FischerTropsch_discipline_jacobian,
             self.test_07_ratio_CalciumLooping_discipline_jacobian,
             self.test_08_gaseous_hydrogen_discipline_jacobian,
-            #self.test_09_carbon_capture_discipline_jacobian,
+            # self.test_09_carbon_capture_discipline_jacobian,
             self.test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian,
             self.test_01b_ratio_FossilGas_discipline_jacobian(),
             self.test_02b_ratio_Nuclear_discipline_jacobian(),
@@ -63,7 +64,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         self.name = 'Test_Ratio'
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
-        #---Ratios---
+        # ---Ratios---
         self.is_apply_ratio = True
         self.is_stream_demand = True
         self.is_apply_resource_ratio = True
@@ -120,19 +121,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -165,13 +171,14 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         coupled_outputs.append(
             f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_02_ratio_SMR_discipline_jacobian(self):
         '''
@@ -210,19 +217,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -257,12 +269,13 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_03_ratio_CropEnergy_discipline_jacobian(self):
         '''
@@ -279,7 +292,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biomass_dry.crop_energy.crop_energy_disc.CropEnergyDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biomass_dry}.crop_energy.crop_energy_disc.CropEnergyDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.techno_name, mod_path)
 
@@ -302,19 +315,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -341,8 +359,9 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict[f'{namespace}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
         inputs_dict[f'{namespace}.{GlossaryEnergy.AllStreamsDemandRatioValue}'] = self.all_streams_demand_ratio
         inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
-        inputs_dict[f'{namespace}.land_surface_for_food_df'] = pd.DataFrame({GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
-                                              'Agriculture total (Gha)': np.ones(31) * 4.8})
+        inputs_dict[f'{namespace}.land_surface_for_food_df'] = pd.DataFrame(
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
+             'Agriculture total (Gha)': np.ones(31) * 4.8})
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -350,12 +369,13 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_04_ratio_UnmanagedWood_discipline_jacobian(self):
         '''
@@ -372,7 +392,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood_disc.UnmanagedWoodDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biomass_dry}.unmanaged_wood.unmanaged_wood_disc.UnmanagedWoodDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.techno_name, mod_path)
 
@@ -395,19 +415,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -441,7 +466,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         # self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
         # discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
@@ -449,9 +474,10 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # outputs=coupled_outputs,)
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_05_ratio_WaterGasShift_discipline_jacobian(self):
         '''
@@ -492,19 +518,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling'] and 'resources' not in key:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -540,12 +571,13 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_06_ratio_FischerTropsch_discipline_jacobian(self):
         '''
@@ -585,19 +617,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio', 'syngas_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling'] and 'resources' not in key:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -633,18 +670,19 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_07_ratio_CalciumLooping_discipline_jacobian(self):
         '''
         Test the gradients of the ratios on CalciumLooping techno since CarbonCapture technos have special gradients
         '''
         self.setUp()
-        self.techno_name = 'flue_gas_capture.CalciumLooping'
+        self.techno_name = f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -677,19 +715,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio', GlossaryEnergy.FlueGasMean,
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -723,19 +766,20 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_08_gaseous_hydrogen_discipline_jacobian(self):
         '''
         Test the gradients of the ratios on Gaseous Hydrogen energy to test the gradients on a stream
         '''
         self.setUp()
-        self.energy_name = 'hydrogen.gaseous_hydrogen'
+        self.energy_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
@@ -762,14 +806,16 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
+            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
-                       'scaling_factor_techno_consumption', 'scaling_factor_techno_production',]:
+                       'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
+                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
+                    'value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
 
@@ -809,12 +855,13 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def _test_09_carbon_capture_discipline_jacobian(self):
         '''
@@ -822,7 +869,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         Also, set the inputs so that the limited flue gas case is tested.
         '''
         self.setUp()
-        self.energy_name = 'carbon_capture'
+        self.energy_name = GlossaryEnergy.carbon_capture
         self.ee = ExecutionEngine(self.name)
         ns_dict = {GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_flue_gas': f'{self.name}',
@@ -849,15 +896,17 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
+            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production',
-                       'flue_gas_prod_ratio', 'flue_gas_production',  'ratio_objective' ]:
+                       'flue_gas_prod_ratio', 'flue_gas_production', 'ratio_objective']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
+                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
+                    'value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
 
@@ -880,20 +929,22 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict[f'{namespace}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
         # Overwrite CalciumLooping techno production to test the flue_gas
         # limited case
-        inputs_dict[f'{namespace}.{self.energy_name}.flue_gas_capture.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
-            'carbon_capture (Mt)'] *= np.linspace(1.0, 5.0, len(self.years))
+        inputs_dict[
+            f'{namespace}.{self.energy_name}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
+            f'{GlossaryEnergy.carbon_capture} (Mt)'] *= np.linspace(1.0, 5.0, len(self.years))
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_cc{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def _test_10_energy_mix_discipline_jacobian(self):
         '''
@@ -955,16 +1006,16 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             coupled_outputs += [output for output in full_outputs if self.ee.dm.get_data(
                 output, 'coupling')]
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         coupled_inputs = [
             'Test_Ratio.EnergyMix.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
-        #'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}']
+        # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}']
         coupled_outputs = ['Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.model_name}.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step',local_data = disc.local_data,
-                            inputs=coupled_inputs,  outputs=coupled_outputs,)
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', local_data=disc.local_data,
+                            inputs=coupled_inputs, outputs=coupled_outputs, )
 
     def _test_11_energy_mix_discipline_in_WITNESSFull_jacobian(self):
         '''
@@ -1000,11 +1051,16 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDANewtonRaphson'
         full_values_dict[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = 1
         # Overwrite values for ratios with values from setup
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.is_apply_ratio'] = self.is_apply_ratio
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.is_stream_demand'] = self.is_stream_demand
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}'] = self.all_streams_demand_ratio
-        full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
+        full_values_dict[
+            f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.is_apply_ratio'] = self.is_apply_ratio
+        full_values_dict[
+            f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.is_stream_demand'] = self.is_stream_demand
+        full_values_dict[
+            f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.is_apply_resource_ratio'] = self.is_apply_resource_ratio
+        full_values_dict[
+            f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}'] = self.all_streams_demand_ratio
+        full_values_dict[
+            f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.all_resource_ratio_usable_demand'] = self.all_resource_ratio_usable_demand
 
         # Load design_var crash
         ds_crash = pd.read_csv('data_tests/design_space_last_ite_crash.csv')
@@ -1015,7 +1071,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         # EnergyMix
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
+            f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}')[
+            0].mdo_discipline_wrapp.mdo_discipline
 
         # Get coupled inputs and outputs
         full_inputs = disc.get_input_data_names()
@@ -1032,7 +1089,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             coupled_outputs += [output for output in full_outputs if self.ee.dm.get_data(
                 output, 'coupling')]
 
-        energy_list = full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryEnergy.energy_list}']
+        energy_list = full_values_dict[
+            f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryEnergy.energy_list}']
         coupled_inputs = []
         for energy in energy_list:
             coupled_inputs += [
@@ -1040,7 +1098,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             coupled_inputs += [
                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
         # coupled_inputs = [
-            # f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
+        # f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}', ]
         # #'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}']
         coupled_outputs = [
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{self.model_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}']
@@ -1066,11 +1124,11 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
 
         coupled_inputs = [
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}']
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.model_name}_WITNESSFull.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step',local_data = disc.local_data,
-                            inputs=coupled_inputs,  outputs=coupled_outputs,)
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', local_data=disc.local_data,
+                            inputs=coupled_inputs, outputs=coupled_outputs, )
 
     def test_12_energy_mix_all_stream_demand_ratio_discipline_jacobian(self):
         '''
@@ -1129,20 +1187,20 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # coupled_outputs.extend(['Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}'
         #                         ])
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         coupled_inputs = [
             # 'Test_Ratio.EnergyMix.fuel.liquid_fuel.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}',
             # 'Test_Ratio.EnergyMix.methane.{GlossaryEnergy.EnergyProductionValue}',
             f'Test_Ratio.EnergyMix.electricity.{GlossaryEnergy.EnergyConsumptionValue}']
-        coupled_outputs = [f'Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}',]
+        coupled_outputs = [f'Test_Ratio.EnergyMix.{GlossaryEnergy.AllStreamsDemandRatioValue}', ]
 
-        #coupled_inputs = ['Test_Ratio.EnergyMix.hydrogen.gaseous_hydrogen.{GlossaryEnergy.EnergyProductionValue}',]
-        #coupled_outputs = ['Test_Ratio.EnergyMix.output_test']
+        # coupled_inputs = ['Test_Ratio.EnergyMix.hydrogen.gaseous_hydrogen.{GlossaryEnergy.EnergyProductionValue}',]
+        # coupled_outputs = ['Test_Ratio.EnergyMix.output_test']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_false_true_{self.model_name}.pkl',
-                            discipline=disc, step=1.0e-16, derr_approx='complex_step',local_data = disc.local_data,
-                            inputs=coupled_inputs,  outputs=coupled_outputs,)
+                            discipline=disc, step=1.0e-16, derr_approx='complex_step', local_data=disc.local_data,
+                            inputs=coupled_inputs, outputs=coupled_outputs, )
 
     def test_01b_ratio_FossilGas_discipline_jacobian(self):
         '''
@@ -1181,19 +1239,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand', 'ratio_objective']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand', 'ratio_objective']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -1229,9 +1292,10 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs.append(
             f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_02b_ratio_Nuclear_discipline_jacobian(self):
         '''
@@ -1270,19 +1334,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -1321,9 +1390,10 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs.append(
             f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_03b_ratio_CoalExtraction_discipline_jacobian(self):
         '''
@@ -1362,19 +1432,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -1410,9 +1485,10 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs.append(
             f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_04b_ratio_Refinery_discipline_jacobian(self):
         '''
@@ -1451,19 +1527,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -1499,10 +1580,11 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         coupled_outputs.append(
             f'{namespace}.{self.techno_name}.non_use_capital')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
-        
+                            outputs=coupled_outputs, )
+
     def test_05b_ratio_PEM_discipline_jacobian(self):
         '''
         Test the gradients of the ratios on a simple techno which uses a single resource ratio (platinum_resource consumption)
@@ -1540,19 +1622,24 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner',  'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'tolerance_linear_solver_MDO', 'group_mda_disciplines',
-                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
-                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
+                       GlossaryEnergy.TransportCostValue, GlossaryEnergy.TransportMarginValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
+                       GlossaryEnergy.EnergyPricesValue, GlossaryEnergy.EnergyCO2EmissionsValue,
+                       GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.ResourcesPriceValue,
                        GlossaryEnergy.RessourcesCO2EmissionsValue, 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
-                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue, 'all_resource_ratio_usable_demand']:
+                       'residuals_history', GlossaryEnergy.AllStreamsDemandRatioValue,
+                       'all_resource_ratio_usable_demand']:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -1572,7 +1659,6 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                     coupled_outputs += [f'{namespace}.{self.techno_name}.{key}']
 
         # Overwrite values for ratios with values from setup
-
 
         inputs_dict[f'{namespace}.{GlossaryEnergy.YearEnd}'] = 2050
         inputs_dict[f'{namespace}.is_apply_ratio'] = self.is_apply_ratio
@@ -1594,14 +1680,16 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             f'{namespace}.{self.techno_name}.non_use_capital')
         coupled_outputs.remove(f'Test_Ratio.Electrolysis.PEM.{GlossaryEnergy.TechnoPricesValue}')
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ratio_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=2e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=2e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
+
 
 if '__main__' == __name__:
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = RatioJacobianTestCase()
     cls.setUp()
-    np.set_printoptions(threshold = 10000)
-    #cls.test_07_ratio_CalciumLooping_discipline_jacobian()
+    np.set_printoptions(threshold=10000)
+    # cls.test_07_ratio_CalciumLooping_discipline_jacobian()
     cls.test_05b_ratio_PEM_discipline_jacobian()

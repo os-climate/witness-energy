@@ -65,7 +65,7 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
         var_f_name = f"{namespace}.{energ}.technologies_list"
         var_energyproduction_name = f"{namespace}.{energ}.energy_production_detailed"
         # biomass_dry not having techno list and other than biomass we are extracting energy list
-        if 'biomass_dry' not in var_f_name:
+        if GlossaryEnergy.biomass_dry not in var_f_name:
             EnergyDict[f"{energ}"] = {}
             loc_techno_list = execution_engine.dm.get_value(var_f_name)
             result = [f"{energ}." + direction for direction in loc_techno_list]
@@ -75,11 +75,11 @@ def get_techno_price_filter_data(execution_engine, namespace, title, price_name,
             if y_incre == 0:
                 var_energyproduction_all_energy_df = var_energyproduction_df.copy()
                 var_energyproduction_all_energy_df.columns = var_energyproduction_all_energy_df.columns.str.replace(
-                    energ + " ", energ+ ".").str.replace("(TWh)", "")
+                    energ + " ", energ + ".").str.replace("(TWh)", "")
             else:
                 var_energyproduction_all_energy_df = var_energyproduction_all_energy_df.merge(var_energyproduction_df)
                 var_energyproduction_all_energy_df.columns = var_energyproduction_all_energy_df.columns.str.replace(
-                    energ + " ", energ+ ".").str.replace(r" \(.*\)", "")
+                    energ + " ", energ + ".").str.replace(r" \(.*\)", "")
             y_incre += 1
 
     techno_name_list = []
@@ -231,13 +231,15 @@ def post_processings(execution_engine, namespace, filters):
         energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
         if f'{energy} Price data of all technologies' in graphs_list:
             capex_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace,
-                                               '15 Most Producing Technologies Capex', 'CAPEX_Part', 'Capex')
+                                                                  '15 Most Producing Technologies Capex', 'CAPEX_Part',
+                                                                  'Capex')
             instanciated_charts.append(capex_bar_slider_graph)
 
         energy = execution_engine.dm.get_disciplines_with_name(namespace)[0].mdo_discipline_wrapp.wrapper.energy_name
         if f'{energy} Price data of all technologies' in graphs_list:
             total_price_bar_slider_graph = get_techno_price_filter_data(execution_engine, namespace,
-                                                '15 Most Producing Technologies Price', 'PRICE_Part', 'Price')
+                                                                        '15 Most Producing Technologies Price',
+                                                                        'PRICE_Part', 'Price')
             instanciated_charts.append(total_price_bar_slider_graph)
 
     return instanciated_charts

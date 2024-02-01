@@ -75,12 +75,12 @@ INVEST_DISC_NAME = "InvestmentDistribution"
 
 class Study(EnergyStudyManager):
     def __init__(
-        self,
-        year_start=GlossaryEnergy.YeartStartDefault,
-        year_end=2050,
-        main_study=True,
-        bspline=True,
-        execution_engine=None,
+            self,
+            year_start=GlossaryEnergy.YeartStartDefault,
+            year_end=2050,
+            main_study=True,
+            bspline=True,
+            execution_engine=None,
     ):
         super().__init__(
             file_path=__file__,
@@ -139,9 +139,9 @@ class Study(EnergyStudyManager):
         list_namespaces = []
 
         if (
-            LiquidFuel.name in self.energy_list
-            and GaseousHydrogen.name in self.energy_list
-            and LiquidHydrogen.name in self.energy_list
+                LiquidFuel.name in self.energy_list
+                and GaseousHydrogen.name in self.energy_list
+                and LiquidHydrogen.name in self.energy_list
         ):
             list_var.append("primary_energies_production")
             list_parent.append("Energy_constraints")
@@ -151,9 +151,9 @@ class Study(EnergyStudyManager):
             list_namespaces.append(GlossaryEnergy.NS_FUNCTIONS)
 
         if (
-            hightemperatureheat.name in self.energy_list
-            and GaseousHydrogen.name in self.energy_list
-            and LiquidHydrogen.name in self.energy_list
+                hightemperatureheat.name in self.energy_list
+                and GaseousHydrogen.name in self.energy_list
+                and LiquidHydrogen.name in self.energy_list
         ):
             list_var.append("primary_energies_production")
             list_parent.append("Energy_constraints")
@@ -280,7 +280,7 @@ class Study(EnergyStudyManager):
         invest_mix_df_wo_years = invest_mix_df.drop(GlossaryEnergy.Years, axis=1)
 
         # check if we are in coarse usecase, in this case we deactivate first point of optim
-        if "fossil" in self.energy_list:
+        if GlossaryEnergy.fossil in self.energy_list:
             activated_elem = [False] + [True] * (GlossaryEnergy.NB_POLES_COARSE - 1)
         else:
             activated_elem = None
@@ -399,7 +399,6 @@ class Study(EnergyStudyManager):
                 for techno in invest_techno.columns:
                     if techno != GlossaryEnergy.Years:
                         invest_mix_df[f"{energy}.{techno}"] = invest_techno[techno].values
-                        
 
         return invest_mix_df
 
@@ -699,18 +698,18 @@ class Study(EnergyStudyManager):
         CO2_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_per_use": 0.277})
 
         energy_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_resource (Mt)": 3.5})
-        energy_production = pd.DataFrame({GlossaryEnergy.Years: self.years, "biomass_dry": 12.5})
+        energy_production = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: 12.5})
         energy_prices = pd.DataFrame(
             {
                 GlossaryEnergy.Years: self.years,
-                "biomass_dry": 9.8,
+                GlossaryEnergy.biomass_dry: 9.8,
                 "biomass_dry_wotaxes": 9.8,
             }
         )
 
         land_use_required = pd.DataFrame({GlossaryEnergy.Years: self.years, "Crop (GHa)": 0.07, "Forest (Gha)": 1.15})
 
-        CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years, "biomass_dry": -0.277})
+        CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: -0.277})
 
         energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.0})
 

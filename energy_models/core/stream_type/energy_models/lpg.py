@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class LiquefiedPetroleumGas(EnergyType):
@@ -21,7 +22,7 @@ class LiquefiedPetroleumGas(EnergyType):
     hydrocarbon gas liquid. mix of 48% propane, 50% butane, 2% pentane
     """
 
-    name = 'liquefied_petroleum_gas'
+    name = GlossaryEnergy.liquefied_petroleum_gas
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # ADEME, CO2 per kg combustion in Europe = 3.15
@@ -37,7 +38,7 @@ class LiquefiedPetroleumGas(EnergyType):
                         # Engineering ToolBox, (2003). Fuels - Higher and Lower Calorific Values. [online]
                         # Available at: https://www.engineeringtoolbox.com/fuels-higher-calorific-values-d_169.html
                         # [Accessed 16/12/2021].
-                        'calorific_value': 12.8,   # weighted average of propane/butane/pentane
+                        'calorific_value': 12.8,  # weighted average of propane/butane/pentane
                         'calorific_value_unit': 'kWh/kg',
                         'high_calorific_value': 12.83,  # weighted average of propane/butane/pentane
                         'high_calorific_value_unit': 'kWh/kg'}

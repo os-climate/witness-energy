@@ -33,10 +33,9 @@ class BiomassBF(CSTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
         # Consumption
 
-        self.consumption_detailed[f'{BiomassDry.name} (TWh)'] = self.production_detailed[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
+        self.consumption_detailed[f'{BiomassDry.name} (TWh)'] = self.production_detailed[
+                                                                    f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                 BiomassDry.data_energy_dict['CO2_per_use'] * \
                                                                 BiomassDry.data_energy_dict['calorific_value']

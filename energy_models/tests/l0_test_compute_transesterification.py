@@ -59,17 +59,22 @@ class TransesterificationPriceTestCase(unittest.TestCase):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1000
         # We take biomass price of methane/5.0
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         default_resources_price_df = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                   'water':  years * [2],
+                                                   'water': years * [2],
                                                    'uranium fuel': 1390000,
-                                                   'CO2': np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464, 0.047799999999999995, 0.049199999999999994, 0.0506, 0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063, 0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784, 0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052, 0.1098, 0.1144, 0.119]) * 1000,
-                                                   'biomass_dry': 68.12,
-                                                   'wet_biomass': 56,
+                                                   'CO2': np.array([0.04, 0.041, 0.042, 0.043, 0.044, 0.045, 0.0464,
+                                                                    0.047799999999999995, 0.049199999999999994, 0.0506,
+                                                                    0.052, 0.0542, 0.0564, 0.0586, 0.0608, 0.063,
+                                                                    0.0652, 0.0674, 0.0696, 0.0718, 0.074, 0.0784,
+                                                                    0.0828, 0.0872, 0.0916, 0.096, 0.1006, 0.1052,
+                                                                    0.1098, 0.1144, 0.119]) * 1000,
+                                                   GlossaryEnergy.biomass_dry: 68.12,
+                                                   GlossaryEnergy.wet_biomass: 56,
                                                    'wood': years * [120],
                                                    NaturalOil.name: 31 * [36.25],
                                                    Methanol.name: 31 * [298],
@@ -79,20 +84,21 @@ class TransesterificationPriceTestCase(unittest.TestCase):
         self.resources_prices = default_resources_price_df
 
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
-                                                 4694500000.0, 4780750000.0, 4867000000.0,
-                                                 4969400000.0, 5071800000.0, 5174200000.0,
-                                                 5276600000.0, 5379000000.0, 5364700000.0,
-                                                 5350400000.0, 5336100000.0, 5321800000.0,
-                                                 5307500000.0, 5293200000.0, 5278900000.0,
-                                                 5264600000.0, 5250300000.0, 5236000000.0,
-                                                 5221700000.0, 5207400000.0, 5193100000.0,
-                                                 5178800000.0, 5164500000.0, 5150200000.0,
-                                                 5135900000.0, 5121600000.0, 5107300000.0,
-                                                 5093000000.0]) / 5.0e9})
+            {GlossaryEnergy.Years: years,
+             GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
+                                                   4694500000.0, 4780750000.0, 4867000000.0,
+                                                   4969400000.0, 5071800000.0, 5174200000.0,
+                                                   5276600000.0, 5379000000.0, 5364700000.0,
+                                                   5350400000.0, 5336100000.0, 5321800000.0,
+                                                   5307500000.0, 5293200000.0, 5278900000.0,
+                                                   5264600000.0, 5250300000.0, 5236000000.0,
+                                                   5221700000.0, 5207400000.0, 5193100000.0,
+                                                   5178800000.0, 5164500000.0, 5150200000.0,
+                                                   5135900000.0, 5121600000.0, 5107300000.0,
+                                                   5093000000.0]) / 5.0e9})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -116,9 +122,8 @@ class TransesterificationPriceTestCase(unittest.TestCase):
         pass
 
     def test_01_transesterification_discipline(self):
-
         self.name = 'Test'
-        self.model_name = 'Transesterification'
+        self.model_name = GlossaryEnergy.Transesterification
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -127,7 +132,7 @@ class TransesterificationPriceTestCase(unittest.TestCase):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biodiesel.transesterification.transesterification_disc.TransesterificationDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biodiesel}.transesterification.transesterification_disc.TransesterificationDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -143,7 +148,7 @@ class TransesterificationPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -154,6 +159,8 @@ class TransesterificationPriceTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
+
+
 #         for graph in graph_list:
 #             graph.to_plotly().show()
 

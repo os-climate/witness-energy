@@ -47,24 +47,27 @@ class InvestCCSDiscipline(SoSWrapp):
     }
     DESC_IN = {
         GlossaryEnergy.YearStart: {'type': 'int', 'default': GlossaryEnergy.YeartStartDefault, 'unit': '[-]',
-                       'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         GlossaryEnergy.YearEnd: {'type': 'int', 'default': 2050, 'unit': '[-]',
-                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                                 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
 
         'ccs_investment': {'type': 'dataframe', 'unit': 'G$',
-                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                    GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True)},
+                           'dataframe_descriptor': {
+                               GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                               GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True)},
                            'dataframe_edition_locked': False},
         'invest_ccs_mix': {'type': 'dataframe',
-                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                    'carbon_capture': ('float', None, False),
-                                                    'carbon_storage': ('float', None, False),},
+                           'dataframe_descriptor': {
+                               GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                               GlossaryEnergy.carbon_capture: ('float', None, False),
+                               GlossaryEnergy.carbon_storage: ('float', None, False), },
                            'dataframe_edition_locked': False},
         GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                     'possible_values': [CarbonCapture.name, CarbonStorage.name],
-                     'default': [CarbonCapture.name, CarbonStorage.name],
-                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
-                     'structuring': True}
+                                  'possible_values': [CarbonCapture.name, CarbonStorage.name],
+                                  'default': [CarbonCapture.name, CarbonStorage.name],
+                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                                  'editable': False,
+                                  'structuring': True}
     }
 
     energy_name = "invest_energy"
@@ -125,7 +128,8 @@ class InvestCCSDiscipline(SoSWrapp):
             grad_energy = inputs_dict['invest_ccs_mix'][energy].values / \
                           norm_mix.values
             self.set_partial_derivative_for_other_types(
-                (f'{energy}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue), ('ccs_investment', GlossaryEnergy.EnergyInvestmentsValue),
+                (f'{energy}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
+                ('ccs_investment', GlossaryEnergy.EnergyInvestmentsValue),
                 np.identity(len(years)) * grad_energy)
 
             invest_copy = inputs_dict['ccs_investment'].copy(deep=True)
@@ -143,7 +147,8 @@ class InvestCCSDiscipline(SoSWrapp):
                                             inputs_dict['invest_ccs_mix'][energy].values / \
                                             norm_mix.values ** 2
                     self.set_partial_derivative_for_other_types(
-                        (f'{energy}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue), ('invest_ccs_mix', energy_other),
+                        (f'{energy}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
+                        ('invest_ccs_mix', energy_other),
                         np.identity(len(years)) * grad_energy_mix_other)
 
     def get_chart_filter_list(self):

@@ -47,8 +47,9 @@ class FlueGasTechno(CCTechno):
     def configure_parameters_update(self, inputs_dict):
 
         CCTechno.configure_parameters_update(self, inputs_dict)
-        self.flue_gas_ratio = inputs_dict[GlossaryEnergy.FlueGasMean].loc[inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.Years]
-                                                               <= self.year_end]
+        self.flue_gas_ratio = inputs_dict[GlossaryEnergy.FlueGasMean].loc[
+            inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.Years]
+            <= self.year_end]
         # To deal quickly with l0 test
         if 'fg_ratio_effect' in inputs_dict:
             self.fg_ratio_effect = inputs_dict['fg_ratio_effect']
@@ -76,7 +77,8 @@ class FlueGasTechno(CCTechno):
         elec_needs = self.get_electricity_needs()
         efficency = self.configure_efficiency()
 
-        return {Renewable.name: np.identity(len(self.years)) * elec_needs / efficency * self.compute_electricity_variation_from_fg_ratio(
+        return {Renewable.name: np.identity(
+            len(self.years)) * elec_needs / efficency * self.compute_electricity_variation_from_fg_ratio(
             self.flue_gas_ratio[GlossaryEnergy.FlueGasMean].values, self.fg_ratio_effect),
                 }
 
@@ -84,11 +86,11 @@ class FlueGasTechno(CCTechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
 
         # Consumption
         self.consumption_detailed[f'{Renewable.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                              self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']
+                                                                              self.production_detailed[
+                                                                                  f'{CCTechno.energy_name} ({self.product_energy_unit})']
 
     def compute_capex(self, invest_list, data_config):
         capex_calc_list = super().compute_capex(invest_list, data_config)

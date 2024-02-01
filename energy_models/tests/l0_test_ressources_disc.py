@@ -36,7 +36,6 @@ class ResourcesDisc(unittest.TestCase):
         pass
 
     def test_01_resources_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'resources'
         self.ee = ExecutionEngine(self.name)
@@ -61,7 +60,6 @@ class ResourcesDisc(unittest.TestCase):
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
-
 
 #         for graph in graph_list:
 #             graph.to_plotly().show()

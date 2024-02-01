@@ -15,10 +15,11 @@ limitations under the License.
 '''
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.hightemperatureheat_mix.usecase import TECHNOLOGIES_LIST
 
-class ProcessBuilder(EnergyProcessBuilder):
 
+class ProcessBuilder(EnergyProcessBuilder):
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - High Heat Mix',
@@ -32,7 +33,6 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
         heat_name = hightemperatureheat.name
         energy_mix = 'EnergyMix'
@@ -44,10 +44,11 @@ class ProcessBuilder(EnergyProcessBuilder):
         mods_dict = {}
         mods_dict[f'{energy_mix}.{heat_name}'] = self.get_stream_disc_path(
             'energy_disciplines', 'HighHeat')
-        #to get sub dictionary
+        # to get sub dictionary
         for techno_name in self.techno_list:
             mods_dict[f'{energy_mix}.{heat_name}.{techno_name}'] = self.get_techno_disc_path(
-                'heat', techno_name, sub_dir='high')
+                GlossaryEnergy.heat, techno_name, sub_dir='high')
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

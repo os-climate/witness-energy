@@ -47,26 +47,29 @@ class InvestEnergyDiscipline(SoSWrapp):
     }
     DESC_IN = {
         GlossaryEnergy.YearStart: {'type': 'int', 'default': GlossaryEnergy.YeartStartDefault, 'unit': '[-]',
-                       'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         GlossaryEnergy.YearEnd: {'type': 'int', 'default': 2050, 'unit': '[-]',
-                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                                 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe',
-                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                       GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True)},
-                              'dataframe_edition_locked': False},
+                                                'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                                'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                                         GlossaryEnergy.EnergyInvestmentsValue: (
+                                                                         'float', None, True)},
+                                                'dataframe_edition_locked': False},
         'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
                                              'namespace': 'ns_public'},
         'invest_energy_mix': {'type': 'dataframe',
-                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                       GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True),
-                                                       'methane': ('float', None, True),
-                                                       'electricity': ('float', None, True),
-                                                       'hydrogen.gaseous_hydrogen': ('float', None, True)},
+                              'dataframe_descriptor': {
+                                  GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                  GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True),
+                                  GlossaryEnergy.methane: ('float', None, True),
+                                  GlossaryEnergy.electricity: ('float', None, True),
+                                  f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': ('float', None, True)},
                               'dataframe_edition_locked': False},
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                        'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                        'editable': False, 'structuring': True}
+                                     'possible_values': EnergyMix.energy_list,
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                                     'editable': False, 'structuring': True}
     }
 
     energy_name = "invest_energy"
@@ -98,14 +101,16 @@ class InvestEnergyDiscipline(SoSWrapp):
 
         input_dict = self.get_sosdisc_inputs()
         energy_invest_df = input_dict[GlossaryEnergy.EnergyInvestmentsValue].copy(deep=True)
-        energy_invest_df[GlossaryEnergy.EnergyInvestmentsValue] = input_dict[GlossaryEnergy.EnergyInvestmentsValue][GlossaryEnergy.EnergyInvestmentsValue] * \
-                                                self.energy_model.rescaling_factor
+        energy_invest_df[GlossaryEnergy.EnergyInvestmentsValue] = input_dict[GlossaryEnergy.EnergyInvestmentsValue][
+                                                                      GlossaryEnergy.EnergyInvestmentsValue] * \
+                                                                  self.energy_model.rescaling_factor
         self.energy_model.set_energy_list(input_dict[GlossaryEnergy.energy_list])
 
         scaling_factor_energy_investment = input_dict['scaling_factor_energy_investment']
         scaled_energy_investment = pd.DataFrame(
-            {GlossaryEnergy.Years: input_dict[GlossaryEnergy.EnergyInvestmentsValue][GlossaryEnergy.Years], GlossaryEnergy.EnergyInvestmentsValue: input_dict[GlossaryEnergy.EnergyInvestmentsValue][
-                                                                                         GlossaryEnergy.EnergyInvestmentsValue] * scaling_factor_energy_investment})
+            {GlossaryEnergy.Years: input_dict[GlossaryEnergy.EnergyInvestmentsValue][GlossaryEnergy.Years],
+             GlossaryEnergy.EnergyInvestmentsValue: input_dict[GlossaryEnergy.EnergyInvestmentsValue][
+                                                        GlossaryEnergy.EnergyInvestmentsValue] * scaling_factor_energy_investment})
 
         energy_invest_df, unit = self.energy_model.get_invest_distrib(
             scaled_energy_investment,
@@ -136,18 +141,21 @@ class InvestEnergyDiscipline(SoSWrapp):
             grad_energy = inputs_dict['invest_energy_mix'][energy].values / \
                           norm_mix.values
             self.set_partial_derivative_for_other_types(
-                (f'{energy}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue), (GlossaryEnergy.EnergyInvestmentsValue, GlossaryEnergy.EnergyInvestmentsValue),
+                (f'{energy}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
+                (GlossaryEnergy.EnergyInvestmentsValue, GlossaryEnergy.EnergyInvestmentsValue),
                 scaling_factor_energy_investment * np.identity(len(years)) * grad_energy[:, np.newaxis])
 
             invest_copy = inputs_dict[GlossaryEnergy.EnergyInvestmentsValue].copy(deep=True)
             invest_copy.reset_index(inplace=True)
-            invest_copy[GlossaryEnergy.EnergyInvestmentsValue] = inputs_dict[GlossaryEnergy.EnergyInvestmentsValue][GlossaryEnergy.EnergyInvestmentsValue] * \
-                                               scaling_factor_energy_investment
+            invest_copy[GlossaryEnergy.EnergyInvestmentsValue] = inputs_dict[GlossaryEnergy.EnergyInvestmentsValue][
+                                                                     GlossaryEnergy.EnergyInvestmentsValue] * \
+                                                                 scaling_factor_energy_investment
 
             grad_energy_mix = invest_copy[GlossaryEnergy.EnergyInvestmentsValue].values * (
                     norm_mix.values - inputs_dict['invest_energy_mix'][energy].values) / norm_mix.values ** 2
             self.set_partial_derivative_for_other_types(
-                (f'{energy}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue), ('invest_energy_mix', energy),
+                (f'{energy}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
+                ('invest_energy_mix', energy),
                 np.identity(len(years)) * grad_energy_mix[:, np.newaxis])
             for energy_other in inputs_dict[GlossaryEnergy.energy_list]:
                 if energy != energy_other:
@@ -155,7 +163,8 @@ class InvestEnergyDiscipline(SoSWrapp):
                                             inputs_dict['invest_energy_mix'][energy].values / \
                                             norm_mix.values ** 2
                     self.set_partial_derivative_for_other_types(
-                        (f'{energy}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue), ('invest_energy_mix', energy_other),
+                        (f'{energy}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
+                        ('invest_energy_mix', energy_other),
                         np.identity(len(years)) * grad_energy_mix_other[:, np.newaxis])
 
     def get_chart_filter_list(self):

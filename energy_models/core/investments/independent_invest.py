@@ -54,7 +54,8 @@ class IndependentInvest(BaseInvest):
         techno_invests = inputs_dict[GlossaryEnergy.invest_mix][self.distribution_list]
         techno_invest_sum = techno_invests.sum(axis=1).values
 
-        techno_invest_sum += inputs_dict[GlossaryEnergy.ForestInvestmentValue][GlossaryEnergy.ForestInvestmentValue].values
+        techno_invest_sum += inputs_dict[GlossaryEnergy.ForestInvestmentValue][
+            GlossaryEnergy.ForestInvestmentValue].values
         energy_list = inputs_dict[GlossaryEnergy.energy_list]
 
         if BiomassDry.name in energy_list:
@@ -70,7 +71,3 @@ class IndependentInvest(BaseInvest):
         max_budget = inputs_dict[GlossaryEnergy.MaxBudgetValue][GlossaryEnergy.MaxBudgetValue].values
         max_budget_constraint = max_budget - energy_investment_wo_tax[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values * 1000
         return max_budget_constraint
-
-
-
-

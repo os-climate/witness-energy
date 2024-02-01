@@ -50,12 +50,12 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'liquid_fuel'
+        self.energy_name = GlossaryEnergy.liquid_fuel
 
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-        
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': np.ones(len(years)) * 20,
-                                           'syngas': 34
+
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.ones(len(years)) * 20,
+                                           GlossaryEnergy.syngas: 34
                                            })
         self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34,
                                                     # price to be updated for
@@ -68,32 +68,34 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                                      'BiomassGasification': 200.0
                                      }
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.2, 'syngas': 0.2})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.2, GlossaryEnergy.syngas: 0.2})
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
-                                          GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
-                                                              4694500000.0, 4780750000.0, 4867000000.0,
-                                                              4969400000.0, 5071800000.0, 5174200000.0,
-                                                              5276600000.0, 5379000000.0, 5364700000.0,
-                                                              5350400000.0, 5336100000.0, 5321800000.0,
-                                                              5307500000.0, 5293200000.0, 5278900000.0,
-                                                              5264600000.0, 5250300000.0, 5236000000.0,
-                                                              5221700000.0, 5207400000.0, 5193100000.0,
-                                                              5178800000.0, 5164500000.0, 5150200000.0,
-                                                              5135900000.0, 5121600000.0, 5107300000.0,
-                                                              5093000000.0]) * 1.0e-9})
+                                          GlossaryEnergy.InvestValue: np.array(
+                                              [4435750000.0, 4522000000.0, 4608250000.0,
+                                               4694500000.0, 4780750000.0, 4867000000.0,
+                                               4969400000.0, 5071800000.0, 5174200000.0,
+                                               5276600000.0, 5379000000.0, 5364700000.0,
+                                               5350400000.0, 5336100000.0, 5321800000.0,
+                                               5307500000.0, 5293200000.0, 5278900000.0,
+                                               5264600000.0, 5250300000.0, 5236000000.0,
+                                               5221700000.0, 5207400000.0, 5193100000.0,
+                                               5178800000.0, 5164500000.0, 5150200000.0,
+                                               5135900000.0, 5121600000.0, 5107300000.0,
+                                               5093000000.0]) * 1.0e-9})
 
         self.invest_level_negative = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                   GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
-                                                                       4694500000.0, 4780750000.0, 4867000000.0,
-                                                                       4969400000.0, 5071800000.0, 5174200000.0,
-                                                                       -5276600000.0, -5379000000.0, -5364700000.0,
-                                                                       -5350400000.0, -5336100000.0, -5321800000.0,
-                                                                       5307500000.0, 5293200000.0, 5278900000.0,
-                                                                       5264600000.0, 5250300000.0, 5236000000.0,
-                                                                       5221700000.0, 5207400000.0, 5193100000.0,
-                                                                       5178800000.0, 5164500000.0, 5150200000.0,
-                                                                       5135900000.0, 5121600000.0, 5107300000.0,
-                                                                       5093000000.0]) * 1.0e-9})
+                                                   GlossaryEnergy.InvestValue: np.array(
+                                                       [4435750000.0, 4522000000.0, 4608250000.0,
+                                                        4694500000.0, 4780750000.0, 4867000000.0,
+                                                        4969400000.0, 5071800000.0, 5174200000.0,
+                                                        -5276600000.0, -5379000000.0, -5364700000.0,
+                                                        -5350400000.0, -5336100000.0, -5321800000.0,
+                                                        5307500000.0, 5293200000.0, 5278900000.0,
+                                                        5264600000.0, 5250300000.0, 5236000000.0,
+                                                        5221700000.0, 5207400000.0, 5193100000.0,
+                                                        5178800000.0, 5164500000.0, 5150200000.0,
+                                                        5135900000.0, 5121600000.0, 5107300000.0,
+                                                        5093000000.0]) * 1.0e-9})
         # CO2 Taxe Data
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -142,11 +144,13 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-        
+
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
 
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -206,11 +210,13 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-        
+
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
 
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -236,7 +242,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}', f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
                                     f'{self.name}.syngas_ratio',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
@@ -269,11 +276,13 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-        
+
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
 
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -335,8 +344,10 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
 
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -364,7 +375,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
                                     f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}', f'{self.name}.syngas_ratio',
+                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.syngas_ratio',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
                                     f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}',
@@ -396,7 +408,7 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-        
+
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
 
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(years),
@@ -425,7 +437,8 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.UtilisationRatioValue}',
-                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}', f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyPricesValue}',
+                                    f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
                                     f'{self.name}.syngas_ratio',
                                     f'{self.name}.{GlossaryEnergy.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}',
@@ -460,8 +473,10 @@ class FTJacobianTestCase(AbstractJacobianUnittest):
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
 
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level_negative,

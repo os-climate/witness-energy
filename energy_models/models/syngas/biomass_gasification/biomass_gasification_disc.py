@@ -26,7 +26,6 @@ from energy_models.models.syngas.biomass_gasification.biomass_gasification impor
 
 
 class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Biomass Gasification Model',
@@ -86,8 +85,8 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                  # 370.96 => gasifier
                                  # 270.63  2 => portable purification system
                                  # => gasifier = 73% total capex
-                                 #'Capex_init': (370.96 + 270.63 / 2.0) * 1000.0,
-                                 #'Capex_init_unit': 'euro',
+                                 # 'Capex_init': (370.96 + 270.63 / 2.0) * 1000.0,
+                                 # 'Capex_init_unit': 'euro',
                                  'Capex_init': 2400.0 * 0.73,  # Rosenfeld 2020 + ratio from Sarra2016
                                  'Capex_init_unit': 'euro/kW',
                                  'full_load_hours': 8760.0,
@@ -114,9 +113,9 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
     # production of gaseous fuel from biomass-derived syngas 3.2e8 Nm3/year
     syngas_needs_for_ft = 1.883
     initial_production = 0.75 * \
-        LiquidFuel.data_energy_dict['calorific_value'] * syngas_needs_for_ft + 3.2e8 * \
-        Methane.data_energy_dict['density'] * \
-        Methane.data_energy_dict['calorific_value'] / 1e9
+                         LiquidFuel.data_energy_dict['calorific_value'] * syngas_needs_for_ft + 3.2e8 * \
+                         Methane.data_energy_dict['density'] * \
+                         Methane.data_energy_dict['calorific_value'] / 1e9
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [3.317804973859207, 6.975128305927281, 4.333201737255864,
@@ -136,10 +135,12 @@ class BiomassGasificationDiscipline(SyngasTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     # -- add specific techno inputs to this
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 

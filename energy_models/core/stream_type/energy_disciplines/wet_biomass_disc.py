@@ -36,10 +36,10 @@ class BiomassWetDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': ['WetCropResidues', 'AnimalManure'],
-                                     'namespace': 'ns_wet_biomass',
-                                     'structuring': True,
-                                     'unit': '-'},
+                                            'possible_values': ['WetCropResidues', 'AnimalManure'],
+                                            'namespace': 'ns_wet_biomass',
+                                            'structuring': True,
+                                            'unit': '-'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_wet_biomass',
@@ -68,7 +68,8 @@ class BiomassWetDiscipline(EnergyDiscipline):
         cost_details, production, consumption, techno_mix = self.energy_model.compute(inputs_dict)
 
         outputs_dict = {GlossaryEnergy.EnergyPricesValue: cost_details,
-                        GlossaryEnergy.EnergyConsumptionValue: consumption / inputs_dict['scaling_factor_energy_consumption'],
+                        GlossaryEnergy.EnergyConsumptionValue: consumption / inputs_dict[
+                            'scaling_factor_energy_consumption'],
                         GlossaryEnergy.EnergyProductionValue: production / inputs_dict[
                             'scaling_factor_energy_production'],
                         'techno_mix': techno_mix}

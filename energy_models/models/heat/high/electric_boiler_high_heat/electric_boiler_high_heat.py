@@ -31,13 +31,12 @@ class ElectricBoilerHighHeat(highheattechno):
 
         self.cost_details[f'{Electricity.name}_needs'] = self.get_theoretical_electricity_needs()
 
-
         self.cost_details[Electricity.name] = \
             self.prices[Electricity.name] * \
             self.cost_details[f'{Electricity.name}_needs'] / \
             self.cost_details['efficiency']
 
-        #print(self.cost_details[Electricity.name])
+        # print(self.cost_details[Electricity.name])
 
         return self.cost_details[Electricity.name]
 
@@ -50,9 +49,9 @@ class ElectricBoilerHighHeat(highheattechno):
     def compute_heat_flux(self):
         land_rate = self.land_rate
         heat_price = self.compute_other_primary_energy_costs()
-        self.heat_flux = land_rate/heat_price
+        self.heat_flux = land_rate / heat_price
         self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
-                                               'heat_flux': self.heat_flux})
+                                                    'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
 
     def grad_price_vs_energy_price(self):
@@ -68,16 +67,15 @@ class ElectricBoilerHighHeat(highheattechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
+
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-                                                                                        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{hightemperatureheat.name} ({self.product_energy_unit})']
 
     def get_theoretical_electricity_needs(self):
         # we need as output kwh/kwh
         elec_demand = self.techno_infos_dict['elec_demand']
 
         return elec_demand
-
-
-

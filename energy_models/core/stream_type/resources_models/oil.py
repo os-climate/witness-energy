@@ -22,7 +22,7 @@ class CrudeOil(BaseStream):
     data_energy_dict = {'reference': 'engineeringtoolbox',
                         'maturity': 5,
                         'WACC': 0.1,
-                        'CO2_per_use': 3.15,   # Same as kerosene ?
+                        'CO2_per_use': 3.15,  # Same as kerosene ?
                         'CO2_per_use_unit': 'kg/kg',
                         'density': 980.0,  # at atmospheric pressure and 298K
                         'density_unit': 'kg/m^3',

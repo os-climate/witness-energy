@@ -24,14 +24,15 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['AnaerobicDigestion']
-TECHNOLOGIES_LIST = ['AnaerobicDigestion']
-TECHNOLOGIES_LIST_DEV = ['AnaerobicDigestion']
+DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.AnaerobicDigestion]
+TECHNOLOGIES_LIST = [GlossaryEnergy.AnaerobicDigestion]
+TECHNOLOGIES_LIST_DEV = [GlossaryEnergy.AnaerobicDigestion]
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1, technologies_list=TECHNOLOGIES_LIST,
-                 bspline=True,  main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1,
+                 technologies_list=TECHNOLOGIES_LIST,
+                 bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
         self.year_start = year_start
@@ -44,8 +45,8 @@ class Study(EnergyMixStudyManager):
         invest_biogas_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'AnaerobicDigestion' in self.technologies_list:
-            invest_biogas_mix_dict['AnaerobicDigestion'] = np.ones(
+        if GlossaryEnergy.AnaerobicDigestion in self.technologies_list:
+            invest_biogas_mix_dict[GlossaryEnergy.AnaerobicDigestion] = np.ones(
                 len(l_ctrl))
         if self.bspline:
             invest_biogas_mix_dict[GlossaryEnergy.Years] = self.years
@@ -65,16 +66,16 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'electricity': 16.0,
-                                           'syngas': 80.0,
-                                           'biomass_dry': 10.0})
+                                      GlossaryEnergy.electricity: 16.0,
+                                      GlossaryEnergy.syngas: 80.0,
+                                      GlossaryEnergy.biomass_dry: 10.0})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 10.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -91,7 +92,15 @@ class Study(EnergyMixStudyManager):
         resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'biomass_dry': - 0.64 / 4.86, 'biogas': - 0.05, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+            {GlossaryEnergy.Years: years,
+             GlossaryEnergy.biomass_dry: - 0.64 / 4.86,
+             GlossaryEnergy.biogas: - 0.05,
+             GlossaryEnergy.solid_fuel: 0.64 / 4.86,
+             GlossaryEnergy.electricity: 0.0,
+             GlossaryEnergy.methane: 0.123 / 15.4,
+             GlossaryEnergy.syngas: 0.0,
+             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
+             'crude oil': 0.02533})
         # define invest mix
         investment_mix = self.get_investments()
 
@@ -99,8 +108,8 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.EnergyMix.syngas_ratio': np.ones(len(years)) * 0.5,
-                       f'{self.study_name}.{energy_name}.AnaerobicDigestion.invest_level': invest_level,
-                       f'{self.study_name}.{energy_name}.AnaerobicDigestion.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.AnaerobicDigestion}.invest_level': invest_level,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.AnaerobicDigestion}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
@@ -116,8 +125,12 @@ class Study(EnergyMixStudyManager):
                     columns=[GlossaryEnergy.Years]).sum(axis=1)
                 for techno in self.technologies_list:
                     invest_level_techno = pd.DataFrame({GlossaryEnergy.Years: invest_level[GlossaryEnergy.Years].values,
-                                                        GlossaryEnergy.InvestValue: invest_level[GlossaryEnergy.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
-                    values_dict[f'{self.study_name}.{energy_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
+                                                        GlossaryEnergy.InvestValue: invest_level[
+                                                                                        GlossaryEnergy.InvestValue].values *
+                                                                                    investment_mix[
+                                                                                        techno].values / investment_mix_sum})
+                    values_dict[
+                        f'{self.study_name}.{energy_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
             else:
                 values_dict[f'{self.study_name}.{energy_name}.{GlossaryEnergy.InvestLevelValue}'] = invest_level
         else:
@@ -138,7 +151,6 @@ if '__main__' == __name__:
     #         disc)
     #     graph_list = ppf.get_post_processing_by_discipline(
     #         disc, filters, as_json=False)
-       
+
     #     for graph in graph_list:
     #         graph.to_plotly().show()
-

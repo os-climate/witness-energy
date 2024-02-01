@@ -57,27 +57,28 @@ class ManagedWoodPriceTestCase(unittest.TestCase):
                                       0.0928246539459331]) * 1.5 * 1e-3
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': electricity_price})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         # invest: plantation of 0.19Mha of forests each years (actual trend
         # since 2017)
         self.invest_level = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([1135081003.0, 1135081003.0, 1135081003.0,
-                                                 1135081003.0, 1135081003.0, 1135081003.0,
-                                                 1135081003.0, 1135081003.0, 1135081003.0,
-                                                 1135081003.0, 1135081003.0, 1135081003.0,
-                                                 1135081003.0, 1135081003.0, 1135081003.0,
-                                                 1135081003.0, 1135081003.0, 1135081003.0,
-                                                 1135081003.0, 1135081003.0, 1135081003.0,
-                                                 1135081003.0, 1135081003.0, 1135081003.0,
-                                                 1135081003.0, 1135081003.0, 1135081003.0,
-                                                 1135081003.0, 1135081003.0, 1135081003.0,
-                                                 1135081003.0]) * 1.0e-9})
+            {GlossaryEnergy.Years: years,
+             GlossaryEnergy.InvestValue: np.array([1135081003.0, 1135081003.0, 1135081003.0,
+                                                   1135081003.0, 1135081003.0, 1135081003.0,
+                                                   1135081003.0, 1135081003.0, 1135081003.0,
+                                                   1135081003.0, 1135081003.0, 1135081003.0,
+                                                   1135081003.0, 1135081003.0, 1135081003.0,
+                                                   1135081003.0, 1135081003.0, 1135081003.0,
+                                                   1135081003.0, 1135081003.0, 1135081003.0,
+                                                   1135081003.0, 1135081003.0, 1135081003.0,
+                                                   1135081003.0, 1135081003.0, 1135081003.0,
+                                                   1135081003.0, 1135081003.0, 1135081003.0,
+                                                   1135081003.0]) * 1.0e-9})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -101,7 +102,6 @@ class ManagedWoodPriceTestCase(unittest.TestCase):
         pass
 
     def test_02_managed_wood_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'ManagedWood'
         self.ee = ExecutionEngine(self.name)
@@ -111,7 +111,7 @@ class ManagedWoodPriceTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biomass_dry.managed_wood.managed_wood_disc.ManagedWoodDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biomass_dry}.managed_wood.managed_wood_disc.ManagedWoodDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -127,7 +127,7 @@ class ManagedWoodPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

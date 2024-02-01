@@ -64,9 +64,8 @@ class EnergyType(BaseStream):
         '''
         self.total_carbon_emissions[self.name] = 0.
         for element in self.subelements_list:
-
             self.total_carbon_emissions[self.name] += self.sub_carbon_emissions[element] * \
-                self.mix_weights[element] / 100.0
+                                                      self.mix_weights[element] / 100.0
 
         return self.total_carbon_emissions
 
@@ -86,8 +85,9 @@ class EnergyType(BaseStream):
 
         if self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'kg/kg':
             ghg_type_per_use = self.data_energy_dict_input[f'{ghg_type}_per_use'] / \
-                self.data_energy_dict_input['high_calorific_value']
-        elif self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'kg/kWh' or self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'Mt/TWh':
+                               self.data_energy_dict_input['high_calorific_value']
+        elif self.data_energy_dict_input[f'{ghg_type}_per_use_unit'] == 'kg/kWh' or self.data_energy_dict_input[
+            f'{ghg_type}_per_use_unit'] == 'Mt/TWh':
             ghg_type_per_use = self.data_energy_dict_input[f'{ghg_type}_per_use']
 
         return ghg_type_per_use

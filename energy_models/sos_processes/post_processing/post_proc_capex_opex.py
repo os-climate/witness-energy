@@ -52,7 +52,7 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
     techno_price_data = {}
 
     for techno in techno_list:
-        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"    #"energy_detailed_techno_prices" for Hydrogen and Fuel
+        techno_prices_f_name = f"{namespace}.{techno}.techno_detailed_prices"  # "energy_detailed_techno_prices" for Hydrogen and Fuel
         price_details = execution_engine.dm.get_value(techno_prices_f_name)
         year_list = price_details[GlossaryEnergy.Years].tolist()
         capex_list = price_details['CAPEX_Part'].tolist()
@@ -69,8 +69,6 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
         else:
             techno_price_data[techno] = energy_costs_List
 
-
-
     key_list = list(techno_price_data.keys())
     initial_y_values = []
     for key in techno_price_data.keys():
@@ -79,8 +77,8 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
         trace = go.Bar(
             x=key_list,
             y=initial_y_values,
-             marker=dict(
-            # set color equal to a variable
+            marker=dict(
+                # set color equal to a variable
                 color=initial_y_values,
                 cmin=min(initial_y_values), cmax=max(initial_y_values),
                 # one of plotly color scales
@@ -88,8 +86,8 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
                 # enable color scale
                 showscale=True,
                 colorbar=dict(title=y_label, thickness=20),
+            )
         )
-    )
 
     steps = []
     for i in range(len(year_list)):
@@ -127,7 +125,6 @@ def get_techno_price_data(execution_engine, namespace, title, price_name, y_labe
     new_chart = InstantiatedPlotlyNativeChart(
         fig, chart_name=title, default_title=True)
     return new_chart
-
 
 
 def post_processings(execution_engine, namespace, filters):
