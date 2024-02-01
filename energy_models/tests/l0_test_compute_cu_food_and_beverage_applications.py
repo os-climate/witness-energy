@@ -25,9 +25,9 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
-class GreenUreaPriceTestCase(unittest.TestCase):
+class FoodBeverageApplPriceTestCase(unittest.TestCase):
     """
-    GreenUrea prices test class
+    FoodBeverageAppl prices test class
     """
 
     def setUp(self):
@@ -77,10 +77,10 @@ class GreenUreaPriceTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_01_green_urea_discipline(self):
+    def test_01_food_beverage_application_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'GreenUrea'
+        self.model_name = 'FoodBeverageAppl'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
@@ -90,7 +90,7 @@ class GreenUreaPriceTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.carbon_utilization.green_urea.green_urea_disc.GreenUreaDiscipline'
+        mod_path = 'energy_models.models.carbon_utilization.food_and_beverage_applications.food_and_beverage_applications_disc.FoodBeverageApplDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
