@@ -731,13 +731,11 @@ class Study(EnergyStudyManager):
         """
         Update design space with utilization ratio for each technology
         """
-        dict_energy_studies = dict(
-            zip(self.energy_list + self.ccs_list, instanciated_studies)
-        )
-        len_years = len(self.years)
-        start_value_utilization_ratio = np.ones(len_years) * 100.0
-        lower_bound = np.ones(len_years) * 0.5
-        upper_bound = np.ones(len_years) * 100.0
+        dict_energy_studies = dict(zip(self.energy_list + self.ccs_list, instanciated_studies))
+        len_utilization_ratio = GlossaryEnergy.NB_POLES_UTILIZATION_RATIO
+        start_value_utilization_ratio = np.ones(len_utilization_ratio) * 100.
+        lower_bound = np.ones(len_utilization_ratio) * 0.5
+        upper_bound = np.ones(len_utilization_ratio) * 100.
         for energy_name, study in dict_energy_studies.items():
             if study is not None:
                 for techno_name in study.technologies_list:
