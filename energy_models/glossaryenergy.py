@@ -79,6 +79,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TransportMarginValue = "transport_margin"
     TransportDemandValue = "transport_demand"
     ForestInvestmentValue = "forest_investment"
+    CarbonCapturedValue = "carbon_captured_type"
     InstalledPower = "power_production"  # todo : rename string to 'Installed Power [MW]' (check unit)
 
     # energy techno discipline names
@@ -209,3 +210,11 @@ class GlossaryEnergy(GlossaryWitnessCore):
                                                      'float', None, False)},
                         'namespace': 'ns_invest',
                         'dataframe_edition_locked': False}
+
+    CarbonCaptured = {'var_name': CarbonCapturedValue, 'type': 'dataframe', 'unit': 'G$',
+                      'visibility': 'Shared',
+                      'dataframe_descriptor': {GlossaryWitnessCore.Years: ('float', None, False),
+                                               CarbonCapturedValue: (
+                                                   'float', None, False)},
+                      'namespace': 'ns_invest',
+                      'dataframe_edition_locked': False}

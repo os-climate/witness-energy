@@ -739,8 +739,14 @@ class Study(EnergyStudyManager):
         for energy_name, study in dict_energy_studies.items():
             if study is not None:
                 for techno_name in study.technologies_list:
+                    if energy_name in self.ccs_list:
+                        # if energy is ccs, use different name
+                        var_name_utilization_ratio = f"{energy_name}.{techno_name}_utilization_ratio_array"
+                    else:
+                        var_name_utilization_ratio = f"{energy_name}_{techno_name}_utilization_ratio_array"
+
                     self.update_dspace_dict_with(
-                        f"{energy_name}_{techno_name}_utilization_ratio_array",
+                        var_name_utilization_ratio,
                         start_value_utilization_ratio,
                         lower_bound,
                         upper_bound,
