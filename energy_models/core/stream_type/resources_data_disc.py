@@ -225,8 +225,6 @@ class ResourcesDisc(SoSWrapp):
         year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
         year_end = self.get_sosdisc_inputs(GlossaryEnergy.YearEnd)
 
-        years = np.arange(year_start, year_end + 1)
-
         resources_price = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesPriceValue)
 
         co2_emissions = self.get_sosdisc_inputs(GlossaryEnergy.RessourcesCO2EmissionsValue)

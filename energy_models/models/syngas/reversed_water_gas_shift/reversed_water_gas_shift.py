@@ -104,8 +104,6 @@ class RWGS(SyngasTechno):
 
     def compute_dcapex_dsyngas_ratio(self):
 
-        q = 0.0
-        dq = 0.0
         capex_init = self.check_capex_unity(
             self.techno_infos_dict)
 
@@ -173,9 +171,7 @@ class RWGS(SyngasTechno):
 
         dprod_dcapex = self.compute_dprod_dcapex(
             capex_list, invest_list, techno_dict, invest_before_year_start)
-        dcapex_syngas = self.compute_dcapex_dsyngas_ratio()
         # dprod_dfluegas = dpprod_dpfluegas + dprod_dcapex * dcapexdfluegas
-        dprod_dfluegas = np.zeros(dprod_dcapex.shape)
         if 'complex128' in [capex_list.dtype, invest_list.dtype, invest_before_year_start.dtype, dcapexdsyngas.dtype]:
             arr_type = 'complex128'
         else:
@@ -218,8 +214,6 @@ class RWGS(SyngasTechno):
         dsyngas_price_dsyngas_ratio = self.compute_dsyngas_price_dsyngas_ratio()
 
         delectricity_price_dsyngas_ratio = self.compute_delectricity_price_dsyngas_ratio()
-
-        dco2_price_dsyngas_ratio = self.compute_dco2_price_dsyngas_ratio()
 
         denergy_cost_dsyngas_ratio = dsyngas_price_dsyngas_ratio + \
                                      delectricity_price_dsyngas_ratio
@@ -299,8 +293,6 @@ class RWGS(SyngasTechno):
 
     def compute_dco2_needs_dsyngas_ratio(self):
         mol_H2 = 1.0
-        mol_CO2 = self.needed_syngas_ratio - self.syngas_ratio * (1.0 + self.needed_syngas_ratio) / \
-                  (1.0 + self.syngas_ratio)
 
         mol_CO2_up = - self.syngas_ratio * (1.0 + self.needed_syngas_ratio)
         dmol_CO2_up = - (1.0 + self.needed_syngas_ratio)
@@ -565,14 +557,11 @@ class RWGS(SyngasTechno):
     def compute_dsyngas_needs_dsyngas_ratio(self):
 
         #############
-        mol_syngas_in = (1.0 + self.needed_syngas_ratio) / \
-                        (1.0 + self.syngas_ratio)
 
         dmol_syngas_in_dsyngas_ratio = - \
                                            (1.0 + self.needed_syngas_ratio) / (1.0 + self.syngas_ratio) ** 2
 
         ####
-        syngas_molar_mass_in = compute_syngas_molar_mass(self.syngas_ratio)
 
         # syngas_molar_mass_in (self.syngas_ratio * CO.data_energy_dict['molar_mass'] +
         # Hydrogen.data_energy_dict['molar_mass']) / (1.0 + self.syngas_ratio)
@@ -589,8 +578,6 @@ class RWGS(SyngasTechno):
                                                syngas_molar_mass_in_up * dsyngas_molar_mass_in_down_dsyngas_ratio) / syngas_molar_mass_in_down ** 2
 
         ######
-        syngas_calorific_value_in = compute_syngas_calorific_value(
-            self.syngas_ratio)
         # (syngas_ratio * CO.data_energy_dict['molar_mass'] * CO.data_energy_dict['calorific_value'] +
         # Hydrogen.data_energy_dict['molar_mass'] *
         # Hydrogen.data_energy_dict['calorific_value']) /
@@ -616,8 +603,6 @@ class RWGS(SyngasTechno):
 
         ########
 
-        syngas_needs = self.get_theoretical_syngas_needs(self.syngas_ratio)
-
         mol_syngas_in = (1.0 + self.needed_syngas_ratio) / \
                         (1.0 + self.syngas_ratio)
         mol_syngas_out = 1.0
@@ -631,10 +616,6 @@ class RWGS(SyngasTechno):
             self.needed_syngas_ratio)
         calorific_value_out = compute_syngas_calorific_value(
             self.needed_syngas_ratio)
-
-        syngas_needs = mol_syngas_in * syngas_molar_mass_in * syngas_calorific_value_in / \
-                       (mol_syngas_out * syngas_molar_mass_out *
-                        calorific_value_out)
 
         dsyngas_needs_dsyngas_ratio = (
                                                   dmol_syngas_in_dsyngas_ratio * syngas_molar_mass_in * syngas_calorific_value_in + mol_syngas_in *
@@ -695,9 +676,6 @@ class RWGS(SyngasTechno):
             self.needed_syngas_ratio)
 
         water_data = Water.data_energy_dict
-        water_needs = mol_H20 * water_data['molar_mass'] / \
-                      (mol_H2 * needed_syngas_molar_mass *
-                       needed_calorific_value)
 
         dwater_needs_dsyngas_ratio = dmol_H20_dsyngas_ratio * water_data['molar_mass'] / \
                                      (mol_H2 * needed_syngas_molar_mass *

@@ -169,7 +169,6 @@ class FlueGasDiscipline(SoSWrapp):
         '''
         inputs_dict = self.get_sosdisc_inputs()
         technologies_list = inputs_dict[GlossaryEnergy.techno_list]
-        ccs_list = inputs_dict[GlossaryEnergy.ccs_list]
         mix_weights = self.get_sosdisc_outputs('flue_gas_prod_ratio')
 
         total_prod = self.get_sosdisc_outputs('flue_gas_production')[

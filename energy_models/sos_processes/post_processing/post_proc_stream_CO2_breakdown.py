@@ -396,7 +396,6 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     # Prepare data
     multilevel_df, years = get_CO2_breakdown_multilevel_df(
         execution_engine, namespace)
-    energy_list = list(set(multilevel_df.index.droplevel(1)))
     technologies_list = list(multilevel_df.loc[energy_name].index.values)
     other_emission_type = [col for col in multilevel_df.columns if col not in [
         'energy', 'technology', 'production', 'CO2_from_production', 'CO2_per_use', 'CO2_after_use']]
@@ -407,7 +406,6 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
 
     # Create Figure
     chart_name = f'{chart_name}'
-    fig = go.Figure()
 
     # Fill figure with data by year
     # i_label_dict associates each label with an integer value

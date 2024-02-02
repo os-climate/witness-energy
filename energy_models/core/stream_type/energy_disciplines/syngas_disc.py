@@ -158,8 +158,6 @@ class SyngasDiscipline(EnergyDiscipline):
         years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
                           inputs_dict[GlossaryEnergy.YearEnd] + 1)
         technos_list = inputs_dict[GlossaryEnergy.techno_list]
-        list_columns_energyprod = list(
-            outputs_dict[GlossaryEnergy.EnergyProductionValue].columns)
         mix_weight = outputs_dict['techno_mix']
         for techno in technos_list:
             mix_weight_techno = mix_weight[techno].values / 100.0

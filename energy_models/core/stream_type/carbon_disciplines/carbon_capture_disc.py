@@ -569,7 +569,6 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
-        energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
         chart_name = f'CO2 captured<br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',
@@ -599,7 +598,6 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
-        energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
         chart_name = f'resources used for CO2 capture <br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',

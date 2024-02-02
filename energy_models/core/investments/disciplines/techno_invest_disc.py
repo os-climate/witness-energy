@@ -168,8 +168,6 @@ class InvestTechnoDiscipline(SoSWrapp):
         if 'Invest Distribution' in charts:
             techno_invest_df = self.get_sosdisc_outputs(
                 'techno_invest_df')
-            techno_mix = self.get_sosdisc_inputs(
-                'invest_techno_mix')
             techno_list = self.get_sosdisc_inputs(
                 GlossaryEnergy.techno_list)
             chart_name = f'Distribution of Investments vs years'

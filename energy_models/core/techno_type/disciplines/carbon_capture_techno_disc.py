@@ -69,8 +69,6 @@ class CCTechnoDiscipline(TechnoDiscipline):
 
         inputs_dict = self.get_sosdisc_inputs()
         scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
-        scaling_factor_techno_consumption = self.get_sosdisc_inputs(
-            'scaling_factor_techno_consumption')
         scaling_factor_techno_production = self.get_sosdisc_inputs(
             'scaling_factor_techno_production')
         dcapex_dfluegas = self.techno_model.compute_dcapex_dfg_ratio(

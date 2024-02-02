@@ -54,7 +54,6 @@ class CalciumLooping(CCTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
-        heat_needs = self.get_heat_needs()
         efficiency = self.configure_efficiency()
         return {Electricity.name: np.identity(
             len(self.years)) * elec_needs / efficiency * self.compute_electricity_variation_from_fg_ratio(

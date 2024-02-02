@@ -137,8 +137,6 @@ class EnergyDiscipline(StreamDiscipline):
         years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
                           inputs_dict[GlossaryEnergy.YearEnd] + 1)
         technos_list = inputs_dict[GlossaryEnergy.techno_list]
-        list_columns_co2_emissions = list(
-            outputs_dict[GlossaryEnergy.CO2EmissionsValue].columns)
         mix_weight = outputs_dict['techno_mix']
         for techno in technos_list:
             list_columnstechnoprod = list(

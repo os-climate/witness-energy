@@ -259,10 +259,8 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
                                               np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
 
     def get_post_processing_list(self, filters=None):
-        instanciated_charts = []
         charts = []
         price_unit_list = []
-        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
 
         # Overload default value with chart filter
         if filters is not None:
@@ -292,7 +290,6 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
     def get_production_chart(self):
         production_mix_df = self.get_sosdisc_outputs('mix_detailed_production')
-        production_df = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
 
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_wood = f'{self.energy_name}_wood (TWh)'
@@ -375,7 +372,6 @@ class UnmanagedWoodDiscipline(BiomassDryTechnoDiscipline):
         name_wood = f'{self.energy_name}_wood'
 
         chart_name = f'Detailed Price of Unmanaged wood technology over the years'
-        techno_price = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
 

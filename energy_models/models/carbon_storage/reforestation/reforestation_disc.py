@@ -146,7 +146,6 @@ class ReforestationDiscipline(CSTechnoDiscipline):
         available_land = self.get_sosdisc_outputs(GlossaryEnergy.LandUseRequiredValue)
         year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
         year_end = self.get_sosdisc_inputs(GlossaryEnergy.YearEnd)
-        years = np.arange(year_start, year_end + 1)
         minimum = min(
             available_land[f'{self.techno_name} (Gha)'].values.tolist())
         maximum = max(

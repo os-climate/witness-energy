@@ -293,14 +293,13 @@ class OneInvestDiscipline(SoSWrapp):
 
         instanciated_charts = []
         charts = []
-        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
                 if chart_filter.filter_key == 'charts_invest':
                     charts = chart_filter.selected_values
                 if chart_filter.filter_key == GlossaryEnergy.Years:
-                    years_list = chart_filter.selected_values
+                    pass
 
         if 'Invest Distribution' in charts:
             all_invest_df = self.get_sosdisc_outputs(

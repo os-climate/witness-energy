@@ -347,8 +347,6 @@ class ConsumptionCO2Emissions(BaseStream):
 
             # Compute the CO2 emitted during the use of the net energy
             # If net energy is negative, CO2 by use is equals to zero
-            net_prod = net_production[
-                f'production {energy} (TWh)'].values
 
         ''' CO2 removed by energy mix       
          CO2 removed by energy mix technologies during the process 

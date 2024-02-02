@@ -141,7 +141,6 @@ class HeatDiscipline(SoSWrapp):
         energy_production = pd.DataFrame({GlossaryEnergy.Years: years})
         energy_consumption = pd.DataFrame({GlossaryEnergy.Years: years})
         energy_production_detailed = pd.DataFrame({GlossaryEnergy.Years: years})
-        energy_heat_flux_detailed = pd.DataFrame({GlossaryEnergy.Years: years})
         energy_prices[GlossaryEnergy.heat] = 0
         energy_prices['heat_production'] = 0
 

@@ -89,7 +89,6 @@ class TechnoType:
         Biblio & references at https://docs.google.com/presentation/d/1r4JVNxEEClfjBGt27wdnzil8jaRt_TwnCMCQ76ew8o4/edit#slide=id.gc29c52ae34_0_96
         '''
         # Init price check
-        product = biblio_data['sos_name'].item().split('.')[0]
         price = self.cost_details[self.name][0]
         max_price = float(biblio_data['max_price'])
         min_price = float(biblio_data['min_price'])
@@ -1117,8 +1116,6 @@ class TechnoType:
         else:
             arr_type = 'float64'
         dprod_list_dinvest_list = np.zeros(
-            (nb_years, nb_years), dtype=arr_type)
-        dprod_list_dcapex_list = np.zeros(
             (nb_years, nb_years), dtype=arr_type)
         # We fill this jacobian column by column because it is the same element
         # in the entire column
