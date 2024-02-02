@@ -210,7 +210,7 @@ class StreamDiscipline(SoSWrapp):
                         GlossaryEnergy.LandUseRequiredValue: self.energy_model.land_use_required,
                         GlossaryEnergy.EnergyTypeCapitalDfValue: self.energy_model.energy_type_capital
                         }
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

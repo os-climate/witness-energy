@@ -1133,8 +1133,6 @@ class TestGlobalEnergyValues(unittest.TestCase):
         elec_detailed_prices = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.energy_detailed_techno_prices')
 
-        elec_detailed_prices['Nuclear'].values[0]
-
 
 if '__main__' == __name__:
     t0 = time.time()

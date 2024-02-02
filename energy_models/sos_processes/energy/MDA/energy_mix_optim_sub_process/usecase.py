@@ -17,9 +17,6 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
-from climateeconomics.sos_processes.iam.witness.resources_process.usecase import (
-    Study as datacase_resource,
-)
 from energy_models.core.demand.energy_demand_disc import EnergyDemandDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import (
@@ -76,18 +73,20 @@ INVEST_DISC_NAME = "InvestmentDistribution"
 class Study(EnergyStudyManager):
     def __init__(
             self,
+            file_path=__file__,
             year_start=GlossaryEnergy.YeartStartDefault,
             year_end=2050,
             main_study=True,
             bspline=True,
             execution_engine=None,
+            techno_dict=DEFAULT_TECHNO_DICT
     ):
         super().__init__(
-            file_path=__file__,
+            file_path=file_path,
             run_usecase=True,
             main_study=main_study,
             execution_engine=execution_engine,
-            techno_dict=DEFAULT_TECHNO_DICT,
+            techno_dict=techno_dict,
         )
         self.year_start = year_start
         self.year_end = year_end
@@ -660,11 +659,6 @@ class Study(EnergyStudyManager):
         values_dict_list.append(values_dict)
 
         self.create_technolist_per_energy(instanciated_studies)
-
-        dc_resource = datacase_resource(self.year_start, self.year_end)
-        dc_resource.study_name = self.study_name
-        resource_input_list = dc_resource.setup_usecase()
-        values_dict_list.extend(resource_input_list)
 
         agri_values_dict = self.get_input_value_from_agriculture_mix()
         values_dict_list.append(agri_values_dict)

@@ -71,7 +71,7 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
         super().run()
 
         outputs_dict = {'syngas_ratio': np.array([self.syngas_ratio])}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

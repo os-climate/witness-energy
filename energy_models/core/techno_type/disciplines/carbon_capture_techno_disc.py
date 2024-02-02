@@ -225,7 +225,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
         year_end = max(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
         minimum = 0
         maximum = max(
-            (techno_detailed_prices[self.techno_name].values).tolist()) * 1.2
+            techno_detailed_prices[self.techno_name].values.tolist()) * 1.2
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Prices [$/tCO2]', [year_start, year_end],
                                              [minimum, maximum],
@@ -236,7 +236,7 @@ class CCTechnoDiscipline(TechnoDiscipline):
                 'percentage_resource')
             new_chart.annotation_upper_left = {
                 'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
-            tot_price = (techno_detailed_prices[self.techno_name].values) / \
+            tot_price = techno_detailed_prices[self.techno_name].values / \
                         (percentage_resource[self.energy_name] / 100.)
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
@@ -245,14 +245,14 @@ class CCTechnoDiscipline(TechnoDiscipline):
         # Add total price
         serie = InstanciatedSeries(
             techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-            (techno_detailed_prices[self.techno_name].values).tolist(), 'Total price with margin', 'lines')
+            techno_detailed_prices[self.techno_name].values.tolist(), 'Total price with margin', 'lines')
 
         new_chart.series.append(serie)
 
         # Factory price
         serie = InstanciatedSeries(
             techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-            (techno_detailed_prices[f'{self.techno_name}_factory'].values).tolist(), 'Factory', 'lines')
+            techno_detailed_prices[f'{self.techno_name}_factory'].values.tolist(), 'Factory', 'lines')
 
         new_chart.series.append(serie)
 
@@ -260,20 +260,20 @@ class CCTechnoDiscipline(TechnoDiscipline):
             # energy_costs
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-                (techno_detailed_prices['energy_costs'].values).tolist(), 'Energy costs', 'lines')
+                techno_detailed_prices['energy_costs'].values.tolist(), 'Energy costs', 'lines')
 
             new_chart.series.append(serie)
 
         # Transport price
         serie = InstanciatedSeries(
             techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-            (techno_detailed_prices['transport'].values).tolist(), 'Transport', 'lines')
+            techno_detailed_prices['transport'].values.tolist(), 'Transport', 'lines')
 
         new_chart.series.append(serie)
         # CO2 taxes
         serie = InstanciatedSeries(
             techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
-            (techno_detailed_prices['CO2_taxes_factory'].values).tolist(), 'CO2 taxes due to production', 'lines')
+            techno_detailed_prices['CO2_taxes_factory'].values.tolist(), 'CO2 taxes due to production', 'lines')
         new_chart.series.append(serie)
 
         return new_chart

@@ -188,13 +188,13 @@ class FischerTropsch(LiquidFuelTechno):
             self.dprice_FT_wotaxes_dsyngas_ratio = np.zeros(
                 (len(self.years), len(self.years)), dtype=arr_type)
 
-            if (self.syngas_ratio[0] < self.needed_syngas_ratio):
+            if self.syngas_ratio[0] < self.needed_syngas_ratio:
                 techno_first_year = 'RWGS'
             else:
                 techno_first_year = 'WGS'
             first_value = None
             for i in range(self.year_end - self.year_start + 1):
-                if (self.syngas_ratio[i] < self.needed_syngas_ratio):
+                if self.syngas_ratio[i] < self.needed_syngas_ratio:
 
                     self.dprice_FT_dsyngas_ratio[i,
                     :] = dprice_FT_dsyngas_ratio_RWGS[i, :]
@@ -274,7 +274,7 @@ class FischerTropsch(LiquidFuelTechno):
             delec_dprice = np.zeros(
                 (len(self.years), len(self.years)), dtype=arr_type)
             for i in range(self.year_end - self.year_start + 1):
-                if (self.syngas_ratio[i] < self.needed_syngas_ratio):
+                if self.syngas_ratio[i] < self.needed_syngas_ratio:
                     # RWGS
 
                     dsyngas_dprice[i] = (self.cost_details['syngas_needs_for_FT'][i] * self.syn_needs_rwgs[i] /
@@ -693,7 +693,7 @@ class FischerTropsch(LiquidFuelTechno):
             dtotal_emission_dsyngas_ratio = np.zeros(
                 (len(self.years), len(self.years)), dtype=arr_type)
             for i in range(self.year_end - self.year_start + 1):
-                if (self.syngas_ratio[i] < self.needed_syngas_ratio):
+                if self.syngas_ratio[i] < self.needed_syngas_ratio:
                     # RWGS
                     #                     dco2_emission_dsyngas_ratio[i,
                     #                                                 :] = dco2_emission_dsyngas_ratio_rwgs[i, :]
@@ -982,7 +982,7 @@ class FischerTropsch(LiquidFuelTechno):
                 (len(self.years), len(self.years)), dtype=arr_type)
 
             for i in range(self.year_end - self.year_start + 1):
-                if (self.syngas_ratio[i] < self.needed_syngas_ratio):
+                if self.syngas_ratio[i] < self.needed_syngas_ratio:
                     # RWGS
                     dwaterprod_dsyngas_ratio[i, :] = dwater_dsyngas_ratio[i, :]
                     dliquid_fuelprod_dsyngas_ratio[:,
@@ -1212,7 +1212,7 @@ class FischerTropsch(LiquidFuelTechno):
                 (len(self.years), len(self.years)), dtype=arr_type)
 
             for i in range(self.year_end - self.year_start + 1):
-                if (self.syngas_ratio[i] < self.needed_syngas_ratio):
+                if self.syngas_ratio[i] < self.needed_syngas_ratio:
                     # RWGS
                     dsyngas_dsyngas_ratio[i,
                     :] = dsyngas_dsyngas_ratio_rwgs[i, :]

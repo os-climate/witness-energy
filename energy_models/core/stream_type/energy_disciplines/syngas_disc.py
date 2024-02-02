@@ -127,7 +127,7 @@ class SyngasDiscipline(EnergyDiscipline):
                         'syngas_ratio': syngas_ratio,
                         'syngas_ratio_technos': self.energy_model.syngas_ratio}
         outputs_dict.update(ghg_per_use_dict)
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_data_energy_dict(self):

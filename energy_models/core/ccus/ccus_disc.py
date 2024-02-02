@@ -202,7 +202,7 @@ class CCUS_Discipline(SoSWrapp):
             EnergyMix.CARBON_STORAGE_CONSTRAINT: self.ccus_model.carbon_storage_constraint,
         }
 
-        # -- store outputs
+        
 
         self.store_sos_outputs_values(outputs_dict)
 
@@ -508,7 +508,7 @@ class CCUS_Discipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (carbon_capture_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'].values).tolist(),
+            carbon_capture_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'].values.tolist(),
             f'CO2 captured from energy mix')
         new_chart.add_series(serie)
 

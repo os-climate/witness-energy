@@ -377,7 +377,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
 
     # If columns is not None, return a subset of multilevel_df with selected
     # columns
-    if columns != None and type(columns) == list:
+    if columns is not None and type(columns) == list:
         multilevel_df = pd.DataFrame(multilevel_df[columns])
 
     return multilevel_df, years

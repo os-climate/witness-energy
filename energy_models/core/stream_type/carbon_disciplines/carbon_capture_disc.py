@@ -105,7 +105,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             'carbon_captured_type': self.energy_model.carbon_captured_type,
             'carbon_captured_type_woratio': self.energy_model.carbon_captured_type_woratio,
         }
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -144,7 +144,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                 where=carbon_captured_type['flue gas'].values != 0.0))
             dfg_ratio = np.divide(- inputs_dict['flue_gas_production'][
                 CarbonCapture.flue_gas_name].values * scaling_factor_energy_production,
-                                  (carbon_captured_type['flue gas'].values)
+                                  carbon_captured_type['flue gas'].values
                                   ** 2, out=np.zeros_like(
                     -inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values),
                                   where=carbon_captured_type['flue gas'].values != 0.0)
@@ -159,7 +159,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                 where=carbon_captured_type_woratio['flue gas'].values != 0.0))
             dfg_ratio_woratio = np.divide(- inputs_dict['flue_gas_production'][
                 CarbonCapture.flue_gas_name].values * scaling_factor_energy_production,
-                                          (carbon_captured_type_woratio['flue gas'].values)
+                                          carbon_captured_type_woratio['flue gas'].values
                                           ** 2, out=np.zeros_like(
                     -inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values),
                                           where=carbon_captured_type_woratio['flue gas'].values != 0.0)

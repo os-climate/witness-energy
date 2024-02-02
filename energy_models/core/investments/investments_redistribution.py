@@ -21,7 +21,7 @@ from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class InvestmentsRedistribution():
+class InvestmentsRedistribution:
     '''
         Model to distribute investments based on percentage of GDP to technologies
     '''

@@ -166,8 +166,6 @@ class RWGS(SyngasTechno):
                      (1.0 - maximum_learning_capex_ratio) * capex_grad
         return capex_grad
 
-        return capex_grad
-
     def compute_dprod_dsyngas_ratio(self, capex_list, invest_list, invest_before_year_start, techno_dict,
                                     dcapexdsyngas):
 

@@ -48,8 +48,8 @@ class PostProcessEnergy(unittest.TestCase):
         """
         All energy list
         """
-        energylist = [GlossaryEnergy.methane, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.biogas, GlossaryEnergy.syngas, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}', \
-                      f'{GlossaryEnergy.fuel}.hydrotreated_oil_fuel', GlossaryEnergy.solid_fuel, GlossaryEnergy.biomass_dry, \
+        energylist = [GlossaryEnergy.methane, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.biogas, GlossaryEnergy.syngas, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}',
+                      f'{GlossaryEnergy.fuel}.hydrotreated_oil_fuel', GlossaryEnergy.solid_fuel, GlossaryEnergy.biomass_dry,
                       GlossaryEnergy.electricity, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}', f'{GlossaryEnergy.fuel}.ethanol', f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}']
         self.namespace_list = []
         """

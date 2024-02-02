@@ -399,7 +399,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             [(1. - alpha) * self.energy_model.production[GlossaryEnergy.TotalProductionValue][0] * delta_years
              / self.energy_model.production[GlossaryEnergy.TotalProductionValue].sum(), ])
 
-        # -- store outputs
+        
         if EnergyMix.PRODUCTION in self.energy_model.energy_prices:
             self.energy_model.energy_prices.drop(
                 columns=[EnergyMix.PRODUCTION], inplace=True)
@@ -458,7 +458,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         else:
             outputs_dict['primary_energies_production'] = pd.DataFrame()
 
-        # -- store outputs
+        
 
         self.store_sos_outputs_values(outputs_dict)
 
