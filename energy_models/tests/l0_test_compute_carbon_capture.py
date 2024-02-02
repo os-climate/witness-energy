@@ -64,11 +64,13 @@ class CarbonCaptureTestCase(unittest.TestCase):
         carbon_capture_name = GlossaryEnergy.carbon_capture
         energy_mix = 'EnergyMix'
         flue_gas_name = 'flue_gas_capture'
+        direct_air_name = 'direct_air_capture'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_carbon_capture': f'{ns_study}.{energy_mix}.{carbon_capture_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
+                   'ns_direct_air': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{direct_air_name}',
                    'ns_public': f'{ns_study}',
                    GlossaryEnergy.NS_CCS: f'{ns_study}',
                    GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',

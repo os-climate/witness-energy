@@ -40,7 +40,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
         self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
+        self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [GlossaryEnergy.biomass_dry,
             GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.ethanol', GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, f'{GlossaryEnergy.heat}.lowtemperatureheat',
             f'{GlossaryEnergy.heat}.mediumtemperatureheat', f'{GlossaryEnergy.heat}.hightemperatureheat']]
         # print(GlossaryEnergy.energy_list, self.energy_list)

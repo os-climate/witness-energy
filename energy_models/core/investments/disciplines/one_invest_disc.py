@@ -82,16 +82,22 @@ class OneInvestDiscipline(SoSWrapp):
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.HeatPumpHighHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.GeothermalHighHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.CHPHighHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.HydrogenBoilerHighHeat': (
+                                        'float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.NaturalGasBoilerLowHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.ElectricBoilerLowHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.HeatPumpLowHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.GeothermalLowHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.CHPLowHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.HydrogenBoilerLowHeat': (
+                                        'float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.NaturalGasBoilerMediumHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.ElectricBoilerMediumHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.HeatPumpMediumHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.GeothermalMediumHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.CHPMediumHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.HydrogenBoilerMediumHeat': (
+                                        'float', None, True),
                                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.PlasmaCracking': ('float', None, True),
                                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.SOEC': ('float', None, True),
                                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.PEM': ('float', None, True),

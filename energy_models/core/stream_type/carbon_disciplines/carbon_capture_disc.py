@@ -85,7 +85,12 @@ class CarbonCaptureDiscipline(StreamDiscipline):
     DESC_OUT = StreamDiscipline.DESC_OUT.copy()
 
     DESC_OUT.update({'carbon_captured_type': {'type': 'dataframe', 'unit': 'Mt'},
-                     'carbon_captured_type_woratio': {'type': 'dataframe', 'unit': 'Mt'}})
+                     'carbon_captured_type_woratio': {'type': 'dataframe', 'unit': 'Mt'},
+                     'production_fgc': {'type': 'dataframe', 'unit': 'TWh'},
+                     'consumption_fgc': {'type': 'dataframe', 'unit': 'TWh'},
+                     'production_dac': {'type': 'dataframe', 'unit': 'TWh'},
+                     'consumption_dac': {'type': 'dataframe', 'unit': 'TWh'},
+                     })
 
 
     def init_execution(self):

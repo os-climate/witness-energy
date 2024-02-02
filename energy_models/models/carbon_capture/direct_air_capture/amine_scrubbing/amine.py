@@ -109,14 +109,14 @@ class Amine(CCTechno):
                                                                  self.production_detailed[
                                                                      f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
-                                                                                            'heat_needs'] * \
-                                                                                        self.production_detailed[
-                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
-                                                                                        Methane.data_energy_dict[
-                                                                                            'CO2_per_use'] / \
-                                                                                        Methane.data_energy_dict[
-                                                                                            'calorific_value']
+        # self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
+        #                                                                                     'heat_needs'] * \
+        #                                                                                 self.production_detailed[
+        #                                                                                     f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
+        #                                                                                 Methane.data_energy_dict[
+        #                                                                                     'CO2_per_use'] / \
+        #                                                                                 Methane.data_energy_dict[
+        #                                                                                     'calorific_value']
 
 
         self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
