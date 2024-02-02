@@ -53,6 +53,15 @@ class CCUS(BaseStream):
         '''
         super(CCUS, self).__init__(name)
 
+        self.CCS_price = None
+        self.carbonstorage_limit = None
+        self.carbonstorage_constraint_ref = None
+        self.energy_prices = None
+        self.all_resource_demand = None
+        self.co2_production = None
+        self.co2_consumption = None
+        self.emissions_by_energy = None
+        self.carbon_storage_constraint = None
         self.total_co2_emissions = pd.DataFrame()
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None

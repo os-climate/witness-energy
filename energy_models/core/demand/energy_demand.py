@@ -48,6 +48,14 @@ class EnergyDemand(object):
         Constructor
         '''
         # -- Inputs attributes set from configure method
+        self.delta_years = None
+        self.electricity_demand_constraint_ref = None
+        self.transport_demand_constraint_ref = None
+        self.transport_demand_df = None
+        self.additional_demand_transport = None
+        self.population_df = None
+        self.improved_efficiency_factor = None
+        self.net_transport_production = None
         self.name = name
         self.year_start = GlossaryEnergy.YeartStartDefault  # year start
         self.year_end = GlossaryEnergy.YeartEndDefault  # year end

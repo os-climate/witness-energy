@@ -31,7 +31,7 @@ TECHNOLOGIES_LIST = [
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1,
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050,
                  technologies_list=TECHNOLOGIES_LIST,
                  bspline=True, main_study=True, prefix_name=None, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):

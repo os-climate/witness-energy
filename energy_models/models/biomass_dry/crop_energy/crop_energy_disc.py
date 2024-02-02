@@ -168,7 +168,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         '''
         specific run for crops 
         '''
-        # -- get inputs
         super().run()
         self.specific_run()
 
@@ -178,7 +177,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         '''
         outputs_dict = {'mix_detailed_prices': self.techno_model.price_mix,
                         'mix_detailed_production': self.techno_model.production_mix}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

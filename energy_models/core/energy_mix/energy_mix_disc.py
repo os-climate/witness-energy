@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import logging
 from copy import deepcopy
 
 import numpy as np
@@ -218,6 +218,11 @@ class Energy_Mix_Discipline(SoSWrapp):
     energy_constraint_list = EnergyMix.energy_constraint_list
     movable_fuel_list = EnergyMix.movable_fuel_list
 
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.energy_model = None
+        self.grad_energy_mix_vs_prod_dict = None
+
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = EnergyMix(self.energy_name)
@@ -399,7 +404,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             [(1. - alpha) * self.energy_model.production[GlossaryEnergy.TotalProductionValue][0] * delta_years
              / self.energy_model.production[GlossaryEnergy.TotalProductionValue].sum(), ])
 
-        # -- store outputs
+        
         if EnergyMix.PRODUCTION in self.energy_model.energy_prices:
             self.energy_model.energy_prices.drop(
                 columns=[EnergyMix.PRODUCTION], inplace=True)
@@ -458,7 +463,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         else:
             outputs_dict['primary_energies_production'] = pd.DataFrame()
 
-        # -- store outputs
+        
 
         self.store_sos_outputs_values(outputs_dict)
 
@@ -920,9 +925,6 @@ class Energy_Mix_Discipline(SoSWrapp):
                                             self.energy_model.raw_tonet_dict[energy])
                     loss_percent = heat_losses_percentage + loss_percentage
 
-                    dtotal_prod_denergy_prod = self.compute_dtotal_production_denergy_production(
-                        production_detailed_df, minimum_energy_production, loss_percent)
-
                     self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
                                                                  EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
                                                                 (
@@ -933,10 +935,6 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                                         1.0 - loss_percent))
 
                 if True in list_index_conso:
-                    dtotal_prod_denergy_cons = - \
-                        self.compute_dtotal_production_denergy_production(
-                            production_detailed_df, minimum_energy_production, 0.0)
-
                     self.set_partial_derivative_for_other_types((EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF,
                                                                  EnergyMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT),
                                                                 (
@@ -1137,6 +1135,10 @@ class Energy_Mix_Discipline(SoSWrapp):
         @param stream_class_dict: dictionary with informations on the energies
         @param scaling_factor_production: float used to scale the energy production at input/output of the model
         @return ddemand_ratio_denergy_prod, ddemand_ratio_denergy_cons: numpy.arrays, shape=(len(years),len(years)) with the gradients
+        :param years:
+        :type years:
+        :param energy_production_brut_detailed:
+        :type energy_production_brut_detailed:
         '''
 
         # Calculate energy production and consumption
@@ -1159,10 +1161,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             energy_production, 1.0e-10)
         energy_prod_limited = compute_func_with_exp_min(
             energy_production, 1.0e-10)
-        energy_cons_limited = compute_func_with_exp_min(
-            energy_consumption, 1.0e-10)
 
-        ddemand_ratio_denergy_prod = np.identity(len(years)) * 100.0
         # If prod < cons, set the identity element for the given year to
         # the corresponding value
         denergy_cons_limited = compute_dfunc_with_exp_min(
@@ -1477,8 +1476,6 @@ class Energy_Mix_Discipline(SoSWrapp):
         for energy in energy_list:
             ns_energy = self.get_ns_energy(energy)
             if self.stream_class_dict[energy].unit == 'TWh':
-                techno_price = self.get_sosdisc_inputs(
-                    f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}')
                 max_value = max(
                     max(energy_prices[energy].values.tolist()), max_value)
 
