@@ -16,7 +16,8 @@
         "txt",
         "ipynb",
         "zip",
-        "rst"
+        "rst",
+        "ini"
     ],
     "files_to_ignore": [
         "default_process_rights.yaml"
