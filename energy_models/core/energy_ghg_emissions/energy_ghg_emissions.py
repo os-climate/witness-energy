@@ -46,6 +46,30 @@ class EnergyGHGEmissions(BaseStream):
 
     GHG_TYPE_LIST = GHGEmissions.GHG_TYPE_LIST
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.energy_list = None
+        self.scaling_factor_energy_production = None
+        self.scaling_factor_energy_consumption = None
+        self.years = None
+        self.gwp_20 = None
+        self.gwp_100 = None
+        self.energy_list = None
+        self.ccs_list = None
+        self.ghg_per_use_dict = None
+        self.energy_production_detailed = None
+        self.co2_emissions_needed_by_energy_mix = None
+        self.co2_emissions_ccus_Gt = None
+        self.CO2_sources = None
+        self.CO2_sinks = None
+        self.ghg_production_dict = None
+        self.CO2_consumption = None
+        self.ghg_sources = None
+        self.ghg_total_emissions = None
+        self.gwp_emissions = None
+        self.CO2_sources_Gt = None
+        self.CO2_sinks_Gt = None
+
     def configure_parameters(self, inputs_dict):
         '''
         Configure parameters (variables that does not change during the run)

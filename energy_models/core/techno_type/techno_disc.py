@@ -125,6 +125,17 @@ class TechnoDiscipline(SoSWrapp):
 
     def __init__(self, sos_name, logger: logging.Logger):
         super().__init__(sos_name=sos_name, logger=logger)
+        self.dprice_dinvest = None
+        self.dprod_dinvest = None
+        self.dpower_dinvest = None
+        self.dprod_dratio = None
+        self.dprod_column_dinvest = None
+        self.dprod_column_dratio = None
+        self.techno_production_derivative = None
+        self.techno_consumption_derivative = None
+        self.dcons_column_dinvest = None
+        self.dprices_demissions = None
+        self.grad_total = None
         self.techno_model = None
 
     def setup_sos_disciplines(self):

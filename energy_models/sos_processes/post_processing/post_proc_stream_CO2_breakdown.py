@@ -314,6 +314,8 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     @param namespace: Namespace at which the data can be accessed
 
     @return multilevel_df: Dataframe
+    :param columns:
+    :type columns:
     '''
     # Construct a DataFrame to organize the data on two levels: energy and
     # techno
@@ -391,6 +393,8 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     @param energy_name: String, name of the energy to display
 
     @return new_chart: InstantiatedPlotlyNativeChart a Sankey Diagram
+    :param summary:
+    :type summary:
     '''
 
     # Prepare data

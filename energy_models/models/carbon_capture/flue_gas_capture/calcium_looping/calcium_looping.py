@@ -23,6 +23,11 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class CalciumLooping(CCTechno):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.flue_gas_ratio = None
+        self.fg_ratio_effect = None
+
     def configure_parameters_update(self, inputs_dict):
 
         CCTechno.configure_parameters_update(self, inputs_dict)

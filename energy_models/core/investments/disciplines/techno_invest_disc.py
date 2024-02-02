@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -69,6 +71,10 @@ class InvestTechnoDiscipline(SoSWrapp):
         'techno_invest_df': {'type': 'dataframe', 'unit': 'G$'}
     }
     _maturity = 'Research'
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.energy_model = None
 
     def init_execution(self):
         self.energy_model = EnergyInvest(self.energy_name)

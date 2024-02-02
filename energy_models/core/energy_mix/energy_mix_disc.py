@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import logging
 from copy import deepcopy
 
 import numpy as np
@@ -217,6 +217,11 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     energy_constraint_list = EnergyMix.energy_constraint_list
     movable_fuel_list = EnergyMix.movable_fuel_list
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.energy_model = None
+        self.grad_energy_mix_vs_prod_dict = None
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -1130,6 +1135,10 @@ class Energy_Mix_Discipline(SoSWrapp):
         @param stream_class_dict: dictionary with informations on the energies
         @param scaling_factor_production: float used to scale the energy production at input/output of the model
         @return ddemand_ratio_denergy_prod, ddemand_ratio_denergy_cons: numpy.arrays, shape=(len(years),len(years)) with the gradients
+        :param years:
+        :type years:
+        :param energy_production_brut_detailed:
+        :type energy_production_brut_detailed:
         '''
 
         # Calculate energy production and consumption

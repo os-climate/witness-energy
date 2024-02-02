@@ -78,6 +78,7 @@ class StreamDiscipline(SoSWrapp):
 
     def __init__(self, sos_name, logger: logging.Logger):
         super().__init__(sos_name=sos_name, logger=logger)
+        self.grad_techno_mix_vs_prod_dict = None
         self.energy_model = None
 
     def setup_sos_disciplines(self):

@@ -1111,7 +1111,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         hefa_price_iea = 1.2 / 780e-3 / 12.2 * 1000
 
         hefa_price = energy_prices[
-            f'{GlossaryEnergy.fuel}.hydrotreated_oil_fuel'][0]
+            f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}'][0]
 
         error_hefa_price = np.abs(
             hefa_price_iea - hefa_price) / hefa_price_iea * 100.0

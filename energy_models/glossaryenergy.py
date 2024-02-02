@@ -34,6 +34,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     biogas = "biogas"
     biodiesel = "biodiesel"
     biomass_dry = "biomass_dry"
+    ethanol = "ethanol"
     electricity = "electricity"
     fossil = "fossil"
     fuel = "fuel"

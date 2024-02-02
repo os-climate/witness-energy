@@ -40,6 +40,34 @@ class TechnoType:
     min_value_invest = 1.e-12
 
     def __init__(self, name):
+        self.years = None
+        self.cost_details = None
+        self.production_detailed = None
+        self.consumption_detailed = None
+        self.aging_distribution = None
+        self.land_use = None
+        self.year_start = None
+        self.year_end = None
+        self.margin = None
+        self.maturity = None
+        self.invest_before_ystart = None
+        self.is_apply_resource_ratio = None
+        self.ratio_available_resource = None
+        self.CO2_taxes = None
+        self.resources_prices = None
+        self.invest_level = None
+        self.production_detailed = None
+        self.is_apply_resource_ratio = None
+        self.ratio_available_resource = None
+        self.transport_cost = None
+        self.transport_margin = None
+        self.production_detailed = None
+        self.dprod_dinvest = None
+        self.dprod_list_dcapex_list = None
+        self.dpower_list_dinvest_list = None
+        self.mean_age_df = None
+        self.production = None
+        self.consumption = None
         self.name = name
 
         self.invest_years = None  # Investment per year
@@ -284,6 +312,8 @@ class TechnoType:
             -self.applied_ratio: the effective ratio applied for each year
         The method "select_ratios" must have been called beforehand to have the self.ratio_df variable
         @param apply_resources_ratio: boolean, used to activate(True)/deactivate(False) the application of limiting ratios. Defaults to True.
+        :param apply_ressources_ratio:
+        :type apply_ressources_ratio:
         """
         ratio_values = np.ones(len(self.years))
         min_ratio_name = ['' for _ in ratio_values]
@@ -1240,6 +1270,8 @@ class TechnoType:
         @param is_apply_ratio: boolean, used to activate(True)/deactivate(False) the application of limiting ratios. Defaults to True.
 
         @return dprod_dratio: numpy array, size=(len(years), len(years))
+        :param dapplied_ratio_dratio:
+        :type dapplied_ratio_dratio:
         '''
         dprod_dratio = np.zeros(
             (len(self.years), len(self.years)))

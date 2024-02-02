@@ -48,6 +48,13 @@ class CarbonCapture(BaseStream):
     def __init__(self, name):
         BaseStream.__init__(self, name)
 
+        self.consumption_woratio = None
+        self.carbon_captured_type_woratio = None
+        self.flue_gas_percentage_woratio = None
+        self.fg_ratio_woratio = None
+        self.production = None
+        self.consumption = None
+        self.production_by_techno = None
         self.flue_gas_percentage = None
         self.carbon_captured_type = None
         self.flue_gas_production = None

@@ -34,6 +34,17 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class RWGS(SyngasTechno):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.esk = None
+        self.needed_syngas_ratio = None
+        self.syngas_ratio = None
+        self.needed_syngas_ratio = None
+        self.inputs_dict = None
+        self.available_power = None
+        self.slope_capex = None
+        self.slope_elec_demand = None
+
     def configure_parameters(self, inputs_dict):
 
         # We need these lines if both configure because syngas is the coupling variable (so in configure_parameters_update)
@@ -468,7 +479,7 @@ class RWGS(SyngasTechno):
 
         return delectricity_needs_dsyngas_ratio * prod_energy + electricity_prod * dprodenergy_dsyngas_ratio
 
-    def compute_dco2_emissions_electricity_dsyngas_ratio(self, dprodenergy_dsyngas_ratio, prod_energy):
+    def compute_dco2_emissions_electricity_dsyngas_ratio(self):
         delectricity_needs_dsyngas_ratio = - np.identity(
             len(self.years)) * self.slope_elec_demand
         dco2_emissions_dsyngas_ratio = delectricity_needs_dsyngas_ratio * self.energy_CO2_emissions[
@@ -492,7 +503,7 @@ class RWGS(SyngasTechno):
             len(self.years)) * dcons_syngas_dsyngas_ratio * prod_energy + syngas_prod * dprodenergy_dsyngas_ratio) / efficiency[
                                                                                                                      :np.newaxis]
 
-    def compute_dco2_emissions_syngas_dsyngas_ratio(self, dprodenergy_dsyngas_ratio, prod_energy):
+    def compute_dco2_emissions_syngas_dsyngas_ratio(self):
         dcons_syngas_dsyngas_ratio = self.compute_dsyngas_needs_dsyngas_ratio()
         dco2_emissions_dsyngas_ratio = dcons_syngas_dsyngas_ratio * self.energy_CO2_emissions[
                                                                         Syngas.name][:, np.newaxis]
@@ -653,9 +664,6 @@ class RWGS(SyngasTechno):
         return water_needs
 
     def compute_dwater_prod_dsynags_ratio(self):
-        mol_H20 = (self.needed_syngas_ratio - self.syngas_ratio) / \
-                  (1.0 + self.syngas_ratio)
-
         mol_H20_up = (self.needed_syngas_ratio - self.syngas_ratio)
 
         dmol_H20_up = -1.0

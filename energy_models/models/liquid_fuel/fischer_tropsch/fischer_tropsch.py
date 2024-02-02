@@ -40,6 +40,30 @@ from energy_models.models.syngas.reversed_water_gas_shift.reversed_water_gas_shi
 
 class FischerTropsch(LiquidFuelTechno):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.syngas_ratio = None
+        self.needed_syngas_ratio = None
+        self.syngas_energy_dict = None
+        self.gaseous_hydrogen_energy_dict = None
+        self.sg_transformation_name = None
+        self.syn_needs_wgs = None
+        self.syn_needs_rwgs = None
+        self.price_details_sg_techno = None
+        self.dprice_FT_dsyngas_ratio = None
+        self.dprice_FT_wotaxes_dsyngas_ratio = None
+        self.syngas_ratio_techno = None
+        self.syngas_ratio_techno_rwgs = None
+        self.price_details_rwgs = None
+        self.water_prod_RWGS = None
+        self.syngas_ratio_techno = None
+        self.syngas_ratio_techno_wgs = None
+        self.price_details_wgs = None
+        self.CO2_prod_wgs = None
+        self.consumption = None
+        self.production = None
+        self.slope_capex = None
+
     def configure_parameters_update(self, inputs_dict):
         LiquidFuelTechno.configure_parameters_update(self, inputs_dict)
         self.syngas_ratio = np.array(inputs_dict['syngas_ratio']) / 100.0

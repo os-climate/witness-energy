@@ -29,7 +29,7 @@ TECHNOLOGIES_LIST_DEV = ['CoalExtraction', 'Pelletizing']
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1,
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050,
                  technologies_list=TECHNOLOGIES_LIST,
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,

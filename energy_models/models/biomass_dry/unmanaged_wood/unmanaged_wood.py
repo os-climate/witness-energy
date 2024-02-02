@@ -27,6 +27,12 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class UnmanagedWood(BiomassDryTechno):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.production_mix = None
+        self.price_mix = None
+        self.mean_age_df = None
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kg of wood

@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 from copy import deepcopy
 
 import numpy as np
@@ -137,6 +138,11 @@ class FischerTropschDiscipline(LiquidFuelTechnoDiscipline):
                }
     # -- add specific techno inputs to this
     DESC_IN.update(LiquidFuelTechnoDiscipline.DESC_IN)
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.dprices_demissions = None
+        self.grad_total = None
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()

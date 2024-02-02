@@ -45,6 +45,21 @@ class ConsumptionCO2Emissions(BaseStream):
         Constructor 
         '''
         super(ConsumptionCO2Emissions, self).__init__(name)
+        self.energy_list = None
+        self.ccs_list = None
+        self.years = None
+        self.scaling_factor_energy_production = None
+        self.scaling_factor_energy_consumption = None
+        self.energy_list = None
+        self.ccs_list = None
+        self.co2_per_use = None
+        self.energy_production_detailed = None
+        self.CO2_sources = None
+        self.CO2_sinks = None
+        self.CO2_production = None
+        self.CO2_consumption = None
+        self.CO2_sources_Gt = None
+        self.CO2_sinks_Gt = None
 
     def configure(self, inputs_dict):
         '''
