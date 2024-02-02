@@ -112,6 +112,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         },
     }
 
+    flue_gas_emission_techno_list = 'flue_gas_emission_techno_list'
     TechnoInvestPercentageName = "techno_invest_percentage"
     TechnoInvestPercentage = {
         "var_name": TechnoInvestPercentageName,
