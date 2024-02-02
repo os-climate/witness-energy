@@ -95,7 +95,7 @@ class PlasmaCracking(GaseousHydrogenTechno):
         self.carbon_intensity[Methane.name] = self.energy_CO2_emissions[Methane.name] * \
                                               self.cost_details['fuel_needs'] / self.cost_details['efficiency']
 
-        # self.energy_CO2_emissions['carbon_storage']
+        # self.energy_CO2_emissions[GlossaryEnergy.carbon_storage]
         C_per_h2 = self.get_theoretical_graphene_production()
         self.carbon_intensity['carbon storage'] = -C_per_h2 * \
                                                   CO2.data_energy_dict['molar_mass'] / \
@@ -177,12 +177,12 @@ class PlasmaCracking(GaseousHydrogenTechno):
 
         quantity['carbon_sales'] = (quantity['carbon_production'] - np.maximum(
             (quantity['carbon_production'] - quantity['carbon_demand']), 0.))
-        quantity['carbon_storage'] = np.maximum(
+        quantity[GlossaryEnergy.carbon_storage] = np.maximum(
             (quantity['carbon_production'] - quantity['carbon_demand']), 0.)
 
         quantity['carbon_sales_revenues'] = quantity['carbon_sales'] * \
                                             quantity['carbon_price']
-        quantity['carbon_storage_revenues'] = quantity['carbon_storage'] * \
+        quantity['carbon_storage_revenues'] = quantity[GlossaryEnergy.carbon_storage] * \
                                               Carbon.data_energy_dict['molar_mass'] / \
                                               CO2.data_energy_dict['molar_mass'] * quantity['CO2_credits']
 

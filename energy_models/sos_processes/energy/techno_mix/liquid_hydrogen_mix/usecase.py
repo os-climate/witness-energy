@@ -67,8 +67,8 @@ class Study(EnergyMixStudyManager):
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      'electricity': 10.0,
-                                      'hydrogen.gaseous_hydrogen': 10.0,
+                                      GlossaryEnergy.electricity: 10.0,
+                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 10.0,
                                       })
 
         # the value for invest_level is just set as an order of magnitude
@@ -89,7 +89,7 @@ class Study(EnergyMixStudyManager):
         transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 0.0})
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, })
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, })
         investment_mix = self.get_investments()
 
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,

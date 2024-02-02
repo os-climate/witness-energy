@@ -14,13 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class LiquidHydrogen(EnergyType):
     """
     """
-    name = 'hydrogen' + '.' + 'liquid_hydrogen'
-    short_name = 'liquid_hydrogen'
+    name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}'
+    short_name = GlossaryEnergy.liquid_hydrogen
     default_techno_list = ['HydrogenLiquefaction']
     unit = 'TWh'
     data_energy_dict = {'maturity': 5,

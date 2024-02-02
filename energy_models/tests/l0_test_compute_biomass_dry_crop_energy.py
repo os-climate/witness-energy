@@ -56,10 +56,10 @@ class CropEnergyPriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': electricity_price})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         # invest: 1Mha of crop land each year
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
@@ -100,7 +100,7 @@ class CropEnergyPriceTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biomass_dry.crop_energy.crop_energy_disc.CropEnergyDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biomass_dry}.crop_energy.crop_energy_disc.CropEnergyDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

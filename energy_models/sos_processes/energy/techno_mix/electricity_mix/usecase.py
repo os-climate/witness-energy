@@ -157,19 +157,19 @@ class Study(EnergyMixStudyManager):
 
         # reference_data_name = 'Reference_aircraft_data'
         # prices are now in $/MWh
-        energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': 10.0,
-                                      'methane': 60.0,
-                                      'biogas': 5.0,
-                                      'biomass_dry': 11.0,
-                                      'solid_fuel': 5.7,
-                                      'fuel.liquid_fuel': 40,
+        energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 10.0,
+                                      GlossaryEnergy.methane: 60.0,
+                                      GlossaryEnergy.biogas: 5.0,
+                                      GlossaryEnergy.biomass_dry: 11.0,
+                                      GlossaryEnergy.solid_fuel: 5.7,
+                                      f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': 40,
                                       })
 
         #  IRENA invest data - Future of wind 2019
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4,
-             'biogas': 0.123 / 15.4, 'biomass_dry': - 0.64 / 4.86, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0,
-             'fuel.liquid_fuel': 0.64 / 4.86,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.solid_fuel: 0.64 / 4.86, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4,
+             GlossaryEnergy.biogas: 0.123 / 15.4, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
+             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': 0.64 / 4.86,
              })
 
         # the value for invest_level is just set as an order of magnitude

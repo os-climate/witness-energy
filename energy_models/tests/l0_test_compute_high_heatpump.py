@@ -44,12 +44,12 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'electricity': np.ones(len(years)) * 148.0,
+                                           GlossaryEnergy.electricity: np.ones(len(years)) * 148.0,
                                            # https://www.statista.com/statistics/1271525/denmark-monthly-wholesale-electricity-price/
-                                           'biomass_dry': np.ones(len(years)) * 45.0,
+                                           GlossaryEnergy.biomass_dry: np.ones(len(years)) * 45.0,
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': 0.0, })
+        self.energy_carbon_emissions = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, })
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, 'water_resource': 2.0})
 
         self.invest_level = pd.DataFrame(
@@ -80,7 +80,7 @@ class HeatPumpHighTemperaureTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'heat.HeatPump']
+                                                == f'{GlossaryEnergy.heat}.HeatPump']
 
     def tearDown(self):
         pass

@@ -49,7 +49,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'biomass_dry'
+        self.energy_name = GlossaryEnergy.biomass_dry
 
         electricity_price = np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                       0.089236536471781, 0.08899046935409588, 0.08874840310033885,
@@ -65,10 +65,10 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
         self.years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'electricity': electricity_price})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: electricity_price})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: 0.0})
         # invest: 1Mha of crop land each year
 
         self.invest_level_managed_wood = pd.DataFrame(
@@ -130,7 +130,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biomass_dry.crop_energy.crop_energy_disc.CropEnergyDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biomass_dry}.crop_energy.crop_energy_disc.CropEnergyDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -190,7 +190,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biomass_dry.managed_wood.managed_wood_disc.ManagedWoodDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biomass_dry}.managed_wood.managed_wood_disc.ManagedWoodDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -246,7 +246,7 @@ class BiomassDryJacobianTestCase(AbstractJacobianUnittest):
                    'ns_resource': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biomass_dry.unmanaged_wood.unmanaged_wood_disc.UnmanagedWoodDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biomass_dry}.unmanaged_wood.unmanaged_wood_disc.UnmanagedWoodDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

@@ -56,7 +56,7 @@ class CarbonStorageJacobianTestCase(AbstractJacobianUnittest):
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
 
-        self.energy_name = 'carbon_storage'
+        self.energy_name = GlossaryEnergy.carbon_storage
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'CO2': 0})

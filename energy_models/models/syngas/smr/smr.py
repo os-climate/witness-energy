@@ -22,6 +22,8 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
+from energy_models.glossaryenergy import GlossaryEnergy
+
 
 class SMR(SyngasTechno):
     syngas_COH2_ratio = 1.0 / 3.0 * 100.0
@@ -48,10 +50,10 @@ class SMR(SyngasTechno):
             self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs']
             / self.cost_details['efficiency'])
 
-        self.cost_details['electricity'] = self.cost_details['elec_needs'] * \
-                                           self.prices['electricity']
+        self.cost_details[GlossaryEnergy.electricity] = self.cost_details['elec_needs'] * \
+                                           self.prices[GlossaryEnergy.electricity]
 
-        return self.cost_details[Water.name] + self.cost_details[f'{Methane.name}'] + self.cost_details['electricity']
+        return self.cost_details[Water.name] + self.cost_details[f'{Methane.name}'] + self.cost_details[GlossaryEnergy.electricity]
 
     def grad_price_vs_energy_price(self):
         '''

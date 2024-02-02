@@ -49,7 +49,7 @@ class SolarThermalDiscipline(ElectricityTechnoDiscipline):
     lifetime = 25  # JRC, IRENA, SolarPACES
     construction_delay = 3  # JRC, ATB NREL, database https://solarpaces.nrel.gov/
     techno_infos_dict_default = {'maturity': 0,
-                                 'product': 'electricity',
+                                 'product': GlossaryEnergy.electricity,
                                  # OPEX : lmean of lazard / JRC / ATB NREL
                                  'Opex_percentage': 0.015,
                                  # WACC : mean of Frauhofer / IRENA / ATB NREL

@@ -59,8 +59,8 @@ class InvestCCSDiscipline(SoSWrapp):
         'invest_ccs_mix': {'type': 'dataframe',
                            'dataframe_descriptor': {
                                GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                               'carbon_capture': ('float', None, False),
-                               'carbon_storage': ('float', None, False), },
+                               GlossaryEnergy.carbon_capture: ('float', None, False),
+                               GlossaryEnergy.carbon_storage: ('float', None, False), },
                            'dataframe_edition_locked': False},
         GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                   'possible_values': [CarbonCapture.name, CarbonStorage.name],

@@ -57,7 +57,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'carbon_capture'
+        self.energy_name = GlossaryEnergy.carbon_capture
         KOH_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                               1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                               1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
@@ -80,7 +80,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
         self.years = years
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                                                    0.159236536471781, 0.15899046935409588,
                                                                    0.15874840310033885,
                                                                    0.15875044941298937, 0.15875249600769718,
@@ -100,7 +100,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                                                    0.16214129913260598, 0.16236574581786147,
                                                                    0.16259350059915213,
                                                                    0.1628246539459331]) * 1000.0,
-             'renewable': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+             GlossaryEnergy.renewable: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                     0.159236536471781, 0.15899046935409588, 0.15874840310033885,
                                     0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
                                     0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
@@ -111,7 +111,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                     0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
                                     0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
                                     0.1628246539459331]) * 1000.0,
-             'methane': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+             GlossaryEnergy.methane: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                   0.159236536471781, 0.15899046935409588, 0.15874840310033885,
                                   0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
                                   0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
@@ -122,7 +122,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
                                   0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
                                   0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
                                   0.1628246539459331]) * 1000.0,
-             'fossil': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+             GlossaryEnergy.fossil: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                  0.159236536471781, 0.15899046935409588,
                                  0.15874840310033885,
                                  0.15875044941298937, 0.15875249600769718,
@@ -145,8 +145,8 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
              })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'amine': 0.0, 'electricity': 0.0, 'methane': 0.2, 'fossil': 0.2,
-             'renewable': 0.0})
+            {GlossaryEnergy.Years: years, 'amine': 0.0, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.2, GlossaryEnergy.fossil: 0.2,
+             GlossaryEnergy.renewable: 0.0})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -464,7 +464,7 @@ class CarbonCaptureJacobianTestCase(AbstractJacobianUnittest):
     def test_05_direct_air_capture_techno_discipline_gradient(self):
 
         self.name = 'Test'
-        self.model_name = 'direct_air_capture.DirectAirCaptureTechno'
+        self.model_name = f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',

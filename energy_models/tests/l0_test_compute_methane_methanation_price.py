@@ -43,7 +43,7 @@ class MethanationPriceTestCase(unittest.TestCase):
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'hydrogen.gaseous_hydrogen': np.array(
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.array(
             [0.1266023955250543, 0.12472966837635774, 0.12308937523217356, 0.12196584543238155,
              0.12101159171871603, 0.12018900859836591, 0.1192884942915236, 0.11865333029969044,
              0.11827242819796199, 0.11804896544898459, 0.11796960162047375, 0.11791110278481422,
@@ -55,7 +55,7 @@ class MethanationPriceTestCase(unittest.TestCase):
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'hydrogen.gaseous_hydrogen': 0.0})
+            {GlossaryEnergy.Years: years, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0})
         # Use the same inest as SMR techno
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
                                           GlossaryEnergy.InvestValue: np.array(

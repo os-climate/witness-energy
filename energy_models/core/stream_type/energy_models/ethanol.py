@@ -14,12 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Ethanol(EnergyType):
     # Ethanol (CH3CH2OH) is a renewable fuel made from various plant materials collectively known as "biomass."
     # Source: US Department of Energy (https://afdc.energy.gov/fuels/ethanol_fuel_basics.html)
-    name = 'fuel.ethanol'
+    name = f'{GlossaryEnergy.fuel}.ethanol'
     short_name = 'ethanol'
     default_techno_list = ['BiomassFermentation']
     data_energy_dict = {'maturity': 5,

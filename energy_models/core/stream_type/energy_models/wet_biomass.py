@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class WetBiomass(EnergyType):
-    name = 'wet_biomass'
+    name = GlossaryEnergy.wet_biomass
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # Raffa, D.W., Bogdanski, A. and Tittonell, P., 2015.

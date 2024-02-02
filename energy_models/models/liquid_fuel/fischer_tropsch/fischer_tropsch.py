@@ -54,17 +54,17 @@ class FischerTropsch(LiquidFuelTechno):
         Overloaded for each energy type
         '''
         self.data_energy_dict = inputs_dict['data_fuel_dict']
-        self.syngas_energy_dict = inputs_dict['syngas.data_fuel_dict']
-        self.gaseous_hydrogen_energy_dict = inputs_dict['hydrogen.gaseous_hydrogen.data_fuel_dict']
+        self.syngas_energy_dict = inputs_dict[f'{GlossaryEnergy.syngas}.data_fuel_dict']
+        self.gaseous_hydrogen_energy_dict = inputs_dict[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.data_fuel_dict']
 
     def select_resources_ratios(self):
         """! Select the ratios to be added to ratio_df
         """
         ratio_df = LiquidFuelTechno.select_resources_ratios(self)
-        if 'carbon_capture' in ratio_df.columns and self.is_stream_demand:
-            ratio_df['carbon_capture'] = ratio_df['carbon_capture'].values
+        if GlossaryEnergy.carbon_capture in ratio_df.columns and self.is_stream_demand:
+            ratio_df[GlossaryEnergy.carbon_capture] = ratio_df[GlossaryEnergy.carbon_capture].values
         else:
-            ratio_df['carbon_capture'] = np.ones(len(self.years))
+            ratio_df[GlossaryEnergy.carbon_capture] = np.ones(len(self.years))
         self.ratio_df = ratio_df
         return ratio_df
 
@@ -236,7 +236,7 @@ class FischerTropsch(LiquidFuelTechno):
                                          self.cost_details['syngas_needs_for_FT'] / \
                                          self.cost_details['efficiency']
 
-        self.cost_details['syngas before transformation'] = self.prices[Syngas.name] * \
+        self.cost_details[f'{GlossaryEnergy.syngas} before transformation'] = self.prices[Syngas.name] * \
                                                             self.cost_details['syngas_needs_for_FT'] / \
                                                             self.cost_details['efficiency']
 
@@ -646,8 +646,8 @@ class FischerTropsch(LiquidFuelTechno):
         #             return {CO2.name: dco2_emissions_dsyngas_ratio_wgs,
         #                     self.name: dsyngas_co2_emissions_dsyngas_ratio_wgs,
         #                     'production': np.zeros(len(self.years),),
-        #                     'electricity': np.zeros(len(self.years),),
-        #                     'syngas': dsyngas_co2_emissions_dsyngas_ratio_wgs - dco2_emissions_dsyngas_ratio_wgs
+        #                     GlossaryEnergy.electricity: np.zeros(len(self.years),),
+        #                     GlossaryEnergy.syngas: dsyngas_co2_emissions_dsyngas_ratio_wgs - dco2_emissions_dsyngas_ratio_wgs
         #                     }
 
         elif self.sg_transformation_name in ['RWGS']:
@@ -662,8 +662,8 @@ class FischerTropsch(LiquidFuelTechno):
         #             return {CO2.name: dco2_emission_dsyngas_ratio_rwgs,
         #                     self.name: dsyngas_co2_emissions_dsyngas_ratio_rwgs,
         #                     'production': np.zeros(len(self.years),),
-        #                     'electricity': delectricity_emission_dsyngas_ratio_rwgs,
-        #                     'syngas': dsyngas_co2_emissions_dsyngas_ratio_rwgs - dco2_emission_dsyngas_ratio_rwgs - delectricity_emission_dsyngas_ratio_rwgs}
+        #                     GlossaryEnergy.electricity: delectricity_emission_dsyngas_ratio_rwgs,
+        #                     GlossaryEnergy.syngas: dsyngas_co2_emissions_dsyngas_ratio_rwgs - dco2_emission_dsyngas_ratio_rwgs - delectricity_emission_dsyngas_ratio_rwgs}
 
         else:
 
@@ -718,8 +718,8 @@ class FischerTropsch(LiquidFuelTechno):
 
     #             return {CO2.name: dco2_emission_dsyngas_ratio,
     #                     self.name: dtotal_emission_dsyngas_ratio,
-    #                     'electricity': delec_emission_dsyngas_ratio,
-    #                     'syngas': dsyngas_emission_dsyngas_ratio}
+    #                     GlossaryEnergy.electricity: delec_emission_dsyngas_ratio,
+    #                     GlossaryEnergy.syngas: dsyngas_emission_dsyngas_ratio}
 
     def get_theoretical_syngas_needs_for_FT(self):
         '''

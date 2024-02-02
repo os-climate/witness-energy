@@ -46,7 +46,7 @@ class SMRPriceTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                    0.089236536471781, 0.08899046935409588,
                                                                    0.08874840310033885,
                                                                    0.08875044941298937, 0.08875249600769718,
@@ -66,7 +66,7 @@ class SMRPriceTestCase(unittest.TestCase):
                                                                    0.09214129913260598, 0.09236574581786147,
                                                                    0.09259350059915213,
                                                                    0.0928246539459331]) * 1000,
-             'methane': 34.
+             GlossaryEnergy.methane: 34.
              })
 
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
@@ -79,7 +79,7 @@ class SMRPriceTestCase(unittest.TestCase):
                                               ResourceGlossary.Water['name']: 1.4
                                               })
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'methane': 0.123 / 15.4, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.electricity: 0.0})
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: len(years) * [1.0]})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]

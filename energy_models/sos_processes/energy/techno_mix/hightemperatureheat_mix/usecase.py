@@ -86,14 +86,13 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         # energy_prices data came from test files  of corresponding technologies
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'electricity': 148.0,
-                                           'syngas': 80.0,
-                                           'biogas': 70.0,
-                                           'methane': 100,
-                                           'biomass_dry': 45,
-                                           'hydrogen.gaseous_hydrogen': 60
-                                        })
+        energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
+                                      GlossaryEnergy.electricity: 148.0,
+                                      GlossaryEnergy.syngas: 80.0,
+                                      GlossaryEnergy.biogas: 70.0,
+                                      GlossaryEnergy.methane: 100,
+                                      GlossaryEnergy.biomass_dry: 45
+                                      })
 
 
         # the value for invest_level is just set as an order of magnitude
@@ -117,7 +116,7 @@ class Study(EnergyMixStudyManager):
         resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'biomass_dry': - 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.0,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.0,
              'water': 0.0})
 
         investment_mix = self.get_investments()
@@ -126,14 +125,14 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.NaturalGasBoilerHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.ElectricBoilerHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.HeatPumpHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.GeothermalHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.CHPHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.HydrogenBoilerHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.NaturalGasBoilerHighHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.ElectricBoilerHighHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.HeatPumpHighHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.GeothermalHighHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.CHPHighHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.HydrogenBoilerHighHeat.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
                        # f'{self.study_name}.{energy_name}.ElectricBoiler.flux_input_dict': land_rate,
                        # f'{self.study_name}.{energy_name}.NaturalGasBoiler.flux_input_dict': land_rate,

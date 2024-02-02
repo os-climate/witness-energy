@@ -17,10 +17,11 @@ limitations under the License.
 from abc import abstractmethod
 
 from energy_models.core.techno_type.techno_type import TechnoType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class KeroseneTechno(TechnoType):
-    energy_name = 'kerosene'
+    energy_name = GlossaryEnergy.kerosene
 
     def __init__(self, name):
         TechnoType.__init__(self, name)

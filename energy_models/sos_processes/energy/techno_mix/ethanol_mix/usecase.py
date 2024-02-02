@@ -70,9 +70,9 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      'electricity': 10.0,
-                                      'syngas': 80.0,
-                                      'biomass_dry': 45.0})
+                                      GlossaryEnergy.electricity: 10.0,
+                                      GlossaryEnergy.syngas: 80.0,
+                                      GlossaryEnergy.biomass_dry: 45.0})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -97,8 +97,8 @@ class Study(EnergyMixStudyManager):
         resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
         energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             'biomass_dry': - 0.64 / 4.86,
-             'electricity': 0.0})
+             GlossaryEnergy.biomass_dry: - 0.64 / 4.86,
+             GlossaryEnergy.electricity: 0.0})
 
         # define invest mix
         investment_mix = self.get_investments()

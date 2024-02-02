@@ -25,9 +25,9 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['Transesterification']
-TECHNOLOGIES_LIST = ['Transesterification']
-TECHNOLOGIES_LIST_DEV = ['Transesterification']
+DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.Transesterification]
+TECHNOLOGIES_LIST = [GlossaryEnergy.Transesterification]
+TECHNOLOGIES_LIST_DEV = [GlossaryEnergy.Transesterification]
 
 
 class Study(EnergyMixStudyManager):
@@ -47,8 +47,8 @@ class Study(EnergyMixStudyManager):
         invest_biodiesel_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'Transesterification' in self.technologies_list:
-            invest_biodiesel_mix_dict['Transesterification'] = np.ones(
+        if GlossaryEnergy.Transesterification in self.technologies_list:
+            invest_biodiesel_mix_dict[GlossaryEnergy.Transesterification] = np.ones(
                 len(l_ctrl))
         if self.bspline:
             invest_biodiesel_mix_dict[GlossaryEnergy.Years] = self.years
@@ -69,9 +69,9 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      'electricity': 16.0,
-                                      'syngas': 80.0,
-                                      'biomass_dry': 10.0})
+                                      GlossaryEnergy.electricity: 16.0,
+                                      GlossaryEnergy.syngas: 80.0,
+                                      GlossaryEnergy.biomass_dry: 10.0})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -96,8 +96,8 @@ class Study(EnergyMixStudyManager):
         resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'biomass_dry': - 0.64 / 4.86, 'biogas': - 0.05, 'solid_fuel': 0.64 / 4.86,
-             'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, GlossaryEnergy.biogas: - 0.05, GlossaryEnergy.solid_fuel: 0.64 / 4.86,
+             GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
              'crude oil': 0.02533})
 
         # define invest mix

@@ -24,9 +24,9 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_DEFAULT,
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.glossaryenergy import GlossaryEnergy
 
-DEFAULT_TECHNOLOGIES_LIST = ['AnaerobicDigestion']
-TECHNOLOGIES_LIST = ['AnaerobicDigestion']
-TECHNOLOGIES_LIST_DEV = ['AnaerobicDigestion']
+DEFAULT_TECHNOLOGIES_LIST = [GlossaryEnergy.AnaerobicDigestion]
+TECHNOLOGIES_LIST = [GlossaryEnergy.AnaerobicDigestion]
+TECHNOLOGIES_LIST_DEV = [GlossaryEnergy.AnaerobicDigestion]
 
 
 class Study(EnergyMixStudyManager):
@@ -45,8 +45,8 @@ class Study(EnergyMixStudyManager):
         invest_biogas_mix_dict = {}
         l_ctrl = np.arange(GlossaryEnergy.NB_POLES_FULL)
 
-        if 'AnaerobicDigestion' in self.technologies_list:
-            invest_biogas_mix_dict['AnaerobicDigestion'] = np.ones(
+        if GlossaryEnergy.AnaerobicDigestion in self.technologies_list:
+            invest_biogas_mix_dict[GlossaryEnergy.AnaerobicDigestion] = np.ones(
                 len(l_ctrl))
         if self.bspline:
             invest_biogas_mix_dict[GlossaryEnergy.Years] = self.years
@@ -66,9 +66,9 @@ class Study(EnergyMixStudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1)
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      'electricity': 16.0,
-                                      'syngas': 80.0,
-                                      'biomass_dry': 10.0})
+                                      GlossaryEnergy.electricity: 16.0,
+                                      GlossaryEnergy.syngas: 80.0,
+                                      GlossaryEnergy.biomass_dry: 10.0})
 
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
@@ -92,8 +92,14 @@ class Study(EnergyMixStudyManager):
         resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
         # biomass_dry price in $/kg
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'biomass_dry': - 0.64 / 4.86, 'biogas': - 0.05, 'solid_fuel': 0.64 / 4.86,
-             'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0,
+            {GlossaryEnergy.Years: years,
+             GlossaryEnergy.biomass_dry: - 0.64 / 4.86,
+             GlossaryEnergy.biogas: - 0.05,
+             GlossaryEnergy.solid_fuel: 0.64 / 4.86,
+             GlossaryEnergy.electricity: 0.0,
+             GlossaryEnergy.methane: 0.123 / 15.4,
+             GlossaryEnergy.syngas: 0.0,
+             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
              'crude oil': 0.02533})
         # define invest mix
         investment_mix = self.get_investments()
@@ -102,8 +108,8 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.EnergyMix.syngas_ratio': np.ones(len(years)) * 0.5,
-                       f'{self.study_name}.{energy_name}.AnaerobicDigestion.invest_level': invest_level,
-                       f'{self.study_name}.{energy_name}.AnaerobicDigestion.{GlossaryEnergy.MarginValue}': margin,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.AnaerobicDigestion}.invest_level': invest_level,
+                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.AnaerobicDigestion}.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,

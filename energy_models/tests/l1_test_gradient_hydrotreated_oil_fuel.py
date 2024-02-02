@@ -50,18 +50,18 @@ class HydrotreatedOilFuelJacobianCase(AbstractJacobianUnittest):
         '''
         self.years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
-        self.energy_name = 'hydrotreated_oil_fuel'
+        self.energy_name = GlossaryEnergy.hydrotreated_oil_fuel
         # crude oil price : 1.3$/gallon
 
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'electricity': np.ones(len(self.years)) * 0.135 * 1000,
-             'hydrogen.gaseous_hydrogen': np.ones(len(self.years)) * 0.1266023955250543 * 1000,
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: np.ones(len(self.years)) * 0.135 * 1000,
+             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.ones(len(self.years)) * 0.1266023955250543 * 1000,
              })
 
         self.energy_carbon_emissions = pd.DataFrame(
             {GlossaryEnergy.Years: self.years,
-             'electricity': 0.0,
-             'hydrogen.gaseous_hydrogen': 0.0,
+             GlossaryEnergy.electricity: 0.0,
+             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
              })
 
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,

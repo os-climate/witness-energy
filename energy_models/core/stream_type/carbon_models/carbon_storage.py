@@ -19,7 +19,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CarbonStorage(BaseStream):
-    name = 'carbon_storage'
+    name = GlossaryEnergy.carbon_storage
     unit = 'Mt'
     default_techno_list = ['BiomassBuryingFossilization', 'DeepOceanInjection',
                            'DeepSalineFormation', 'DepletedOilGas',

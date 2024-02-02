@@ -51,7 +51,7 @@ class PureCarbonSS(CSTechno):
 
         if (carbon_quantity_to_be_stored is not None) & (consumption is not None):
             constraint = consumption[f'{Carbon.name} ({self.mass_unit})'] - \
-                         carbon_quantity_to_be_stored['carbon_storage']
+                         carbon_quantity_to_be_stored[GlossaryEnergy.carbon_storage]
             self.carbon_to_be_stored_constraint = pd.DataFrame(
                 {GlossaryEnergy.Years: self.years, 'carbon_to_be_stored_constraint': constraint})
 

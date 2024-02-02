@@ -80,10 +80,10 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     loss_percentage_default_dict = {
         energy: 0.0 for energy in EnergyMix.energy_list}
-    loss_percentage_default_dict['methane'] = 289.21 / \
+    loss_percentage_default_dict[GlossaryEnergy.methane] = 289.21 / \
                                               FossilGasDiscipline.initial_production * 100.0
-    loss_percentage_default_dict['electricity'] = 2012.15 / 24600.0 * 100.0
-    loss_percentage_default_dict['fuel.liquid_fuel'] = 90.15 / \
+    loss_percentage_default_dict[GlossaryEnergy.electricity] = 2012.15 / 24600.0 * 100.0
+    loss_percentage_default_dict[f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}'] = 90.15 / \
                                                        RefineryDiscipline.initial_production * 100.0
 
     DESC_IN = {GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
@@ -287,7 +287,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                 dynamic_inputs[new_var].update({'namespace': GlossaryEnergy.NS_WITNESS,
                                                                 'visibility': SoSWrapp.SHARED_VISIBILITY})
 
-                if 'syngas' in energy_list:
+                if GlossaryEnergy.syngas in energy_list:
                     dynamic_inputs[f'syngas_ratio'] = {
                         'type': 'array', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_syngas',
                         'unit': '%'}
@@ -305,39 +305,39 @@ class Energy_Mix_Discipline(SoSWrapp):
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'renewable (TWh)': ('float', None, True),
-                                                     'fossil (TWh)': ('float', None, True),
-                                                     'carbon_capture (Mt)': ('float', None, True), }}
+                                                     f'{GlossaryEnergy.renewable} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.fossil} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'renewable (TWh)': ('float', None, True),
-                                                     'fossil (TWh)': ('float', None, True),
-                                                     'carbon_capture (Mt)': ('float', None, True), }}
+                                                     f'{GlossaryEnergy.renewable} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.fossil} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'carbon_capture': ('float', None, True),
+                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                     'carbon_storage': ('float', None, True), }}
+                                                     GlossaryEnergy.carbon_storage: ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'carbon_capture': ('float', None, True),
+                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
                                                      'carbon_capture_wotaxes': ('float', None, True),
-                                                     'carbon_storage': ('float', None, True),
+                                                     GlossaryEnergy.carbon_storage: ('float', None, True),
                                                      'carbon_storage_wotaxes': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'direct_air_capture': ('float', None, True),
-                                                     'flue_gas_capture.FlueGasTechno (Gha)': ('float', None, True),
+                                                     f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno (Gha)': ('float', None, True),
                                                      'CarbonStorageTechno (Gha)': ('float', None, True),
-                                                     'direct_air_capture.DirectAirCaptureTechno (Gha)': (
+                                                     f'{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno (Gha)': (
                                                          'float', None, True), }}
 
         self.update_default_with_years(inputs_dict)
@@ -442,13 +442,13 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
 
-        if 'production ' + self.LIQUID_FUEL_NAME + ' (TWh)' in self.energy_model.production and 'production ' + self.HYDROGEN_NAME + ' (TWh)' in self.energy_model.production and 'production ' + self.LIQUID_HYDROGEN_NAME + ' (TWh)' in self.energy_model.production:
+        if f'production ' + self.LIQUID_FUEL_NAME + ' (TWh)' in self.energy_model.production and f'production ' + self.HYDROGEN_NAME + ' (TWh)' in self.energy_model.production and f'production ' + GlossaryEnergy.liquid_hydrogen + ' (TWh)' in self.energy_model.production:
             production_liquid_fuel = self.energy_model.production[
-                'production ' + self.LIQUID_FUEL_NAME + ' (TWh)']
+                f'production ' + self.LIQUID_FUEL_NAME + ' (TWh)']
             production_hydrogen = self.energy_model.production[
-                'production ' + self.HYDROGEN_NAME + ' (TWh)']
+                f'production ' + self.HYDROGEN_NAME + ' (TWh)']
             production_liquid_hydrogen = self.energy_model.production[
-                'production ' + self.LIQUID_HYDROGEN_NAME + ' (TWh)']
+                f'production ' + GlossaryEnergy.liquid_hydrogen + ' (TWh)']
             sum_energies_production = production_liquid_fuel + \
                                       production_hydrogen + production_liquid_hydrogen
 
@@ -472,7 +472,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         '''
         energy_list = inputs_dict_orig[GlossaryEnergy.energy_list]
         agri_name = AgricultureMixDiscipline.name
-        if 'biomass_dry' in energy_list:
+        if GlossaryEnergy.biomass_dry in energy_list:
             inputs_dict[f'{BiomassDry.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = inputs_dict_orig.pop(
                 f'{agri_name}.{GlossaryEnergy.EnergyConsumptionValue}')
             inputs_dict[
@@ -514,7 +514,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             'total_prod_minus_min_prod_constraint_ref']
         production_energy_net_pos = outputs_dict['production_energy_net_positive']
         energies = [j for j in energy_list if j not in [
-            'carbon_storage', 'carbon_capture']]
+            GlossaryEnergy.carbon_storage, GlossaryEnergy.carbon_capture]]
         mix_weight = outputs_dict['energy_mix']
         scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
@@ -587,8 +587,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                 self.set_partial_derivative_for_other_types(
                     ('energy_production_objective',), (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
                     dprod_objective_dprod)
-                if 'production ' + self.LIQUID_FUEL_NAME + ' (TWh)' in production_detailed_df.columns and 'production ' + self.HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns and 'production ' + self.LIQUID_HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns:
-                    if energy == self.HYDROGEN_NAME or energy == self.LIQUID_HYDROGEN_NAME or energy == self.LIQUID_FUEL_NAME:
+                if f'production ' + self.LIQUID_FUEL_NAME + ' (TWh)' in production_detailed_df.columns and f'production ' + self.HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns and f'production ' + GlossaryEnergy.liquid_hydrogen + ' (TWh)' in production_detailed_df.columns:
+                    if energy == self.HYDROGEN_NAME or energy == GlossaryEnergy.liquid_hydrogen or energy == self.LIQUID_FUEL_NAME:
                         self.set_partial_derivative_for_other_types(('primary_energies_production', 'primary_energies'),
                                                                     (
                                                                         f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}',
@@ -622,7 +622,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                         (EnergyMix.SYNGAS_PROD_OBJECTIVE,
                          ), (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
                         scaling_factor_energy_production * np.sign(
-                            production_detailed_df['production syngas (TWh)'].values) * np.identity(
+                            production_detailed_df[f'production {GlossaryEnergy.syngas} (TWh)'].values) * np.identity(
                             len(years)) / syngas_prod_ref)
 
                     self.set_partial_derivative_for_other_types(
@@ -632,7 +632,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
                 # constraint liquid hydrogen
 
-                if energy == self.LIQUID_HYDROGEN_NAME:
+                if energy == GlossaryEnergy.liquid_hydrogen:
                     self.set_partial_derivative_for_other_types(
                         (f'{EnergyMix.CONSTRAINT_PROD_H2_LIQUID}', 'constraint_liquid_hydrogen'), (
                             f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
@@ -688,8 +688,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                             (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
                              f'{energy} ({stream_class_dict[energy].unit})'),
                             scaling_factor_energy_consumption * dprod_objective_dcons / scaling_factor_energy_production)
-                        if 'production ' + self.LIQUID_FUEL_NAME + ' (TWh)' in production_detailed_df.columns and 'production ' + self.HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns and 'production ' + self.LIQUID_HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns:
-                            if energy == self.HYDROGEN_NAME or energy == self.LIQUID_HYDROGEN_NAME or energy == self.LIQUID_FUEL_NAME:
+                        if f'production ' + self.LIQUID_FUEL_NAME + ' (TWh)' in production_detailed_df.columns and f'production ' + self.HYDROGEN_NAME + ' (TWh)' in production_detailed_df.columns and f'production ' + GlossaryEnergy.liquid_hydrogen + ' (TWh)' in production_detailed_df.columns:
+                            if energy == self.HYDROGEN_NAME or energy == GlossaryEnergy.liquid_hydrogen or energy == self.LIQUID_FUEL_NAME:
                                 self.set_partial_derivative_for_other_types(
                                     ('primary_energies_production', 'primary_energies'), (
                                         f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
@@ -721,7 +721,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                 scaling_factor_energy_consumption * solid_fuel_elec_percentage * dtotal_prod_denergy_cons / solid_fuel_elec_constraint_ref * np.identity(
                                     len(years)))
 
-                        if energy == self.LIQUID_HYDROGEN_NAME:
+                        if energy == GlossaryEnergy.liquid_hydrogen:
                             self.set_partial_derivative_for_other_types(
                                 (f'{EnergyMix.CONSTRAINT_PROD_H2_LIQUID}', 'constraint_liquid_hydrogen'), (
                                     f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
@@ -743,7 +743,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                     f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
                                     f'{energy} ({stream_class_dict[energy].unit})'),
                                 - scaling_factor_energy_production * np.sign(
-                                    production_detailed_df['production syngas (TWh)'].values) * np.identity(
+                                    production_detailed_df[f'production {GlossaryEnergy.syngas} (TWh)'].values) * np.identity(
                                     len(years)) / syngas_prod_ref)
 
                             self.set_partial_derivative_for_other_types(
@@ -1361,7 +1361,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
-        if 'Liquid hydrogen production constraint' in charts and self.LIQUID_HYDROGEN_NAME in energy_list:
+        if 'Liquid hydrogen production constraint' in charts and GlossaryEnergy.liquid_hydrogen in energy_list:
             new_chart = self.get_chart_liquid_hydrogen_constraint()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
@@ -1392,8 +1392,8 @@ class Energy_Mix_Discipline(SoSWrapp):
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Energy (TWh)', chart_name=chart_name)
 
-        sum_solid_fuel_elec = energy_production_detailed['production solid_fuel (TWh)'].values + \
-                              energy_production_detailed['production electricity (TWh)'].values
+        sum_solid_fuel_elec = energy_production_detailed[f'production {GlossaryEnergy.solid_fuel} (TWh)'].values + \
+                              energy_production_detailed[f'production {GlossaryEnergy.electricity} (TWh)'].values
         new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryEnergy.Years].values),
                                        list(sum_solid_fuel_elec),
                                        'Sum of solid fuel and electricity productions', 'lines')
@@ -1416,17 +1416,17 @@ class Energy_Mix_Discipline(SoSWrapp):
             GlossaryEnergy.Years, 'Energy (TWh)', chart_name=chart_name)
 
         new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryEnergy.Years].values), list(
-            energy_production_detailed['production hydrogen.liquid_hydrogen (TWh)'].values),
+            energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)'].values),
                                        'Liquid hydrogen production', 'lines')
         new_chart.series.append(new_serie)
         new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryEnergy.Years].values), list(
-            energy_production_detailed['production hydrogen.gaseous_hydrogen (TWh)'].values +
-            energy_production_detailed['production hydrogen.liquid_hydrogen (TWh)'].values),
+            energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)'].values +
+            energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)'].values),
                                        'Total hydrogen production', 'lines')
         new_chart.series.append(new_serie)
         constraint = liquid_hydrogen_percentage * \
-                     (energy_production_detailed['production hydrogen.gaseous_hydrogen (TWh)'].values +
-                      energy_production_detailed['production hydrogen.liquid_hydrogen (TWh)'].values)
+                     (energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)'].values +
+                      energy_production_detailed[f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)'].values)
         new_serie = InstanciatedSeries(list(energy_production_detailed[GlossaryEnergy.Years].values), list(constraint),
                                        f'percentage of total hydrogen production', 'lines')
         new_chart.series.append(new_serie)
@@ -1613,8 +1613,8 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         for reactant in energy_production_detailed.columns:
             if reactant not in [GlossaryEnergy.Years, GlossaryEnergy.TotalProductionValue, 'Total production (uncut)'] \
-                    and 'carbon_capture' not in reactant \
-                    and 'carbon_storage' not in reactant:
+                    and GlossaryEnergy.carbon_capture not in reactant \
+                    and GlossaryEnergy.carbon_storage not in reactant:
                 energy_twh = energy_production_detailed[reactant].values
                 legend_title = f'{reactant}'.replace(
                     "(TWh)", "").replace('production', '')
@@ -1676,8 +1676,8 @@ class Energy_Mix_Discipline(SoSWrapp):
 
         for reactant in energy_production_detailed.columns:
             if reactant not in [GlossaryEnergy.Years, GlossaryEnergy.TotalProductionValue] \
-                    and 'carbon_capture' not in reactant \
-                    and 'carbon_storage' not in reactant:
+                    and GlossaryEnergy.carbon_capture not in reactant \
+                    and GlossaryEnergy.carbon_storage not in reactant:
                 energy_twh = energy_production_detailed[reactant].values
                 legend_title = f'{reactant}'.replace(
                     "(TWh)", "").replace('production', '')

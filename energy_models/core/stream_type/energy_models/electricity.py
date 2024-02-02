@@ -21,7 +21,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Electricity(EnergyType):
-    name = 'electricity'
+    name = GlossaryEnergy.electricity
     hydropower_name = 'Hydropower'
     default_techno_list = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal', 'Hydropower',
                            'CoalGen', 'OilGen', 'Nuclear', 'CombinedCycleGasTurbine',

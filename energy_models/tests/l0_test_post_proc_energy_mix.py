@@ -47,18 +47,14 @@ class PostProcessEnergy(unittest.TestCase):
         """
         All energy list
         """
-        energylist = ['methane', 'hydrogen.gaseous_hydrogen', 'biogas', 'syngas', 'fuel.liquid_fuel', \
-                      'fuel.hydrotreated_oil_fuel', 'solid_fuel', 'biomass_dry', \
-                      'electricity', 'fuel.biodiesel', 'fuel.ethanol', 'hydrogen.liquid_hydrogen']
         self.namespace_list = []
 
         """
         All energy list with study name for post processing
         """
-        energylist= ['heat']
-        for energ in energylist:
-            self.namespace_list.append(f'{self.study_name}.EnergyMix.{energ}')
-
+        # energylist= [GlossaryEnergy.methane]
+        # for energ in energylist:
+        #     self.namespace_list.append(f'{self.study_name}.EnergyMix.{energ}')
         # self.namespace_list.append(f'{self.study_name}.EnergyMix')
 
     def test_post_processing_Table_plots(self):

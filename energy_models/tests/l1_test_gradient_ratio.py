@@ -278,6 +278,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
                             outputs=coupled_outputs, )
 
 
+
     # def test_03_ratio_CropEnergy_discipline_jacobian(self):
     #     '''
     #     Test the gradients of the ratios on CropEnergy techno since it has special gradients
@@ -466,6 +467,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
     #                         discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
     #                         inputs=coupled_inputs,
     #                         outputs=coupled_outputs,)
+
 
     def test_05_ratio_WaterGasShift_discipline_jacobian(self):
         '''
@@ -669,7 +671,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         Test the gradients of the ratios on CalciumLooping techno since CarbonCapture technos have special gradients
         '''
         self.setUp()
-        self.techno_name = 'flue_gas_capture.CalciumLooping'
+        self.techno_name = f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -766,7 +768,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         Test the gradients of the ratios on Gaseous Hydrogen energy to test the gradients on a stream
         '''
         self.setUp()
-        self.energy_name = 'hydrogen.gaseous_hydrogen'
+        self.energy_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
@@ -856,7 +858,7 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         Also, set the inputs so that the limited flue gas case is tested.
         '''
         self.setUp()
-        self.energy_name = 'carbon_capture'
+        self.energy_name = GlossaryEnergy.carbon_capture
         self.ee = ExecutionEngine(self.name)
         ns_dict = {GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
                    'ns_flue_gas': f'{self.name}',
@@ -917,8 +919,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
         # Overwrite CalciumLooping techno production to test the flue_gas
         # limited case
         inputs_dict[
-            f'{namespace}.{self.energy_name}.flue_gas_capture.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
-            'carbon_capture (Mt)'] *= np.linspace(1.0, 5.0, len(self.years))
+            f'{namespace}.{self.energy_name}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
+            f'{GlossaryEnergy.carbon_capture} (Mt)'] *= np.linspace(1.0, 5.0, len(self.years))
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()

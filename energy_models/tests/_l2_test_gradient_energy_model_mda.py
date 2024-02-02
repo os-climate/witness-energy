@@ -87,9 +87,9 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(full_values_dict)
 
         disc_mda = self.ee.root_process
-        output_columns = ['methane', 'hydrogen.gaseous_hydrogen', 'biogas', 'electricity', 'solid_fuel',
-                          'liquid_fuel', 'biodiesel', 'syngas', 'biomass_dry', 'carbon_capture',
-                          'carbon_storage']
+        output_columns = [GlossaryEnergy.methane, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.biogas, GlossaryEnergy.electricity, GlossaryEnergy.solid_fuel,
+                          GlossaryEnergy.liquid_fuel, GlossaryEnergy.biodiesel, GlossaryEnergy.syngas, GlossaryEnergy.biomass_dry, GlossaryEnergy.carbon_capture,
+                          GlossaryEnergy.carbon_storage]
 
         output_prices = [
             f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in output_columns]
@@ -125,9 +125,9 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(full_values_dict)
 
         disc_mda = self.ee.root_process
-        output_columns = ['methane', 'hydrogen.gaseous_hydrogen', 'biogas', 'electricity', 'solid_fuel',
-                          'liquid_fuel', 'biodiesel', 'syngas', 'biomass_dry', 'carbon_capture',
-                          'carbon_storage']
+        output_columns = [GlossaryEnergy.methane, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.biogas, GlossaryEnergy.electricity, GlossaryEnergy.solid_fuel,
+                          GlossaryEnergy.liquid_fuel, GlossaryEnergy.biodiesel, GlossaryEnergy.syngas, GlossaryEnergy.biomass_dry, GlossaryEnergy.carbon_capture,
+                          GlossaryEnergy.carbon_storage]
 
         output_prices = [
             f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in output_columns]
@@ -169,9 +169,9 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(full_values_dict)
 
         disc_mda = self.ee.root_process
-        output_columns = ['methane', 'hydrogen.gaseous_hydrogen', 'biogas', 'electricity', 'solid_fuel',
-                          'liquid_fuel', 'biodiesel', 'syngas', 'biomass_dry', 'carbon_capture',
-                          'carbon_storage']
+        output_columns = [GlossaryEnergy.methane, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.biogas, GlossaryEnergy.electricity, GlossaryEnergy.solid_fuel,
+                          GlossaryEnergy.liquid_fuel, GlossaryEnergy.biodiesel, GlossaryEnergy.syngas, GlossaryEnergy.biomass_dry, GlossaryEnergy.carbon_capture,
+                          GlossaryEnergy.carbon_storage]
 
         output_prices = [
             f'{self.name}.EnergyMix.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in output_columns]
@@ -300,9 +300,9 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
             f'{usecase.study_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_emissions}
 
         exec_eng2.load_study_from_input_dict(full_values_dict)
-        energy_list = ['methane', 'solid_fuel', 'syngas', 'electricity', 'liquid_fuel',
-                       'carbon_capture', 'carbon_storage', 'biogas', 'biomass_dry', 'biodiesel',
-                       'hydrogen.gaseous_hydrogen', 'hydrogen.liquid_hydrogen']
+        energy_list = [GlossaryEnergy.methane, GlossaryEnergy.solid_fuel, GlossaryEnergy.syngas, GlossaryEnergy.electricity, GlossaryEnergy.liquid_fuel,
+                       GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, GlossaryEnergy.biogas, GlossaryEnergy.biomass_dry, GlossaryEnergy.biodiesel,
+                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}']
 
         disc_mda = exec_eng2.root_process
         energy_price_outputs = []

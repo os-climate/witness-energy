@@ -39,8 +39,8 @@ class CCUSDiscTestCase(unittest.TestCase):
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            'fossil', 'renewable', 'fuel.ethanol', 'carbon_capture', 'carbon_storage', 'heat.lowtemperatureheat', \
-            'heat.mediumtemperatureheat', 'heat.hightemperatureheat', 'biomass_dry']]
+            GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.ethanol', GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, f'{GlossaryEnergy.heat}.lowtemperatureheat', \
+            f'{GlossaryEnergy.heat}.mediumtemperatureheat', f'{GlossaryEnergy.heat}.hightemperatureheat']]
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
         streams_outputs_dict = pickle.load(pkl_file)
@@ -56,7 +56,7 @@ class CCUSDiscTestCase(unittest.TestCase):
             streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyProductionValue]['value']
             self.energy_consumption[f'{energy}'] = \
             streams_outputs_dict[f'{energy}'][GlossaryEnergy.EnergyConsumptionValue]['value']
-        for energy in ['carbon_capture', 'carbon_storage']:
+        for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]:
             self.land_use_required[f'{energy}'] = \
             streams_outputs_dict[f'{energy}'][GlossaryEnergy.LandUseRequiredValue]['value']
             self.energy_production[f'{energy}'] = \
@@ -113,7 +113,7 @@ class CCUSDiscTestCase(unittest.TestCase):
             f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
             f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
             f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list,
-            f'{self.name}.{GlossaryEnergy.ccs_list}': ['carbon_capture', 'carbon_storage'],
+            f'{self.name}.{GlossaryEnergy.ccs_list}': [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage],
             f'{self.name}.scaling_factor_energy_production': self.scaling_factor_energy_production,
             f'{self.name}.scaling_factor_energy_consumption': self.scaling_factor_energy_consumption,
             f'{self.name}.{GlossaryEnergy.EnergyProductionDetailedValue}': self.energy_production_detailed,
@@ -124,7 +124,7 @@ class CCUSDiscTestCase(unittest.TestCase):
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[
                 energy]
 
-        for energy in ['carbon_capture', 'carbon_storage']:
+        for energy in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]:
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyProductionValue}'] = self.energy_production[energy]
             inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = self.energy_consumption[
                 energy]

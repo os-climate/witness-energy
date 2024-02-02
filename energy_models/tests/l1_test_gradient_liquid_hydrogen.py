@@ -48,7 +48,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'liquid_hydrogen'
+        self.energy_name = GlossaryEnergy.liquid_hydrogen
 
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
@@ -79,17 +79,17 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                        0.0928246539459331]) * 1000.0})
 
         self.hydrogen_liquefaction_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                               'hydrogen.gaseous_hydrogen (TWh)': [230.779470] * len(
+                                                               f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [230.779470] * len(
                                                                    years),
-                                                               'electricity (TWh)': [82.649011] * len(years), })
+                                                               f'{GlossaryEnergy.electricity} (TWh)': [82.649011] * len(years), })
 
         self.hydrogen_liquefaction_production = pd.DataFrame({GlossaryEnergy.Years: years,
                                                               LiquidHydrogen.name + ' (TWh)': [2304.779470] * len(
                                                                   years), })
 
         self.hydrogen_liquefaction_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'HydrogenLiquefaction': 0.0, 'hydrogen.gaseous_hydrogen': 0.0,
-             'electricity': 0.0,
+            {GlossaryEnergy.Years: years, 'HydrogenLiquefaction': 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
+             GlossaryEnergy.electricity: 0.0,
              'production': 0.0})
 
         electricity_price = np.array([0.09, 0.08974117039450046, 0.08948672733558984,
@@ -104,12 +104,12 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1000
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price,
-                                           'hydrogen.gaseous_hydrogen': np.ones(len(years)) * 33.,
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price,
+                                           f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.ones(len(years)) * 33.,
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.02, 'hydrogen.gaseous_hydrogen': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.02, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.1715})
@@ -229,7 +229,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
 
     def test_02_liquid_hydrogen_discipline_jacobian(self):
         self.name = 'Test'
-        self.energy_name = 'hydrogen.liquid_hydrogen'
+        self.energy_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_liquid_hydrogen': f'{self.name}',
@@ -281,7 +281,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
         inputs_dict[f'{namespace}.{self.energy_name}.HydrogenLiquefaction.{GlossaryEnergy.TechnoProductionValue}'][
-            'hydrogen.liquid_hydrogen (TWh)'] *= np.linspace(5.0, 5.0, len(self.years))
+            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)'] *= np.linspace(5.0, 5.0, len(self.years))
 
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({

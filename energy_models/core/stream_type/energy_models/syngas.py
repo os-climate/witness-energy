@@ -21,10 +21,11 @@ import numpy as np
 from energy_models.core.stream_type.carbon_models.carbon_monoxyde import CO
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Syngas(EnergyType):
-    name = 'syngas'
+    name = GlossaryEnergy.syngas
     default_techno_list = ['Pyrolysis', 'SMR', 'AutothermalReforming',
                            'CoElectrolysis', 'BiomassGasification', 'CoalGasification']
     data_energy_dict = {

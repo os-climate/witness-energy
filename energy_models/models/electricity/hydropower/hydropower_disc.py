@@ -48,14 +48,14 @@ class HydropowerDiscipline(ElectricityTechnoDiscipline):
     construction_delay = 3
     techno_infos_dict_default = {'type': 'electricity_creation',
                                  'maturity': 0,
-                                 'product': 'electricity',
+                                 'product': GlossaryEnergy.electricity,
                                  # IRENA, 2021
                                  # Renewable Power Generation Costs in 2020
                                  # https://www.irena.org/publications/2021/Jun/Renewable-Power-Costs-in-2020
                                  'Opex_percentage': 0.025,
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
-                                 'electricity': 'hydropower',
+                                 GlossaryEnergy.electricity: 'hydropower',
                                  'WACC': 0.075,  # Weighted averaged cost of capital for the carbon capture plant
                                  'lifetime': lifetime,  # should be modified
                                  'lifetime_unit': GlossaryEnergy.Years,

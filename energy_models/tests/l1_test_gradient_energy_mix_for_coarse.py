@@ -68,8 +68,8 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
 
         self.disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.EnergyMix')[0].mdo_discipline_wrapp.mdo_discipline
-        self.energy_list = ['renewable', 'fossil']
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.energy_list = [GlossaryEnergy.renewable, GlossaryEnergy.fossil]
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def TearDown(self):
         '''
@@ -85,29 +85,29 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_names.extend([
             f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in self.energy_list
             if
-            energy not in ['carbon_capture', 'carbon_storage']])
+            energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
             f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in
             self.energy_list if
-            energy not in ['carbon_capture', 'carbon_storage']])
+            energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
              self.energy_list if
-             energy not in ['carbon_capture', 'carbon_storage']])
+             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
-            [f'{self.name}.CCUS.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
-             ['carbon_capture', 'carbon_storage']])
+            [f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyConsumptionValue}' for energy in
+             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 
         inputs_names.extend(
-            [f'{self.name}.CCUS.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in
-             ['carbon_capture', 'carbon_storage']])
+            [f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyProductionValue}' for energy in
+             [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend([
-            f'{self.name}.CCUS.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in
-            ['carbon_capture', 'carbon_storage']])
+            f'{self.name}.{GlossaryEnergy.CCUS}.{energy}.{GlossaryEnergy.EnergyPricesValue}' for energy in
+            [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
         inputs_names.extend(
             [f'{self.name}.{self.model_name}.{energy}.{GlossaryEnergy.CO2EmissionsValue}' for energy in self.energy_list
              if
-             energy not in ['carbon_capture', 'carbon_storage']])
+             energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energymix_co2_emissions.pkl',

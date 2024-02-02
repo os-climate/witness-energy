@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class HeatingOil(EnergyType):
@@ -21,7 +22,7 @@ class HeatingOil(EnergyType):
     regroup different product of curde oil refinery, such as Naphtha and gas oil
     """
 
-    name = 'heating_oil'
+    name = GlossaryEnergy.heating_oil
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # CO2 emissions per U.S. Energy Information Administration

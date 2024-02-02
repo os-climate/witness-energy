@@ -22,8 +22,7 @@ import pandas as pd
 import scipy.interpolate as sc
 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
-from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, \
-    get_static_prices
+from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
@@ -65,8 +64,8 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
 
         self.energy_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years,
-             'electricity': np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0,
-             'methane': np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0})
+             GlossaryEnergy.electricity: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0,
+             GlossaryEnergy.methane: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 80.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.array([22000.00, 22000.00, 22000.00, 22000.00,
@@ -91,7 +90,7 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
              GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 100})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'methane': 0.2})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.methane: 0.2})
 
         transport_cost = 0,
 
@@ -202,8 +201,6 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -266,8 +263,6 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -327,8 +322,6 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
                            np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
@@ -391,8 +384,6 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
                            np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_piperazine,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
@@ -454,8 +445,6 @@ class GradientFlueGasTestCase(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
                        f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
-                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
                            np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.FlueGasMean}': self.flue_gas_mean_swing,

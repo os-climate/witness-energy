@@ -53,119 +53,78 @@ class IndependentInvestDiscipline(SoSWrapp):
         GlossaryEnergy.invest_mix: {'type': 'dataframe', 'unit': 'G$',
                                     'dataframe_edition_locked': False,
                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                             'electricity.SolarPv': ('float', None, True),
-                                                             'electricity.WindOnshore': ('float', None, True),
-                                                             'electricity.CoalGen': ('float', None, True),
-                                                             'methane.FossilGas': ('float', None, True),
-                                                             'methane.UpgradingBiogas': ('float', None, True),
-                                                             'hydrogen.gaseous_hydrogen.WaterGasShift': (
-                                                             'float', None, True),
-                                                             'hydrogen.gaseous_hydrogen.Electrolysis.AWE': (
-                                                             'float', None, True),
-                                                             'carbon_capture.direct_air_capture.AmineScrubbing': (
-                                                                 'float', None, True),
-                                                             'carbon_capture.flue_gas_capture.CalciumLooping': (
-                                                             'float', None, True),
-                                                             'carbon_storage.DeepSalineFormation': (
-                                                             'float', None, True),
-                                                             'carbon_storage.GeologicMineralization': (
-                                                             'float', None, True),
-                                                             'methane.Methanation': ('float', None, True),
-                                                             'hydrogen.gaseous_hydrogen.PlasmaCracking': (
-                                                             'float', None, True),
-                                                             'hydrogen.gaseous_hydrogen.Electrolysis.SOEC': (
-                                                             'float', None, True),
-                                                             'hydrogen.gaseous_hydrogen.Electrolysis.PEM': (
-                                                             'float', None, True),
-                                                             'heat.hightemperatureheat.NaturalGasBoilerHighHeat': (
-                                                             'float', None, True),
-                                                             'heat.hightemperatureheat.ElectricBoilerHighHeat': (
-                                                             'float', None, True),
-                                                             'heat.hightemperatureheat.HeatPumpHighHeat': (
-                                                             'float', None, True),
-                                                             'heat.hightemperatureheat.GeothermalHighHeat': (
-                                                             'float', None, True),
-                                                             'heat.hightemperatureheat.CHPHighHeat': (
-                                                             'float', None, True),
-                                                             'heat.lowtemperatureheat.NaturalGasBoilerLowHeat': (
-                                                             'float', None, True),
-                                                             'heat.lowtemperatureheat.ElectricBoilerLowHeat': (
-                                                             'float', None, True),
-                                                             'heat.lowtemperatureheat.HeatPumpLowHeat': (
-                                                             'float', None, True),
-                                                             'heat.lowtemperatureheat.GeothermalLowHeat': (
-                                                             'float', None, True),
-                                                             'heat.lowtemperatureheat.CHPLowHeat': (
-                                                             'float', None, True),
-                                                             'heat.mediumtemperatureheat.NaturalGasBoilerMediumHeat': (
-                                                             'float', None, True),
-                                                             'heat.mediumtemperatureheat.ElectricBoilerMediumHeat': (
-                                                             'float', None, True),
-                                                             'heat.mediumtemperatureheat.HeatPumpMediumHeat': (
-                                                             'float', None, True),
-                                                             'heat.mediumtemperatureheat.GeothermalMediumHeat': (
-                                                             'float', None, True),
-                                                             'heat.mediumtemperatureheat.CHPMediumHeat': (
-                                                             'float', None, True),
-                                                             'biogas.AnaerobicDigestion': ('float', None, True),
-                                                             'syngas.BiomassGasification': ('float', None, True),
-                                                             'syngas.SMR': ('float', None, True),
-                                                             'syngas.Pyrolysis': ('float', None, True),
-                                                             'syngas.AutothermalReforming': ('float', None, True),
-                                                             'syngas.CoElectrolysis': ('float', None, True),
-                                                             'syngas.CoalGasification': ('float', None, True),
-                                                             'fuel.liquid_fuel.Refinery': ('float', None, True),
-                                                             'fuel.liquid_fuel.FischerTropsch': ('float', None, True),
-                                                             'fuel.hydrotreated_oil_fuel.HefaDecarboxylation': (
-                                                             'float', None, True),
-                                                             'fuel.hydrotreated_oil_fuel.HefaDeoxygenation': (
-                                                             'float', None, True),
-                                                             'solid_fuel.CoalExtraction': ('float', None, True),
-                                                             'solid_fuel.Pelletizing': ('float', None, True),
-                                                             'electricity.WindOffshore': ('float', None, True),
-                                                             'electricity.SolarThermal': ('float', None, True),
-                                                             'electricity.Geothermal': ('float', None, True),
-                                                             'electricity.Hydropower': ('float', None, True),
-                                                             'electricity.Nuclear': ('float', None, True),
-                                                             'electricity.CombinedCycleGasTurbine': (
-                                                             'float', None, True),
-                                                             'electricity.GasTurbine': ('float', None, True),
-                                                             'electricity.BiogasFired': ('float', None, True),
-                                                             'electricity.BiomassFired': ('float', None, True),
-                                                             'electricity.OilGen': ('float', None, True),
-                                                             'fuel.biodiesel.Transesterification': (
-                                                             'float', None, True),
-                                                             'fuel.ethanol.BiomassFermentation': ('float', None, True),
-                                                             'hydrogen.liquid_hydrogen.HydrogenLiquefaction': (
-                                                             'float', None, True),
-                                                             'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing': (
-                                                                 'float', None, True),
-                                                             'carbon_capture.flue_gas_capture.ChilledAmmoniaProcess': (
-                                                                 'float', None, True),
-                                                             'carbon_capture.flue_gas_capture.CO2Membranes': (
-                                                             'float', None, True),
-                                                             'carbon_capture.flue_gas_capture.MonoEthanolAmine': (
-                                                                 'float', None, True),
-                                                             'carbon_capture.flue_gas_capture.PiperazineProcess': (
-                                                                 'float', None, True),
-                                                             'carbon_capture.flue_gas_capture.PressureSwingAdsorption': (
-                                                                 'float', None, True),
-                                                             'carbon_storage.BiomassBuryingFossilization': (
-                                                             'float', None, True),
-                                                             'carbon_storage.DeepOceanInjection': ('float', None, True),
-                                                             'carbon_storage.DepletedOilGas': ('float', None, True),
-                                                             'carbon_storage.EnhancedOilRecovery': (
-                                                             'float', None, True),
-                                                             'carbon_storage.PureCarbonSolidStorage': (
-                                                             'float', None, True),
-                                                             'renewable.RenewableSimpleTechno': ('float', None, True),
-                                                             'fossil.FossilSimpleTechno': ('float', None, True),
-                                                             'carbon_capture.direct_air_capture.DirectAirCaptureTechno': (
-                                                             'float', None, True),
-                                                             'carbon_capture.flue_gas_capture.FlueGasTechno': (
-                                                             'float', None, True),
-                                                             'carbon_storage.CarbonStorageTechno': (
-                                                             'float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.SolarPv': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.WindOnshore': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),
+                                                             f'{GlossaryEnergy.methane}.FossilGas': ('float', None, True),
+                                                             f'{GlossaryEnergy.methane}.UpgradingBiogas': ('float', None, True),
+                                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': ('float', None, True),
+                                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.AWE': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_storage}.DeepSalineFormation': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_storage}.GeologicMineralization': ('float', None, True),
+                                                             f'{GlossaryEnergy.methane}.Methanation': ('float', None, True),
+                                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.PlasmaCracking': ('float', None, True),
+                                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.SOEC': ('float', None, True),
+                                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.PEM': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.NaturalGasBoilerHighHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.ElectricBoilerHighHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.HeatPumpHighHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.GeothermalHighHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.CHPHighHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.NaturalGasBoilerLowHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.ElectricBoilerLowHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.HeatPumpLowHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.GeothermalLowHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.CHPLowHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.NaturalGasBoilerMediumHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.ElectricBoilerMediumHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.HeatPumpMediumHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.GeothermalMediumHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.CHPMediumHeat': ('float', None, True),
+                                                             f'{GlossaryEnergy.biogas}.{GlossaryEnergy.AnaerobicDigestion}': ('float', None, True),
+                                                             f'{GlossaryEnergy.syngas}.BiomassGasification': ('float', None, True),
+                                                             f'{GlossaryEnergy.syngas}.SMR': ('float', None, True),
+                                                             f'{GlossaryEnergy.syngas}.Pyrolysis': ('float', None, True),
+                                                             f'{GlossaryEnergy.syngas}.AutothermalReforming': ('float', None, True),
+                                                             f'{GlossaryEnergy.syngas}.CoElectrolysis': ('float', None, True),
+                                                             f'{GlossaryEnergy.syngas}.CoalGasification': ('float', None, True),
+                                                             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery': ('float', None, True),
+                                                             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch': ('float', None, True),
+                                                             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}.HefaDecarboxylation': ('float', None, True),
+                                                             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}.HefaDeoxygenation': ('float', None, True),
+                                                             f'{GlossaryEnergy.solid_fuel}.CoalExtraction': ('float', None, True),
+                                                             f'{GlossaryEnergy.solid_fuel}.Pelletizing': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.WindOffshore': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.SolarThermal': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.Geothermal': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.Hydropower': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.Nuclear': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.GasTurbine': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.BiogasFired': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.BiomassFired': ('float', None, True),
+                                                             f'{GlossaryEnergy.electricity}.OilGen': ('float', None, True),
+                                                             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}.{GlossaryEnergy.Transesterification}': ('float', None, True),
+                                                             f'{GlossaryEnergy.fuel}.ethanol.BiomassFermentation': ('float', None, True),
+                                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}.HydrogenLiquefaction': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CO2Membranes': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.PiperazineProcess': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_storage}.BiomassBuryingFossilization': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_storage}.DeepOceanInjection': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_storage}.DepletedOilGas': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_storage}.EnhancedOilRecovery': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_storage}.PureCarbonSolidStorage': ('float', None, True),
+                                                             f'{GlossaryEnergy.renewable}.RenewableSimpleTechno': ('float', None, True),
+                                                             f'{GlossaryEnergy.fossil}.FossilSimpleTechno': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.FlueGasTechno': ('float', None, True),
+                                                             f'{GlossaryEnergy.carbon_storage}.CarbonStorageTechno': ('float', None, True),
                                                              }},
 
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},

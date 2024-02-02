@@ -96,7 +96,7 @@ class TestMDARobustness(AbstractJacobianUnittest):
         years = np.arange(self.year_start, self.year_end + 1)
 
         values_dict[1][f'{self.name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}'] = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                    0.089236536471781, 0.08899046935409588,
                                                                    0.08874840310033885,
                                                                    0.08875044941298937, 0.08875249600769718,
@@ -116,15 +116,15 @@ class TestMDARobustness(AbstractJacobianUnittest):
                                                                    0.09214129913260598, 0.09236574581786147,
                                                                    0.09259350059915213,
                                                                    0.0928246539459331]) * 0.0,
-             'biomass_dry': 0.0,
-             'biogas': 0.0,
-             'methane': 0.0,
-             'solid_fuel': 0.0,
-             'hydrogen.gaseous_hydrogen': 0.0,
-             'liquid_fuel': 0.0,
-             'syngas': 0.0,
-             'carbon_capture': 0.0,
-             'carbon_storage': 0.0,
+             GlossaryEnergy.biomass_dry: 0.0,
+             GlossaryEnergy.biogas: 0.0,
+             GlossaryEnergy.methane: 0.0,
+             GlossaryEnergy.solid_fuel: 0.0,
+             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
+             GlossaryEnergy.liquid_fuel: 0.0,
+             GlossaryEnergy.syngas: 0.0,
+             GlossaryEnergy.carbon_capture: 0.0,
+             GlossaryEnergy.carbon_storage: 0.0,
              'BioDiesel': 0.0})
 
         full_values_dict = {}

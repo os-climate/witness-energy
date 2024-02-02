@@ -56,14 +56,14 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1000.0
         # We take biomass price of methane/5.0
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price
                                            })
         self.resources_prices = pd.DataFrame(
             {GlossaryEnergy.Years: years, ResourceGlossary.WetBiomass['name']: electricity_price / 100.0
              })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years,
              GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
@@ -104,7 +104,7 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
 
     def test_02_biomass_gas_discipline(self):
         self.name = 'Test'
-        self.model_name = 'AnaerobicDigestion'
+        self.model_name = GlossaryEnergy.AnaerobicDigestion
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -112,7 +112,7 @@ class AnaerobicDigestionPriceTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biogas.anaerobic_digestion.anaerobic_digestion_disc.AnaerobicDigestionDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biogas}.anaerobic_digestion.anaerobic_digestion_disc.AnaerobicDigestionDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

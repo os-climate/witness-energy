@@ -61,7 +61,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
     def test_01_carbon_capture_discipline(self):
         self.name = 'Test'
         ns_study = self.name
-        carbon_capture_name = 'carbon_capture'
+        carbon_capture_name = GlossaryEnergy.carbon_capture
         energy_mix = 'EnergyMix'
         flue_gas_name = 'flue_gas_capture'
         self.ee = ExecutionEngine(self.name)
@@ -100,7 +100,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
     def test_02_carbon_capture_discipline_limited(self):
         self.name = 'Test'
         ns_study = self.name
-        carbon_capture_name = 'carbon_capture'
+        carbon_capture_name = GlossaryEnergy.carbon_capture
         energy_mix = 'EnergyMix'
         flue_gas_name = 'flue_gas_capture'
         self.ee = ExecutionEngine(self.name)
@@ -126,7 +126,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
 
         inputs_dict[
             f'Test.EnergyMix.carbon_capture.flue_gas_capture.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
-            'carbon_capture (Mt)'] *= 5.0
+            f'{GlossaryEnergy.carbon_capture} (Mt)'] *= 5.0
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()

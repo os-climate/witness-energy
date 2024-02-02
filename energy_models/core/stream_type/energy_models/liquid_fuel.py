@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class LiquidFuel(EnergyType):
-    name = 'fuel.liquid_fuel'
-    short_name = 'liquid_fuel'
+    name = f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}'
+    short_name = GlossaryEnergy.liquid_fuel
     default_techno_list = ['AlcoholToFuel', 'BioFuel',
                            'EOR', 'Refinery', 'HEFA',
                            'FischerTropsch']

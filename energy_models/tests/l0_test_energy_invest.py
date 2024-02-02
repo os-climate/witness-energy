@@ -40,15 +40,15 @@ class TestEnergyInvest(unittest.TestCase):
         self.y_step = 1
         self.energy_invest = EnergyInvest()
         self.energy_list = [
-            'electricity', 'hydrogen.gaseous_hydrogen', 'methane']
+            GlossaryEnergy.electricity, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.methane]
         self.energy_invest.set_energy_list(self.energy_list)
 
         self.years = np.arange(self.y_s, self.y_e + 1)
         dict2 = {}
         dict2[GlossaryEnergy.Years] = self.years
-        dict2['electricity'] = np.ones(len(self.years))
-        dict2['methane'] = np.ones(len(self.years)) * 0.5
-        dict2['hydrogen.gaseous_hydrogen'] = np.ones(len(self.years)) * 0.5
+        dict2[GlossaryEnergy.electricity] = np.ones(len(self.years))
+        dict2[GlossaryEnergy.methane] = np.ones(len(self.years)) * 0.5
+        dict2[f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'] = np.ones(len(self.years)) * 0.5
         self.energy_mix = pd.DataFrame(dict2)
 
         dict3 = {}
@@ -73,7 +73,7 @@ class TestEnergyInvest(unittest.TestCase):
 
         dict1 = {}
         dict1[GlossaryEnergy.Years] = self.years
-        dict1['electricity'] = np.ones(len(self.years))
+        dict1[GlossaryEnergy.electricity] = np.ones(len(self.years))
         mix_df1 = pd.DataFrame(dict1)
 
         # -- assert fail if not enough information
@@ -159,8 +159,8 @@ class TestEnergyInvest(unittest.TestCase):
 
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
-                       f'{self.name}.{GlossaryEnergy.energy_list}': ['electricity', 'methane',
-                                                                     'hydrogen.gaseous_hydrogen'],
+                       f'{self.name}.{GlossaryEnergy.energy_list}': [GlossaryEnergy.electricity, GlossaryEnergy.methane,
+                                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'],
                        f'{self.name}.{self.model_name}.invest_energy_mix': self.energy_mix,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}': self.invest_df}
 
@@ -270,7 +270,7 @@ class TestEnergyInvest(unittest.TestCase):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        energy_list = ['electricity', 'methane', 'hydrogen.gaseous_hydrogen']
+        energy_list = [GlossaryEnergy.electricity, GlossaryEnergy.methane, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}']
         inputs_dict = {f'{self.name}.{self.model_name}.{GlossaryEnergy.YearStart}': self.y_s,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.YearEnd}': self.y_e,
                        f'{self.name}.{GlossaryEnergy.energy_list}': energy_list,

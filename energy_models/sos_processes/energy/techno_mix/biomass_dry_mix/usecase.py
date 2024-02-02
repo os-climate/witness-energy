@@ -75,7 +75,7 @@ class Study(EnergyMixStudyManager):
         years = np.arange(self.year_start, self.year_end + 1)
         # reference_data_name = 'Reference_aircraft_data'
         energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      'electricity': 16.0})
+                                      GlossaryEnergy.electricity: 16.0})
 
         # We use the IEA H2 demand to fake the invest level through years
 
@@ -105,8 +105,8 @@ class Study(EnergyMixStudyManager):
         resources_price['CO2'] = np.linspace(
             50.0, 100.0, len(years))  # biomass_dry price in $/kg
         energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0,
-             'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.biomass_dry: - 0.64 / 4.86, GlossaryEnergy.solid_fuel: 0.64 / 4.86, GlossaryEnergy.electricity: 0.0,
+             GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, 'crude oil': 0.02533})
 
         # define invest mix
         investment_mix = self.get_investments()

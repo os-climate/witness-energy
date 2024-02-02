@@ -50,13 +50,13 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'methane'
+        self.energy_name = GlossaryEnergy.methane
         self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
         years = np.arange(self.year_start, self.year_end + 1)
         self.years = years
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+                                           GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                     0.089236536471781, 0.08899046935409588,
                                                                     0.08874840310033885,
                                                                     0.08875044941298937, 0.08875249600769718,
@@ -76,7 +76,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                                                                     0.09214129913260598, 0.09236574581786147,
                                                                     0.09259350059915213,
                                                                     0.0928246539459331]) * 1000.0,
-                                           'hydrogen.gaseous_hydrogen': np.array(
+                                           f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.array(
                                                [0.1266023955250543, 0.12472966837635774, 0.12308937523217356,
                                                 0.12196584543238155,
                                                 0.12101159171871603, 0.12018900859836591, 0.1192884942915236,
@@ -92,7 +92,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                                                 0.12433514237290824, 0.12511526161029957, 0.12590456744159823,
                                                 0.1267030200703957,
                                                 0.12691667296790637, 0.12714334679576733, 0.12738215136005188]) * 1000,
-                                           'biogas': np.array(
+                                           GlossaryEnergy.biogas: np.array(
                                                [0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
                                                 0.0557845721244601, 0.05435665353332419, 0.05225877624361548,
                                                 0.05045797192512811, 0.04888746457113824, 0.04750006564084081,
@@ -107,7 +107,7 @@ class MethaneJacobianTestCase(AbstractJacobianUnittest):
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'biogas': -0.51})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0, GlossaryEnergy.biogas: -0.51})
         # Use the same inest as SMR techno
 
         self.invest_level_methanation = pd.DataFrame({GlossaryEnergy.Years: years,

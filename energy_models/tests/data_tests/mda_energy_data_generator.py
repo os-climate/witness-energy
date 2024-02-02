@@ -18,6 +18,7 @@ limitations under the License.
 
 import pickle
 
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as MDA_Energy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -162,14 +163,14 @@ def launch_data_pickle_generation(directory=''):
     ###############
     for stream in ccs_list:
         stream_disc = ee.dm.get_disciplines_with_name(
-            f'{name}.CCUS.{stream}')[0]
+            f'{name}.{GlossaryEnergy.CCUS}.{stream}')[0]
         # Inputs
         mda_energy_data_streams_input_dict[stream] = {}
         full_inputs = stream_disc.get_input_data_names()
         # For the coupled inputs and outputs, test inputs/outputs on all
         # namespaces
         coupled_inputs = []
-        namespaces = [f'{name}.', f'{name}.CCUS.', f'{name}.CCUS.{stream}.', ]
+        namespaces = [f'{name}.', f'{name}.{GlossaryEnergy.CCUS}.', f'{name}.{GlossaryEnergy.CCUS}.{stream}.', ]
         for namespace in namespaces:
             coupled_inputs += [input[len(namespace):] for input in full_inputs if ee.dm.get_data(
                 input, 'coupling')]
@@ -185,7 +186,7 @@ def launch_data_pickle_generation(directory=''):
         # For the coupled inputs and outputs, test inputs/outputs on all
         # namespaces
         coupled_outputs = []
-        namespaces = [f'{name}.', f'{name}.CCUS.', f'{name}.CCUS.{stream}.']
+        namespaces = [f'{name}.', f'{name}.{GlossaryEnergy.CCUS}.', f'{name}.{GlossaryEnergy.CCUS}.{stream}.']
         for namespace in namespaces:
             coupled_outputs += [output[len(namespace):] for output in full_outputs if ee.dm.get_data(
                 output, 'coupling')]
@@ -202,15 +203,15 @@ def launch_data_pickle_generation(directory=''):
         for techno in technologies_list:
             # Loop on technologies
             techno_disc = ee.dm.get_disciplines_with_name(
-                f'{name}.CCUS.{stream}.{techno}')[0]
+                f'{name}.{GlossaryEnergy.CCUS}.{stream}.{techno}')[0]
             # Inputs
             mda_energy_data_technologies_input_dict[techno] = {}
             full_inputs = techno_disc.get_input_data_names()
             # For the coupled inputs and outputs, test inputs/outputs on all
             # namespaces
             coupled_inputs = []
-            namespaces = [f'{name}.', f'{name}.CCUS.', f'{name}.CCUS.{stream}.',
-                          f'{name}.CCUS.{stream}.{techno}.']
+            namespaces = [f'{name}.', f'{name}.{GlossaryEnergy.CCUS}.', f'{name}.{GlossaryEnergy.CCUS}.{stream}.',
+                          f'{name}.{GlossaryEnergy.CCUS}.{stream}.{techno}.']
             for namespace in namespaces:
                 coupled_inputs += [input[len(namespace):] for input in full_inputs if ee.dm.get_data(
                     input, 'coupling')]
@@ -226,8 +227,8 @@ def launch_data_pickle_generation(directory=''):
             # For the coupled inputs and outputs, test inputs/outputs on all
             # namespaces
             coupled_outputs = []
-            namespaces = [f'{name}.', f'{name}.CCUS.', f'{name}.CCUS.{stream}.',
-                          f'{name}.CCUS.{stream}.{techno}.']
+            namespaces = [f'{name}.', f'{name}.{GlossaryEnergy.CCUS}.', f'{name}.{GlossaryEnergy.CCUS}.{stream}.',
+                          f'{name}.{GlossaryEnergy.CCUS}.{stream}.{techno}.']
             for namespace in namespaces:
                 coupled_outputs += [output[len(namespace):] for output in full_outputs if ee.dm.get_data(
                     output, 'coupling')]

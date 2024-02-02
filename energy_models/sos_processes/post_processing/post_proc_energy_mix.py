@@ -70,7 +70,7 @@ def get_techno_comparision_data(execution_engine, namespace, year):
         var_f_name = f"{namespace}.{energ}.technologies_list"
         var_energyproduction_name = f"{namespace}.{energ}.energy_production_detailed"
 
-        if 'biomass_dry' not in var_f_name:
+        if GlossaryEnergy.biomass_dry not in var_f_name:
             EnergyDict[f"{energ}"] = {}
             loc_techno_list = execution_engine.dm.get_value(var_f_name)
             result = [f"{energ}." + direction for direction in loc_techno_list]

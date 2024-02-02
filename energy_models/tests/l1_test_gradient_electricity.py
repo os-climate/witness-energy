@@ -58,7 +58,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'electricity'
+        self.energy_name = GlossaryEnergy.electricity
         self.year_start = GlossaryEnergy.YeartStartDefault
         self.year_end = 2050
 
@@ -68,7 +68,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
         solid_fuel_price = np.array(
             [5.7] * len(self.years))
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'electricity': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.electricity: np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                                                         0.089236536471781, 0.08899046935409588,
                                                                         0.08874840310033885,
                                                                         0.08875044941298937, 0.08875249600769718,
@@ -88,18 +88,18 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                                                                         0.09214129913260598, 0.09236574581786147,
                                                                         0.09259350059915213,
                                                                         0.0928246539459331]) * 1000.0,
-             'solid_fuel': solid_fuel_price,
-             'fuel.liquid_fuel': np.ones(len(self.years)) * 91,
-             'methane': np.ones(len(self.years)) * 27.07,
-             'biogas': np.ones(len(self.years)) * 5.0,
-             'biomass_dry': np.ones(len(self.years)) * 11.0,
+             GlossaryEnergy.solid_fuel: solid_fuel_price,
+             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': np.ones(len(self.years)) * 91,
+             GlossaryEnergy.methane: np.ones(len(self.years)) * 27.07,
+             GlossaryEnergy.biogas: np.ones(len(self.years)) * 5.0,
+             GlossaryEnergy.biomass_dry: np.ones(len(self.years)) * 11.0,
              })
         #         self.energy_prices = pd.DataFrame(
-        #             {'methane': np.ones(len(years)) * 27.07})
+        #             {GlossaryEnergy.methane: np.ones(len(years)) * 27.07})
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: self.years, 'methane': 0.123 / 15.4, 'biogas': 0.123 / 15.4,
-             'solid_fuel': 0.64 / 4.86, 'fuel.liquid_fuel': 0.64 / 4.86, 'biomass_dry': - 0.64 / 4.86,
-             'electricity': 0.0})
+            {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.biogas: 0.123 / 15.4,
+             GlossaryEnergy.solid_fuel: 0.64 / 4.86, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': 0.64 / 4.86, GlossaryEnergy.biomass_dry: - 0.64 / 4.86,
+             GlossaryEnergy.electricity: 0.0})
 
         # --- invest level ---
         self.invest_level_ccgast = pd.DataFrame(
@@ -200,7 +200,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'electricity.CombinedCycleGasTurbine']
+                                                == f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine']
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(50.0, 50.0, len(self.years))))
@@ -499,7 +499,7 @@ class ElectricityJacobianTestCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio[
-                           [GlossaryEnergy.Years, 'methane']],
+                           [GlossaryEnergy.Years, GlossaryEnergy.methane]],
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
 

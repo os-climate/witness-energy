@@ -74,7 +74,7 @@ class CoalExtractionDiscipline(SolidFuelTechnoDiscipline):
                                  # ratio elec use / kerosene product
                                  'elec_demand': 0.01,
                                  'elec_demand_unit': 'kWh/kWh',
-                                 'electricity': 'solar',
+                                 GlossaryEnergy.electricity: 'solar',
                                  'heat_demand': 0.0,
                                  'heat_demand_unit': 'kWh/kWh',
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant

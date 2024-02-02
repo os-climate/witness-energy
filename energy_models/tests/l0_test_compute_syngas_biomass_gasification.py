@@ -55,12 +55,12 @@ class SyngasBiomassGasificationTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price,
-                                           'biomass_dry': np.ones(len(years)) * 6812 / 3.36
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price,
+                                           GlossaryEnergy.biomass_dry: np.ones(len(years)) * 6812 / 3.36
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'biomass_dry': - 0.425 * 44.01 / 12.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.biomass_dry: - 0.425 * 44.01 / 12.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.linspace(1.0, 100000, len(years))})

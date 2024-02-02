@@ -57,10 +57,10 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
         self.years = years
-        self.energy_name = 'liquid_fuel'
+        self.energy_name = GlossaryEnergy.liquid_fuel
         # crude oil price : 1.3$/gallon
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                                                    0.159236536471781, 0.15899046935409588,
                                                                    0.15874840310033885,
                                                                    0.15875044941298937, 0.15875249600769718,
@@ -81,8 +81,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                                                    0.16259350059915213,
                                                                    0.1628246539459331]) * 1000.0,
              'CO2': 0.0,
-             'syngas': 34,
-             'hydrogen.gaseous_hydrogen': 15.,
+             GlossaryEnergy.syngas: 34,
+             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
              })
 
         self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34,
@@ -96,7 +96,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                      'BiomassGasification': 2.0
                                      }
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.})
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
                                           GlossaryEnergy.InvestValue: np.array(
@@ -170,7 +170,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'liquid_fuel.Refinery']
+                                                == f'{GlossaryEnergy.liquid_fuel}.Refinery']
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
@@ -250,7 +250,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     def test_02_transesterification_discipline_analytic_grad(self):
 
         self.name = 'Test'
-        self.model_name = 'Transesterification'
+        self.model_name = GlossaryEnergy.Transesterification
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -260,7 +260,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biodiesel.transesterification.transesterification_disc.TransesterificationDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biodiesel}.transesterification.transesterification_disc.TransesterificationDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -312,7 +312,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     def test_03_transesterification_discipline_analytic_grad_negative_invest(self):
 
         self.name = 'Test'
-        self.model_name = 'Transesterification'
+        self.model_name = GlossaryEnergy.Transesterification
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -322,7 +322,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biodiesel.transesterification.transesterification_disc.TransesterificationDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biodiesel}.transesterification.transesterification_disc.TransesterificationDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -374,7 +374,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     def test_04_transesterification_discipline_analytic_grad_negative_invest2(self):
 
         self.name = 'Test'
-        self.model_name = 'Transesterification'
+        self.model_name = GlossaryEnergy.Transesterification
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -384,7 +384,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biodiesel.transesterification.transesterification_disc.TransesterificationDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biodiesel}.transesterification.transesterification_disc.TransesterificationDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -435,7 +435,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     def test_05_liquid_fuel_discipline_jacobian(self):
 
         self.name = 'Test'
-        self.energy_name = 'fuel.liquid_fuel'
+        self.energy_name = f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_liquid_fuel': f'{self.name}',

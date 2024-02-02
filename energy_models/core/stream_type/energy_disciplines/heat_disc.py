@@ -44,7 +44,7 @@ class HeatDiscipline(SoSWrapp):
         'version': '',
     }
 
-    name = 'heat'
+    name = GlossaryEnergy.heat
     energy_name = name
     heat_list = [HighHeatDiscipline.energy_name,
                  MediumHeatDiscipline.energy_name,
@@ -142,7 +142,7 @@ class HeatDiscipline(SoSWrapp):
         energy_consumption = pd.DataFrame({GlossaryEnergy.Years: years})
         energy_production_detailed = pd.DataFrame({GlossaryEnergy.Years: years})
         energy_heat_flux_detailed = pd.DataFrame({GlossaryEnergy.Years: years})
-        energy_prices['heat'] = 0
+        energy_prices[GlossaryEnergy.heat] = 0
         energy_prices['heat_production'] = 0
 
         # loop over heat energies
@@ -173,13 +173,13 @@ class HeatDiscipline(SoSWrapp):
             #     [energy_heat_flux_detailed, energy_heat_flux.drop(GlossaryEnergy.Years, axis=1)], axis=1)
 
             # mean price weighted with production for each energy
-            energy_prices['heat'] += [price * production for price,
+            energy_prices[GlossaryEnergy.heat] += [price * production for price,
                                                              production in
                                       zip(energy_prices[energy], energy_production[energy])]
             energy_prices['heat_production'] += energy_production[energy]
 
         # aggregations
-        energy_prices['heat'] = energy_prices['heat'] / \
+        energy_prices[GlossaryEnergy.heat] = energy_prices[GlossaryEnergy.heat] / \
                                 energy_prices['heat_production']
         energy_prices.drop('heat_production', axis=1)
         energy_production = energy_production.groupby(level=0, axis=1).sum() #.reset_index()
@@ -285,7 +285,7 @@ class HeatDiscipline(SoSWrapp):
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
 
-        for energy in ['heat'] + self.energy_list:
+        for energy in [GlossaryEnergy.heat] + self.energy_list:
             display_energy_name = energy.split(".")[-1].replace("_", " ")
             serie = InstanciatedSeries(
                 energy_prices[GlossaryEnergy.Years].values.tolist(),

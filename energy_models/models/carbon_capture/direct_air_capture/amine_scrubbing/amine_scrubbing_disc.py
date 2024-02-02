@@ -40,7 +40,7 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
         'icon': 'fas fa-globe-europe fa-fw',
         'version': '',
     }
-    techno_name = 'direct_air_capture.AmineScrubbing'
+    techno_name = f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing'
     lifetime = 35
     construction_delay = 3
     techno_infos_dict_default = {'maturity': 0,
