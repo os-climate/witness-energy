@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 import numpy as np
 
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
@@ -123,6 +125,10 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
     name = f'{GHGemissionsDiscipline.name}.Energy'
 
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.model = None
+
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
         self.model = EnergyGHGEmissions(self.name)
@@ -187,7 +193,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      f'{GlossaryEnergy.liquefied_petroleum_gas} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.heating_oil} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.ultra_low_sulfur_diesel} (TWh)': ('float', None, True),
-                                                     f'{GlossaryEnergy.fuel}.hydrotreated_oil_fuel': ('float', None, True),
+                                                     f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}': ('float', None, True),
                                                      'copper_resource (Mt)': ('float', None, True),
                                                      'uranium_resource (Mt)': ('float', None, True),
                                                      f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)': ('float', None, True),
@@ -239,7 +245,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      f'{GlossaryEnergy.liquefied_petroleum_gas} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.heating_oil} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.ultra_low_sulfur_diesel} (TWh)': ('float', None, True),
-                                                     f'{GlossaryEnergy.fuel}.hydrotreated_oil_fuel': ('float', None, True),
+                                                     f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}': ('float', None, True),
                                                      'copper_resource (Mt)': ('float', None, True),
                                                      'uranium_resource (Mt)': ('float', None, True),
                                                      f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)': ('float', None, True),

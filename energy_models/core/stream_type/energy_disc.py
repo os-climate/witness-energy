@@ -125,7 +125,7 @@ class EnergyDiscipline(StreamDiscipline):
         outputs_dict = {GlossaryEnergy.CO2EmissionsValue: CO2_emissions}
 
         outputs_dict.update(ghg_per_use)
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -137,8 +137,6 @@ class EnergyDiscipline(StreamDiscipline):
         years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
                           inputs_dict[GlossaryEnergy.YearEnd] + 1)
         technos_list = inputs_dict[GlossaryEnergy.techno_list]
-        list_columns_co2_emissions = list(
-            outputs_dict[GlossaryEnergy.CO2EmissionsValue].columns)
         mix_weight = outputs_dict['techno_mix']
         for techno in technos_list:
             list_columnstechnoprod = list(

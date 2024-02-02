@@ -448,7 +448,6 @@ class Study(EnergyStudyManager):
                 instance_sub_study = sub_study(
                     self.year_start,
                     self.year_end,
-                    self.time_step,
                     bspline=self.bspline,
                     main_study=False,
                     prefix_name=prefix_name,
@@ -460,7 +459,6 @@ class Study(EnergyStudyManager):
                 instance_sub_study = sub_study(
                     self.year_start,
                     self.year_end,
-                    self.time_step,
                     bspline=self.bspline,
                     main_study=False,
                     execution_engine=self.execution_engine,

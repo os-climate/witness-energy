@@ -33,8 +33,6 @@ class CarbonCaptureTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-
         self.name = 'Test'
         ee_data = ExecutionEngine(self.name)
         repo = 'energy_models.sos_processes.energy.techno_mix'

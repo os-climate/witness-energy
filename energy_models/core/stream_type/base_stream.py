@@ -37,6 +37,24 @@ class BaseStream:
         '''
         Constructor
         '''
+        self.years = None
+        self.sub_prices = None
+        self.sub_prices_wo_taxes = None
+        self.total_carbon_emissions = None
+        self.sub_carbon_emissions = None
+        self.co2_emitted_by_energy = None
+        self.mix_weights = None
+        self.price_by_energy = None
+        self.production = None
+        self.production_raw = None
+        self.production_by_techno = None
+        self.consumption = None
+        self.land_use_required = None
+        self.consumption_woratio = None
+        self.production = None
+        self.consumption = None
+        self.production_by_techno = None
+        self.energy_type_capital = None
         self.name = name
         # -- Inputs attributes set from configure method
         self.year_start = GlossaryEnergy.YeartStartDefault  # year start
