@@ -12,5 +12,3 @@ dist/
 energy_models.egg-info/
 /CH_energy_price.png
 /Makefile
-pytest.ini
-energy_models/models/gaseous_hydrogen/water_gas_shift/water_gas_shift.py
