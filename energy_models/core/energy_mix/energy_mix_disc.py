@@ -449,7 +449,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                         'co2_emissions_needed_by_energy_mix': self.energy_model.co2_emissions_needed_by_energy_mix,
                         'carbon_capture_from_energy_mix': self.energy_model.carbon_capture_from_energy_mix,
                         GlossaryEnergy.EnergyCapitalDfValue: self.energy_model.energy_capital,
-                        #GlossaryEnergy.TargetProductionConstraintValue: self.energy_model.target_production_constraint,
+                        GlossaryEnergy.TargetProductionConstraintValue: self.energy_model.target_production_constraint,
                         }
 
         primary_energy_percentage = inputs_dict['primary_energy_percentage']

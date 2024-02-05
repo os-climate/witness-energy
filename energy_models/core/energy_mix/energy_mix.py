@@ -390,6 +390,8 @@ class EnergyMix(BaseStream):
                                                                     GlossaryEnergy.TotalProductionValue] * \
                                                                 self.heat_losses_percentage / 100.0
 
+
+
     def compute_energy_production_uncut(self):
         """maybe to delete"""
         self.production['Total production (uncut)'] = self.production[GlossaryEnergy.TotalProductionValue].values
@@ -901,6 +903,10 @@ class EnergyMix(BaseStream):
             dtot_CO2_emissions, key_dep_tuple_list, new_key)
 
         return dtot_CO2_emissions
+    def compute_target_production_constraint(self, energy_production: np.ndarray, inputs_dict ):
+        target_energy_production=inputs_dict[GlossaryEnergy.TargetEnergyProductionValue][GlossaryEnergy.TargetEnergyProductionValue].values
+        self.target_production_constraint=energy_production[GlossaryEnergy.EnergyProductionValue].values-target_energy_production * 1000
+
 
     def compute(self, inputs: dict, exp_min=True):
         self.configure_parameters_update(inputs)
@@ -924,6 +930,7 @@ class EnergyMix(BaseStream):
         self.compute_net_positive_consumable_energy_production()
         self.compute_mean_price(exp_min=inputs['exp_min'])
         self.compute_constraint_h2()
+        self.compute_target_production_constraint(self.production[GlossaryEnergy.TotalProductionValue], inputs)
 
 
 def update_new_gradient(grad_dict, key_dep_tuple_list, new_key):
