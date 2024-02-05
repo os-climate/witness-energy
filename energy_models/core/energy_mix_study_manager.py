@@ -61,10 +61,7 @@ class EnergyMixStudyManager(StudyManager):
         invest_mix_dict = self.get_investments()
         energy_wodot = self.energy_name.replace('.', '_')
 
-        if len(self.technologies_list) > 1:
-            enable_variable = True
-        else:
-            enable_variable = False
+        enable_variable = True
 
         for techno in self.technologies_list:
             techno_wo_dot = techno.replace('.', '_')
