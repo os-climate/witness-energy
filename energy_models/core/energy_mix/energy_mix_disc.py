@@ -104,6 +104,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                'normalization_value_demand_constraints': {'type': 'float', 'default': 1000.0, 'unit': 'Twh',
                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                           'namespace': GlossaryEnergy.NS_REFERENCE},
+               GlossaryEnergy.TargetEnergyProductionValue: GlossaryEnergy.TargetEnergyProductionDf,
                GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
                'minimum_energy_production': {'type': 'float', 'default': 1e4,
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
@@ -144,6 +145,7 @@ class Energy_Mix_Discipline(SoSWrapp):
 
     DESC_OUT = {
         GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
+        GlossaryEnergy.TargetProductionConstraintValue: GlossaryEnergy.TargetProductionConstraint,
         GlossaryEnergy.EnergyCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
         'energy_CO2_emissions_after_use': {'type': 'dataframe', 'unit': 'kg/kWh'},
         'co2_emissions_by_energy': {'type': 'dataframe', 'unit': 'Mt'},
@@ -228,6 +230,15 @@ class Energy_Mix_Discipline(SoSWrapp):
         dynamic_inputs = {}
         dynamic_outputs = {}
         inputs_dict = self.get_sosdisc_inputs()
+        if GlossaryEnergy.YearStart in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs(
+                [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+            years = np.arange(year_start, year_end + 1)
+            default_Target_Energy_Production = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                             GlossaryEnergy.TargetEnergyProductionValue: np.zeros_like(
+                                                                 years)})
+            self.set_dynamic_default_values(
+                {GlossaryEnergy.TargetEnergyProductionValue: default_Target_Energy_Production})
         if GlossaryEnergy.energy_list in self.get_data_in():
             energy_list = inputs_dict[GlossaryEnergy.energy_list]
             self.update_default_energy_list()
@@ -437,7 +448,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                         'resources_demand_woratio': self.energy_model.resources_demand_woratio,
                         'co2_emissions_needed_by_energy_mix': self.energy_model.co2_emissions_needed_by_energy_mix,
                         'carbon_capture_from_energy_mix': self.energy_model.carbon_capture_from_energy_mix,
-                        GlossaryEnergy.EnergyCapitalDfValue: self.energy_model.energy_capital
+                        GlossaryEnergy.EnergyCapitalDfValue: self.energy_model.energy_capital,
+                        #GlossaryEnergy.TargetProductionConstraintValue: self.energy_model.target_production_constraint,
                         }
 
         primary_energy_percentage = inputs_dict['primary_energy_percentage']
