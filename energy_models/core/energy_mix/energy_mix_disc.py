@@ -957,7 +957,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         for energy in energy_list:
             ns_energy = self.get_ns_energy(energy)
             ddemand_ratio_denergy_prod, ddemand_ratio_denergy_cons = self.compute_ddemand_ratio_denergy_production(
-                energy, sub_production_dict, sub_consumption_woratio_dict, stream_class_dict,
+                energy, sub_production_dict, sub_consumption_woratio_dict,
                 scaling_factor_energy_production, years, energy_production_brut_detailed)
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.AllStreamsDemandRatioValue,
@@ -1124,7 +1124,6 @@ class Energy_Mix_Discipline(SoSWrapp):
         return np.identity(len(years)) * dtotal_production_denergy_production
 
     def compute_ddemand_ratio_denergy_production(self, energy, sub_production_dict, sub_consumption_dict,
-                                                 stream_class_dict,
                                                  scaling_factor_production, years, energy_production_brut_detailed):
         '''! Compute the gradient of the demand ratio vs energy production function :
                  -the ratio is capped to one if energy_prod>energy_cons, hence the special condition.
@@ -1132,7 +1131,6 @@ class Energy_Mix_Discipline(SoSWrapp):
         @param energy: string, name of the energy 
         @param sub_production_dict: dictionary with the raw production for all the energies 
         @param sub_consumption_dict: dictionary with the raw consumption for all energies
-        @param stream_class_dict: dictionary with informations on the energies
         @param scaling_factor_production: float used to scale the energy production at input/output of the model
         @return ddemand_ratio_denergy_prod, ddemand_ratio_denergy_cons: numpy.arrays, shape=(len(years),len(years)) with the gradients
         :param years:
@@ -1474,7 +1472,6 @@ class Energy_Mix_Discipline(SoSWrapp):
         energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
         max_value = 0
         for energy in energy_list:
-            ns_energy = self.get_ns_energy(energy)
             if self.stream_class_dict[energy].unit == 'TWh':
                 max_value = max(
                     max(energy_prices[energy].values.tolist()), max_value)

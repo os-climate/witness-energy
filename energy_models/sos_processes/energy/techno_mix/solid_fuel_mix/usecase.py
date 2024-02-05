@@ -114,14 +114,11 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{solid_fuel_name}.Pelletizing.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-
-                       f'{self.study_name}.{solid_fuel_name}.invest_techno_mix': investment_mix,
                        }
 
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.{solid_fuel_name}.{GlossaryEnergy.InvestLevelValue}': invest_level,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                {f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
                  f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
                  f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
                  })

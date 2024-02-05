@@ -100,7 +100,6 @@ class Study(EnergyMixStudyManager):
 
                        f'{self.study_name}.{fossil_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{fossil_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       f'{self.study_name}.{fossil_name}.invest_techno_mix': investment_mix,
 
                        }
 

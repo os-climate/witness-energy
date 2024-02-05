@@ -38,12 +38,12 @@ class RWGS(SyngasTechno):
         super().__init__(name)
         self.esk = None
         self.needed_syngas_ratio = None
-        self.syngas_ratio = None
+        self.syngas_ratio: float = 0.0
         self.needed_syngas_ratio = None
         self.inputs_dict = None
         self.available_power = None
-        self.slope_capex = None
-        self.slope_elec_demand = None
+        self.slope_capex: float = 0.0
+        self.slope_elec_demand: float = 0.0
 
     def configure_parameters(self, inputs_dict):
 

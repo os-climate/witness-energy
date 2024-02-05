@@ -59,7 +59,7 @@ class FischerTropsch(LiquidFuelTechno):
         self.syngas_ratio_techno = None
         self.syngas_ratio_techno_wgs = None
         self.price_details_wgs = None
-        self.CO2_prod_wgs = None
+        self.CO2_prod_wgs: float = 0.0
         self.consumption = None
         self.production = None
         self.slope_capex = None
@@ -1162,9 +1162,6 @@ class FischerTropsch(LiquidFuelTechno):
             capex_grad = self.compute_dcapex_dsyngas_ratio()
             dprodenergy_dsyngas_ratio = self.compute_dprod_dfluegas(
                 capex, invest, invest_before_ystart, techno_infos_dict, capex_grad)
-
-            delectricity_dsyngas_ratio_wgs = self.compute_delec_consumption_dsyngas_ratio(
-                dprodenergy_dsyngas_ratio)
 
             # RWGS
 

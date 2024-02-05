@@ -639,7 +639,7 @@ class TechnoType:
 
         return capex_calc_list.tolist()
 
-    def compute_dcapex_dinvest(self, invest_list, data_config, initial_production):
+    def compute_dcapex_dinvest(self, invest_list, data_config):
         """
         Compute Capital expenditures (immobilisations)
         depending on the demand on the technology

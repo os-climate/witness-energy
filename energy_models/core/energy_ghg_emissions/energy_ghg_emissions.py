@@ -468,7 +468,7 @@ class EnergyGHGEmissions(BaseStream):
         return dtot_CO2_emissions
 
     # , co2_emissions):
-    def compute_grad_CO2_emissions_sinks(self, net_production):
+    def compute_grad_CO2_emissions_sinks(self):
         '''
         Compute CO2 total emissions
         '''

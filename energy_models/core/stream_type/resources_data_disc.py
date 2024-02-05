@@ -222,8 +222,6 @@ class ResourcesDisc(SoSWrapp):
         """
 
         """
-        year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
-        year_end = self.get_sosdisc_inputs(GlossaryEnergy.YearEnd)
 
         resources_price = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesPriceValue)
 

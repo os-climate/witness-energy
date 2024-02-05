@@ -217,11 +217,9 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{electricity_name}.BiomassFired.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{electricity_name}.Geothermal.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{electricity_name}.CoalGen.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.RenewableElectricitySimpleTechno.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{electricity_name}.OilGen.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{electricity_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{electricity_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.invest_techno_mix': investment_mix,
 
                        }
 

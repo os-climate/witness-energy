@@ -222,7 +222,6 @@ class Transesterification(BioDieselTechno):
         in kg 1.0082 oil + 0.082 NaturalOil = 1 biodiesel + 0.0984 glycerol
         for 1kWh equivalent of biodiesel: 10.362 kg oil + 0.842 kg of NaturalOil = 10.2778 kg of biodiesel + 1.0109 kg of glycerol
         """
-        naturaloil_data = NaturalOil.data_energy_dict
         biodiesel_calorific_value = self.data_energy_dict['calorific_value']
 
         natural_oil_needs = 1.008196721 / biodiesel_calorific_value

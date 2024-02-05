@@ -353,45 +353,6 @@ class Study(EnergyStudyManager):
         all_streams_demand_ratio.update({energy: 100.0 for energy in self.energy_list})
         all_streams_demand_ratio = pd.DataFrame(all_streams_demand_ratio)
 
-        all_resource_ratio_usable_demand = {GlossaryEnergy.Years: self.years}
-        all_resource_ratio_usable_demand.update({resource: 100.0 for resource in EnergyMix.RESOURCE_LIST})
-        all_resource_ratio_usable_demand = pd.DataFrame(all_resource_ratio_usable_demand)
-
-        invest_df = pd.DataFrame(
-            {
-                GlossaryEnergy.Years: self.years,
-                GlossaryEnergy.EnergyInvestmentsValue: 10.55 * (1.0 - 0.0253) ** np.arange(len(self.years)),
-            }
-        )
-        # init land surface for food for biomass dry crop energy
-        land_surface_for_food = pd.DataFrame(
-            {
-                GlossaryEnergy.Years: self.years,
-                "Agriculture total (Gha)": np.ones_like(self.years) * 4.8,
-            }
-        )
-
-        co2_emissions_from_energy_mix = pd.DataFrame(
-            {
-                GlossaryEnergy.Years: self.years,
-                "carbon_capture from energy mix (Mt)": 25.0,
-            }
-        )
-
-        population_df = pd.DataFrame(
-            {
-                GlossaryEnergy.Years: self.years,
-                GlossaryEnergy.PopulationValue: np.linspace(7886.69358, 9000.0, len(self.years)),
-            }
-        )
-
-        transport_demand = pd.DataFrame(
-            {
-                GlossaryEnergy.Years: self.years,
-                GlossaryEnergy.TransportDemandValue: np.linspace(33600.0, 30000.0, len(self.years)),
-            }
-        )
-
         forest_invest_df = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: 5})
 
         values_dict = {
@@ -441,14 +402,9 @@ class Study(EnergyStudyManager):
 
         crop_investment = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestmentsValue: 0.0})
 
-        values_dict.update(
-            {
+        values_dict.update({
                 f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
-                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.ManagedWoodInvestmentName}": managed_wood_investment,
-                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.DeforestationInvestmentName}": deforestation_investment,
-                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.CropInvestmentName}": crop_investment,
-            }
-        )
+        })
 
         values_dict_list.append(values_dict)
 
@@ -457,6 +413,13 @@ class Study(EnergyStudyManager):
         if not self.coarse_mode:
             agri_values_dict = self.get_input_value_from_agriculture_mix()
             values_dict_list.append(agri_values_dict)
+
+            values_dict.update({
+                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
+                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.ManagedWoodInvestmentName}": managed_wood_investment,
+                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.DeforestationInvestmentName}": deforestation_investment,
+                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.CropInvestmentName}": crop_investment,
+            })
 
         return values_dict_list
 

@@ -55,10 +55,9 @@ class UnmanagedWood(BiomassDryTechno):
 
     def grad_production_invest(self, capex, production, production_mix):
 
-        dcapex_dinvest = self.compute_dcapex_dinvest(
-            self.invest_level.loc[self.invest_level[GlossaryEnergy.Years]
-                                  <= self.year_end][GlossaryEnergy.InvestValue].values, self.techno_infos_dict,
-            self.initial_production)
+        dcapex_dinvest = self.compute_dcapex_dinvest(self.invest_level.loc[self.invest_level[GlossaryEnergy.Years]
+                                                                           <= self.year_end][
+                                                         GlossaryEnergy.InvestValue].values, self.techno_infos_dict)
 
         dprod_dinvest = self.compute_dprod_dinvest(
             capex, self.invest_level[GlossaryEnergy.InvestValue].values,

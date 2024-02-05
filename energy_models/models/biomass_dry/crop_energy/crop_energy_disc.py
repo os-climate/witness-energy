@@ -211,11 +211,10 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_prod_dland_for_food / scaling_factor_techno_production)
 
-        dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
-            invest_level.loc[invest_level[GlossaryEnergy.Years]
-                             <= self.techno_model.year_end][
-                GlossaryEnergy.InvestValue].values * scaling_factor_invest_level, self.techno_model.techno_infos_dict,
-            self.techno_model.initial_production)
+        dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(invest_level.loc[invest_level[GlossaryEnergy.Years]
+                                                                                   <= self.techno_model.year_end][
+                                                                      GlossaryEnergy.InvestValue].values * scaling_factor_invest_level,
+                                                                  self.techno_model.techno_infos_dict)
 
         dnon_use_capital_dinvest, dtechnocapital_dinvest = self.techno_model.compute_dnon_usecapital_dinvest(
             dcapex_dinvest, d_prod_dland_for_food / scaling_factor_techno_production)

@@ -260,7 +260,7 @@ class CCUS(BaseStream):
             [- (self.total_co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].sum(
             ) - self.carbonstorage_limit) / self.carbonstorage_constraint_ref])
 
-    def compute_grad_CO2_emissions(self, co2_emissions, alpha):
+    def compute_grad_CO2_emissions(self, co2_emissions):
         '''
         Compute CO2 total emissions
         '''

@@ -115,18 +115,15 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.FischerTropsch.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
                        }
         if self.main_study:
-            values_dict.update(
-                {f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
-                 f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix_name}.syngas.syngas_ratio': np.ones(len(years)) * 0.33,
-                 f'{self.study_name}.{energy_mix_name}.syngas.syngas_ratio_technos': {'SMR': 0.33,
-                                                                                      'CoElectrolysis': 1.0,
-                                                                                      'ATR': 0.66,
-                                                                                      'CoalGasification': 1.5}})
+            values_dict.update({
+                f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
+                f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
+                f'{self.study_name}.{energy_mix_name}.syngas.syngas_ratio': np.ones(len(years)) * 0.33,
+            })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
                     columns=[GlossaryEnergy.Years]).sum(axis=1)
