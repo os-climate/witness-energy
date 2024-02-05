@@ -570,17 +570,7 @@ class Study(EnergyStudyManager):
             GlossaryEnergy.Years: self.years,
             GlossaryEnergy.EnergyInvestmentsValue: 10.55 * (1.0 - 0.0253) ** np.arange(len(self.years)),
         })
-        scaling_factor_energy_investment = 100.0
         # init land surface for food for biomass dry crop energy
-        land_surface_for_food = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            "Agriculture total (Gha)": np.ones_like(self.years) * 4.8,
-        })
-
-        co2_emissions_from_energy_mix = pd.DataFrame({
-            GlossaryEnergy.Years: self.years,
-            "carbon_capture from energy mix (Mt)": 25.0,
-        })
 
         population_df = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
@@ -592,7 +582,6 @@ class Study(EnergyStudyManager):
             GlossaryEnergy.TransportDemandValue: np.linspace(33600.0, 30000.0, len(self.years)),
         })
 
-        forest_invest_df = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: 5})
 
         if not self.energy_invest_input_in_abs_value:
             # if energy investments are expressed in percentage, the new corresponding inputs must be defined
@@ -633,16 +622,10 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{GlossaryEnergy.YearEnd}": self.year_end,
             f"{self.study_name}.{GlossaryEnergy.energy_list}": self.energy_list,
             f"{self.study_name}.{GlossaryEnergy.ccs_list}": self.ccs_list,
-            f"{self.study_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
             f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
-            f"{self.study_name}.land_surface_for_food_df": land_surface_for_food,
             f"{self.study_name}.{GlossaryEnergy.CO2TaxesValue}": co2_taxes,
-            f"{self.study_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}": energy_carbon_emissions,
-            f"{self.study_name}.scaling_factor_energy_investment": scaling_factor_energy_investment,
             f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}": energy_carbon_emissions,
             f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
-            f"{self.study_name}.{energy_mix_name}.all_resource_ratio_usable_demand": all_resource_ratio_usable_demand,
-            f"{self.study_name}.{energy_mix_name}.co2_emissions_from_energy_mix": co2_emissions_from_energy_mix,
             f"{self.study_name}.is_stream_demand": True,
             f"{self.study_name}.max_mda_iter": 50,
             f"{self.study_name}.sub_mda_class": "MDAGaussSeidel",
@@ -653,8 +636,13 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}": resources_prices,
             f"{self.study_name}.{GlossaryEnergy.PopulationDfValue}": population_df,
             f"{self.study_name}.Energy_demand.{GlossaryEnergy.TransportDemandValue}": transport_demand,
-            f"{self.study_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_invest_df,
+
         }
+        if self.main_study:
+            values_dict.update({
+                f"{self.study_name}.{energy_mix_name}.all_resource_ratio_usable_demand": all_resource_ratio_usable_demand,
+
+            })
 
         (
             values_dict_list,
@@ -716,7 +704,7 @@ class Study(EnergyStudyManager):
 
         self.create_technolist_per_energy(instanciated_studies)
 
-        dc_resource = datacase_resource(self.year_start, self.year_end)
+        dc_resource = datacase_resource(self.year_start, self.year_end, main_study=False)
         dc_resource.study_name = self.study_name
         resource_input_list = dc_resource.setup_usecase()
         values_dict_list.extend(resource_input_list)

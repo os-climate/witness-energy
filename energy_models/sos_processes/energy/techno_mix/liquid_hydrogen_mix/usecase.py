@@ -98,7 +98,6 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{lh_name}.HydrogenLiquefaction.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{lh_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{lh_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       f'{self.study_name}.{lh_name}.invest_techno_mix': investment_mix,
                        }
 
         if self.main_study:

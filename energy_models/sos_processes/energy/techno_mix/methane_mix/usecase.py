@@ -111,10 +111,9 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{energy_name}.FossilGas.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.UpgradingBiogas.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.Methanation.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
                        }
 
         if self.main_study:

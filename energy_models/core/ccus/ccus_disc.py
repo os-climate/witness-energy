@@ -247,8 +247,7 @@ class CCUS_Discipline(SoSWrapp):
         alpha = inputs_dict['alpha']
         co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
         self.ccus_model.configure_parameters_update(inputs_dict)
-        dtot_co2_emissions = self.ccus_model.compute_grad_CO2_emissions(
-            co2_emissions, alpha)
+        dtot_co2_emissions = self.ccus_model.compute_grad_CO2_emissions(co2_emissions)
 
         for key, value in dtot_co2_emissions.items():
             co2_emission_column = key.split(' vs ')[0]
@@ -435,17 +434,11 @@ class CCUS_Discipline(SoSWrapp):
         instanciated_charts = []
         charts = []
 
-        price_unit_list = ['$/MWh', '$/t']
-        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
                 if chart_filter.filter_key == 'charts':
                     charts = chart_filter.selected_values
-                if chart_filter.filter_key == 'price_unit':
-                    price_unit_list = chart_filter.selected_values
-                if chart_filter.filter_key == GlossaryEnergy.Years:
-                    years_list = chart_filter.selected_values
 
         if 'Carbon storage constraint' in charts:
             new_chart = self.get_chart_carbon_storage_constraint()

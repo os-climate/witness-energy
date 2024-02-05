@@ -328,8 +328,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
         # ------------------------------------#
         # -- CO2 emissions sinks gradients--#
         # ------------------------------------#
-        dtot_co2_emissions_sinks = self.model.compute_grad_CO2_emissions_sinks(
-            energy_production_detailed)
+        dtot_co2_emissions_sinks = self.model.compute_grad_CO2_emissions_sinks()
 
         for key, value in dtot_co2_emissions_sinks.items():
             co2_emission_column = key.split(' vs ')[0]

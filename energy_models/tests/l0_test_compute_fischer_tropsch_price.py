@@ -153,8 +153,7 @@ class FTPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.syngas_ratio': np.ones(len(years)),
-                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices}
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -201,8 +200,6 @@ class FTPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.syngas_ratio': np.ones(len(years)),
-                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
                        f'{self.name}.{ResourceMixModel.RATIO_USABLE_DEMAND}': self.ratio_available_resource,
                        f'{self.name}.is_apply_resource_ratio': True}
 
