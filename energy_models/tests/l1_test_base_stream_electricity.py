@@ -40,10 +40,10 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'electricity'
+        self.energy_name = GlossaryEnergy.electricity
         logging.disable(logging.INFO)
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-        
+
         self.years = years
 
         self.hydropower_techno_prices = pd.DataFrame({'Hydropower': np.linspace(100, 100 + len(years) - 1, len(years)),
@@ -59,7 +59,7 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
                                                     })
 
         self.gasturbine_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                    'methane (TWh)': [4.192699] * len(years)
+                                                    f'{GlossaryEnergy.methane} (TWh)': [4.192699] * len(years)
                                                     })
 
         self.techno_capital = pd.DataFrame(
@@ -94,14 +94,14 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         We want to kill the low influence to reduce gradients
         '''
         self.name = 'Test'
-        self.model_name = 'electricity'
+        self.model_name = GlossaryEnergy.electricity
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_electricity': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_energy_mix': self.name,
-                   'ns_ref': self.name}
+                   GlossaryEnergy.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
+                   GlossaryEnergy.NS_REFERENCE: self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.stream_type.energy_disciplines.electricity_disc.ElectricityDiscipline'
@@ -116,12 +116,12 @@ class BaseStreamTestCase(AbstractJacobianUnittest):
         low_prod = 1.e-2
         years_low_prod = 10
         hydropower_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                              'electricity (TWh)': np.linspace(100, 100, len(self.years)),
+                                              f'{GlossaryEnergy.electricity} (TWh)': np.linspace(100, 100, len(self.years)),
                                               'CO2 from Flue Gas (Mt)': [844.027980] * len(self.years)})
 
         gasturbine_production = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                              'electricity (TWh)': [low_prod] * years_low_prod + [100] * (
-                                                          len(self.years) - years_low_prod),
+                                              f'{GlossaryEnergy.electricity} (TWh)': [low_prod] * years_low_prod + [100] * (
+                                                      len(self.years) - years_low_prod),
                                               'O2 (Mt)': [0.019217] * len(self.years)})
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': 2020,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,

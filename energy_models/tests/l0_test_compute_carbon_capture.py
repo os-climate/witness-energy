@@ -33,8 +33,6 @@ class CarbonCaptureTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-
         self.name = 'Test'
         ee_data = ExecutionEngine(self.name)
         repo = 'energy_models.sos_processes.energy.techno_mix'
@@ -59,10 +57,9 @@ class CarbonCaptureTestCase(unittest.TestCase):
         pass
 
     def test_01_carbon_capture_discipline(self):
-
         self.name = 'Test'
         ns_study = self.name
-        carbon_capture_name = 'carbon_capture'
+        carbon_capture_name = GlossaryEnergy.carbon_capture
         energy_mix = 'EnergyMix'
         flue_gas_name = 'flue_gas_capture'
         self.ee = ExecutionEngine(self.name)
@@ -71,8 +68,8 @@ class CarbonCaptureTestCase(unittest.TestCase):
                    'ns_energy_study': f'{ns_study}',
                    'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
                    'ns_public': f'{ns_study}',
-                   'ns_ccs': f'{ns_study}',
-                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_CCS: f'{ns_study}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -94,14 +91,14 @@ class CarbonCaptureTestCase(unittest.TestCase):
             f'{self.name}.{energy_mix}.{carbon_capture_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+
+    #         for graph in graph_list:
+    #             graph.to_plotly().show()
 
     def test_02_carbon_capture_discipline_limited(self):
-
         self.name = 'Test'
         ns_study = self.name
-        carbon_capture_name = 'carbon_capture'
+        carbon_capture_name = GlossaryEnergy.carbon_capture
         energy_mix = 'EnergyMix'
         flue_gas_name = 'flue_gas_capture'
         self.ee = ExecutionEngine(self.name)
@@ -110,7 +107,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
                    'ns_energy_study': f'{ns_study}',
                    'ns_flue_gas': f'{ns_study}.{energy_mix}.{carbon_capture_name}.{flue_gas_name}',
                    'ns_public': f'{ns_study}',
-                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -125,8 +122,9 @@ class CarbonCaptureTestCase(unittest.TestCase):
 
         inputs_dict = deepcopy(self.dm_dict)
 
-        inputs_dict[f'Test.EnergyMix.carbon_capture.flue_gas_capture.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
-            'carbon_capture (Mt)'] *= 5.0
+        inputs_dict[
+            f'Test.EnergyMix.carbon_capture.flue_gas_capture.CalciumLooping.{GlossaryEnergy.TechnoProductionValue}'][
+            f'{GlossaryEnergy.carbon_capture} (Mt)'] *= 5.0
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -135,6 +133,8 @@ class CarbonCaptureTestCase(unittest.TestCase):
             f'{self.name}.{energy_mix}.{carbon_capture_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
+
+
 #         for graph in graph_list:
 #             graph.to_plotly().show()
 

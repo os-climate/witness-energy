@@ -17,11 +17,11 @@ limitations under the License.
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.biomass_dry_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Biomass Dry Mix',
@@ -29,12 +29,12 @@ class ProcessBuilder(EnergyProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
         self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
 
         biomass_dry_name = BiomassDry.name
@@ -43,7 +43,7 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
-                   'ns_witness': f'{ns_study}',
+                   GlossaryEnergy.NS_WITNESS: f'{ns_study}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
         mods_dict = {}
         mods_dict[f'{energy_mix}.{biomass_dry_name}'] = self.get_stream_disc_path(
@@ -52,5 +52,6 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{energy_mix}.{biomass_dry_name}.{techno_name}'] = self.get_techno_disc_path(
                 biomass_dry_name, techno_name)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

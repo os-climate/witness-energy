@@ -17,12 +17,12 @@ limitations under the License.
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.sos_processes.energy.techno_mix.carbon_storage_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Carbon Storage Mix',
@@ -37,7 +37,6 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.prefix_name = 'EnergyMix'
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
 
         carbon_storage_name = CarbonStorage.name
@@ -49,8 +48,8 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
-                   'ns_carb':  f'{ns_study}.{self.prefix_name}.{carbon_storage}.PureCarbonSolidStorage',
-                   'ns_functions': f'{ns_study}.{func_manager_name}',
+                   'ns_carb': f'{ns_study}.{self.prefix_name}.{carbon_storage}.PureCarbonSolidStorage',
+                   GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}.{func_manager_name}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
 
         mods_dict = {}
@@ -60,5 +59,6 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{self.prefix_name}.{carbon_storage_name}.{techno_name}'] = self.get_techno_disc_path(
                 carbon_storage_name, techno_name)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

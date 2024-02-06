@@ -56,7 +56,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-        
+
         self.energy_name = 'methanol'
         self.product_energy_unit = 'TWh'
         self.mass_unit = 'Mt'
@@ -72,7 +72,7 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                                                      CarbonCapture.name: 0.0,
                                                      Electricity.name: 0.0,
                                                      })
-        
+
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: self.years, Water.name: 2.0})
 
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
@@ -146,8 +146,10 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))}
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -238,11 +240,12 @@ class MethanolJacobianCase(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_specific_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                             local_data=disc.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{techno_name}.{GlossaryEnergy.TechnoProductionValue}',
-                                    f'{self.name}.{self.model_name}.{techno_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                    f'{self.name}.{self.model_name}.{techno_name}.{GlossaryEnergy.TechnoPricesValue}',
-                                    f'{self.name}.{self.model_name}.{techno_name}.{GlossaryEnergy.TechnoConsumptionValue}',
-                                    f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
+                            inputs=[
+                                f'{self.name}.{self.model_name}.{techno_name}.{GlossaryEnergy.TechnoProductionValue}',
+                                f'{self.name}.{self.model_name}.{techno_name}.{GlossaryEnergy.TechnoConsumptionValue}',
+                                f'{self.name}.{self.model_name}.{techno_name}.{GlossaryEnergy.TechnoPricesValue}',
+                                f'{self.name}.{self.model_name}.{techno_name}.{GlossaryEnergy.TechnoConsumptionValue}',
+                                f'{self.name}.{GlossaryEnergy.CO2TaxesValue}'],
                             outputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.CO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.CO2_per_use',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyPricesValue}',

@@ -41,7 +41,7 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         'icon': 'fa-solid fa-cloud fa-fw',
         'version': '',
     }
-    techno_name = 'flue_gas_capture.FlueGasTechno'
+    techno_name = f'{GlossaryEnergy.flue_gas_capture}.FlueGasTechno'
     lifetime = 25
     construction_delay = 1
 
@@ -102,18 +102,21 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
                GlossaryEnergy.FlueGasMean: {'type': 'dataframe', 'namespace': 'ns_flue_gas',
-                                 'visibility': CCTechnoDiscipline.SHARED_VISIBILITY, 'unit': '',
-                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                          GlossaryEnergy.FlueGasMean: ('float', None, True), }
-                                 },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+                                            'visibility': CCTechnoDiscipline.SHARED_VISIBILITY, 'unit': '',
+                                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                                     GlossaryEnergy.FlueGasMean: (
+                                                                     'float', None, True), }
+                                            },
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)
 
@@ -135,4 +138,4 @@ class FlueGasTechnoDiscipline(CCTechnoDiscipline):
         self.set_partial_derivatives_techno(
             grad_dict, None)
 
-        self.set_partial_derivatives_flue_gas('renewable')
+        self.set_partial_derivatives_flue_gas(GlossaryEnergy.renewable)

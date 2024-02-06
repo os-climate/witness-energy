@@ -40,10 +40,10 @@ class CarbonStorageDiscipline(StreamDiscipline):
     }
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': CarbonStorage.default_techno_list,
-                                     'visibility': 'Shared',
-                                     'unit': '-',
-                                     'namespace': 'ns_carbon_storage', 'structuring': True},
+                                            'possible_values': CarbonStorage.default_techno_list,
+                                            'visibility': 'Shared',
+                                            'unit': '-',
+                                            'namespace': 'ns_carbon_storage', 'structuring': True},
                'data_fuel_dict': {'type': 'dict', 'visibility': 'Shared',
                                   'namespace': 'ns_carbon_storage', 'default': CarbonStorage.data_energy_dict,
                                   'unit': 'defined in dict'},
@@ -133,7 +133,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
 
         serie = InstanciatedSeries(
             CO2_storage_prices[GlossaryEnergy.Years].values.tolist(),
-            (CO2_storage_prices[self.energy_name].values).tolist(), f'{self.energy_name} mix price', 'lines')
+            CO2_storage_prices[self.energy_name].values.tolist(), f'{self.energy_name} mix price', 'lines')
 
         new_chart.series.append(serie)
 
@@ -144,7 +144,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
                 f'{technology}.{GlossaryEnergy.TechnoPricesValue}')
             serie = InstanciatedSeries(
                 CO2_storage_prices[GlossaryEnergy.Years].values.tolist(),
-                (techno_price[technology].values).tolist(), f'{technology} price', 'lines')
+                techno_price[technology].values.tolist(), f'{technology} price', 'lines')
             new_chart.series.append(serie)
 
         return new_chart

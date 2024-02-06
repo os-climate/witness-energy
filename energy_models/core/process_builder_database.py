@@ -1,7 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
-Modifications on 2023/03/21-2023/11/16 Copyright 2023 Capgemini
-
+Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -13,6 +11,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
 '''
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
@@ -50,7 +49,7 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
 
         return ns_ids
 
-    def create_builder_list(self, mods_dict, ns_dict=None, associate_namespace=False,  get_from_database=False):
+    def create_builder_list(self, mods_dict, ns_dict=None, associate_namespace=False, get_from_database=False):
         ''' 
         define a base namespace
         instantiate builders iterating over a list of module paths
@@ -65,7 +64,8 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
             builders.append(a_b)
         return builders
 
-    def set_builder_specific_ns_database(self, builders_list, ns_dict=None, associate_namespace=False, get_from_database=False):
+    def set_builder_specific_ns_database(self, builders_list, ns_dict=None, associate_namespace=False,
+                                         get_from_database=False):
         '''
         Associates specific namespace dictionaries with their respective builders and/or saves them to a database.
 
@@ -81,5 +81,5 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
         '''
         ns_ids = self.process_namespace(ns_dict, get_from_database)
         for builder in builders_list:
-            if associate_namespace: 
+            if associate_namespace:
                 builder.associate_namespaces(ns_ids)

@@ -35,11 +35,12 @@ class UltraLowSulfurDieselDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {
-        GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': ['Refinery'],
-                              'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                              'namespace': 'ns_kerosene',
-                              'structuring': True,
-                              'unit': '-'},
+        GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                     'possible_values': ['Refinery'],
+                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                     'namespace': 'ns_kerosene',
+                                     'structuring': True,
+                                     'unit': '-'},
         'data_fuel_dict': {'type': 'dict',
                            'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                            'namespace': 'ns_kerosene',

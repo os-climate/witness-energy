@@ -49,24 +49,25 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.energy_production_detailed = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                         EnergyDemand.elec_prod_column: np.linspace(20000, 19000,
                                                                                                    len(self.years)),
-                                                        'production hydrogen.liquid_hydrogen (TWh)': np.linspace(20000,
+                                                        f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)': np.linspace(20000,
                                                                                                                  19000,
                                                                                                                  len(self.years)),
-                                                        'production fuel.liquid_fuel (TWh)': np.linspace(10000, 12000,
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)': np.linspace(10000, 12000,
                                                                                                          len(self.years)),
-                                                        'production fuel.biodiesel (TWh)': np.linspace(11000, 12000,
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} (TWh)': np.linspace(11000, 12000,
                                                                                                        len(self.years)),
-                                                        'production methane (TWh)': np.linspace(5000., 6000.,
+                                                        f'production {GlossaryEnergy.methane} (TWh)': np.linspace(5000., 6000.,
                                                                                                 len(self.years)),
-                                                        'production biogas (TWh)': np.linspace(1000., 1500.,
+                                                        f'production {GlossaryEnergy.biogas} (TWh)': np.linspace(1000., 1500.,
                                                                                                len(self.years)),
-                                                        'production fuel.hydrotreated_oil_fuel (TWh)': np.linspace(
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} (TWh)': np.linspace(
                                                             2000., 3000., len(self.years)),
                                                         })
         self.population = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                         GlossaryEnergy.PopulationValue: np.linspace(7794.79, 9000., len(self.years))})
         self.transport_demand = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                              GlossaryEnergy.TransportDemandValue: np.linspace(33600., 30000., len(self.years))})
+                                              GlossaryEnergy.TransportDemandValue: np.linspace(33600., 30000.,
+                                                                                               len(self.years))})
 
     def tearDown(self):
         pass
@@ -76,10 +77,10 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.model_name = 'demand_model'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}',
-                   'ns_functions': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}',
-                   'ns_witness': f'{self.name}'}
+                   GlossaryEnergy.NS_REFERENCE: f'{self.name}',
+                   GlossaryEnergy.NS_FUNCTIONS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.demand.energy_demand_disc.EnergyDemandDiscipline'

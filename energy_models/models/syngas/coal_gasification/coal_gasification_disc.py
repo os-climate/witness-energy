@@ -24,7 +24,6 @@ from energy_models.models.syngas.coal_gasification.coal_gasification import Coal
 
 
 class CoalGasificationDiscipline(SyngasTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Coal Gasification Model',
@@ -77,7 +76,7 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
     # almost all the rest (23%) from coal.
     # 70 MT of hydrogen then 70*33.3 TWh of hydrogen we need approximately
     # 1.639 kWh of syngas to produce one of hydrogen (see WGS results)
-    #initial_production = 70.0 * 33.3 * 1.639 * 0.23
+    # initial_production = 70.0 * 33.3 * 1.639 * 0.23
 
     # IEA says 3333 TWh of coal is transformed into syngas (other
     # transformation). Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019, License: CC BY 4.0.
@@ -86,13 +85,14 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
     # We need 1.19 kWH of coal for 1 KWh of syngas then:
     initial_production = (3333. + 264.72) / 1.19
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': np.array([3.317804973859207, 6.975128305927281, 4.333201737255864,
-                                                                  3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
-                                                                  4.208448479896288, 2.7398341887870643, 5.228582707722979,
-                                                                  10.057639166085064, 0.0, 2.313462297352473, 6.2755625737595535,
-                                                                  5.609159099363739, 6.3782076592711885, 8.704303197679629,
-                                                                  6.1950256610618135, 3.7836557445596464, 1.7560205289962763,
-                                                                  ]) + 0.82141})
+                                             'distrib': np.array(
+                                                 [3.317804973859207, 6.975128305927281, 4.333201737255864,
+                                                  3.2499013031833868, 1.5096723255070685, 1.7575996841282722,
+                                                  4.208448479896288, 2.7398341887870643, 5.228582707722979,
+                                                  10.057639166085064, 0.0, 2.313462297352473, 6.2755625737595535,
+                                                  5.609159099363739, 6.3782076592711885, 8.704303197679629,
+                                                  6.1950256610618135, 3.7836557445596464, 1.7560205289962763,
+                                                  ]) + 0.82141})
     FLUE_GAS_RATIO = np.array([0.13])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
@@ -103,10 +103,12 @@ class CoalGasificationDiscipline(SyngasTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 

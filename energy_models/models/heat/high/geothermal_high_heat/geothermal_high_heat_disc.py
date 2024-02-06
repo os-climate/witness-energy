@@ -26,7 +26,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 
 class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Geothermal High Heat Model',
@@ -44,60 +43,67 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
     techno_name = 'GeothermalHighHeat'
     energy_name = hightemperatureheat.name
 
-
-    lifetime = 25    # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+    lifetime = 25  # in years # https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
 
     construction_delay = 1  # in years
     techno_infos_dict_default = {
-        'Capex_init': 3830, # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
+        'Capex_init': 3830,
+        # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
         'Capex_init_unit': '$/kW',
-        'Opex_percentage': 0.0287, # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
+        'Opex_percentage': 0.0287,
+        # https://www.irena.org/-/media/Files/IRENA/Agency/Publication/2017/Aug/IRENA_Geothermal_Power_2017.pdf
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
         GlossaryEnergy.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryEnergy.Years,
-        'efficiency': 1,    # consumptions and productions already have efficiency included
-        'CO2_from_production': 0.122, # high GHG concentrations in the reservoir fluid # https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf
+        'efficiency': 1,  # consumptions and productions already have efficiency included
+        'CO2_from_production': 0.122,
+        # high GHG concentrations in the reservoir fluid # https://documents1.worldbank.org/curated/en/875761592973336676/pdf/Greenhouse-Gas-Emissions-from-Geothermal-Power-Production.pdf
         'CO2_from_production_unit': 'kg/kWh',
         'maturity': 5,
         'learning_rate': 0.00,
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
-        'output_temperature': 500, #Average High Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
+        'output_temperature': 500,
+        # Average High Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
         'mean_temperature': 200,
         'output_temperature_unit': 'K',
         'mean_temperature_unit': 'K',
-        'steel_needs': 968,    # Page:21 #https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
+        'steel_needs': 968,
+        # Page:21 #https://www.energy.gov/eere/geothermal/articles/life-cycle-analysis-results-geothermal-systems-comparison-other-power
     }
 
     # geothermal_high_heat Heat production
     # production in 2019 #https://en.wikipedia.org/wiki/Geothermal_power
     # in TWh
-    initial_production = 182500/3  # Equally split for High, low and Medium Heat production, #https://www.iea.org/data-and-statistics/charts/direct-use-of-geothermal-energy-world-2012-2024
+    initial_production = 182500 / 3  # Equally split for High, low and Medium Heat production, #https://www.iea.org/data-and-statistics/charts/direct-use-of-geothermal-energy-world-2012-2024
 
     distrib = [9.677419355, 7.52688172, 0,
                5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
-               13.97849462, 9.677419355,   7.52688172,   1.075268817,
-               2.150537634,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0]
+               13.97849462, 9.677419355, 7.52688172, 1.075268817,
+               2.150537634, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), GlossaryEnergy.InvestValue: 3830/(25*8760)* np.array([182500/3])}) #1.83E+08]
+        {'past years': np.array(-construction_delay),
+         GlossaryEnergy.InvestValue: 3830 / (25 * 8760) * np.array([182500 / 3])})  # 1.83E+08]
     flux_input_dict = {'land_rate': 23000, 'land_rate_unit': '$/Gha', }
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False},
 
                'flux_input_dict': {'type': 'dict', 'default': flux_input_dict, 'unit': 'defined in dict'},
                }
@@ -117,9 +123,10 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
 
         dynamic_outputs = {}
         dynamic_outputs['heat_flux'] = {'type': 'dataframe', 'unit': 'TWh/Gha',
-                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], True),
-                                                                 'heat_flux': ('float', [1.e-8, 1e30], True),
-                                                                 },
+                                        'dataframe_descriptor': {
+                                            GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], True),
+                                            'heat_flux': ('float', [1.e-8, 1e30], True),
+                                            },
                                         }
 
         self.add_outputs(dynamic_outputs)
@@ -135,7 +142,7 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
         self.techno_model.compute_heat_flux()
 
         outputs_dict = {'heat_flux': self.techno_model.heat_flux_distribution}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     @staticmethod
@@ -171,10 +178,7 @@ class GeothermalHighHeatDiscipline(HighHeatTechnoDiscipline):
         """
         instanciated_charts = super().get_post_processing_list(filters)
         charts = []
-        # for pie charts Title
-        unit_str = '$/MWh'
-        var_str = 'Split up of Opex contributions'
-        # Overload default value with chart filter
+
         if filters is not None:
             for chart_filter in filters:
                 if chart_filter.filter_key == 'charts':

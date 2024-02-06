@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-#-- generate coupling between:
+# -- generate coupling between:
 #    - ac_model
 #    - economics_operator
 
@@ -24,7 +24,6 @@ from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import TE
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Methane Mix',
@@ -38,7 +37,6 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
 
         methane_name = Methane.name
@@ -55,5 +53,6 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{energy_mix}.{methane_name}.{techno_name}'] = self.get_techno_disc_path(
                 methane_name, techno_name)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

@@ -18,12 +18,12 @@ limitations under the License.
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.syngas import Syngas
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from energy_models.sos_processes.energy.techno_mix.gaseous_hydrogen_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Gaseous Hydrogen Mix',
@@ -37,7 +37,6 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
 
         gaseous_hydrogen_name = GaseousHydrogen.name
@@ -48,8 +47,8 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
                    'ns_syngas': f'{ns_study}.{energy_mix}.{Syngas.name}',
-                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
-                   'ns_carb':  f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
+                   'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
         mods_dict = {}
         mods_dict[f'{energy_mix}.{gaseous_hydrogen_name}'] = self.get_stream_disc_path(
@@ -58,5 +57,6 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{energy_mix}.{gaseous_hydrogen_name}.{techno_name}'] = self.get_techno_disc_path(
                 GaseousHydrogen.short_name, techno_name)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

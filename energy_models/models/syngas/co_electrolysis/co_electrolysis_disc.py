@@ -24,7 +24,6 @@ from energy_models.models.syngas.co_electrolysis.co_electrolysis import CoElectr
 
 
 class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Co-Electrolysis Model',
@@ -43,7 +42,7 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
     techno_name = 'CoElectrolysis'
     lifetime = 40
     construction_delay = 2  # years
-    #'reaction': 'H20 + CO2 = H2 + CO + O2',
+    # 'reaction': 'H20 + CO2 = H2 + CO + O2',
 
     techno_infos_dict_default = {'CO2_from_production': 0,
                                  'CO2_from_production_unit': 'kg/kg',
@@ -54,7 +53,6 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                  'lifetime_unit': GlossaryEnergy.Years,
                                  'Capex_init': 600,
                                  'Capex_init_unit': '$/kW',
-                                 'efficiency': 0.8,
                                  'maturity': 5,
                                  'learning_rate': 0.2,
                                  'available_power': 50000,
@@ -86,10 +84,12 @@ class CoElectrolysisDiscipline(SyngasTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 

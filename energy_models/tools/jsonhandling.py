@@ -15,6 +15,8 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+
+
 def preprocess_json(data):
     """
     Replaces all occurrences of . in the keys of a dictionary with #.
@@ -43,6 +45,7 @@ def preprocess_json(data):
     else:
         return data
 
+
 def preprocess_and_save_json(input_file_path, output_file_path):
     """
     Reads a JSON file, preprocesses it by replacing all occurrences of . in the keys with #,
@@ -57,6 +60,7 @@ def preprocess_and_save_json(input_file_path, output_file_path):
         processed_data = preprocess_json(data)
     with open(output_file_path, 'w') as output_file:
         json.dump(processed_data, output_file, indent=4)
+
 
 def preprocess_data_and_save_json(data, output_file_path):
     """
@@ -107,7 +111,7 @@ def convert_to_editable_json(data):
             return {k: convert(v) for k, v in obj.items()}
         elif isinstance(obj, list):
             return [convert(elem) for elem in obj]
-        elif isinstance(obj, np.ndarray): 
+        elif isinstance(obj, np.ndarray):
             return [convert(elem) for elem in obj]
         elif isinstance(obj, float):
             return obj  # Round to 2 decimal places
@@ -115,7 +119,7 @@ def convert_to_editable_json(data):
             return int(obj)
         else:
             return obj
-    
+
     data = convert(data)
     return data
 
@@ -152,6 +156,7 @@ def get_document_from_cosmosdb_pymongo(connection_string: str, database_name: st
 import json
 from pymongo import MongoClient
 
+
 def insert_json_to_mongodb_bis(json_path, collection_name, database_name, connection_string):
     # Read the JSON file
     with open(json_path, 'r') as f:
@@ -171,8 +176,7 @@ def insert_json_to_mongodb_bis(json_path, collection_name, database_name, connec
     client.close()
 
 
-
-if __name__ == '__main__': 
+if __name__ == '__main__':
     from os.path import join, dirname
 
     # delete . in json file, replace by # (not handled by mongodb)

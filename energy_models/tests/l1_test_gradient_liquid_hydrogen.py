@@ -48,10 +48,10 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'liquid_hydrogen'
+        self.energy_name = GlossaryEnergy.liquid_hydrogen
 
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-        
+
         self.years = years
 
         self.hydrogen_liquefaction_techno_prices = pd.DataFrame(
@@ -79,16 +79,17 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                        0.0928246539459331]) * 1000.0})
 
         self.hydrogen_liquefaction_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                               'hydrogen.gaseous_hydrogen (TWh)': [230.779470] * len(
+                                                               f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [230.779470] * len(
                                                                    years),
-                                                               'electricity (TWh)': [82.649011] * len(years), })
+                                                               f'{GlossaryEnergy.electricity} (TWh)': [82.649011] * len(years), })
 
         self.hydrogen_liquefaction_production = pd.DataFrame({GlossaryEnergy.Years: years,
                                                               LiquidHydrogen.name + ' (TWh)': [2304.779470] * len(
                                                                   years), })
 
         self.hydrogen_liquefaction_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'HydrogenLiquefaction': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'electricity': 0.0,
+            {GlossaryEnergy.Years: years, 'HydrogenLiquefaction': 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0,
+             GlossaryEnergy.electricity: 0.0,
              'production': 0.0})
 
         electricity_price = np.array([0.09, 0.08974117039450046, 0.08948672733558984,
@@ -103,12 +104,12 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1000
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price,
-                                           'hydrogen.gaseous_hydrogen': np.ones(len(years)) * 33.,
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price,
+                                           f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': np.ones(len(years)) * 33.,
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.02, 'hydrogen.gaseous_hydrogen': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.02, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.1715})
@@ -138,16 +139,16 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.invest = pd.DataFrame({GlossaryEnergy.Years: years,
                                     GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
-                                                        4694500000.0, 4780750000.0, 4867000000.0,
-                                                        4969400000.0, 5071800000.0, 5174200000.0,
-                                                        5276600000.0, 5379000000.0, 5364700000.0,
-                                                        5350400000.0, 5336100000.0, 5321800000.0,
-                                                        5307500000.0, 5293200000.0, 5278900000.0,
-                                                        5264600000.0, 5250300000.0, 5236000000.0,
-                                                        5221700000.0, 5207400000.0, 5193100000.0,
-                                                        5178800000.0, 5164500000.0, 5150200000.0,
-                                                        5135900000.0, 5121600000.0, 5107300000.0,
-                                                        5093000000.0]) * 1.0e-9})
+                                                                          4694500000.0, 4780750000.0, 4867000000.0,
+                                                                          4969400000.0, 5071800000.0, 5174200000.0,
+                                                                          5276600000.0, 5379000000.0, 5364700000.0,
+                                                                          5350400000.0, 5336100000.0, 5321800000.0,
+                                                                          5307500000.0, 5293200000.0, 5278900000.0,
+                                                                          5264600000.0, 5250300000.0, 5236000000.0,
+                                                                          5221700000.0, 5207400000.0, 5193100000.0,
+                                                                          5178800000.0, 5164500000.0, 5150200000.0,
+                                                                          5135900000.0, 5121600000.0, 5107300000.0,
+                                                                          5093000000.0]) * 1.0e-9})
         self.land_use_required_mock = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'random techno (Gha)': 0.0})
 
@@ -189,14 +190,17 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat([self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
-                                                                  axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
+                           [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
+                           axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -226,7 +230,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
     def test_02_liquid_hydrogen_discipline_jacobian(self):
 
         self.name = 'Test'
-        self.energy_name = 'hydrogen.liquid_hydrogen'
+        self.energy_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_liquid_hydrogen': f'{self.name}',
@@ -254,7 +258,8 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
+            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
@@ -277,7 +282,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
         inputs_dict[f'{namespace}.{self.energy_name}.HydrogenLiquefaction.{GlossaryEnergy.TechnoProductionValue}'][
-            'hydrogen.liquid_hydrogen (TWh)'] *= np.linspace(5.0, 5.0, len(self.years))
+            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)'] *= np.linspace(5.0, 5.0, len(self.years))
 
         technos = inputs_dict[f"{self.name}.technologies_list"]
         techno_capital = pd.DataFrame({
@@ -296,7 +301,7 @@ class LiquidHydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,

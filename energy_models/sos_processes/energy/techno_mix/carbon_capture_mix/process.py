@@ -19,11 +19,11 @@ from energy_models.core.energy_process_builder import EnergyProcessBuilder
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Carbon Capture Mix',
@@ -37,24 +37,25 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.techno_list = TECHNOLOGIES_LIST
         self.prefix_name = 'EnergyMix'
         self.associate_namespace = True
-    def get_builders(self):
 
+    def get_builders(self):
         ns_study = self.ee.study_name
         energy_mix = 'EnergyMix'
         flue_gas_name = FlueGas.node_name
         carbon_capture_name = CarbonCapture.name
         ns_dict = {'ns_carbon_capture': f'{ns_study}.{self.prefix_name}.{carbon_capture_name}',
                    'ns_energy': f'{ns_study}.{energy_mix}',
-                   'ns_ccs': f'{ns_study}.CCUS',
+                   GlossaryEnergy.NS_CCS: f'{ns_study}.CCUS',
                    'ns_energy_study': f'{ns_study}',
                    'ns_flue_gas': f'{ns_study}.{self.prefix_name}.{carbon_capture_name}.{flue_gas_name}',
                    'ns_public': f'{ns_study}',
-                   'ns_energy_mix': f'{ns_study}.{energy_mix}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
         mods_dict = {}
         mods_dict[f'{self.prefix_name}.{carbon_capture_name}'] = self.get_stream_disc_path(
             'carbon_disciplines', 'CarbonCapture')
-        mods_dict[f'{self.prefix_name}.{carbon_capture_name}.{flue_gas_name}'] = 'energy_models.core.stream_type.carbon_disciplines.flue_gas_disc.FlueGasDiscipline'
+        mods_dict[
+            f'{self.prefix_name}.{carbon_capture_name}.{flue_gas_name}'] = 'energy_models.core.stream_type.carbon_disciplines.flue_gas_disc.FlueGasDiscipline'
         for full_techno_name in self.techno_list:
             list_dot = full_techno_name.split('.')
             sub_dir = list_dot[0]
@@ -62,6 +63,7 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{self.prefix_name}.{carbon_capture_name}.{full_techno_name}'] = self.get_techno_disc_path(
                 carbon_capture_name, techno_name, sub_dir)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
 
         return builder_list

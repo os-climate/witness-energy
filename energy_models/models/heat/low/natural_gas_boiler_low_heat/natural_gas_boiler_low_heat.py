@@ -25,6 +25,12 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class NaturalGasLowHeat(lowheattechno):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.land_rate = None
+        self.heat_flux = None
+        self.heat_flux_distribution = None
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kWh of heat
@@ -43,7 +49,6 @@ class NaturalGasLowHeat(lowheattechno):
         # kwh/kwh * price of methane ($/kwh) : kwh/kwh * $/kwh  ----> $/kwh  : price of methane is in self.prices[f'{Methane.name}']
         # and then we divide by efficiency
 
-
         return self.cost_details[f'{Methane.name}']
 
     def grad_price_vs_energy_price(self):
@@ -55,25 +60,28 @@ class NaturalGasLowHeat(lowheattechno):
         efficiency = self.techno_infos_dict['efficiency']
 
         return {
-                Methane.name: np.identity(len(self.years)) * methane_needs / efficiency
-                }
+            Methane.name: np.identity(len(self.years)) * methane_needs / efficiency
+        }
 
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
 
-        
-
         # Consumption
 
-        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[f'{Methane.name}_needs'] * \
-                                                                                    self.production_detailed[f'{lowtemperatureheat.name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                        f'{Methane.name}_needs'] * \
+                                                                                    self.production_detailed[
+                                                                                        f'{lowtemperatureheat.name} ({self.product_energy_unit})']
 
         # CO2 production
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict['CO2_per_use'] / \
-                                                                                        Methane.data_energy_dict['calorific_value'] * \
-                                                                                        self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = Methane.data_energy_dict[
+                                                                                            'CO2_per_use'] / \
+                                                                                        Methane.data_energy_dict[
+                                                                                            'calorific_value'] * \
+                                                                                        self.consumption_detailed[
+                                                                                            f'{Methane.name} ({self.product_energy_unit})']
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
@@ -110,9 +118,7 @@ class NaturalGasLowHeat(lowheattechno):
     def compute_heat_flux(self):
         land_rate = self.land_rate
         heat_price = self.compute_other_primary_energy_costs()
-        self.heat_flux = land_rate/heat_price
+        self.heat_flux = land_rate / heat_price
         self.heat_flux_distribution = pd.DataFrame({GlossaryEnergy.Years: self.cost_details[GlossaryEnergy.Years],
-                                               'heat_flux': self.heat_flux})
+                                                    'heat_flux': self.heat_flux})
         return self.heat_flux_distribution
-
-

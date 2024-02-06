@@ -51,8 +51,8 @@ class TestEnergyorCCSInvest(unittest.TestCase):
 
         dict2 = {}
         dict2[GlossaryEnergy.Years] = self.years
-        dict2['carbon_capture'] = np.ones(len(self.years))
-        dict2['carbon_storage'] = np.ones(len(self.years)) * 0.5
+        dict2[GlossaryEnergy.carbon_capture] = np.ones(len(self.years))
+        dict2[GlossaryEnergy.carbon_storage] = np.ones(len(self.years)) * 0.5
         self.ccs_mix = pd.DataFrame(dict2)
 
         invest_ref = 1.0e3  # G$ means 1 milliard of dollars
@@ -71,7 +71,6 @@ class TestEnergyorCCSInvest(unittest.TestCase):
                            'invest_ccs_mix': self.ccs_mix}
 
     def test_01_compute(self):
-
         self.energy_invest.configure(self.input_dict)
 
         self.energy_invest.compute()
@@ -83,22 +82,24 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         energy_conversion_invest = self.energy_invest.get_energy_conversion_investment(
         )
 
-        self.assertListEqual(np.around(ccs_invest[GlossaryEnergy.EnergyInvestmentsValue].values / rescaling_factor + energy_conversion_invest[GlossaryEnergy.EnergyInvestmentsValue].values, 8).tolist(),
+        self.assertListEqual(np.around(
+            ccs_invest[GlossaryEnergy.EnergyInvestmentsValue].values / rescaling_factor + energy_conversion_invest[
+                GlossaryEnergy.EnergyInvestmentsValue].values, 8).tolist(),
                              np.around(self.invest_df[GlossaryEnergy.EnergyInvestmentsValue].values, 8).tolist())
         ccs_invest_theory = self.percentage * \
-            self.invest_df[GlossaryEnergy.EnergyInvestmentsValue].values
+                            self.invest_df[GlossaryEnergy.EnergyInvestmentsValue].values
 
-        self.assertListEqual(np.around(ccs_invest[GlossaryEnergy.EnergyInvestmentsValue].values / rescaling_factor, 8).tolist(),
-                             np.around(ccs_invest_theory, 8).tolist())
+        self.assertListEqual(
+            np.around(ccs_invest[GlossaryEnergy.EnergyInvestmentsValue].values / rescaling_factor, 8).tolist(),
+            np.around(ccs_invest_theory, 8).tolist())
 
     def test_02_energy_invest_disc(self):
-
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': f'{self.name}.{self.model_name}',
-                   'ns_ccs': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}.{self.model_name}.Energy'}
+        ns_dict = {GlossaryEnergy.NS_WITNESS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}.{self.model_name}.Energy'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.investments.disciplines.energy_or_ccs_invest_disc.InvestCCSorEnergyDiscipline'
@@ -119,17 +120,17 @@ class TestEnergyorCCSInvest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+
+    #         for graph in graph_list:
+    #             graph.to_plotly().show()
 
     def test_03_energy_invest_disc_check_jacobian(self):
-
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': f'{self.name}.{self.model_name}',
-                   'ns_ccs': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}.{self.model_name}.Energy'}
+        ns_dict = {GlossaryEnergy.NS_WITNESS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}.{self.model_name}.Energy'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.investments.disciplines.energy_or_ccs_invest_disc.InvestCCSorEnergyDiscipline'
@@ -145,26 +146,26 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         self.ee.load_study_from_input_dict(namespaced_input_dict)
         self.ee.execute()
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}',
-                                                                          f'{self.name}.{self.model_name}.ccs_percentage'],
+        succeed = disc.check_jacobian(derr_approx='complex_step',
+                                      inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyInvestmentsValue}',
+                                              f'{self.name}.{self.model_name}.ccs_percentage'],
                                       outputs=[
-            f'{self.name}.{self.model_name}.Energy.energy_investment',
-            f'{self.name}.{self.model_name}.ccs_investment'],
-                                      input_data = disc.local_data,
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                               f'jacobian_energy_invest_or_ccs_disc.pkl'))
+                                          f'{self.name}.{self.model_name}.Energy.energy_investment',
+                                          f'{self.name}.{self.model_name}.ccs_investment'],
+                                      input_data=disc.local_data,
+                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                                         f'jacobian_energy_invest_or_ccs_disc.pkl'))
 
         self.assertTrue(
             succeed, msg=f"Wrong gradient")
 
     def test_04_ccs_invest_disc(self):
-
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': f'{self.name}.{self.model_name}',
-                   'ns_ccs': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}.{self.model_name}.Energy',
+        ns_dict = {GlossaryEnergy.NS_WITNESS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}.{self.model_name}.Energy',
                    'ns_public': f'{self.name}.{self.model_name}',
                    'ns_energy_study': f'{self.name}.{self.model_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -187,17 +188,17 @@ class TestEnergyorCCSInvest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+
+    #         for graph in graph_list:
+    #             graph.to_plotly().show()
 
     def test_05_ccs_invest_disc_check_jacobian(self):
-
         self.name = 'Energy'
         self.model_name = 'Invest'
         self.ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_witness': f'{self.name}.{self.model_name}',
-                   'ns_ccs': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}.{self.model_name}.Energy',
+        ns_dict = {GlossaryEnergy.NS_WITNESS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_CCS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}.{self.model_name}.Energy',
                    'ns_public': f'{self.name}.{self.model_name}',
                    'ns_energy_study': f'{self.name}.{self.model_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -217,12 +218,14 @@ class TestEnergyorCCSInvest(unittest.TestCase):
         self.ee.execute()
         ccs_list = [CarbonCapture.name, CarbonStorage.name]
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        succeed = disc.check_jacobian(derr_approx='complex_step', inputs=[f'{self.name}.{self.model_name}.ccs_investment',
-                                                                          f'{self.name}.{self.model_name}.invest_ccs_mix'],
+        succeed = disc.check_jacobian(derr_approx='complex_step',
+                                      inputs=[f'{self.name}.{self.model_name}.ccs_investment',
+                                              f'{self.name}.{self.model_name}.invest_ccs_mix'],
                                       outputs=[
-            f'{self.name}.{self.model_name}.{ccs}.{GlossaryEnergy.InvestLevelValue}' for ccs in ccs_list],
-            input_data = disc.local_data,
-            load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                               f'jacobian_invest_ccs_disc.pkl'))
+                                          f'{self.name}.{self.model_name}.{ccs}.{GlossaryEnergy.InvestLevelValue}' for
+                                          ccs in ccs_list],
+                                      input_data=disc.local_data,
+                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
+                                                         f'jacobian_invest_ccs_disc.pkl'))
         self.assertTrue(
             succeed, msg=f"Wrong gradient")

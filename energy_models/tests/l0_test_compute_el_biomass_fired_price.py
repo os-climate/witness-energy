@@ -50,19 +50,19 @@ class GasTurbinePriceTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'biomass_dry': np.ones(len(years)) * 11.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.biomass_dry: np.ones(len(years)) * 11.0})
         # From CO2 prod of methane fossil
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'methane': 0.123 / 15.4, 'biomass_dry': - 0.64 / 4.86})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.methane: 0.123 / 15.4, GlossaryEnergy.biomass_dry: - 0.64 / 4.86})
         #  IEA invest data NPS Scenario 22bn to 2030 and 31bn after 2030
 
         self.invest_level_2 = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 21.0})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
-#         co2_taxes = [0.01486, 0.01722, 0.02027,
-#                      0.02901,  0.03405,   0.03908,  0.04469,   0.05029]
-        co2_taxes = [0, 0, 0, 0,  0,   0,  0,   0]
+        #         co2_taxes = [0.01486, 0.01722, 0.02027,
+        #                      0.02901,  0.03405,   0.03908,  0.04469,   0.05029]
+        co2_taxes = [0, 0, 0, 0, 0, 0, 0, 0]
 
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
@@ -86,7 +86,7 @@ class GasTurbinePriceTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'electricity.BiomassFired']
+                                                == f'{GlossaryEnergy.electricity}.BiomassFired']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         demand_ratio_dict = dict(
@@ -106,7 +106,7 @@ class GasTurbinePriceTestCase(unittest.TestCase):
             GlossaryEnergy.Years: years,
             GlossaryEnergy.UtilisationRatioValue: np.ones_like(years) * 100.
         })
-        
+
         inputs_dict = {GlossaryEnergy.YearStart: GlossaryEnergy.YeartStartDefault,
                        GlossaryEnergy.YearEnd: 2050,
                        GlossaryEnergy.UtilisationRatioValue: utilisation_ratio,
@@ -114,7 +114,7 @@ class GasTurbinePriceTestCase(unittest.TestCase):
                        GlossaryEnergy.InvestLevelValue: self.invest_level_2,
                        GlossaryEnergy.InvestmentBeforeYearStartValue: BiomassFiredDiscipline.invest_before_year_start,
                        GlossaryEnergy.CO2TaxesValue: self.co2_taxes,
-                       GlossaryEnergy.MarginValue:  self.margin,
+                       GlossaryEnergy.MarginValue: self.margin,
                        GlossaryEnergy.TransportCostValue: self.transport,
                        GlossaryEnergy.TransportMarginValue: self.margin,
                        GlossaryEnergy.ResourcesPriceValue: self.resources_price,
@@ -122,7 +122,8 @@ class GasTurbinePriceTestCase(unittest.TestCase):
                        'initial_production': BiomassFiredDiscipline.initial_production,
                        'initial_age_distrib': BiomassFiredDiscipline.initial_age_distribution,
                        GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_carbon_emissions,
-                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        'scaling_factor_invest_level': 1e3,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -187,7 +188,7 @@ class GasTurbinePriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -200,16 +201,18 @@ class GasTurbinePriceTestCase(unittest.TestCase):
         power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
-        self.assertLessEqual(list(production_detailed['electricity (TWh)'].values),
+        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
                              list(power_production['total_installed_power'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
-        self.assertGreaterEqual(list(production_detailed[f'electricity (TWh)'].values),
+        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
                                 list(power_production['total_installed_power'] * techno_infos_dict[
                                     'full_load_hours'] / 1000 * 0.999))
 
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
         for graph in graph_list:
-            graph.to_plotly()#.show()
+            graph.to_plotly()  # .show()
+
+
 if __name__ == "__main__":
     unittest.main()

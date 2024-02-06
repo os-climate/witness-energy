@@ -129,6 +129,53 @@ class EnergyMix(BaseStream):
         '''
         super(EnergyMix, self).__init__(name)
 
+        self.co2_emitted_by_energy = None
+        self.CCS_price = None
+        self.CO2_tax_minus_CCS_constraint = None
+        self.total_prod_minus_min_prod_constraint_df = None
+        self.minimum_energy_production = None
+        self.production_threshold = None
+        self.scaling_factor_energy_production = None
+        self.scaling_factor_energy_consumption = None
+        self.solid_fuel_elec_percentage = None
+        self.solid_fuel_elec_constraint_ref = None
+        self.liquid_hydrogen_percentage = None
+        self.liquid_hydrogen_constraint_ref = None
+        self.syngas_prod_ref = None
+        self.syngas_prod_limit = None
+        self.ratio_norm_value = None
+        self.heat_losses_percentage = None
+        self.scaling_factor_energy_production = None
+        self.scaling_factor_energy_consumption = None
+        self.carbon_tax = None
+        self.total_prod_minus_min_prod_constraint_ref = None
+        self.co2_emitted_by_energy = None
+        self.co2_emissions = None
+        self.energy_prices = None
+        self.price_by_energy = None
+        self.resources_demand = None
+        self.resources_demand_woratio = None
+        self.all_streams_demand_ratio = None
+        self.energy_prices_in = None
+        self.co2_emissions_in = None
+        self.energy_capital = None
+        self.consumable_energy_df = None
+        self.consumed_energy_by_ccus_sum = None
+        self.production = None
+        self.carbon_emissions_after_use = None
+        self.co2_production = None
+        self.co2_consumption = None
+        self.emissions_by_energy = None
+        self.co2_emissions_needed_by_energy_mix = None
+        self.carbon_capture_from_energy_mix = None
+        self.net_positive_consumable_energy_production = None
+        self.energy_mean_price = None
+        self.constraint_liquid_hydrogen = None
+        self.constraint_solid_fuel_elec = None
+        self.syngas_prod_objective = None
+        self.syngas_prod_constraint = None
+        self.all_streams_demand_ratio = None
+        self.ratio_objective = None
         self.total_co2_emissions = None
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
@@ -152,11 +199,14 @@ class EnergyMix(BaseStream):
         # Specific configure for energy mix
         self.co2_emitted_by_energy = {}
         self.CCS_price = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1)})
+            {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart],
+                                             inputs_dict[GlossaryEnergy.YearEnd] + 1)})
         self.CO2_tax_minus_CCS_constraint = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1)})
+            {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart],
+                                             inputs_dict[GlossaryEnergy.YearEnd] + 1)})
         self.total_prod_minus_min_prod_constraint_df = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1)})
+            {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart],
+                                             inputs_dict[GlossaryEnergy.YearEnd] + 1)})
         self.minimum_energy_production = inputs_dict['minimum_energy_production']
         self.production_threshold = inputs_dict['production_threshold']
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
@@ -168,7 +218,8 @@ class EnergyMix(BaseStream):
         self.syngas_prod_ref = inputs_dict['syngas_prod_ref']
         self.syngas_prod_limit = inputs_dict['syngas_prod_constraint_limit']
         self.co2_for_food = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1),
+            {GlossaryEnergy.Years: np.arange(inputs_dict[GlossaryEnergy.YearStart],
+                                             inputs_dict[GlossaryEnergy.YearEnd] + 1),
              f'{CO2.name} for food (Mt)': 0.0})
         self.ratio_norm_value = inputs_dict['ratio_ref']
 
@@ -201,7 +252,8 @@ class EnergyMix(BaseStream):
                                                self.scaling_factor_energy_production
             self.sub_consumption_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] * \
                                                 self.scaling_factor_energy_consumption
-            self.sub_consumption_woratio_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] * \
+            self.sub_consumption_woratio_dict[energy] = inputs_dict[
+                                                            f'{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] * \
                                                         self.scaling_factor_energy_consumption
             self.sub_land_use_required_dict[energy] = inputs_dict[f'{energy}.{GlossaryEnergy.LandUseRequiredValue}']
 
@@ -233,7 +285,8 @@ class EnergyMix(BaseStream):
                                                           f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                                                       self.scaling_factor_energy_consumption
                     self.resources_demand_woratio[resource] = self.resources_demand_woratio[resource] + \
-                                                              inputs_dict[f'{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'][
+                                                              inputs_dict[
+                                                                  f'{energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'][
                                                                   f'{resource} ({self.RESOURCE_CONSUMPTION_UNIT})'].values * \
                                                               self.scaling_factor_energy_consumption
 
@@ -264,7 +317,8 @@ class EnergyMix(BaseStream):
             energy_ = energy
             if energy == BiomassDry.name:
                 energy_ = AgricultureMixDiscipline.name
-            energy_type_capitals.append(self.inputs[f"{energy_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.Capital].values)
+            energy_type_capitals.append(
+                self.inputs[f"{energy_}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"][GlossaryEnergy.Capital].values)
 
         for ccs in self.inputs[GlossaryEnergy.ccs_list]:
             energy_type_capitals.append(
@@ -341,8 +395,8 @@ class EnergyMix(BaseStream):
 
         # substract a percentage of raw production into net production
         self.consumable_energy_df[GlossaryEnergy.TotalProductionValue] -= self.production_raw[
-                                                                            GlossaryEnergy.TotalProductionValue] * \
-                                                                        self.heat_losses_percentage / 100.0
+                                                                              GlossaryEnergy.TotalProductionValue] * \
+                                                                          self.heat_losses_percentage / 100.0
 
     def compute_net_energy_production(self):
         """
@@ -380,8 +434,8 @@ class EnergyMix(BaseStream):
         self.production[GlossaryEnergy.TotalProductionValue] = self.production[columns_to_sum].sum(axis=1)
 
         self.production[GlossaryEnergy.TotalProductionValue] -= self.production_raw[
-                                                                  GlossaryEnergy.TotalProductionValue] * \
-                                                              self.heat_losses_percentage / 100.0
+                                                                    GlossaryEnergy.TotalProductionValue] * \
+                                                                self.heat_losses_percentage / 100.0
 
     def compute_energy_production_uncut(self):
         """maybe to delete"""
@@ -394,9 +448,9 @@ class EnergyMix(BaseStream):
                 production_year = max(
                     self.production.at[year, GlossaryEnergy.TotalProductionValue], -200.0 * min_energy)
                 self.production.loc[year, GlossaryEnergy.TotalProductionValue] = min_energy / 10. * \
-                                                                               (9 + np.exp(
-                                                                                   production_year / min_energy) * np.exp(
-                                                                                   -1))
+                                                                                 (9 + np.exp(
+                                                                                     production_year / min_energy) * np.exp(
+                                                                                     -1))
 
     def compute_net_prod_of_coarse_energies(self, energy, column_name):
         '''
@@ -406,7 +460,7 @@ class EnergyMix(BaseStream):
         '''
         try:
             return self.production_raw[column_name].values * \
-                (1.0 - self.raw_tonet_dict[energy])
+                   (1.0 - self.raw_tonet_dict[energy])
         except KeyError:
             return 0.
 
@@ -567,7 +621,7 @@ class EnergyMix(BaseStream):
             tol = 1e-3
             mix_weight[mix_weight < tol] = 0.0
             energy_mean_price[GlossaryEnergy.EnergyPriceValue] += self.price_by_energy[energy].values * \
-                                                 mix_weight
+                                                                  mix_weight
             self.mix_weights[energy] = mix_weight
 
         # In case all the technologies are below the threshold assign a
@@ -587,7 +641,7 @@ class EnergyMix(BaseStream):
                                           year, GlossaryEnergy.EnergyPriceValue] = min_energy_price
                     for energy in self.energy_list:
                         self.mix_weights.loc[self.mix_weights[GlossaryEnergy.Years] == year,
-                        energy] = 1. if energy == min_energy_name else 0.0
+                                             energy] = 1. if energy == min_energy_name else 0.0
 
         self.energy_mean_price = energy_mean_price
         return energy_mean_price

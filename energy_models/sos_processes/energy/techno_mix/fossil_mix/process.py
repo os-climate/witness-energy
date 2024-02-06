@@ -17,11 +17,11 @@ limitations under the License.
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 from energy_models.core.stream_type.energy_models.fossil import Fossil
+from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.fossil_mix.usecase import TECHNOLOGIES_LIST
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Fossil Mix',
@@ -35,7 +35,6 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
 
         fossil_name = Fossil.name
@@ -44,17 +43,17 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_energy': f'{ns_study}.{energy_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
-                   'ns_functions': f'{ns_study}',
-                   'ns_ref': f'{ns_study}',
+                   GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}',
+                   GlossaryEnergy.NS_REFERENCE: f'{ns_study}',
                    'ns_resource': f'{ns_study}.{energy_mix}'}
         mods_dict = {}
         mods_dict[f'{energy_mix}.{fossil_name}'] = self.get_stream_disc_path(
             'energy_disciplines', 'Fossil')
         for techno_name in self.techno_list:
-
             sub_dir = None
             mods_dict[f'{energy_mix}.{fossil_name}.{techno_name}'] = self.get_techno_disc_path(
                 fossil_name, techno_name, sub_dir)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

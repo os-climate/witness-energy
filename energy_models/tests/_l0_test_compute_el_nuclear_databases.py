@@ -42,21 +42,22 @@ class NuclearTestCase(unittest.TestCase):
         self.resources_price[GlossaryEnergy.Years] = years
         self.resources_price[ResourceGlossary.Water['name']] = 2.0
         self.resources_price[ResourceGlossary.Uranium['name']] = 1390.0e3
-        self.resources_price[ResourceGlossary.Copper['name']] = 10057.7 * 1000 * 1000 # in $/Mt
+        self.resources_price[ResourceGlossary.Copper['name']] = 10057.7 * 1000 * 1000  # in $/Mt
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years})
         self.invest_level[GlossaryEnergy.InvestValue] = 10.
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
 
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1), GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 200})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
+             GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 200})
 
         self.transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.zeros(len(years))})
@@ -67,7 +68,7 @@ class NuclearTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'electricity.Nuclear']
+                                                == f'{GlossaryEnergy.electricity}.Nuclear']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         self.resource_list = [
@@ -88,8 +89,6 @@ class NuclearTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    
-
     def test_01_nuclear_discipline(self):
         # TODO: test commented out bc needs to be updated with new database connector def
         self.name = 'Test'
@@ -102,8 +101,7 @@ class NuclearTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
         ns_dict_bis = {'ns_electricity_nuc': f'{self.name}.{self.model_name}'}
-        ns_id = self.ee.ns_manager.add_ns_def(ns_dict_bis)
-        ns_id = self.ee.ns_manager.add_ns_def(ns_dict_bis, database_name = 'Europe')  # pylint: disable=E1123
+        ns_id = self.ee.ns_manager.add_ns_def(ns_dict_bis, database_name='Europe')  # pylint: disable=E1123
         file_path = join(dirname(__file__), 'data_tests', 'data_nuclear_test.json')
         self.ee.ns_manager.set_ns_database_location(file_path)
         mod_path = 'energy_models.models.electricity.nuclear_modified.nuclear_disc.NuclearDiscipline'
@@ -113,7 +111,7 @@ class NuclearTestCase(unittest.TestCase):
         model_name_US = 'Nuclear_US'
         builder_us = self.ee.factory.get_builder_from_module(
             model_name_US, mod_path)
-        ns_id = self.ee.ns_manager.add_ns_def({'ns_electricity_nuc': f'{self.name}.{model_name_US}'}, database_name = 'US')  # pylint: disable=E1123
+        ns_id = self.ee.ns_manager.add_ns_def({'ns_electricity_nuc': f'{self.name}.{model_name_US}'},)  # pylint: disable=E1123
         builder_us.associate_namespaces(ns_id)
         self.ee.factory.set_builders_to_coupling_builder([builder, builder_us])
 
@@ -131,21 +129,19 @@ class NuclearTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
-                       f'{self.name}.{model_name_US}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.name}.{model_name_US}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
-
 
         self.ee.execute()
 
         disc_europe = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
 
-        
         disc_us = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{model_name_US}')[0]
-        
+
         # we have associated only ns_electricity_nuc to the database. It means that only values of variables in this namespace will be loaded from the json file 
         with open(file_path, "r") as f:
             json_data = f.read()
@@ -155,12 +151,18 @@ class NuclearTestCase(unittest.TestCase):
         data_ref_us = data_dict_json['US']
 
         # check techno_infos_dict maturity is equal to the json value 
-        self.assertEqual(data_ref_europe['techno_infos_dict']['maturity'], disc_europe.get_sosdisc_inputs('techno_infos_dict')['maturity'])
-        self.assertEqual(data_ref_us['techno_infos_dict']['maturity'], disc_us.get_sosdisc_inputs('techno_infos_dict')['maturity'])
+        self.assertEqual(data_ref_europe['techno_infos_dict']['maturity'],
+                         disc_europe.get_sosdisc_inputs('techno_infos_dict')['maturity'])
+        self.assertEqual(data_ref_us['techno_infos_dict']['maturity'],
+                         disc_us.get_sosdisc_inputs('techno_infos_dict')['maturity'])
 
         # check that for a variable not in ns_electricity_nuc, the used value is the one given in the test not in the json. We test it on transport_margin variable 
-        self.assertNotEqual(data_ref_europe[GlossaryEnergy.TransportMarginValue][GlossaryEnergy.MarginValue].max(), disc_europe.get_sosdisc_inputs(GlossaryEnergy.TransportMarginValue)[GlossaryEnergy.MarginValue].max())
-        self.assertNotEqual(data_ref_us[GlossaryEnergy.TransportMarginValue][GlossaryEnergy.MarginValue].max(), disc_us.get_sosdisc_inputs(GlossaryEnergy.TransportMarginValue)[GlossaryEnergy.MarginValue].max())
+        self.assertNotEqual(data_ref_europe[GlossaryEnergy.TransportMarginValue][GlossaryEnergy.MarginValue].max(),
+                            disc_europe.get_sosdisc_inputs(GlossaryEnergy.TransportMarginValue)[
+                                GlossaryEnergy.MarginValue].max())
+        self.assertNotEqual(data_ref_us[GlossaryEnergy.TransportMarginValue][GlossaryEnergy.MarginValue].max(),
+                            disc_us.get_sosdisc_inputs(GlossaryEnergy.TransportMarginValue)[
+                                GlossaryEnergy.MarginValue].max())
 
 
 import json
@@ -184,7 +186,7 @@ def convert_to_editable_json(data):
             return int(obj)
         else:
             return obj
-    
+
     data = convert(data)
     return json.dumps(data, ensure_ascii=False)
 
@@ -196,7 +198,7 @@ def convert_from_editable_json(json_str):
         elif isinstance(obj, list):
             if len(obj) > 0 and isinstance(obj[0], dict):
                 df = pd.DataFrame({k: v for d in obj for k, v in d.items()})
-                #df = df.apply(lambda x: pd.to_numeric(x, errors='ignore') if x.dtype == np.object else x)
+                # df = df.apply(lambda x: pd.to_numeric(x, errors='ignore') if x.dtype == np.object else x)
                 return df
             else:
                 return [convert(elem) for elem in obj]

@@ -20,7 +20,7 @@ import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class EnergyOrCCSInvest():
+class EnergyOrCCSInvest:
     '''
         Model to split global investment into investment for Carbon Capture and Storage technologies and into investment for energy conversion 
     '''
@@ -47,13 +47,14 @@ class EnergyOrCCSInvest():
         Compute the investment in to CCS and into energy_conversion 
         '''
         ccs_invest = self.global_invest[GlossaryEnergy.EnergyInvestmentsValue].values * \
-            self.invest_ccs_percentage['ccs_percentage'].values / 100.0
+                     self.invest_ccs_percentage['ccs_percentage'].values / 100.0
 
         energy_conversion_invest = self.global_invest[GlossaryEnergy.EnergyInvestmentsValue].values - ccs_invest
         self.invest_ccs = pd.DataFrame({GlossaryEnergy.Years: self.global_invest[GlossaryEnergy.Years].values,
                                         GlossaryEnergy.EnergyInvestmentsValue: ccs_invest})
-        self.invest_energy_conversion = pd.DataFrame({GlossaryEnergy.Years: self.global_invest[GlossaryEnergy.Years].values,
-                                                      GlossaryEnergy.EnergyInvestmentsValue: energy_conversion_invest})
+        self.invest_energy_conversion = pd.DataFrame(
+            {GlossaryEnergy.Years: self.global_invest[GlossaryEnergy.Years].values,
+             GlossaryEnergy.EnergyInvestmentsValue: energy_conversion_invest})
 
     def get_ccs_investment(self, rescaling_factor):
         '''

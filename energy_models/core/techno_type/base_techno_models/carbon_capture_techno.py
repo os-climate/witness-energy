@@ -22,6 +22,7 @@ from scipy.stats import linregress
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.techno_type.techno_type import TechnoType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class CCTechno(TechnoType):
@@ -113,7 +114,7 @@ class CCTechno(TechnoType):
                 elif position == len(co2_concentration_list_with_fg):
                     position = len(co2_concentration_list)
                 if fg in co2_concentration_list:
-                    position = position + 1
+                    position += 1
 
                 slope = linregress(
                     co2_concentration_list[position - 1:position + 1], capex_capture_list[position - 1:position + 1])[0]
@@ -123,7 +124,7 @@ class CCTechno(TechnoType):
 
             capex = super().compute_capex(invest_list, data_config)
             grad = np.array(slopes)[:, np.newaxis] * \
-                np.array(capex)[:, np.newaxis] / 479.8
+                   np.array(capex)[:, np.newaxis] / 479.8
 
         else:
             grad = 0.0
@@ -142,13 +143,13 @@ class CCTechno(TechnoType):
                                                          kind='linear', fill_value='extrapolate')
 
             real_ratio = func_elec_demand_with_fg_ratio(fg_mean_ratio) / \
-                func_elec_demand_with_fg_ratio(c02_concentration_base)
+                         func_elec_demand_with_fg_ratio(c02_concentration_base)
         else:
             real_ratio = np.ones(len(fg_mean_ratio))
 
         return real_ratio
 
-    def compute_delec_dfg_ratio(self, fg_mean_ratio, fg_ratio_effect, energy_name='electricity'):
+    def compute_delec_dfg_ratio(self, fg_mean_ratio, fg_ratio_effect, energy_name=GlossaryEnergy.electricity):
 
         if fg_ratio_effect:
             co2_concentration_list = [0.035, 0.092, 0.13, 0.186, 0.44, 0.99]
@@ -165,7 +166,7 @@ class CCTechno(TechnoType):
                     position = len(co2_concentration_list)
 
                 if fg in co2_concentration_list:
-                    position = position + 1
+                    position += 1
                 slope = linregress(
                     co2_concentration_list[position - 1:position + 1], elec_demand_list[position - 1:position + 1])[0]
                 if np.isnan(slope):
@@ -174,18 +175,18 @@ class CCTechno(TechnoType):
             elec_needs = self.get_electricity_needs()
 
             grad = np.array(slopes)[:, np.newaxis] \
-                * elec_needs / 8.5 / self.techno_infos_dict['efficiency'] *\
-                self.prices[energy_name][:, np.newaxis]
+                   * elec_needs / 8.5 / self.techno_infos_dict['efficiency'] * \
+                   self.prices[energy_name][:, np.newaxis]
         else:
             grad = 0.0
         return np.identity(len(fg_mean_ratio)) * grad
 
-    def compute_dprod_dfluegas(self,  capex_list, invest_list, invest_before_year_start, techno_dict, dcapexdfluegas):
+    def compute_dprod_dfluegas(self, capex_list, invest_list, invest_before_year_start, techno_dict, dcapexdfluegas):
 
         dprod_dcapex = self.compute_dprod_dcapex(
             capex_list, invest_list, techno_dict, invest_before_year_start)
 
-        #dprod_dfluegas = dpprod_dpfluegas + dprod_dcapex * dcapexdfluegas
+        # dprod_dfluegas = dpprod_dpfluegas + dprod_dcapex * dcapexdfluegas
         if 'complex128' in [dcapexdfluegas.dtype, dprod_dcapex.dtype]:
             arr_type = 'complex128'
         else:
@@ -208,11 +209,13 @@ class CCTechno(TechnoType):
         dratiodfluegas = 0.0
         '''
 
-        dtechnocapital_dfluegas = (dcapex_dfluegas * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
-                                   dprod_dfluegas * self.cost_details[f'Capex_{self.name}'].values.reshape((len(self.years), 1)))
+        dtechnocapital_dfluegas = (dcapex_dfluegas * self.production_woratio[
+            f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
+                                   dprod_dfluegas * self.cost_details[f'Capex_{self.name}'].values.reshape(
+                    (len(self.years), 1)))
 
         dnon_usecapital_dfluegas = dtechnocapital_dfluegas * (
-            1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
+                1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
 
         # we do not divide by / self.scaling_factor_invest_level because invest
         # and non_use_capital are in G$

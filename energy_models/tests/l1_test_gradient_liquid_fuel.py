@@ -55,25 +55,34 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-        
+
         self.years = years
-        self.energy_name = 'liquid_fuel'
+        self.energy_name = GlossaryEnergy.liquid_fuel
         # crude oil price : 1.3$/gallon
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                      0.159236536471781, 0.15899046935409588, 0.15874840310033885,
-                                                      0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
-                                                      0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
-                                                      0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
-                                                      0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
-                                                      0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
-                                                      0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
-                                                      0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
-                                                      0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                                      0.1628246539459331]) * 1000.0,
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+                                                                   0.159236536471781, 0.15899046935409588,
+                                                                   0.15874840310033885,
+                                                                   0.15875044941298937, 0.15875249600769718,
+                                                                   0.15875454288453355,
+                                                                   0.15875659004356974, 0.1587586374848771,
+                                                                   0.15893789675406477,
+                                                                   0.15911934200930778, 0.15930302260662477,
+                                                                   0.15948898953954933,
+                                                                   0.15967729551117891, 0.15986799501019029,
+                                                                   0.16006114439108429,
+                                                                   0.16025680195894345, 0.16045502805900876,
+                                                                   0.16065588517140537,
+                                                                   0.1608594380113745, 0.16106575363539733,
+                                                                   0.16127490155362818,
+                                                                   0.16148695384909017, 0.1617019853041231,
+                                                                   0.1619200735346165,
+                                                                   0.16214129913260598, 0.16236574581786147,
+                                                                   0.16259350059915213,
+                                                                   0.1628246539459331]) * 1000.0,
              'CO2': 0.0,
-             'syngas': 34,
-             'hydrogen.gaseous_hydrogen': 15.,
+             GlossaryEnergy.syngas: 34,
+             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 15.,
              })
 
         self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34,
@@ -87,46 +96,49 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                                      'BiomassGasification': 2.0
                                      }
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.syngas: 0.0, f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 0.})
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
-                                          GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
-                                                              4694500000.0, 4780750000.0, 4867000000.0,
-                                                              4969400000.0, 5071800000.0, 5174200000.0,
-                                                              5276600000.0, 5379000000.0, 5364700000.0,
-                                                              5350400000.0, 5336100000.0, 5321800000.0,
-                                                              5307500000.0, 5293200000.0, 5278900000.0,
-                                                              5264600000.0, 5250300000.0, 5236000000.0,
-                                                              5221700000.0, 5207400000.0, 5193100000.0,
-                                                              5178800000.0, 5164500000.0, 5150200000.0,
-                                                              5135900000.0, 5121600000.0, 5107300000.0,
-                                                              5093000000.0]) * 1.0e-9})
+                                          GlossaryEnergy.InvestValue: np.array(
+                                              [4435750000.0, 4522000000.0, 4608250000.0,
+                                               4694500000.0, 4780750000.0, 4867000000.0,
+                                               4969400000.0, 5071800000.0, 5174200000.0,
+                                               5276600000.0, 5379000000.0, 5364700000.0,
+                                               5350400000.0, 5336100000.0, 5321800000.0,
+                                               5307500000.0, 5293200000.0, 5278900000.0,
+                                               5264600000.0, 5250300000.0, 5236000000.0,
+                                               5221700000.0, 5207400000.0, 5193100000.0,
+                                               5178800000.0, 5164500000.0, 5150200000.0,
+                                               5135900000.0, 5121600000.0, 5107300000.0,
+                                               5093000000.0]) * 1.0e-9})
 
         self.invest_level_negative = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                   GlossaryEnergy.InvestValue: -np.array([4435750000.0, 4522000000.0, 4608250000.0,
-                                                                        4694500000.0, 4780750000.0, 4867000000.0,
-                                                                        4969400000.0, 5071800000.0, 5174200000.0,
-                                                                        5276600000.0, 5379000000.0, 5364700000.0,
-                                                                        5350400000.0, 5336100000.0, 5321800000.0,
-                                                                        5307500000.0, 5293200000.0, 5278900000.0,
-                                                                        5264600000.0, 5250300000.0, 5236000000.0,
-                                                                        5221700000.0, 5207400000.0, 5193100000.0,
-                                                                        5178800000.0, 5164500000.0, 5150200000.0,
-                                                                        5135900000.0, 5121600000.0, 5107300000.0,
-                                                                        5093000000.0]) * 1.0e-9})
+                                                   GlossaryEnergy.InvestValue: -np.array(
+                                                       [4435750000.0, 4522000000.0, 4608250000.0,
+                                                        4694500000.0, 4780750000.0, 4867000000.0,
+                                                        4969400000.0, 5071800000.0, 5174200000.0,
+                                                        5276600000.0, 5379000000.0, 5364700000.0,
+                                                        5350400000.0, 5336100000.0, 5321800000.0,
+                                                        5307500000.0, 5293200000.0, 5278900000.0,
+                                                        5264600000.0, 5250300000.0, 5236000000.0,
+                                                        5221700000.0, 5207400000.0, 5193100000.0,
+                                                        5178800000.0, 5164500000.0, 5150200000.0,
+                                                        5135900000.0, 5121600000.0, 5107300000.0,
+                                                        5093000000.0]) * 1.0e-9})
 
         self.invest_level_negative2 = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                    GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
-                                                                        4694500000.0, 4780750000.0, 4867000000.0,
-                                                                        4969400000.0, 5071800000.0, 5174200000.0,
-                                                                        5276600000.0, 5379000000.0, 5364700000.0,
-                                                                        5350400000.0, -5336100000.0, -5321800000.0,
-                                                                        -5307500000.0, -5293200000.0, -5278900000.0,
-                                                                        -5264600000.0, -5250300000.0, 5236000000.0,
-                                                                        5221700000.0, 5207400000.0, 5193100000.0,
-                                                                        5178800000.0, 5164500000.0, 5150200000.0,
-                                                                        5135900000.0, 5121600000.0, 5107300000.0,
-                                                                        5093000000.0]) * 1.0e-9})
+                                                    GlossaryEnergy.InvestValue: np.array(
+                                                        [4435750000.0, 4522000000.0, 4608250000.0,
+                                                         4694500000.0, 4780750000.0, 4867000000.0,
+                                                         4969400000.0, 5071800000.0, 5174200000.0,
+                                                         5276600000.0, 5379000000.0, 5364700000.0,
+                                                         5350400000.0, -5336100000.0, -5321800000.0,
+                                                         -5307500000.0, -5293200000.0, -5278900000.0,
+                                                         -5264600000.0, -5250300000.0, 5236000000.0,
+                                                         5221700000.0, 5207400000.0, 5193100000.0,
+                                                         5178800000.0, 5164500000.0, 5150200000.0,
+                                                         5135900000.0, 5121600000.0, 5107300000.0,
+                                                         5093000000.0]) * 1.0e-9})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -158,7 +170,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'liquid_fuel.Refinery']
+                                                == f'{GlossaryEnergy.liquid_fuel}.Refinery']
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(1.0, 1.0, len(years))))
@@ -195,8 +207,10 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -236,7 +250,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     def test_02_transesterification_discipline_analytic_grad(self):
 
         self.name = 'Test'
-        self.model_name = 'Transesterification'
+        self.model_name = GlossaryEnergy.Transesterification
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -246,7 +260,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biodiesel.transesterification.transesterification_disc.TransesterificationDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biodiesel}.transesterification.transesterification_disc.TransesterificationDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -263,8 +277,10 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -296,7 +312,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     def test_03_transesterification_discipline_analytic_grad_negative_invest(self):
 
         self.name = 'Test'
-        self.model_name = 'Transesterification'
+        self.model_name = GlossaryEnergy.Transesterification
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -306,7 +322,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biodiesel.transesterification.transesterification_disc.TransesterificationDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biodiesel}.transesterification.transesterification_disc.TransesterificationDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -323,8 +339,10 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -356,7 +374,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     def test_04_transesterification_discipline_analytic_grad_negative_invest2(self):
 
         self.name = 'Test'
-        self.model_name = 'Transesterification'
+        self.model_name = GlossaryEnergy.Transesterification
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': f'{self.name}',
                    'ns_energy_study': f'{self.name}',
@@ -366,7 +384,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.biodiesel.transesterification.transesterification_disc.TransesterificationDiscipline'
+        mod_path = f'energy_models.models.{GlossaryEnergy.biodiesel}.transesterification.transesterification_disc.TransesterificationDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -383,8 +401,10 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
                        f'{self.name}.all_resource_ratio_usable_demand': self.all_resource_ratio_usable_demand,
                        }
@@ -415,7 +435,7 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
     def test_05_liquid_fuel_discipline_jacobian(self):
 
         self.name = 'Test'
-        self.energy_name = 'fuel.liquid_fuel'
+        self.energy_name = f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_liquid_fuel': f'{self.name}',
@@ -442,7 +462,8 @@ class LiquidFuelJacobianCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
+            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']

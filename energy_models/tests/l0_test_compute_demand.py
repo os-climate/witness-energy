@@ -42,20 +42,21 @@ class DemandTestCase(unittest.TestCase):
         self.population = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                         GlossaryEnergy.PopulationValue: np.linspace(7794.79, 9000., len(self.years))})
         self.transport_demand = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                        GlossaryEnergy.TransportDemandValue: np.linspace(33000., 33000., len(self.years))})
+                                              GlossaryEnergy.TransportDemandValue: np.linspace(33000., 33000.,
+                                                                                               len(self.years))})
+
     def tearDown(self):
         pass
 
     def test_01_demand_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'Demand'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}',
-                   'ns_functions': f'{self.name}.{self.model_name}',
-                   'ns_energy_mix': f'{self.name}',
-                   'ns_witness': f'{self.name}'}
+                   GlossaryEnergy.NS_REFERENCE: f'{self.name}',
+                   GlossaryEnergy.NS_FUNCTIONS: f'{self.name}.{self.model_name}',
+                   GlossaryEnergy.NS_ENERGY_MIX: f'{self.name}',
+                   GlossaryEnergy.NS_WITNESS: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'energy_models.core.demand.energy_demand_disc.EnergyDemandDiscipline'

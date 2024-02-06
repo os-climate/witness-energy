@@ -44,11 +44,11 @@ class SyngasDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': Syngas.default_techno_list,
-                                     'default': Syngas.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_syngas', 'structuring': True,
-                                     'unit': '-'},
+                                            'possible_values': Syngas.default_techno_list,
+                                            'default': Syngas.default_techno_list,
+                                            'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                            'namespace': 'ns_syngas', 'structuring': True,
+                                            'unit': '-'},
 
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
@@ -102,7 +102,7 @@ class SyngasDiscipline(EnergyDiscipline):
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha',
                         "dynamic_dataframe_columns": True}
-                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] =\
+                    dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoCapitalValue}'] = \
                         GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.TechnoCapitalDf)
 
         self.add_inputs(dynamic_inputs)
@@ -127,7 +127,7 @@ class SyngasDiscipline(EnergyDiscipline):
                         'syngas_ratio': syngas_ratio,
                         'syngas_ratio_technos': self.energy_model.syngas_ratio}
         outputs_dict.update(ghg_per_use_dict)
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_data_energy_dict(self):
@@ -158,8 +158,6 @@ class SyngasDiscipline(EnergyDiscipline):
         years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
                           inputs_dict[GlossaryEnergy.YearEnd] + 1)
         technos_list = inputs_dict[GlossaryEnergy.techno_list]
-        list_columns_energyprod = list(
-            outputs_dict[GlossaryEnergy.EnergyProductionValue].columns)
         mix_weight = outputs_dict['techno_mix']
         for techno in technos_list:
             mix_weight_techno = mix_weight[techno].values / 100.0
@@ -250,7 +248,7 @@ class SyngasDiscipline(EnergyDiscipline):
 
         serie = InstanciatedSeries(
             years.tolist(),
-            syngas_ratio.tolist(), 'syngas mix', 'lines')
+            syngas_ratio.tolist(), f'{GlossaryEnergy.syngas} mix', 'lines')
 
         new_chart.series.append(serie)
 

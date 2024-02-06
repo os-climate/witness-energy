@@ -25,8 +25,6 @@ from energy_models.core.techno_type.base_techno_models.carbon_capture_techno imp
 
 class DirectAirCaptureTechno(CCTechno):
 
-
-
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs which depends on the technology 
@@ -39,7 +37,7 @@ class DirectAirCaptureTechno(CCTechno):
                                                  )
         self.cost_details['heat_needs'] = self.get_heat_needs()
         self.cost_details[Fossil.name] = list(self.prices[Fossil.name] * self.cost_details['heat_needs']
-                                                 )
+                                              )
         return self.cost_details[Renewable.name] + self.cost_details[Fossil.name]
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -49,7 +47,8 @@ class DirectAirCaptureTechno(CCTechno):
 
         self.carbon_intensity[Fossil.name] = self.energy_CO2_emissions[Fossil.name] * self.cost_details['heat_needs']
 
-        self.carbon_intensity[Renewable.name] = self.energy_CO2_emissions[Renewable.name] * self.cost_details['elec_needs']
+        self.carbon_intensity[Renewable.name] = self.energy_CO2_emissions[Renewable.name] * self.cost_details[
+            'elec_needs']
 
         return self.carbon_intensity[Fossil.name] + self.carbon_intensity[Renewable.name] - 1.0
 
@@ -60,8 +59,8 @@ class DirectAirCaptureTechno(CCTechno):
         '''
         elec_needs = self.get_electricity_needs()
         heat_needs = self.get_heat_needs()
-        return {Renewable.name: np.identity(len(self.years)) * elec_needs ,
-                Fossil.name: np.identity(len(self.years)) * heat_needs ,
+        return {Renewable.name: np.identity(len(self.years)) * elec_needs,
+                Fossil.name: np.identity(len(self.years)) * heat_needs,
                 }
 
     def compute_consumption_and_production(self):
@@ -69,22 +68,22 @@ class DirectAirCaptureTechno(CCTechno):
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
         """
-        
+
         # Consumption
 
         self.consumption_detailed[f'{Renewable.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                              self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+                                                                              self.production_detailed[
+                                                                                  f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         self.consumption_detailed[f'{Fossil.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
-                                                                           self.production_detailed[f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+                                                                           self.production_detailed[
+                                                                               f'{CCTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.cost_details[
+                                                                                            'heat_needs'] * \
                                                                                         self.production_detailed[
-                                                                                   f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
-                                                                                        Fossil.data_energy_dict['CO2_per_use'] / \
+                                                                                            f'{CCTechno.energy_name} ({self.product_energy_unit})'] * \
                                                                                         Fossil.data_energy_dict[
-                                                                                   'calorific_value']
-
-
-
-
+                                                                                            'CO2_per_use'] / \
+                                                                                        Fossil.data_energy_dict[
+                                                                                            'calorific_value']

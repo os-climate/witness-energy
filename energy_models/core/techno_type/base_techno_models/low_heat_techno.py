@@ -44,4 +44,3 @@ class lowheattechno(TechnoType):
         Need to be overloaded in each technology model (example in SMR)
         '''
         return 0.0
-
