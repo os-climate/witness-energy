@@ -104,7 +104,6 @@ class Energy_Mix_Discipline(SoSWrapp):
                'normalization_value_demand_constraints': {'type': 'float', 'default': 1000.0, 'unit': 'Twh',
                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                           'namespace': GlossaryEnergy.NS_REFERENCE},
-               GlossaryEnergy.TargetEnergyProductionValue: GlossaryEnergy.TargetEnergyProductionDf,
                GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
                'minimum_energy_production': {'type': 'float', 'default': 1e4,
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
