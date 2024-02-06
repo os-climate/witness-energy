@@ -69,61 +69,64 @@ class Heat_Mix_Discipline(SoSWrapp):
                                'editable': False, 'structuring': True},
                GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               'CO2_emission_mix': {'type': 'dataframe', 'unit': 'G$',
-                                           'dataframe_edition_locked': False,
-                                           'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                    'heat.hightemperatureheat.NaturalGasBoilerHighHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.hightemperatureheat.ElectricBoilerHighHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.hightemperatureheat.HeatPumpHighHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.hightemperatureheat.GeothermalHighHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.hightemperatureheat.CHPHighHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.lowtemperatureheat.NaturalGasBoilerLowHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.lowtemperatureheat.ElectricBoilerLowHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.lowtemperatureheat.HeatPumpLowHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.lowtemperatureheat.GeothermalLowHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.lowtemperatureheat.CHPLowHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.mediumtemperatureheat.NaturalGasBoilerMediumHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.mediumtemperatureheat.ElectricBoilerMediumHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.mediumtemperatureheat.HeatPumpMediumHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.mediumtemperatureheat.GeothermalMediumHeat': (
-                                                                        'float', None, True),
-                                                                    'heat.mediumtemperatureheat.CHPMediumHeat': (
-                                                                        'float', None, True),
-                                                                    }},
+               'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
+                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
+               # 'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8,
+               #                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               'normalization_value_demand_constraints': {'type': 'float', 'default': 1000.0, 'unit': 'Twh',
+                                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                          'namespace': 'ns_ref'},
+               GlossaryEnergy.CO2Taxes['var_name']: GlossaryEnergy.CO2Taxes,
+               'minimum_energy_production': {'type': 'float', 'default': 1e4,
+                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public',
+                                             'unit': 'TWh'},
+               'total_prod_minus_min_prod_constraint_ref': {'type': 'float', 'default': 1e4, 'unit': 'Twh',
+                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                            'namespace': 'ns_ref'},
+               'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
+               'production_threshold': {'type': 'float', 'default': 1e-3, 'unit': 'Twh'},
+               'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
+                                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                    'namespace': 'ns_public'},
+               'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
+                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                     'namespace': 'ns_public'},
+               'ratio_ref': {'type': 'float', 'default': 500., 'unit': '-', 'user_level': 2,
+                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               # 'methane': ('float', None, True),
                }
 
     DESC_OUT = {
-        GlossaryEnergy.EnergyCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
-        'CO2MinimizationObjective': {
-            'type': 'dataframe', 'unit': 'kg/kWh',
-            'visibility': SoSWrapp.SHARED_VISIBILITY,
-            'namespace': 'ns_functions'
-                                    },
-                }
+        # GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
+        # GlossaryEnergy.EnergyCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
+        'co2_emissions_by_energy': {'type': 'dataframe', 'unit': 'Mt'},
+        GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
+        GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh'},
+        'energy_mix': {'type': 'dataframe', 'unit': '%'},
+        'energy_production_objective': {'type': 'array', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                        'namespace': 'ns_functions'},
+        HeatMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: {
+            'type': 'dataframe', 'unit': 'TWh',
+            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+                GlossaryEnergy.AllStreamsDemandRatioValue: {'type': 'dataframe', 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                     'namespace': 'ns_energy',
+                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                                                              GlossaryEnergy.CO2Tax: ('float', None, True)}
+                                     },
+    }
 
     energy_name = HeatMix.name
     energy_class_dict = HeatMix.energy_class_dict
+    stream_class_dict = HeatMix.stream_class_dict
     LowTemperatureHeat_name = lowtemperatureheat.name
     MediumTemperatureHeat_name = mediumtemperatureheat.name
     HighTemperatureHeat_name = hightemperatureheat.name
+    energy_constraint_list = HeatMix.energy_constraint_list
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = HeatMix(self.energy_name)
-        # self.energy_model.configure_parameters(inputs_dict)
+        self.energy_model.configure_parameters(inputs_dict)
 
     def setup_sos_disciplines(self):
 
@@ -132,26 +135,36 @@ class Heat_Mix_Discipline(SoSWrapp):
         inputs_dict = self.get_sosdisc_inputs()
         if GlossaryEnergy.energy_list in self.get_data_in():
             energy_list = inputs_dict[GlossaryEnergy.energy_list]
-            # self.update_default_energy_list()
+            self.update_default_energy_list()
             if energy_list is not None:
                 for energy in energy_list:
                     ns_energy = self.get_ns_energy(energy)
-
-                    dynamic_inputs[f'{energy}.{GlossaryEnergy.techno_list}'] = {
-                        'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
-                        'visibility': 'Shared', 'namespace': 'ns_energy',
-                        'possible_values': self.energy_class_dict[energy].default_techno_list,
-                        'default': self.energy_class_dict[energy].default_techno_list}
-
-                    if f'{energy}.{GlossaryEnergy.techno_list}' in self.get_data_in():
-                        technology_list = self.get_sosdisc_inputs(
-                            f'{energy}.{GlossaryEnergy.techno_list}')
-                        if technology_list is not None:
-                            for techno in technology_list:
-                                dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
-                                    'type': 'dataframe', 'unit': 'kg/kWh',
-                                    'visibility': 'Shared', 'namespace': 'ns_energy'}
-
+                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
+                        'type': 'dataframe', 'unit': 'PWh',
+                        "dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = {
+                        'type': 'dataframe', 'unit': 'PWh',"dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}'] = {
+                        'type': 'dataframe', 'unit': 'PWh',"dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.EnergyPricesValue}'] = {
+                        'type': 'dataframe', 'unit': '$/MWh',"dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.LandUseRequiredValue}'] = {
+                        'type': 'dataframe', 'unit': 'Gha',"dynamic_dataframe_columns": True}
+                    dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.EnergyCO2EmissionsValue}'] = {'type': 'dataframe', 'unit': 'kg/kWh',
+                                                                                               "dynamic_dataframe_columns": True}
+                    # dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}'] = \
+                    #     GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.EnergyTypeCapitalDf)
+                    if energy in self.energy_class_dict:
+                        # Biomass energy is computed by the agriculture model
+                        dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.CO2EmissionsValue}'] = {
+                            'type': 'dataframe', 'unit': 'kg/kWh', "dynamic_dataframe_columns": True}
+                        dynamic_inputs[f'{ns_energy}.CO2_per_use'] = {
+                            'type': 'dataframe', 'unit': 'kg/kWh',
+                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                     GlossaryEnergy.CO2Tax: ('float', None, True),
+                                                     'CO2_per_use': ('float', None, True),
+                                                     },
+                        }
 
         self.update_default_with_years(inputs_dict)
 
@@ -166,6 +179,8 @@ class Heat_Mix_Discipline(SoSWrapp):
             years = np.arange(inputs_dict[GlossaryEnergy.YearStart], inputs_dict[GlossaryEnergy.YearEnd] + 1)
             lh_perc_default = np.concatenate(
                 (np.ones(5) * 1e-4, np.ones(len(years) - 5) / 4), axis=None)
+            self.set_dynamic_default_values(
+                {'liquid_hydrogen_percentage': lh_perc_default})
 
     def update_default_energy_list(self):
         '''
@@ -193,31 +208,49 @@ class Heat_Mix_Discipline(SoSWrapp):
 
     def run(self):
         # -- get inputs
-        # inputs_dict_orig = self.get_sosdisc_inputs()
-        # # -- configure class with inputs
-        # inputs_dict = {}
-        #
-        # inputs_dict.update(inputs_dict_orig)
+        inputs_dict_orig = self.get_sosdisc_inputs()
+        # -- configure class with inputs
+        inputs_dict = {}
+        inputs_dict.update(inputs_dict_orig)
 
-        input_dict = self.get_sosdisc_inputs()
+        self.energy_model.compute(inputs_dict)
 
-        self.energy_model.compute(input_dict)
+        # -- Compute objectives with alpha trades
+        alpha = inputs_dict['alpha']
+        delta_years = inputs_dict[GlossaryEnergy.YearEnd] - inputs_dict[GlossaryEnergy.YearStart] + 1
 
-        energyCO2emissionsvalue, CO2MinimizationObjective = self.energy_model.compute(input_dict)
+        energy_production_objective = np.asarray(
+            [(1. - alpha) * self.energy_model.production[GlossaryEnergy.TotalProductionValue][0] * delta_years
+             / self.energy_model.production[GlossaryEnergy.TotalProductionValue].sum(), ])
 
-        output_dict = {GlossaryEnergy.EnergyCO2EmissionsValue: energyCO2emissionsvalue,
-                       GlossaryEnergy.EnergyInvestmentsMinimizationObjective: CO2MinimizationObjective, }
+        # -- store outputs
+        if HeatMix.PRODUCTION in self.energy_model.energy_prices:
+            self.energy_model.energy_prices.drop(
+                columns=[HeatMix.PRODUCTION], inplace=True)
+        # energy_production stored in PetaWh for coupling variables scaling
+        scaled_energy_production = pd.DataFrame(
+            {GlossaryEnergy.Years: self.energy_model.production[GlossaryEnergy.Years].values,
+             GlossaryEnergy.TotalProductionValue: self.energy_model.production[GlossaryEnergy.TotalProductionValue].values /
+                                                inputs_dict[
+                                                    'scaling_factor_energy_production']})
 
+        # print('')
+        # print(self.energy_model.total_carbon_emissions.to_string())
+        outputs_dict = {
+                        # GlossaryEnergy.EnergyPricesValue: self.energy_model.energy_prices,
+                        'co2_emissions_by_energy': self.energy_model.emissions_by_energy,
+                        # GlossaryEnergy.EnergyCO2EmissionsValue: self.energy_model.total_carbon_emissions,
+                        GlossaryEnergy.EnergyProductionValue: scaled_energy_production,
+                        GlossaryEnergy.EnergyProductionDetailedValue: self.energy_model.production,
+                        'energy_mix': self.energy_model.mix_weights,
+                        'energy_production_objective': energy_production_objective,
+                        GlossaryEnergy.AllStreamsDemandRatioValue: self.energy_model.all_streams_demand_ratio,
+                        self.energy_model.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF: self.energy_model.total_prod_minus_min_prod_constraint_df,
+                        }
 
-        for energy in input_dict[GlossaryEnergy.energy_list]:
-            for techno in input_dict[f'{energy}.{GlossaryEnergy.techno_list}']:
-                output_dict[f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = pd.DataFrame(
-                    {GlossaryEnergy.Years: input_dict[GlossaryEnergy.invest_mix][GlossaryEnergy.Years].values,
-                     GlossaryEnergy.CO2EmissionsValue: input_dict['CO2_emission_mix'][
-                         f'{energy}.{techno}'].values})
+        # -- store outputs
 
-        self.store_sos_outputs_values(output_dict)
-
+        self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
 

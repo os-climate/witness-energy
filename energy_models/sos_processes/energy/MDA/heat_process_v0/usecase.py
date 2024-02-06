@@ -80,7 +80,7 @@ AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
 FUNC_DF = FunctionManagerDisc.FUNC_DF
 CO2_TAX_MINUS_CCS_CONSTRAINT_DF = EnergyMix.CO2_TAX_MINUS_CCS_CONSTRAINT_DF
 CARBON_TO_BE_STORED_CONSTRAINT = PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT
-TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF = HeatMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF
+# TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF = HeatMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF
 INVEST_DISC_NAME = 'InvestmentDistribution'
 hydropower_name = Electricity.hydropower_name
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
@@ -165,8 +165,8 @@ class Study(EnergyStudyManager):
         list_aggr_type = []
         list_namespaces = []
 
-        list_var.extend(
-            [TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF])
+        # list_var.extend(
+        #     [TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF])
         list_parent.extend(['Energy_constraints'])
         list_ftype.extend([INEQ_CONSTRAINT])
         list_weight.extend([-1.])

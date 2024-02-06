@@ -302,6 +302,34 @@ class HeatMixTestCase(unittest.TestCase):
         self.is_stream_demand = True
         self.liquid_hydrogen_percentage = np.ones(len(self.years))
 
+        ############################################################################
+        energy_mix_invest_dic = {}
+        energy_mix_invest_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_invest_dic['heat.hightemperatureheat.NaturalGasBoilerHighHeat'] = np.ones(len(self.years)) * 10.0
+        energy_mix_invest_dic['heat.hightemperatureheat.ElectricBoilerHighHeat'] = np.ones(len(self.years)) * 20.0
+        energy_mix_invest_dic['heat.hightemperatureheat.HeatPumpHighHeat'] = np.ones(len(self.years)) * 30.0
+        energy_mix_invest_dic['heat.hightemperatureheat.GeothermalHighHeat'] = np.ones(len(self.years)) * 40.0
+        energy_mix_invest_dic['heat.hightemperatureheat.CHPHighHeat'] = np.ones(len(self.years)) * 50.0
+        energy_mix_invest_dic['heat.hightemperatureheat.HydrogenBoilerHighHeat'] = np.ones(len(self.years)) * 60.0
+
+        energy_mix_invest_dic['heat.lowtemperatureheat.NaturalGasBoilerLowHeat'] = np.ones(len(self.years)) * 10.0
+        energy_mix_invest_dic['heat.lowtemperatureheat.ElectricBoilerLowHeat'] = np.ones(len(self.years)) * 20.0
+        energy_mix_invest_dic['heat.lowtemperatureheat.HeatPumpLowHeat'] = np.ones(len(self.years)) * 30.0
+        energy_mix_invest_dic['heat.lowtemperatureheat.GeothermalLowHeat'] = np.ones(len(self.years)) * 40.0
+        energy_mix_invest_dic['heat.lowtemperatureheat.CHPLowHeat'] = np.ones(len(self.years)) * 50.0
+        energy_mix_invest_dic['heat.lowtemperatureheat.HydrogenBoilerLowHeat'] = np.ones(len(self.years)) * 60.0
+
+        energy_mix_invest_dic['heat.mediumtemperatureheat.NaturalGasBoilerMediumHeat'] = np.ones(len(self.years)) * 10.0
+        energy_mix_invest_dic['heat.mediumtemperatureheat.ElectricBoilerMediumHeat'] = np.ones(len(self.years)) * 20.0
+        energy_mix_invest_dic['heat.mediumtemperatureheat.HeatPumpMediumHeat'] = np.ones(len(self.years)) * 30.0
+        energy_mix_invest_dic['heat.mediumtemperatureheat.GeothermalMediumHeat'] = np.ones(len(self.years)) * 40.0
+        energy_mix_invest_dic['heat.mediumtemperatureheat.CHPMediumHeat'] = np.ones(len(self.years)) * 50.0
+        energy_mix_invest_dic['heat.mediumtemperatureheat.HydrogenBoilerMediumHeat'] = np.ones(len(self.years)) * 60.0
+
+
+
+        self.energy_mix = pd.DataFrame(energy_mix_invest_dic)
+
     def test_01_energy_mix(self):
         """
         Test heat mix class
@@ -316,6 +344,12 @@ class HeatMixTestCase(unittest.TestCase):
                        GlossaryEnergy.YearEnd: self.year_end,
                        GlossaryEnergy.energy_list: ['heat.hightemperatureheat', 'heat.lowtemperatureheat'], #'heat.mediumtemperatureheat',
                        GlossaryEnergy.ccs_list: [],
+                       'heat.hightemperatureheat.technologies_list': ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
+                           'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat'],
+                       'heat.lowtemperatureheat.technologies_list': ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
+                           'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat'],
+                       'heat.mediumtemperatureheat.technologies_list': ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
+                           'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat'],
                        f'heat.hightemperatureheat.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption_hydro,
                        f'heat.hightemperatureheat.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.consumption_hydro,
                        f'heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.production_hydro,
@@ -351,17 +385,14 @@ class HeatMixTestCase(unittest.TestCase):
                        'ratio_ref': 100.,
                        'heat.hightemperatureheat.losses_percentage': 1.,
                        'methane.losses_percentage': 2.,
-                       'heat_losses_percentage': 5.
-
+                       'heat_losses_percentage': 5.,
+                       'CO2_emission_mix': self.energy_mix,
                        }
 
         EM = HeatMix('HeatMix')
         EM.configure(inputs_dict)
-        EM.compute_raw_production()
-        EM.compute_net_consumable_energy()
-        EM.compute_net_energy_production()
-        EM.compute_price_by_energy()
-        EM.compute_CO2_emissions()
+        EM.compute(inputs_dict)
+        EM.compute_CO2_emissions(inputs_dict)
 
     # def test_02_energy_mix_discipline(self):
     #     """
