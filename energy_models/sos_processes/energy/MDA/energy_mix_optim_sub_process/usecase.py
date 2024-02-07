@@ -27,6 +27,8 @@ from energy_models.core.energy_study_manager import (
     CCUS_TYPE,
     ENERGY_TYPE,
 )
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
@@ -86,6 +88,7 @@ class Study(EnergyStudyManager):
         self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.dict_technos = {}
+        self.coupling_name = "MDA"
 
         self.lower_bound_techno = 1.0e-6
         self.upper_bound_techno = 3000
@@ -303,17 +306,6 @@ class Study(EnergyStudyManager):
                     'namespace_out': 'ns_invest'
                 }
                 # add design variable for utilization ratio per technology
-                '''
-                design_var_descriptor[f'{energy}_{technology}_utilization_ratio_array'] = {
-                    'out_name':  f'{energy}.{technology}.{GlossaryEnergy.UtilisationRatioValue}',
-                    'out_type': 'dataframe',
-                    'key': GlossaryEnergy.UtilisationRatioValue,
-                    'index': self.years,
-                    'index_name': GlossaryEnergy.Years,
-                    'namespace_in': GlossaryEnergy.NS_ENERGY_MIX,
-                    'namespace_out': GlossaryEnergy.NS_ENERGY_MIX
-                }
-                '''
 
         for ccs in self.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
@@ -344,6 +336,133 @@ class Study(EnergyStudyManager):
                 '''
 
         return design_var_descriptor
+
+    def get_dspace(self):
+        """returns design space"""
+        invest_mix_dict = self.get_investments_mix()
+
+        for energy in self.energy_list:
+            energy_wodot = energy.replace('.', '_')
+            techno_list = self.techno_dict[energy]
+            for techno in techno_list:
+                techno_wo_dot = techno.replace('.', '_')
+                self.update_dspace_dict_with(
+                    f'{energy}.{techno}.{energy_wodot}_{techno_wo_dot}_array_mix', np.maximum(
+                        self.lower_bound_techno, invest_mix_dict[techno].values),
+                    self.lower_bound_techno, self.upper_bound_techno, enable_variable=True)
+
+    def make_dspace_invests(self, dspace_list: list) -> pd.DataFrame:
+        dspaces_cleaned = []
+        for ds in dspace_list:
+            ds.pop('dspace_size')
+            for var_name, sub_ds_dict in ds.items():
+                sub_ds_dict['variable'] = var_name
+                ds_value = {var_name: sub_ds_dict}
+                dspaces_cleaned.append(pd.DataFrame(ds_value).T)
+
+        dspace = pd.concat(dspaces_cleaned)
+        return dspace
+
+    def make_dspace_utilisation_ratio(self, d_space_invest: pd.DataFrame) -> pd.DataFrame:
+        variables = d_space_invest['variable']
+        var_ur = [var.replace('array_mix', 'utilization_ratio_array') for var in variables]
+        low_bound = [1e-6] * 20
+        upper_bound = [100.] * 20
+        value = [100.] * 20
+        n_dvar_ur = len(variables)
+        dspace_ur = {
+            'variable': var_ur,
+            'value': [value] * n_dvar_ur,
+            'activated_elem': [[True] * 20] * n_dvar_ur,
+            'lower_bnd': [low_bound] * n_dvar_ur,
+            'upper_bnd': [upper_bound] * n_dvar_ur,
+            'enable_variable': [True] * n_dvar_ur
+        }
+
+        dspace_ur = pd.DataFrame(dspace_ur)
+        return dspace_ur
+
+    def make_func_df(self):
+        func_df = pd.DataFrame({
+            "variable": ["energy_production_objective", "syngas_prod_objective"],
+            "parent": ["objectives", "objectives"],
+            "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.OBJECTIVE],
+            "weight": [1.0, 0.0],
+            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM],
+            "namespace": [GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS]
+        })
+        return func_df
+
+    def get_dvar_values(self, dspace):
+        out_dict = {}
+
+        for ccs in self.ccs_list:
+            ccs_wo_dot = ccs.replace('.', '_')
+            for technology in self.dict_technos[ccs]:
+                technology_wo_dot = technology.replace('.', '_')
+                array_var_name = f"{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix"
+                value = dspace.loc[dspace['variable'] == array_var_name, 'value'].values[0]
+                out_dict.update({
+                    f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.CCUS}.{array_var_name}": np.array(value)
+                })
+
+        for energy in self.energy_list:
+            ccs_wo_dot = energy.replace('.', '_')
+            for technology in self.dict_technos[energy]:
+                technology_wo_dot = technology.replace('.', '_')
+                array_var_name = f"{energy}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix"
+                value = dspace.loc[dspace['variable'] == array_var_name, 'value'].values[0]
+                out_dict.update({
+                    f"{self.study_name}.{self.coupling_name}.EnergyMix.{array_var_name}": np.array(value)
+                })
+
+        return out_dict
+
+    def make_dspace(self, dspace_list: list):
+        dspace_invests = self.make_dspace_invests(dspace_list)
+        dspace_utilisation_ratio = self.make_dspace_utilisation_ratio(dspace_invests)
+        dspace = pd.concat([dspace_invests, dspace_utilisation_ratio])
+        dspace.reset_index(drop=True, inplace=True)
+        return dspace
+
+    def get_input_value_from_agriculture_mix(self):
+        agri_mix_name = "AgricultureMix"
+
+        N2O_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "N2O_per_use": 5.34e-5})
+        CH4_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "CH4_per_use": 0.0})
+        CO2_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_per_use": 0.277})
+
+        energy_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_resource (Mt)": 3.5})
+        energy_production = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: 12.5})
+        energy_prices = pd.DataFrame(
+            {
+                GlossaryEnergy.Years: self.years,
+                GlossaryEnergy.biomass_dry: 9.8,
+                "biomass_dry_wotaxes": 9.8,
+            }
+        )
+
+        land_use_required = pd.DataFrame({GlossaryEnergy.Years: self.years, "Crop (GHa)": 0.07, "Forest (Gha)": 1.15})
+
+        CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: -0.277})
+
+        energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.0})
+
+        agri_values_dict = {
+            f"{self.study_name}.{agri_mix_name}.N2O_per_use": N2O_per_use,
+            f"{self.study_name}.{agri_mix_name}.CH4_per_use": CH4_per_use,
+            f"{self.study_name}.{agri_mix_name}.CO2_per_use": CO2_per_use,
+            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyConsumptionValue}": energy_consumption,
+            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}": energy_consumption,
+            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyProductionValue}": energy_production,
+            f"{self.study_name}.{self.coupling_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}": energy_type_capital,
+            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
+            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.LandUseRequiredValue}": land_use_required,
+            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.CO2EmissionsValue}": CO2_emissions,
+        }
+
+        return agri_values_dict
+
     def setup_usecase(self, study_folder_path=None):
 
         energy_mix_name = EnergyMix.name
@@ -414,15 +533,15 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{GlossaryEnergy.YearEnd}": self.year_end,
             f"{self.study_name}.{GlossaryEnergy.energy_list}": self.energy_list,
             f"{self.study_name}.{GlossaryEnergy.ccs_list}": self.ccs_list,
-            f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
+            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
             f"{self.study_name}.{GlossaryEnergy.CO2TaxesValue}": co2_taxes,
-            f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}": energy_carbon_emissions,
-            f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
+            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}": energy_carbon_emissions,
+            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
             f"{self.study_name}.is_stream_demand": True,
             f"{self.study_name}.max_mda_iter": 50,
             f"{self.study_name}.sub_mda_class": "MDAGaussSeidel",
-            f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}": resources_CO2_emissions,
-            f"{self.study_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}": resources_prices,
+            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}": resources_CO2_emissions,
+            f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}": resources_prices,
             f"{self.study_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_invest_df,
         }
 
@@ -445,7 +564,7 @@ class Study(EnergyStudyManager):
             ] = flue_gas_list
 
         if self.coarse_mode:
-            values_dict.update({f"{self.study_name}.EnergyMix.heat_losses_percentage": 0.0})
+            values_dict.update({f"{self.study_name}.{self.coupling_name}.EnergyMix.heat_losses_percentage": 0.0})
         invest_mix_df = self.get_absolute_total_mix(instanciated_studies)
 
         managed_wood_investment = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestmentsValue: 0.0})
@@ -457,7 +576,7 @@ class Study(EnergyStudyManager):
         crop_investment = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestmentsValue: 0.0})
 
         values_dict.update({
-                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
+            #f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
         })
 
         values_dict_list.append(values_dict)
@@ -469,51 +588,29 @@ class Study(EnergyStudyManager):
             values_dict_list.append(agri_values_dict)
 
             values_dict.update({
-                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
-                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.ManagedWoodInvestmentName}": managed_wood_investment,
-                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.DeforestationInvestmentName}": deforestation_investment,
-                f"{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.CropInvestmentName}": crop_investment,
+                #f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
+                f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.ManagedWoodInvestmentName}": managed_wood_investment,
+                f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.DeforestationInvestmentName}": deforestation_investment,
+                f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.CropInvestmentName}": crop_investment,
             })
 
-        return values_dict_list
+        design_var_descriptor = self.get_dvar_dscriptor()
+        # self.get_dspace()
 
-    def get_input_value_from_agriculture_mix(self):
-        agri_mix_name = "AgricultureMix"
-
-        N2O_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "N2O_per_use": 5.34e-5})
-        CH4_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "CH4_per_use": 0.0})
-        CO2_per_use = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_per_use": 0.277})
-
-        energy_consumption = pd.DataFrame({GlossaryEnergy.Years: self.years, "CO2_resource (Mt)": 3.5})
-        energy_production = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: 12.5})
-        energy_prices = pd.DataFrame(
-            {
-                GlossaryEnergy.Years: self.years,
-                GlossaryEnergy.biomass_dry: 9.8,
-                "biomass_dry_wotaxes": 9.8,
-            }
-        )
-
-        land_use_required = pd.DataFrame({GlossaryEnergy.Years: self.years, "Crop (GHa)": 0.07, "Forest (Gha)": 1.15})
-
-        CO2_emissions = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.biomass_dry: -0.277})
-
-        energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.0})
-
-        agri_values_dict = {
-            f"{self.study_name}.{agri_mix_name}.N2O_per_use": N2O_per_use,
-            f"{self.study_name}.{agri_mix_name}.CH4_per_use": CH4_per_use,
-            f"{self.study_name}.{agri_mix_name}.CO2_per_use": CO2_per_use,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyConsumptionValue}": energy_consumption,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}": energy_consumption,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyProductionValue}": energy_production,
-            f"{self.study_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}": energy_type_capital,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.LandUseRequiredValue}": land_use_required,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.CO2EmissionsValue}": CO2_emissions,
+        values_dict_list_, dspace_list, instanced_sub_studies = self.setup_usecase_sub_study_list()
+        func_df = self.make_func_df()
+        dspace = self.make_dspace(dspace_list)
+        values_mdo = {
+            f"{self.study_name}.DesignVariables.design_var_descriptor": design_var_descriptor,
+            f"{self.study_name}.design_space": dspace,
+            f"{self.study_name}.FunctionsManager.function_df": func_df,
         }
 
-        return agri_values_dict
+        dvar_values = self.get_dvar_values(dspace)
+        values_mdo.update(dvar_values)
+        values_dict_list.append(values_mdo)
+
+        return values_dict_list
 
 
 if "__main__" == __name__:
