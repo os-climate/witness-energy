@@ -29,6 +29,12 @@ class Electricity(EnergyType):
                            'Geothermal', 'RenewableElectricitySimpleTechno',
                            'RenewableElectricitySimpleTechnoDiscipline']
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.hydropower_production_current = None
+        self.hydropower_constraint_ref = None
+        self.hydropower_constraint = None
+
     def configure_parameters(self, inputs_dict):
         '''
         Overide configure parameters of EnergyType

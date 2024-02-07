@@ -45,7 +45,6 @@ class CalciumPotassiumScrubbingDiscipline(CCTechnoDiscipline):
     construction_delay = 3
     techno_infos_dict_default = {'maturity': 0,
                                  'reaction_part_1': 'CO2 + 2KOH --> H2O + K2CO3',
-                                 'reaction_part_2': 'K2CO3 + Ca(OH)2 --> 2KOH + CaCO3',
                                  'reaction_part_2': 'CaCO3 (calciner)--> CaO +CO2',
                                  'Opex_percentage': 0.04,
                                  'elec_demand': 0.1,

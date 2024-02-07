@@ -151,7 +151,7 @@ class CalciumPotassium(CCTechno):
         KOH_need = 2 * KOH_molar_mass / CO2_molar_mass * \
                    (1 - self.techno_infos_dict['potassium_refound_efficiency'])
 
-        return (KOH_need)
+        return KOH_need
 
     def compute_calcium_need(self):
         """

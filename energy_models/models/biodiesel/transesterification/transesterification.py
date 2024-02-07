@@ -210,7 +210,6 @@ class Transesterification(BioDieselTechno):
         in kg 1.0082 oil + 0.082 methanol = 1 biodiesel + 0.0984 glycerol
         for 1kWh equivalent of biodiesel: 10.362 kg oil + 0.842 kg of methanol = 10.2778 kg of biodiesel + 1.0109 kg of glycerol
         """
-        methanol_data = Methanol.data_energy_dict
         biodiesel_calorific_value = self.data_energy_dict['calorific_value']
 
         methanol_needs = 0.0819672311 / biodiesel_calorific_value
@@ -223,8 +222,6 @@ class Transesterification(BioDieselTechno):
         in kg 1.0082 oil + 0.082 NaturalOil = 1 biodiesel + 0.0984 glycerol
         for 1kWh equivalent of biodiesel: 10.362 kg oil + 0.842 kg of NaturalOil = 10.2778 kg of biodiesel + 1.0109 kg of glycerol
         """
-        naturaloil_data = NaturalOil.data_energy_dict
-        naturaloil_calorific_value = naturaloil_data['calorific_value']
         biodiesel_calorific_value = self.data_energy_dict['calorific_value']
 
         natural_oil_needs = 1.008196721 / biodiesel_calorific_value
@@ -237,7 +234,6 @@ class Transesterification(BioDieselTechno):
         in kg 1.0082 oil + 0.082 SodiumHydroxide = 1 biodiesel + 0.0984 glycerol
         for 1kWh equivalent of biodiesel: 10.362 kg oil + 0.842 kg of SodiumHydroxide = 10.2778 kg of biodiesel + 1.0109 kg of glycerol
         """
-        naturaloil_data = SodiumHydroxide.data_energy_dict
         biodiesel_calorific_value = self.data_energy_dict['calorific_value']
 
         sodiumhydroxyde_needs = 0.01 / biodiesel_calorific_value
@@ -250,7 +246,6 @@ class Transesterification(BioDieselTechno):
         in kg 1.0082 oil + 0.082 SodiumHydroxide = 1 biodiesel + 0.0984 glycerol
         for 1kWh equivalent of biodiesel: 10.362 kg oil + 0.842 kg of SodiumHydroxide = 10.2778 kg of biodiesel + 1.0109 kg of glycerol
         """
-        water_data = SodiumHydroxide.data_energy_dict
         biodiesel_calorific_value = self.data_energy_dict['calorific_value']
 
         water_needs = 0.017 / biodiesel_calorific_value

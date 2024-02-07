@@ -43,7 +43,9 @@ class Study(StudyManager):
             invest_discipline=INVEST_DISCIPLINE_DEFAULT,
             energy_invest_input_in_abs_value=True,
             execution_engine=None,
+            main_study: bool = True,
     ):
+        self.main_study = main_study
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -64,7 +66,7 @@ class Study(StudyManager):
             self.year_start,
             self.year_end,
             self.time_step,
-            main_study=False,
+            main_study=self.main_study,
             bspline=self.bspline,
             execution_engine=execution_engine,
             invest_discipline=self.invest_discipline,

@@ -23,6 +23,11 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class FlueGasTechno(CCTechno):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.flue_gas_ratio = None
+        self.fg_ratio_effect = None
+
     def get_electricity_needs(self):
         """
         Overloads techno type method to use electricity in coarse technologies for heat

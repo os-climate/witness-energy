@@ -13,8 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
 import os
 from os.path import dirname
+
+import pandas as pd
 
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import \
     DEFAULT_COARSE_TECHNO_DICT
@@ -30,7 +33,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
     Energy mix jacobian test class
     """
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return []
@@ -51,7 +54,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
         usecase = Study(execution_engine=self.ee,
-                        invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT)
+                        invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT, main_study=True)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -62,6 +65,14 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         self.full_values_dict[f'{self.name}.epsilon0'] = 1.0
         self.full_values_dict[f'{self.name}.tolerance'] = 1.0e-8
         self.full_values_dict[f'{self.name}.max_mda_iter'] = 50
+        forest_investment = pd.DataFrame({
+            GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
+            GlossaryEnergy.ForestInvestmentValue: 5.
+        })
+        self.full_values_dict.update({
+            f"{self.name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_investment,
+
+        })
         self.ee.load_study_from_input_dict(self.full_values_dict)
 
         self.ee.execute()

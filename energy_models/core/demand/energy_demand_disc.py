@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 
 import numpy as np
 
@@ -90,6 +91,10 @@ class EnergyDemandDiscipline(SoSWrapp):
     energy_constraint_list = [Electricity.name] + \
                              EnergyDemand.energy_list_transport
     elec_prod_column = EnergyDemand.elec_prod_column
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.demand_model = None
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()

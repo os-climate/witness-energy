@@ -27,6 +27,12 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class UnmanagedWood(BiomassDryTechno):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.production_mix = None
+        self.price_mix = None
+        self.mean_age_df = None
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kg of wood
@@ -49,10 +55,9 @@ class UnmanagedWood(BiomassDryTechno):
 
     def grad_production_invest(self, capex, production, production_mix):
 
-        dcapex_dinvest = self.compute_dcapex_dinvest(
-            self.invest_level.loc[self.invest_level[GlossaryEnergy.Years]
-                                  <= self.year_end][GlossaryEnergy.InvestValue].values, self.techno_infos_dict,
-            self.initial_production)
+        dcapex_dinvest = self.compute_dcapex_dinvest(self.invest_level.loc[self.invest_level[GlossaryEnergy.Years]
+                                                                           <= self.year_end][
+                                                         GlossaryEnergy.InvestValue].values, self.techno_infos_dict)
 
         dprod_dinvest = self.compute_dprod_dinvest(
             capex, self.invest_level[GlossaryEnergy.InvestValue].values,

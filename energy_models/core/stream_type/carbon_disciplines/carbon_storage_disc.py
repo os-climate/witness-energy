@@ -133,7 +133,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
 
         serie = InstanciatedSeries(
             CO2_storage_prices[GlossaryEnergy.Years].values.tolist(),
-            (CO2_storage_prices[self.energy_name].values).tolist(), f'{self.energy_name} mix price', 'lines')
+            CO2_storage_prices[self.energy_name].values.tolist(), f'{self.energy_name} mix price', 'lines')
 
         new_chart.series.append(serie)
 
@@ -144,7 +144,7 @@ class CarbonStorageDiscipline(StreamDiscipline):
                 f'{technology}.{GlossaryEnergy.TechnoPricesValue}')
             serie = InstanciatedSeries(
                 CO2_storage_prices[GlossaryEnergy.Years].values.tolist(),
-                (techno_price[technology].values).tolist(), f'{technology} price', 'lines')
+                techno_price[technology].values.tolist(), f'{technology} price', 'lines')
             new_chart.series.append(serie)
 
         return new_chart

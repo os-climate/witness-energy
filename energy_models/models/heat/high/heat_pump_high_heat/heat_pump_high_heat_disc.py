@@ -163,7 +163,7 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
         self.techno_model.compute_heat_flux()
 
         outputs_dict = {'heat_flux': self.techno_model.heat_flux_distribution}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     @staticmethod

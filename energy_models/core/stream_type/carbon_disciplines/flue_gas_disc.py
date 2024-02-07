@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 import numpy as np
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
@@ -107,6 +109,10 @@ class FlueGasDiscipline(SoSWrapp):
                                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_flue_gas', 'unit': '%'}}
 
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.energy_model = None
+
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = FlueGas(self.energy_name)
@@ -160,7 +166,7 @@ class FlueGasDiscipline(SoSWrapp):
             GlossaryEnergy.FlueGasMean: flue_gas_mean,
             'flue_gas_production': self.energy_model.get_total_flue_gas_production(),
             'flue_gas_prod_ratio': self.energy_model.get_total_flue_gas_prod_ratio()}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -169,7 +175,6 @@ class FlueGasDiscipline(SoSWrapp):
         '''
         inputs_dict = self.get_sosdisc_inputs()
         technologies_list = inputs_dict[GlossaryEnergy.techno_list]
-        ccs_list = inputs_dict[GlossaryEnergy.ccs_list]
         mix_weights = self.get_sosdisc_outputs('flue_gas_prod_ratio')
 
         total_prod = self.get_sosdisc_outputs('flue_gas_production')[
