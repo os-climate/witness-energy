@@ -233,11 +233,11 @@ class Energy_Mix_Discipline(SoSWrapp):
             year_start, year_end = self.get_sosdisc_inputs(
                 [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
             years = np.arange(year_start, year_end + 1)
-            default_Target_Energy_Production = pd.DataFrame({GlossaryEnergy.Years: years,
+            default_target_energy_production = pd.DataFrame({GlossaryEnergy.Years: years,
                                                              GlossaryEnergy.TargetEnergyProductionValue: np.zeros_like(
                                                                  years)})
             self.set_dynamic_default_values(
-                {GlossaryEnergy.TargetEnergyProductionValue: default_Target_Energy_Production})
+                {GlossaryEnergy.TargetEnergyProductionValue: default_target_energy_production})
         if GlossaryEnergy.energy_list in self.get_data_in():
             energy_list = inputs_dict[GlossaryEnergy.energy_list]
             self.update_default_energy_list()

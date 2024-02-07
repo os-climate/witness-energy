@@ -109,6 +109,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
              if
              energy not in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]])
 
+
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coarse_energymix_co2_emissions.pkl',
                             discipline=self.disc, step=1.0e-16, derr_approx='complex_step', threshold=1e-5,
@@ -120,7 +121,8 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyProductionValue}',
                                      f'{self.name}.{self.model_name}.land_demand_df',
                                      f'{self.name}.{GlossaryEnergy.EnergyCapitalDfValue}',
-                                     f'{self.name}.{self.model_name}.energy_prices_after_tax'
+                                     f'{self.name}.{self.model_name}.energy_prices_after_tax',
+                                     f'{self.name}.{self.model_name}{GlossaryEnergy.TargetProductionConstraintValue}.'
                                      ])
         AbstractJacobianUnittest.DUMP_JACOBIAN = False
         path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls', 'jacobian_coarse_energymix_co2_emissions.pkl')
