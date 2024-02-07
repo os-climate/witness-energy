@@ -61,8 +61,8 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
-INVEST_DISC_NAME = "InvestmentDistribution"
 
+INVEST_DISC_NAME = "InvestmentDistribution"
 
 
 class Study(EnergyStudyManager):
@@ -576,7 +576,7 @@ class Study(EnergyStudyManager):
         crop_investment = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestmentsValue: 0.0})
 
         values_dict.update({
-            #f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
+            # f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
         })
 
         values_dict_list.append(values_dict)
@@ -588,7 +588,7 @@ class Study(EnergyStudyManager):
             values_dict_list.append(agri_values_dict)
 
             values_dict.update({
-                #f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
+                # f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
                 f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.ManagedWoodInvestmentName}": managed_wood_investment,
                 f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.DeforestationInvestmentName}": deforestation_investment,
                 f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.CropInvestmentName}": crop_investment,
@@ -615,5 +615,6 @@ class Study(EnergyStudyManager):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
+    # uc_cls.load_data()
+    # uc_cls.run()

@@ -43,7 +43,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         coupling_name = "MDA"
         designvariable_name = "DesignVariables"
         func_manager_name = "FunctionsManager"
-        extra_name = 'EXTRA'
         ns_study = self.ee.study_name
         energy_mix = EnergyMix.name
         carbon_storage = PureCarbonSS.energy_name
@@ -62,14 +61,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                     associate_namespace=False,
                 )
 
-            builder_list.extend(energy_builder_list)
+                builder_list.extend(energy_builder_list)
         self.ee.ns_manager.update_namespace_list_with_extra_ns(coupling_name,
                                                                after_name=self.ee.study_name,
                                                                clean_existing=False)
-
-        self.ee.factory.update_builder_list_with_extra_name(
-            extra_name, builder_list=builder_list)
-
 
         # Needed namespaces for the 3 disciplines below
         # All other namespaces are specified in each subprocess
@@ -78,7 +73,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'ns_energy': f'{ns_study}.{energy_mix}',
             GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{energy_mix}',
             'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
-            'ns_resource': f'{ns_study}.{energy_mix}.resource',
+            'ns_resource': f'{ns_study}',
             GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
             'ns_invest': f'{self.ee.study_name}.InvestmentDistribution',
         }
@@ -93,7 +88,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         mods_dict = {
             energy_mix: 'energy_models.core.energy_mix.energy_mix_disc.Energy_Mix_Discipline',
-            #GlossaryEnergy.CCUS: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
+            # GlossaryEnergy.CCUS: 'energy_models.core.ccus.ccus_disc.CCUS_Discipline',
         }
 
         builder_other_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
@@ -173,7 +168,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                    GlossaryEnergy.NS_REFERENCE: f'{ns_study}.NormalizationReferences',
                    'ns_emissions': f'{ns_study}.{energy_mix}', }
 
-        #self.ee.ns_manager.add_ns_def(ns_dict)
+        # self.ee.ns_manager.add_ns_def(ns_dict)
 
         # Update namespace regarding land use and energy mix coupling
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
@@ -182,10 +177,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
-
-        # modify namespaces defined in the child process
-        self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            extra_name, after_name=self.ee.study_name, clean_existing=True)
 
         # design variables builder
         design_var_path = 'sostrades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
@@ -199,11 +190,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             f'{func_manager_name}', fmanager_path)
         builder_list.append(fmanager_builder)
 
-        ns_dict = {GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{extra_name}',
+        ns_dict = {GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}',
                    'ns_public': f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    GlossaryEnergy.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
-                   'ns_invest': f'{self.ee.study_name}.{coupling_name}.{extra_name}.{INVEST_DISC_NAME}', }
+                   'ns_invest': f'{self.ee.study_name}.{coupling_name}.{INVEST_DISC_NAME}', }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         # create coupling builder
@@ -212,4 +203,3 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # coupling_builder.set_builder_info('with_data_io', True)
 
         return coupling_builder
-
