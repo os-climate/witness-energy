@@ -580,6 +580,10 @@ class Energy_Mix_Discipline(SoSWrapp):
                     (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
                     dtotal_prod_denergy_prod)
                 self.set_partial_derivative_for_other_types(
+                    (GlossaryEnergy.TargetProductionConstraintValue,),
+                    (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
+                    dtotal_prod_denergy_prod * 1000)
+                self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyProductionDetailedValue,
                      GlossaryEnergy.TotalProductionValue),
                     (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),

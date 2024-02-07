@@ -33,7 +33,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
     Energy mix jacobian test class
     """
 
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return []
@@ -133,7 +133,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.land_demand_df',
                                      f'{self.name}.{GlossaryEnergy.EnergyCapitalDfValue}',
                                      f'{self.name}.{self.model_name}.energy_prices_after_tax',
-                                     f'{self.name}.{self.model_name}{GlossaryEnergy.TargetProductionConstraintValue}.'
+                                     f'{self.name}.FunctionManagerDisc.{GlossaryEnergy.TargetProductionConstraintValue}'
                                      ])
         AbstractJacobianUnittest.DUMP_JACOBIAN = False
         path_pickle = os.path.join(dirname(__file__), 'jacobian_pkls', 'jacobian_coarse_energymix_co2_emissions.pkl')
