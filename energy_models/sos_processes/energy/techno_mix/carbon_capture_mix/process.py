@@ -69,8 +69,8 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{self.prefix_name}.{carbon_capture_name}.{full_techno_name}'] = self.get_techno_disc_path(
                 carbon_capture_name, techno_name, sub_dir)
 
-        mods_dict[
-            f'{self.prefix_name}.{carbon_capture_name}.direct_air_capture'] = 'energy_models.core.stream_type.carbon_disciplines.direct_air_disc.DirectAirDiscipline'
+        # mods_dict[
+        #     f'{self.prefix_name}.{carbon_capture_name}.direct_air_capture'] = 'energy_models.core.stream_type.carbon_disciplines.direct_air_disc.DirectAirDiscipline'
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
 

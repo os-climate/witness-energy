@@ -466,7 +466,7 @@ class Study(EnergyStudyManager):
                     self.year_end,
                     self.time_step,
                     bspline=self.bspline,
-                    main_study=False,
+                    main_study=True,
                     prefix_name=prefix_name,
                     execution_engine=self.execution_engine,
                     invest_discipline=self.invest_discipline,
