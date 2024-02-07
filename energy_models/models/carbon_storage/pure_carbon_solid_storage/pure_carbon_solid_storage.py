@@ -25,6 +25,10 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class PureCarbonSS(CSTechno):
     CARBON_TO_BE_STORED_CONSTRAINT = 'carbon_to_be_stored_constraint'
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.carbon_to_be_stored_constraint = None
+
     def compute_crf(self, data_config):
         return 1
 

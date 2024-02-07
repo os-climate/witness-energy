@@ -25,13 +25,16 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CO2Taxes = GlossaryWitnessCore.CO2Taxes
     CO2Taxes["namespace"] = "ns_energy_study"
 
-    NB_POLES_UTILIZATION_RATIO = 10 # number of poles for bspline design variables utilization ratio
+    NB_POLES_UTILIZATION_RATIO = (
+        10  # number of poles for bspline design variables utilization ratio
+    )
     NB_POLES_COARSE: int = 20  # number of poles in witness coarse
     NB_POLES_FULL: int = 8  # number of poles in witness full
 
     biogas = "biogas"
     biodiesel = "biodiesel"
     biomass_dry = "biomass_dry"
+    ethanol = "ethanol"
     electricity = "electricity"
     fossil = "fossil"
     fuel = "fuel"
@@ -79,15 +82,16 @@ class GlossaryEnergy(GlossaryWitnessCore):
     TransportMarginValue = "transport_margin"
     TransportDemandValue = "transport_demand"
     ForestInvestmentValue = "forest_investment"
+    CarbonCapturedValue = "carbon_captured_type"
     InstalledPower = "power_production"  # todo : rename string to 'Installed Power [MW]' (check unit)
 
     # energy techno discipline names
-    FossilSimpleTechno = 'FossilSimpleTechno'
-    RenewableSimpleTechno = 'RenewableSimpleTechno'
-    CarbonCaptureAndStorageTechno = 'CarbonCaptureAndStorageTechno'
-    CarbonStorageTechno = 'CarbonStorageTechno'
-    DirectAirCapture = 'direct_air_capture.DirectAirCaptureTechno'
-    FlueGasCapture = f'{flue_gas_capture}.FlueGasTechno'
+    FossilSimpleTechno = "FossilSimpleTechno"
+    RenewableSimpleTechno = "RenewableSimpleTechno"
+    CarbonCaptureAndStorageTechno = "CarbonCaptureAndStorageTechno"
+    CarbonStorageTechno = "CarbonStorageTechno"
+    DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
+    FlueGasCapture = f"{flue_gas_capture}.FlueGasTechno"
 
     CCSTechnoInvest = {
         "type": "dataframe",
@@ -95,7 +99,11 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "visibility": "Shared",
         "namespace": "ns_ccs",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.Years: (
+                "int",
+                [1900, GlossaryWitnessCore.YeartEndDefault],
+                False,
+            ),
             "invest": ("float", None, True),
         },
     }
@@ -106,7 +114,11 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "visibility": "Shared",
         "namespace": "ns_energy",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.Years: (
+                "int",
+                [1900, GlossaryWitnessCore.YeartEndDefault],
+                False,
+            ),
             "invest": ("float", None, True),
         },
     }
@@ -116,7 +128,11 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "description": "Capital in G$ of the technology",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.Years: (
+                "int",
+                [1900, GlossaryWitnessCore.YeartEndDefault],
+                False,
+            ),
             GlossaryWitnessCore.Capital: ("float", None, False),
         },
     }
@@ -126,7 +142,11 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "type": "dataframe",
         "namespace": "ns_witness",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.Years: (
+                "int",
+                [1900, GlossaryWitnessCore.YeartEndDefault],
+                False,
+            ),
             GlossaryWitnessCore.UtilisationRatioValue: ("float", [0, 100], False),
         },
     }
@@ -140,7 +160,11 @@ class GlossaryEnergy(GlossaryWitnessCore):
         # 'visibility': 'Shared',
         "description": "Capital in G$ of the energy type",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.Years: (
+                "int",
+                [1900, GlossaryWitnessCore.YeartEndDefault],
+                False,
+            ),
             GlossaryWitnessCore.Capital: ("float", None, False),
         },
     }
@@ -150,7 +174,12 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "var_name": TechnoInvestPercentageName,
         "type": "dataframe",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False), },
+            GlossaryWitnessCore.Years: (
+                "int",
+                [1900, GlossaryWitnessCore.YeartEndDefault],
+                False,
+            ),
+        },
         "unit": "%",
         "description": "Percentage of investments in each energy technology based on total energy investments",
     }
@@ -160,52 +189,108 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "var_name": EnergyInvestPercentageGDPName,
         "type": "dataframe",
         "unit": "%",
-
-        "dataframe_descriptor": {GlossaryWitnessCore.Years: ('int', None, False),
-                                 EnergyInvestPercentageGDPName: ('float', None, True)},
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("int", None, False),
+            EnergyInvestPercentageGDPName: ("float", None, True),
+        },
         "description": "percentage of total energy investment in each of the energy technologies",
     }
 
     ManagedWoodInvestmentName = "managed_wood_investment"
-    ManagedWoodInvestment = {'var_name': ManagedWoodInvestmentName,
-                             'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                             'dataframe_descriptor': {GlossaryWitnessCore.Years: ('float', None, False),
-                                                      GlossaryWitnessCore.InvestmentsValue: ('float', None, False)},
-                             'namespace': 'ns_forest', 'dataframe_edition_locked': False, }
+    ManagedWoodInvestment = {
+        "var_name": ManagedWoodInvestmentName,
+        "type": "dataframe",
+        "unit": "G$",
+        "visibility": "Shared",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, False),
+            GlossaryWitnessCore.InvestmentsValue: ("float", None, False),
+        },
+        "namespace": "ns_forest",
+        "dataframe_edition_locked": False,
+    }
 
     DeforestationInvestmentName = "deforestation_investment"
-    DeforestationInvestment = {'var_name': DeforestationInvestmentName,
-                               'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                               'dataframe_descriptor': {GlossaryWitnessCore.Years: ('float', None, False),
-                                                        GlossaryWitnessCore.InvestmentsValue: ('float', None, False)},
-                               'namespace': 'ns_forest', 'dataframe_edition_locked': False}
+    DeforestationInvestment = {
+        "var_name": DeforestationInvestmentName,
+        "type": "dataframe",
+        "unit": "G$",
+        "visibility": "Shared",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, False),
+            GlossaryWitnessCore.InvestmentsValue: ("float", None, False),
+        },
+        "namespace": "ns_forest",
+        "dataframe_edition_locked": False,
+    }
 
     CropInvestmentName = "crop_investment"
-    CropInvestment = {'var_name': CropInvestmentName,
-                      'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
-                      'dataframe_descriptor': {GlossaryWitnessCore.Years: ('float', None, False),
-                                               GlossaryWitnessCore.InvestmentsValue: ('float', None, False)},
-                      'namespace': 'ns_crop', 'dataframe_edition_locked': False}
+    CropInvestment = {
+        "var_name": CropInvestmentName,
+        "type": "dataframe",
+        "unit": "G$",
+        "visibility": "Shared",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, False),
+            GlossaryWitnessCore.InvestmentsValue: ("float", None, False),
+        },
+        "namespace": "ns_crop",
+        "dataframe_edition_locked": False,
+    }
 
     TechnoListName = "technologies_list"
-    TechnoList = {'var_name': TechnoListName,
-                  'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'structuring': True,
-                  'visibility': 'Shared'}
+    TechnoList = {
+        "var_name": TechnoListName,
+        "type": "list",
+        "subtype_descriptor": {"list": "string"},
+        "structuring": True,
+        "visibility": "Shared",
+    }
 
-    InvestLevel = {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared'}
+    InvestLevel = {"type": "dataframe", "unit": "G$", "visibility": "Shared"}
 
-    EnergyList = {'var_name': EnergyListName, 'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                  'visibility': 'Shared', 'namespace': 'ns_energy_study',
-                  'editable': False, 'structuring': True}
+    EnergyList = {
+        "var_name": EnergyListName,
+        "type": "list",
+        "subtype_descriptor": {"list": "string"},
+        "visibility": "Shared",
+        "namespace": "ns_energy_study",
+        "editable": False,
+        "structuring": True,
+    }
 
-    CCSList = {'var_name': CCSListName, 'type': 'list', 'subtype_descriptor': {'list': 'string'},
-               'visibility': 'Shared', 'namespace': 'ns_energy_study',
-               'editable': False, 'structuring': True}
+    CCSList = {
+        "var_name": CCSListName,
+        "type": "list",
+        "subtype_descriptor": {"list": "string"},
+        "visibility": "Shared",
+        "namespace": "ns_energy_study",
+        "editable": False,
+        "structuring": True,
+    }
 
-    ForestInvestment = {'var_name': ForestInvestmentValue, 'type': 'dataframe', 'unit': 'G$',
-                        'visibility': 'Shared',
-                        'dataframe_descriptor': {GlossaryWitnessCore.Years: ('float', None, False),
-                                                 ForestInvestmentValue: (
-                                                     'float', None, False)},
-                        'namespace': 'ns_invest',
-                        'dataframe_edition_locked': False}
+    ForestInvestment = {
+        "var_name": ForestInvestmentValue,
+        "type": "dataframe",
+        "unit": "G$",
+        "visibility": "Shared",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, False),
+            ForestInvestmentValue: ("float", None, False),
+        },
+        "namespace": "ns_invest",
+        "dataframe_edition_locked": False,
+    }
+
+    CarbonCaptured = {
+        "var_name": CarbonCapturedValue,
+        "type": "dataframe",
+        "unit": "G$",
+        "visibility": "Shared",
+        "dataframe_descriptor": {
+            GlossaryWitnessCore.Years: ("float", None, False),
+            CarbonCapturedValue: ("float", None, False),
+        },
+        "namespace": "ns_invest",
+        "dataframe_edition_locked": False,
+    }

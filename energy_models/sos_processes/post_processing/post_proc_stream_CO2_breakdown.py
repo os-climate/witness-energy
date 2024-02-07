@@ -314,6 +314,8 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     @param namespace: Namespace at which the data can be accessed
 
     @return multilevel_df: Dataframe
+    :param columns:
+    :type columns:
     '''
     # Construct a DataFrame to organize the data on two levels: energy and
     # techno
@@ -377,7 +379,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
 
     # If columns is not None, return a subset of multilevel_df with selected
     # columns
-    if columns != None and type(columns) == list:
+    if columns is not None and type(columns) == list:
         multilevel_df = pd.DataFrame(multilevel_df[columns])
 
     return multilevel_df, years
@@ -391,12 +393,13 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     @param energy_name: String, name of the energy to display
 
     @return new_chart: InstantiatedPlotlyNativeChart a Sankey Diagram
+    :param summary:
+    :type summary:
     '''
 
     # Prepare data
     multilevel_df, years = get_CO2_breakdown_multilevel_df(
         execution_engine, namespace)
-    energy_list = list(set(multilevel_df.index.droplevel(1)))
     technologies_list = list(multilevel_df.loc[energy_name].index.values)
     other_emission_type = [col for col in multilevel_df.columns if col not in [
         'energy', 'technology', 'production', 'CO2_from_production', 'CO2_per_use', 'CO2_after_use']]
@@ -407,7 +410,6 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
 
     # Create Figure
     chart_name = f'{chart_name}'
-    fig = go.Figure()
 
     # Fill figure with data by year
     # i_label_dict associates each label with an integer value

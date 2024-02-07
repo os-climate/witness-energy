@@ -129,15 +129,12 @@ class TestGlobalEnergyValues(unittest.TestCase):
         wind_production = 1590.19  # in 2020
         nuclear_production = 2616.61
         hydropower_production = 4355.
-        trad_biomass_production = 11111.
-        other_renew_production = 1614.
         modern_biofuels_production = 1043.  # in 2020
         # in 2020
         # https://ourworldindata.org/renewable-energy#solar-energy-generation
         solar_production = 844.37
         coal_production = 43752. - 952.78
         gas_production = 39893. - 3782.83
-        total_production = 166824.
 
         '''
         Oil production
@@ -493,8 +490,6 @@ class TestGlobalEnergyValues(unittest.TestCase):
         # coal to gas technology not implemented
         gas_works = 196.11  # Twh
 
-        coal_total_final_consumption = net_energy_production[
-            f'production {GlossaryEnergy.solid_fuel} (TWh)'][0]
         print('Coal to gas plants not implemented corresponds to ',
               gas_works / coal_used_by_energy * 100.0, ' % of coal used by energy')
         coal_total_final_consumption = net_energy_production[
@@ -1007,8 +1002,6 @@ class TestGlobalEnergyValues(unittest.TestCase):
         energy_prices = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.{GlossaryEnergy.EnergyPricesValue}')
 
-        energy_prices_after_tax = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.energy_prices_after_tax')
         '''
         Energy prices
         '''
@@ -1024,7 +1017,6 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('Electricity price error in 2021: ', error_elec_price, ' %',
               f'globalpetrolprices.com :{elec_price_iea} $/MWh vs WITNESS :{elec_price} $/MWh')
 
-        ng_price_iea_2022 = 1.17 / 0.657e-3 / 13.9  # $/MWh
         ng_price_iea_2021 = 0.8 / 0.657e-3 / 13.9  # $/MWh
         ng_price = energy_prices[
             GlossaryEnergy.methane][0]
@@ -1035,7 +1027,6 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('Natural Gas/Methane price error in 2021 : ', error_ng_price, ' %',
               f'globalpetrolprices.com :{ng_price_iea_2021} $/MWh vs WITNESS :{ng_price} $/MWh')
 
-        kerosene_price_iea = 0.92 / 0.0095  # $/MWh in 2022
         kerosene_price_iea_2021 = 2.8 / 39.5 * 1000  # $/MWh in 2021
         kerosene_price = energy_prices[
             f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}'][0]
@@ -1120,7 +1111,7 @@ class TestGlobalEnergyValues(unittest.TestCase):
         hefa_price_iea = 1.2 / 780e-3 / 12.2 * 1000
 
         hefa_price = energy_prices[
-            f'{GlossaryEnergy.fuel}.hydrotreated_oil_fuel'][0]
+            f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}'][0]
 
         error_hefa_price = np.abs(
             hefa_price_iea - hefa_price) / hefa_price_iea * 100.0
@@ -1129,11 +1120,6 @@ class TestGlobalEnergyValues(unittest.TestCase):
               f'IEA :{hefa_price_iea} $/MWh vs WITNESS :{hefa_price} $/MWh')
 
         print('------------- Electricity prices --------------')
-
-        elec_detailed_prices = self.ee.dm.get_value(
-            f'{self.name}.{self.energymixname}.{GlossaryEnergy.electricity}.energy_detailed_techno_prices')
-
-        elec_detailed_prices['Nuclear'].values[0]
 
 
 if '__main__' == __name__:

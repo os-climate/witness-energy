@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -119,7 +121,7 @@ class OneInvestDiscipline(SoSWrapp):
                                         f'{GlossaryEnergy.electricity}.BiomassFired': ('float', None, True),
                                         f'{GlossaryEnergy.electricity}.OilGen': ('float', None, True),
                                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}.{GlossaryEnergy.Transesterification}': ('float', None, True),
-                                        f'{GlossaryEnergy.fuel}.ethanol.BiomassFermentation': ('float', None, True),
+                                        f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}.BiomassFermentation': ('float', None, True),
                                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}.HydrogenLiquefaction': ('float', None, True),
                                         f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': (
                                             'float', None, True),
@@ -158,6 +160,10 @@ class OneInvestDiscipline(SoSWrapp):
         'all_invest_df': {'type': 'dataframe', 'unit': 'G$'}
     }
     _maturity = 'Research'
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.one_invest_model = None
 
     def init_execution(self):
         self.one_invest_model = OneInvest()
@@ -293,14 +299,13 @@ class OneInvestDiscipline(SoSWrapp):
 
         instanciated_charts = []
         charts = []
-        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
                 if chart_filter.filter_key == 'charts_invest':
                     charts = chart_filter.selected_values
                 if chart_filter.filter_key == GlossaryEnergy.Years:
-                    years_list = chart_filter.selected_values
+                    pass
 
         if 'Invest Distribution' in charts:
             all_invest_df = self.get_sosdisc_outputs(

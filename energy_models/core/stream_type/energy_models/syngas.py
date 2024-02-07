@@ -52,6 +52,7 @@ class Syngas(EnergyType):
     }
 
     def __init__(self, name):
+        self.syngas_ratio_mean = None
         self.syngas_ratio = {}
         EnergyType.__init__(self, name)
 
