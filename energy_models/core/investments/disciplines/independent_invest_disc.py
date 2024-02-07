@@ -143,6 +143,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                                         'float', None, False)},
                                                'namespace': 'ns_invest',
                                                'dataframe_edition_locked': False},
+        GlossaryEnergy.MaxBudgetValue : GlossaryEnergy.MaxBudgetDf,
     }
 
     energy_name = "one_invest"
