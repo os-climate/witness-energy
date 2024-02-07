@@ -32,7 +32,7 @@ TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1,
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050,
                  technologies_list=TECHNOLOGIES_LIST, bspline=True, main_study=True, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
@@ -118,14 +118,9 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.NaturalGasBoiler.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.ElectricBoiler.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.HeatPump.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.Geothermal.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.CHP.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
                        # f'{self.study_name}.{energy_name}.ElectricBoiler.flux_input_dict': land_rate,
                        # f'{self.study_name}.{energy_name}.NaturalGasBoiler.flux_input_dict': land_rate,
                        # f'{self.study_name}.{energy_name}.HeatPump.flux_input_dict': land_rate,

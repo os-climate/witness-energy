@@ -31,7 +31,7 @@ TECHNOLOGIES_LIST_DEV = ['BiomassFermentation']
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1,
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050,
                  technologies_list=TECHNOLOGIES_LIST, bspline=True, main_study=True, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_DEFAULT, run_usecase=False):
         super().__init__(__file__, technologies_list=technologies_list,
@@ -69,11 +69,6 @@ class Study(EnergyMixStudyManager):
         energy_name = f'{energy_mix}.{self.energy_name}'
 
         years = np.arange(self.year_start, self.year_end + 1)
-        energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                      GlossaryEnergy.electricity: 10.0,
-                                      GlossaryEnergy.syngas: 80.0,
-                                      GlossaryEnergy.biomass_dry: 45.0})
-
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 10.0})
@@ -86,40 +81,23 @@ class Study(EnergyMixStudyManager):
 
         co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
-        margin = pd.DataFrame(
-            {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
-        # From future of hydrogen
-        transport = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 200.0})
 
         resources_price = pd.DataFrame(columns=[GlossaryEnergy.Years, 'CO2', 'water'])
         resources_price[GlossaryEnergy.Years] = years
         resources_price['CO2'] = np.linspace(50.0, 100.0, len(years))
-        energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years,
-             GlossaryEnergy.biomass_dry: - 0.64 / 4.86,
-             GlossaryEnergy.electricity: 0.0})
-
         # define invest mix
         investment_mix = self.get_investments()
 
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.Ethanol.invest_level': invest_level,
-                       f'{self.study_name}.{energy_name}.Ethanol.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
-                       f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
                        }
 
         if self.main_study:
-            values_dict.update(
-                {f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
-                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.EnergyPricesValue}': energy_prices,
-                 f'{self.study_name}.{energy_mix}.{GlossaryEnergy.EnergyCO2EmissionsValue}': energy_carbon_emissions,
-
-                 })
+            values_dict.update({
+                    f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': co2_taxes,
+             })
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
                 investment_mix_sum = investment_mix.drop(
                     columns=[GlossaryEnergy.Years]).sum(axis=1)
@@ -142,8 +120,7 @@ class Study(EnergyMixStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(main_study=True,
                    technologies_list=DEFAULT_TECHNOLOGIES_LIST)
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()
     # ppf = PostProcessingFactory()
     # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
     #     filters = ppf.get_post_processing_filters_by_discipline(

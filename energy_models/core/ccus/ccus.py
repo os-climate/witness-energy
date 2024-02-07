@@ -53,6 +53,15 @@ class CCUS(BaseStream):
         '''
         super(CCUS, self).__init__(name)
 
+        self.CCS_price = None
+        self.carbonstorage_limit = None
+        self.carbonstorage_constraint_ref = None
+        self.energy_prices = None
+        self.all_resource_demand = None
+        self.co2_production = None
+        self.co2_consumption = None
+        self.emissions_by_energy = None
+        self.carbon_storage_constraint = None
         self.total_co2_emissions = pd.DataFrame()
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
@@ -251,7 +260,7 @@ class CCUS(BaseStream):
             [- (self.total_co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].sum(
             ) - self.carbonstorage_limit) / self.carbonstorage_constraint_ref])
 
-    def compute_grad_CO2_emissions(self, co2_emissions, alpha):
+    def compute_grad_CO2_emissions(self, co2_emissions):
         '''
         Compute CO2 total emissions
         '''

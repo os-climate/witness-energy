@@ -121,7 +121,6 @@ class CoalGen(ElectricityTechno):
         Compute the gradient of global price vs energy prices 
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
-        elec_needs = self.get_electricity_needs()
         solid_fuel_needs = self.techno_infos_dict['fuel_demand']
         efficiency = self.configure_efficiency()
         return {SolidFuel.name: np.identity(len(self.years)) * solid_fuel_needs / efficiency[:, np.newaxis]}

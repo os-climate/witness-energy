@@ -36,7 +36,7 @@ TECHNOLOGIES_LIST_DEV = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1,
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050,
                  technologies_list=DEFAULT_TECHNOLOGIES_LIST,
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
@@ -217,11 +217,9 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{electricity_name}.BiomassFired.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{electricity_name}.Geothermal.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{electricity_name}.CoalGen.{GlossaryEnergy.MarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.RenewableElectricitySimpleTechno.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{electricity_name}.OilGen.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{electricity_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{electricity_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       f'{self.study_name}.{electricity_name}.invest_techno_mix': investment_mix,
 
                        }
 

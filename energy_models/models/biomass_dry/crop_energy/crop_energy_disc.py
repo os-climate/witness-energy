@@ -168,7 +168,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         '''
         specific run for crops 
         '''
-        # -- get inputs
         super().run()
         self.specific_run()
 
@@ -178,7 +177,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         '''
         outputs_dict = {'mix_detailed_prices': self.techno_model.price_mix,
                         'mix_detailed_production': self.techno_model.production_mix}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -212,11 +211,10 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_prod_dland_for_food / scaling_factor_techno_production)
 
-        dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
-            invest_level.loc[invest_level[GlossaryEnergy.Years]
-                             <= self.techno_model.year_end][
-                GlossaryEnergy.InvestValue].values * scaling_factor_invest_level, self.techno_model.techno_infos_dict,
-            self.techno_model.initial_production)
+        dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(invest_level.loc[invest_level[GlossaryEnergy.Years]
+                                                                                   <= self.techno_model.year_end][
+                                                                      GlossaryEnergy.InvestValue].values * scaling_factor_invest_level,
+                                                                  self.techno_model.techno_infos_dict)
 
         dnon_use_capital_dinvest, dtechnocapital_dinvest = self.techno_model.compute_dnon_usecapital_dinvest(
             dcapex_dinvest, d_prod_dland_for_food / scaling_factor_techno_production)

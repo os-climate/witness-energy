@@ -17,7 +17,7 @@ limitations under the License.
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class ResourceGlossary():
+class ResourceGlossary:
     '''
     Just a glossary to harmonize the resources names and data
     CO2 emissions [kgCO2/kg]

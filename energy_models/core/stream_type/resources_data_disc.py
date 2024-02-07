@@ -203,8 +203,7 @@ class ResourcesDisc(SoSWrapp):
 
         if self.get_data_in() is not None:
             if GlossaryEnergy.YearStart in self.get_data_in():
-                year_start, year_end = self.get_sosdisc_inputs(
-                    [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+                year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
                 years = np.arange(year_start, year_end + 1)
                 resources_price = self.get_sosdisc_inputs(
                     GlossaryEnergy.ResourcesPriceValue)
@@ -223,10 +222,6 @@ class ResourcesDisc(SoSWrapp):
         """
 
         """
-        year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
-        year_end = self.get_sosdisc_inputs(GlossaryEnergy.YearEnd)
-
-        years = np.arange(year_start, year_end + 1)
 
         resources_price = self.get_sosdisc_inputs(GlossaryEnergy.ResourcesPriceValue)
 
@@ -234,7 +229,7 @@ class ResourcesDisc(SoSWrapp):
 
         outputs_dict = {GlossaryEnergy.ResourcesPriceValue: resources_price,
                         GlossaryEnergy.RessourcesCO2EmissionsValue: co2_emissions}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

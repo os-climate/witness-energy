@@ -114,7 +114,7 @@ class CCTechno(TechnoType):
                 elif position == len(co2_concentration_list_with_fg):
                     position = len(co2_concentration_list)
                 if fg in co2_concentration_list:
-                    position = position + 1
+                    position += 1
 
                 slope = linregress(
                     co2_concentration_list[position - 1:position + 1], capex_capture_list[position - 1:position + 1])[0]
@@ -166,7 +166,7 @@ class CCTechno(TechnoType):
                     position = len(co2_concentration_list)
 
                 if fg in co2_concentration_list:
-                    position = position + 1
+                    position += 1
                 slope = linregress(
                     co2_concentration_list[position - 1:position + 1], elec_demand_list[position - 1:position + 1])[0]
                 if np.isnan(slope):

@@ -70,7 +70,7 @@ class SolarThermal(ElectricityTechno):
 
         self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = ((1 -
                                                                                                  self.techno_infos_dict[
-                                                                                                     'efficiency']) * \
+                                                                                                     'efficiency']) *
                                                                                                 self.production_detailed[
                                                                                                     f'{ElectricityTechno.energy_name} ({self.product_energy_unit})']) / \
                                                                                                self.techno_infos_dict[
