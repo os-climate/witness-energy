@@ -27,7 +27,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 from energy_models.glossaryenergy import GlossaryEnergy
 
 class HeatMixJacobianTestCase(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         self.name = 'Test'
@@ -111,9 +111,9 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_heat_mix_discipline.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.CO2_emission_mix'],
                             outputs=[f'{self.name}.CO2MinimizationObjective',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
                             ],
                             derr_approx='complex_step')
