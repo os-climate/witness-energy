@@ -951,8 +951,8 @@ class EnergyMix(BaseStream):
 
         return dtot_CO2_emissions
     def compute_target_production_constraint(self, energy_production: np.ndarray, inputs_dict: dict):
-        target_energy_production=inputs_dict[GlossaryEnergy.TargetEnergyProductionValue][GlossaryEnergy.TargetEnergyProductionValue].values
-        self.target_production_constraint=energy_production[GlossaryEnergy.EnergyProductionValue].values-target_energy_production * 1000
+        target_energy_production = inputs_dict[GlossaryEnergy.TargetEnergyProductionValue][GlossaryEnergy.TargetEnergyProductionValue].values
+        self.target_production_constraint = energy_production[GlossaryEnergy.EnergyProductionValue].values-target_energy_production * 1000
 
 
     def compute(self, inputs: dict, exp_min=True):
