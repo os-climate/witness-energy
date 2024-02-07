@@ -1277,7 +1277,8 @@ class Energy_Mix_Discipline(SoSWrapp):
         chart_list = ['Energy price', 'Energy mean price', 'Energy mix',
                       'production', 'CO2 emissions', 'Carbon intensity', 'CO2 taxes over the years',
                       'Solid energy and electricity production constraint',
-                      'Liquid hydrogen production constraint', 'Stream ratio', 'Energy mix losses']
+                      'Liquid hydrogen production constraint', 'Stream ratio', 'Energy mix losses',
+                      'Target energy production constraint']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -1393,6 +1394,27 @@ class Energy_Mix_Discipline(SoSWrapp):
             new_chart = self.get_chart_energy_mix_losses(energy_list)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
+
+        if 'Target energy production constraint' in charts:
+            target_energy_production_df = self.get_sosdisc_inputs(GlossaryEnergy.TargetEnergyProductionValue)
+            target_energy_production = target_energy_production_df[GlossaryEnergy.TargetEnergyProductionValue].values * 1000
+            years = target_energy_production_df[GlossaryEnergy.Years].values
+            if target_energy_production.max() > 0:
+                chart_target_energy_production = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.TargetEnergyProductionDf['unit'],
+                                                            chart_name=GlossaryEnergy.TargetProductionConstraintValue,
+                                                            stacked_bar=True)
+
+                serie_target_energy_production = InstanciatedSeries(list(years), list(target_energy_production), GlossaryEnergy.TargetEnergyProductionValue,
+                                                      'dash_lines')
+                chart_target_energy_production.add_series(serie_target_energy_production)
+
+                energy_production = self.get_sosdisc_outputs(GlossaryEnergy.TotalProductionValue)[
+                                     GlossaryEnergy.TotalProductionValue].values
+                serie_production = InstanciatedSeries(list(years), list(energy_production), "Energy production",
+                                                   'bar')
+                chart_target_energy_production.add_series(serie_production)
+                instanciated_charts.insert(1, chart_target_energy_production)
+
         return instanciated_charts
 
     def get_chart_solid_energy_elec_constraint(self):
