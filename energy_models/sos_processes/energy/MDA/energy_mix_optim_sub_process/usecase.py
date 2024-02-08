@@ -56,16 +56,11 @@ from energy_models.core.stream_type.resources_data_disc import (
     get_static_prices,
 )
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import (
-    PureCarbonSS,
-)
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-
 INVEST_DISC_NAME = "InvestmentDistribution"
+
 
 
 class Study(EnergyStudyManager):
@@ -290,6 +285,65 @@ class Study(EnergyStudyManager):
                 # so it has no dedicated technology in the energy_mix
                 self.dict_technos[energy_name] = []
 
+    def get_dvar_dscriptor(self):
+        """Returns design variable descriptor based on techno list"""
+        design_var_descriptor = {}
+        for energy in self.energy_list:
+            energy_wo_dot = energy.replace('.', '_')
+            for technology in self.dict_technos[energy]:
+                technology_wo_dot = technology.replace('.', '_')
+
+                design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {
+                    'out_name': GlossaryEnergy.invest_mix,
+                    'out_type': 'dataframe',
+                    'key': f'{energy}.{technology}',
+                    'index': self.years,
+                    'index_name': GlossaryEnergy.Years,
+                    'namespace_in': GlossaryEnergy.NS_ENERGY_MIX,
+                    'namespace_out': 'ns_invest'
+                }
+                # add design variable for utilization ratio per technology
+                '''
+                design_var_descriptor[f'{energy}_{technology}_utilization_ratio_array'] = {
+                    'out_name':  f'{energy}.{technology}.{GlossaryEnergy.UtilisationRatioValue}',
+                    'out_type': 'dataframe',
+                    'key': GlossaryEnergy.UtilisationRatioValue,
+                    'index': self.years,
+                    'index_name': GlossaryEnergy.Years,
+                    'namespace_in': GlossaryEnergy.NS_ENERGY_MIX,
+                    'namespace_out': GlossaryEnergy.NS_ENERGY_MIX
+                }
+                '''
+
+        for ccs in self.ccs_list:
+            ccs_wo_dot = ccs.replace('.', '_')
+            for technology in self.dict_technos[ccs]:
+                technology_wo_dot = technology.replace('.', '_')
+
+                design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
+                    'out_name': GlossaryEnergy.invest_mix,
+                    'out_type': 'dataframe',
+                    'key': f'{ccs}.{technology}',
+                    'index': self.years,
+                    'index_name': GlossaryEnergy.Years,
+                    'namespace_in': GlossaryEnergy.NS_CCS,
+                    'namespace_out': 'ns_invest'
+                }
+
+                # add design variable for utilization ratio per technology
+                '''
+                design_var_descriptor[f'{ccs}.{technology}_utilization_ratio_array'] = {
+                    'out_name': f'{ccs}.{technology}.{GlossaryEnergy.UtilisationRatioValue}',
+                    'out_type': 'dataframe',
+                    'key': GlossaryEnergy.UtilisationRatioValue,
+                    'index': self.years,
+                    'index_name': GlossaryEnergy.Years,
+                    'namespace_in': GlossaryEnergy.NS_CCS,
+                    'namespace_out': GlossaryEnergy.NS_CCS
+                }
+                '''
+
+        return design_var_descriptor
     def setup_usecase(self, study_folder_path=None):
 
         energy_mix_name = EnergyMix.name
