@@ -23,6 +23,7 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.carbon_capture_techno import CCTechno
 
+
 class Amine(CCTechno):
 
     def compute_other_primary_energy_costs(self):

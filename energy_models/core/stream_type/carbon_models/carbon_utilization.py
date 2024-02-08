@@ -20,6 +20,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class CarbonUtilization(BaseStream):
     name = 'carbon_utilization'
+    food_storage_name = 'CO2 from Food Storage'
     unit = 'Mt'
     default_techno_list = ['BiomassBuryingFossilization', 'DeepOceanInjection',
                            'DeepSalineFormation', 'DepletedOilGas',

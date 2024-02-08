@@ -25,6 +25,7 @@ class CUTechno(TechnoType):
     def __init__(self, name):
         TechnoType.__init__(self, name)
         self.product_energy_unit = 'Mt'
+        self.energy_unit = 'TWh'
 
     def check_capex_unity(self, data_tocheck):
         """
