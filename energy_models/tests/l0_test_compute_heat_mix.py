@@ -72,6 +72,42 @@ class HeatMixTestCase(unittest.TestCase):
 
         self.energy_mix = pd.DataFrame(energy_mix_emission_dic)
 
+        energy_mix_target_production_dic = {}
+        energy_mix_target_production_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_target_production_dic['target production'] = 260
+
+        self.traget_production = pd.DataFrame(energy_mix_target_production_dic)
+
+        ############
+        energy_mix_high_heat_production_dic = {}
+        energy_mix_high_heat_production_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_high_heat_production_dic['NaturalGasBoilerHighHeat'] = np.ones(len(self.years)) * 2
+        energy_mix_high_heat_production_dic['ElectricBoilerHighHeat'] = np.ones(len(self.years)) * 3
+        energy_mix_high_heat_production_dic['HeatPumpHighHeat'] = np.ones(len(self.years)) * 4
+        energy_mix_high_heat_production_dic['GeothermalHighHeat'] = np.ones(len(self.years)) * 5
+        energy_mix_high_heat_production_dic['CHPHighHeat'] = np.ones(len(self.years)) * 6
+        energy_mix_high_heat_production_dic['HydrogenBoilerHighHeat'] = np.ones(len(self.years)) * 7
+        self.high_heat_production = pd.DataFrame(energy_mix_high_heat_production_dic)
+
+        energy_mix_low_heat_production_dic = {}
+        energy_mix_low_heat_production_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_low_heat_production_dic['NaturalGasBoilerLowHeat'] = np.ones(len(self.years)) * 15.0
+        energy_mix_low_heat_production_dic['ElectricBoilerLowHeat'] = np.ones(len(self.years)) * 16.0
+        energy_mix_low_heat_production_dic['HeatPumpLowHeat'] = np.ones(len(self.years)) * 17.0
+        energy_mix_low_heat_production_dic['GeothermalLowHeat'] = np.ones(len(self.years)) * 18.0
+        energy_mix_low_heat_production_dic['CHPLowHeat'] = np.ones(len(self.years)) * 19.0
+        energy_mix_low_heat_production_dic['HydrogenBoilerLowHeat'] = np.ones(len(self.years)) * 20.0
+        self.low_heat_production = pd.DataFrame(energy_mix_low_heat_production_dic)
+
+        energy_mix_mediun_heat_production_dic = {}
+        energy_mix_mediun_heat_production_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_mediun_heat_production_dic['NaturalGasBoilerMediumHeat'] = np.ones(len(self.years)) * 22.0
+        energy_mix_mediun_heat_production_dic['ElectricBoilerMediumHeat'] = np.ones(len(self.years)) * 23.0
+        energy_mix_mediun_heat_production_dic['HeatPumpMediumHeat'] = np.ones(len(self.years)) * 24.0
+        energy_mix_mediun_heat_production_dic['GeothermalMediumHeat'] = np.ones(len(self.years)) * 25.0
+        energy_mix_mediun_heat_production_dic['CHPMediumHeat'] = np.ones(len(self.years)) * 13.0
+        energy_mix_mediun_heat_production_dic['HydrogenBoilerMediumHeat'] = np.ones(len(self.years)) * 18.0
+        self.medium_heat_production = pd.DataFrame(energy_mix_mediun_heat_production_dic)
 
     def test_01_energy_mix(self):
         """
@@ -93,6 +129,10 @@ class HeatMixTestCase(unittest.TestCase):
                        'heat.mediumtemperatureheat.technologies_list': ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
                            'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat'],
                        'CO2_emission_mix': self.energy_mix,
+                       'target_heat_production': self.traget_production,
+                       f'heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.high_heat_production,
+                       f'heat.lowtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.low_heat_production,
+                       f'heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.medium_heat_production,
                        }
 
         EM = HeatMix('HeatMix')
@@ -148,8 +188,14 @@ class HeatMixTestCase(unittest.TestCase):
                                                                         'HeatPumpMediumHeat', 'GeothermalMediumHeat',
                                                                         'CHPMediumHeat', 'HydrogenBoilerMediumHeat'],
                        f'{name}.{model_name}.CO2_emission_mix': self.energy_mix,
+                       f'{name}.{model_name}.target_heat_production': self.traget_production,
+                       f'{name}.{model_name}.heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.high_heat_production,
+                       f'{name}.{model_name}.heat.lowtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.low_heat_production,
+                       f'{name}.{model_name}.heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.medium_heat_production,
+
                        }
 
+        # self.high_heat_production
         ee.load_study_from_input_dict(inputs_dict)
 
         ee.execute()

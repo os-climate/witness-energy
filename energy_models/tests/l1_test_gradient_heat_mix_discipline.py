@@ -90,6 +90,44 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
 
         energy_mix_emission = pd.DataFrame(energy_mix_emission_dic)
 
+        energy_mix_target_production_dic = {}
+        energy_mix_target_production_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_target_production_dic['target production'] = 260
+
+        self.traget_production = pd.DataFrame(energy_mix_target_production_dic)
+
+
+        ############
+        energy_mix_high_heat_production_dic = {}
+        energy_mix_high_heat_production_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_high_heat_production_dic['NaturalGasBoilerHighHeat'] = np.ones(len(self.years)) * 2
+        energy_mix_high_heat_production_dic['ElectricBoilerHighHeat'] = np.ones(len(self.years)) * 3
+        energy_mix_high_heat_production_dic['HeatPumpHighHeat'] = np.ones(len(self.years)) * 4
+        energy_mix_high_heat_production_dic['GeothermalHighHeat'] = np.ones(len(self.years)) * 5
+        energy_mix_high_heat_production_dic['CHPHighHeat'] = np.ones(len(self.years)) * 6
+        energy_mix_high_heat_production_dic['HydrogenBoilerHighHeat'] = np.ones(len(self.years)) * 7
+        self.high_heat_production = pd.DataFrame(energy_mix_high_heat_production_dic)
+
+        energy_mix_low_heat_production_dic = {}
+        energy_mix_low_heat_production_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_low_heat_production_dic['NaturalGasBoilerLowHeat'] = np.ones(len(self.years)) * 15.0
+        energy_mix_low_heat_production_dic['ElectricBoilerLowHeat'] = np.ones(len(self.years)) * 16.0
+        energy_mix_low_heat_production_dic['HeatPumpLowHeat'] = np.ones(len(self.years)) * 17.0
+        energy_mix_low_heat_production_dic['GeothermalLowHeat'] = np.ones(len(self.years)) * 18.0
+        energy_mix_low_heat_production_dic['CHPLowHeat'] = np.ones(len(self.years)) * 19.0
+        energy_mix_low_heat_production_dic['HydrogenBoilerLowHeat'] = np.ones(len(self.years)) * 20.0
+        self.low_heat_production = pd.DataFrame(energy_mix_low_heat_production_dic)
+
+        energy_mix_mediun_heat_production_dic = {}
+        energy_mix_mediun_heat_production_dic[GlossaryEnergy.Years] = self.years
+        energy_mix_mediun_heat_production_dic['NaturalGasBoilerMediumHeat'] = np.ones(len(self.years)) * 22.0
+        energy_mix_mediun_heat_production_dic['ElectricBoilerMediumHeat'] = np.ones(len(self.years)) * 23.0
+        energy_mix_mediun_heat_production_dic['HeatPumpMediumHeat'] = np.ones(len(self.years)) * 24.0
+        energy_mix_mediun_heat_production_dic['GeothermalMediumHeat'] = np.ones(len(self.years)) * 25.0
+        energy_mix_mediun_heat_production_dic['CHPMediumHeat'] = np.ones(len(self.years)) * 13.0
+        energy_mix_mediun_heat_production_dic['HydrogenBoilerMediumHeat'] = np.ones(len(self.years)) * 18.0
+        self.medium_heat_production = pd.DataFrame(energy_mix_mediun_heat_production_dic)
+
         self.values_dict = {
                             f'{self.name}.{GlossaryEnergy.YearStart}': self.year_start,
                             f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
@@ -98,6 +136,11 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
                             'heat.lowtemperatureheat.technologies_list': low_heat_techno_list,
                             'heat.mediumtemperatureheat.technologies_list': medium_heat_techno_list,
                             f'{self.name}.{self.model_name}.CO2_emission_mix': energy_mix_emission,
+                            f'{self.name}.{self.model_name}.target_heat_production': self.traget_production,
+                            f'{self.name}.{self.model_name}.heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.high_heat_production,
+                            f'{self.name}.{self.model_name}.heat.lowtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.low_heat_production,
+                            f'{self.name}.{self.model_name}.heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.medium_heat_production,
+
                             }
 
         self.ee.load_study_from_input_dict(self.values_dict)
@@ -112,8 +155,11 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_heat_mix_discipline.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.CO2_emission_mix'],
+                            inputs=[f'{self.name}.{self.model_name}.CO2_emission_mix',
+                                    f'{self.name}.{self.model_name}.target_heat_production',
+                                    ],
                             outputs=[f'{self.name}.CO2MinimizationObjective',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyProductionValue}',
                             ],
                             derr_approx='complex_step')

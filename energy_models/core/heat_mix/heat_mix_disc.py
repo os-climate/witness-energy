@@ -27,6 +27,7 @@ from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.energy_models.heat import mediumtemperatureheat
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
 
 class Heat_Mix_Discipline(SoSWrapp):
@@ -50,6 +51,12 @@ class Heat_Mix_Discipline(SoSWrapp):
                                'editable': False, 'structuring': True},
                GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               'target_heat_production': {'type': 'dataframe', 'unit': 'PWh',
+                                                      'dataframe_edition_locked': False,
+                                                      'dataframe_descriptor': {
+                                                       GlossaryEnergy.Years: ('float', None, True),
+                                                       'target production': ('float', [1.e-8, 1e30], True),
+                                                      }},
                'CO2_emission_mix': {'type': 'dataframe', 'unit': 'G$',
                                            'dataframe_edition_locked': False,
                                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
@@ -94,10 +101,14 @@ class Heat_Mix_Discipline(SoSWrapp):
 
     DESC_OUT = {
         GlossaryEnergy.EnergyCO2EmissionsValue: {'type': 'dataframe', 'unit': 'kg/kWh'},
+        GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
         'CO2MinimizationObjective': {'type': 'array', 'unit': '-',
             'visibility': SoSWrapp.SHARED_VISIBILITY,
-            'namespace':GlossaryEnergy.NS_FUNCTIONS
-                                    },
+            'namespace':GlossaryEnergy.NS_FUNCTIONS},
+
+        'TargetHeatProductionConstraint': {'type': 'array', 'unit': '-',
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                     'namespace': GlossaryEnergy.NS_FUNCTIONS},
                 }
 
     energy_name = HeatMix.name
@@ -129,6 +140,9 @@ class Heat_Mix_Discipline(SoSWrapp):
                         'possible_values': self.energy_class_dict[energy].default_techno_list,
                         'default': self.energy_class_dict[energy].default_techno_list}
 
+                    dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] = {
+                        'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
+
                     if f'{energy}.{GlossaryEnergy.techno_list}' in self.get_data_in():
                         technology_list = self.get_sosdisc_inputs(
                             f'{energy}.{GlossaryEnergy.techno_list}')
@@ -137,6 +151,8 @@ class Heat_Mix_Discipline(SoSWrapp):
                                 dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
                                     'type': 'dataframe', 'unit': 'kg/kWh',
                                     'visibility': 'Shared', 'namespace': 'ns_energy'}
+                                dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.EnergyProductionValue}'] = {
+                                    'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
 
 
         self.update_default_with_years(inputs_dict)
@@ -161,10 +177,14 @@ class Heat_Mix_Discipline(SoSWrapp):
 
         self.energy_model.compute(input_dict)
 
-        energyCO2emissionsvalue, CO2MinimizationObjective = self.energy_model.compute(input_dict)
+        energyCO2emissionsvalue, CO2MinimizationObjective, total_energy_heat_production, total_energy_heat_production_constraint\
+            = self.energy_model.compute(input_dict)
 
         output_dict = {GlossaryEnergy.EnergyCO2EmissionsValue: energyCO2emissionsvalue,
-                       'CO2MinimizationObjective': CO2MinimizationObjective, }
+                       'CO2MinimizationObjective': CO2MinimizationObjective,
+                       GlossaryEnergy.EnergyProductionValue: total_energy_heat_production,
+                       'TargetHeatProductionConstraint': total_energy_heat_production_constraint,
+                       }
 
         for energy in input_dict[GlossaryEnergy.energy_list]:
             for techno in input_dict[f'{energy}.{GlossaryEnergy.techno_list}']:
@@ -173,7 +193,38 @@ class Heat_Mix_Discipline(SoSWrapp):
                      GlossaryEnergy.CO2EmissionsValue: input_dict['CO2_emission_mix'][
                          f'{energy}.{techno}'].values})
 
+                output_dict[f'{energy}.{techno}.{GlossaryEnergy.EnergyProductionValue}'] = pd.DataFrame(
+                    {GlossaryEnergy.Years: input_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'][GlossaryEnergy.Years].values,
+                     GlossaryEnergy.EnergyProductionValue: input_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'][techno].values})
+
         self.store_sos_outputs_values(output_dict)
+
+    def compute_sos_jacobian(self):
+        inputs_dict = self.get_sosdisc_inputs()
+
+        years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
+                          inputs_dict[GlossaryEnergy.YearEnd] + 1)
+
+        delta_years = len(years)
+        identity = np.identity(delta_years)
+        ones = np.ones(delta_years)
+        energy_list = inputs_dict[GlossaryEnergy.energy_list]
+
+        # print(self.energy_model.distribution_list)
+        for techno in self.energy_model.distribution_list:
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.EnergyCO2EmissionsValue),
+                ('CO2_emission_mix', techno), identity) #,identity * 1e-3
+
+            self.set_partial_derivative_for_other_types(
+                ('CO2MinimizationObjective',),
+                ('CO2_emission_mix', techno), ones) #* 1e-3
+
+
+        self.set_partial_derivative_for_other_types(
+            ('TargetHeatProductionConstraint',),
+            ('target_heat_production', 'target production'), identity)
+
 
 
     def get_ns_energy(self, energy):
@@ -187,22 +238,11 @@ class Heat_Mix_Discipline(SoSWrapp):
 
         return ns_energy
 
-    def compute_sos_jacobian(self):
-        inputs_dict = self.get_sosdisc_inputs()
 
-        years = np.arange(inputs_dict[GlossaryEnergy.YearStart],
-                          inputs_dict[GlossaryEnergy.YearEnd] + 1)
+    def get_chart_filter_list(self):
 
-        delta_years = len(years)
-        identity = np.identity(delta_years)
-        ones = np.ones(delta_years)
-
-        for techno in self.energy_model.distribution_list:
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.EnergyCO2EmissionsValue),
-                ('CO2_emission_mix', techno), identity) #,identity * 1e-3
-
-            self.set_partial_derivative_for_other_types(
-                ('CO2MinimizationObjective',),
-                ('CO2_emission_mix', techno), ones) #* 1e-3
-
+        chart_filters = []
+        chart_list = ['actual_target_energy_production']
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
+        return chart_filters

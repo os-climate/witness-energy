@@ -67,7 +67,37 @@ class HeatMix(BaseStream):
 
         energy_CO2_emission_objective = self.compute_energy_CO2_emission_objective(energy_CO2_emission)
 
-        return energy_CO2_emission, energy_CO2_emission_objective
+        total_energy_heat_production, total_energy_heat_production_constraint = self.compute_target_heat_production_constraint(inputs_dict)
+
+        return energy_CO2_emission, energy_CO2_emission_objective, \
+            total_energy_heat_production, total_energy_heat_production_constraint
+
+
+    def compute_target_heat_production_constraint(self, inputs_dict):
+        '''
+        Compute the CO2 emission_ratio in kgCO2/kWh for the MDA
+        '''
+
+        total_heat_production = self.compute_total_production(inputs_dict)
+        # print(inputs_dict['target_heat_production']['target production'])
+
+        total_heat_production_constraint = total_heat_production[GlossaryEnergy.EnergyProductionValue] - inputs_dict['target_heat_production']['target production']
+
+        return total_heat_production, np.array([total_heat_production_constraint])
+    def compute_total_production(self, inputs_dict: dict):
+        # print(inputs_dict['target_heat_production'][GlossaryEnergy.Years])
+        total_heat_production = pd.DataFrame({GlossaryEnergy.Years:
+                                                       inputs_dict['target_heat_production'][GlossaryEnergy.Years]})
+        total_heat_production[GlossaryEnergy.EnergyProductionValue] = 0
+        for energy in inputs_dict[GlossaryEnergy.energy_list]:
+            columns_to_sum = [column for column in inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}']
+                              if not column.endswith(GlossaryEnergy.Years)]
+
+            total_heat_production[GlossaryEnergy.EnergyProductionValue] = \
+                total_heat_production[GlossaryEnergy.EnergyProductionValue] + inputs_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'][columns_to_sum].sum(axis=1)
+
+
+        return total_heat_production
 
     def compute_CO2_emissions(self, inputs_dict: dict):
 
