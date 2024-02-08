@@ -90,7 +90,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         AbstractJacobianUnittest.DUMP_JACOBIAN = False
 
     def test_01_energy_mix_discipline_co2_emissions_gt(self):
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         inputs_names = []
 
         inputs_names.extend([
@@ -140,7 +140,7 @@ class EnergyMixCoarseJacobianTestCase(AbstractJacobianUnittest):
         os.remove(path_pickle)
 
     def test_02_energy_mix_co2_tax(self):
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         inputs_names = [
             f'{self.name}.{GlossaryEnergy.CO2TaxesValue}']
 
