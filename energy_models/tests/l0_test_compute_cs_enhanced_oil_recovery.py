@@ -124,7 +124,7 @@ class EnhancedOilRecoveryPriceTestCase(unittest.TestCase):
             'EnhancedOilRecovery')
         enhanced_oil_recovery_model.configure_parameters(inputs_dict)
         enhanced_oil_recovery_model.configure_parameters_update(inputs_dict)
-        price_details = enhanced_oil_recovery_model.compute_price()
+        enhanced_oil_recovery_model.compute_price()
 
         # Comparison in $/kgCO2
         # plt.figure()
@@ -184,6 +184,6 @@ class EnhancedOilRecoveryPriceTestCase(unittest.TestCase):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
+        disc.get_post_processing_list(filters)
         # for graph in graph_list:
         #     graph.to_plotly().show()

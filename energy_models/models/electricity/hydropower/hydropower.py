@@ -57,4 +57,3 @@ class Hydropower(ElectricityTechno):
         Get the theoretical CO2 production for a given technology,
         Need to be overloaded in each technology model (example in SMR)
         '''
-        pass

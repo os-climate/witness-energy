@@ -104,7 +104,7 @@ class TestMDAAnalyticGradient(AbstractJacobianUnittest):
         energy_prices_jac = self.ee2.dm.get_value(
             f'{usecase.study_name}.EnergyMix.{GlossaryEnergy.EnergyPricesValue}')
 
-        diff = energy_prices_jac - energy_prices_nr
+        energy_prices_jac - energy_prices_nr
 
         # diff.to_csv('diff_energy.csv')
 

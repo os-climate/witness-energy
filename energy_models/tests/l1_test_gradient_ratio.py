@@ -1177,8 +1177,8 @@ class RatioJacobianTestCase(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
         # Get coupled inputs and outputs
-        full_inputs = disc.get_input_data_names()
-        full_outputs = disc.get_output_data_names()
+        disc.get_input_data_names()
+        disc.get_output_data_names()
 
         # coupled_inputs = [input for input in full_inputs if self.ee.dm.get_data(
         #     input, 'coupling')]

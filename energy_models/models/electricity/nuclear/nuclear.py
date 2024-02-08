@@ -209,7 +209,6 @@ class Nuclear(ElectricityTechno):
                             ratio_invest = ((invest_sum + invest) /
                                             invest_sum) ** (-expo_factor)
 
-                            pass
 
                         except FloatingPointError:
                             # set invest as a complex to calculate capex_year as a
@@ -217,7 +216,6 @@ class Nuclear(ElectricityTechno):
                             ratio_invest = ((invest_sum + np.complex128(invest)) /
                                             invest_sum) ** (-expo_factor)
 
-                            pass
                         np.seterr('warn')
 
                     # Check that the ratio is always above 0.95 but no strict threshold for

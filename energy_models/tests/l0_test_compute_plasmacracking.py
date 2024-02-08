@@ -178,7 +178,7 @@ plasma_cracking_disc.PlasmaCrackingDiscipline'
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
+        disc.get_post_processing_list(filters)
 
     def test_02_plasma_cracking_discipline_strong_invest_first_year(self):
         """

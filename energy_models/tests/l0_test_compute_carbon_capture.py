@@ -17,7 +17,6 @@ limitations under the License.
 import unittest
 from copy import deepcopy
 
-import numpy as np
 
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import Study
@@ -90,7 +89,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{energy_mix}.{carbon_capture_name}')[0]
         filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
+        disc.get_post_processing_list(filters)
 
     #         for graph in graph_list:
     #             graph.to_plotly().show()
@@ -132,7 +131,7 @@ class CarbonCaptureTestCase(unittest.TestCase):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{energy_mix}.{carbon_capture_name}')[0]
         filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
+        disc.get_post_processing_list(filters)
 
 
 #         for graph in graph_list:

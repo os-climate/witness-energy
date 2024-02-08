@@ -147,7 +147,7 @@ class GasTurbinePriceTestCase(unittest.TestCase):
                                     'full_load_hours'] / 1000 * 0.999))
 
         filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
+        disc.get_post_processing_list(filters)
 
 #         for graph in graph_list:
 #             graph.to_plotly().show()

@@ -162,7 +162,7 @@ class FTPriceTestCase(unittest.TestCase):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filters)
+        disc.get_post_processing_list(filters)
 
         # graph_list[-1].to_plotly().show()
 

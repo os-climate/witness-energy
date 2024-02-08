@@ -30,7 +30,6 @@ class ResourcesDisc(unittest.TestCase):
         Initialize third data needed for testing
         '''
 
-        pass
 
     def tearDown(self):
         pass
