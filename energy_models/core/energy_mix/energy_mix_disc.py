@@ -1397,6 +1397,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         if 'Target energy production constraint' in charts:
             target_energy_production_df = self.get_sosdisc_inputs(GlossaryEnergy.TargetEnergyProductionValue)
             target_energy_production = target_energy_production_df[GlossaryEnergy.TargetEnergyProductionValue].values * 1000
+            #target_energy_production[:] = 100
             years = target_energy_production_df[GlossaryEnergy.Years].values
             if target_energy_production.max() > 0:
                 chart_target_energy_production = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.TargetEnergyProductionDf['unit'],
@@ -1407,12 +1408,12 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                       'dash_lines')
                 chart_target_energy_production.add_series(serie_target_energy_production)
 
-                energy_production = self.get_sosdisc_outputs(GlossaryEnergy.TotalProductionValue)[
+                energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)[
                                      GlossaryEnergy.TotalProductionValue].values
                 serie_production = InstanciatedSeries(list(years), list(energy_production), "Energy production",
                                                    'bar')
                 chart_target_energy_production.add_series(serie_production)
-                instanciated_charts.insert(1, chart_target_energy_production)
+                instanciated_charts.append(chart_target_energy_production)
 
         return instanciated_charts
 

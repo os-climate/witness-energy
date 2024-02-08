@@ -300,6 +300,7 @@ class EnergyMixTestCase(unittest.TestCase):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.liquid_hydrogen_percentage = np.ones(len(self.years))
+        self.target_production = np.ones((4, 8))*100
 
     def test_01_energy_mix(self):
         """
@@ -318,7 +319,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption_hydro,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.consumption_hydro,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProductionValue}': self.production_hydro,
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.TargetEnergyProductionValue}': self.production_hydro,
+                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.TargetEnergyProductionValue}':  self.target_production,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production_hydro,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyPricesValue}': self.prices_hydro,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
@@ -326,7 +327,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption,
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.consumption,
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProductionValue}': self.production,
-                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.TargetEnergyProductionValue}': self.production,
+                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.TargetEnergyProductionValue}': self.target_production,
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production,
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}': self.cost_details,
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
@@ -412,7 +413,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.consumption_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProductionValue}': self.production_hydro,
-                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.TargetEnergyProductionValue}': self.production_hydro,
+                       f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.TargetEnergyProductionValue}':  self.target_production,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyPricesValue}': self.prices_hydro,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
@@ -424,7 +425,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyConsumptionValue}': self.energy_consumption_biomass,
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.energy_consumption_biomass,
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyProductionValue}': self.energy_production_biomass,
-                       f'{name}.{agriculture_mix}.{GlossaryEnergy.TargetEnergyProductionValue}': self.energy_production_biomass,
+                       f'{name}.{agriculture_mix}.{GlossaryEnergy.TargetEnergyProductionValue}':  self.target_production,
                        f'{name}.{model_name}.{agriculture_mix}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
                        f'{name}.{agriculture_mix}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices_biomass,
                        f'{name}.{agriculture_mix}.CO2_per_use': self.CO2_per_use_biomass,
@@ -433,7 +434,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.consumption,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProductionValue}': self.production,
-                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.TargetEnergyProductionValue}': self.production,
+                       f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.TargetEnergyProductionValue}':  self.target_production,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}': self.cost_details,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyTypeCapitalDfValue}': self.energy_type_capital,
@@ -459,8 +460,8 @@ class EnergyMixTestCase(unittest.TestCase):
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-    #        for graph in graph_list:
-    #            graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
 
     def test_03_energy_mix_discipline_exponential_limit(self):
         """
@@ -545,7 +546,7 @@ class EnergyMixTestCase(unittest.TestCase):
             disc, filters, as_json=False)
         for graph in graph_list:
             pass
-            # graph.to_plotly().show()
+            graph.to_plotly().show()
 
     def test_04_energy_mix_resource(self):
         """
