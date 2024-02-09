@@ -302,7 +302,7 @@ class EnergyMixTestCase(unittest.TestCase):
         self.liquid_hydrogen_percentage = np.ones(len(self.years))
         self.target_production = pd.DataFrame({
             GlossaryEnergy.Years: self.years,
-            GlossaryEnergy.TargetEnergyProductionValue: np.ones_like(self.years) * 150
+            GlossaryEnergy.TargetEnergyProductionValue: np.ones_like(self.years) * 0.3
         })
 
     def test_01_energy_mix(self):
@@ -461,8 +461,8 @@ class EnergyMixTestCase(unittest.TestCase):
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-        for graph in graph_list:
-            graph.to_plotly().show()
+        #for graph in graph_list:
+            #graph.to_plotly().show()
 
     def test_03_energy_mix_discipline_exponential_limit(self):
         """
@@ -546,7 +546,7 @@ class EnergyMixTestCase(unittest.TestCase):
             disc, filters, as_json=False)
         for graph in graph_list:
             pass
-            # graph.to_plotly().show()
+            #graph.to_plotly().show()
 
     def test_04_energy_mix_resource(self):
         """
