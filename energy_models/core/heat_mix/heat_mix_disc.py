@@ -148,9 +148,9 @@ class Heat_Mix_Discipline(SoSWrapp):
                             f'{energy}.{GlossaryEnergy.techno_list}')
                         if technology_list is not None:
                             for techno in technology_list:
-                                dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
-                                    'type': 'dataframe', 'unit': 'kg/kWh',
-                                    'visibility': 'Shared', 'namespace': 'ns_energy'}
+                                # dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
+                                #     'type': 'dataframe', 'unit': 'kg/kWh',
+                                #     'visibility': 'Shared', 'namespace': 'ns_energy'}
                                 dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.EnergyProductionValue}'] = {
                                     'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
 
@@ -188,10 +188,10 @@ class Heat_Mix_Discipline(SoSWrapp):
 
         for energy in input_dict[GlossaryEnergy.energy_list]:
             for techno in input_dict[f'{energy}.{GlossaryEnergy.techno_list}']:
-                output_dict[f'{energy}.{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = pd.DataFrame(
-                    {GlossaryEnergy.Years: input_dict['CO2_emission_mix'][GlossaryEnergy.Years].values,
-                     GlossaryEnergy.CO2EmissionsValue: input_dict['CO2_emission_mix'][
-                         f'{energy}.{techno}'].values})
+                # output_dict[f'{energy}.{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = pd.DataFrame(
+                #     {GlossaryEnergy.Years: input_dict['CO2_emission_mix'][GlossaryEnergy.Years].values,
+                #      GlossaryEnergy.CO2EmissionsValue: input_dict['CO2_emission_mix'][
+                #          f'{energy}.{techno}'].values})
 
                 output_dict[f'{energy}.{techno}.{GlossaryEnergy.EnergyProductionValue}'] = pd.DataFrame(
                     {GlossaryEnergy.Years: input_dict[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'][GlossaryEnergy.Years].values,
@@ -212,9 +212,9 @@ class Heat_Mix_Discipline(SoSWrapp):
 
         # print(self.energy_model.distribution_list)
         for techno in self.energy_model.distribution_list:
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.EnergyCO2EmissionsValue),
-                ('CO2_emission_mix', techno), identity) #,identity * 1e-3
+            # self.set_partial_derivative_for_other_types(
+            #     (GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.EnergyCO2EmissionsValue),
+            #     ('CO2_emission_mix', techno), identity) #,identity * 1e-3
 
             self.set_partial_derivative_for_other_types(
                 ('CO2MinimizationObjective',),
