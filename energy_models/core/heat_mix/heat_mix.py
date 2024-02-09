@@ -81,7 +81,6 @@ class HeatMix(BaseStream):
         return total_heat_production_constraint
 
     def compute_total_production(self, inputs_dict: dict):
-        # print(inputs_dict[GlossaryEnergy.TargetHeatProductionValue][GlossaryEnergy.Years])
         total_heat_production = pd.DataFrame({GlossaryEnergy.Years:
                                                        inputs_dict[GlossaryEnergy.TargetHeatProductionValue][GlossaryEnergy.Years]})
         total_heat_production[GlossaryEnergy.EnergyProductionValue] = 0

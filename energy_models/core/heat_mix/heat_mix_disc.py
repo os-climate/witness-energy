@@ -220,7 +220,6 @@ class Heat_Mix_Discipline(SoSWrapp):
             '''
 
 
-
     def get_chart_filter_list(self):
 
         filters = []
