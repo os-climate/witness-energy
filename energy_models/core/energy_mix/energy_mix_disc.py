@@ -244,6 +244,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                                  years)})
             self.set_dynamic_default_values(
                 {GlossaryEnergy.TargetEnergyProductionValue: default_target_energy_production})
+            dynamic_inputs.update({GlossaryEnergy.TargetEnergyProductionValue: default_target_energy_production})
         if GlossaryEnergy.energy_list in self.get_data_in():
             energy_list = inputs_dict[GlossaryEnergy.energy_list]
             self.update_default_energy_list()
@@ -338,6 +339,13 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                      GlossaryEnergy.carbon_capture: ('float', None, True),
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                      GlossaryEnergy.carbon_storage: ('float', None, True), }}
+                        dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.TargetEnergyProductionValue}'] = {
+                            'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
+                            'namespace': GlossaryEnergy.NS_CCS,
+                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                     GlossaryEnergy.carbon_capture: ('float', 0, True),
+                                                     'CO2 from Flue Gas (Mt)': ('float', 0, True),
+                                                     GlossaryEnergy.carbon_storage: ('float', 0, True), }}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyPricesValue}'] = {
                             'type': 'dataframe', 'unit': '$/MWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
