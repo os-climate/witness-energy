@@ -33,7 +33,7 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
         self.name = 'Test'
         self.model_name = 'HeatMix'
         self.year_start =GlossaryCore.YeartStartDefault
-        self.year_end = GlossaryCore.YeartEndDefault
+        self.year_end = 2030#GlossaryCore.YeartEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start
 
@@ -90,11 +90,10 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
 
         energy_mix_emission = pd.DataFrame(energy_mix_emission_dic)
 
-        energy_mix_target_production_dic = {}
-        energy_mix_target_production_dic[GlossaryEnergy.Years] = self.years
-        energy_mix_target_production_dic['target production'] = 260
-
-        self.traget_production = pd.DataFrame(energy_mix_target_production_dic)
+        self.target_production = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.TargetHeatProductionValue: 260.
+        })
 
 
         ############
@@ -136,7 +135,7 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
                             'heat.lowtemperatureheat.technologies_list': low_heat_techno_list,
                             'heat.mediumtemperatureheat.technologies_list': medium_heat_techno_list,
                             f'{self.name}.{self.model_name}.CO2_emission_mix': energy_mix_emission,
-                            f'{self.name}.{self.model_name}.target_heat_production': self.traget_production,
+                            f'{self.name}.{self.model_name}.{GlossaryEnergy.TargetHeatProductionValue}': self.target_production,
                             f'{self.name}.{self.model_name}.heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.high_heat_production,
                             f'{self.name}.{self.model_name}.heat.lowtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.low_heat_production,
                             f'{self.name}.{self.model_name}.heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.medium_heat_production,
@@ -156,10 +155,10 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_heat_mix_discipline.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.CO2_emission_mix',
-                                    f'{self.name}.{self.model_name}.target_heat_production',
                                     ],
-                            outputs=[f'{self.name}.CO2MinimizationObjective',
+                            outputs=[f'{self.name}.{GlossaryEnergy.CO2MinimizationObjective}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyProductionValue}',
+                                     f'{self.name}.{GlossaryEnergy.TargetHeatProductionConstraintValue}',
                             ],
                             derr_approx='complex_step')

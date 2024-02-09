@@ -72,11 +72,10 @@ class HeatMixTestCase(unittest.TestCase):
 
         self.energy_mix = pd.DataFrame(energy_mix_emission_dic)
 
-        energy_mix_target_production_dic = {}
-        energy_mix_target_production_dic[GlossaryEnergy.Years] = self.years
-        energy_mix_target_production_dic['target production'] = 260
-
-        self.traget_production = pd.DataFrame(energy_mix_target_production_dic)
+        self.target_production = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.TargetHeatProductionValue: 260.
+        })
 
         ############
         energy_mix_high_heat_production_dic = {}
@@ -129,7 +128,7 @@ class HeatMixTestCase(unittest.TestCase):
                        'heat.mediumtemperatureheat.technologies_list': ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
                            'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat'],
                        'CO2_emission_mix': self.energy_mix,
-                       'target_heat_production': self.traget_production,
+                       GlossaryEnergy.TargetHeatProductionValue: self.target_production,
                        f'heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.high_heat_production,
                        f'heat.lowtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.low_heat_production,
                        f'heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.medium_heat_production,
@@ -141,18 +140,13 @@ class HeatMixTestCase(unittest.TestCase):
         EM.compute_CO2_emissions(inputs_dict)
 
 
-    def test_02_energy_mix_discipline(self):
+    def test_02_heat_mix_discipline(self):
         """
-        Test energy mix discipline
-
-        Returns
-        -------
-        None.
-
+        Test heat mix discipline
         """
 
         name = 'Test'
-        model_name = 'EnergyMix'
+        model_name = 'HeatMix'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_energy_study': f'{name}',
@@ -188,7 +182,7 @@ class HeatMixTestCase(unittest.TestCase):
                                                                         'HeatPumpMediumHeat', 'GeothermalMediumHeat',
                                                                         'CHPMediumHeat', 'HydrogenBoilerMediumHeat'],
                        f'{name}.{model_name}.CO2_emission_mix': self.energy_mix,
-                       f'{name}.{model_name}.target_heat_production': self.traget_production,
+                       f'{name}.{model_name}.{GlossaryEnergy.TargetHeatProductionValue}': self.target_production,
                        f'{name}.{model_name}.heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.high_heat_production,
                        f'{name}.{model_name}.heat.lowtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.low_heat_production,
                        f'{name}.{model_name}.heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.medium_heat_production,
@@ -207,11 +201,12 @@ class HeatMixTestCase(unittest.TestCase):
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-    #        for graph in graph_list:
-    #            graph.to_plotly().show()
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass
 
 
 if '__main__' == __name__:
     cls = HeatMixTestCase()
     cls.setUp()
-    cls.test_02_energy_mix_discipline()
+    cls.test_02_heat_mix_discipline()
