@@ -25,11 +25,15 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
+    def __init__(self, ee):
+        super().__init__(ee)
+        self.sub_process_repo = 'energy_models.sos_processes.energy.MDA'
+        self.sub_process_name = 'energy_mix_optim_sub_process'
 
     def get_builders(self):
         optim_name = "MDO"
 
-        coupling_builder = self.ee.factory.get_builder_from_process('energy_models.sos_processes.energy.MDA', 'energy_mix_optim_sub_process')
+        coupling_builder = self.ee.factory.get_builder_from_process(self.sub_process_repo, self.sub_process_name)
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
