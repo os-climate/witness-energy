@@ -37,10 +37,16 @@ TECHNOLOGIES_LIST = [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing', f'{G
 TECHNOLOGIES_LIST_COARSE = [f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing', f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping']
 
 TECHNOLOGIES_FLUE_GAS_LIST_COARSE = [f'{GlossaryEnergy.electricity}.GasTurbine']
-DEFAULT_FLUE_GAS_LIST = [f'{GlossaryEnergy.electricity}.CoalGen', f'{GlossaryEnergy.electricity}.GasTurbine', f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine',
-                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift', f'{GlossaryEnergy.liquid_fuel}.FischerTropsch',
-                         f'{GlossaryEnergy.liquid_fuel}.Refinery', f'{GlossaryEnergy.methane}.FossilGas',
-                         f'{GlossaryEnergy.solid_fuel}.Pelletizing', f'{GlossaryEnergy.syngas}.CoalGasification', f'{GlossaryEnergy.fossil}.FossilSimpleTechno',
+DEFAULT_FLUE_GAS_LIST = [f'{GlossaryEnergy.electricity}.CoalGen',
+                         f'{GlossaryEnergy.electricity}.GasTurbine',
+                         f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine',
+                         f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift',
+                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch',
+                         f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery',
+                         f'{GlossaryEnergy.methane}.FossilGas',
+                         f'{GlossaryEnergy.solid_fuel}.Pelletizing',
+                         f'{GlossaryEnergy.syngas}.CoalGasification',
+                         f'{GlossaryEnergy.fossil}.FossilSimpleTechno',
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing',
                          f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.DirectAirCaptureTechno']

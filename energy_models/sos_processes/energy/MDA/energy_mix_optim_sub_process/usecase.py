@@ -233,7 +233,7 @@ class Study(EnergyStudyManager):
         dspace_list = []
         for sub_study_name, sub_study in self.sub_study_dict.items():
             if self.techno_dict[sub_study_name]["type"] == CCUS_TYPE:
-                prefix_name = GlossaryEnergy.CCUS
+                prefix_name = f"{self.coupling_name}.{GlossaryEnergy.CCUS}"
                 instance_sub_study = sub_study(
                     self.year_start,
                     self.year_end,
@@ -305,7 +305,17 @@ class Study(EnergyStudyManager):
                     'namespace_in': GlossaryEnergy.NS_ENERGY_MIX,
                     'namespace_out': 'ns_invest'
                 }
-                # add design variable for utilization ratio per technology
+
+                design_var_descriptor[f'{energy}.{technology}.utilization_ratio_array'] = {
+                    'out_name': f'{energy}.{technology}.{GlossaryEnergy.UtilisationRatioValue}',
+                    'out_type': 'dataframe',
+                    'key': GlossaryEnergy.UtilisationRatioValue,
+                    'index': self.years,
+                    'index_name': GlossaryEnergy.Years,
+                    'namespace_in': GlossaryEnergy.NS_ENERGY_MIX,
+                    'namespace_out': GlossaryEnergy.NS_WITNESS
+                }
+
 
         for ccs in self.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
@@ -323,17 +333,15 @@ class Study(EnergyStudyManager):
                 }
 
                 # add design variable for utilization ratio per technology
-                '''
-                design_var_descriptor[f'{ccs}.{technology}_utilization_ratio_array'] = {
+                design_var_descriptor[f'{ccs}.{technology}.utilization_ratio_array'] = {
                     'out_name': f'{ccs}.{technology}.{GlossaryEnergy.UtilisationRatioValue}',
                     'out_type': 'dataframe',
                     'key': GlossaryEnergy.UtilisationRatioValue,
                     'index': self.years,
                     'index_name': GlossaryEnergy.Years,
                     'namespace_in': GlossaryEnergy.NS_CCS,
-                    'namespace_out': GlossaryEnergy.NS_CCS
+                    'namespace_out': GlossaryEnergy.NS_WITNESS
                 }
-                '''
 
         return design_var_descriptor
 
@@ -363,15 +371,19 @@ class Study(EnergyStudyManager):
         dspace = pd.concat(dspaces_cleaned)
         return dspace
 
-    def make_dspace_utilisation_ratio(self, d_space_invest: pd.DataFrame) -> pd.DataFrame:
-        variables = d_space_invest['variable']
-        var_ur = [var.replace('array_mix', 'utilization_ratio_array') for var in variables]
+    def make_dspace_utilisation_ratio(self) -> pd.DataFrame:
+        variables = []
+        for energy_or_ccs in self.energy_list + self.ccs_list:
+            for techno in self.dict_technos[energy_or_ccs]:
+                variables.append(
+                    f"{energy_or_ccs}.{techno}.utilization_ratio_array"
+                )
         low_bound = [1e-6] * 20
         upper_bound = [100.] * 20
         value = [100.] * 20
         n_dvar_ur = len(variables)
         dspace_ur = {
-            'variable': var_ur,
+            'variable': variables,
             'value': [value] * n_dvar_ur,
             'activated_elem': [[True] * 20] * n_dvar_ur,
             'lower_bnd': [low_bound] * n_dvar_ur,
@@ -400,28 +412,43 @@ class Study(EnergyStudyManager):
             ccs_wo_dot = ccs.replace('.', '_')
             for technology in self.dict_technos[ccs]:
                 technology_wo_dot = technology.replace('.', '_')
-                array_var_name = f"{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix"
-                value = dspace.loc[dspace['variable'] == array_var_name, 'value'].values[0]
+                array_invest_var_name = f"{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix"
+                value = dspace.loc[dspace['variable'] == array_invest_var_name, 'value'].values[0]
                 out_dict.update({
-                    f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.CCUS}.{array_var_name}": np.array(value)
+                    f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.CCUS}.{array_invest_var_name}": np.array(value)
+                })
+
+                array_utilization_ratio_var_name = f"{ccs}.{technology}.utilization_ratio_array"
+                value = dspace.loc[dspace['variable'] == array_utilization_ratio_var_name, 'value'].values[0]
+                out_dict.update({
+                    f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.CCUS}.{ccs}.{technology}.utilization_ratio_array": np.array(value)
                 })
 
         for energy in self.energy_list:
-            ccs_wo_dot = energy.replace('.', '_')
+            energy_wo_dot = energy.replace('.', '_')
             for technology in self.dict_technos[energy]:
                 technology_wo_dot = technology.replace('.', '_')
-                array_var_name = f"{energy}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix"
-                value = dspace.loc[dspace['variable'] == array_var_name, 'value'].values[0]
+
+                array_invest_var_name = f"{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix"
+                value = dspace.loc[dspace['variable'] == array_invest_var_name, 'value'].values[0]
                 out_dict.update({
-                    f"{self.study_name}.{self.coupling_name}.EnergyMix.{array_var_name}": np.array(value)
+                    f"{self.study_name}.{self.coupling_name}.EnergyMix.{array_invest_var_name}": np.array(value)
+                })
+
+                array_utilization_ratio_var_name = f"{energy}.{technology}.utilization_ratio_array"
+                value = dspace.loc[dspace['variable'] == array_utilization_ratio_var_name, 'value'].values[0]
+                out_dict.update({
+                    f"{self.study_name}.{self.coupling_name}.EnergyMix.{energy}.{technology}.utilization_ratio_array": np.array(
+                        value)
                 })
 
         return out_dict
 
     def make_dspace(self, dspace_list: list):
-        dspace_invests = self.make_dspace_invests(dspace_list)
-        dspace_utilisation_ratio = self.make_dspace_utilisation_ratio(dspace_invests)
-        dspace = pd.concat([dspace_invests, dspace_utilisation_ratio])
+        dspace = self.make_dspace_invests(dspace_list)
+        dspace_utilisation_ratio = self.make_dspace_utilisation_ratio()
+        dspace = pd.concat([dspace, dspace_utilisation_ratio])
+
         dspace.reset_index(drop=True, inplace=True)
         return dspace
 
@@ -449,16 +476,16 @@ class Study(EnergyStudyManager):
         energy_type_capital = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.Capital: 0.0})
 
         agri_values_dict = {
-            f"{self.study_name}.{agri_mix_name}.N2O_per_use": N2O_per_use,
-            f"{self.study_name}.{agri_mix_name}.CH4_per_use": CH4_per_use,
-            f"{self.study_name}.{agri_mix_name}.CO2_per_use": CO2_per_use,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyConsumptionValue}": energy_consumption,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}": energy_consumption,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyProductionValue}": energy_production,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.N2O_per_use": N2O_per_use,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.CH4_per_use": CH4_per_use,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.CO2_per_use": CO2_per_use,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyConsumptionValue}": energy_consumption,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}": energy_consumption,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyProductionValue}": energy_production,
             f"{self.study_name}.{self.coupling_name}.EnergyMix.{agri_mix_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}": energy_type_capital,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.LandUseRequiredValue}": land_use_required,
-            f"{self.study_name}.{agri_mix_name}.{GlossaryEnergy.CO2EmissionsValue}": CO2_emissions,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.EnergyPricesValue}": energy_prices,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.LandUseRequiredValue}": land_use_required,
+            f"{self.study_name}.{self.coupling_name}.{agri_mix_name}.{GlossaryEnergy.CO2EmissionsValue}": CO2_emissions,
         }
 
         return agri_values_dict
@@ -542,7 +569,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.sub_mda_class": "MDAGaussSeidel",
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}": resources_CO2_emissions,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}": resources_prices,
-            f"{self.study_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_invest_df,
+            f"{self.study_name}.{self.coupling_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_invest_df,
         }
 
         (
@@ -576,19 +603,33 @@ class Study(EnergyStudyManager):
         crop_investment = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.InvestmentsValue: 0.0})
 
         values_dict.update({
-            # f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
+             f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
         })
 
         values_dict_list.append(values_dict)
 
         self.create_technolist_per_energy(instanciated_studies)
 
+        possible_technos = [
+            f"{energy}.{techno}"
+            for energy, tech_dict in self.techno_dict.items()
+            for techno in tech_dict["value"]
+        ]
+        flue_gas_list = [
+            techno for techno in DEFAULT_FLUE_GAS_LIST if techno in possible_technos
+        ]
+
+        if CarbonCapture.name in DEFAULT_TECHNO_DICT:
+            values_dict[
+                f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.CCUS}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
+            ] = flue_gas_list
+
         if not self.coarse_mode:
             agri_values_dict = self.get_input_value_from_agriculture_mix()
             values_dict_list.append(agri_values_dict)
 
             values_dict.update({
-                # f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
+                 f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.invest_mix}": invest_mix_df,
                 f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.ManagedWoodInvestmentName}": managed_wood_investment,
                 f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.DeforestationInvestmentName}": deforestation_investment,
                 f"{self.study_name}.{self.coupling_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.CropInvestmentName}": crop_investment,
@@ -601,9 +642,10 @@ class Study(EnergyStudyManager):
         func_df = self.make_func_df()
         dspace = self.make_dspace(dspace_list)
         values_mdo = {
-            f"{self.study_name}.DesignVariables.design_var_descriptor": design_var_descriptor,
+            f"{self.study_name}.{self.coupling_name}.DesignVariables.design_var_descriptor": design_var_descriptor,
             f"{self.study_name}.design_space": dspace,
-            f"{self.study_name}.FunctionsManager.function_df": func_df,
+            f"{self.study_name}.{self.coupling_name}.FunctionsManager.function_df": func_df,
+            f"{self.study_name}.{self.coupling_name}.max_mda_iter": 80,
         }
 
         dvar_values = self.get_dvar_values(dspace)
@@ -615,6 +657,6 @@ class Study(EnergyStudyManager):
 
 if "__main__" == __name__:
     uc_cls = Study()
-    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    # uc_cls.load_data()
-    # uc_cls.run()
+    #uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
+    uc_cls.load_data()
+    uc_cls.run()
