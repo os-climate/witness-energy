@@ -15,7 +15,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from copy import deepcopy
 
 import numpy as np
 import pandas as pd
@@ -28,7 +27,8 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 
 class Heat_Mix_Discipline(SoSWrapp):
     # ontology information
@@ -246,3 +246,50 @@ class Heat_Mix_Discipline(SoSWrapp):
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
         return chart_filters
+
+    def get_post_processing_list(self, filters=None):
+        instanciated_charts = []
+        charts = []
+
+        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
+        energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
+        # Overload default value with chart filter
+        if filters is not None:
+            for chart_filter in filters:
+                if chart_filter.filter_key == 'charts':
+                    charts = chart_filter.selected_values
+        #         if chart_filter.filter_key == 'price_unit':
+        #             price_unit_list = chart_filter.selected_values
+        #         if chart_filter.filter_key == GlossaryEnergy.Years:
+        #             years_list = chart_filter.selected_values
+        if 'actual_target_energy_production' in charts:
+            new_chart = self.get_chart_target_actual_production()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
+        return instanciated_charts
+    def get_chart_target_actual_production(self):
+        '''
+        Plot the total co2 emissions sources - sinks
+        '''
+        chart_name = 'Target v/s Actual production'
+        target_production = self.get_sosdisc_inputs('target_heat_production')
+        total_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
+
+
+
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'target production (PWh)',
+                                             chart_name=chart_name)
+
+        x_serie_1 = target_production[GlossaryEnergy.Years].values.tolist()
+
+        serie = InstanciatedSeries(
+            x_serie_1,
+            (target_production['target production'].values).tolist(), 'target production')
+        new_chart.add_series(serie)
+        serie = InstanciatedSeries(
+            x_serie_1,
+            (total_production[GlossaryEnergy.EnergyProductionValue].values ).tolist(), 'total heat production')
+        new_chart.add_series(serie)
+
+        return new_chart

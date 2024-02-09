@@ -68,7 +68,6 @@ class HeatMix(BaseStream):
         energy_CO2_emission_objective = self.compute_energy_CO2_emission_objective(energy_CO2_emission)
 
         total_energy_heat_production, total_energy_heat_production_constraint = self.compute_target_heat_production_constraint(inputs_dict)
-
         return energy_CO2_emission, energy_CO2_emission_objective, \
             total_energy_heat_production, total_energy_heat_production_constraint
 
