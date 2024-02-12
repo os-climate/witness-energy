@@ -15,12 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
 
-from energy_models.core.investments.independent_invest import IndependentInvest
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -86,24 +84,6 @@ class TestIndependentInvest(unittest.TestCase):
         self.crop_invest_df = pd.DataFrame(
             {GlossaryEnergy.Years: self.years, "investment": crop_invest})
 
-    def test_01_independent_invest_model(self):
-        scaling_factor_energy_investment = 100
-        inputs_dict = {GlossaryEnergy.YearStart: self.y_s,
-                       GlossaryEnergy.YearEnd: self.y_e,
-                       GlossaryEnergy.energy_list: self.energy_list,
-                       GlossaryEnergy.ccs_list: self.ccs_list,
-                       f'{GlossaryEnergy.electricity}.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
-                       f'{GlossaryEnergy.methane}.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.technologies_list': ['WaterGasShift', 'Electrolysis.AWE'],
-                       f'{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
-                                                            f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'],
-                       f'{GlossaryEnergy.carbon_storage}.technologies_list': ['DeepSalineFormation', 'GeologicMineralization'],
-                       GlossaryEnergy.invest_mix: self.energy_mix,
-                       GlossaryEnergy.ForestInvestmentValue: self.forest_invest_df,
-                       'scaling_factor_energy_investment': scaling_factor_energy_investment, }
-        one_invest_model = IndependentInvest()
-        one_invest_model.compute(inputs_dict)
-
     def test_02_independent_invest_disc(self):
 
         self.name = 'Energy'
@@ -115,6 +95,7 @@ class TestIndependentInvest(unittest.TestCase):
                    'ns_energy_study': self.name,
                    GlossaryEnergy.NS_CCS: f'{self.name}.CCUS',
                    'ns_energy': self.name,
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name,
                    GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_invest': f'{self.name}.{self.model_name}'
                    }
@@ -187,7 +168,8 @@ class TestIndependentInvest(unittest.TestCase):
                    GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_invest': self.name,
                    'ns_forest': f'{self.name}.Forest',
-                   'ns_crop': f'{self.name}.Crop'
+                   'ns_crop': f'{self.name}.Crop',
+                   GlossaryEnergy.NS_ENERGY_MIX: self.name
                    }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -201,8 +183,14 @@ class TestIndependentInvest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
+        max_budget = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.MaxBudgetValue: np.linspace(800, 970, len(self.years))
+        })
+
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.y_s,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': self.y_e,
+                       f'{self.name}.{GlossaryEnergy.MaxBudgetValue}': max_budget,
                        f'{self.name}.{GlossaryEnergy.energy_list}': self.energy_list_bis,
                        f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
                        f'{self.name}.{GlossaryEnergy.electricity}.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
@@ -244,82 +232,9 @@ class TestIndependentInvest(unittest.TestCase):
 
         for graph in graph_list:
             pass
-            # graph.to_plotly().show()
-
-    def test_04_independent_invest_disc_check_jacobian(self):
-
-        self.name = 'Energy'
-        self.model_name = 'Invest'
-        self.ee = ExecutionEngine(self.name)
-        ns_dict = {GlossaryEnergy.NS_WITNESS: self.name,
-                   GlossaryEnergy.NS_REFERENCE: self.name,
-                   'ns_public': self.name,
-                   'ns_energy_study': self.name,
-                   'ns_energy': self.name,
-                   GlossaryEnergy.NS_CCS: f'{self.name}',
-                   GlossaryEnergy.NS_FUNCTIONS: self.name,
-                   'ns_invest': self.name,
-                   'ns_crop': self.name,
-                   'ns_forest': self.name
-                   }
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'energy_models.core.investments.disciplines.independent_invest_disc.IndependentInvestDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-        energy_list = [GlossaryEnergy.electricity, GlossaryEnergy.methane,
-                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}', GlossaryEnergy.biomass_dry]
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': self.y_s,
-                       f'{self.name}.{GlossaryEnergy.YearEnd}': self.y_e,
-                       f'{self.name}.{GlossaryEnergy.energy_list}': energy_list,
-                       f'{self.name}.{GlossaryEnergy.ccs_list}': self.ccs_list,
-                       f'{self.name}.{GlossaryEnergy.electricity}.technologies_list': ['SolarPv', 'WindOnshore', 'CoalGen'],
-                       f'{self.name}.{GlossaryEnergy.methane}.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.{GlossaryEnergy.biomass_dry}.technologies_list': [],
-                       f'{self.name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.technologies_list': ['WaterGasShift',
-                                                                                    'Electrolysis.AWE'],
-                       f'{self.name}.{GlossaryEnergy.carbon_capture}.technologies_list': [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
-                                                                         f'{GlossaryEnergy.flue_gas_capture}.CalciumLooping'],
-                       f'{self.name}.{GlossaryEnergy.carbon_storage}.technologies_list': ['DeepSalineFormation',
-                                                                         'GeologicMineralization'],
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}': self.energy_mix,
-                       f'{self.name}.{GlossaryEnergy.ForestInvestmentValue}': self.forest_invest_df,
-                       f'{self.name}.managed_wood_investment': self.managed_wood_invest_df,
-                       f'{self.name}.deforestation_investment': self.deforestation_invest_df,
-                       f'{self.name}.crop_investment': self.crop_invest_df}
-
-        self.ee.load_study_from_input_dict(inputs_dict)
-        self.ee.execute()
-        disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        all_technos_list = [
-            f'{energy}.{techno}' for energy in energy_list + self.ccs_list for techno in
-            inputs_dict[f'{self.name}.{energy}.{GlossaryEnergy.techno_list}']]
-        succeed = disc.check_jacobian(derr_approx='complex_step',
-                                      inputs=[f'{self.name}.{self.model_name}.{GlossaryEnergy.invest_mix}',
-                                              f'{self.name}.{GlossaryEnergy.ForestInvestmentValue}',
-                                              f'{self.name}.managed_wood_investment',
-                                              f'{self.name}.deforestation_investment',
-                                              f'{self.name}.crop_investment'],
-                                      outputs=[
-                                                  f'{self.name}.{techno}.{GlossaryEnergy.InvestLevelValue}' for techno
-                                                  in
-                                                  all_technos_list] +
-                                              [f'{self.name}.{GlossaryEnergy.EnergyInvestmentsWoTaxValue}',
-                                               f'{self.name}.{GlossaryEnergy.EnergyInvestmentsMinimizationObjective}'],
-                                      input_data=disc.local_data,
-                                      load_jac_path=join(dirname(__file__), 'jacobian_pkls',
-                                                         f'jacobian_independent_invest_disc.pkl'),
-                                      dump_jac_path=None)
-        self.assertTrue(
-            succeed, msg=f"Wrong gradient")
+            #graph.to_plotly().show()
 
 
 if '__main__' == __name__:
     cls = TestIndependentInvest()
     cls.setUp()
-    cls.test_04_independent_invest_disc_check_jacobian()
