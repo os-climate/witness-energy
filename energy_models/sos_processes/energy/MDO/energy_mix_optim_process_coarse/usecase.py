@@ -27,7 +27,7 @@ class Study(subStudy):
         super().__init__(
             file_path=file_path,
             execution_engine=execution_engine,
-            run_usecase=run_usecase
+            run_usecase=run_usecase,
         )
         self.techno_dict = DEFAULT_COARSE_TECHNO_DICT
 

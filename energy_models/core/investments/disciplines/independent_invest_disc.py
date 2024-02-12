@@ -285,7 +285,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.MaxBudgetConstraintValue,),
                 (GlossaryEnergy.invest_mix, techno),
-                - identity)
+                identity)
 
             self.set_partial_derivative_for_other_types(
                 (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
@@ -305,7 +305,7 @@ class IndependentInvestDiscipline(SoSWrapp):
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.MaxBudgetConstraintValue,),
             (GlossaryEnergy.ForestInvestmentValue, GlossaryEnergy.ForestInvestmentValue),
-            - identity)
+            identity)
 
         energy_list = inputs_dict[GlossaryEnergy.energy_list]
         if BiomassDry.name in energy_list:
@@ -323,7 +323,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.MaxBudgetConstraintValue,),
                     (techno, GlossaryEnergy.InvestmentsValue),
-                    - identity)
+                    identity)
 
     def get_chart_filter_list(self):
 

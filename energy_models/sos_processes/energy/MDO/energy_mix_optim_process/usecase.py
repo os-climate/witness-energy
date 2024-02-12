@@ -46,7 +46,7 @@ class Study(StudyManager):
             f'{self.study_name}.{self.optim_name}.algo': 'L-BFGS-B',
             f'{self.study_name}.{self.optim_name}.formulation': 'DisciplinaryOpt',
             f'{self.study_name}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,
-            f'{self.study_name}.{self.optim_name}.max_iter': 3,
+            f'{self.study_name}.{self.optim_name}.max_iter': 50,
             f'{self.study_name}.{self.optim_name}.differentiation_method': 'user',
         }
         data.append(values_mdo)
