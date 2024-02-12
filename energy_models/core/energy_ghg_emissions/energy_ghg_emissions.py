@@ -49,12 +49,6 @@ class EnergyGHGEmissions(BaseStream):
 
     def __init__(self, name):
         super().__init__(name)
-        self.energy_gwp_objective = None
-
-        self.gwp_atmostphere_20_year_start = DatabaseWitnessCore.C02YearStartConcentration.value * DatabaseWitnessCore.pp_to_gt['CO2'] + \
-                                             DatabaseWitnessCore.N2OYearStartConcentration.value * DatabaseWitnessCore.pp_to_gt['N2O'] + \
-                                             DatabaseWitnessCore.CH4YearStartConcentration.value * DatabaseWitnessCore.pp_to_gt['CH4']
-
         self.energy_list = None
         self.scaling_factor_energy_production = None
         self.scaling_factor_energy_consumption = None
@@ -167,7 +161,6 @@ class EnergyGHGEmissions(BaseStream):
         self.update_emissions_in_gt()
         self.compute_total_ghg_emissions()
         self.compute_gwp()
-        self.compute_energy_emissions_objective()
 
     def sum_ghg_emissions_by_use(self):
         '''Total CO2 by use 
@@ -513,11 +506,3 @@ class EnergyGHGEmissions(BaseStream):
                     len_years)
 
         return dtot_CO2_emissions
-
-    def compute_energy_emissions_objective(self):
-        columns_to_sum = [f"{ghg}_20" for ghg in self.GHG_TYPE_LIST]
-
-        mean_annual_gwp_emitted_by_energy = self.gwp_emissions[columns_to_sum].sum(axis=1).mean()
-        self.energy_gwp_objective = np.array([
-            (2 * self.gwp_atmostphere_20_year_start + mean_annual_gwp_emitted_by_energy) / (4 * self.gwp_atmostphere_20_year_start)
-        ])

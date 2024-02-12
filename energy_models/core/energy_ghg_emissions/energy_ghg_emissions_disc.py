@@ -121,7 +121,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                        'namespace': GlossaryEnergy.NS_WITNESS},
         'GHG_emissions_per_energy': {'type': 'dict', 'subtype_descriptor': {'dict': 'dataframe'}, 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'},
-        GlossaryEnergy.CO2EnergyEmissionsObjectiveValue: GlossaryEnergy.CO2EnergyEmissionsObjective,
     }
 
     name = f'{GHGemissionsDiscipline.name}.Energy'
@@ -312,7 +311,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
             'CO2_emissions_sources': self.model.CO2_sources_Gt,
             'CO2_emissions_sinks': self.model.CO2_sinks_Gt,
             'GWP_emissions': self.model.gwp_emissions,
-            GlossaryEnergy.CO2EnergyEmissionsObjectiveValue: self.model.energy_gwp_objective
 
         }
         self.store_sos_outputs_values(outputs_dict)
