@@ -129,6 +129,7 @@ class EnergyMix(BaseStream):
         '''
         super(EnergyMix, self).__init__(name)
 
+        self.target_production_constraint = None
         self.co2_emitted_by_energy = None
         self.CCS_price = None
         self.CO2_tax_minus_CCS_constraint = None
@@ -436,6 +437,8 @@ class EnergyMix(BaseStream):
         self.production[GlossaryEnergy.TotalProductionValue] -= self.production_raw[
                                                                     GlossaryEnergy.TotalProductionValue] * \
                                                                 self.heat_losses_percentage / 100.0
+
+
 
     def compute_energy_production_uncut(self):
         """maybe to delete"""
@@ -949,6 +952,10 @@ class EnergyMix(BaseStream):
 
         return dtot_CO2_emissions
 
+    def compute_target_production_constraint(self, inputs_dict: dict):
+        target_energy_production = inputs_dict[GlossaryEnergy.TargetEnergyProductionValue][GlossaryEnergy.TargetEnergyProductionValue].values
+        self.target_production_constraint = self.production[GlossaryEnergy.TotalProductionValue].values * 1000 - target_energy_production
+
     def compute(self, inputs: dict, exp_min=True):
         self.configure_parameters_update(inputs)
 
@@ -971,6 +978,8 @@ class EnergyMix(BaseStream):
         self.compute_net_positive_consumable_energy_production()
         self.compute_mean_price(exp_min=inputs['exp_min'])
         self.compute_constraint_h2()
+
+        self.compute_target_production_constraint(inputs)
 
 
 def update_new_gradient(grad_dict, key_dep_tuple_list, new_key):

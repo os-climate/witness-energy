@@ -15,28 +15,19 @@ limitations under the License.
 '''
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase import Study as subStudy
-from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Study(subStudy):
     def __init__(
             self,
             file_path=__file__,
-            year_start=GlossaryEnergy.YeartStartDefault,
-            year_end=2050,
-            main_study=True,
-            bspline=True,
             execution_engine=None,
     ):
         super().__init__(
             file_path=file_path,
-            main_study=main_study,
             execution_engine=execution_engine,
-            bspline=bspline,
-            year_start=year_start,
-            year_end=year_end,
-            techno_dict=DEFAULT_COARSE_TECHNO_DICT
         )
+        self.techno_dict = DEFAULT_COARSE_TECHNO_DICT
 
 
 if "__main__" == __name__:

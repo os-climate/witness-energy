@@ -16,13 +16,13 @@ Four main sources are taken into account :
 Other technologies acts in the favor of the removal of carbon emissions and CO2 fluxes are divided in three categories : 
 - The CO2 fluxes stored by carbon storage technologies (i.e. injected in oceans)
 - The CO2 removed by technologies (i.e. managed wood technology removes CO2 thanks to tree carbon cycle)
-- The CO2 needed by the chemcial reaction of a technology (i.e. Fischer Tropsch plants may needs CO2 to enrich syngas in CO for Fischer Tropsch synthesis)
+- The CO2 needed by the chemical reaction of a technology (i.e. Fischer Tropsch plants may needs CO2 to enrich syngas in CO for Fischer Tropsch synthesis)
   
 ![](co2_emissions_model.PNG)
 
-## other GHG emissions model 
+## Other GHG emissions model 
 
-The other models are taking into account two sources of GHG emissions : 
+The other models are taking into account two sources of GHG emissions: 
 - The GHG emissions coming from technologies (CH4 leakage in coal mines, N2O leakage when oil is burned in oil-fired electricity plants)
 - The GHG emissions coming from the use (burning) of fossil fuel are biomass dry net production.
 

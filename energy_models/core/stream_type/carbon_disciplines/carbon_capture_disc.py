@@ -60,8 +60,8 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                                'float', None, True),
                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': (
                                                'float', None, True),
-                                           f'{GlossaryEnergy.liquid_fuel}.FischerTropsch': ('float', None, True),
-                                           f'{GlossaryEnergy.liquid_fuel}.Refinery': ('float', None, True),
+                                           f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch': ('float', None, True),
+                                           f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery': ('float', None, True),
                                            f'{GlossaryEnergy.methane}.FossilGas': ('float', None, True),
                                            f'{GlossaryEnergy.solid_fuel}.Pelletizing': ('float', None, True),
                                            f'{GlossaryEnergy.syngas}.CoalGasification': ('float', None, True),

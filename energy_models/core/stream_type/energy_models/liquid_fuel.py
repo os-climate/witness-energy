@@ -21,9 +21,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 class LiquidFuel(EnergyType):
     name = f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}'
     short_name = GlossaryEnergy.liquid_fuel
-    default_techno_list = ['AlcoholToFuel', 'BioFuel',
-                           'EOR', 'Refinery', 'HEFA',
-                           'FischerTropsch']
+    default_techno_list = ['Refinery', 'FischerTropsch']
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # ICAO, Carbon Calculator, 2017, CO2 per kg combustion = 3.16

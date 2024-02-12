@@ -14,10 +14,10 @@ limitations under the License.
 
 '''
 
-from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.process import ProcessBuilder as ProccesEnergyMixOptimFull
 
 
-class ProcessBuilder(BaseProcessBuilder):
+class ProcessBuilder(ProccesEnergyMixOptimFull):
     # ontology information
     _ontology_data = {
         'label': 'Energy Mix coarse Optim process',
@@ -25,32 +25,6 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
-
-    def get_builders(self):
-        builders = self.ee.factory.get_builder_from_process('energy_models.sos_processes.energy.MDA', 'energy_mix_optim_sub_process_coarse')
-
-        designvariable_name = "DesignVariables"
-        func_manager_name = "FunctionsManager"
-
-        # design variables builder
-        ns_dict = {
-            'ns_optim': self.ee.study_name
-        }
-        mods_dict = {
-            designvariable_name: 'sostrades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
-        }
-        builder_dvar = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
-        builders.extend(builder_dvar)
-
-        # function manager builder
-
-        ns_dict = {
-            #'ns_optim': self.ee.study_name
-        }
-        mods_dict = {
-            func_manager_name: 'sostrades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
-        }
-        builder_fmanager = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
-        builders.extend(builder_fmanager)
-
-        return builders
+    def __init__(self, ee):
+        super().__init__(ee)
+        self.sub_process_name = "energy_mix_optim_sub_process_coarse"

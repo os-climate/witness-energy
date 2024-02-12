@@ -300,6 +300,10 @@ class EnergyMixTestCase(unittest.TestCase):
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
         self.is_stream_demand = True
         self.liquid_hydrogen_percentage = np.ones(len(self.years))
+        self.target_production = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            GlossaryEnergy.TargetEnergyProductionValue: np.ones_like(self.years) * 0.3
+        })
 
     def test_01_energy_mix(self):
         """
@@ -318,6 +322,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption_hydro,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.consumption_hydro,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProductionValue}': self.production_hydro,
+                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.TargetEnergyProductionValue}':  self.target_production,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production_hydro,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.EnergyPricesValue}': self.prices_hydro,
                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
@@ -325,6 +330,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionValue}': self.consumption,
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}': self.consumption,
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProductionValue}': self.production,
+                       f'{GlossaryEnergy.methane}.{GlossaryEnergy.TargetEnergyProductionValue}': self.target_production,
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyProcductionWithoutRatioValue}': self.production,
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.EnergyPricesValue}': self.cost_details,
                        f'{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
@@ -441,6 +447,7 @@ class EnergyMixTestCase(unittest.TestCase):
                        f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage,
                        f'{name}.{model_name}.{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.loss_percentage': 1.0,
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.loss_percentage': 2.0,
+                       f'{name}.{model_name}.{GlossaryEnergy.TargetEnergyProductionValue}': self.target_production
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
@@ -454,8 +461,8 @@ class EnergyMixTestCase(unittest.TestCase):
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-    #        for graph in graph_list:
-    #            graph.to_plotly().show()
+        #for graph in graph_list:
+            #graph.to_plotly().show()
 
     def test_03_energy_mix_discipline_exponential_limit(self):
         """
@@ -522,7 +529,8 @@ class EnergyMixTestCase(unittest.TestCase):
                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
                        f'{name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage
+                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage,
+                       f'{name}.{model_name}.{GlossaryEnergy.TargetEnergyProductionValue}': self.target_production,
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
@@ -538,7 +546,7 @@ class EnergyMixTestCase(unittest.TestCase):
             disc, filters, as_json=False)
         for graph in graph_list:
             pass
-            # graph.to_plotly().show()
+            #graph.to_plotly().show()
 
     def test_04_energy_mix_resource(self):
         """
@@ -604,7 +612,8 @@ class EnergyMixTestCase(unittest.TestCase):
                            {GlossaryEnergy.Years: self.years, GlossaryEnergy.methane: 0.0}),
                        f'{name}.{model_name}.{GlossaryEnergy.methane}.{GlossaryEnergy.LandUseRequiredValue}': self.land_use_required_mock,
                        f'{name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
-                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage
+                       f'{name}.{model_name}.liquid_hydrogen_percentage': self.liquid_hydrogen_percentage,
+                       f'{name}.{model_name}.{GlossaryEnergy.TargetEnergyProductionValue}': self.target_production
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
