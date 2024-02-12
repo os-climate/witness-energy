@@ -546,7 +546,7 @@ class EnergyMixTestCase(unittest.TestCase):
             disc, filters, as_json=False)
         for graph in graph_list:
             pass
-            graph.to_plotly().show()
+            #graph.to_plotly().show()
 
     def test_04_energy_mix_resource(self):
         """
