@@ -13,7 +13,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
+    GHGemissionsDiscipline
 from energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc import EnergyGHGEmissionsDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -91,7 +92,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         }
 
         ns_dict = {
-            GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}.{func_manager_name}',
+            GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
             'ns_energy': f'{ns_study}.{energy_mix}',
             GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{coupling_name}.{energy_mix}',
             'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
@@ -105,7 +106,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # ---------------------------------------------
         ns_dict = {
-            GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}.{func_manager_name}',
+            GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
             'ns_energy': f'{ns_study}.{energy_mix}',
             GlossaryEnergy.NS_ENERGY_MIX: f'{ns_study}.{coupling_name}.{energy_mix}',
             'ns_carb': f'{ns_study}.{energy_mix}.{carbon_storage}.PureCarbonSolidStorage',
@@ -115,6 +116,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         }
 
         emissions_mod_dict = {
+            GHGemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline',
             EnergyGHGEmissionsDiscipline.name: 'energy_models.core.energy_ghg_emissions.energy_ghg_emissions_disc.EnergyGHGEmissionsDiscipline'
         }
         builder_emission_list = self.create_builder_list(emissions_mod_dict, ns_dict=ns_dict, associate_namespace=False)
@@ -145,7 +147,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 GlossaryEnergy.NS_WITNESS: f'{ns_study}.{coupling_name}',
                 GlossaryEnergy.NS_CCS: f'{ns_study}.{coupling_name}.{GlossaryEnergy.CCUS}',
                 GlossaryEnergy.NS_REFERENCE: f'{ns_study}.{energy_mix}.{carbon_storage}.NormalizationReferences',
-                GlossaryEnergy.NS_FUNCTIONS: f'{ns_study}.{func_manager_name}',
+                GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
                 'ns_forest': f"{ns_study}.{coupling_name}.{INVEST_DISC_NAME}",
                 'ns_crop': f"{ns_study}.{coupling_name}.{INVEST_DISC_NAME}",
             }
@@ -182,7 +184,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         ns_dict = {'ns_energy': f'{ns_study}.{coupling_name}.{energy_mix}',
                    'ns_emissions': f'{ns_study}.{energy_mix}',
                    'ns_land_use': f'{self.ee.study_name}.EnergyMix',
-                   GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
+                   GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
                    GlossaryEnergy.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.{coupling_name}.{INVEST_DISC_NAME}'}
 
@@ -202,7 +204,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             f'{func_manager_name}', fmanager_path)
         builder_list.append(fmanager_builder)
 
-        ns_dict = {GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}',
+        ns_dict = {GlossaryEnergy.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{func_manager_name}',
                    'ns_public': f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    GlossaryEnergy.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',

@@ -396,12 +396,12 @@ class Study(EnergyStudyManager):
 
     def make_func_df(self):
         func_df = pd.DataFrame({
-            "variable": ["energy_production_objective", "syngas_prod_objective"],
-            "parent": ["objectives", "objectives"],
-            "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.OBJECTIVE],
-            "weight": [1.0, 0.0],
-            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM],
-            "namespace": [GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS]
+            "variable": [GlossaryEnergy.CO2EmissionsObjectiveValue, GlossaryEnergy.TargetProductionConstraintValue, GlossaryEnergy.MaxBudgetConstraintValue,],
+            "parent": ["objectives", "constraints", "constraints"],
+            "ftype": [FunctionManagerDisc.OBJECTIVE, FunctionManagerDisc.INEQ_CONSTRAINT, FunctionManagerDisc.INEQ_CONSTRAINT] ,
+            "weight": [1.0, 1.0, 1.0,],
+            FunctionManagerDisc.AGGR_TYPE: [FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM, FunctionManager.AGGR_TYPE_SUM,],
+            "namespace": [GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS, GlossaryEnergy.NS_FUNCTIONS,]
         })
         return func_df
 
@@ -555,6 +555,14 @@ class Study(EnergyStudyManager):
 
         forest_invest_df = pd.DataFrame({GlossaryEnergy.Years: self.years, GlossaryEnergy.ForestInvestmentValue: 5})
 
+        co2_land_emissions = pd.DataFrame({
+            GlossaryEnergy.Years: self.years
+        })
+
+        CO2_indus_emissions_df = pd.DataFrame({
+            GlossaryEnergy.Years: self.years,
+            "indus_emissions": 0.
+        })
         values_dict = {
             f"{self.study_name}.{GlossaryEnergy.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryEnergy.YearEnd}": self.year_end,
@@ -570,6 +578,10 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}": resources_CO2_emissions,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}": resources_prices,
             f"{self.study_name}.{self.coupling_name}.InvestmentDistribution.{GlossaryEnergy.ForestInvestmentValue}": forest_invest_df,
+            f"{self.study_name}.{self.coupling_name}.CO2_land_emissions": co2_land_emissions,
+            f"{self.study_name}.{self.coupling_name}.CH4_land_emissions": co2_land_emissions,
+            f"{self.study_name}.{self.coupling_name}.N2O_land_emissions": co2_land_emissions,
+            f"{self.study_name}.{self.coupling_name}.CO2_indus_emissions_df": CO2_indus_emissions_df,
         }
 
         (

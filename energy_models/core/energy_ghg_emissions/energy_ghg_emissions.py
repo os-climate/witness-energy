@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
     AgricultureMixDiscipline
 from energy_models.core.stream_type.base_stream import BaseStream
@@ -48,6 +49,12 @@ class EnergyGHGEmissions(BaseStream):
 
     def __init__(self, name):
         super().__init__(name)
+        self.energy_gwp_objective = None
+
+        self.gwp_atmostphere_20_year_start = DatabaseWitnessCore.C02YearStartConcentration.value * DatabaseWitnessCore.pp_to_gt['CO2'] + \
+                                             DatabaseWitnessCore.N2OYearStartConcentration.value * DatabaseWitnessCore.pp_to_gt['N2O'] + \
+                                             DatabaseWitnessCore.CH4YearStartConcentration.value * DatabaseWitnessCore.pp_to_gt['CH4']
+
         self.energy_list = None
         self.scaling_factor_energy_production = None
         self.scaling_factor_energy_consumption = None
@@ -150,21 +157,17 @@ class EnergyGHGEmissions(BaseStream):
         # and sub_consumption df
         for energy in self.energy_list:
             self.aggregate_all_ghg_emissions_in_energy(energy)
-
             self.compute_ghg_emissions_by_use(energy)
 
         for ccs_name in self.ccs_list:
             self.aggregate_all_ghg_emissions_in_energy(ccs_name)
 
         self.sum_ghg_emissions_by_use()
-
         self.compute_other_co2_emissions()
-
         self.update_emissions_in_gt()
-
         self.compute_total_ghg_emissions()
-
         self.compute_gwp()
+        self.compute_energy_emissions_objective()
 
     def sum_ghg_emissions_by_use(self):
         '''Total CO2 by use 
@@ -508,10 +511,13 @@ class EnergyGHGEmissions(BaseStream):
                 dtot_CO2_emissions[
                     f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(
                     len_years)
-        #             self.total_co2_emissions[f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
-        #                 axis=1).values
-        #         else:
-        #             self.total_co2_emissions[
-        #                 f'{CO2.name} removed energy mix {self.ghg_input_unit}'] = 0.0
 
         return dtot_CO2_emissions
+
+    def compute_energy_emissions_objective(self):
+        columns_to_sum = [f"{ghg}_20" for ghg in self.GHG_TYPE_LIST]
+
+        mean_annual_gwp_emitted_by_energy = self.gwp_emissions[columns_to_sum].sum(axis=1).mean()
+        self.energy_gwp_objective = np.array([
+            (2 * self.gwp_atmostphere_20_year_start + mean_annual_gwp_emitted_by_energy) / (4 * self.gwp_atmostphere_20_year_start)
+        ])
