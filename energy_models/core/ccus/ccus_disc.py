@@ -244,7 +244,6 @@ class CCUS_Discipline(SoSWrapp):
         # -- New CO2 emissions gradients--#
         # --------------------------------#
 
-        alpha = inputs_dict['alpha']
         co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
         self.ccus_model.configure_parameters_update(inputs_dict)
         dtot_co2_emissions = self.ccus_model.compute_grad_CO2_emissions(co2_emissions)

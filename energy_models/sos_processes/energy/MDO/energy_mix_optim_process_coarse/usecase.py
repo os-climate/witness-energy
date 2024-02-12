@@ -15,7 +15,6 @@ limitations under the License.
 '''
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase import Study as subStudy
-from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Study(subStudy):

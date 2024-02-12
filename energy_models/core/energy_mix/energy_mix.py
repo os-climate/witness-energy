@@ -129,6 +129,7 @@ class EnergyMix(BaseStream):
         '''
         super(EnergyMix, self).__init__(name)
 
+        self.target_production_constraint = None
         self.co2_emitted_by_energy = None
         self.CCS_price = None
         self.CO2_tax_minus_CCS_constraint = None
