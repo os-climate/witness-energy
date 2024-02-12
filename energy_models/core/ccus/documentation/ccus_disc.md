@@ -7,7 +7,7 @@ Carbon emissions stored by carbon storage technologies are limited by the amount
 
 ![](carbon_stored.PNG)
 
-The Solid carbon ready to store is for now the one created by plasma cracking technology. However the computation of gaseous CO2 ready to store is more complex. The CO2 captured to be stored is the difference between the gaseous CO2 capture provided by the energy mix and the needed one. The CO2 capture provided is the sum of the CO2 really captured by carbon capture technologies and the CO2 already captured by energy mic technologies (as Upgrading biogas technology).
+The Solid carbon ready to store is for now the one created by plasma cracking technology. However the computation of gaseous CO2 ready to store is more complex. The CO2 captured to be stored is the difference between the gaseous CO2 capture provided by the energy mix and the needed one. The CO2 capture provided is the sum of the CO2 really captured by carbon capture technologies and the CO2 already captured by energy mix technologies (as Upgrading biogas technology).
 
 ![](Carbon_captured_to_be_stored.PNG)
 
@@ -15,7 +15,7 @@ If the CO2 captured to be stored is lower than zero that means that we need more
 
 $$ratio_{cc\_available}  = min(1.0,\frac{cc_{provided}}{cc_{needed}})$$
 
-This ratio is send to technology models that needs carbon capture and their production is consequently impacted : 
+This ratio is sent to technology models that needs carbon capture and their production is consequently impacted : 
 
 $$production  = production*ratio_{cc\_available}$$
 
