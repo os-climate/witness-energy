@@ -201,8 +201,8 @@ class HeatMixTestCase(unittest.TestCase):
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-        for graph in graph_list:
-           graph.to_plotly().show()
+        # for graph in graph_list:
+        #    graph.to_plotly().show()
 
 
 

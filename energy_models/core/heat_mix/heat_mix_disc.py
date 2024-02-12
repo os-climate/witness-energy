@@ -27,7 +27,6 @@ from energy_models.core.stream_type.energy_models.heat import mediumtemperatureh
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
 
@@ -144,8 +143,11 @@ class Heat_Mix_Discipline(SoSWrapp):
                                 # dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.CO2EmissionsValue}'] = {
                                 #     'type': 'dataframe', 'unit': 'kg/kWh',
                                 #     'visibility': 'Shared', 'namespace': 'ns_energy'}
+                                dynamic_inputs[f'{energy}.{techno}.{GlossaryEnergy.EnergyProductionValue}'] = {
+                                    'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
                                 dynamic_outputs[f'{energy}.{techno}.{GlossaryEnergy.EnergyProductionValue}'] = {
                                     'type': 'dataframe', 'unit': 'PWh', "dynamic_dataframe_columns": True}
+
 
         if GlossaryEnergy.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
@@ -204,55 +206,84 @@ class Heat_Mix_Discipline(SoSWrapp):
         identity = np.identity(delta_years)
         ones = np.ones(delta_years)
 
-        # print(self.energy_model.distribution_list)
+        energy_list = inputs_dict[GlossaryEnergy.energy_list]
+
+        for energy in energy_list:
+            techno_list = inputs_dict[f'{energy}.technologies_list']
+            for techno in techno_list:
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryEnergy.EnergyProductionValue, GlossaryEnergy.EnergyProductionValue),
+                    (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', techno), identity)  # ,identity * 1e-3
+
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryEnergy.TargetHeatProductionConstraintValue,),
+                    (f'{energy}.{GlossaryEnergy.EnergyProductionValue}', techno), identity)  # ,identity * 1e-3
+
         for techno in self.energy_model.distribution_list:
-            # self.set_partial_derivative_for_other_types(
-            #     (GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.EnergyCO2EmissionsValue),
-            #     ('CO2_emission_mix', techno), identity) #,identity * 1e-3
+
+            self.set_partial_derivative_for_other_types(
+                (GlossaryEnergy.EnergyCO2EmissionsValue, GlossaryEnergy.EnergyCO2EmissionsValue),
+                ('CO2_emission_mix', techno), identity) #,identity * 1e-3
 
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.CO2MinimizationObjective,),
                 ('CO2_emission_mix', techno), ones)
 
-            '''
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.TargetHeatProductionConstraintValue,),
-                ('CO2_emission_mix', techno), identity)
-            '''
+        self.set_partial_derivative_for_other_types(
+            (GlossaryEnergy.TargetHeatProductionConstraintValue,),
+            (GlossaryEnergy.TargetHeatProductionValue, GlossaryEnergy.TargetHeatProductionValue), identity)
 
 
     def get_chart_filter_list(self):
 
-        filters = []
-        chart_list = [GlossaryEnergy.TargetHeatProductionValue]
-        filters.append(ChartFilter(
+        chart_filters = []
+        chart_list = ['actual_target_energy_production']
+        chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
+        return chart_filters
 
     def get_post_processing_list(self, filters=None):
         instanciated_charts = []
+        charts = []
 
+        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
+        energy_list = self.get_sosdisc_inputs(GlossaryEnergy.energy_list)
+        # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
                 if chart_filter.filter_key == 'charts':
-                    chart_list = chart_filter.selected_values
-
-        target_heat_prod = self.get_sosdisc_inputs(GlossaryEnergy.TargetHeatProductionValue)[
-            GlossaryEnergy.TargetHeatProductionValue].values
-        heat_prod_df = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
-        heat_prod = list(heat_prod_df[GlossaryEnergy.EnergyProductionValue].values)
-        years = list(heat_prod_df[GlossaryEnergy.Years].values)
-        if GlossaryEnergy.TargetHeatProductionValue in chart_list and target_heat_prod.max() > 0:
-            chart_name = "Target heat production constraint"
-            new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.TargetHeatProduction['unit'],
-                                                 chart_name=chart_name)
-
-
-            new_series = InstanciatedSeries(years, heat_prod, 'Heat production', 'lines', True)
-            new_chart.add_series(new_series)
-
-            new_series = InstanciatedSeries(years, list(target_heat_prod), 'Minimal required heat production', 'dash_lines', True)
-            new_chart.add_series(new_series)
-            instanciated_charts.append(new_chart)
+                    charts = chart_filter.selected_values
+        #         if chart_filter.filter_key == 'price_unit':
+        #             price_unit_list = chart_filter.selected_values
+        #         if chart_filter.filter_key == GlossaryEnergy.Years:
+        #             years_list = chart_filter.selected_values
+        if 'actual_target_energy_production' in charts:
+            new_chart = self.get_chart_target_actual_production()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
+    def get_chart_target_actual_production(self):
+        '''
+        Plot the total co2 emissions sources - sinks
+        '''
+        chart_name = 'Target v/s Actual production'
+        target_production = self.get_sosdisc_inputs(GlossaryEnergy.TargetHeatProductionValue)
+        total_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
+
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'target production (PWh)',
+                                             chart_name=chart_name)
+
+        x_serie_1 = target_production[GlossaryEnergy.Years].values.tolist()
+
+        serie = InstanciatedSeries(
+            x_serie_1,
+            (target_production[GlossaryEnergy.TargetHeatProductionValue].values).tolist(), 'target production')
+        new_chart.add_series(serie)
+        serie = InstanciatedSeries(
+            x_serie_1,
+            (total_production[GlossaryEnergy.EnergyProductionValue].values).tolist(), 'total heat production')
+        new_chart.add_series(serie)
+
+        return new_chart

@@ -152,16 +152,14 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
     def test_01_heat_mix_analytic_grad(self):
         self.ee.execute()
 
-        checked_productionss_input = [
-            f'{self.name}.{self.model_name}.heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}',
-            f'{self.name}.{self.model_name}.heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}'
-            f'{self.name}.{self.model_name}.heat.lowtemperatureheat.{GlossaryEnergy.EnergyProductionValue}'
-        ]
-
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_heat_mix_discipline.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.CO2_emission_mix',
-                                    ],# + checked_productionss_input,
+                                    f'{self.name}.{self.model_name}.{GlossaryEnergy.TargetHeatProductionValue}',
+                                    f'{self.name}.{self.model_name}.heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}',
+                                    f'{self.name}.{self.model_name}.heat.mediumtemperatureheat.{GlossaryEnergy.EnergyProductionValue}',
+                                    f'{self.name}.{self.model_name}.heat.lowtemperatureheat.{GlossaryEnergy.EnergyProductionValue}'
+                                    ],
                             outputs=[f'{self.name}.{GlossaryEnergy.CO2MinimizationObjective}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}',
                                      f'{self.name}.{self.model_name}.{GlossaryEnergy.EnergyProductionValue}',

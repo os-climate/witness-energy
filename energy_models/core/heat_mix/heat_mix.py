@@ -76,7 +76,8 @@ class HeatMix(BaseStream):
 
     def compute_target_heat_production_constraint(self, total_heat_production, inputs_dict):
 
-        total_heat_production_constraint = total_heat_production[GlossaryEnergy.EnergyProductionValue].values - inputs_dict[GlossaryEnergy.TargetHeatProductionValue][GlossaryEnergy.TargetHeatProductionValue].values
+        total_heat_production_constraint = total_heat_production[GlossaryEnergy.EnergyProductionValue].values \
+                                           - inputs_dict[GlossaryEnergy.TargetHeatProductionValue][GlossaryEnergy.TargetHeatProductionValue].values
 
         return total_heat_production_constraint
 
