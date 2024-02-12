@@ -26,10 +26,13 @@ class Study(StudyManager):
             self,
             file_path=__file__,
             execution_engine=None,
+            run_usecase=False
+
     ):
         super().__init__(
             file_path=file_path,
             execution_engine=execution_engine,
+            run_usecase=run_usecase
         )
         self.optim_name = 'MDO'
         self.techno_dict = DEFAULT_TECHNO_DICT
@@ -44,12 +47,13 @@ class Study(StudyManager):
             f'{self.study_name}.{self.optim_name}.formulation': 'DisciplinaryOpt',
             f'{self.study_name}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,
             f'{self.study_name}.{self.optim_name}.max_iter': 3,
+            f'{self.study_name}.{self.optim_name}.differentiation_method': 'user',
         }
         data.append(values_mdo)
         return data
 
 
 if '__main__' == __name__:
-    uc_cls = Study()
+    uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()

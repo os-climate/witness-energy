@@ -45,10 +45,10 @@ class EnergyDemandDiscipline(SoSWrapp):
     }
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
                                                               'dataframe_descriptor': {
-                                                                  GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                                  GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                                                   'demand': ('float', None, True),
                                                                   f'production {GlossaryEnergy.electricity} (TWh)': ('float', None, True),
                                                                   f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)': ('float', None, True),
@@ -70,7 +70,7 @@ class EnergyDemandDiscipline(SoSWrapp):
                                                      'namespace': GlossaryEnergy.NS_REFERENCE},
                GlossaryEnergy.PopulationDf['var_name']: GlossaryEnergy.PopulationDf,
                GlossaryEnergy.TransportDemandValue: {'type': 'dataframe', 'dataframe_descriptor': {
-                   GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                   GlossaryEnergy.Years: ('int', [1900, 2100], False),
                    GlossaryEnergy.TransportDemandValue: ('float', None, True)},
                                                      'dataframe_edition_locked': False, 'unit': 'TWh'},
                'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh',

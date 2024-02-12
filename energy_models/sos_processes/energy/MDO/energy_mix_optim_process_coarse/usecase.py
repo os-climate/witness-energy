@@ -22,15 +22,17 @@ class Study(subStudy):
             self,
             file_path=__file__,
             execution_engine=None,
+            run_usecase=False
     ):
         super().__init__(
             file_path=file_path,
             execution_engine=execution_engine,
+            run_usecase=run_usecase
         )
         self.techno_dict = DEFAULT_COARSE_TECHNO_DICT
 
 
 if "__main__" == __name__:
-    uc_cls = Study()
+    uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()

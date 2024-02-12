@@ -122,14 +122,14 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
     # The increase in land is of 10Mha each year, in CAPEX and OPEX
     land_surface_for_food = pd.DataFrame(
         {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1),
-         'Agriculture total (Gha)': np.ones(81) * 4.8})
+         'Agriculture total (Gha)': 4.8})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                           GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),
                                            }
@@ -145,7 +145,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                                      'namespace': GlossaryEnergy.NS_WITNESS,
                                                      'default': land_surface_for_food,
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                     'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                     'int', [1900, 2100], False),
                                                                               'Agriculture total (Gha)': (
                                                                               'float', None, True), },
                                                      'dataframe_edition_locked': False}}

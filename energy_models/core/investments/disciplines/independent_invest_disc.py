@@ -51,7 +51,7 @@ class IndependentInvestDiscipline(SoSWrapp):
     energy_mix_name = EnergyMix.name
     DESC_IN = {
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.invest_mix: {'type': 'dataframe', 'unit': 'G$',
                                     'dataframe_edition_locked': False,
                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
