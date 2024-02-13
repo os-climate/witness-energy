@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
     AgricultureMixDiscipline
 from energy_models.core.stream_type.base_stream import BaseStream
@@ -150,20 +151,15 @@ class EnergyGHGEmissions(BaseStream):
         # and sub_consumption df
         for energy in self.energy_list:
             self.aggregate_all_ghg_emissions_in_energy(energy)
-
             self.compute_ghg_emissions_by_use(energy)
 
         for ccs_name in self.ccs_list:
             self.aggregate_all_ghg_emissions_in_energy(ccs_name)
 
         self.sum_ghg_emissions_by_use()
-
         self.compute_other_co2_emissions()
-
         self.update_emissions_in_gt()
-
         self.compute_total_ghg_emissions()
-
         self.compute_gwp()
 
     def sum_ghg_emissions_by_use(self):
@@ -508,10 +504,5 @@ class EnergyGHGEmissions(BaseStream):
                 dtot_CO2_emissions[
                     f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(
                     len_years)
-        #             self.total_co2_emissions[f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
-        #                 axis=1).values
-        #         else:
-        #             self.total_co2_emissions[
-        #                 f'{CO2.name} removed energy mix {self.ghg_input_unit}'] = 0.0
 
         return dtot_CO2_emissions

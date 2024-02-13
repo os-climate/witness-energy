@@ -95,7 +95,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                                          'editable': False, 'structuring': True},
                GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.TargetEnergyProductionValue: GlossaryEnergy.TargetEnergyProductionDf,
                'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
@@ -185,7 +185,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_energy',
                                                     'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                    'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                    'int', [1900, 2100], False),
                                                                              GlossaryEnergy.CO2Tax: (
                                                                              'float', None, True)}
                                                     },

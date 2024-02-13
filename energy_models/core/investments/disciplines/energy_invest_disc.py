@@ -54,7 +54,7 @@ class InvestEnergyDiscipline(SoSWrapp):
                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe',
                                                 'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                'int', [1900, 2100], False),
                                                                          GlossaryEnergy.EnergyInvestmentsValue: (
                                                                          'float', None, True)},
                                                 'dataframe_edition_locked': False},
@@ -62,7 +62,7 @@ class InvestEnergyDiscipline(SoSWrapp):
                                              'namespace': 'ns_public'},
         'invest_energy_mix': {'type': 'dataframe',
                               'dataframe_descriptor': {
-                                  GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                  GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                   GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True),
                                   GlossaryEnergy.methane: ('float', None, True),
                                   GlossaryEnergy.electricity: ('float', None, True),

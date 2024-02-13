@@ -31,6 +31,16 @@ class GlossaryEnergy(GlossaryWitnessCore):
     NB_POLES_COARSE: int = 20  # number of poles in witness coarse
     NB_POLES_FULL: int = 8  # number of poles in witness full
 
+    YeartEndDefault = 2050
+    YearEndVar = {
+        "type": "int",
+        "default": YeartEndDefault,
+        "unit": "year",
+        "visibility": "Shared",
+        "namespace": "ns_public",
+        "range": [2000, 2300],
+    }
+
     biogas = "biogas"
     biodiesel = "biodiesel"
     biomass_dry = "biomass_dry"

@@ -52,9 +52,9 @@ class TechnoDiscipline(SoSWrapp):
 
     DESC_IN = {
         GlossaryEnergy.YearStart: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
-        GlossaryEnergy.YearEnd: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_END_DESC_IN),
+        GlossaryEnergy.YearEnd: dict({'structuring': True}, **GlossaryEnergy.YearEndVar),
         GlossaryEnergy.InvestLevelValue: {'type': 'dataframe', 'unit': 'G$',
-                                          'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                          'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                                                    GlossaryEnergy.InvestValue: ('float', None, True)},
                                           'dataframe_edition_locked': False
                                           },
@@ -177,25 +177,26 @@ class TechnoDiscipline(SoSWrapp):
         '''
         Update all default dataframes with years 
         '''
-        if GlossaryEnergy.YearStart in self.get_data_in():
+        if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-            years = np.arange(year_start, year_end + 1)
-            default_margin = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           GlossaryEnergy.MarginValue: 110.0})
+            if year_start is not None and year_end is not None:
+                years = np.arange(year_start, year_end + 1)
+                default_margin = pd.DataFrame({GlossaryEnergy.Years: years,
+                                               GlossaryEnergy.MarginValue: 110.0})
 
-            default_utilisation_ratio = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                      GlossaryEnergy.UtilisationRatioValue: 100.0 * np.ones_like(
-                                                          years)})
+                default_utilisation_ratio = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                          GlossaryEnergy.UtilisationRatioValue: 100.0 * np.ones_like(
+                                                              years)})
 
-            self.set_dynamic_default_values({GlossaryEnergy.ResourcesPriceValue: get_static_prices(years),
-                                             GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                                                 years),
-                                             GlossaryEnergy.MarginValue: default_margin,
-                                             GlossaryEnergy.UtilisationRatioValue: default_utilisation_ratio,
-                                             GlossaryEnergy.TransportCostValue: pd.DataFrame(
-                                                 {GlossaryEnergy.Years: years,
-                                                  'transport': 0.0}),
-                                             GlossaryEnergy.TransportMarginValue: default_margin})
+                self.set_dynamic_default_values({GlossaryEnergy.ResourcesPriceValue: get_static_prices(years),
+                                                 GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
+                                                     years),
+                                                 GlossaryEnergy.MarginValue: default_margin,
+                                                 GlossaryEnergy.UtilisationRatioValue: default_utilisation_ratio,
+                                                 GlossaryEnergy.TransportCostValue: pd.DataFrame(
+                                                     {GlossaryEnergy.Years: years,
+                                                      'transport': 0.0}),
+                                                 GlossaryEnergy.TransportMarginValue: default_margin})
 
     def run(self):
         '''

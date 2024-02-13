@@ -47,13 +47,13 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                        'visibility': 'Shared',
                                        'namespace': 'ns_flue_gas', 'unit': 'Mt',
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                           GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                            'CO2 from Flue Gas': ('float', None, False)}},
                'flue_gas_prod_ratio': {'type': 'dataframe',
                                        'visibility': 'Shared',
                                        'namespace': 'ns_flue_gas', 'unit': '-',
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                           GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                            f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),
                                            f'{GlossaryEnergy.electricity}.GasTurbine': ('float', None, True),
                                            f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine': (
