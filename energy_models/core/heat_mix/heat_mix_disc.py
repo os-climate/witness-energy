@@ -52,7 +52,7 @@ class Heat_Mix_Discipline(SoSWrapp):
                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                                'editable': False, 'structuring': True},
                GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.TargetHeatProductionValue: GlossaryEnergy.TargetHeatProduction,
                'CO2_emission_mix': {'type': 'dataframe', 'unit': 'G$',
                                            'dataframe_edition_locked': False,
@@ -231,7 +231,7 @@ class Heat_Mix_Discipline(SoSWrapp):
 
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.TargetHeatProductionConstraintValue,),
-            (GlossaryEnergy.TargetHeatProductionValue, GlossaryEnergy.TargetHeatProductionValue), identity)
+            (GlossaryEnergy.TargetHeatProductionValue, GlossaryEnergy.TargetHeatProductionValue), identity*-1)
 
 
     def get_chart_filter_list(self):

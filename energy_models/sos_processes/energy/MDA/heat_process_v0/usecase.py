@@ -28,10 +28,8 @@ from energy_models.core.energy_study_manager import AGRI_TYPE, EnergyStudyManage
 from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.gaseous_hydrogen import GaseousHydrogen
 from energy_models.core.stream_type.energy_models.methane import Methane
-from energy_models.core.stream_type.energy_models.syngas import Syngas
 from energy_models.core.stream_type.resources_data_disc import get_static_CO2_emissions, get_static_prices
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_solid_storage import PureCarbonSS
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.core.stream_type.energy_models.heat import hightemperatureheat
@@ -43,30 +41,18 @@ from energy_models.sos_processes.energy.heat_techno_mix.lowtemperatureheat_mix.u
     TECHNOLOGIES_LIST_DEV as lowtemperatureheat_technos_dev
 from energy_models.sos_processes.energy.heat_techno_mix.mediumtemperatureheat_mix.usecase import \
     TECHNOLOGIES_LIST_DEV as mediumtemperatureheat_technos_dev
-from energy_models.sos_processes.energy.techno_mix.methane_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as Methane_technos_dev
-from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import \
-    TECHNOLOGIES_LIST_DEV as Electricity_technos_dev
 DEFAULT_TECHNO_DICT = {
-                       # Electricity.name: {'type': ENERGY_TYPE, 'value': Electricity_technos_dev},
-                       # Methane.name: {'type': ENERGY_TYPE, 'value': Methane_technos_dev},
                        hightemperatureheat.name: {'type': ENERGY_TYPE, 'value': hightemperatureheat_technos_dev},
                        mediumtemperatureheat.name: {'type': ENERGY_TYPE, 'value': mediumtemperatureheat_technos_dev},
                        lowtemperatureheat.name: {'type': ENERGY_TYPE, 'value': lowtemperatureheat_technos_dev},
-                       } #Methane.name: {'type': ENERGY_TYPE, 'value': Methane_technos_dev},
+                       }
 
-CCS_NAME = 'CCUS'
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
 OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
-AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
-AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
-AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
-AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
 FUNC_DF = FunctionManagerDisc.FUNC_DF
 CO2_TAX_MINUS_CCS_CONSTRAINT_DF = EnergyMix.CO2_TAX_MINUS_CCS_CONSTRAINT_DF
-CARBON_TO_BE_STORED_CONSTRAINT = PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT
 # TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF = HeatMix.TOTAL_PROD_MINUS_MIN_PROD_CONSTRAINT_DF
 INVEST_DISC_NAME = 'InvestmentDistribution'
 hydropower_name = Electricity.hydropower_name

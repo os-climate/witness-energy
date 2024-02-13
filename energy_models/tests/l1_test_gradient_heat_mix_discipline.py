@@ -27,13 +27,13 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 from energy_models.glossaryenergy import GlossaryEnergy
 
 class HeatMixJacobianTestCase(AbstractJacobianUnittest):
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         self.name = 'Test'
         self.model_name = 'HeatMix'
         self.year_start =GlossaryCore.YeartStartDefault
-        self.year_end = 2030#GlossaryCore.YeartEndDefault
+        self.year_end = 2030 #GlossaryCore.YeartEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start
 
