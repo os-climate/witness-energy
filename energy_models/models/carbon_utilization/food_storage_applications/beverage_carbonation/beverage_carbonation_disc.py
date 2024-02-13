@@ -39,7 +39,7 @@ class BeverageCarbonationDiscipline(CUTechnoDiscipline):
         'icon': 'fas fa-globe-europe fa-fw',
         'version': '',
     }
-    techno_name = 'food_and_beverage_applications.BeverageCarbonation'
+    techno_name = 'food_storage_applications.BeverageCarbonation'
     # https://www.vedantu.com/chemistry/carbonation
     lifetime = 35
     construction_delay = 3
@@ -51,15 +51,15 @@ class BeverageCarbonationDiscipline(CUTechnoDiscipline):
                                  # Opex % : fig 5 - 6 :
                                  # https://reader.elsevier.com/reader/sd/pii/S1876610212010934?token=1A3181CEE6756AFE741AAACDFC004EAA641316AEC4BE6238B4712D20B90F53690774128290A7E3032F7D5AF0F8CC38A9
                                  'Opex_percentage': 0.29,   # https://www.justfooderp.com/docs/JustFood-Operational-Excellence.pdf
-                                 'elec_demand': 2.0,     # https://www.news-medical.net/news/20200206/New-technology-captures-CO2-from-the-atmosphere-for-use-in-beverage-carbonation.aspx
-                                 'elec_demand_unit': 'kWh/kgCO2',
+                                 'elec_demand': 2.0,        # https://www.news-medical.net/news/20200206/New-technology-captures-CO2-from-the-atmosphere-for-use-in-beverage-carbonation.aspx
+                                 'elec_demand_unit': 'kWh/kg',
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224, pp.957-980.
                                  # for now constant in time but should increase
                                  # with time 10%/10year according to Fasihi2019
                                  'heat_demand': 1.6,        # https://researchmgt.monash.edu/ws/portalfiles/portal/330629911/323332938_oa.pdf
-                                 'heat_demand_unit': 'kWh/kgCO2',
+                                 'heat_demand_unit': 'kWh/kg',
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.33,
@@ -90,6 +90,10 @@ class BeverageCarbonationDiscipline(CUTechnoDiscipline):
                                  GlossaryEnergy.EnergyEfficiency: 0.78,
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
+                                 'water_demand': 2.02,  # https://www.google.com/search?q=water+required+in+liter+to+form+1+liter+of+beverage+carbonated+drinks&rlz=1C1UEAD_enIN1000IN1000&oq=water+required+in+liter+to+form+1+liter+of+beverage+carbona&gs_lcrp=EgZjaHJvbWUqCQgCECEYChigATIGCAAQRRg5MgkIARAhGAoYoAEyCQgCECEYChigAdIBCjExNzgzMWowajeoAgCwAgA&sourceid=chrome&ie=UTF-8
+                                 'water_demand_unit': 'l/l',
+                                 'co2_needs': 1,        # https://www.google.com/search?q=co2+needs+to+produce+1+liter+of+beverage+bottle&sca_esv=40ad471a4e6b196f&rlz=1C1UEAD_enIN1000IN1000&sxsrf=ACQVn0_pRM6bqIEnQdjSjw_8Y3sXh8-YOw%3A1707821558392&ei=9knLZZi_F4aQnesP-YuXaA&oq=co2+needs+to+produce+1+liter+of+beverage+&gs_lp=Egxnd3Mtd2l6LXNlcnAiKWNvMiBuZWVkcyB0byBwcm9kdWNlIDEgbGl0ZXIgb2YgYmV2ZXJhZ2UgKgIIAzIFECEYoAEyBRAhGKABMgUQIRigATIFECEYoAFIv0xQoQNY6CBwAXgBkAEAmAGwAaAB2BOqAQQwLjE4uAEByAEA-AEBwgIKEAAYRxjWBBiwA8ICBBAjGCfCAgQQIRgVwgIHECEYChigAeIDBBgAIEGIBgGQBgg&sclient=gws-wiz-serp
+                                 'co2_needs_unit': 'l/l',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  }
@@ -124,7 +128,7 @@ class BeverageCarbonationDiscipline(CUTechnoDiscipline):
                                                          0.0]
                                              })
     # use the same flue gas ratio as gas turbine one
-    FLUE_GAS_RATIO = np.array([0.0350])
+    FOOD_STORAGE_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

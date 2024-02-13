@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 23/11/2023 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,6 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from abc import abstractmethod
+
+import numpy as np
+import scipy.interpolate as sc
+from scipy.stats import linregress
 
 from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 from energy_models.core.techno_type.techno_type import TechnoType
@@ -41,14 +46,17 @@ class CUTechno(TechnoType):
             capex_unit = data_tocheck['Capex_init_unit']
             raise Exception(
                 f'The CAPEX unity {capex_unit} is not handled yet in techno_type')
+        # return $/tCO2
         return capex_init * 1000.0
 
     def check_energy_demand_unit(self, energy_demand_unit, energy_demand):
         """
         Compute energy demand in kWh/kgCO2
         """
+        # Based on formula 1 of the Fasihi2016 PtL paper
+        # self.data['demand']=self.scenario_demand['elec_demand']
 
-        if energy_demand_unit == 'kWh/kgCO2':
+        if energy_demand_unit == 'kWh/kg':
             pass
         # add elif unit conversion if necessary
         else:
@@ -62,10 +70,150 @@ class CUTechno(TechnoType):
         '''
         Compute other energy costs which will depend on the techno reaction (elec for electrolysis or methane for SMR by example)
         '''
+
     @abstractmethod
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
-        ''' 
+        '''
         Get the theoretical CO2 production for a given technology,
         Need to be overloaded in each technology model (example in SMR)
         '''
         return 0.0
+
+    @staticmethod
+    def compute_capex_variation_from_fs_ratio(fs_mean_ratio, fs_ratio_effect):
+
+        if fs_ratio_effect:
+            c02_concentration_base = 0.13
+            co2_concentration_list = [0.035, 0.092, 0.13, 0.186, 0.44, 0.99]
+            capex_utilization_list = [1234, 629, 479.8, 396.8, 263.3, 117]
+
+            func_capex_with_fs_ratio = sc.interp1d(co2_concentration_list, capex_utilization_list,
+                                                   kind='linear', fill_value='extrapolate')
+
+            real_ratio = func_capex_with_fs_ratio(
+                fs_mean_ratio) / func_capex_with_fs_ratio(c02_concentration_base)
+        else:
+            real_ratio = np.ones(len(fs_mean_ratio))
+
+        return real_ratio
+
+    def compute_dcapex_dfs_ratio(self, fs_mean_ratio, invest_list, data_config, fs_ratio_effect):
+
+        if fs_ratio_effect:
+            co2_concentration_list = [0.035, 0.092, 0.13, 0.186, 0.44, 0.99]
+            capex_utilization_list = [1234, 629, 479.8, 396.8, 263.3, 117]
+
+            slopes = []
+            for fs in fs_mean_ratio:
+                co2_concentration_list_with_fs = co2_concentration_list + [fs]
+                co2_concentration_list_with_fs.sort()
+                position = co2_concentration_list_with_fs.index(fs)
+                if position == 0:
+                    position = 1
+                elif position == len(co2_concentration_list_with_fs):
+                    position = len(co2_concentration_list)
+                if fs in co2_concentration_list:
+                    position = position + 1
+
+                slope = linregress(
+                    co2_concentration_list[position - 1:position + 1], capex_utilization_list[position - 1:position + 1])[0]
+                if np.isnan(slope):
+                    slope = 0.0
+                slopes.append(slope)
+
+            capex = super().compute_capex(invest_list, data_config)
+            grad = np.array(slopes)[:, np.newaxis] * \
+                np.array(capex)[:, np.newaxis] / 479.8
+
+        else:
+            grad = 0.0
+
+        return np.identity(len(fs_mean_ratio)) * grad
+
+    @staticmethod
+    def compute_electricity_variation_from_fs_ratio(fs_mean_ratio, fs_ratio_effect):
+
+        if fs_ratio_effect:
+            c02_concentration_base = 0.13
+            co2_concentration_list = [0.035, 0.092, 0.13, 0.186, 0.44, 0.99]
+            elec_demand_list = [23.2, 10.5, 8.5, 6.6, 4.5, 8.5]
+
+            func_elec_demand_with_fs_ratio = sc.interp1d(co2_concentration_list, elec_demand_list,
+                                                         kind='linear', fill_value='extrapolate')
+
+            real_ratio = func_elec_demand_with_fs_ratio(fs_mean_ratio) / \
+                func_elec_demand_with_fs_ratio(c02_concentration_base)
+        else:
+            real_ratio = np.ones(len(fs_mean_ratio))
+
+        return real_ratio
+
+    def compute_delec_dfs_ratio(self, fs_mean_ratio, fs_ratio_effect, energy_name='electricity'):
+
+        if fs_ratio_effect:
+            co2_concentration_list = [0.035, 0.092, 0.13, 0.186, 0.44, 0.99]
+            elec_demand_list = [23.2, 10.5, 8.5, 6.6, 4.5, 8.5]
+
+            slopes = []
+            for fs in fs_mean_ratio:
+                co2_concentration_list_with_fs = co2_concentration_list + [fs]
+                co2_concentration_list_with_fs.sort()
+                position = co2_concentration_list_with_fs.index(fs)
+                if position == 0:
+                    position = 1
+                elif position == len(co2_concentration_list_with_fs):
+                    position = len(co2_concentration_list)
+
+                if fs in co2_concentration_list:
+                    position = position + 1
+                slope = linregress(
+                    co2_concentration_list[position - 1:position + 1], elec_demand_list[position - 1:position + 1])[0]
+                if np.isnan(slope):
+                    slope = 0.0
+                slopes.append(slope)
+            elec_needs = self.get_electricity_needs()
+
+            grad = np.array(slopes)[:, np.newaxis] \
+                * elec_needs / 8.5 / self.techno_infos_dict['efficiency'] *\
+                self.prices[energy_name][:, np.newaxis]
+        else:
+            grad = 0.0
+        return np.identity(len(fs_mean_ratio)) * grad
+
+    def compute_dprod_dfoodstorage(self,  capex_list, invest_list, invest_before_year_start, techno_dict, dcapexdfluegas):
+
+        dprod_dcapex = self.compute_dprod_dcapex(
+            capex_list, invest_list, techno_dict, invest_before_year_start)
+
+        #dprod_dfluegas = dpprod_dpfluegas + dprod_dcapex * dcapexdfluegas
+        if 'complex128' in [dcapexdfluegas.dtype, dprod_dcapex.dtype]:
+            arr_type = 'complex128'
+        else:
+            arr_type = 'float64'
+
+        dprod_dfoodstorage = np.zeros(dprod_dcapex.shape, dtype=arr_type)
+
+        for line in range(dprod_dcapex.shape[0]):
+            for column in range(dprod_dcapex.shape[1]):
+                dprod_dfoodstorage[line, column] = np.matmul(
+                    dprod_dcapex[line, :], dcapexdfluegas[:, column])
+
+        return dprod_dfoodstorage
+
+    def compute_dnon_usecapital_dfoodstorage(self, dcapex_dfoodstorage, dprod_dfoodstorage):
+        '''
+        Compute the gradient of non_use capital by invest_level
+
+        dnon_usecapital_dfluegas = dcapex_dfluegas*prod(1-ratio) + dprod_dfluegas*capex(1-ratio) - dratiodfluegas*prod*capex
+        dratiodfluegas = 0.0
+        '''
+
+        dtechnocapital_dfluegas = (dcapex_dfoodstorage * self.production_woratio[f'{self.energy_name} ({self.product_energy_unit})'].values.reshape((len(self.years), 1)) +
+                                   dprod_dfoodstorage * self.cost_details[f'Capex_{self.name}'].values.reshape((len(self.years), 1)))
+
+        dnon_usecapital_dfluegas = dtechnocapital_dfluegas * (
+            1.0 - self.applied_ratio['applied_ratio'].values).reshape((len(self.years), 1))
+
+        # we do not divide by / self.scaling_factor_invest_level because invest
+        # and non_use_capital are in G$
+        return dnon_usecapital_dfluegas, dtechnocapital_dfluegas

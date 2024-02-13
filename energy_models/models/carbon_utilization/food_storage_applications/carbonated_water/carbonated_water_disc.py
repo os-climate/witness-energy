@@ -53,14 +53,14 @@ class CarbonatedWaterDiscipline(CUTechnoDiscipline):
                                  # Opex % : fig 5 - 6 :
                                  'Opex_percentage': 0.35,  #https://www.atlantis-press.com/article/125971500.pdf
                                  'elec_demand': 3.19,      # https://www.google.com/search?q=carbonated+water+process+how+much+electricity+used+in+kwh+&sca_esv=b9eca7660d2a1203&rlz=1C1UEAD_enIN1000IN1000&sxsrf=ACQVn0_mLwbL4I9MG04Nw-xDXYROrfmkdg%3A1707333796755&ei=pNjDZafhLdKeseMP8OGy6Ao&ved=0ahUKEwinw9-D-pmEAxVST2wGHfCwDK0Q4dUDCBA&uact=5&oq=carbonated+water+process+how+much+electricity+used+in+kwh+&gs_lp=Egxnd3Mtd2l6LXNlcnAiOmNhcmJvbmF0ZWQgd2F0ZXIgcHJvY2VzcyBob3cgbXVjaCBlbGVjdHJpY2l0eSB1c2VkIGluIGt3aCBIAFAAWABwAHgBkAEAmAEAoAEAqgEAuAEDyAEA-AEB4gMEGAAgQQ&sclient=gws-wiz-serp#ip=1
-                                 'elec_demand_unit': 'kWh/kgCO2',
+                                 'elec_demand_unit': 'kWh/kg',
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224, pp.957-980.
                                  # for now constant in time but should increase
                                  # with time 10%/10year according to Fasihi2019
                                  'heat_demand': 0.00026,     # https://pubs.acs.org/doi/10.1021/acssuschemeng.0c08561
-                                 'heat_demand_unit': 'kWh/kgCO2',
+                                 'heat_demand_unit': 'kWh/kg',
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.33,
@@ -92,6 +92,10 @@ class CarbonatedWaterDiscipline(CUTechnoDiscipline):
                                  GlossaryEnergy.EnergyEfficiency: 0.78,
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
+                                 'water_demand': 1.32,  # https://en.wikipedia.org/wiki/Bottled_water
+                                 'water_demand_unit': 'l/l',
+                                 'co2_needs': 1,      # https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carbonation
+                                 'co2_needs_unit': 'l/l',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  }
@@ -124,7 +128,7 @@ class CarbonatedWaterDiscipline(CUTechnoDiscipline):
                                                          0.0]
                                              })
     # use the same flue gas ratio as gas turbine one
-    FLUE_GAS_RATIO = np.array([0.0350])
+    FOOD_STORAGE_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},

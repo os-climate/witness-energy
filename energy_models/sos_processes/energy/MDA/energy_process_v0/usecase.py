@@ -26,6 +26,8 @@ from energy_models.core.energy_study_manager import AGRI_TYPE, EnergyStudyManage
     DEFAULT_TECHNO_DICT, CCUS_TYPE, ENERGY_TYPE
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
+
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas

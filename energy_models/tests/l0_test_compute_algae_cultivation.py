@@ -1,5 +1,6 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2022 Airbus SAS
+Modifications on 2023/11/07-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -22,7 +23,7 @@ import scipy.interpolate as sc
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_utilization.food_and_beverage_applications.algae_cultivation.algae_cultivation_disc import AlgaeCultivationDiscipline
+from energy_models.models.carbon_utilization.food_storage_applications.algae_cultivation.algae_cultivation_disc import AlgaeCultivationDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -35,20 +36,29 @@ class AlgaeCultivationTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_end = 2050
-        amine_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                                1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                                1.0, 1.0, 1.0, 1.0]) * 1300.0
-        years = np.arange(GlossaryEnergy.YeartStartDefault, self.year_end + 1)
+
+        algae_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                              1.0, 1.0, 1.0, 1.0]) * 500.0
+
+
+        biomass_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                              1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                              1.0, 1.0, 1.0, 1.0]) * 85.0
+        water_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                                  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                                  1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                                  1.0, 1.0, 1.0, 1.0]) * 85.0
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.resource_list = [
             'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource']
         self.ratio_available_resource = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, self.year_end + 1)})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
-
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
                                                                                     0.159236536471781, 0.15899046935409588, 0.15874840310033885,
                                                                                     0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
@@ -60,21 +70,27 @@ class AlgaeCultivationTestCase(unittest.TestCase):
                                                                                     0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
                                                                                     0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
                                                                                     0.1628246539459331]) * 1000.0,
-                                           'methane': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                     0.159236536471781, 0.15899046935409588, 0.15874840310033885,
-                                                     0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
-                                                     0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
-                                                     0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
-                                                     0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
-                                                     0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
-                                                     0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
-                                                     0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
-                                                     0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                                     0.1628246539459331]) * 1000.0,
+                                           # 'methane': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
+                                           #                                          0.159236536471781, 0.15899046935409588, 0.15874840310033885,
+                                           #                                          0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
+                                           #                                          0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
+                                           #                                          0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
+                                           #                                          0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
+                                           #                                          0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
+                                           #                                          0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
+                                           #                                          0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
+                                           #                                          0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
+                                           #                                          0.1628246539459331]) * 1000.0,
                                            })
 
+        self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: years, ResourceGlossary.Nitrogen['name']: algae_price,
+                                              ResourceGlossary.Phosphorus['name']: biomass_price,
+                                              ResourceGlossary.Water['name']: water_price
+                                              })
+
+        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, ResourceGlossary.AcceleratedCarbonation['name']: 0.0, 'electricity': 0.0, 'methane':0.2})
+            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'methane': 0.0})
         invest = np.array([5093000000.0, 5107300000.0, 5121600000.0, 5135900000.0,
                            5150200000.0, 5164500000.0, 5178800000.0,
                            5221700000.0, 5207400000.0, 5193100000.0,
@@ -85,10 +101,7 @@ class AlgaeCultivationTestCase(unittest.TestCase):
                            4276600000.0, 4379000000.0, 4364700000.0,
                            4169400000.0, 4071800000.0, 4174200000.0,
                            3894500000.0, 3780750000.0, 3567000000.0,
-                           ]) * 0.02 / 1000 * 1.0e-9
-
-        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, ResourceGlossary.AcceleratedCarbonation['name']: amine_price
-                                             })
+                           ]) * 0.05 / 10000 * 1e-9
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: invest})
@@ -116,10 +129,10 @@ class AlgaeCultivationTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_03_accelerate_c_discipline(self):
+    def test_03_AlgaeC_discipline(self):
 
         self.name = 'Test'
-        self.model_name = 'building_material.AcceleratedCarbonation'
+        self.model_name = 'food_storage_applications.AlgaeCultivation'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': self.name, 'ns_energy': self.name,
                    'ns_energy_study': f'{self.name}',
@@ -127,7 +140,7 @@ class AlgaeCultivationTestCase(unittest.TestCase):
                    'ns_resource': self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'energy_models.models.carbon_utilization.food_and_beverage_applications.algae_cultivation.algae_cultivation_disc.AlgaeCultivationDiscipline'
+        mod_path = 'energy_models.models.carbon_utilization.food_storage_applications.algae_cultivation.algae_cultivation_disc.AlgaeCultivationDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -136,7 +149,7 @@ class AlgaeCultivationTestCase(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': self.year_end,
+        inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -146,7 +159,8 @@ class AlgaeCultivationTestCase(unittest.TestCase):
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestmentBeforeYearStartValue}':
                        AlgaeCultivationDiscipline.invest_before_year_start,
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
+
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

@@ -28,8 +28,8 @@ class ResourceGlossary():
 
     ResourceList = ['Uranium', 'Water', 'SeaWater', 'CO2', 'BiomassDry', 'WetBiomass', 'NaturalOil', 'Methanol',
                     'SodiumHydroxide', 'Wood', 'Carbon', 'ManagedWood', 'Oxygen', 'CrudeOil', 'SolidFuel',
-                    'Calcium', 'CalciumOxyde', 'Potassium', 'PotassiumHydroxide', 'Dioxygen', 'Amine',
-                    'EthanolAmine', 'MonoEthanolAmine', 'Glycerol', 'NaturalGas', 'Coal', 'Oil', 'Copper', 'Platinum', 'BeverageCarbonation', 'CarbonatedWater']
+                    'Calcium', 'Phosphorus', 'Nitrogen', 'CalciumOxyde', 'Potassium', 'PotassiumHydroxide', 'Dioxygen', 'Amine',
+                    'EthanolAmine', 'MonoEthanolAmine', 'Glycerol', 'NaturalGas', 'Coal', 'Oil', 'Copper', 'Platinum', 'BeverageCarbonation', 'CarbonatedWater', 'AlgaeCultivatiob']
 
     Uranium = {'name': 'uranium_resource',
                GlossaryEnergy.CO2EmissionsValue: 0.474 / 277.78,
@@ -85,6 +85,12 @@ class ResourceGlossary():
     Calcium = {'name': 'calcium_resource',
                GlossaryEnergy.CO2EmissionsValue: 0.0,
                'price': 85.0}
+    Nitrogen = {'name': 'nitrogen_resource',
+               GlossaryEnergy.CO2EmissionsValue: 0.0,
+               'price': 85.0}
+    Phosphorus = {'name': 'phosphorus_resource',
+                GlossaryEnergy.CO2EmissionsValue: 0.0,
+                'price': 85.0}
     CalciumOxyde = {'name': 'calcium_oxyde_resource',
                     GlossaryEnergy.CO2EmissionsValue: 0.0,
                     'price': 150.0}
@@ -103,6 +109,9 @@ class ResourceGlossary():
     CarbonatedWater = {'name': 'carbonated_water_resource',
                            GlossaryEnergy.CO2EmissionsValue: 0.0,
                            'price': 1300.0}
+    AlgaeCultivation = {'name': 'algae_cultivation_resource',
+                       GlossaryEnergy.CO2EmissionsValue: 0.0,
+                       'price': 1300.0}
     EthanolAmine = {'name': 'ethanol_amine_resource',
                     GlossaryEnergy.CO2EmissionsValue: 0.0,
                     'price': 1700.0}
@@ -135,8 +144,8 @@ class ResourceGlossary():
         'WetBiomass': WetBiomass, 'NaturalOil': NaturalOil, 'Methanol': Methanol,
         'SodiumHydroxide': SodiumHydroxide, 'Wood': Wood, 'Carbon': Carbon, 'ManagedWood': ManagedWood,
         'Oxygen': Oxygen, 'Dioxygen': Dioxygen, 'CrudeOil': CrudeOil, 'SolidFuel': SolidFuel,
-        'Calcium': Calcium, 'CalciumOxyde': CalciumOxyde, 'Potassium': Potassium, 'Amine': Amine,
+        'Calcium': Calcium, 'CalciumOxyde': CalciumOxyde, 'Potassium': Potassium, 'Amine': Amine, 'Nitrogen': Nitrogen, 'Phosphorus': Phosphorus,
         'PotassiumHydroxide': PotassiumHydroxide, 'BeverageCarbonation': BeverageCarbonation, 'EthanolAmine': EthanolAmine,
         'MonoEthanolAmine': MonoEthanolAmine, 'Glycerol': Glycerol, 'NaturalGas': NaturalGas,
-        'Coal': Coal, 'Oil': Oil, 'Copper' : Copper, 'Platinum': Platinum, 'CarbonatedWater': CarbonatedWater
+        'Coal': Coal, 'Oil': Oil, 'Copper' : Copper, 'Platinum': Platinum, 'CarbonatedWater': CarbonatedWater, 'AlgaeCultivation': AlgaeCultivation
     }

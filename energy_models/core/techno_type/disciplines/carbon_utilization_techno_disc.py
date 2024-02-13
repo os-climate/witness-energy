@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/11/06-2023/11/16 Copyright 2023 Capgemini
+Modifications on 2023/10/23-2023/11/16 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,21 +14,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-import pandas as pd
+import numpy as np
 
 from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 from energy_models.core.techno_type.techno_disc import TechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
-    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart \
+    import InstanciatedSeries, TwoAxesInstanciatedChart
 
 
 class CUTechnoDiscipline(TechnoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Carbon Utilization Technology Model',
+        'label': 'Carbon Utilization Techology Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -36,20 +35,25 @@ class CUTechnoDiscipline(TechnoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fas fa-truck-loading fa-fw',
+        'icon': 'fas fa-air-freshener fa-fw',
         'version': '',
     }
-    DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_carbon_utilization',
-                                  'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
+    DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                  'namespace': 'ns_carbon_utilization',
+                                  'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
                                                            'transport': ('float',  None, True)},
                                   'dataframe_edition_locked': False},
-               GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_carbon_utilization',
-                                    'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, 2100], False),
+               GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                    'namespace': 'ns_carbon_utilization',
+                                    'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
                                                              GlossaryEnergy.MarginValue: ('float',  None, True)},
                                     'dataframe_edition_locked': False},
+               'fg_ratio_effect': {'type': 'bool', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                   'namespace': 'ns_carbon_utilization', 'default': True},
                'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_carbon_utilization', 'default': CarbonUtilization.data_energy_dict,
                                   'unit': 'defined in dict'},
+
                }
     DESC_IN.update(TechnoDiscipline.DESC_IN)
 
@@ -57,15 +61,92 @@ class CUTechnoDiscipline(TechnoDiscipline):
 
     energy_name = CarbonUtilization.name
 
-    def compute_sos_jacobian(self):
-        # Grad of price vs energyprice
+    def set_partial_derivatives_flue_gas(self, energy_name='electricity'):
 
-        TechnoDiscipline.compute_sos_jacobian(self)
+        inputs_dict = self.get_sosdisc_inputs()
+        scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
+        scaling_factor_techno_consumption = self.get_sosdisc_inputs(
+            'scaling_factor_techno_consumption')
+        scaling_factor_techno_production = self.get_sosdisc_inputs(
+            'scaling_factor_techno_production')
+        dcapex_dfluegas = self.techno_model.compute_dcapex_dfg_ratio(
+            inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.FlueGasMean].values,
+            inputs_dict[GlossaryEnergy.InvestLevelValue].loc[inputs_dict[GlossaryEnergy.InvestLevelValue][GlossaryEnergy.Years] <=
+                                            inputs_dict[GlossaryEnergy.YearEnd]][GlossaryEnergy.InvestValue].values,
+            inputs_dict['techno_infos_dict'], inputs_dict['fg_ratio_effect'])
 
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
+        crf = self.techno_model.compute_crf(inputs_dict['techno_infos_dict'])
+        dfactory_dfluegas = dcapex_dfluegas * \
+            (crf + inputs_dict['techno_infos_dict']['Opex_percentage'])
 
-        self.set_partial_derivatives_techno(
-            grad_dict, None)
+        delec_dflue_gas = self.techno_model.compute_delec_dfg_ratio(
+            inputs_dict[GlossaryEnergy.FlueGasMean][GlossaryEnergy.FlueGasMean].values, inputs_dict['fg_ratio_effect'], energy_name)
+
+        margin = inputs_dict[GlossaryEnergy.MarginValue].loc[inputs_dict[GlossaryEnergy.MarginValue][GlossaryEnergy.Years]
+                                           <= inputs_dict[GlossaryEnergy.YearEnd]][GlossaryEnergy.MarginValue].values
+
+        dprice_dfluegas = (dfactory_dfluegas + delec_dflue_gas) * np.split(margin, len(margin)) / \
+            100.0
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}'), (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean), dprice_dfluegas)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryEnergy.TechnoPricesValue, f'{self.techno_name}_wotaxes'), (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean), dprice_dfluegas)
+
+        capex = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)[
+            f'Capex_{self.techno_name}'].values
+
+        dprod_dfluegas = self.techno_model.compute_dprod_dfluegas(
+            capex, inputs_dict[GlossaryEnergy.InvestLevelValue][GlossaryEnergy.InvestValue].values,
+            inputs_dict[GlossaryEnergy.InvestmentBeforeYearStartValue][GlossaryEnergy.InvestValue].values,
+            inputs_dict['techno_infos_dict'], dcapex_dfluegas)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryEnergy.TechnoProductionValue, f'{self.energy_name} ({self.techno_model.product_energy_unit})'), (
+                GlossaryEnergy.FlueGasMean, GlossaryEnergy.FoodStorageMeanMean),
+            dprod_dfluegas * self.techno_model.applied_ratio['applied_ratio'].values[:, np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
+
+        production, consumption = self.get_sosdisc_outputs(
+            [GlossaryEnergy.TechnoProductionValue, GlossaryEnergy.TechnoConsumptionValue])
+        for column in consumption:
+            dprod_column_dfluegas = dprod_dfluegas.copy()
+            if column != GlossaryEnergy.Years:
+                var_cons = (consumption[column] /
+                            production[f'{self.energy_name} ({self.techno_model.product_energy_unit})']).fillna(
+                    0)
+                for line in range(len(consumption[column].values)):
+                    dprod_column_dfluegas[line, :] = dprod_dfluegas[line,
+                                                                    :] * var_cons[line]
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryEnergy.TechnoConsumptionValue, column), (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
+                    dprod_column_dfluegas * self.techno_model.applied_ratio['applied_ratio'].values[:, np.newaxis] * scaling_factor_invest_level / scaling_factor_techno_production)
+                self.set_partial_derivative_for_other_types(
+                    (GlossaryEnergy.TechnoConsumptionWithoutRatioValue,
+                     column), (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean),
+                    dprod_column_dfluegas * scaling_factor_invest_level / scaling_factor_techno_production)
+
+        dnon_use_capital_dflue_gas_mean, dtechnocapital_dflue_gas_mean = self.techno_model.compute_dnon_usecapital_dfluegas(
+            dcapex_dfluegas, dprod_dfluegas)
+
+        self.set_partial_derivative_for_other_types(
+            ('non_use_capital', self.techno_model.name), (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean), dnon_use_capital_dflue_gas_mean)
+        self.set_partial_derivative_for_other_types(
+            (GlossaryEnergy.TechnoCapitalValue, GlossaryEnergy.Capital),
+            (GlossaryEnergy.FlueGasMean, GlossaryEnergy.FlueGasMean), dtechnocapital_dflue_gas_mean)
+
+    def get_chart_filter_list(self):
+
+        chart_filters = super().get_chart_filter_list()
+        chart_filters[0].remove(
+            [
+                'CO2 emissions',
+                'Non-Use Capital',
+                'Power production',
+                'Factory Mean Age'
+            ]
+        )
+        return chart_filters
 
     def get_post_processing_list(self, filters=None):
 
@@ -84,9 +165,13 @@ class CUTechnoDiscipline(TechnoDiscipline):
                     price_unit_list = chart_filter.selected_values
 
         if 'Detailed prices' in charts and '$/tCO2' in price_unit_list:
-            new_chart = self.get_chart_detailed_price_in_dollar_ton()
+            new_chart = self.get_chart_detailed_price_in_dollar_tCO2()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
+
+        if GlossaryEnergy.UtilisationRatioValue in charts:
+            new_chart = self.get_utilisation_ratio_chart()
+            instanciated_charts.append(new_chart)
 
         if 'Consumption and production' in charts:
             new_chart = self.get_chart_investments()
@@ -98,9 +183,10 @@ class CUTechnoDiscipline(TechnoDiscipline):
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
-        if GlossaryEnergy.UtilisationRatioValue in charts:
-            new_chart = self.get_utilisation_ratio_chart()
-            instanciated_charts.append(new_chart)
+            new_charts = self.get_charts_consumption_and_production_energy()
+            for new_chart in new_charts:
+                if new_chart is not None:
+                    instanciated_charts.append(new_chart)
 
         if 'Applied Ratio' in charts:
             new_chart = self.get_chart_applied_ratio()
@@ -113,18 +199,13 @@ class CUTechnoDiscipline(TechnoDiscipline):
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
 
-        if 'Non-Use Capital' in charts:
-            new_chart = self.get_chart_non_use_capital()
-            if new_chart is not None:
-                instanciated_charts.append(new_chart)
-
-
         return instanciated_charts
 
-    def get_chart_detailed_price_in_dollar_ton(self):
+    def get_chart_detailed_price_in_dollar_tCO2(self):
 
         techno_detailed_prices = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedPricesValue)
+
         chart_name = f'Detailed prices of {self.techno_name} technology over the years'
         year_start = min(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
         year_end = max(techno_detailed_prices[GlossaryEnergy.Years].values.tolist())
@@ -206,7 +287,8 @@ class CUTechnoDiscipline(TechnoDiscipline):
             GlossaryEnergy.TechnoDetailedConsumptionValue)
         techno_production = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedProductionValue)
-        chart_name = f'{self.techno_name} technology energy Capture & consumption<br>with input investments'
+        # print(techno_production.to_string())
+        chart_name = f'{self.techno_name} resources production & consumption <br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',
                                              chart_name=chart_name, stacked_bar=True)
@@ -225,8 +307,45 @@ class CUTechnoDiscipline(TechnoDiscipline):
         for products in techno_production.columns:
             if products != GlossaryEnergy.Years and products.endswith('(Mt)'):
                 energy_twh = techno_production[products].values
-                legend_title = f'{products}'.replace(
+                legend_title = f'{products} product'.replace(
                     "(Mt)", "")
+                serie = InstanciatedSeries(
+                    techno_production[GlossaryEnergy.Years].values.tolist(),
+                    energy_twh.tolist(), legend_title, 'bar')
+
+                new_chart.series.append(serie)
+        instanciated_charts.append(new_chart)
+
+        return instanciated_charts
+
+    def get_charts_consumption_and_production_energy(self):
+        instanciated_charts = []
+        # Charts for consumption and prod
+        techno_consumption = self.get_sosdisc_outputs(
+            GlossaryEnergy.TechnoDetailedConsumptionValue)
+        techno_production = self.get_sosdisc_outputs(
+            GlossaryEnergy.TechnoDetailedProductionValue)
+        chart_name = f'{self.techno_name} energy production & consumption<br>with input investments'
+
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Energy [TWh]',
+                                             chart_name=chart_name, stacked_bar=True)
+
+        for reactant in techno_consumption.columns:
+            if reactant != GlossaryEnergy.Years and reactant.endswith('(TWh)'):
+                energy_twh = -techno_consumption[reactant].values
+                legend_title = f'{reactant} consumption'.replace(
+                    "(TWh)", "")
+                serie = InstanciatedSeries(
+                    techno_consumption[GlossaryEnergy.Years].values.tolist(),
+                    energy_twh.tolist(), legend_title, 'bar')
+
+                new_chart.series.append(serie)
+
+        for products in techno_production.columns:
+            if products != GlossaryEnergy.Years and products.endswith('(TWh)'):
+                energy_twh = techno_production[products].values
+                legend_title = f'{products}'.replace(
+                    "(TWh)", "")
                 serie = InstanciatedSeries(
                     techno_production[GlossaryEnergy.Years].values.tolist(),
                     energy_twh.tolist(), legend_title, 'bar')
@@ -244,8 +363,7 @@ class CUTechnoDiscipline(TechnoDiscipline):
             'initial_production')
         initial_age_distrib = self.get_sosdisc_inputs(
             'initial_age_distrib')
-        initial_prod = pd.DataFrame({'age': initial_age_distrib['age'].values,
-                                     'distrib': initial_age_distrib['distrib'].values, })
+        initial_prod = initial_age_distrib.copy(deep=True)
         initial_prod['CO2 (Mt)'] = initial_prod['distrib'] / \
             100.0 * initial_production
         initial_prod[GlossaryEnergy.Years] = year_start - initial_prod['age']
@@ -254,14 +372,14 @@ class CUTechnoDiscipline(TechnoDiscipline):
 
         study_production = self.get_sosdisc_outputs(
             GlossaryEnergy.TechnoDetailedProductionValue)
-        chart_name = f'World {self.energy_name} capture via {self.techno_name}<br>with 2020 factories distribution'
+        chart_name = f'World CO2 utilization via {self.techno_name}<br>with 2020 factories distribution'
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} capture (Mt)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, f'{self.energy_name} (Mt)',
                                              chart_name=chart_name)
 
         serie = InstanciatedSeries(
             initial_prod[GlossaryEnergy.Years].values.tolist(),
-            initial_prod[f'cum CO2 (Mt)'].values.tolist(), 'Initial carbon capture by 2020 factories', 'lines')
+            initial_prod[f'cum CO2 (Mt)'].values.tolist(), 'Initial carbon utilization by 2020 factories', 'lines')
         study_prod = study_production[f'{self.energy_name} (Mt)'].values
         new_chart.series.append(serie)
         years_study = study_production[GlossaryEnergy.Years].values.tolist()
@@ -271,7 +389,7 @@ class CUTechnoDiscipline(TechnoDiscipline):
             0, initial_prod[f'cum CO2 (Mt)'].values.tolist()[-1])
         serie = InstanciatedSeries(
             years_study,
-            study_prod_l, 'Predicted carbon capture', 'lines')
+            study_prod_l, 'Predicted carbon utilization', 'lines')
         new_chart.series.append(serie)
 
         return new_chart

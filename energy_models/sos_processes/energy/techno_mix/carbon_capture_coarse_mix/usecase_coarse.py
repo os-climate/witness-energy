@@ -110,7 +110,7 @@ class Study(EnergyMixStudyManager):
         investment_mix = self.get_investments()
         values_dict = {f'{self.study_name}.{GlossaryEnergy.YearStart}': self.year_start,
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
-                       f'{self.study_name}.{GlossaryEnergy.ccs_list}': ['carbon_capture', 'carbon_storage'],
+                       f'{self.study_name}.{GlossaryEnergy.ccs_list}': ['carbon_capture', 'carbon_storage', 'carbon_utilization'],
                        f'{self.study_name}.{ccs_name}.{flue_gas_name}.{GlossaryEnergy.techno_list}': flue_gas_list,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
                        f'{self.study_name}.{ccs_name}.flue_gas_capture.flue_gas_mean': self.flue_gas_mean,

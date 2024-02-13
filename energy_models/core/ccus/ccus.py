@@ -23,6 +23,8 @@ from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
+
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -45,7 +47,7 @@ class CCUS(BaseStream):
                 f'{CarbonStorage.name} (Mt)',
                 f'{CO2.name} (Mt)',
                 f'{Carbon.name} (Mt)']
-    ccs_list = [CarbonCapture.name, CarbonStorage.name]
+    ccs_list = [CarbonCapture.name, CarbonStorage.name, CarbonUtilization.name ]
 
     def __init__(self, name):
         '''

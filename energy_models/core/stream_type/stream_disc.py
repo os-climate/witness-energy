@@ -88,12 +88,16 @@ class StreamDiscipline(SoSWrapp):
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                 'electricity (TWh)': ('float', None, True),
+                                                 'nitrogen (Mt)': ('float', None, True),
                                                 'amine (Mt)': ('float', None, True),
                                                 'methane (TWh)': ('float', None, True),
                                                 'calcium (Mt)': ('float', None, True),
                                                 'potassium (Mt)': ('float', None, True),
-                                                'biomass_dry (TWh)': ('float', None, True),
-                                                'carbon_capture (Mt)': ('float', None, True),
+                                                 'phosphorus (Mt)': ('float', None, True),
+                                                 'biomass_dry (TWh)': ('float', None, True),
+                                                 'carbon_utilization (Mt)': ('float', None, True),
+                                                 'beverage_carbonation (Mt)': ('float', None, True),
+                                                 'carbon_capture (Mt)': ('float', None, True),
                                                 'carbon_resource (Mt)': ('float', None, True),
                                                 'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                 'heat.mediumtemperatureheat (TWh)': ('float', None, True),
@@ -104,11 +108,15 @@ class StreamDiscipline(SoSWrapp):
                                                  'amine (Mt)': ('float', None, True),
                                                  'methane (TWh)': ('float', None, True),
                                                  'calcium (Mt)': ('float', None, True),
+                                                 'nitrogen (Mt)': ('float', None, True),
                                                  'potassium (Mt)': ('float', None, True),
                                                  'electricity (TWh)': ('float', None, True),
                                                  'biomass_dry (TWh)': ('float', None, True),
                                                  'carbon_capture (Mt)': ('float', None, True),
+                                                 'carbon_utilization (Mt)': ('float', None, True),
+                                                 'beverage_carbonation (Mt)': ('float', None, True),
                                                  'carbon_resource (Mt)': ('float', None, True),
+                                                 'phosphorus (Mt)': ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                  'heat.lowtemperatureheat (TWh)': ('float', None, True),
@@ -117,7 +125,10 @@ class StreamDiscipline(SoSWrapp):
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  'carbon_capture (Mt)': ('float', None, True),
-                                                'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                 'carbon_utilization (Mt)': ('float', None, True),
+                                                 'phosphorus (Mt)': ('float', None, True),
+                                                 'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                 'Food Storage (Mt)': ('float', None, True),
                                                  'carbon_storage (Mt)': ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  'heat.mediumtemperatureheat (TWh)': ('float', None, True),
@@ -128,6 +139,15 @@ class StreamDiscipline(SoSWrapp):
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                 'direct_air_capture.AmineScrubbing': ('float', None, True),
                                                 'direct_air_capture.AmineScrubbing_wotaxes': ('float', None, True),
+                                                 'food_storage_applications.BeverageCarbonation_wotaxes': ('float', None, True),
+                                                'food_storage_applications.CarbonatedWater_wotaxes': ('float', None, True),
+                                                 'food_storage_applications.CarbonatedWater.techno_prices': ('float', None, True),
+                                                 'food_storage_applications.AlgaeCultivation_wotaxes': ('float', None, True),
+                                                 'food_storage_applications.AlgaeCultivation.techno_prices': ('float', None, True),
+                                                 'food_storage_applications.BeverageCarbonation': ('float', None, True),
+                                                 'food_storage_applications.CarbonatedWater': ('float', None, True),
+                                                 'food_storage_applications.AlgaeCultivation': ('float', None, True),
+                                                 'food_storage_applications.BeverageCarbonation.techno_prices': ('float', None, True),
                                                 'direct_air_capture.CalciumPotassiumScrubbing': ('float', None, True),
                                                 'direct_air_capture.CalciumPotassiumScrubbing_wotaxes': ('float', None, True),
                                                 'flue_gas_capture.CalciumLooping': ('float', None, True),
@@ -175,6 +195,10 @@ class StreamDiscipline(SoSWrapp):
                                                  'EnhancedOilRecovery (Gha)': ('float', None, True),
                                                  'GeologicMineralization (Gha)': ('float', None, True),
                                                  'PureCarbonSolidStorage (Gha)': ('float', None, True),
+                                                 'food_storage_applications.CarbonatedWater (Gha)': ('float', None, True),
+                                                 'food_storage_applications.AlgaeCultivation (Gha)': ('float', None, True),
+                                                 'food_storage_applications.BeverageCarbonation (Gha)': ('float', None, True),
+
                                                  }}
 
         self.add_inputs(dynamic_inputs)
@@ -590,7 +614,7 @@ class StreamDiscipline(SoSWrapp):
         display_techno_list = []
 
         for techno in techno_list:
-            if self.energy_name in['carbon_capture', 'carbon_storage']:
+            if self.energy_name in['carbon_capture', 'carbon_storage', 'carbon_utilization']:
                 unit = '(Mt)'
             else:
                 unit = '(TWh)'

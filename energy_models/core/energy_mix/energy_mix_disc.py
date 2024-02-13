@@ -293,14 +293,16 @@ class Energy_Mix_Discipline(SoSWrapp):
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'renewable (TWh)': ('float', None, True),
                                                      'fossil (TWh)': ('float', None, True),
-                                                     'carbon_capture (Mt)': ('float', None, True), }}
+                                                     'carbon_capture (Mt)': ('float', None, True),
+                                                     'carbon_utilization (Mt)': ('float', None, True),}}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyConsumptionWithoutRatioValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      'renewable (TWh)': ('float', None, True),
                                                      'fossil (TWh)': ('float', None, True),
-                                                     'carbon_capture (Mt)': ('float', None, True), }}
+                                                     'carbon_capture (Mt)': ('float', None, True),
+                                                     'carbon_utilization (Mt)': ('float', None, True),}}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.EnergyProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,

@@ -19,7 +19,7 @@ import pandas as pd
 
 from energy_models.core.techno_type.disciplines.carbon_utilization_techno_disc import CUTechnoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
-from energy_models.models.carbon_utilization.food_and_beverage_applications.algae_cultivation.algae_cultivation import AlgaeCultivation
+from energy_models.models.carbon_utilization.food_storage_applications.algae_cultivation.algae_cultivation import AlgaeCultivation
 
 
 class AlgaeCultivationDiscipline(CUTechnoDiscipline):
@@ -39,25 +39,22 @@ class AlgaeCultivationDiscipline(CUTechnoDiscipline):
         'icon': 'fas fa-globe-europe fa-fw',
         'version': '',
     }
-    techno_name = 'food_and_beverage_applications.AlgaeCultivation'
-    lifetime = 35
+    techno_name = 'food_storage_applications.AlgaeCultivation'
+    lifetime = 35  # 15  # https://www.sciencedirect.com/science/article/abs/pii/S2211926418300808
     construction_delay = 3
     techno_infos_dict_default = {'maturity': 0,
-                                 'reaction': 'Cao + CO2 <--> CaCO3',
                                  # Husebye, J., Brunsvold, A.L., Roussanaly, S. and Zhang, X., 2012.
                                  # Techno economic evaluation of amine based CO2 capture: impact of CO2 concentration and steam supply.
                                  # Energy Procedia, 23, pp.381-390.
-                                 # Opex % : fig 5 - 6 :
-                                 # https://reader.elsevier.com/reader/sd/pii/S1876610212010934?token=1A3181CEE6756AFE741AAACDFC004EAA641316AEC4BE6238B4712D20B90F53690774128290A7E3032F7D5AF0F8CC38A9
-                                 'Opex_percentage': 0.25,
-                                 'elec_demand': 0.25,
-                                 'elec_demand_unit': 'kWh/kgCO2',
+                                 'Opex_percentage': 0.34,   #https://www.sciencedirect.com/science/article/pii/S004896972202839X
+                                 'elec_demand': 0.7,    # https://www.sciencedirect.com/science/article/pii/S2211926417306677#:~:text=For%20closed%20cultivation%20systems%20the,kWh%C2%B7kg%E2%88%92%201%20algae.
+                                'elec_demand_unit': 'kWh/kg',
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224, pp.957-980.
                                  # for now constant in time but should increase
                                  # with time 10%/10year according to Fasihi2019
-                                 'heat_demand': 1.75,
+                                 'heat_demand': 0.036,    # https://downloads.hindawi.com/journals/ijce/2010/102179.pdf # page no.6
                                  'heat_demand_unit': 'kWh/kgCO2',
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.1,
@@ -66,10 +63,10 @@ class AlgaeCultivationDiscipline(CUTechnoDiscipline):
                                  'lifetime_unit': GlossaryEnergy.Years,
                                  # 0.6577,  # 730 euro/tCO2 in Fashi2019 Capex
                                  # initial at year 2020 1.11 euro/$
-                                 'Capex_init': 0.88,  # average for solid techno, Fashi2019
+                                 'Capex_init': 1.47,  # https://www.osti.gov/servlets/purl/1845001 # page no. 17
                                  'Capex_init_unit': '$/kgCO2',
-                                 'efficiency': 0.9,
-                                 'CO2_capacity_peryear': 2E+9,  # https://www.jocet.org/papers/141-E055.pdf #page no. 290 - last para
+                                 'efficiency': 0.98,    # https://energsustainsoc.biomedcentral.com/articles/10.1186/s13705-020-00262-5
+                                 'CO2_capacity_peryear': 2.425,  # https://mdpi-res.com/d_attachment/sustainability/sustainability-13-13061/article_deploy/sustainability-13-13061-v2.pdf?version=1637918442
                                  'CO2_capacity_peryear_unit': 'kg CO2/year',
                                  'real_factor_CO2': 1.0,
                                  GlossaryEnergy.TransportCostValue: 0.0,
@@ -84,11 +81,19 @@ class AlgaeCultivationDiscipline(CUTechnoDiscipline):
                                  # GJ/tCO2 in practice (Climeworks)
                                  # according to Vo2018 4GJ/tCO2 or Fasihi2016:
                                  # 1.51 in practice
-                                 'enthalpy': 1.124,
+                                 'enthalpy': 0.416667,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryEnergy.EnergyEfficiency: 0.78,
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
+                                 'nitrogen_needs': 0.36,     # https://www.osti.gov/servlets/purl/1785547#:~:text=Approximately%200.36%20kg%20of%20nitrogen,%25%20lipid%20content%20(6).
+                                 'nitrogen_needs_unit': 'kg/kg',
+                                 'phosphorus_needs': 0.023,   # https://www.researchgate.net/figure/Summary-of-LCA-Nutrient-Input-Data-for-Production-of-1-kg-Dry-Algal-Biomass-the-Types_tbl2_305791188#:~:text=%5B257%5D%20investigated%20the%20nutrient%20requirements,...
+                                 'phosphorus_needs_unit': 'kg/kg',
                                  'techno_evo_eff': 'no',
+                                 'water_demand': 3726,      # https://www.sciencedirect.com/science/article/abs/pii/S0960852414015727
+                                 'water_demand_unit': 'kg/kg',
+                                 'co2_needs': 1.8,           # https://www.sciencedirect.com/science/article/pii/S2772427122000948
+                                 'co2_needs_unit': 'kg/kg',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  }
@@ -97,15 +102,13 @@ class AlgaeCultivationDiscipline(CUTechnoDiscipline):
     # Husebye, J., Brunsvold, A.L., Roussanaly, S. and Zhang, X., 2012.
     # Techno economic evaluation of amine based CO2 capture: impact of CO2 concentration and steam supply.
     # Energy Procedia, 23, pp.381-390.
-    # https://reader.elsevier.com/reader/sd/pii/S1876610212010934?token=1A3181CEE6756AFE741AAACDFC004EAA641316AEC4BE6238B4712D20B90F53690774128290A7E3032F7D5AF0F8CC38A9
     # Buijs, W. and De Flart, S., 2017.
     # Direct air capture of CO2 with an amine resin: A molecular modeling study of the CO2 capturing process.
     # Industrial & engineering chemistry research, 56(43), pp.12297-12304.
-    # https://pubs.acs.org/doi/pdf/10.1021/acs.iecr.7b02613
 
     techno_info_dict = techno_infos_dict_default
 
-    initial_capture = 5.0e-3  # in Mt at year_start
+    initial_utilization = 13.986   # in Mt at year_start # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6999637/
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: np.array([0.05093, 0.05093, 15.0930]) * 0.8 / 3000})
 
@@ -123,11 +126,11 @@ class AlgaeCultivationDiscipline(CUTechnoDiscipline):
                                                          0.0]
                                              })
     # use the same flue gas ratio as gas turbine one
-    FLUE_GAS_RATIO = np.array([0.0350])
+    FOOD_STORAGE_RATIO = np.array([0.0350])
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
-               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},
+               'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_utilization},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {'age': ('int',  [0, 100], False),
                                                                 'distrib': ('float',  None, True)},
@@ -147,6 +150,11 @@ class AlgaeCultivationDiscipline(CUTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = AlgaeCultivation(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
+        # co2 = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
+
+        # print(co2.to_string())
+
+
 
     def compute_sos_jacobian(self):
         # Grad of price vs energyprice
@@ -158,3 +166,4 @@ class AlgaeCultivationDiscipline(CUTechnoDiscipline):
         carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
         self.set_partial_derivatives_techno(
             grad_dict, carbon_emissions, grad_dict_resources)
+

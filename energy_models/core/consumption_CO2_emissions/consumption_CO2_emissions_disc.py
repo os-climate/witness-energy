@@ -79,6 +79,8 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                                 'production hydrogen.liquid_hydrogen (TWh)': ('float', None, True),
                                                                 'production carbon_capture (Mt)': ('float', None, True),
                                                                 'production carbon_storage (Mt)': ('float', None, True),
+                                                                'production carbon_utilization (Mt)': ('float', None, True),
+
                                                                 'Total production': ('float', None, True),
                                                                 'Total production (uncut)': ('float', None, True),
                                                                 }
@@ -146,6 +148,9 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                      'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                     'syngas (TWh)': ('float', None, True),
                                                     'platinum_resource (Mt)': ('float', None, True),
+                                                     'nitrogen_resource (Mt)': ('float', None, True),
+                                                     'phosphorus_resource (Mt)': ('float', None, True),
+                                                     'beverage_carbonation_resource (Mt)': ('float', None, True),
                                                     'oil_resource (Mt)': ('float', None, True),
                                                     'copper_resource (Mt)': ('float', None, True),
                                                     'uranium_resource (Mt)': ('float', None, True),
@@ -164,6 +169,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                     'solid_fuel (TWh)': ('float', None, True),
                                                     'wood (Mt)': ('float', None, True),
                                                     'carbon_capture (Mt)': ('float', None, True),
+                                                     'carbon_utilization (Mt)': ('float', None, True),
                                                     'dioxygen_resource (Mt)': ('float', None, True),
                                                     'electricity (TWh)': ('float', None, True),
                                                     'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),}}
@@ -191,6 +197,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                     'N2O (Mt)': ('float', None, True),
                                                     'methane': ('float', None, True),
                                                     'carbon_capture (Mt)': ('float', None, True),
+                                                     'carbon_utilization (Mt)': ('float', None, True),
                                                     'biogas': ('float', None, True),
                                                     'fuel.biodiesel': ('float', None, True),
                                                     'glycerol_resource (Mt)': ('float', None, True),

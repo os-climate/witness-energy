@@ -36,7 +36,7 @@ class BeverageCarbonationTestCase(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.year_end = 2050
-        beverage_c_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+        water_price = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                                 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                                 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
                                 1.0, 1.0, 1.0, 1.0]) * 1300.0
@@ -60,17 +60,7 @@ class BeverageCarbonationTestCase(unittest.TestCase):
                                                                                     0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
                                                                                     0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
                                                                                     0.1628246539459331]) * 1000.0,
-                                           'methane': np.array([0.16, 0.15974117039450046, 0.15948672733558984,
-                                                     0.159236536471781, 0.15899046935409588, 0.15874840310033885,
-                                                     0.15875044941298937, 0.15875249600769718, 0.15875454288453355,
-                                                     0.15875659004356974, 0.1587586374848771, 0.15893789675406477,
-                                                     0.15911934200930778, 0.15930302260662477, 0.15948898953954933,
-                                                     0.15967729551117891, 0.15986799501019029, 0.16006114439108429,
-                                                     0.16025680195894345, 0.16045502805900876, 0.16065588517140537,
-                                                     0.1608594380113745, 0.16106575363539733, 0.16127490155362818,
-                                                     0.16148695384909017, 0.1617019853041231, 0.1619200735346165,
-                                                     0.16214129913260598, 0.16236574581786147, 0.16259350059915213,
-                                                     0.1628246539459331]) * 1000.0,
+
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
@@ -87,7 +77,7 @@ class BeverageCarbonationTestCase(unittest.TestCase):
                            3894500000.0, 3780750000.0, 3567000000.0,
                            ]) * 0.02 / 1000 * 1.0e-9
 
-        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, ResourceGlossary.BeverageCarbonation['name']: beverage_c_price
+        self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, ResourceGlossary.Water['name']: water_price
                                              })
 
         self.invest_level = pd.DataFrame(

@@ -21,6 +21,7 @@ from energy_models.core.stream_type.energy_models.electricity import Electricity
 from energy_models.core.stream_type.energy_models.heat import lowtemperatureheat
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from energy_models.core.techno_type.base_techno_models.carbon_utilization_techno import CUTechno
+from energy_models.core.stream_type.resources_models.water import Water
 
 
 class CarbonatedWater(CUTechno):
@@ -35,15 +36,13 @@ class CarbonatedWater(CUTechno):
 
         self.cost_details[Electricity.name] = list(self.prices[Electricity.name] * self.cost_details['elec_needs']
                                                    )
-
-        self.cost_details['carbonated_water_needs'] = self.compute_carbonated_water_need() / self.cost_details['efficiency']
-
-        self.cost_details[ResourceGlossary.CarbonatedWater['name']] = list(
-            self.resources_prices[ResourceGlossary.CarbonatedWater['name']] * self.cost_details['carbonated_water_needs'] )
+        self.cost_details[f'{Water.name}_needs'] = self.get_theoretical_water_needs()
+        self.cost_details[Water.name] = self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs'] / \
+            self.cost_details['efficiency']
 
         self.cost_details['heat_needs'] = self.get_heat_needs()
 
-        return self.cost_details[Electricity.name] + self.cost_details[ResourceGlossary.CarbonatedWater['name']]
+        return self.cost_details[Electricity.name] + self.cost_details[Water.name]
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
@@ -52,9 +51,7 @@ class CarbonatedWater(CUTechno):
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * self.cost_details['elec_needs']
 
-        self.carbon_intensity[ResourceGlossary.CarbonatedWater['name']] = self.resources_CO2_emissions[ResourceGlossary.CarbonatedWater['name']] * \
-                                                                self.cost_details['carbonated_water_needs']
-        return self.carbon_intensity[Electricity.name] + self.carbon_intensity[ResourceGlossary.CarbonatedWater['name']] - 1.0
+        return self.carbon_intensity[Electricity.name] - 1.0
 
     def grad_price_vs_energy_price(self):
         '''
@@ -71,9 +68,9 @@ class CarbonatedWater(CUTechno):
         '''
         Compute the gradient of global price vs resources prices
         '''
-        carbonated_water_needs = self.compute_carbonated_water_need()
-        efficiency = self.configure_efficiency()
-        return {ResourceGlossary.CarbonatedWater['name']: np.identity(len(self.years)) * carbonated_water_needs / efficiency,
+        water_needs = self.get_theoretical_water_needs()
+        efficiency = self.techno_infos_dict['efficiency']
+        return {Water.name: np.identity(len(self.years)) * water_needs / efficiency,
                 }
 
     def compute_consumption_and_production(self):
@@ -81,10 +78,15 @@ class CarbonatedWater(CUTechno):
         Compute the consumption and the production of the technology for a given investment
         Maybe add efficiency in consumption computation ? 
         """
-        
-        # Consumption
 
         self.compute_other_primary_energy_costs()
+
+        # Production
+
+        self.production_detailed[f'carbonated_water ({self.mass_unit})'] = self.production_detailed[
+            f'{CUTechno.energy_name} ({self.product_energy_unit})']
+
+        # Consumption
 
         self.consumption_detailed[f'{Electricity.name} ({self.energy_unit})'] = self.cost_details['elec_needs'] * \
                                                                                 self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']  # in kWH
@@ -92,26 +94,22 @@ class CarbonatedWater(CUTechno):
         self.consumption_detailed[f'{lowtemperatureheat.name} ({self.energy_unit})'] = self.cost_details['heat_needs'] * \
                                                                             self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']
 
-        # self.consumption_detailed[f'carbonated_water ({self.mass_unit})'] = self.cost_details['carbonated_water_needs'] * \
-        #                                                          self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']   # in kWH
+        self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
+                                                                        self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                        self.cost_details['efficiency']
+
+        self.consumption_detailed[f'{CarbonUtilization.food_storage_name} ({self.mass_unit})'] = self.techno_infos_dict['co2_needs'] * \
+                                                                                                 self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']
+
+        # # Productions
         #
-        # self.production_detailed[f'{CarbonUtilization.food_storage_name} ({self.mass_unit})'] = self.cost_details['heat_needs'] * \
-        #                                                                                 self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})'] * \
-        #                                                                                 self.consumption_detailed[f'carbonated_water ({self.mass_unit})'] / \
-        #                                                                                 self.consumption_detailed[f'{lowtemperatureheat.name} ({self.energy_unit})']
+        # self.production_detailed[f'carbonated_water ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
+        #                                                          self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']   # in kWH
 
-    def compute_carbonated_water_need(self):
-        """
-       'reaction': 'CO2 + H2O <--> H2CO3'
-        unit : kg_CW/kg_CO2
-        """
-        # Buijs, W. and De Flart, S., 2017.
-        # Direct air capture of CO2 with an amine resin: A molecular modeling study of the CO2 capturing process.
-        # Industrial & engineering chemistry research, 56(43), pp.12297-12304.
-        # efficiency
-        CO2_mol_per_kg_carbonated_water = 1.1
-        CO2_molar_mass = 44.0
+    def get_theoretical_water_needs(self):
 
-        kg_CO2_per_kg_carbonated_water = CO2_mol_per_kg_carbonated_water * CO2_molar_mass
+        water_demand = self.techno_infos_dict['water_demand']
 
-        return 1 / kg_CO2_per_kg_carbonated_water
+        water_needs = water_demand
+
+        return water_needs
