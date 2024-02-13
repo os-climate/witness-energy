@@ -953,8 +953,11 @@ class EnergyMix(BaseStream):
         return dtot_CO2_emissions
 
     def compute_target_production_constraint(self, inputs_dict: dict):
+        target_production_constraint_ref = inputs_dict[GlossaryEnergy.TargetProductionConstraintRefValue]
         target_energy_production = inputs_dict[GlossaryEnergy.TargetEnergyProductionValue][GlossaryEnergy.TargetEnergyProductionValue].values
-        self.target_production_constraint = self.production[GlossaryEnergy.TotalProductionValue].values * 1000 - target_energy_production
+        actual_production_twh = self.production[GlossaryEnergy.TotalProductionValue].values * 1000
+        missing_production = target_energy_production - actual_production_twh
+        self.target_production_constraint = missing_production / target_production_constraint_ref
 
     def compute(self, inputs: dict, exp_min=True):
         self.configure_parameters_update(inputs)
