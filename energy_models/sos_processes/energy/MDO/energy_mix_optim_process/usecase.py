@@ -26,8 +26,8 @@ class Study(StudyManager):
             self,
             file_path=__file__,
             execution_engine=None,
-            run_usecase=False
-
+            run_usecase=False,
+            use_utilisation_ratio: bool=False
     ):
         super().__init__(
             file_path=file_path,
@@ -36,9 +36,10 @@ class Study(StudyManager):
         )
         self.optim_name = 'MDO'
         self.techno_dict = DEFAULT_TECHNO_DICT
+        self.use_utilisation_ratio = use_utilisation_ratio
 
     def setup_usecase(self, study_folder_path=None):
-        data_usecase = subStudy(techno_dict=self.techno_dict)
+        data_usecase = subStudy(techno_dict=self.techno_dict, use_utilisation_ratio=self.use_utilisation_ratio)
         data_usecase.study_name = f'{self.study_name}.{self.optim_name}'
         data = data_usecase.setup_usecase()
 

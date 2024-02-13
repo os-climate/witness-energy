@@ -391,7 +391,7 @@ class Study(EnergyStudyManager):
             'activated_elem': [[True] * GlossaryEnergy.NB_POLES_UTILIZATION_RATIO] * n_dvar_ur,
             'lower_bnd': [low_bound] * n_dvar_ur,
             'upper_bnd': [upper_bound] * n_dvar_ur,
-            'enable_variable': [False] * n_dvar_ur
+            'enable_variable': [True] * n_dvar_ur
         }
 
         dspace_ur = pd.DataFrame(dspace_ur)
