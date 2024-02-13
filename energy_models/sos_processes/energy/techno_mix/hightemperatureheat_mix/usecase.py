@@ -91,7 +91,8 @@ class Study(EnergyMixStudyManager):
                                       GlossaryEnergy.syngas: 80.0,
                                       GlossaryEnergy.biogas: 70.0,
                                       GlossaryEnergy.methane: 100,
-                                      GlossaryEnergy.biomass_dry: 45
+                                      GlossaryEnergy.biomass_dry: 45,
+                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 220
                                       })
 
 
@@ -135,6 +136,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
                        }
+
 
         if self.main_study:
             values_dict.update(

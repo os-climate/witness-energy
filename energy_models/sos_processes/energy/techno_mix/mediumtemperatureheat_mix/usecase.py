@@ -94,9 +94,9 @@ class Study(EnergyMixStudyManager):
                                       GlossaryEnergy.syngas: 80.0,
                                       GlossaryEnergy.biogas: 70.0,
                                       GlossaryEnergy.methane: 100,
-                                      GlossaryEnergy.biomass_dry: 45})
-
-
+                                      GlossaryEnergy.biomass_dry: 45,
+                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 220
+                                      })
         # the value for invest_level is just set as an order of magnitude
         invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: 10.0})
