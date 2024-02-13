@@ -48,6 +48,7 @@ class Study(StudyManager):
             f'{self.study_name}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,
             f'{self.study_name}.{self.optim_name}.max_iter': 50,
             f'{self.study_name}.{self.optim_name}.differentiation_method': 'user',
+            f"{self.study_name}.sub_mda_class": "MDANewtonRaphson",
         }
         data.append(values_mdo)
         return data
