@@ -50,7 +50,7 @@ class CO2MembranesDiscipline(CCTechnoDiscipline):
     # https://www.sciencedirect.com/science/article/pii/S1750583618307461?via%3Dihub#fig0040
     # Refered in this code as SAEECCT
 
-    elec_demand_capture = 1000  # SAEECCT - MJ/tCO2
+    elec_demand_capture = 1000  # SAEECCT - MJ/tCO2  page no:9, # https://sci-hub.et-fine.com/10.1016/j.ijggc.2019.03.006
     mj_to_kwh_factor = 0.277778
     # Hypothesis for max CO2 captured SAEECCT, USC plant 790 Kg/MWh CO2
     # emission and net power output 550 MW
