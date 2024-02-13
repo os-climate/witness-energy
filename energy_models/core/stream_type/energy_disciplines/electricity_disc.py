@@ -108,7 +108,7 @@ class ElectricityDiscipline(EnergyDiscipline):
                             }
         else:
             outputs_dict = {}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

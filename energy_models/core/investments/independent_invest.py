@@ -40,7 +40,8 @@ class IndependentInvest(BaseInvest):
         """compute"""
         energy_investment_wo_tax = self.compute_energy_investment_wo_tax(inputs_dict)
         energy_invest_objective = self.compute_energy_invest_objective(energy_investment_wo_tax)
-        return energy_investment_wo_tax, energy_invest_objective
+        max_budget_constraint = self.compute_max_budget_constraint(energy_investment_wo_tax, inputs_dict)
+        return energy_investment_wo_tax, energy_invest_objective, max_budget_constraint
 
     def compute_energy_invest_objective(self, energy_investment_wo_tax):
         energy_invest_objective = energy_investment_wo_tax[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values.sum()
@@ -65,3 +66,8 @@ class IndependentInvest(BaseInvest):
              GlossaryEnergy.EnergyInvestmentsWoTaxValue: techno_invest_sum / 1e3})  # T$
 
         return energy_investment_wo_tax
+
+    def compute_max_budget_constraint(self, energy_investment_wo_tax: np.ndarray, inputs_dict: dict):
+        max_budget = inputs_dict[GlossaryEnergy.MaxBudgetValue][GlossaryEnergy.MaxBudgetValue].values
+        max_budget_constraint = energy_investment_wo_tax[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values * 1000 - max_budget
+        return max_budget_constraint

@@ -41,6 +41,30 @@ from energy_models.core.techno_type.base_techno_models.medium_heat_techno import
 
 class FischerTropsch(LiquidFuelTechno):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.syngas_ratio = None
+        self.needed_syngas_ratio = None
+        self.syngas_energy_dict = None
+        self.gaseous_hydrogen_energy_dict = None
+        self.sg_transformation_name = None
+        self.syn_needs_wgs = None
+        self.syn_needs_rwgs = None
+        self.price_details_sg_techno = None
+        self.dprice_FT_dsyngas_ratio = None
+        self.dprice_FT_wotaxes_dsyngas_ratio = None
+        self.syngas_ratio_techno = None
+        self.syngas_ratio_techno_rwgs = None
+        self.price_details_rwgs = None
+        self.water_prod_RWGS = None
+        self.syngas_ratio_techno = None
+        self.syngas_ratio_techno_wgs = None
+        self.price_details_wgs = None
+        self.CO2_prod_wgs: float = 0.0
+        self.consumption = None
+        self.production = None
+        self.slope_capex = None
+
     def configure_parameters_update(self, inputs_dict):
         LiquidFuelTechno.configure_parameters_update(self, inputs_dict)
         self.syngas_ratio = np.array(inputs_dict['syngas_ratio']) / 100.0
@@ -189,13 +213,12 @@ class FischerTropsch(LiquidFuelTechno):
             self.dprice_FT_wotaxes_dsyngas_ratio = np.zeros(
                 (len(self.years), len(self.years)), dtype=arr_type)
 
-            if (self.syngas_ratio[0] < self.needed_syngas_ratio):
+            if self.syngas_ratio[0] < self.needed_syngas_ratio:
                 techno_first_year = 'RWGS'
             else:
                 techno_first_year = 'WGS'
-            first_value = None
             for i in range(self.year_end - self.year_start + 1):
-                if (self.syngas_ratio[i] < self.needed_syngas_ratio):
+                if self.syngas_ratio[i] < self.needed_syngas_ratio:
 
                     self.dprice_FT_dsyngas_ratio[i,
                     :] = dprice_FT_dsyngas_ratio_RWGS[i, :]
@@ -275,7 +298,7 @@ class FischerTropsch(LiquidFuelTechno):
             delec_dprice = np.zeros(
                 (len(self.years), len(self.years)), dtype=arr_type)
             for i in range(self.year_end - self.year_start + 1):
-                if (self.syngas_ratio[i] < self.needed_syngas_ratio):
+                if self.syngas_ratio[i] < self.needed_syngas_ratio:
                     # RWGS
 
                     dsyngas_dprice[i] = (self.cost_details['syngas_needs_for_FT'][i] * self.syn_needs_rwgs[i] /
@@ -695,7 +718,7 @@ class FischerTropsch(LiquidFuelTechno):
             dtotal_emission_dsyngas_ratio = np.zeros(
                 (len(self.years), len(self.years)), dtype=arr_type)
             for i in range(self.year_end - self.year_start + 1):
-                if (self.syngas_ratio[i] < self.needed_syngas_ratio):
+                if self.syngas_ratio[i] < self.needed_syngas_ratio:
                     # RWGS
                     #                     dco2_emission_dsyngas_ratio[i,
                     #                                                 :] = dco2_emission_dsyngas_ratio_rwgs[i, :]
@@ -760,9 +783,6 @@ class FischerTropsch(LiquidFuelTechno):
     def compute_dcapex_dsyngas_ratio(self):
 
         invest_sum = 0.0
-        dinvest_sum = 0.0
-        q = 0.0
-        dq = 0.0
         capex_year = 0.0
         capex_init = self.check_capex_unity(
             self.techno_infos_dict)
@@ -896,10 +916,8 @@ class FischerTropsch(LiquidFuelTechno):
             needed_calorific_value = compute_syngas_calorific_value(
                 self.needed_syngas_ratio)
 
-            mol_H2up = (1.0 + self.syngas_ratio)
             dmol_H2up = 1.0
             mol_H2down = (1.0 + self.needed_syngas_ratio)
-            dmol_H2down = 0.0
 
             dmol_H2_dsyngas_ratio = (dmol_H2up * mol_H2down) / mol_H2down ** 2
             dmol_CO2_dsyngas_ratio = 1 - \
@@ -966,10 +984,8 @@ class FischerTropsch(LiquidFuelTechno):
             needed_calorific_value = compute_syngas_calorific_value(
                 self.needed_syngas_ratio)
 
-            mol_H2up = (1.0 + self.syngas_ratio)
             dmol_H2up = 1.0
             mol_H2down = (1.0 + self.needed_syngas_ratio)
-            dmol_H2down = 0.0
 
             dmol_H2_dsyngas_ratio = (dmol_H2up * mol_H2down) / mol_H2down ** 2
             dmol_CO2_dsyngas_ratio = 1 - \
@@ -1020,7 +1036,7 @@ class FischerTropsch(LiquidFuelTechno):
                 (len(self.years), len(self.years)), dtype=arr_type)
 
             for i in range(self.year_end - self.year_start + 1):
-                if (self.syngas_ratio[i] < self.needed_syngas_ratio):
+                if self.syngas_ratio[i] < self.needed_syngas_ratio:
                     # RWGS
                     dwaterprod_dsyngas_ratio[i, :] = dwater_dsyngas_ratio[i, :]
                     dliquid_fuelprod_dsyngas_ratio[:,
@@ -1056,10 +1072,8 @@ class FischerTropsch(LiquidFuelTechno):
         needed_calorific_value = compute_syngas_calorific_value(
             self.needed_syngas_ratio)
 
-        mol_H2up = (1.0 + self.syngas_ratio)
         dmol_H2up = 1.0
         mol_H2down = (1.0 + self.needed_syngas_ratio)
-        dmol_H2down = 0.0
 
         dmol_H2_dsyngas_ratio = (dmol_H2up * mol_H2down) / mol_H2down ** 2
         dmol_CO2_dsyngas_ratio = 1 - \
@@ -1187,16 +1201,14 @@ class FischerTropsch(LiquidFuelTechno):
                                                                        self.cost_details['efficiency'].values /
                                                                        self.syngas_ratio_techno_wgs.cost_details[
                                                                            'efficiency'].values)
-
+            #########################################################
             capex_grad = self.compute_dcapex_dsyngas_ratio()
             dprodenergy_dsyngas_ratio = self.compute_dprod_dfluegas(
                 capex, invest, invest_before_ystart, techno_infos_dict, capex_grad)
 
             delectricity_dsyngas_ratio_wgs = self.compute_delec_consumption_dsyngas_ratio(
                 dprodenergy_dsyngas_ratio)
-            delec_dsyngas_ratio_wgs = delectricity_dsyngas_ratio_wgs + np.identity(len(self.years)) * (
-
-                                                                                                              -1.0 * self.syngas_ratio_techno.slope_elec_demand *
+            delec_dsyngas_ratio_wgs = delectricity_dsyngas_ratio_wgs + np.identity(len(self.years)) * ( -1.0 * self.syngas_ratio_techno.slope_elec_demand *
                                                                                                               self.cost_details[
                                                                                                                   'syngas_needs_for_FT'] *
                                                                                                               self.production[
@@ -1204,6 +1216,7 @@ class FischerTropsch(LiquidFuelTechno):
                                                                                                               self.syngas_ratio_techno_wgs.cost_details[
                                                                                                                   'efficiency']).to_numpy()[:, np.newaxis]
 
+            #########################################################
             # RWGS
 
             dco2_needs_dsyngas_ratio = self.syngas_ratio_techno_rwgs.compute_dco2_needs_dsyngas_ratio()
@@ -1253,7 +1266,7 @@ class FischerTropsch(LiquidFuelTechno):
                 (len(self.years), len(self.years)), dtype=arr_type)
 
             for i in range(self.year_end - self.year_start + 1):
-                if (self.syngas_ratio[i] < self.needed_syngas_ratio):
+                if self.syngas_ratio[i] < self.needed_syngas_ratio:
                     # RWGS
                     dsyngas_dsyngas_ratio[i,
                     :] = dsyngas_dsyngas_ratio_rwgs[i, :]

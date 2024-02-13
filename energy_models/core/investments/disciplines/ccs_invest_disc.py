@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -53,12 +55,12 @@ class InvestCCSDiscipline(SoSWrapp):
 
         'ccs_investment': {'type': 'dataframe', 'unit': 'G$',
                            'dataframe_descriptor': {
-                               GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                               GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True)},
                            'dataframe_edition_locked': False},
         'invest_ccs_mix': {'type': 'dataframe',
                            'dataframe_descriptor': {
-                               GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                               GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                GlossaryEnergy.carbon_capture: ('float', None, False),
                                GlossaryEnergy.carbon_storage: ('float', None, False), },
                            'dataframe_edition_locked': False},
@@ -76,6 +78,10 @@ class InvestCCSDiscipline(SoSWrapp):
         'ccs_invest_df': {'type': 'dataframe', 'unit': 'G$'}
     }
     _maturity = 'Research'
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.energy_model = None
 
     def init_execution(self):
         self.energy_model = EnergyInvest(self.energy_name)

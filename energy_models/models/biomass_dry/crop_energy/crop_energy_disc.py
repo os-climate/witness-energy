@@ -122,14 +122,14 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
     # The increase in land is of 10Mha each year, in CAPEX and OPEX
     land_surface_for_food = pd.DataFrame(
         {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1),
-         'Agriculture total (Gha)': np.ones(81) * 4.8})
+         'Agriculture total (Gha)': 4.8})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                           GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),
                                            }
@@ -145,7 +145,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
                                                      'namespace': GlossaryEnergy.NS_WITNESS,
                                                      'default': land_surface_for_food,
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                     'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                     'int', [1900, 2100], False),
                                                                               'Agriculture total (Gha)': (
                                                                               'float', None, True), },
                                                      'dataframe_edition_locked': False}}
@@ -168,7 +168,6 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         '''
         specific run for crops 
         '''
-        # -- get inputs
         super().run()
         self.specific_run()
 
@@ -178,7 +177,7 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
         '''
         outputs_dict = {'mix_detailed_prices': self.techno_model.price_mix,
                         'mix_detailed_production': self.techno_model.production_mix}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -212,11 +211,10 @@ class CropEnergyDiscipline(BiomassDryTechnoDiscipline):
             (CropEnergy.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
             d_prod_dland_for_food / scaling_factor_techno_production)
 
-        dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
-            invest_level.loc[invest_level[GlossaryEnergy.Years]
-                             <= self.techno_model.year_end][
-                GlossaryEnergy.InvestValue].values * scaling_factor_invest_level, self.techno_model.techno_infos_dict,
-            self.techno_model.initial_production)
+        dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(invest_level.loc[invest_level[GlossaryEnergy.Years]
+                                                                                   <= self.techno_model.year_end][
+                                                                      GlossaryEnergy.InvestValue].values * scaling_factor_invest_level,
+                                                                  self.techno_model.techno_infos_dict)
 
         dnon_use_capital_dinvest, dtechnocapital_dinvest = self.techno_model.compute_dnon_usecapital_dinvest(
             dcapex_dinvest, d_prod_dland_for_food / scaling_factor_techno_production)

@@ -129,6 +129,54 @@ class EnergyMix(BaseStream):
         '''
         super(EnergyMix, self).__init__(name)
 
+        self.target_production_constraint = None
+        self.co2_emitted_by_energy = None
+        self.CCS_price = None
+        self.CO2_tax_minus_CCS_constraint = None
+        self.total_prod_minus_min_prod_constraint_df = None
+        self.minimum_energy_production = None
+        self.production_threshold = None
+        self.scaling_factor_energy_production = None
+        self.scaling_factor_energy_consumption = None
+        self.solid_fuel_elec_percentage = None
+        self.solid_fuel_elec_constraint_ref = None
+        self.liquid_hydrogen_percentage = None
+        self.liquid_hydrogen_constraint_ref = None
+        self.syngas_prod_ref = None
+        self.syngas_prod_limit = None
+        self.ratio_norm_value = None
+        self.heat_losses_percentage = None
+        self.scaling_factor_energy_production = None
+        self.scaling_factor_energy_consumption = None
+        self.carbon_tax = None
+        self.total_prod_minus_min_prod_constraint_ref = None
+        self.co2_emitted_by_energy = None
+        self.co2_emissions = None
+        self.energy_prices = None
+        self.price_by_energy = None
+        self.resources_demand = None
+        self.resources_demand_woratio = None
+        self.all_streams_demand_ratio = None
+        self.energy_prices_in = None
+        self.co2_emissions_in = None
+        self.energy_capital = None
+        self.consumable_energy_df = None
+        self.consumed_energy_by_ccus_sum = None
+        self.production = None
+        self.carbon_emissions_after_use = None
+        self.co2_production = None
+        self.co2_consumption = None
+        self.emissions_by_energy = None
+        self.co2_emissions_needed_by_energy_mix = None
+        self.carbon_capture_from_energy_mix = None
+        self.net_positive_consumable_energy_production = None
+        self.energy_mean_price = None
+        self.constraint_liquid_hydrogen = None
+        self.constraint_solid_fuel_elec = None
+        self.syngas_prod_objective = None
+        self.syngas_prod_constraint = None
+        self.all_streams_demand_ratio = None
+        self.ratio_objective = None
         self.total_co2_emissions = None
         self.total_co2_emissions_Gt = None
         self.co2_for_food = None
@@ -389,6 +437,8 @@ class EnergyMix(BaseStream):
         self.production[GlossaryEnergy.TotalProductionValue] -= self.production_raw[
                                                                     GlossaryEnergy.TotalProductionValue] * \
                                                                 self.heat_losses_percentage / 100.0
+
+
 
     def compute_energy_production_uncut(self):
         """maybe to delete"""
@@ -902,6 +952,10 @@ class EnergyMix(BaseStream):
 
         return dtot_CO2_emissions
 
+    def compute_target_production_constraint(self, inputs_dict: dict):
+        target_energy_production = inputs_dict[GlossaryEnergy.TargetEnergyProductionValue][GlossaryEnergy.TargetEnergyProductionValue].values
+        self.target_production_constraint = self.production[GlossaryEnergy.TotalProductionValue].values * 1000 - target_energy_production
+
     def compute(self, inputs: dict, exp_min=True):
         self.configure_parameters_update(inputs)
 
@@ -924,6 +978,8 @@ class EnergyMix(BaseStream):
         self.compute_net_positive_consumable_energy_production()
         self.compute_mean_price(exp_min=inputs['exp_min'])
         self.compute_constraint_h2()
+
+        self.compute_target_production_constraint(inputs)
 
 
 def update_new_gradient(grad_dict, key_dep_tuple_list, new_key):

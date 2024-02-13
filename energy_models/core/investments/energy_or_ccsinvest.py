@@ -20,7 +20,7 @@ import pandas as pd
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
-class EnergyOrCCSInvest():
+class EnergyOrCCSInvest:
     '''
         Model to split global investment into investment for Carbon Capture and Storage technologies and into investment for energy conversion 
     '''

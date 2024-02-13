@@ -118,8 +118,6 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
     # -- add specific techno outputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)
 
-    DESC_OUT = CSTechnoDiscipline.DESC_OUT
-
     # -- add specific techno outputs to this
     DESC_OUT = {
         PureCarbonSS.CARBON_TO_BE_STORED_CONSTRAINT: {
@@ -136,8 +134,7 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
 
         if self.get_data_in() is not None:
             if GlossaryEnergy.YearStart in self.get_data_in():
-                year_start, year_end = self.get_sosdisc_inputs(
-                    [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+                year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
                 years = np.arange(year_start, year_end + 1)
 
                 if self.get_sosdisc_inputs('carbon_quantity_to_be_stored') is not None:
@@ -170,7 +167,6 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         inputs += list(self.inst_desc_in.keys())
         inputs_dict = self.get_sosdisc_inputs()  # inputs, in_dict=True)
 
-        outputs = list(self.DESC_OUT.keys())
         outputs_dict = self.get_sosdisc_outputs()  # outputs, in_dict=True)
 
         # -- configure class with inputs
@@ -254,8 +250,6 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
             for chart_filter in filters:
                 if chart_filter.filter_key == 'charts':
                     charts = chart_filter.selected_values
-                if chart_filter.filter_key == 'price_unit':
-                    price_unit_list = chart_filter.selected_values
 
         if 'Constraint' in charts:
             new_chart = self.get_chart_constraint()
@@ -270,7 +264,6 @@ class PureCarbonSolidStorageDiscipline(CSTechnoDiscipline):
         inputs += list(self.inst_desc_in.keys())
         inputs_dict = self.get_sosdisc_inputs()  # inputs, in_dict=True)
 
-        outputs = list(self.DESC_OUT.keys())
         outputs_dict = self.get_sosdisc_outputs()  # outputs, in_dict=True)
 
         # -- configure class with inputs

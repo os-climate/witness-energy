@@ -26,8 +26,13 @@ class Electricity(EnergyType):
     default_techno_list = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal', 'Hydropower',
                            'CoalGen', 'OilGen', 'Nuclear', 'CombinedCycleGasTurbine',
                            'GasTurbine', 'BiogasFired', 'BiomassFired',
-                           'Geothermal', 'RenewableElectricitySimpleTechno',
-                           'RenewableElectricitySimpleTechnoDiscipline']
+                           'Geothermal']
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.hydropower_production_current = None
+        self.hydropower_constraint_ref = None
+        self.hydropower_constraint = None
 
     def configure_parameters(self, inputs_dict):
         '''

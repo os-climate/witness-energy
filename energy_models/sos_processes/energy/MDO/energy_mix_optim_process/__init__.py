@@ -13,15 +13,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-# variable used by headers mechanisms to be added in each open source reposiroty
-
-
-# Add here extension to ignore
-extension_to_ignore = ["pkl", "png", "jpg", "csv", "md", "markdown", "avif", "json", "in", "gitignore",
-                                  "cfg", "puml", "pdf", "txt", "ipynb", "zip", "rst"]
-
-# Add here the files to ignore
-files_to_ignore = ["default_process_rights.yaml"]
-
-airbus_rev_commit = "37fb4ae"

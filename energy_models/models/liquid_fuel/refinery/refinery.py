@@ -34,6 +34,12 @@ class Refinery(LiquidFuelTechno):
     # corresponds to crude oil price divided by efficiency TO BE MODIFIED
     oil_extraction_capex = 44.0 / 0.89
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.other_energy_dict = None
+        self.dprod_dinvest = None
+        self.dprod_list_dcapex_list = None
+
     def configure_energy_data(self, inputs_dict):
         '''
         Configure energy data by reading the data_energy_dict in the right Energy class

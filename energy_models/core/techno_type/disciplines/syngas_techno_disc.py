@@ -40,14 +40,14 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
                                                    'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                                    'namespace': 'ns_syngas',
                                                    'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                   'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                   'int', [1900, 2100], False),
                                                                             'transport': ('float', None, True)},
                                                    'dataframe_edition_locked': False},
                GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
                                                      'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                                      'namespace': 'ns_syngas',
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                     'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                     'int', [1900, 2100], False),
                                                                               GlossaryEnergy.MarginValue: (
                                                                               'float', None, True)},
                                                      'dataframe_edition_locked': False},
@@ -71,7 +71,7 @@ class SyngasTechnoDiscipline(TechnoDiscipline):
         super().run()
 
         outputs_dict = {'syngas_ratio': np.array([self.syngas_ratio])}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

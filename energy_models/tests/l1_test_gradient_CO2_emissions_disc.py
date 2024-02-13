@@ -55,7 +55,7 @@ class ConsumptionCO2EmissionsDiscJacobianTestCase(AbstractJacobianUnittest):
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
-            GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.ethanol', GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage,
+            GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}', GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage,
             f'{GlossaryEnergy.heat}.lowtemperatureheat', f'{GlossaryEnergy.heat}.mediumtemperatureheat', f'{GlossaryEnergy.heat}.hightemperatureheat']]
         self.ccs_list = [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]
         self.agriculture_mix_name = 'AgricultureMix'

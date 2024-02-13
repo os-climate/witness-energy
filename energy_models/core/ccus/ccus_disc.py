@@ -14,10 +14,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 
 import numpy as np
 import pandas as pd
 
+from copy import copy, deepcopy
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -53,7 +55,8 @@ class CCUS_Discipline(SoSWrapp):
                                   'editable': False,
                                   'structuring': True},
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.YearEnd: {'type': 'int',
+                        'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public',  'range': [2000,2300]},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
@@ -114,6 +117,10 @@ class CCUS_Discipline(SoSWrapp):
                                               'namespace': GlossaryEnergy.NS_FUNCTIONS},
 
     }
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.ccus_model = None
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -182,7 +189,7 @@ class CCUS_Discipline(SoSWrapp):
                                              'CO2_resource for food (Mt)': ('float', None, True), }
                 }
 
-        self.add_inputs(dynamic_inputs)
+        self.add_inputs(dynamic_inputs),
         self.add_outputs(dynamic_outputs)
 
     def update_default_ccs_list(self):
@@ -228,7 +235,7 @@ class CCUS_Discipline(SoSWrapp):
             EnergyMix.CARBON_STORAGE_CONSTRAINT: self.ccus_model.carbon_storage_constraint,
         }
 
-        # -- store outputs
+        
 
         self.store_sos_outputs_values(outputs_dict)
 
@@ -265,11 +272,9 @@ class CCUS_Discipline(SoSWrapp):
         # -- New CO2 emissions gradients--#
         # --------------------------------#
 
-        alpha = inputs_dict['alpha']
         co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
         self.ccus_model.configure_parameters_update(inputs_dict)
-        dtot_co2_emissions = self.ccus_model.compute_grad_CO2_emissions(
-            co2_emissions, alpha)
+        dtot_co2_emissions = self.ccus_model.compute_grad_CO2_emissions(co2_emissions)
 
         for key, value in dtot_co2_emissions.items():
             co2_emission_column = key.split(' vs ')[0]
@@ -456,17 +461,11 @@ class CCUS_Discipline(SoSWrapp):
         instanciated_charts = []
         charts = []
 
-        price_unit_list = ['$/MWh', '$/t']
-        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
                 if chart_filter.filter_key == 'charts':
                     charts = chart_filter.selected_values
-                if chart_filter.filter_key == 'price_unit':
-                    price_unit_list = chart_filter.selected_values
-                if chart_filter.filter_key == GlossaryEnergy.Years:
-                    years_list = chart_filter.selected_values
 
         if 'Carbon storage constraint' in charts:
             new_chart = self.get_chart_carbon_storage_constraint()
@@ -534,7 +533,7 @@ class CCUS_Discipline(SoSWrapp):
 
         serie = InstanciatedSeries(
             x_serie_1,
-            (carbon_capture_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'].values).tolist(),
+            carbon_capture_from_energy_mix[f'{CarbonCapture.name} from energy mix (Gt)'].values.tolist(),
             f'CO2 captured from energy mix')
         new_chart.add_series(serie)
 

@@ -40,6 +40,34 @@ class TechnoType:
     min_value_invest = 1.e-12
 
     def __init__(self, name):
+        self.years = None
+        self.cost_details = None
+        self.production_detailed = None
+        self.consumption_detailed = None
+        self.aging_distribution = None
+        self.land_use = None
+        self.year_start = None
+        self.year_end = None
+        self.margin = None
+        self.maturity = None
+        self.invest_before_ystart = None
+        self.is_apply_resource_ratio = None
+        self.ratio_available_resource = None
+        self.CO2_taxes = None
+        self.resources_prices = None
+        self.invest_level = None
+        self.production_detailed = None
+        self.is_apply_resource_ratio = None
+        self.ratio_available_resource = None
+        self.transport_cost = None
+        self.transport_margin = None
+        self.production_detailed = None
+        self.dprod_dinvest = None
+        self.dprod_list_dcapex_list = None
+        self.dpower_list_dinvest_list = None
+        self.mean_age_df = None
+        self.production = None
+        self.consumption = None
         self.name = name
 
         self.invest_years = None  # Investment per year
@@ -89,7 +117,6 @@ class TechnoType:
         Biblio & references at https://docs.google.com/presentation/d/1r4JVNxEEClfjBGt27wdnzil8jaRt_TwnCMCQ76ew8o4/edit#slide=id.gc29c52ae34_0_96
         '''
         # Init price check
-        product = biblio_data['sos_name'].item().split('.')[0]
         price = self.cost_details[self.name][0]
         max_price = float(biblio_data['max_price'])
         min_price = float(biblio_data['min_price'])
@@ -284,6 +311,8 @@ class TechnoType:
             -self.applied_ratio: the effective ratio applied for each year
         The method "select_ratios" must have been called beforehand to have the self.ratio_df variable
         @param apply_resources_ratio: boolean, used to activate(True)/deactivate(False) the application of limiting ratios. Defaults to True.
+        :param apply_ressources_ratio:
+        :type apply_ressources_ratio:
         """
         ratio_values = np.ones(len(self.years))
         min_ratio_name = ['' for _ in ratio_values]
@@ -609,7 +638,7 @@ class TechnoType:
 
         return capex_calc_list.tolist()
 
-    def compute_dcapex_dinvest(self, invest_list, data_config, initial_production):
+    def compute_dcapex_dinvest(self, invest_list, data_config):
         """
         Compute Capital expenditures (immobilisations)
         depending on the demand on the technology
@@ -1117,8 +1146,6 @@ class TechnoType:
             arr_type = 'float64'
         dprod_list_dinvest_list = np.zeros(
             (nb_years, nb_years), dtype=arr_type)
-        dprod_list_dcapex_list = np.zeros(
-            (nb_years, nb_years), dtype=arr_type)
         # We fill this jacobian column by column because it is the same element
         # in the entire column
         for i in range(nb_years):
@@ -1242,6 +1269,8 @@ class TechnoType:
         @param is_apply_ratio: boolean, used to activate(True)/deactivate(False) the application of limiting ratios. Defaults to True.
 
         @return dprod_dratio: numpy array, size=(len(years), len(years))
+        :param dapplied_ratio_dratio:
+        :type dapplied_ratio_dratio:
         '''
         dprod_dratio = np.zeros(
             (len(self.years), len(self.years)))

@@ -24,6 +24,12 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class ElectricBoilerHighHeat(highheattechno):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.land_rate = None
+        self.heat_flux = None
+        self.heat_flux_distribution = None
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kWh of heat

@@ -184,13 +184,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_liquid_fuel', post_proc_mod
                 )
-            if energy == f'{GlossaryEnergy.fuel}.hydrotreated_oil_fuel':
+            if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_hydrotreated_oil_fuel', post_proc_mod
                 )
             if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_biodiesel', post_proc_mod)
-            if energy == f'{GlossaryEnergy.fuel}.ethanol':
+            if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_ethanol', post_proc_mod)
 
             if energy == f'{GlossaryEnergy.heat}.hightemperatureheat':
@@ -220,13 +220,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_liquid_fuel', post_proc_mod
                 )
-            if energy == f'{GlossaryEnergy.fuel}.hydrotreated_oil_fuel':
+            if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                     f'ns_hydrotreated_oil_fuel', post_proc_mod
                 )
             if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_biodiesel', post_proc_mod)
-            if energy == f'{GlossaryEnergy.fuel}.ethanol':
+            if energy == f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_ethanol', post_proc_mod)
             if energy == f'{GlossaryEnergy.heat}.hightemperatureheat':
                 self.ee.post_processing_manager.add_post_processing_module_to_namespace(f'ns_heat_high', post_proc_mod)

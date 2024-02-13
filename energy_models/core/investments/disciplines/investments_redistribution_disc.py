@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 
 import numpy as np
 
@@ -50,7 +51,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
     ccs_list_desc_dict.update({'possible_values': CCUS.ccs_list})
     DESC_IN = {
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.EnergyListName: energy_list_desc_dict,
         GlossaryEnergy.CCSListName: ccs_list_desc_dict,
         GlossaryEnergy.ForestInvestmentValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.ForestInvestment),
@@ -63,6 +64,10 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
         GlossaryEnergy.EnergyInvestmentsWoTaxValue: GlossaryEnergy.EnergyInvestmentsWoTax,
     }
     _maturity = 'Research'
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.invest_redistribution_model = None
 
     def init_execution(self):
         self.invest_redistribution_model = InvestmentsRedistribution()

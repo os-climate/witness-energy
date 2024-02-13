@@ -34,7 +34,7 @@ TECHNOLOGIES_LIST_DEV = ['WaterGasShift', 'Electrolysis.SOEC', 'Electrolysis.PEM
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050, time_step=1,
+    def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050,
                  technologies_list=TECHNOLOGIES_LIST,
                  bspline=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
@@ -54,8 +54,7 @@ class Study(EnergyMixStudyManager):
                 0.001 * (1 + 0.03) ** i for i in l_ctrl]
 
         if 'WaterGasShift' in self.technologies_list:
-            invest_hydrogen_mix_dict['WaterGasShift'] = [
-                10.0 for i in l_ctrl]
+            invest_hydrogen_mix_dict['WaterGasShift'] = [10.0] * len(l_ctrl)
 
         if 'Electrolysis.SOEC' in self.technologies_list:
             invest_hydrogen_mix_dict['Electrolysis.SOEC'] = [
@@ -133,7 +132,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.WaterGasShift.{GlossaryEnergy.MarginValue}': margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': margin,
-                       f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       #f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
                        }
         if self.main_study:
             values_dict.update(

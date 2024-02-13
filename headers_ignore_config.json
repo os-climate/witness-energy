@@ -1,0 +1,26 @@
+{
+    "extension_to_ignore": [
+        "pkl",
+        "png",
+        "jpg",
+        "csv",
+        "md",
+        "markdown",
+        "avif",
+        "json",
+        "in",
+        "gitignore",
+        "cfg",
+        "puml",
+        "pdf",
+        "txt",
+        "ipynb",
+        "zip",
+        "rst",
+        "ini"
+    ],
+    "files_to_ignore": [
+        "default_process_rights.yaml"
+    ],
+    "airbus_rev_commit": "37fb4ae"
+}

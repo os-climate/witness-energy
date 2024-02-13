@@ -52,10 +52,9 @@ class TechnoDiscipline(SoSWrapp):
 
     DESC_IN = {
         GlossaryEnergy.YearStart: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_START_DESC_IN),
-        GlossaryEnergy.YearEnd: dict({'structuring': True}, **ClimateEcoDiscipline.YEAR_END_DESC_IN),
+        GlossaryEnergy.YearEnd: dict({'structuring': True}, **GlossaryEnergy.YearEndVar),
         GlossaryEnergy.InvestLevelValue: {'type': 'dataframe', 'unit': 'G$',
-                                          'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                          'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                          'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                                                    GlossaryEnergy.InvestValue: ('float', None, True)},
                                           'dataframe_edition_locked': False
                                           },
@@ -127,6 +126,17 @@ class TechnoDiscipline(SoSWrapp):
 
     def __init__(self, sos_name, logger: logging.Logger):
         super().__init__(sos_name=sos_name, logger=logger)
+        self.dprice_dinvest = None
+        self.dprod_dinvest = None
+        self.dpower_dinvest = None
+        self.dprod_dratio = None
+        self.dprod_column_dinvest = None
+        self.dprod_column_dratio = None
+        self.techno_production_derivative = None
+        self.techno_consumption_derivative = None
+        self.dcons_column_dinvest = None
+        self.dprices_demissions = None
+        self.grad_total = None
         self.techno_model = None
 
     def setup_sos_disciplines(self):
@@ -136,8 +146,7 @@ class TechnoDiscipline(SoSWrapp):
             self.update_default_dataframes_with_years()
 
             if 'is_apply_ratio' in self.get_data_in():
-                year_start, year_end = self.get_sosdisc_inputs(
-                    [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+                year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
                 years = np.arange(year_start, year_end + 1)
                 if self.get_sosdisc_inputs('is_stream_demand'):
                     demand_ratio_dict = dict(
@@ -169,26 +178,26 @@ class TechnoDiscipline(SoSWrapp):
         '''
         Update all default dataframes with years
         '''
-        if GlossaryEnergy.YearStart in self.get_data_in():
-            year_start, year_end = self.get_sosdisc_inputs(
-                [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
-            years = np.arange(year_start, year_end + 1)
-            default_margin = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           GlossaryEnergy.MarginValue: 110.0})
+        if GlossaryEnergy.YearStart in self.get_data_in() and GlossaryEnergy.YearEnd in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+            if year_start is not None and year_end is not None:
+                years = np.arange(year_start, year_end + 1)
+                default_margin = pd.DataFrame({GlossaryEnergy.Years: years,
+                                               GlossaryEnergy.MarginValue: 110.0})
 
-            default_utilisation_ratio = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                      GlossaryEnergy.UtilisationRatioValue: 100.0 * np.ones_like(
-                                                          years)})
+                default_utilisation_ratio = pd.DataFrame({GlossaryEnergy.Years: years,
+                                                          GlossaryEnergy.UtilisationRatioValue: 100.0 * np.ones_like(
+                                                              years)})
 
-            self.set_dynamic_default_values({GlossaryEnergy.ResourcesPriceValue: get_static_prices(years),
-                                             GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
-                                                 years),
-                                             GlossaryEnergy.MarginValue: default_margin,
-                                             GlossaryEnergy.UtilisationRatioValue: default_utilisation_ratio,
-                                             GlossaryEnergy.TransportCostValue: pd.DataFrame(
-                                                 {GlossaryEnergy.Years: years,
-                                                  'transport': 0.0}),
-                                             GlossaryEnergy.TransportMarginValue: default_margin})
+                self.set_dynamic_default_values({GlossaryEnergy.ResourcesPriceValue: get_static_prices(years),
+                                                 GlossaryEnergy.RessourcesCO2EmissionsValue: get_static_CO2_emissions(
+                                                     years),
+                                                 GlossaryEnergy.MarginValue: default_margin,
+                                                 GlossaryEnergy.UtilisationRatioValue: default_utilisation_ratio,
+                                                 GlossaryEnergy.TransportCostValue: pd.DataFrame(
+                                                     {GlossaryEnergy.Years: years,
+                                                      'transport': 0.0}),
+                                                 GlossaryEnergy.TransportMarginValue: default_margin})
 
     def run(self):
         '''
@@ -219,7 +228,7 @@ class TechnoDiscipline(SoSWrapp):
                         GlossaryEnergy.TechnoCapitalValue: self.techno_model.techno_capital,
                         GlossaryEnergy.InstalledPower: self.techno_model.installed_power,
                         }
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -238,11 +247,10 @@ class TechnoDiscipline(SoSWrapp):
         utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][
             GlossaryEnergy.UtilisationRatioValue].values
         ratio_df = self.techno_model.ratio_df
-        dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(
-            invest_level.loc[invest_level[GlossaryEnergy.Years]
-                             <= self.techno_model.year_end][
-                GlossaryEnergy.InvestValue].values * scaling_factor_invest_level, self.techno_model.techno_infos_dict,
-            self.techno_model.initial_production)
+        dcapex_dinvest = self.techno_model.compute_dcapex_dinvest(invest_level.loc[invest_level[GlossaryEnergy.Years]
+                                                                                   <= self.techno_model.year_end][
+                                                                      GlossaryEnergy.InvestValue].values * scaling_factor_invest_level,
+                                                                  self.techno_model.techno_infos_dict)
 
         crf = self.techno_model.compute_crf(
             self.techno_model.techno_infos_dict)
@@ -775,7 +783,7 @@ class TechnoDiscipline(SoSWrapp):
                 'percentage_resource')
             new_chart.annotation_upper_left = {
                 'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
-            tot_price = (techno_detailed_prices[self.techno_name].values) / \
+            tot_price = techno_detailed_prices[self.techno_name].values / \
                         (percentage_resource[self.energy_name] / 100.)
             serie = InstanciatedSeries(
                 techno_detailed_prices[GlossaryEnergy.Years].values.tolist(),
@@ -843,7 +851,7 @@ class TechnoDiscipline(SoSWrapp):
                 'percentage_resource')
             new_chart.annotation_upper_left = {
                 'Percentage of total price at starting year': f'{percentage_resource[self.energy_name][0]} %'}
-            tot_price = (techno_detailed_prices[self.techno_name].values) / \
+            tot_price = techno_detailed_prices[self.techno_name].values / \
                         (percentage_resource[self.energy_name] / 100.)
 
             serie = InstanciatedSeries(

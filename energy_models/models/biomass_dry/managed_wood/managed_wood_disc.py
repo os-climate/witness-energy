@@ -192,7 +192,7 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                           GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),
                                            }
@@ -226,14 +226,12 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
         outputs_dict = {'mix_detailed_prices': self.techno_model.price_mix,
                         'mix_detailed_production': self.techno_model.production_mix}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def get_post_processing_list(self, filters=None):
-        instanciated_charts = []
         charts = []
         price_unit_list = []
-        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
@@ -262,7 +260,6 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
 
     def get_production_chart(self):
         production_mix_df = self.get_sosdisc_outputs('mix_detailed_production')
-        production_df = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedProductionValue)
 
         name_residue = f'{self.energy_name}_residue (TWh)'
         name_wood = f'{self.energy_name}_wood (TWh)'
@@ -346,7 +343,6 @@ class ManagedWoodDiscipline(BiomassDryTechnoDiscipline):
         name_wood = f'{self.energy_name}_wood'
 
         chart_name = f'Price of Managed wood technology over the years'
-        techno_price = self.get_sosdisc_outputs(GlossaryEnergy.TechnoDetailedPricesValue)
         year_start = min(price_mix_df[GlossaryEnergy.Years].values.tolist())
         year_end = max(price_mix_df[GlossaryEnergy.Years].values.tolist())
 

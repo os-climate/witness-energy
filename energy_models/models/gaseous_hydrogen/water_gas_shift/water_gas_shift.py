@@ -35,6 +35,15 @@ from energy_models.core.techno_type.base_techno_models.low_heat_techno import lo
 
 class WGS(GaseousHydrogenTechno):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.syngas_ratio = None
+        self.needed_syngas_ratio = None
+        self.inputs_dict = None
+        self.available_power = None
+        self.slope_capex = None
+        self.syngas_ratio = None
+
     def configure_parameters_update(self, inputs_dict):
         GaseousHydrogenTechno.configure_parameters_update(self, inputs_dict)
         self.syngas_ratio = np.array(inputs_dict['syngas_ratio']) / 100.0

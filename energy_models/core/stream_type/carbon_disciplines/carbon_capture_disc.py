@@ -47,21 +47,21 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                                        'visibility': 'Shared',
                                        'namespace': 'ns_flue_gas', 'unit': 'Mt',
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                           GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                            'CO2 from Flue Gas': ('float', None, False)}},
                'flue_gas_prod_ratio': {'type': 'dataframe',
                                        'visibility': 'Shared',
                                        'namespace': 'ns_flue_gas', 'unit': '-',
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                           GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                            f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),
                                            f'{GlossaryEnergy.electricity}.GasTurbine': ('float', None, True),
                                            f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine': (
                                                'float', None, True),
                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': (
                                                'float', None, True),
-                                           f'{GlossaryEnergy.liquid_fuel}.FischerTropsch': ('float', None, True),
-                                           f'{GlossaryEnergy.liquid_fuel}.Refinery': ('float', None, True),
+                                           f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch': ('float', None, True),
+                                           f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery': ('float', None, True),
                                            f'{GlossaryEnergy.methane}.FossilGas': ('float', None, True),
                                            f'{GlossaryEnergy.solid_fuel}.Pelletizing': ('float', None, True),
                                            f'{GlossaryEnergy.syngas}.CoalGasification': ('float', None, True),
@@ -113,7 +113,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
             'production_dac': self.energy_model.production_dac,
             'consumption_dac': self.energy_model.consumption_dac,
         }
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -152,7 +152,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                 where=carbon_captured_type['flue gas'].values != 0.0))
             dfg_ratio = np.divide(- inputs_dict['flue_gas_production'][
                 CarbonCapture.flue_gas_name].values * scaling_factor_energy_production,
-                                  (carbon_captured_type['flue gas'].values)
+                                  carbon_captured_type['flue gas'].values
                                   ** 2, out=np.zeros_like(
                     -inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values),
                                   where=carbon_captured_type['flue gas'].values != 0.0)
@@ -167,7 +167,7 @@ class CarbonCaptureDiscipline(StreamDiscipline):
                 where=carbon_captured_type_woratio['flue gas'].values != 0.0))
             dfg_ratio_woratio = np.divide(- inputs_dict['flue_gas_production'][
                 CarbonCapture.flue_gas_name].values * scaling_factor_energy_production,
-                                          (carbon_captured_type_woratio['flue gas'].values)
+                                          carbon_captured_type_woratio['flue gas'].values
                                           ** 2, out=np.zeros_like(
                     -inputs_dict['flue_gas_production'][CarbonCapture.flue_gas_name].values),
                                           where=carbon_captured_type_woratio['flue gas'].values != 0.0)
@@ -589,7 +589,6 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
-        energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
         chart_name = f'CO2 captured<br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',
@@ -619,7 +618,6 @@ class CarbonCaptureDiscipline(StreamDiscipline):
         energy_consumption = self.get_sosdisc_outputs(GlossaryEnergy.EnergyConsumptionValue)
         scaling_factor_energy_consumption = self.get_sosdisc_inputs(
             'scaling_factor_energy_consumption')
-        energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)
         chart_name = f'resources used for CO2 capture <br>with input investments'
 
         new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Mass [Mt]',

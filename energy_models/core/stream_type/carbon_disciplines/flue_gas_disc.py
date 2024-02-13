@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 import numpy as np
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
@@ -63,8 +65,8 @@ class FlueGasDiscipline(SoSWrapp):
                                  f'{GlossaryEnergy.electricity}.GasTurbine': GasTurbineDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.liquid_fuel}.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.liquid_fuel}.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.methane}.FossilGas': FossilGasDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.solid_fuel}.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.syngas}.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
@@ -76,8 +78,7 @@ class FlueGasDiscipline(SoSWrapp):
                                  }
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
-
+               GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.flue_gas_emission_techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
@@ -109,6 +110,10 @@ class FlueGasDiscipline(SoSWrapp):
                                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                                         'namespace': 'ns_flue_gas', 'unit': '%'}}
 
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.energy_model = None
+
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = FlueGas(self.energy_name)
@@ -137,7 +142,7 @@ class FlueGasDiscipline(SoSWrapp):
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': ns_variable,
                         'dataframe_descriptor': {
-                            GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                            GlossaryEnergy.Years: ('int', [1900, 2100], False),
                             'CO2 from Flue Gas (Mt)': ('float', None, False),
                             }
                     }
@@ -162,7 +167,7 @@ class FlueGasDiscipline(SoSWrapp):
             GlossaryEnergy.FlueGasMean: flue_gas_mean,
             'flue_gas_production': self.energy_model.get_total_flue_gas_production(),
             'flue_gas_prod_ratio': self.energy_model.get_total_flue_gas_prod_ratio()}
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -170,6 +175,7 @@ class FlueGasDiscipline(SoSWrapp):
              Compute gradient of coupling outputs vs coupling inputs
         '''
         inputs_dict = self.get_sosdisc_inputs()
+
         technologies_list = inputs_dict[GlossaryEnergy.flue_gas_emission_techno_list]
         ccs_list = inputs_dict[GlossaryEnergy.ccs_list]
         mix_weights = self.get_sosdisc_outputs('flue_gas_prod_ratio')

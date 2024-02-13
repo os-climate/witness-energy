@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc import \
     AgricultureMixDiscipline
 from energy_models.core.stream_type.base_stream import BaseStream
@@ -45,6 +46,30 @@ class EnergyGHGEmissions(BaseStream):
                 f'{Carbon.name} {ghg_input_unit}']
 
     GHG_TYPE_LIST = GHGEmissions.GHG_TYPE_LIST
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.energy_list = None
+        self.scaling_factor_energy_production = None
+        self.scaling_factor_energy_consumption = None
+        self.years = None
+        self.gwp_20 = None
+        self.gwp_100 = None
+        self.energy_list = None
+        self.ccs_list = None
+        self.ghg_per_use_dict = None
+        self.energy_production_detailed = None
+        self.co2_emissions_needed_by_energy_mix = None
+        self.co2_emissions_ccus_Gt = None
+        self.CO2_sources = None
+        self.CO2_sinks = None
+        self.ghg_production_dict = None
+        self.CO2_consumption = None
+        self.ghg_sources = None
+        self.ghg_total_emissions = None
+        self.gwp_emissions = None
+        self.CO2_sources_Gt = None
+        self.CO2_sinks_Gt = None
 
     def configure_parameters(self, inputs_dict):
         '''
@@ -126,20 +151,15 @@ class EnergyGHGEmissions(BaseStream):
         # and sub_consumption df
         for energy in self.energy_list:
             self.aggregate_all_ghg_emissions_in_energy(energy)
-
             self.compute_ghg_emissions_by_use(energy)
 
         for ccs_name in self.ccs_list:
             self.aggregate_all_ghg_emissions_in_energy(ccs_name)
 
         self.sum_ghg_emissions_by_use()
-
         self.compute_other_co2_emissions()
-
         self.update_emissions_in_gt()
-
         self.compute_total_ghg_emissions()
-
         self.compute_gwp()
 
     def sum_ghg_emissions_by_use(self):
@@ -444,7 +464,7 @@ class EnergyGHGEmissions(BaseStream):
         return dtot_CO2_emissions
 
     # , co2_emissions):
-    def compute_grad_CO2_emissions_sinks(self, net_production):
+    def compute_grad_CO2_emissions_sinks(self):
         '''
         Compute CO2 total emissions
         '''
@@ -470,8 +490,6 @@ class EnergyGHGEmissions(BaseStream):
 
             # Compute the CO2 emitted during the use of the net energy
             # If net energy is negative, CO2 by use is equals to zero
-            net_prod = net_production[
-                f'production {energy} (TWh)'].values
 
         ''' CO2 removed by energy mix       
          CO2 removed by energy mix technologies during the process 
@@ -486,10 +504,5 @@ class EnergyGHGEmissions(BaseStream):
                 dtot_CO2_emissions[
                     f'{CO2.name} removed by energy mix (Mt) vs {energy1}#{CO2.name} {self.ghg_input_unit}#cons'] = np.ones(
                     len_years)
-        #             self.total_co2_emissions[f'{CO2.name} removed by energy mix {self.ghg_input_unit}'] = energy_removing_co2.sum(
-        #                 axis=1).values
-        #         else:
-        #             self.total_co2_emissions[
-        #                 f'{CO2.name} removed energy mix {self.ghg_input_unit}'] = 0.0
 
         return dtot_CO2_emissions

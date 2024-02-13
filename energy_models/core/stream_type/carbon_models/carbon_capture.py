@@ -48,6 +48,13 @@ class CarbonCapture(BaseStream):
     def __init__(self, name):
         BaseStream.__init__(self, name)
 
+        self.consumption_woratio = None
+        self.carbon_captured_type_woratio = None
+        self.flue_gas_percentage_woratio = None
+        self.fg_ratio_woratio = None
+        self.production = None
+        self.consumption = None
+        self.production_by_techno = None
         self.flue_gas_percentage = None
         self.carbon_captured_type = None
         self.flue_gas_production = None
@@ -306,7 +313,7 @@ class CarbonCapture(BaseStream):
             dfluegas = self.compute_dflue_gas_with_exp_min(
                 self.fg_ratio)
             dfg_ratio = -1.0 * self.flue_gas_production / \
-                        (self.carbon_captured_type['flue gas'].values) ** 2
+                        self.carbon_captured_type['flue gas'].values ** 2
             dfg_ratio_dfg_prod = 1.0 / \
                                  self.carbon_captured_type['flue gas'].values
         grad_element_mix_vs_prod = {}

@@ -94,7 +94,7 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
                                        'dataframe_descriptor': {
-                                           GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                           GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                            'age': ('float', None, True),
                                            'distrib': ('float', None, True),
                                            }
@@ -115,4 +115,3 @@ class ElectricBoilerMediumHeatDiscipline(MediumHeatTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = ElectricBoilerMediumHeat(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
-

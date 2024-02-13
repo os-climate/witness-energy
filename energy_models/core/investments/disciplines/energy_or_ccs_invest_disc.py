@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 import numpy as np
 
 from energy_models.core.investments.energy_or_ccsinvest import EnergyOrCCSInvest
@@ -41,14 +43,14 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
     DESC_IN = {
         GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe', 'unit': '100G$',
                                                 'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                'int', [1900, 2100], False),
                                                                          GlossaryEnergy.EnergyInvestmentsValue: (
                                                                          'float', None, True)},
                                                 'dataframe_edition_locked': False,
                                                 'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_WITNESS},
         'ccs_percentage': {'type': 'dataframe',
                            'dataframe_descriptor': {
-                               GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                               GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                'ccs_percentage': ('float', [0., 100.], True)},
                            'dataframe_edition_locked': False,
                            'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS}
@@ -62,6 +64,10 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
     rescaling_factor = 1e2
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.energy_model = None
 
     def init_execution(self):
         self.energy_model = EnergyOrCCSInvest()

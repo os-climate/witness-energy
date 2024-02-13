@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 import numpy as np
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
@@ -47,7 +49,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
 
     DESC_IN = {
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': EnergyMix.energy_list,
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
@@ -102,6 +104,10 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
     }
 
     model_name = ConsumptionCO2Emissions.name
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.model = None
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -193,7 +199,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                      f'{GlossaryEnergy.liquefied_petroleum_gas} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.heating_oil} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.ultra_low_sulfur_diesel} (TWh)': ('float', None, True),
-                                                     f'{GlossaryEnergy.fuel}.hydrotreated_oil_fuel': ('float', None, True),
+                                                     f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}': ('float', None, True),
                                                      GlossaryEnergy.electricity: ('float', None, True),
                                                      'N2O (Mt)': ('float', None, True),
                                                      GlossaryEnergy.methane: ('float', None, True),
@@ -341,8 +347,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
         # ------------------------------------#
         # -- CO2 emissions sinks gradients--#
         # ------------------------------------#
-        dtot_co2_emissions_sinks = self.model.compute_grad_CO2_emissions_sinks(
-            energy_production_detailed)
+        dtot_co2_emissions_sinks = self.model.compute_grad_CO2_emissions_sinks()
 
         for key, value in dtot_co2_emissions_sinks.items():
             co2_emission_column = key.split(' vs ')[0]

@@ -17,8 +17,6 @@ limitations under the License.
 import unittest
 from copy import deepcopy
 
-import numpy as np
-
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import Study
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -33,8 +31,6 @@ class CarbonCaptureTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
-
         self.name = 'Test'
         ee_data = ExecutionEngine(self.name)
         repo = 'energy_models.sos_processes.energy.techno_mix'

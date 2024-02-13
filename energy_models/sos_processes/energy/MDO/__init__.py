@@ -13,17 +13,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-import HeadersIgnoreConfig
-from sostrades_core.tools.check_headers import HeaderTools
-
-ht = HeaderTools()
-
-ht.set_verbose_mode(False)
-
-ht.write_headers_if_needed_in_repo(
-    HeadersIgnoreConfig.extension_to_ignore,
-    HeadersIgnoreConfig.files_to_ignore,
-    HeadersIgnoreConfig.airbus_rev_commit,
-    ".",
-)

@@ -139,8 +139,7 @@ class PlasmaCrackingDiscipline(GaseousHydrogenTechnoDiscipline):
 
         if self.get_data_in() is not None:
             if GlossaryEnergy.YearStart in self.get_data_in():
-                year_start, year_end = self.get_sosdisc_inputs(
-                    [GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
+                year_start, year_end = self.get_sosdisc_inputs([GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd])
                 years = np.arange(year_start, year_end + 1)
 
                 if self.get_sosdisc_inputs('CO2_credits')[GlossaryEnergy.Years].values.tolist() != list(years):

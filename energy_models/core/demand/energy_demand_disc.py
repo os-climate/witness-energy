@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 
 import numpy as np
 
@@ -44,10 +45,10 @@ class EnergyDemandDiscipline(SoSWrapp):
     }
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
                                                               'dataframe_descriptor': {
-                                                                  GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                                  GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                                                   'demand': ('float', None, True),
                                                                   'production fuel.ethanol (TWh)': ('float', None, True),
                                                                   'production heat.hightemperatureheat (TWh)': ('float', None, True),
@@ -74,7 +75,7 @@ class EnergyDemandDiscipline(SoSWrapp):
                                                      'namespace': GlossaryEnergy.NS_REFERENCE},
                GlossaryEnergy.PopulationDf['var_name']: GlossaryEnergy.PopulationDf,
                GlossaryEnergy.TransportDemandValue: {'type': 'dataframe', 'dataframe_descriptor': {
-                   GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                   GlossaryEnergy.Years: ('int', [1900, 2100], False),
                    GlossaryEnergy.TransportDemandValue: ('float', None, True)},
                                                      'dataframe_edition_locked': False, 'unit': 'TWh'},
                'transport_demand_constraint_ref': {'type': 'float', 'default': 6000.0, 'unit': 'TWh',
@@ -95,6 +96,10 @@ class EnergyDemandDiscipline(SoSWrapp):
     energy_constraint_list = [Electricity.name] + \
                              EnergyDemand.energy_list_transport
     elec_prod_column = EnergyDemand.elec_prod_column
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.demand_model = None
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()

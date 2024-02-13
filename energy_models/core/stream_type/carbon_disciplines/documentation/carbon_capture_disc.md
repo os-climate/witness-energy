@@ -11,7 +11,7 @@ The technologies taken into account are:
 * Calcium-Potassium scrubbing
 
 
-**Flue Gas:**
+**Flue Gas capture:**
 Flue gas is a high CO2-concentrated gas, usually the result of plant activities such as coal burning plant.
 Carbon Capture technologies dealing with flue gas allow to reduce CO2 emissions from plant activities
 
@@ -26,7 +26,7 @@ The technologies taken into account are:
 * Piperazine process
 * Pressure swing adsorption
 
-Flue gas Capture is limited by the amount of flue gas available at the exit of CO2 emissing factories. The model limits (smoothly with an exponential to avoid zero gradients) the carbon capture via flue gas with the real amount of flue gas available. The mean CO2 concentration in the flue gas is retained to compute the economic data of each flue gas technology:
+Flue gas capture is limited by the amount of flue gas available at the exit of CO2 emissing factories. The model limits (smoothly with an exponential to avoid zero gradients) the carbon capture via flue gas with the real amount of flue gas available. The mean CO2 concentration in the flue gas is retained to compute the economic data of each flue gas technology.
 
 
 [^1]: https://en.wikipedia.org/wiki/Carbon_capture_and_storage
