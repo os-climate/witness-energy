@@ -24,7 +24,6 @@ from energy_models.models.syngas.autothermal_reforming.autothermal_reforming imp
 
 
 class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Authothermal Reforming Model',
@@ -43,7 +42,7 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
     techno_name = 'AutothermalReforming'
     lifetime = 15
     construction_delay = 3  # years
-    #'reaction': '2CH4 + CO2 + O2 = 3H2 + 3CO + H2O',
+    # 'reaction': '2CH4 + CO2 + O2 = 3H2 + 3CO + H2O',
     techno_infos_dict_default = {'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'Opex_percentage': 0.02,
@@ -87,10 +86,12 @@ class AutothermalReformingDiscipline(SyngasTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
 
     DESC_IN.update(SyngasTechnoDiscipline.DESC_IN)
 

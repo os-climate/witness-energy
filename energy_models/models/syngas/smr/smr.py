@@ -22,9 +22,10 @@ from energy_models.core.stream_type.energy_models.methane import Methane
 from energy_models.core.stream_type.resources_models.water import Water
 from energy_models.core.techno_type.base_techno_models.syngas_techno import SyngasTechno
 from energy_models.core.techno_type.base_techno_models.high_heat_techno import highheattechno
+from energy_models.glossaryenergy import GlossaryEnergy
+
 
 class SMR(SyngasTechno):
-
     syngas_COH2_ratio = 1.0 / 3.0 * 100.0
 
     def compute_other_primary_energy_costs(self):
@@ -45,13 +46,14 @@ class SMR(SyngasTechno):
                                                     / self.cost_details['efficiency'])
 
         # Cost of H20 for 1 kWH of H2
-        self.cost_details[Water.name] = list(self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs']
-                                          / self.cost_details['efficiency'])
+        self.cost_details[Water.name] = list(
+            self.resources_prices[Water.name] * self.cost_details[f'{Water.name}_needs']
+            / self.cost_details['efficiency'])
 
-        self.cost_details['electricity'] = self.cost_details['elec_needs'] * \
-            self.prices['electricity']
+        self.cost_details[GlossaryEnergy.electricity] = self.cost_details['elec_needs'] * \
+                                           self.prices[GlossaryEnergy.electricity]
 
-        return self.cost_details[Water.name] + self.cost_details[f'{Methane.name}'] + self.cost_details['electricity']
+        return self.cost_details[Water.name] + self.cost_details[f'{Methane.name}'] + self.cost_details[GlossaryEnergy.electricity]
 
     def grad_price_vs_energy_price(self):
         '''
@@ -92,11 +94,11 @@ class SMR(SyngasTechno):
                                                    self.cost_details['efficiency']
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                       self.cost_details['elec_needs']
+                                                  self.cost_details['elec_needs']
 
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                                 self.cost_details[f'{Water.name}_needs'] / \
-                                                 self.cost_details['efficiency']
+                                            self.cost_details[f'{Water.name}_needs'] / \
+                                            self.cost_details['efficiency']
 
         return self.carbon_intensity[f'{Methane.name}'] + self.carbon_intensity[Electricity.name] + \
                self.carbon_intensity[Water.name]
@@ -112,8 +114,8 @@ class SMR(SyngasTechno):
         mol_COH2 = 3.0
         methane_data = Methane.data_energy_dict
         methane_needs = mol_CH4 * methane_data['molar_mass'] * methane_data['calorific_value'] / \
-            (mol_COH2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                        (mol_COH2 * self.data_energy_dict['molar_mass'] *
+                         self.data_energy_dict['calorific_value'])
 
         return methane_needs
 
@@ -128,8 +130,8 @@ class SMR(SyngasTechno):
         mol_COH2 = 3.0
         water_data = Water.data_energy_dict
         water_needs = mol_H2O * water_data['molar_mass'] / \
-            (mol_COH2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                      (mol_COH2 * self.data_energy_dict['molar_mass'] *
+                       self.data_energy_dict['calorific_value'])
 
         return water_needs
 
@@ -139,20 +141,24 @@ class SMR(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
         # Consumption
         self.consumption_detailed[f'{Methane.name} ({self.product_energy_unit})'] = self.cost_details['CH4_needs'] * \
-                                                                                    self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                    self.production_detailed[
+                                                                                        f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                     self.cost_details['efficiency']
 
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            'elec_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
-                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                        self.production_detailed[
+                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                         self.cost_details['efficiency']
 
         self.consumption_detailed[f'{highheattechno.energy_name} ({self.product_energy_unit})'] = \
             self.techno_infos_dict['high_heat_production'] * self.techno_infos_dict['useful_heat_recovery_factor'] *  \
             self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+
 

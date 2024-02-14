@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-
+Modifications on 2024/01/31-2024/02/01 Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -12,8 +12,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Methanol(EnergyType):
@@ -23,12 +25,12 @@ class Methanol(EnergyType):
     # It can also be used as an alternative fuel through combustion reaction
     # Source: J.M.K.C. Donev et al. (2018). Energy Education - Methanol [Online].
     # Available: https://energyeducation.ca/encyclopedia/Methanol. [Accessed: June 20, 2022].
-    name = 'fuel.methanol'
+    name = f'{GlossaryEnergy.fuel}.methanol'
     short_name = 'methanol'
     default_techno_list = ['CO2Hydrogenation']
     data_energy_dict = {'maturity': 5,
 
-                        #Engineering ToolBox, (2009).Combustion of Fuels - Carbon Dioxide Emission.[online]
+                        # Engineering ToolBox, (2009).Combustion of Fuels - Carbon Dioxide Emission.[online]
                         # Available at: (https://www.engineeringtoolbox.com/co2-emission-fuels-d_1085.html)
                         # [Accessed 20/06/2022].
                         'CO2_per_use': 1.37,

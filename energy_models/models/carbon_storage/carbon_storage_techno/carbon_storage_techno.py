@@ -33,8 +33,6 @@ class CarbonStorageTechno(CSTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
         # Consumption
 
         self.consumption_detailed[f'{CarbonCapture.name} ({self.product_energy_unit})'] = self.production_detailed[

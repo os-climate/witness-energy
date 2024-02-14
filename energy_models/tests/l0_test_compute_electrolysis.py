@@ -38,24 +38,26 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
 
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.resource_list = [
-            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource', 'copper_resource', 'platinum_resource']
+            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource', 'copper_resource',
+            'platinum_resource']
         self.ratio_available_resource = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 100, 100, len(self.ratio_available_resource.index))
         self.energy_prices = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 60.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 60.0})
         self.energy_co2_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0})
         # price of 1 kg of wood
-        self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: years, ResourceGlossary.Water['name']: 0.0, ResourceGlossary.Platinum['name']: 32825887 })
+        self.resources_prices = pd.DataFrame({GlossaryEnergy.Years: years, ResourceGlossary.Water['name']: 0.0,
+                                              ResourceGlossary.Platinum['name']: 32825887})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: len(years) * [0.3]})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
 
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
@@ -78,6 +80,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
 
     def tearDown(self):
         pass
+
     def test_03_pem_discipline(self):
 
         self.name = 'Test'
@@ -105,7 +108,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -120,7 +123,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
         for graph in graph_list:
-            graph.to_plotly()#.show()
+            graph.to_plotly()  # .show()
 
     def _test_05_soec_discipline(self):
 
@@ -149,7 +152,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices,
                        'scaling_factor_techno_consumption': self.scaling_factor_techno_consumption,
                        'scaling_factor_techno_production': self.scaling_factor_techno_production,
@@ -163,8 +166,9 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+
+    #         for graph in graph_list:
+    #             graph.to_plotly().show()
 
     def _test_07_awe_discipline(self):
 
@@ -193,7 +197,7 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin,
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_prices
                        }
 
@@ -205,6 +209,8 @@ class ElectrolysisPriceTestCase(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filters = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filters)
+
+
 #         for graph in graph_list:
 #             graph.to_plotly().show()
 

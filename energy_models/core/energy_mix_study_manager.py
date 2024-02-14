@@ -26,7 +26,8 @@ class EnergyMixStudyManager(StudyManager):
     classdocs
     '''
 
-    def __init__(self, file_path, technologies_list, run_usecase=True, main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
+    def __init__(self, file_path, technologies_list, run_usecase=True, main_study=True, execution_engine=None,
+                 invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         '''
         Constructor
         '''
@@ -38,7 +39,8 @@ class EnergyMixStudyManager(StudyManager):
         self.configure_ds_boundaries()
         self.invest_discipline = invest_discipline
         self.main_study = main_study
-    #--Overwrite method for technology selection
+
+    # --Overwrite method for technology selection
 
     def setup_process(self):
         StudyManager.setup_process(self)
@@ -59,10 +61,7 @@ class EnergyMixStudyManager(StudyManager):
         invest_mix_dict = self.get_investments()
         energy_wodot = self.energy_name.replace('.', '_')
 
-        if len(self.technologies_list) > 1:
-            enable_variable = True
-        else:
-            enable_variable = False
+        enable_variable = True
 
         for techno in self.technologies_list:
             techno_wo_dot = techno.replace('.', '_')

@@ -96,11 +96,12 @@ class ElectrolysisAWEDiscipline(GaseousHydrogenTechnoDiscipline):
                                                                 'distrib': ('float', None, True)}
                                        },
                GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
-                                        'unit': 'G$',
-                                        'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+                                                               'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this

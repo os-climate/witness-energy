@@ -26,7 +26,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 
 class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Heat Pump High Heat Model',
@@ -44,8 +43,7 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     techno_name = 'HeatPumpHighHeat'
     energy_name = hightemperatureheat.name
 
-
-    lifetime = 25           # years # https://www.energy.gov/energysaver/heat-pump-systems
+    lifetime = 25  # years # https://www.energy.gov/energysaver/heat-pump-systems
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.
     # Heat pump can reduce your electricity use for heating by approximately 50% compared to
     # electric resistance heating such as furnaces and baseboard heaters.
@@ -55,31 +53,34 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     # Heat pumps could satisfy over 80% of global space and water heating needs with a lower carbon
     # footprint than gas-fired condensing boilers: however, in 2021 they only met 10%
     construction_delay = 1  # years
-    #COP = 3.5
+    # COP = 3.5
 
     techno_infos_dict_default = {
-        'Capex_init': 718/(25*8760),   #660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        'Capex_init': 718 / (25 * 8760),
+        # 660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'Capex_init_unit': '$/kWh',
-        'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        'Opex_percentage': 0.04,
+        ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
         GlossaryEnergy.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryEnergy.Years,
-        'efficiency': 1.0,    # consumptions and productions already have efficiency included
+        'efficiency': 1.0,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
-        #'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
-        #'elec_demand_unit': 'kWh/kWh',
+        # 'elec_demand': (1.0 / COP), #*(0.13/100), # Electricity cost 13cent/hr #https://www.perchenergy.com/energy-calculators/heat-pump-electricity-use-cost
+        # 'elec_demand_unit': 'kWh/kWh',
         # 'heating_space': 92.9,
         # 'heating_space_unit': 'm^2',
         # 'heat_required_per_meter_square': 0.00879, #https://carbonswitch.com/heat-pump-sizing-guide/#:~:text=If%20you%20Google%20%E2%80%9Cheat%20pump,a%2060%2C000%20BTU%20heat%20pump.
         # 'heat_required_per_meter_square_unit': 'kW/m^2',
-        #'maturity': 5,
+        # 'maturity': 5,
         'learning_rate': 0.00,
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
-        'output_temperature': 500, # High Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
+        'output_temperature': 500,
+        # High Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
         'mean_temperature': 20,
         'output_temperature_unit': '°C',
         'mean_temperature_unit': '°C'
@@ -88,7 +89,8 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     # heat_pump_high_heat Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
     # in TWh
-    initial_production = 1*8760/3  # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
+    initial_production = 1 * 8760 / 3  # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
+
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
@@ -106,7 +108,8 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
     # invest_before_year_start = pd.DataFrame(
     #     {'past years': np.array(-construction_delay), GlossaryEnergy.InvestValue: 718/(25*8760) * np.array([1*8760*0.5*0.5/3])})
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.array(-construction_delay), GlossaryEnergy.InvestValue: 0 * np.array([1*8760*0.5*0.5/3])}) # Invest before year start is 0
+        {'past years': np.array(-construction_delay),
+         GlossaryEnergy.InvestValue: 0 * np.array([1 * 8760 * 0.5 * 0.5 / 3])})  # Invest before year start is 0
     # invest_before_year_start = pd.DataFrame(
     #     {'past years': np.arange(-construction_delay, 0),
     #      GlossaryEnergy.InvestValue: 718/(25*8760) * np.array([0, 1*8760*0.5/3])})
@@ -114,13 +117,15 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
+
                GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False},
+
                }
     DESC_IN.update(HighHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
@@ -131,18 +136,4 @@ class HeatPumpHighHeatDiscipline(HighHeatTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = HeatPump(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
-
-    # def setup_sos_disciplines(self):
-    #     super().setup_sos_disciplines()
-    #
-    # def run(self):
-    #     '''
-    #     Run for all energy disciplines
-    #     '''
-    #
-    #     inputs_dict = self.get_sosdisc_inputs()
-    #     self.techno_model.configure_parameters_update(inputs_dict)
-    #     super().run()
-    #
-
 

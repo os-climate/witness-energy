@@ -35,11 +35,12 @@ class LowHeatDiscipline(EnergyDiscipline):
     # -- add specific techno inputs to this
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': lowtemperatureheat.default_techno_list,
-                                     'default': lowtemperatureheat.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_heat_low',
-                                     'structuring': True, 'unit': '-'
-                                     },
+                                            'possible_values': lowtemperatureheat.default_techno_list,
+                                            'default': lowtemperatureheat.default_techno_list,
+                                            'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                            'namespace': 'ns_heat_low',
+                                            'structuring': True, 'unit': '-'
+                                            },
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'unit': 'defined in dict',
                                   'namespace': 'ns_heat_low', 'default': lowtemperatureheat.data_energy_dict},

@@ -20,11 +20,10 @@ import energy_models.tests as jacobian_target
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 if __name__ == '__main__':
-    
     AbstractJacobianUnittest.launch_all_pickle_generation(
-       jacobian_target, 'l1_test_gradient*.py')
+        jacobian_target, 'l1_test_gradient*.py')
 
-    #AbstractJacobianUnittest.launch_all_pickle_generation(
+    # AbstractJacobianUnittest.launch_all_pickle_generation(
     #    jacobian_target, '_l1_test_gradient_energy_mix.py')
 
     # AbstractJacobianUnittest.launch_all_pickle_generation(

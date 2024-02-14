@@ -88,24 +88,28 @@ class BiomassFermentation(EthanolTechno):
         Compute the consumption and the production of the technology for a given investment
         """
 
-        
-
         # Production
         carbon_production_factor = self.get_theoretical_co2_prod()
         self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = carbon_production_factor * \
-                                                                               self.production_detailed[f'{Ethanol.name} ({self.product_energy_unit})'] / \
+                                                                               self.production_detailed[
+                                                                                   f'{Ethanol.name} ({self.product_energy_unit})'] / \
                                                                                self.cost_details['efficiency']
 
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-                                                                                        self.production_detailed[f'{Ethanol.name} ({self.product_energy_unit})'] / \
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{Ethanol.name} ({self.product_energy_unit})'] / \
                                                                                         self.cost_details['efficiency']
 
-        self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details[f'{BiomassDry.name}_needs'] * \
-                                                                                       self.production_detailed[f'{Ethanol.name} ({self.product_energy_unit})'] / \
+        self.consumption_detailed[f'{BiomassDry.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                           f'{BiomassDry.name}_needs'] * \
+                                                                                       self.production_detailed[
+                                                                                           f'{Ethanol.name} ({self.product_energy_unit})'] / \
                                                                                        self.cost_details['efficiency']
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details[f'{Water.name}_needs'] * \
-                                                                        self.production_detailed[f'{Ethanol.name} ({self.product_energy_unit})'] / \
+                                                                        self.production_detailed[
+                                                                            f'{Ethanol.name} ({self.product_energy_unit})'] / \
                                                                         self.cost_details['efficiency']
 
     def compute_CO2_emissions_from_input_resources(self):
@@ -114,8 +118,8 @@ class BiomassFermentation(EthanolTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                       self.cost_details[f'{Electricity.name}_needs'] / \
-                                                       self.cost_details['efficiency']
+                                                  self.cost_details[f'{Electricity.name}_needs'] / \
+                                                  self.cost_details['efficiency']
 
         self.carbon_intensity[BiomassDry.name] = self.energy_CO2_emissions[BiomassDry.name] * \
                                                  self.cost_details[f'{BiomassDry.name}_needs'] / \
@@ -137,9 +141,9 @@ class BiomassFermentation(EthanolTechno):
         """
         biomass_demand = self.techno_infos_dict['biomass_dry_demand']
 
-        ethanol_density = Ethanol.data_energy_dict['density']                       # kg/m3
-        ethanol_calorific_value = Ethanol.data_energy_dict['calorific_value']       # kWh/kg
-        biomass_calorific_value = BiomassDry.data_energy_dict['calorific_value']    # kWh/kg
+        ethanol_density = Ethanol.data_energy_dict['density']  # kg/m3
+        ethanol_calorific_value = Ethanol.data_energy_dict['calorific_value']  # kWh/kg
+        biomass_calorific_value = BiomassDry.data_energy_dict['calorific_value']  # kWh/kg
 
         biomass_needs = biomass_demand * biomass_calorific_value / (ethanol_density * ethanol_calorific_value)
 
@@ -153,9 +157,9 @@ class BiomassFermentation(EthanolTechno):
         Needs in kg of Water per kWh of Ethanol
         """
         water_demand = self.techno_infos_dict['water_demand']
-        water_density = Water.data_energy_dict['density']                       # kg/m3
-        ethanol_density = Ethanol.data_energy_dict['density']                   # kg/m3
-        ethanol_calorific_value = Ethanol.data_energy_dict['calorific_value']   # kWh/kg
+        water_density = Water.data_energy_dict['density']  # kg/m3
+        ethanol_density = Ethanol.data_energy_dict['density']  # kg/m3
+        ethanol_calorific_value = Ethanol.data_energy_dict['calorific_value']  # kWh/kg
 
         water_needs = water_demand * water_density / (ethanol_density * ethanol_calorific_value)
         return water_needs
@@ -166,8 +170,8 @@ class BiomassFermentation(EthanolTechno):
         Electricity usage there averaged 0.70 kilowatt hours per gallon of ethanol.
         """
         elec_demand = self.techno_infos_dict['elec_demand']
-        ethanol_density = Ethanol.data_energy_dict['density']                   # kg/m3
-        ethanol_calorific_value = Ethanol.data_energy_dict['calorific_value']   # kWh/kg
+        ethanol_density = Ethanol.data_energy_dict['density']  # kg/m3
+        ethanol_calorific_value = Ethanol.data_energy_dict['calorific_value']  # kWh/kg
 
         electricity_needs = elec_demand / (ethanol_density * ethanol_calorific_value)
 
@@ -182,8 +186,8 @@ class BiomassFermentation(EthanolTechno):
         - 1 pound = 0.45359237 kg
         """
         co2_captured__production = self.techno_infos_dict['co2_captured__production']
-        ethanol_density = Ethanol.data_energy_dict['density']                       # kg/m3
-        ethanol_calorific_value = Ethanol.data_energy_dict['calorific_value']       # kWh/kg
+        ethanol_density = Ethanol.data_energy_dict['density']  # kg/m3
+        ethanol_calorific_value = Ethanol.data_energy_dict['calorific_value']  # kWh/kg
 
         co2_prod = co2_captured__production / (ethanol_density * ethanol_calorific_value)
 

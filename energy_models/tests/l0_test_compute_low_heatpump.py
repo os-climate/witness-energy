@@ -45,18 +45,20 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
                 1, 1, len(self.ratio_available_resource.index))
 
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'electricity': np.ones(len(years)) * 148.0, #https://www.statista.com/statistics/1271525/denmark-monthly-wholesale-electricity-price/
-                                           'biomass_dry': np.ones(len(years)) * 45.0,
+                                           GlossaryEnergy.electricity: np.ones(len(years)) * 148.0,
+                                           # https://www.statista.com/statistics/1271525/denmark-monthly-wholesale-electricity-price/
+                                           GlossaryEnergy.biomass_dry: np.ones(len(years)) * 45.0,
                                            })
 
-        self.energy_carbon_emissions = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': 0.0, 'biomass_dry': - 0.64 / 4.86})
+        self.energy_carbon_emissions = pd.DataFrame(
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.biomass_dry: - 0.64 / 4.86})
         self.resources_price = pd.DataFrame({GlossaryEnergy.Years: years, 'water_resource': 2.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.0})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -80,13 +82,12 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'heat.HeatPump']
+                                                == f'{GlossaryEnergy.heat}.HeatPump']
 
     def tearDown(self):
         pass
 
     def test_02_heatpump_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'HeatPump'
         self.ee = ExecutionEngine(self.name)
@@ -114,7 +115,7 @@ class HeatPumpLowTemperaureTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -133,6 +134,5 @@ if __name__ == "__main__":
     unittest.main()
 
 # Test Results
-#https://www.iea.org/data-and-statistics/charts/levelised-cost-of-heating-for-air-to-air-and-air-to-water-heat-pumps-and-gas-boilers-for-selected-countries-and-sensitivity-to-fuel-prices-h1-2021-h1-2022
-#https://www.iea.org/data-and-statistics/charts/marginal-cost-of-heating-with-residential-heat-pumps-and-gas-boilers-under-different-energy-cost-assumptions-in-selected-countries-between-h1-2021-and-h1-2022
-
+# https://www.iea.org/data-and-statistics/charts/levelised-cost-of-heating-for-air-to-air-and-air-to-water-heat-pumps-and-gas-boilers-for-selected-countries-and-sensitivity-to-fuel-prices-h1-2021-h1-2022
+# https://www.iea.org/data-and-statistics/charts/marginal-cost-of-heating-with-residential-heat-pumps-and-gas-boilers-under-different-energy-cost-assumptions-in-selected-countries-between-h1-2021-and-h1-2022

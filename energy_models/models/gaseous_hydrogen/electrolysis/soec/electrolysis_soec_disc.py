@@ -53,7 +53,7 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'WACC': 0.1,
-                                 'learning_rate':  0.2,
+                                 'learning_rate': 0.2,
                                  'maximum_learning_capex_ratio': 500.0 / 2800,
                                  'lifetime': lifetime,
                                  'lifetime_unit': GlossaryEnergy.Years,
@@ -74,12 +74,12 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
     initial_production = 0.0
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib':  np.ones(lifetime - 1) * 100.0 / (lifetime - 1)})
+                                             'distrib': np.ones(lifetime - 1) * 100.0 / (lifetime - 1)})
 
-# Public investment in Europe through FCH JU : 156 MEuro or 190M$
-# We assume half is for SOEC .
-# Worldwide the investment of europe for PEM is 36%   190/2*100/32 = 297 M$
-# https://www.euractiv.com/section/energy/news/europe-china-battle-for-global-supremacy-on-electrolyser-manufacturing/
+    # Public investment in Europe through FCH JU : 156 MEuro or 190M$
+    # We assume half is for SOEC .
+    # Worldwide the investment of europe for PEM is 36%   190/2*100/32 = 297 M$
+    # https://www.euractiv.com/section/energy/news/europe-china-battle-for-global-supremacy-on-electrolyser-manufacturing/
     invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
                                              GlossaryEnergy.InvestValue: [0.297]})
 
@@ -94,11 +94,12 @@ class ElectrolysisSOECDiscipline(GaseousHydrogenTechnoDiscipline):
                                                                 'distrib': ('float', None, True)}
                                        },
                GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
-                                        'unit': 'G$',
-                                        'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+                                                               'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this

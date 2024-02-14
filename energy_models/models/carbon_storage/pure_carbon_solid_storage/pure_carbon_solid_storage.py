@@ -23,8 +23,11 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class PureCarbonSS(CSTechno):
-
     CARBON_TO_BE_STORED_CONSTRAINT = 'carbon_to_be_stored_constraint'
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.carbon_to_be_stored_constraint = None
 
     def compute_crf(self, data_config):
         return 1
@@ -38,12 +41,11 @@ class PureCarbonSS(CSTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
         # Consumption
         # Production is gaseous CO2 equivalent
         # COnsumption is real Carbon storage (C)
-        self.consumption_detailed[f'{Carbon.name} ({self.mass_unit})'] = self.production_detailed[f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
+        self.consumption_detailed[f'{Carbon.name} ({self.mass_unit})'] = self.production_detailed[
+                                                                             f'{CSTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                          Carbon.data_energy_dict['CO2_per_use']
 
     def compute_constraint(self, carbon_quantity_to_be_stored, consumption):
@@ -53,7 +55,7 @@ class PureCarbonSS(CSTechno):
 
         if (carbon_quantity_to_be_stored is not None) & (consumption is not None):
             constraint = consumption[f'{Carbon.name} ({self.mass_unit})'] - \
-                carbon_quantity_to_be_stored['carbon_storage']
+                         carbon_quantity_to_be_stored[GlossaryEnergy.carbon_storage]
             self.carbon_to_be_stored_constraint = pd.DataFrame(
                 {GlossaryEnergy.Years: self.years, 'carbon_to_be_stored_constraint': constraint})
 

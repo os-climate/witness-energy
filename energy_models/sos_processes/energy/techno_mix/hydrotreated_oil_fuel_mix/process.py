@@ -21,7 +21,6 @@ from energy_models.sos_processes.energy.techno_mix.hydrotreated_oil_fuel_mix.use
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - HEFA Mix',
@@ -29,12 +28,12 @@ class ProcessBuilder(EnergyProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
         self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
 
         energy_name = HydrotreatedOilFuel.name
@@ -52,5 +51,6 @@ class ProcessBuilder(EnergyProcessBuilder):
         for techno_name in self.techno_list:
             mods_dict[f'{energy_mix}.{energy_name}.{techno_name}'] = self.get_techno_disc_path(
                 HydrotreatedOilFuel.short_name, techno_name)
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

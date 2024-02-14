@@ -64,20 +64,23 @@ class UpgradingBiogas(MethaneTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
         # kg/kWh corresponds to Mt/TWh
         co2_prod = self.get_theoretical_co2_prod()
         self.production_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = co2_prod * \
-                                                                               self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
-
+                                                                               self.production_detailed[
+                                                                                   f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                        self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            'elec_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{BioGas.name} ({self.product_energy_unit})'] = self.cost_details['biogas_needs'] * \
-                                                                                   self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+                                                                                   self.production_detailed[
+                                                                                       f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
         self.consumption_detailed[f'{Monotethanolamine.name} ({self.mass_unit})'] = self.get_MEA_loss() * \
-                                                                                    self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+                                                                                    self.production_detailed[
+                                                                                        f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
         # production
         self.production_detailed[f'{lowheattechno.energy_name} ({self.product_energy_unit})'] = \
@@ -93,8 +96,8 @@ class UpgradingBiogas(MethaneTechno):
         mol_biogas = 1.0
         mol_CH4 = biogas_data['CH4_per_energy']
         biogas_needs = mol_biogas * biogas_data['molar_mass'] * biogas_data['calorific_value'] / \
-            (mol_CH4 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                       (mol_CH4 * self.data_energy_dict['molar_mass'] *
+                        self.data_energy_dict['calorific_value'])
         return biogas_needs / self.techno_infos_dict['efficiency']
 
     def get_MEA_loss(self):
@@ -103,7 +106,7 @@ class UpgradingBiogas(MethaneTechno):
         '''
 
         mea_loss = self.techno_infos_dict['MEA_needs'] / (
-            self.data_energy_dict['density'] * self.data_energy_dict['calorific_value'])
+                self.data_energy_dict['density'] * self.data_energy_dict['calorific_value'])
 
         return mea_loss
 
@@ -121,11 +124,11 @@ class UpgradingBiogas(MethaneTechno):
 
         if unit == 'kg/kWh':
             co2_prod = mol_CO2 * co2_data['molar_mass'] / \
-                (mol_CH4 * self.data_energy_dict['molar_mass'] *
-                 self.data_energy_dict['calorific_value'])
+                       (mol_CH4 * self.data_energy_dict['molar_mass'] *
+                        self.data_energy_dict['calorific_value'])
         elif unit == 'kg/kg':
             co2_prod = mol_CO2 * co2_data['molar_mass'] / \
-                (mol_CH4 * self.data_energy_dict['molar_mass'])
+                       (mol_CH4 * self.data_energy_dict['molar_mass'])
 
         return co2_prod
 
@@ -141,8 +144,8 @@ class UpgradingBiogas(MethaneTechno):
                                                   self.cost_details['elec_needs']
 
         # This CO2 is captured we do not take it into account in the CO2 emissions
-#         co2_prod = self.get_theoretical_co2_prod()
-#         self.carbon_emissions['CO2'] = -self.resources_CO2_emissions['CO2'] * \
-#             co2_prod
+        #         co2_prod = self.get_theoretical_co2_prod()
+        #         self.carbon_emissions['CO2'] = -self.resources_CO2_emissions['CO2'] * \
+        #             co2_prod
         # + self.carbon_emissions['CO2']
         return self.carbon_intensity[f'{BioGas.name}'] + self.carbon_intensity[Electricity.name]

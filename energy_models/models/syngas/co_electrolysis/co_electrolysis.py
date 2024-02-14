@@ -25,7 +25,6 @@ from energy_models.core.techno_type.base_techno_models.syngas_techno import Syng
 
 
 class CoElectrolysis(SyngasTechno):
-
     syngas_COH2_ratio = 100.0  # in %
 
     def compute_other_primary_energy_costs(self):
@@ -50,7 +49,7 @@ class CoElectrolysis(SyngasTechno):
                                              / self.cost_details['efficiency'])
 
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
-            self.prices[Electricity.name]
+                                              self.prices[Electricity.name]
 
         return self.cost_details[Water.name] + self.cost_details[CO2.name] + self.cost_details[Electricity.name]
 
@@ -86,10 +85,10 @@ class CoElectrolysis(SyngasTechno):
                                                self.cost_details['efficiency']
 
         self.carbon_intensity[Water.name] = self.resources_CO2_emissions[Water.name] * \
-                                                 self.cost_details['water_needs'] / self.cost_details['efficiency']
+                                            self.cost_details['water_needs'] / self.cost_details['efficiency']
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                       self.cost_details['elec_needs']
+                                                  self.cost_details['elec_needs']
 
         return self.carbon_intensity[f'{CO2.name}'] + self.carbon_intensity[Water.name] + \
                self.carbon_intensity[Electricity.name]
@@ -115,8 +114,8 @@ class CoElectrolysis(SyngasTechno):
         mol_COH2 = 1.0
         co2_data = CO2.data_energy_dict
         co2_needs = mol_CO2 * co2_data['molar_mass'] / \
-            (mol_COH2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                    (mol_COH2 * self.data_energy_dict['molar_mass'] *
+                     self.data_energy_dict['calorific_value'])
 
         return co2_needs
 
@@ -131,8 +130,8 @@ class CoElectrolysis(SyngasTechno):
         mol_COH2 = 1.0
         water_data = Water.data_energy_dict
         water_needs = mol_H2O * water_data['molar_mass'] / \
-            (mol_COH2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                      (mol_COH2 * self.data_energy_dict['molar_mass'] *
+                       self.data_energy_dict['calorific_value'])
 
         return water_needs
 
@@ -145,8 +144,8 @@ class CoElectrolysis(SyngasTechno):
         mol_COH2 = 1.0
         oxygen_data = Dioxygen.data_energy_dict
         oxygen_production = mol_O2 * oxygen_data['molar_mass'] / \
-            (mol_COH2 * self.data_energy_dict['molar_mass'] *
-             self.data_energy_dict['calorific_value'])
+                            (mol_COH2 * self.data_energy_dict['molar_mass'] *
+                             self.data_energy_dict['calorific_value'])
 
         return oxygen_production
 
@@ -156,21 +155,22 @@ class CoElectrolysis(SyngasTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
         o2_production = self.get_oxygen_production()
 
         self.production_detailed[f'{Dioxygen.name} ({self.mass_unit})'] = o2_production / \
                                                                           self.data_energy_dict['calorific_value'] * \
-                                                                          self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
+                                                                          self.production_detailed[
+                                                                              f'{SyngasTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
         self.consumption_detailed[f'{CarbonCapture.name} ({self.mass_unit})'] = self.cost_details['CO2_needs'] * \
-                                                                                self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                                self.production_detailed[
+                                                                                    f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                 self.cost_details['efficiency']
 
         self.consumption_detailed[f'{Water.name} ({self.mass_unit})'] = self.cost_details['water_needs'] * \
-                                                                        self.production_detailed[f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
+                                                                        self.production_detailed[
+                                                                            f'{SyngasTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                         self.cost_details['efficiency']
 
         self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = \
@@ -191,8 +191,8 @@ class CoElectrolysis(SyngasTechno):
         mol_syngas = 3.0
         water_data = Water.data_energy_dict
         production_for_1kg = mol_H20 * \
-            water_data['molar_mass'] / \
-            (mol_syngas * self.data_energy_dict['molar_mass']
-             * self.data_energy_dict['calorific_value'])
+                             water_data['molar_mass'] / \
+                             (mol_syngas * self.data_energy_dict['molar_mass']
+                              * self.data_energy_dict['calorific_value'])
 
         return production_for_1kg

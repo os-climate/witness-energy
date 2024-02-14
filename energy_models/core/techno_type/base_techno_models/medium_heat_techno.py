@@ -31,7 +31,6 @@ class mediumheattechno(TechnoType):
 
         return transport_cost
 
-
     @abstractmethod
     def compute_other_primary_energy_costs(self):
         '''
@@ -45,4 +44,3 @@ class mediumheattechno(TechnoType):
         Need to be overloaded in each technology model (example in SMR)
         '''
         return 0.0
-

@@ -21,7 +21,7 @@ from .base_invest import BaseInvest
 class EnergyInvest(BaseInvest):
     def __init__(self, name='Energy'):
         BaseInvest.__init__(self, name)
-        #-- default value, can be changed if necessary
+        # -- default value, can be changed if necessary
         self.energy_list = None
         self.invest_mix = None
         self.rescaling_factor = 1e2
@@ -49,7 +49,8 @@ class EnergyInvest(BaseInvest):
             raise ValueError(str(sorted(head_list)) +
                              ' should be equal to ' + str(sorted(self.energy_list)))
 
-    def get_invest_distrib(self, invest_level, invest_mix, input_unit, output_unit, column_name=GlossaryEnergy.InvestValue):
+    def get_invest_distrib(self, invest_level, invest_mix, input_unit, output_unit,
+                           column_name=GlossaryEnergy.InvestValue):
         self.set_invest_level(invest_level, input_unit, column_name)
         self.set_invest_mix(invest_mix)
         invest_distrib, unit = self.get_distributed_invest(

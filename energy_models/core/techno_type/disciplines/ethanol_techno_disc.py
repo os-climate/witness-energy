@@ -20,7 +20,6 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class EthanolTechnoDiscipline(TechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Ethanol Technology Model',
@@ -34,14 +33,21 @@ class EthanolTechnoDiscipline(TechnoDiscipline):
         'icon': '',
         'version': '',
     }
-    DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ethanol',
-                                  'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                           'transport': ('float',  None, True)},
-                                  'dataframe_edition_locked': False},
-               GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%', 'visibility': TechnoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ethanol',
-                                    'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                             GlossaryEnergy.MarginValue: ('float',  None, True)},
-                                    'dataframe_edition_locked': False},
+    DESC_IN = {GlossaryEnergy.TransportCostValue: {'type': 'dataframe', 'unit': '$/t',
+                                                   'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                   'namespace': 'ns_ethanol',
+                                                   'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                                   'int', [1900, 2100], False),
+                                                                            'transport': ('float', None, True)},
+                                                   'dataframe_edition_locked': False},
+               GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
+                                                     'visibility': TechnoDiscipline.SHARED_VISIBILITY,
+                                                     'namespace': 'ns_ethanol',
+                                                     'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                                     'int', [1900, 2100], False),
+                                                                              GlossaryEnergy.MarginValue: (
+                                                                              'float', None, True)},
+                                                     'dataframe_edition_locked': False},
                'data_fuel_dict': {'type': 'dict', 'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_ethanol', 'default': Ethanol.data_energy_dict},
                }

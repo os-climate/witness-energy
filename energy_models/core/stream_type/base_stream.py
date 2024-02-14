@@ -37,8 +37,26 @@ class BaseStream:
         '''
         Constructor
         '''
+        self.years = None
+        self.sub_prices = None
+        self.sub_prices_wo_taxes = None
+        self.total_carbon_emissions = None
+        self.sub_carbon_emissions = None
+        self.co2_emitted_by_energy = None
+        self.mix_weights = None
+        self.price_by_energy = None
+        self.production = None
+        self.production_raw = None
+        self.production_by_techno = None
+        self.consumption = None
+        self.land_use_required = None
+        self.consumption_woratio = None
+        self.production = None
+        self.consumption = None
+        self.production_by_techno = None
+        self.energy_type_capital = None
         self.name = name
-        #-- Inputs attributes set from configure method
+        # -- Inputs attributes set from configure method
         self.year_start = GlossaryEnergy.YeartStartDefault  # year start
         self.year_end = GlossaryEnergy.YeartEndDefault  # year end
         self.min_prod = 1e-3
@@ -102,14 +120,15 @@ class BaseStream:
                 if column == GlossaryEnergy.Years:
                     continue
                 self.sub_production_dict[element][column] = self.sub_production_dict[element][column].values * \
-                    inputs_dict['scaling_factor_techno_production']
+                                                            inputs_dict['scaling_factor_techno_production']
             for column in self.sub_consumption_dict[element].columns:
                 if column == GlossaryEnergy.Years:
                     continue
                 self.sub_consumption_dict[element][column] = self.sub_consumption_dict[element][column].values * \
-                    inputs_dict['scaling_factor_techno_consumption']
-                self.sub_consumption_woratio_dict[element][column] = self.sub_consumption_woratio_dict[element][column].values * \
-                    inputs_dict['scaling_factor_techno_consumption']
+                                                             inputs_dict['scaling_factor_techno_consumption']
+                self.sub_consumption_woratio_dict[element][column] = self.sub_consumption_woratio_dict[element][
+                                                                         column].values * \
+                                                                     inputs_dict['scaling_factor_techno_consumption']
             self.sub_land_use_required_dict[element] = inputs_dict[f'{element}.{GlossaryEnergy.LandUseRequiredValue}']
 
     def compute(self, inputs, exp_min=True):
@@ -156,7 +175,8 @@ class BaseStream:
 
         return production, consumption, production_by_techno
 
-    def compute_other_consumption_production(self, element, sub_production_dict, sub_consumption_dict, production, consumption, factor=1.0):
+    def compute_other_consumption_production(self, element, sub_production_dict, sub_consumption_dict, production,
+                                             consumption, factor=1.0):
         '''
         Compute other consumption and production
         '''
@@ -213,7 +233,7 @@ class BaseStream:
             # we compute then mix_weight with these prods minimized and use it
             # also for co2 emissions
             mix_weight = prod_element[element] / \
-                prod_total_for_mix_weight
+                         prod_total_for_mix_weight
             # Still If the element is negligible do not take into account this element
             # It is negligible if tol = 0.1%
             tol = 1e-3
@@ -227,13 +247,16 @@ class BaseStream:
         # and the cutoff is applied, assign a placeholder price
         if not exp_min:
             for year in self.total_prices[GlossaryEnergy.Years].values:
-                if np.real(self.total_prices.loc[self.total_prices[GlossaryEnergy.Years] == year][self.name].values) == 0.0:
+                if np.real(self.total_prices.loc[self.total_prices[GlossaryEnergy.Years] == year][
+                               self.name].values) == 0.0:
                     # Get the min_price of the technos this year that are > 0.0
-                    year_techno_prices = self.sub_prices[self.subelements_list].loc[self.sub_prices[GlossaryEnergy.Years] == year]
+                    year_techno_prices = self.sub_prices[self.subelements_list].loc[
+                        self.sub_prices[GlossaryEnergy.Years] == year]
                     min_techno_price = min(
                         val for val in year_techno_prices.values[0] if val > 0.0)
                     min_techno_name = [
-                        name for name in year_techno_prices.columns if year_techno_prices[name].values == min_techno_price][0]
+                        name for name in year_techno_prices.columns if
+                        year_techno_prices[name].values == min_techno_price][0]
                     for element in self.subelements_list:
                         self.mix_weights.loc[self.mix_weights[GlossaryEnergy.Years] == year,
                                              element] = 100. if element == min_techno_name else 0.0
@@ -249,11 +272,11 @@ class BaseStream:
         prod_element_dict = {}
         for key, value in elements_dict.items():
             prod_element_dict[key] = deepcopy(production_by_techno[
-                value].values)
+                                                  value].values)
             prod_element_dict[key][prod_element_dict[key]
                                    < min_prod] = 0.0
             prod_total_for_mix_weight = prod_total_for_mix_weight + \
-                prod_element_dict[key]
+                                        prod_element_dict[key]
         prod_total_for_mix_weight[prod_total_for_mix_weight == 0.0] = min_prod
 
         return prod_element_dict, prod_total_for_mix_weight
@@ -265,7 +288,7 @@ class BaseStream:
 
         for key, value in elements_dict.items():
             prod_element_dict[key] = deepcopy(production_by_techno[
-                value].values)
+                                                  value].values)
             dprod_element_dict[key] = np.ones(
                 len(prod_element_dict[key]))
             dprod_element_dict[key][prod_element_dict[key]
@@ -291,7 +314,7 @@ class BaseStream:
         prod_element_dict = {}
         for key, value in elements_dict.items():
             prod_element_dict[key] = deepcopy(production_by_techno[
-                value].values)
+                                                  value].values)
 
             if prod_element_dict[key].min() < min_prod:
                 # if some values are below min_prod
@@ -307,7 +330,7 @@ class BaseStream:
                                        * np.exp(-1)), prod_element_dict[key])
 
             prod_total_for_mix_weight = prod_total_for_mix_weight + \
-                prod_element_dict[key]
+                                        prod_element_dict[key]
 
         return prod_element_dict, prod_total_for_mix_weight
 
@@ -318,7 +341,7 @@ class BaseStream:
 
         for key, value in elements_dict.items():
             prod_element_dict[key] = deepcopy(production_by_techno[
-                value].values)
+                                                  value].values)
             dprod_element_dict[key] = np.ones(
                 len(prod_element_dict[key]))
             if prod_element_dict[key].min() < min_prod:
@@ -346,12 +369,12 @@ class BaseStream:
 
         for element in elements_dict.keys():
             grad_element_mix_vs_prod[f'{element}'] = dprod_element_dict[element] * (
-                prod_total_for_mix_weight - prod_element_dict[element]) / prod_total_for_mix_weight**2
+                    prod_total_for_mix_weight - prod_element_dict[element]) / prod_total_for_mix_weight ** 2
             for element_other in elements_dict.keys():
                 if element_other != element:
                     grad_element_mix_vs_prod[f'{element} {element_other}'] = -dprod_element_dict[element] * \
-                        prod_element_dict[element_other] / \
-                        prod_total_for_mix_weight**2
+                                                                             prod_element_dict[element_other] / \
+                                                                             prod_total_for_mix_weight ** 2
 
         return grad_element_mix_vs_prod
 

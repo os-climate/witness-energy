@@ -44,21 +44,22 @@ class NuclearTestCase(unittest.TestCase):
         self.resources_price[GlossaryEnergy.Years] = years
         self.resources_price[ResourceGlossary.Water['name']] = 2.0
         self.resources_price[ResourceGlossary.Uranium['name']] = 1390.0e3
-        self.resources_price[ResourceGlossary.Copper['name']] = 10057.7 * 1000 * 1000 # in $/Mt
+        self.resources_price[ResourceGlossary.Copper['name']] = 10057.7 * 1000 * 1000  # in $/Mt
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years})
         self.invest_level[GlossaryEnergy.InvestValue] = 10.
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
         self.co2_taxes = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.CO2Tax: func(years)})
 
         self.margin = pd.DataFrame(
-            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1), GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 110})
+            {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1),
+             GlossaryEnergy.MarginValue: np.ones(len(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1))) * 110})
 
         self.transport = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'transport': np.zeros(len(years))})
@@ -69,7 +70,7 @@ class NuclearTestCase(unittest.TestCase):
             dirname(__file__), 'output_values_check', 'biblio_data.csv')
         self.biblio_data = pd.read_csv(biblio_data_path)
         self.biblio_data = self.biblio_data.loc[self.biblio_data['sos_name']
-                                                == 'electricity.Nuclear']
+                                                == f'{GlossaryEnergy.electricity}.Nuclear']
         self.scaling_factor_techno_consumption = 1e3
         self.scaling_factor_techno_production = 1e3
         self.resource_list = [
@@ -91,7 +92,6 @@ class NuclearTestCase(unittest.TestCase):
         pass
 
     def test_03_nuclear_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'Nuclear'
         self.ee = ExecutionEngine(self.name)
@@ -120,7 +120,7 @@ class NuclearTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': self.resources_price,
                        ResourceMixModel.RATIO_USABLE_DEMAND: self.ratio_available_resource,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin}
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -132,10 +132,10 @@ class NuclearTestCase(unittest.TestCase):
         power_production = disc.get_sosdisc_outputs(GlossaryEnergy.InstalledPower)
         techno_infos_dict = disc.get_sosdisc_inputs('techno_infos_dict')
 
-        self.assertLessEqual(list(production_detailed['electricity (TWh)'].values),
+        self.assertLessEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
                              list(power_production['total_installed_power'] * techno_infos_dict[
                                  'full_load_hours'] / 1000 * 1.001))
-        self.assertGreaterEqual(list(production_detailed[f'electricity (TWh)'].values),
+        self.assertGreaterEqual(list(production_detailed[f'{GlossaryEnergy.electricity} (TWh)'].values),
                                 list(power_production['total_installed_power'] * techno_infos_dict[
                                     'full_load_hours'] / 1000 * 0.999))
         filters = disc.get_chart_filter_list()

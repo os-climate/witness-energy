@@ -1,5 +1,5 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,11 +16,13 @@ limitations under the License.
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 '''
-import pprint
+
+
+from sostrades_core.tools.check_headers import HeaderTools
 import unittest
-
-from sostrades_core.tools.check_headers import check_headers
-
+import pprint
+import os
+import json
 
 class Testheader(unittest.TestCase):
     """
@@ -32,14 +34,19 @@ class Testheader(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.pp = pprint.PrettyPrinter(indent=4, compact=True)
-        self.ExtensionToIgnore = ["pkl", "png", "jpg", "csv", "md", "markdown", "avif", "json", "in", "gitignore", "cfg", "puml", "pdf", "txt", "ipynb", "zip", "rst"]
-        #Add here the files to ignore       
-        self.FilesToIgnore = ["default_process_rights.yaml"]
-        #commit from where to compare added, modeified deleted ...
-        self.airbus_rev_commit = "37fb4ae"
 
-    def test_Headers(self):
-        check_headers(self.ExtensionToIgnore,self.FilesToIgnore,self.airbus_rev_commit)
+        with open(os.path.join(os.path.dirname(__file__),"..","..","headers_ignore_config.json"),"r",encoding="utf-8") as f:
+
+            headers_ignore_config=json.load(f)
+
+            self.extension_to_ignore = headers_ignore_config["extension_to_ignore"]
+            #Add here the files to ignore
+            self.files_to_ignore = headers_ignore_config["files_to_ignore"]
+            #commit from where to compare added, modeified deleted ...
+            self.airbus_rev_commit = headers_ignore_config["airbus_rev_commit"]
 
         
 
+    def test_Headers(self):
+        ht = HeaderTools()
+        ht.check_headers(self.extension_to_ignore, self.files_to_ignore, self.airbus_rev_commit)

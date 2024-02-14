@@ -26,7 +26,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 
 class ReforestationDiscipline(CSTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Reforestation Model',
@@ -91,7 +90,7 @@ class ReforestationDiscipline(CSTechnoDiscipline):
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [0, 0, 0]})
     #
-    initial_storage = 0   # in MtCO2
+    initial_storage = 0  # in MtCO2
     # distrib computed, for planted forests since 150 years
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51, 0.51,
@@ -110,21 +109,24 @@ class ReforestationDiscipline(CSTechnoDiscipline):
                                                          0.69, 1.53, 0.69, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.71,
                                                          4.98, 0.71, 0.71, 0.71, 0.71, 0.71]})
 
-#
+    #
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default},
                'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_storage},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                                'age': ('float', None, True),
-                                                                'distrib': ('float', None, True),
-                                                                }
+                                       'dataframe_descriptor': {
+                                           GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                                           'age': ('float', None, True),
+                                           'distrib': ('float', None, True),
+                                           }
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     # -- add specific techno inputs to this
     DESC_IN.update(CSTechnoDiscipline.DESC_IN)
 
@@ -137,7 +139,6 @@ class ReforestationDiscipline(CSTechnoDiscipline):
         self.techno_model.configure_parameters(inputs_dict)
 
     def get_post_processing_list(self, filters=None):
-
         generic_filter = CSTechnoDiscipline.get_chart_filter_list(self)
         instanciated_charts = CSTechnoDiscipline.get_post_processing_list(
             self, generic_filter)
@@ -145,13 +146,13 @@ class ReforestationDiscipline(CSTechnoDiscipline):
         available_land = self.get_sosdisc_outputs(GlossaryEnergy.LandUseRequiredValue)
         year_start = self.get_sosdisc_inputs(GlossaryEnergy.YearStart)
         year_end = self.get_sosdisc_inputs(GlossaryEnergy.YearEnd)
-        years = np.arange(year_start, year_end + 1)
         minimum = min(
             available_land[f'{self.techno_name} (Gha)'].values.tolist())
         maximum = max(
             available_land[f'{self.techno_name} (Gha)'].values.tolist())
 
-        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Land use required (Gha)', [year_start, year_end], [minimum, maximum],
+        new_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Land use required (Gha)', [year_start, year_end],
+                                             [minimum, maximum],
                                              chart_name=f'Land use required for {self.techno_name}')
 
         # Add total price

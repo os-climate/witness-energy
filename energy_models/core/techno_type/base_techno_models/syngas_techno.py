@@ -24,12 +24,10 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class SyngasTechno(TechnoType):
-
     energy_name = Syngas.name
     syngas_COH2_ratio = None
 
     def configure_energy_data(self, inputs_dict):
-
         self.data_energy_dict = deepcopy(inputs_dict['data_fuel_dict'])
 
         molar_mass = compute_molar_mass(self.syngas_COH2_ratio / 100.)
@@ -47,6 +45,7 @@ class SyngasTechno(TechnoType):
         '''
         Compute other energy costs which will depend on the techno reaction (elec for electrolysis or methane for SMR by example)
         '''
+
     @abstractmethod
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 
@@ -59,6 +58,6 @@ class SyngasTechno(TechnoType):
         # Electricity has no Calorific value overload
         # Warning transport cost unit must $/kWh
         transport_cost = self.transport_cost['transport'] * \
-            self.transport_margin[GlossaryEnergy.MarginValue] / 100.0
+                         self.transport_margin[GlossaryEnergy.MarginValue] / 100.0
 
         return transport_cost

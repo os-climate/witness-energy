@@ -69,7 +69,9 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
     initial_production = 70.0 * 33.3 * 0.001
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': np.asarray([0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 1, 0, 1, 1, 4, 3, 1, 2, 2, 1, 1, 0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 2]) * 100.0 / 30.0})
+                                             'distrib': np.asarray(
+                                                 [0, 0, 0, 0, 0, 0, 0, 1, 2, 0, 0, 1, 1, 0, 1, 1, 4, 3, 1, 2, 2, 1, 1,
+                                                  0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 2]) * 100.0 / 30.0})
 
     invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
                                              GlossaryEnergy.InvestValue: [0.0443575, 0.0443575]})
@@ -85,12 +87,13 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
                                                                 'distrib': ('float', None, True)}
                                        },
                GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
-                                        'unit': 'G$',
-                                        'default': invest_before_year_start,
-                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                 'past years': ('float', None, True),
-                                                                 GlossaryEnergy.InvestValue: ('float', None, True)}
-                                        }}
+                                                               'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   GlossaryEnergy.Years: ('float', None, True),
+                                                                   'past years': ('float', None, True),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)}
+                                                               }}
     DESC_IN.update(LiquidHydrogenTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this
@@ -106,18 +109,17 @@ class HydrogenLiquefactionDiscipline(LiquidHydrogenTechnoDiscipline):
     #     self.techno_model.configure_parameters(inputs_dict)
     #     LiquidHydrogenTechnoDiscipline.compute_sos_jacobian(self)
 
-        # # the generic gradient for production column is not working because of
-        # # abandoned mines not proportional to production
-        #
-        # scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
-        #     ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
-        # applied_ratio = self.get_sosdisc_outputs(
-        #     'applied_ratio')['applied_ratio'].values
-        #
-        # dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
-        # production_gradient = self.techno_consumption_derivative[f'{Electricity.name} ({self.techno_model.product_energy_unit})']
-        # m = self.set_partial_derivative_for_other_types(
-        #     (GlossaryEnergy.TechnoProductionValue,
-        #      f'{lowtemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
-        #     (production_gradient - dprod_name_dinvest))
-
+    # # the generic gradient for production column is not working because of
+    # # abandoned mines not proportional to production
+    #
+    # scaling_factor_invest_level, scaling_factor_techno_production = self.get_sosdisc_inputs(
+    #     ['scaling_factor_invest_level', 'scaling_factor_techno_production'])
+    # applied_ratio = self.get_sosdisc_outputs(
+    #     'applied_ratio')['applied_ratio'].values
+    #
+    # dprod_name_dinvest = (self.dprod_dinvest.T * applied_ratio).T * scaling_factor_invest_level / scaling_factor_techno_production
+    # production_gradient = self.techno_consumption_derivative[f'{Electricity.name} ({self.techno_model.product_energy_unit})']
+    # m = self.set_partial_derivative_for_other_types(
+    #     (GlossaryEnergy.TechnoProductionValue,
+    #      f'{lowtemperatureheat.name} ({self.techno_model.product_energy_unit})'), (GlossaryEnergy.InvestLevelValue, GlossaryEnergy.InvestValue),
+    #     (production_gradient - dprod_name_dinvest))

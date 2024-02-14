@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 import numpy as np
 
 from energy_models.core.investments.energy_or_ccsinvest import EnergyOrCCSInvest
@@ -25,7 +27,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 
 class InvestCCSorEnergyDiscipline(SoSWrapp):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Investment CCS Model',
@@ -41,25 +42,32 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
     }
     DESC_IN = {
         GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe', 'unit': '100G$',
-                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                       GlossaryEnergy.EnergyInvestmentsValue: ('float',  None, True)},
-                              'dataframe_edition_locked': False,
-                              'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_WITNESS},
+                                                'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                                'int', [1900, 2100], False),
+                                                                         GlossaryEnergy.EnergyInvestmentsValue: (
+                                                                         'float', None, True)},
+                                                'dataframe_edition_locked': False,
+                                                'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_WITNESS},
         'ccs_percentage': {'type': 'dataframe',
-                           'dataframe_descriptor': {GlossaryEnergy.Years: ('int',  [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                    'ccs_percentage': ('float',  [0., 100.], True)},
+                           'dataframe_descriptor': {
+                               GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                               'ccs_percentage': ('float', [0., 100.], True)},
                            'dataframe_edition_locked': False,
                            'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS}
     }
 
     DESC_OUT = {
         GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe', 'unit': '100G$',
-                              'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_ENERGY_MIX},
+                                                'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_ENERGY_MIX},
         'ccs_investment': {'type': 'dataframe', 'unit': 'G$',
                            'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS}
     }
     _maturity = 'Research'
     rescaling_factor = 1e2
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.energy_model = None
 
     def init_execution(self):
         self.energy_model = EnergyOrCCSInvest()
@@ -87,22 +95,26 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
         len_grad = len(inputs_dict['ccs_percentage']['ccs_percentage'].values)
         self.set_partial_derivative_for_other_types(
             ('ccs_investment', GlossaryEnergy.EnergyInvestmentsValue), (GlossaryEnergy.EnergyInvestmentsValue,
-                                                      GlossaryEnergy.EnergyInvestmentsValue),
-            np.identity(len_grad) * inputs_dict['ccs_percentage']['ccs_percentage'].values / 100.0 * self.rescaling_factor)
+                                                                        GlossaryEnergy.EnergyInvestmentsValue),
+            np.identity(len_grad) * inputs_dict['ccs_percentage'][
+                'ccs_percentage'].values / 100.0 * self.rescaling_factor)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.EnergyInvestmentsValue,
-             GlossaryEnergy.EnergyInvestmentsValue), (GlossaryEnergy.EnergyInvestmentsValue, GlossaryEnergy.EnergyInvestmentsValue),
+             GlossaryEnergy.EnergyInvestmentsValue),
+            (GlossaryEnergy.EnergyInvestmentsValue, GlossaryEnergy.EnergyInvestmentsValue),
             np.identity(len_grad) * (1.0 - inputs_dict['ccs_percentage']['ccs_percentage'].values / 100.0))
 
         self.set_partial_derivative_for_other_types(
             ('ccs_investment', GlossaryEnergy.EnergyInvestmentsValue), ('ccs_percentage', 'ccs_percentage'),
-            np.identity(len_grad) * inputs_dict[GlossaryEnergy.EnergyInvestmentsValue][GlossaryEnergy.EnergyInvestmentsValue].values / 100.0 * self.rescaling_factor)
+            np.identity(len_grad) * inputs_dict[GlossaryEnergy.EnergyInvestmentsValue][
+                GlossaryEnergy.EnergyInvestmentsValue].values / 100.0 * self.rescaling_factor)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.EnergyInvestmentsValue,
              GlossaryEnergy.EnergyInvestmentsValue), ('ccs_percentage', 'ccs_percentage'),
-            -np.identity(len_grad) * inputs_dict[GlossaryEnergy.EnergyInvestmentsValue][GlossaryEnergy.EnergyInvestmentsValue].values / 100.0)
+            -np.identity(len_grad) * inputs_dict[GlossaryEnergy.EnergyInvestmentsValue][
+                GlossaryEnergy.EnergyInvestmentsValue].values / 100.0)
 
     def get_chart_filter_list(self):
 
@@ -127,7 +139,6 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
                     charts = chart_filter.selected_values
 
         if 'Global Invest Distribution' in charts:
-
             ccs_percentage = self.get_sosdisc_inputs(
                 'ccs_percentage')['ccs_percentage'].values / 100.0
             total_energy_investment = self.get_sosdisc_inputs(
@@ -139,7 +150,7 @@ class InvestCCSorEnergyDiscipline(SoSWrapp):
                                                  chart_name=chart_name, stacked_bar=True)
 
             total_invest = total_energy_investment[GlossaryEnergy.EnergyInvestmentsValue].values * \
-                self.rescaling_factor
+                           self.rescaling_factor
             e_invest = total_invest * (1.0 - ccs_percentage)
             serie = InstanciatedSeries(
                 total_energy_investment[GlossaryEnergy.Years].values.tolist(),

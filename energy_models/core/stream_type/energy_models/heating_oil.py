@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-
+Modifications on 2024/01/31-2024/02/01 Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -12,8 +12,10 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
 '''
 from energy_models.core.stream_type.energy_type import EnergyType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class HeatingOil(EnergyType):
@@ -21,7 +23,7 @@ class HeatingOil(EnergyType):
     regroup different product of curde oil refinery, such as Naphtha and gas oil
     """
 
-    name = 'heating_oil'
+    name = GlossaryEnergy.heating_oil
     data_energy_dict = {'maturity': 5,
                         'WACC': 0.1,
                         # CO2 emissions per U.S. Energy Information Administration
@@ -43,10 +45,10 @@ class HeatingOil(EnergyType):
                         'molar_mass_unit': 'g/mol',
                         # Source for [calorific value]: IEA 2022, Energy Statistics Manual,
                         # https://www.iea.org/reports/energy-statistics-manual-2
-                        #License: CC BY 4.0.
+                        # License: CC BY 4.0.
                         # Calorific value = (cal_val Naphtha + cal_val Gas
                         # oil)/2.0 * (277.778/1000) [GJ/t to kWh/kg conversion]
-                        'calorific_value': 12.47,   #
+                        'calorific_value': 12.47,  #
                         'calorific_value_unit': 'kWh/kg',
                         'high_calorific_value': 13.36,  #
                         'high_calorific_value_unit': 'kWh/kg'}

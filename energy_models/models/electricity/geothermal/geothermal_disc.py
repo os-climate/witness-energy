@@ -72,11 +72,13 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
                                  # Demystifying-the-Costs-of-Electricity-Generation-Technologies
                                  'capacity_factor': 0.85,
                                  'techno_evo_eff': 'no',
-                                 'efficiency': 0.16, # https://www.sciencedirect.com/science/article/abs/pii/S0375650513001120
+                                 'efficiency': 0.16,
+                                 # https://www.sciencedirect.com/science/article/abs/pii/S0375650513001120
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'copper_needs': 1100,  #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
+                                 'copper_needs': 1100,
+                                 # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
     techno_info_dict = techno_infos_dict_default
@@ -89,8 +91,8 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
     # https://www.irena.org/publications/2021/Jun/Renewable-Power-Costs-in-2020
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [2.4, 2.9, 2.5,
-                                                                     2.7, 2.4, 2.5,
-                                                                     1.2]})
+                                                                                       2.7, 2.4, 2.5,
+                                                                                       1.2]})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [
@@ -105,13 +107,15 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
 
@@ -134,7 +138,7 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
-                if ResourceGlossary.Copper['name'] in product :
+                if ResourceGlossary.Copper['name'] in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
@@ -143,11 +147,11 @@ class GeothermalDiscipline(ElectricityTechnoDiscipline):
             if ResourceGlossary.Copper['name'] in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
-                mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
+                mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
                     techno_consumption[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)
-        
+
         return instanciated_chart

@@ -21,7 +21,6 @@ from energy_models.sos_processes.energy.techno_mix.biogas_mix.usecase import TEC
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Biogas Mix',
@@ -29,12 +28,12 @@ class ProcessBuilder(EnergyProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
         self.techno_list = TECHNOLOGIES_LIST
 
     def get_builders(self):
-
         ns_study = self.ee.study_name
 
         biogas_name = BioGas.name
@@ -52,5 +51,6 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{energy_mix}.{biogas_name}.{techno_name}'] = self.get_techno_disc_path(
                 biogas_name, techno_name)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
         return builder_list

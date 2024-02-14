@@ -36,10 +36,10 @@ class BioDieselDiscipline(EnergyDiscipline):
     # -- add specific techno inputs to this
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': BioDiesel.default_techno_list,
-                                     'default': BioDiesel.default_techno_list,
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_biodiesel', 'structuring': True, 'unit': '-'},
+                                            'possible_values': BioDiesel.default_techno_list,
+                                            'default': BioDiesel.default_techno_list,
+                                            'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                            'namespace': 'ns_biodiesel', 'structuring': True, 'unit': '-'},
                'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'unit': 'defined in dict',
                                   'namespace': 'ns_biodiesel', 'default': BioDiesel.data_energy_dict},
