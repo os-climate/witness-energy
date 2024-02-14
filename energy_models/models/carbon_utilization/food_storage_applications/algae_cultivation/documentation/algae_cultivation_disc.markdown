@@ -6,14 +6,15 @@ Growing Algae Process:
 
 Water, carbon dioxide, minerals and light are all important factors in cultivation, and different algae have different requirements. The basic reaction for algae growth in water is carbon dioxide + light energy + water = glucose + oxygen + water. This is called autotrophic growth. [^2]
 
-
 Nutrients such as nitrogen (N), phosphorus (P), and potassium (K) serve as fertilizer for algae, and are generally necessary for growth. Silica and iron, as well as several trace elements, may also be considered important marine nutrients as the lack of one can limit the growth of, or productivity in, a given area. Carbon dioxide is also essential; usually an input of CO2 is required for fast-paced algal growth. These elements must be dissolved into the water, in bio-available forms, for algae to grow. [^7] It is more Efficient.
 
-![img.png](img.png)
+ [^8]
+![img_1.png](img_1.png)
+
 
 **Calculation :**
 
-Consumption of Nitrogen, Phosphorus , co2 needs and Water is in kg per kg of algae. [^3], [^4], [^5], [^6] unit is kg/kg. and Electricity consumption 
+Consumption of Nitrogen, Phosphorus , co2 needs and Water is in kg per kg of algae. [^3], [^4], [^5], [^6] unit is kg/kg. and Electricity consumption in kWh/kg of Algae. [^9]
 
 **Datas :**
 
@@ -30,5 +31,9 @@ Consumption of Nitrogen, Phosphorus , co2 needs and Water is in kg per kg of alg
 [^6]: CO2 Needs, [CO2, sciencedirect] (https://www.sciencedirect.com/science/article/pii/S2772427122000948)
 
 [^7]: Efficiency, [Efficiency] (https://energsustainsoc.biomedcentral.com/articles/10.1186/s13705-020-00262-5)
+
+[^8]: Algae Cultivation Lifespan, [Lifespan] (https://www.sciencedirect.com/science/article/abs/pii/S2211926418300808)
+
+[^9]: Algae Cultivation Electric Demand, [Electric Demand, sciencedirect] (https://www.sciencedirect.com/science/article/pii/S2211926417306677#:~:text=For%20closed%20cultivation%20systems%20the,kWh%C2%B7kg%E2%88%92%201%20algae)
 
                                 
