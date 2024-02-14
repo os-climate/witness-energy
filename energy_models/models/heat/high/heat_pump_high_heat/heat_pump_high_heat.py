@@ -23,6 +23,12 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class HeatPump(highheattechno):
+    def __init__(self, name):
+        super().__init__(name)
+        self.land_rate = None
+        self.heat_flux = None
+        self.heat_flux_distribution = None
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kWh of Heat Pump Heat Generation
@@ -37,37 +43,36 @@ class HeatPump(highheattechno):
 
     def grad_price_vs_energy_price(self):
         elec_needs = self.get_theoretical_electricity_needs()
-        heat_generated = elec_needs #self.get_theoretical_heat_generated()
+        heat_generated = elec_needs  # self.get_theoretical_heat_generated()
         mean_temperature = self.techno_infos_dict['mean_temperature']
         output_temperature = self.techno_infos_dict['output_temperature']
         COP = output_temperature / (output_temperature - mean_temperature)
         efficiency = COP
-        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
-               # hightemperatureheat.name: np.identity(len(self.years)) * heat_generated / efficiency,
-               }
+        return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency}
+
     def compute_consumption_and_production(self):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
+
         # Production
         self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] = \
             self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
             self.cost_details['efficiency']
 
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-                                                                                        self.production_detailed[f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{hightemperatureheat.name} ({self.product_energy_unit})'] / \
                                                                                         self.cost_details['efficiency']
 
     def get_theoretical_electricity_needs(self):
-
         mean_temperature = self.techno_infos_dict['mean_temperature']
         output_temperature = self.techno_infos_dict['output_temperature']
-        COP = output_temperature/(output_temperature - mean_temperature)
-        electricity_needs = 1 / COP   # (heating_space*heat_required_per_meter_square) / COP
+        COP = output_temperature / (output_temperature - mean_temperature)
+        electricity_needs = 1 / COP  # (heating_space*heat_required_per_meter_square) / COP
 
         return electricity_needs
-
 
 

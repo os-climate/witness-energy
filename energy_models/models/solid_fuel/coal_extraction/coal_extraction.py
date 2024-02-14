@@ -28,6 +28,10 @@ from energy_models.core.techno_type.base_techno_models.solid_fuel_techno import 
 class CoalExtraction(SolidFuelTechno):
     COAL_RESOURCE_NAME = ResourceGlossary.Coal['name']
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.emission_factor_mt_twh = None
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs which depends on the technology 
@@ -56,7 +60,6 @@ class CoalExtraction(SolidFuelTechno):
         Work also for total CO2_emissions vs energy CO2 emissions
         '''
         elec_needs = self.get_electricity_needs()
-        fuel_needs = self.get_fuel_needs()
         efficiency = self.techno_infos_dict['efficiency']
         return {Electricity.name: np.identity(len(self.years)) * elec_needs / efficiency,
                 # LiquidFuel.name: np.identity(len(self.years)) * fuel_needs /
@@ -76,25 +79,28 @@ class CoalExtraction(SolidFuelTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
         self.production_detailed[f'{CO2.name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
                                                                      self.data_energy_dict['high_calorific_value'] * \
-                                                                     self.production_detailed[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']
+                                                                     self.production_detailed[
+                                                                         f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']
 
         self.compute_ch4_emissions()
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                        self.production_detailed[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            'elec_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # self.consumption[f'{LiquidFuel.name} ({self.product_energy_unit})'] = self.cost_details['fuel_needs'] * \
         #     self.production[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
         #     self.cost_details['efficiency']  # in kWH
 
         # Coal Consumption
-        self.consumption_detailed[f'{self.COAL_RESOURCE_NAME} ({self.mass_unit})'] = self.production_detailed[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
+        self.consumption_detailed[f'{self.COAL_RESOURCE_NAME} ({self.mass_unit})'] = self.production_detailed[
+                                                                                         f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                                      self.cost_details['efficiency'] / \
-                                                                                     SolidFuel.data_energy_dict['calorific_value']  # in Mt
+                                                                                     SolidFuel.data_energy_dict[
+                                                                                         'calorific_value']  # in Mt
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
@@ -102,7 +108,7 @@ class CoalExtraction(SolidFuelTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                       self.cost_details['elec_needs']
+                                                  self.cost_details['elec_needs']
         self.carbon_intensity[self.COAL_RESOURCE_NAME] = self.resources_CO2_emissions[self.COAL_RESOURCE_NAME] * \
                                                          self.cost_details[f'{self.COAL_RESOURCE_NAME}_needs']
 
@@ -113,7 +119,7 @@ class CoalExtraction(SolidFuelTechno):
         #     self.carbon_emissions[LiquidFuel.name] = 25.33 * \
         #         self.cost_details['fuel_needs']
         return self.carbon_intensity[Electricity.name] + self.carbon_intensity[self.COAL_RESOURCE_NAME]
-        #+ self.carbon_emissions[LiquidFuel.name]
+        # + self.carbon_emissions[LiquidFuel.name]
 
     def compute_ch4_emissions(self):
         '''
@@ -130,14 +136,17 @@ class CoalExtraction(SolidFuelTechno):
         underground_mining_gas_content = self.techno_infos_dict['underground_mining_gas_content']
         surface_mining_gas_content = self.techno_infos_dict['surface_mining_gas_content']
         gas_content = self.techno_infos_dict['underground_mining_percentage'] / \
-            100.0 * underground_mining_gas_content + \
-            (1. - self.techno_infos_dict['underground_mining_percentage'] /
-             100.0) * surface_mining_gas_content
+                      100.0 * underground_mining_gas_content + \
+                      (1. - self.techno_infos_dict['underground_mining_percentage'] /
+                       100.0) * surface_mining_gas_content
 
         # gascontent must be passed in Mt/Twh
         self.emission_factor_mt_twh = gas_content * emission_factor_coeff * Methane.data_energy_dict['density'] / \
-            self.data_energy_dict['calorific_value'] * 1e-3
+                                      self.data_energy_dict['calorific_value'] * 1e-3
         # need to multiply by 1e9 to be in m3 by density to be in kg and by 1e-9 to be in Mt
         # and add ch4 from abandoned mines
-        self.production_detailed[f'{Methane.emission_name} ({self.mass_unit})'] = self.emission_factor_mt_twh * self.production_detailed[f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'].values + \
-                                                                                  self.techno_infos_dict['ch4_from_abandoned_mines']
+        self.production_detailed[f'{Methane.emission_name} ({self.mass_unit})'] = self.emission_factor_mt_twh * \
+                                                                                  self.production_detailed[
+                                                                                      f'{SolidFuelTechno.energy_name} ({self.product_energy_unit})'].values + \
+                                                                                  self.techno_infos_dict[
+                                                                                      'ch4_from_abandoned_mines']

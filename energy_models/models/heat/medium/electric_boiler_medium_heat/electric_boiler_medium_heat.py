@@ -24,6 +24,12 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class ElectricBoilerMediumHeat(mediumheattechno):
 
+    def __init__(self, name):
+        super().__init__(name)
+        self.land_rate = None
+        self.heat_flux = None
+        self.heat_flux_distribution = None
+
     def compute_other_primary_energy_costs(self):
         """
         Compute primary costs to produce 1kWh of heat
@@ -50,19 +56,16 @@ class ElectricBoilerMediumHeat(mediumheattechno):
         """
         Compute the consumption and the production of the technology for a given investment
         """
-        
+
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[f'{Electricity.name}_needs'] * \
-                                                                                        self.production_detailed[f'{mediumtemperatureheat.name} ({self.product_energy_unit})']
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            f'{Electricity.name}_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{mediumtemperatureheat.name} ({self.product_energy_unit})']
 
     def get_theoretical_electricity_needs(self):
         # we need as output kwh/kwh
         elec_demand = self.techno_infos_dict['elec_demand']
 
         return elec_demand
-
-
-
-
-
 

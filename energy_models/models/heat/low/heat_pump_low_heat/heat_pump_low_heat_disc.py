@@ -26,7 +26,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 
 class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Heat Pump Low Heat Model',
@@ -44,7 +43,7 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
     techno_name = 'HeatPumpLowHeat'
     energy_name = lowtemperatureheat.name
 
-    lifetime = 25           # years
+    lifetime = 25  # years
     # https://www.energy.gov/energysaver/heat-pump-systems
     # Heat pumps offer an energy-efficient alternative to furnaces and air conditioners for all climates.
     # Heat pump can reduce your electricity use for heating by approximately 50% compared to
@@ -58,14 +57,16 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
 
     techno_infos_dict_default = {
 
-        'Capex_init': 718/(25*8760), #660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        'Capex_init': 718 / (25 * 8760),
+        # 660euro/kW/(lifetime * Number of hours in year) # Source:- https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'Capex_init_unit': '$/kWh',
-        'Opex_percentage': 0.04, ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
+        'Opex_percentage': 0.04,
+        ## https://europeanclimate.org/wp-content/uploads/2019/11/14-03-2019-ffe-2050-cost-assumptions.xlsx
         'lifetime': lifetime,
         'lifetime_unit': GlossaryEnergy.Years,
         GlossaryEnergy.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryEnergy.Years,
-        'efficiency': 1,    # consumptions and productions already have efficiency included
+        'efficiency': 1,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
         'maturity': 5,
@@ -73,7 +74,8 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
         'full_load_hours': 8760.0,
         'WACC': 0.075,
         'techno_evo_eff': 'no',
-        'output_temperature': 60, # Average Low Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
+        'output_temperature': 60,
+        # Average Low Temperature, Page Number 152, #https://www.medeas.eu/system/files/documentation/files/D8.11%28D35%29%20Model%20Users%20Manual.pdf
         'mean_temperature': 20,
         'output_temperature_unit': '°C',
         'mean_temperature_unit': '°C',
@@ -82,12 +84,12 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
     # heat_pump_high_heat Heat production
     # production in 2021 #https://www.iea.org/reports/heat-pumps
     # in TWh
-    initial_production = 1*8760/3 # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
+    initial_production = 1 * 8760 / 3  # 1000GW * Number of Hours in a Year /(Equally split for High, low and Medium Heat production)
 
     distrib = [9.677419355, 7.52688172, 0,
                5.376344086, 4.301075269, 5.376344086, 11.82795699, 21.50537634,
-               13.97849462, 9.677419355,   7.52688172,   1.075268817,
-               2.150537634,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0]
+               13.97849462, 9.677419355, 7.52688172, 1.075268817,
+               2.150537634, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': 100 / sum(distrib) * np.array(distrib)})  # to review
@@ -97,13 +99,15 @@ class HeatPumpLowHeatDiscipline(LowHeatTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
+
                GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
                                         'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
                                                                  GlossaryEnergy.InvestValue: ('float',  None, True)},
                                         'dataframe_edition_locked': False},
+
                }
     DESC_IN.update(LowHeatTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

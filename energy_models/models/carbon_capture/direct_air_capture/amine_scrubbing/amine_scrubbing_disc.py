@@ -40,7 +40,7 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
         'icon': 'fas fa-globe-europe fa-fw',
         'version': '',
     }
-    techno_name = 'direct_air_capture.AmineScrubbing'
+    techno_name = f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing'
     lifetime = 35
     construction_delay = 3
     techno_infos_dict_default = {'maturity': 0,
@@ -51,15 +51,15 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
                                  # Opex % : fig 5 - 6 :
                                  # https://reader.elsevier.com/reader/sd/pii/S1876610212010934?token=1A3181CEE6756AFE741AAACDFC004EAA641316AEC4BE6238B4712D20B90F53690774128290A7E3032F7D5AF0F8CC38A9
                                  'Opex_percentage': 0.25,
-                                 'elec_demand': 0.25,
-                                 'elec_demand_unit': 'kWh/kgCO2',
+                                 'elec_demand': 0.22,     
+                                 'elec_demand_unit': 'kWh/kgCO2', # page no:6 # https://www.rsc.org/suppdata/d0/ee/d0ee00787k/d0ee00787k1.pdf
                                  # Fasihi, M., Efimova, O. and Breyer, C., 2019.
                                  # Techno-economic assessment of CO2 direct air capture plants.
                                  # Journal of cleaner production, 224, pp.957-980.
                                  # for now constant in time but should increase
                                  # with time 10%/10year according to Fasihi2019
-                                 'heat_demand': 1.75,
-                                 'heat_demand_unit': 'kWh/kgCO2',
+                                 'heat_demand': 0.1034,
+                                 'heat_demand_unit': 'kWh/kgCO2',  # https://www.osti.gov/servlets/purl/1482179
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.33,
@@ -108,7 +108,8 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
 
     initial_capture = 5.0e-3  # in Mt at year_start
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: np.array([0.05093, 0.05093, 15.0930]) * 0.8 / 3000})
+        {'past years': np.arange(-construction_delay, 0),
+         GlossaryEnergy.InvestValue: np.array([0.05093, 0.05093, 15.0930]) * 0.8 / 3000})
 
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime - 1),
                                              'distrib': [10.0, 10.0, 10.0, 10.0, 10.0,
@@ -130,13 +131,15 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)
 

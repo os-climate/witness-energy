@@ -64,7 +64,8 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'copper_needs': 8000, #IEA Executive summary - Role of critical minerals in clean energy transitions 2022
+                                 'copper_needs': 8000,
+                                 # IEA Executive summary - Role of critical minerals in clean energy transitions 2022
                                  }
 
     techno_info_dict = techno_infos_dict_default
@@ -83,8 +84,8 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
                                                  21.1073, 15.2249, 15.5709, 7.61246, 11.7647, 5.53633, 5.19031, 4.15225,
                                                  3.11419, 3.11419, 2.07612, 1.38408, 1.03806, 0.34602, 0.34602,
                                                  0.34602, 1.03806, 0.69204, 0.34602, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-    ]
-    })
+                                             ]
+                                             })
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -93,10 +94,12 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
                                        'dataframe_descriptor': {'age': ('int', [0, 100], False),
                                                                 'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int', [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float', None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(ElectricityTechnoDiscipline.DESC_IN)
     # Add specific transport cost for Offshore technology
@@ -122,7 +125,7 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
-                if ResourceGlossary.Copper['name'] in product :
+                if ResourceGlossary.Copper['name'] in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
@@ -131,11 +134,11 @@ class WindOffshoreDiscipline(ElectricityTechnoDiscipline):
             if ResourceGlossary.Copper['name'] in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
-                mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
+                mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
                     techno_consumption[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)
-        
+
         return instanciated_chart

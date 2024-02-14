@@ -55,18 +55,18 @@ class SyngasBiomassGasificationTestCase(unittest.TestCase):
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price,
-                                           'biomass_dry': np.ones(len(years)) * 6812 / 3.36
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price,
+                                           GlossaryEnergy.biomass_dry: np.ones(len(years)) * 6812 / 3.36
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.0, 'biomass_dry': - 0.425 * 44.01 / 12.0})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.0, GlossaryEnergy.biomass_dry: - 0.425 * 44.01 / 12.0})
 
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.linspace(1.0, 100000, len(years))})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -90,7 +90,6 @@ class SyngasBiomassGasificationTestCase(unittest.TestCase):
         pass
 
     def test_02_biomass_gas_discipline(self):
-
         self.name = 'Test'
         self.model_name = 'biomassGasification'
         self.ee = ExecutionEngine(self.name)
@@ -117,7 +116,7 @@ class SyngasBiomassGasificationTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}':  self.margin
+                       f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

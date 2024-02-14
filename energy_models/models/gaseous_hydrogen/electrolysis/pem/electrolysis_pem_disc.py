@@ -55,7 +55,7 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',
                                  'WACC': 0.05,
-                                 'learning_rate':  0.15,
+                                 'learning_rate': 0.15,
                                  'maximum_learning_capex_ratio': 500.0 / 1012.5,  # 500 euro/kw minimum capex
                                  'lifetime': lifetime,
                                  'lifetime_unit': GlossaryEnergy.Years,
@@ -74,8 +74,8 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
                                  'efficiency_max': 0.75,
                                  'useful_heat_recovery_factor': 0.8,
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'platinum_needs': 1.0/8.0, #Fuel Cell technologies Office 2017
-                                 'platinum_needs_units': 'g/KW',}
+                                 'platinum_needs': 1.0 / 8.0,  # Fuel Cell technologies Office 2017
+                                 'platinum_needs_units': 'g/KW', }
 
     # Around 50MW of nominal power *8000 hours per year
     initial_production = 0.4
@@ -83,10 +83,10 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                              'distrib': [25, 25, 20, 15, 15] + [0.0] * 5
                                              })
-# Public investment in Europe through FCH JU : 156 MEuro or 190M$
-# We assume half is for PEM .
-# Worldwide the investment of europe for PEM is 36%   190/2*100/36 = 263.9 M$
-# https://www.euractiv.com/section/energy/news/europe-china-battle-for-global-supremacy-on-electrolyser-manufacturing/
+    # Public investment in Europe through FCH JU : 156 MEuro or 190M$
+    # We assume half is for PEM .
+    # Worldwide the investment of europe for PEM is 36%   190/2*100/36 = 263.9 M$
+    # https://www.euractiv.com/section/energy/news/europe-china-battle-for-global-supremacy-on-electrolyser-manufacturing/
     invest_before_year_start = pd.DataFrame({'past years': np.arange(-construction_delay, 0),
                                              GlossaryEnergy.InvestValue: [0.264, 0.264]})
 
@@ -101,11 +101,12 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
                                                                 'distrib': ('float', None, True)}
                                        },
                GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe',
-                                        'unit': 'G$',
-                                        'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+                                                               'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     DESC_IN.update(GaseousHydrogenTechnoDiscipline.DESC_IN)
 
     # -- add specific techno outputs to this
@@ -126,7 +127,7 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
-                if ResourceGlossary.Platinum['name'] in product :
+                if ResourceGlossary.Platinum['name'] in product:
                     chart_name = f'Mass consumption of platinum for the {self.techno_name} technology with input investments'
                     new_chart_platinum = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [kg]', chart_name=chart_name, stacked_bar=True)
@@ -135,11 +136,12 @@ class ElectrolysisPEMDiscipline(GaseousHydrogenTechnoDiscipline):
             if ResourceGlossary.Platinum['name'] in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
-                mass = techno_consumption[reactant].values * 1000 * 1000 * 1000 #convert Mt in kg for more readable post-proc
+                mass = techno_consumption[
+                           reactant].values * 1000 * 1000 * 1000  # convert Mt in kg for more readable post-proc
                 serie = InstanciatedSeries(
                     techno_consumption[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_platinum.series.append(serie)
         instanciated_chart.append(new_chart_platinum)
-        
+
         return instanciated_chart

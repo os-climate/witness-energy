@@ -17,10 +17,11 @@ limitations under the License.
 from abc import abstractmethod
 
 from energy_models.core.techno_type.techno_type import TechnoType
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class KeroseneTechno(TechnoType):
-    energy_name = 'kerosene'
+    energy_name = GlossaryEnergy.kerosene
 
     def __init__(self, name):
         TechnoType.__init__(self, name)
@@ -30,6 +31,7 @@ class KeroseneTechno(TechnoType):
         '''
         Compute other energy costs which will depend on the techno reaction (elec for electrolysis or methane for SMR by example)
         '''
+
     @abstractmethod
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 

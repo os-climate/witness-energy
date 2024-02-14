@@ -25,7 +25,6 @@ from energy_models.models.ethanol.biomass_fermentation.biomass_fermentation impo
 
 
 class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Biomass Fermentation Model',
@@ -54,7 +53,7 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
 
     # Ethanol Producer [Online]
     # http://www.ethanolproducer.com/articles/2005/time-testing#:~:text=Most%20experts%20suggest%20dry%2Dmill,of%20%22useful%22%20life%20expectancy.
-    lifetime = 45           # years
+    lifetime = 45  # years
     # Economic and Technical Analysis of Ethanol Dry Milling: Model Description.
     # Rhys T.Dale and Wallace E.Tyner Staff Paper
     # 06-04 April 2006
@@ -74,12 +73,12 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
         'lifetime_unit': GlossaryEnergy.Years,
         GlossaryEnergy.ConstructionDelay: construction_delay,
         'construction_delay_unit': GlossaryEnergy.Years,
-        'efficiency': 1,    # consumptions and productions already have efficiency included
+        'efficiency': 1,  # consumptions and productions already have efficiency included
         'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
         'elec_demand': 0.70 / gallon_to_m3,
         'elec_demand_unit': 'kWh/m3',
-        'water_demand':  3.5,
+        'water_demand': 3.5,
         'water_demand_unit': 'm3/m3',
         'biomass_dry_demand': 56 * pound_to_kg / (2.9 * gallon_to_m3),
         'biomass_dry_demand_unit': 'kg/m3',
@@ -97,7 +96,7 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
     # production in 2019: 29330 million gallons
     # in TWh
     initial_production = 29330 * 1e6 * \
-        (gallon_to_m3 * ethanol_density * ethanol_calorific_value) * 1e-9
+                         (gallon_to_m3 * ethanol_density * ethanol_calorific_value) * 1e-9
 
     distrib = [40.0, 40.0, 20.0, 20.0, 20.0, 12.0, 12.0, 12.0, 12.0, 12.0,
                8.0, 8.0, 8.0, 8.0, 8.0, 5.0, 5.0, 5.0, 5.0, 5.0,
@@ -112,7 +111,8 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
     # Renewable Fuels Association [online]
     # https://ethanolrfa.org/markets-and-statistics/annual-ethanol-production
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
+        {'past years': np.arange(-construction_delay, 0),
+         GlossaryEnergy.InvestValue: 1.95 * liter_per_gallon * np.array([0, 29.330 - 28.630])})
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict', 'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
@@ -120,10 +120,12 @@ class BiomassFermentationDiscipline(EthanolTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     DESC_IN.update(EthanolTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = EthanolTechnoDiscipline.DESC_OUT

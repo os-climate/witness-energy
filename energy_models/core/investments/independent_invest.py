@@ -40,7 +40,8 @@ class IndependentInvest(BaseInvest):
         """compute"""
         energy_investment_wo_tax = self.compute_energy_investment_wo_tax(inputs_dict)
         energy_invest_objective = self.compute_energy_invest_objective(energy_investment_wo_tax)
-        return energy_investment_wo_tax, energy_invest_objective
+        max_budget_constraint = self.compute_max_budget_constraint(energy_investment_wo_tax, inputs_dict)
+        return energy_investment_wo_tax, energy_invest_objective, max_budget_constraint
 
     def compute_energy_invest_objective(self, energy_investment_wo_tax):
         energy_invest_objective = energy_investment_wo_tax[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values.sum()
@@ -53,7 +54,8 @@ class IndependentInvest(BaseInvest):
         techno_invests = inputs_dict[GlossaryEnergy.invest_mix][self.distribution_list]
         techno_invest_sum = techno_invests.sum(axis=1).values
 
-        techno_invest_sum += inputs_dict[GlossaryEnergy.ForestInvestmentValue][GlossaryEnergy.ForestInvestmentValue].values
+        techno_invest_sum += inputs_dict[GlossaryEnergy.ForestInvestmentValue][
+            GlossaryEnergy.ForestInvestmentValue].values
         energy_list = inputs_dict[GlossaryEnergy.energy_list]
 
         if BiomassDry.name in energy_list:
@@ -65,6 +67,7 @@ class IndependentInvest(BaseInvest):
 
         return energy_investment_wo_tax
 
-
-
-
+    def compute_max_budget_constraint(self, energy_investment_wo_tax: np.ndarray, inputs_dict: dict):
+        max_budget = inputs_dict[GlossaryEnergy.MaxBudgetValue][GlossaryEnergy.MaxBudgetValue].values
+        max_budget_constraint = energy_investment_wo_tax[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values * 1000 - max_budget
+        return max_budget_constraint

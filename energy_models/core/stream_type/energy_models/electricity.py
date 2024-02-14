@@ -21,12 +21,18 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class Electricity(EnergyType):
-    name = 'electricity'
+    name = GlossaryEnergy.electricity
     hydropower_name = 'Hydropower'
     default_techno_list = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal', 'Hydropower',
                            'CoalGen', 'OilGen', 'Nuclear', 'CombinedCycleGasTurbine',
                            'GasTurbine', 'BiogasFired', 'BiomassFired',
-                           'Geothermal', 'RenewableElectricitySimpleTechno', 'RenewableElectricitySimpleTechnoDiscipline']
+                           'Geothermal']
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.hydropower_production_current = None
+        self.hydropower_constraint_ref = None
+        self.hydropower_constraint = None
 
     def configure_parameters(self, inputs_dict):
         '''
@@ -44,4 +50,5 @@ class Electricity(EnergyType):
             {GlossaryEnergy.Years: self.production[GlossaryEnergy.Years]})
 
         self.hydropower_constraint['hydropower_constraint'] = - (
-            self.production_by_techno[f'{self.name} {self.hydropower_name} ({self.unit})'] - self.hydropower_production_current) / self.hydropower_constraint_ref
+                self.production_by_techno[
+                    f'{self.name} {self.hydropower_name} ({self.unit})'] - self.hydropower_production_current) / self.hydropower_constraint_ref

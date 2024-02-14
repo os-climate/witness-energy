@@ -28,7 +28,6 @@ from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase im
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Carbon Capture Mix',
@@ -42,8 +41,8 @@ class ProcessBuilder(EnergyProcessBuilder):
         self.techno_list = TECHNOLOGIES_LIST
         self.prefix_name = 'EnergyMix'
         self.associate_namespace = True
-    def get_builders(self):
 
+    def get_builders(self):
         ns_study = self.ee.study_name
         energy_mix = 'EnergyMix'
         flue_gas_name = FlueGas.node_name
@@ -61,11 +60,8 @@ class ProcessBuilder(EnergyProcessBuilder):
         mods_dict = {}
         mods_dict[f'{self.prefix_name}.{carbon_capture_name}'] = self.get_stream_disc_path(
             'carbon_disciplines', 'CarbonCapture')
-        mods_dict[f'{self.prefix_name}.{carbon_capture_name}.{flue_gas_name}'] = 'energy_models.core.stream_type.carbon_disciplines.flue_gas_disc.FlueGasDiscipline'
-
-
-
-        # 'energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc.DirectAirCaptureTechnoDiscipline'
+        mods_dict[
+            f'{self.prefix_name}.{carbon_capture_name}.{flue_gas_name}'] = 'energy_models.core.stream_type.carbon_disciplines.flue_gas_disc.FlueGasDiscipline'
         for full_techno_name in self.techno_list:
             list_dot = full_techno_name.split('.')
             sub_dir = list_dot[0]
@@ -73,9 +69,10 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{self.prefix_name}.{carbon_capture_name}.{full_techno_name}'] = self.get_techno_disc_path(
                 carbon_capture_name, techno_name, sub_dir)
 
-        mods_dict[
-            f'{self.prefix_name}.{carbon_capture_name}.direct_air_capture'] = 'energy_models.core.stream_type.carbon_disciplines.direct_air_disc.DirectAirDiscipline'
+        # mods_dict[
+        #     f'{self.prefix_name}.{carbon_capture_name}.direct_air_capture'] = 'energy_models.core.stream_type.carbon_disciplines.direct_air_disc.DirectAirDiscipline'
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+
 
         return builder_list

@@ -24,7 +24,6 @@ from energy_models.models.methane.methanation.methanation import Methanation
 
 
 class MethanationDiscipline(MethaneTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Methanation Model',
@@ -76,7 +75,7 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
     # F. Bauer, M. Sterner Technical University of Applied Sciences (OTH)
 
     initial_production = 590.0 * 8760.0 * 13.9 * \
-        0.657 * 1.0e-9  # in TWh at year_start
+                         0.657 * 1.0e-9  # in TWh at year_start
 
     # from Power-to-Gas: Electrolysis and methanation status review M. Thema,
     # F. Bauer, M. Sterner Technical University of Applied Sciences (OTH)
@@ -95,10 +94,12 @@ class MethanationDiscipline(MethaneTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
 
     DESC_IN.update(MethaneTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this

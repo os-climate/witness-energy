@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-
+Modifications on 2024/01/31 Copyright 2024 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -12,6 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+
 '''
 import json
 
@@ -155,6 +156,7 @@ def generate_dict_from_usecase(usecase):
         out_dict[conversion[key][0]][conversion[key][1]]['source'] = 'None'
 
     return out_dict
+
 
 def dump_json_file_from_dict(dict_to_dump):
     with open("mda_v0.json", "w") as outfile:

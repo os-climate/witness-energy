@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -51,103 +53,112 @@ class OneInvestDiscipline(SoSWrapp):
 
     DESC_IN = {
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe', 'unit': '100G$',
-                              'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                       GlossaryEnergy.EnergyInvestmentsValue: ('float', None, True)},
-                              'dataframe_edition_locked': False,
-                              'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_WITNESS},
+                                                'dataframe_descriptor': {GlossaryEnergy.Years: (
+                                                'int', [1900, 2100], False),
+                                                                         GlossaryEnergy.EnergyInvestmentsValue: (
+                                                                         'float', None, True)},
+                                                'dataframe_edition_locked': False,
+                                                'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_WITNESS},
         'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
                                              'namespace': 'ns_public'},
         GlossaryEnergy.invest_mix: {'type': 'dataframe',
-                       'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                'electricity.SolarPv': ('float', None, True),
-                                                'electricity.WindOnshore': ('float', None, True),
-                                                'electricity.CoalGen': ('float', None, True),
-                                                'methane.FossilGas': ('float', None, True),
-                                                'methane.UpgradingBiogas': ('float', None, True),
-                                                'hydrogen.gaseous_hydrogen.WaterGasShift': ('float', None, True),
-                                                'hydrogen.gaseous_hydrogen.Electrolysis.AWE': ('float', None, True),
-                                                'carbon_capture.direct_air_capture.AmineScrubbing': (
-                                                'float', None, True),
-                                                'carbon_capture.flue_gas_capture.CalciumLooping': ('float', None, True),
-                                                'carbon_storage.DeepSalineFormation': ('float', None, True),
-                                                'carbon_storage.GeologicMineralization': ('float', None, True),
-                                                'methane.Methanation': ('float', None, True),
-                                                'heat.hightemperatureheat.NaturalGasBoilerHighHeat': ('float', None, True),
-                                                'heat.hightemperatureheat.ElectricBoilerHighHeat': ('float', None, True),
-                                                'heat.hightemperatureheat.HeatPumpHighHeat': ('float', None, True),
-                                                'heat.hightemperatureheat.GeothermalHighHeat': ('float', None, True),
-                                                'heat.hightemperatureheat.CHPHighHeat': ('float', None, True),
-                                                'heat.hightemperatureheat.HydrogenBoilerHighHeat': ('float', None, True),
-                                                'heat.lowtemperatureheat.NaturalGasBoilerLowHeat': ('float', None, True),
-                                                'heat.lowtemperatureheat.ElectricBoilerLowHeat': ('float', None, True),
-                                                'heat.lowtemperatureheat.HeatPumpLowHeat': ('float', None, True),
-                                                'heat.lowtemperatureheat.GeothermalLowHeat': ('float', None, True),
-                                                'heat.lowtemperatureheat.CHPLowHeat': ('float', None, True),
-                                                'heat.lowtemperatureheat.HydrogenBoilerLowHeat': ('float', None, True),
-                                                'heat.mediumtemperatureheat.NaturalGasBoilerMediumHeat': ('float', None, True),
-                                                'heat.mediumtemperatureheat.ElectricBoilerMediumHeat': ('float', None, True),
-                                                'heat.mediumtemperatureheat.HeatPumpMediumHeat': ('float', None, True),
-                                                'heat.mediumtemperatureheat.GeothermalMediumHeat': ('float', None, True),
-                                                'heat.mediumtemperatureheat.CHPMediumHeat': ('float', None, True),
-                                                'heat.mediumtemperatureheat.HydrogenBoilerMediumHeat': ('float', None, True),
-                                                'hydrogen.gaseous_hydrogen.PlasmaCracking': ('float', None, True),
-                                                'hydrogen.gaseous_hydrogen.Electrolysis.SOEC': ('float', None, True),
-                                                'hydrogen.gaseous_hydrogen.Electrolysis.PEM': ('float', None, True),
-                                                'biogas.AnaerobicDigestion': ('float', None, True),
-                                                'syngas.BiomassGasification': ('float', None, True),
-                                                'syngas.SMR': ('float', None, True),
-                                                'syngas.Pyrolysis': ('float', None, True),
-                                                'syngas.AutothermalReforming': ('float', None, True),
-                                                'syngas.CoElectrolysis': ('float', None, True),
-                                                'syngas.CoalGasification': ('float', None, True),
-                                                'fuel.liquid_fuel.Refinery': ('float', None, True),
-                                                'fuel.liquid_fuel.FischerTropsch': ('float', None, True),
-                                                'fuel.hydrotreated_oil_fuel.HefaDecarboxylation': ('float', None, True),
-                                                'fuel.hydrotreated_oil_fuel.HefaDeoxygenation': ('float', None, True),
-                                                'solid_fuel.CoalExtraction': ('float', None, True),
-                                                'solid_fuel.Pelletizing': ('float', None, True),
-                                                'electricity.WindOffshore': ('float', None, True),
-                                                'electricity.SolarThermal': ('float', None, True),
-                                                'electricity.Geothermal': ('float', None, True),
-                                                'electricity.Hydropower': ('float', None, True),
-                                                'electricity.Nuclear': ('float', None, True),
-                                                'electricity.CombinedCycleGasTurbine': ('float', None, True),
-                                                'electricity.GasTurbine': ('float', None, True),
-                                                'electricity.BiogasFired': ('float', None, True),
-                                                'electricity.BiomassFired': ('float', None, True),
-                                                'electricity.OilGen': ('float', None, True),
-                                                'fuel.biodiesel.Transesterification': ('float', None, True),
-                                                'fuel.ethanol.BiomassFermentation': ('float', None, True),
-                                                'hydrogen.liquid_hydrogen.HydrogenLiquefaction': ('float', None, True),
-                                                'carbon_capture.direct_air_capture.CalciumPotassiumScrubbing': (
-                                                'float', None, True),
-                                                'carbon_capture.flue_gas_capture.ChilledAmmoniaProcess': (
-                                                'float', None, True),
-                                                'carbon_capture.flue_gas_capture.CO2Membranes': ('float', None, True),
-                                                'carbon_capture.flue_gas_capture.MonoEthanolAmine': (
-                                                'float', None, True),
-                                                'carbon_capture.flue_gas_capture.PiperazineProcess': (
-                                                'float', None, True),
-                                                'carbon_capture.flue_gas_capture.PressureSwingAdsorption': (
-                                                'float', None, True),
-                                                'carbon_storage.BiomassBuryingFossilization': ('float', None, True),
-                                                'carbon_storage.DeepOceanInjection': ('float', None, True),
-                                                'carbon_storage.DepletedOilGas': ('float', None, True),
-                                                'carbon_storage.EnhancedOilRecovery': ('float', None, True),
-                                                'carbon_storage.PureCarbonSolidStorage': ('float', None, True),
-                                                'renewable.RenewableSimpleTechno': ('float', None, True),
-                                                'fossil.FossilSimpleTechno': ('float', None, True),
-    },
-                       'dataframe_edition_locked': False},
+                                    'dataframe_descriptor': {
+                                        GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                                        f'{GlossaryEnergy.electricity}.SolarPv': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.WindOnshore': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),
+                                        f'{GlossaryEnergy.methane}.FossilGas': ('float', None, True),
+                                        f'{GlossaryEnergy.methane}.UpgradingBiogas': ('float', None, True),
+                                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': ('float', None, True),
+                                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.AWE': ('float', None, True),
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing': (
+                                            'float', None, True),
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CalciumLooping': ('float', None, True),
+                                        f'{GlossaryEnergy.carbon_storage}.DeepSalineFormation': ('float', None, True),
+                                        f'{GlossaryEnergy.carbon_storage}.GeologicMineralization': ('float', None, True),
+                                        f'{GlossaryEnergy.methane}.Methanation': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.NaturalGasBoilerHighHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.ElectricBoilerHighHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.HeatPumpHighHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.GeothermalHighHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.CHPHighHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.HydrogenBoilerHighHeat': (
+                                        'float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.NaturalGasBoilerLowHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.ElectricBoilerLowHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.HeatPumpLowHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.GeothermalLowHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.CHPLowHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.HydrogenBoilerLowHeat': (
+                                        'float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.NaturalGasBoilerMediumHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.ElectricBoilerMediumHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.HeatPumpMediumHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.GeothermalMediumHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.CHPMediumHeat': ('float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.mediumtemperatureheat}.HydrogenBoilerMediumHeat': (
+                                        'float', None, True),
+                                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.PlasmaCracking': ('float', None, True),
+                                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.SOEC': ('float', None, True),
+                                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.Electrolysis.PEM': ('float', None, True),
+                                        f'{GlossaryEnergy.biogas}.{GlossaryEnergy.AnaerobicDigestion}': ('float', None, True),
+                                        f'{GlossaryEnergy.syngas}.BiomassGasification': ('float', None, True),
+                                        f'{GlossaryEnergy.syngas}.SMR': ('float', None, True),
+                                        f'{GlossaryEnergy.syngas}.Pyrolysis': ('float', None, True),
+                                        f'{GlossaryEnergy.syngas}.AutothermalReforming': ('float', None, True),
+                                        f'{GlossaryEnergy.syngas}.CoElectrolysis': ('float', None, True),
+                                        f'{GlossaryEnergy.syngas}.CoalGasification': ('float', None, True),
+                                        f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery': ('float', None, True),
+                                        f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch': ('float', None, True),
+                                        f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}.HefaDecarboxylation': ('float', None, True),
+                                        f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}.HefaDeoxygenation': ('float', None, True),
+                                        f'{GlossaryEnergy.solid_fuel}.CoalExtraction': ('float', None, True),
+                                        f'{GlossaryEnergy.solid_fuel}.Pelletizing': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.WindOffshore': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.SolarThermal': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.Geothermal': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.Hydropower': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.Nuclear': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.GasTurbine': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.BiogasFired': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.BiomassFired': ('float', None, True),
+                                        f'{GlossaryEnergy.electricity}.OilGen': ('float', None, True),
+                                        f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}.{GlossaryEnergy.Transesterification}': ('float', None, True),
+                                        f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}.BiomassFermentation': ('float', None, True),
+                                        f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}.HydrogenLiquefaction': ('float', None, True),
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': (
+                                            'float', None, True),
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.ChilledAmmoniaProcess': (
+                                            'float', None, True),
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.CO2Membranes': ('float', None, True),
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.MonoEthanolAmine': (
+                                            'float', None, True),
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.PiperazineProcess': (
+                                            'float', None, True),
+                                        f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption': (
+                                            'float', None, True),
+                                        f'{GlossaryEnergy.carbon_storage}.BiomassBuryingFossilization': ('float', None, True),
+                                        f'{GlossaryEnergy.carbon_storage}.DeepOceanInjection': ('float', None, True),
+                                        f'{GlossaryEnergy.carbon_storage}.DepletedOilGas': ('float', None, True),
+                                        f'{GlossaryEnergy.carbon_storage}.EnhancedOilRecovery': ('float', None, True),
+                                        f'{GlossaryEnergy.carbon_storage}.PureCarbonSolidStorage': ('float', None, True),
+                                        f'{GlossaryEnergy.renewable}.RenewableSimpleTechno': ('float', None, True),
+                                        f'{GlossaryEnergy.fossil}.FossilSimpleTechno': ('float', None, True),
+                                        },
+                                    'dataframe_edition_locked': False},
+
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                        'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                        'editable': False, 'structuring': True},
-        GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
-                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
-                     'structuring': True},
+                                     'possible_values': EnergyMix.energy_list,
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                                     'editable': False, 'structuring': True},
+        GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                  'possible_values': CCUS.ccs_list,
+                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                                  'editable': False,
+                                  'structuring': True},
     }
 
     energy_name = "one_invest"
@@ -156,6 +167,10 @@ class OneInvestDiscipline(SoSWrapp):
         'all_invest_df': {'type': 'dataframe', 'unit': 'G$'}
     }
     _maturity = 'Research'
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.one_invest_model = None
 
     def init_execution(self):
         self.one_invest_model = OneInvest()
@@ -207,11 +222,11 @@ class OneInvestDiscipline(SoSWrapp):
                         if technology_list is not None:
                             for techno in technology_list:
                                 dynamic_outputs[f'{ccs}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = {
-                                    'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': GlossaryEnergy.NS_CCS}
+                                    'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared',
+                                    'namespace': GlossaryEnergy.NS_CCS}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
-
 
     def run(self):
 
@@ -227,9 +242,9 @@ class OneInvestDiscipline(SoSWrapp):
             else:
                 for techno in input_dict[f'{energy}.{GlossaryEnergy.techno_list}']:
                     output_dict[f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = pd.DataFrame(
-                        {GlossaryEnergy.Years: input_dict[GlossaryEnergy.EnergyInvestmentsValue][GlossaryEnergy.Years].values,
+                        {GlossaryEnergy.Years: input_dict[GlossaryEnergy.EnergyInvestmentsValue][
+                            GlossaryEnergy.Years].values,
                          GlossaryEnergy.InvestValue: all_invest_df[f'{energy}.{techno}'].values})
-
 
         self.store_sos_outputs_values(output_dict)
 
@@ -247,14 +262,17 @@ class OneInvestDiscipline(SoSWrapp):
             grad_energy = inputs_dict[GlossaryEnergy.invest_mix][techno].values / \
                           norm_mix.values
             self.set_partial_derivative_for_other_types(
-                (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue), (GlossaryEnergy.EnergyInvestmentsValue, GlossaryEnergy.EnergyInvestmentsValue),
+                (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
+                (GlossaryEnergy.EnergyInvestmentsValue, GlossaryEnergy.EnergyInvestmentsValue),
                 scaling_factor_energy_investment * np.identity(len(years)) * grad_energy[:, np.newaxis])
 
             grad_techno_mix = inputs_dict[GlossaryEnergy.EnergyInvestmentsValue][
                                   GlossaryEnergy.EnergyInvestmentsValue].values * scaling_factor_energy_investment * (
-                                      norm_mix.values - inputs_dict[GlossaryEnergy.invest_mix][techno].values) / norm_mix.values ** 2
+                                      norm_mix.values - inputs_dict[GlossaryEnergy.invest_mix][
+                                  techno].values) / norm_mix.values ** 2
             self.set_partial_derivative_for_other_types(
-                (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue), (GlossaryEnergy.invest_mix, techno),
+                (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
+                (GlossaryEnergy.invest_mix, techno),
                 np.identity(len(years)) * grad_techno_mix[:, np.newaxis])
             for techno_other in self.one_invest_model.distribution_list:
                 if techno != techno_other:
@@ -263,7 +281,8 @@ class OneInvestDiscipline(SoSWrapp):
                                             inputs_dict[GlossaryEnergy.invest_mix][techno].values / \
                                             norm_mix.values ** 2
                     self.set_partial_derivative_for_other_types(
-                        (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue), (GlossaryEnergy.invest_mix, techno_other),
+                        (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
+                        (GlossaryEnergy.invest_mix, techno_other),
                         np.identity(len(years)) * grad_techno_mix_other[:, np.newaxis])
 
     def get_chart_filter_list(self):
@@ -287,14 +306,13 @@ class OneInvestDiscipline(SoSWrapp):
 
         instanciated_charts = []
         charts = []
-        years_list = [self.get_sosdisc_inputs(GlossaryEnergy.YearStart)]
         # Overload default value with chart filter
         if filters is not None:
             for chart_filter in filters:
                 if chart_filter.filter_key == 'charts_invest':
                     charts = chart_filter.selected_values
                 if chart_filter.filter_key == GlossaryEnergy.Years:
-                    years_list = chart_filter.selected_values
+                    pass
 
         if 'Invest Distribution' in charts:
             all_invest_df = self.get_sosdisc_outputs(

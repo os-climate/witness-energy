@@ -41,7 +41,8 @@ class FossilGas(MethaneTechno):
         # resources price [$/t] since needs are in [kg/kWh] to have cost in
         # [$/MWh]
         self.cost_details[self.NATURAL_GAS_RESOURCE_NAME] = list(
-            self.resources_prices[self.NATURAL_GAS_RESOURCE_NAME] * self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'])
+            self.resources_prices[self.NATURAL_GAS_RESOURCE_NAME] * self.cost_details[
+                f'{self.NATURAL_GAS_RESOURCE_NAME}_needs'])
         # cost to produce 1Kwh of methane
         return self.cost_details[Electricity.name] + self.cost_details[self.NATURAL_GAS_RESOURCE_NAME]
 
@@ -70,14 +71,19 @@ class FossilGas(MethaneTechno):
         """
 
         # compute CH4 production in kWh
-        
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                        self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            'elec_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{MethaneTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # kg/kWh corresponds to Mt/TWh
-        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict['CO2_from_production'] / \
-                                                                                        self.data_energy_dict['calorific_value'] * \
-                                                                                        self.production_detailed[f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'{CarbonCapture.flue_gas_name} ({self.mass_unit})'] = self.techno_infos_dict[
+                                                                                            'CO2_from_production'] / \
+                                                                                        self.data_energy_dict[
+                                                                                            'calorific_value'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{MethaneTechno.energy_name} ({self.product_energy_unit})']
 
         # self.production[f'{hightemperatureheat.name}] ({self.product_energy_unit})'] = ((1 - self.techno_infos_dict['efficiency']) * \
         #      self.production[f'{Methane.name} ({self.product_energy_unit})']) / \
@@ -87,7 +93,9 @@ class FossilGas(MethaneTechno):
 
         # consumption fossil gas: prod [TWh] * needs [kg/kWh] = [Mt]
         self.consumption_detailed[f'{self.NATURAL_GAS_RESOURCE_NAME} ({self.mass_unit})'] = self.production_detailed[
-            f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * self.cost_details[f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']  # in Mt
+                                                                                                f'{MethaneTechno.energy_name} ({self.product_energy_unit})'] * \
+                                                                                            self.cost_details[
+                                                                                                f'{self.NATURAL_GAS_RESOURCE_NAME}_needs']  # in Mt
 
     def compute_CO2_emissions_from_input_resources(self):
         '''
@@ -95,7 +103,7 @@ class FossilGas(MethaneTechno):
         '''
 
         self.carbon_intensity[Electricity.name] = self.energy_CO2_emissions[Electricity.name] * \
-                                                       self.cost_details['elec_needs']
+                                                  self.cost_details['elec_needs']
 
         self.carbon_intensity[self.NATURAL_GAS_RESOURCE_NAME] = \
             self.resources_CO2_emissions[self.NATURAL_GAS_RESOURCE_NAME] * \

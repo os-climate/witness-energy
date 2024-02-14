@@ -50,7 +50,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
     # goals. Nature communications, 10(1), pp.1-9.
     construction_delay = 5  # For 1000MW hypercritical in Korea
     techno_infos_dict_default = {'maturity': 0,
-                                 'product': 'electricity',
+                                 'product': GlossaryEnergy.electricity,
                                  # Lorenczik, S., Kim, S., Wanner, B., Bermudez Menendez, J.M., Remme, U., Hasegawa,
                                  # T., Keppler, J.H., Mir, L., Sousa, G., Berthelemy, M. and Vaya Soler, A., 2020.
                                  # Projected Costs of Generating Electricity-2020 Edition (No. NEA--7531).
@@ -118,7 +118,8 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                  'techno_evo_eff': 'no',
                                  'efficiency': 1,
                                  GlossaryEnergy.ConstructionDelay: construction_delay,
-                                 'copper_needs': 1100,  #no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
+                                 'copper_needs': 1100,
+                                 # no data, assuming it needs at least enough copper for a generator (such as the gas_turbine)
                                  }
 
     techno_info_dict = techno_infos_dict_default
@@ -150,13 +151,15 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False},
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False},
                'flue_gas_co2_ratio': {'type': 'array', 'default': oil_flue_gas_ratio, 'unit': ''},
                }
 
@@ -169,7 +172,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.techno_model = OilGen(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
-    
+
     def get_charts_consumption_and_production(self):
         "Adds the chart specific for resources needed for construction"
         instanciated_chart = super().get_charts_consumption_and_production()
@@ -180,7 +183,7 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
         for product in techno_consumption.columns:
 
             if product != GlossaryEnergy.Years and product.endswith(f'(Mt)'):
-                if ResourceGlossary.Copper['name'] in product :
+                if ResourceGlossary.Copper['name'] in product:
                     chart_name = f'Mass consumption of copper for the {self.techno_name} technology with input investments'
                     new_chart_copper = TwoAxesInstanciatedChart(
                         GlossaryEnergy.Years, 'Mass [t]', chart_name=chart_name, stacked_bar=True)
@@ -189,11 +192,11 @@ class OilGenDiscipline(ElectricityTechnoDiscipline):
             if ResourceGlossary.Copper['name'] in reactant:
                 legend_title = f'{reactant} consumption'.replace(
                     ' (Mt)', "")
-                mass = techno_consumption[reactant].values * 1000 * 1000 #convert Mt in t for more readable post-proc
+                mass = techno_consumption[reactant].values * 1000 * 1000  # convert Mt in t for more readable post-proc
                 serie = InstanciatedSeries(
                     techno_consumption[GlossaryEnergy.Years].values.tolist(),
                     mass.tolist(), legend_title, 'bar')
                 new_chart_copper.series.append(serie)
         instanciated_chart.append(new_chart_copper)
-        
+
         return instanciated_chart

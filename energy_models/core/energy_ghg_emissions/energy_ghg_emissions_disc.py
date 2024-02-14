@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 import numpy as np
 
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
@@ -50,78 +52,91 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
     DESC_IN = {
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                        'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                        'editable': False, 'structuring': True},
+                                     'possible_values': EnergyMix.energy_list,
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                                     'editable': False, 'structuring': True},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                              'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        'GHG_global_warming_potential20': {'type': 'dict','subtype_descriptor':{'dict':'float'}, 'unit': 'kgCO2eq/kg',
+        'GHG_global_warming_potential20': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+                                           'unit': 'kgCO2eq/kg',
                                            'default': ClimateEcoDiscipline.GWP_20_default,
                                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                            'namespace': GlossaryEnergy.NS_WITNESS, 'user_level': 3},
-        'GHG_global_warming_potential100': {'type': 'dict','subtype_descriptor':{'dict':'float'}, 'unit': 'kgCO2eq/kg',
+        'GHG_global_warming_potential100': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+                                            'unit': 'kgCO2eq/kg',
                                             'default': ClimateEcoDiscipline.GWP_100_default,
                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                             'namespace': GlossaryEnergy.NS_WITNESS, 'user_level': 3},
         GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
-                                       'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-                                       'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                'production fuel.ethanol (TWh)': (
-                                                                    'float', None, True),
-                                                                'production methane (TWh)': ('float', None, True),
-                                                                'production hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
-                                                                'production biogas (TWh)': ('float', None, True),
-                                                                'production syngas (TWh)': ('float', None, True),
-                                                                'production fuel.liquid_fuel (TWh)': (
-                                                                'float', None, True),
-                                                                'production fuel.hydrotreated_oil_fuel (TWh)': (
-                                                                'float', None, True),
-                                                                'production solid_fuel (TWh)': ('float', None, True),
-                                                                'production biomass_dry (TWh)': ('float', None, True),
-                                                                'production electricity (TWh)': ('float', None, True),
-                                                                'production fuel.biodiesel (TWh)': (
-                                                                'float', None, True),
-                                                                'production hydrogen.liquid_hydrogen (TWh)': (
-                                                                'float', None, True),
-                                                                'production carbon_capture (Mt)': ('float', None, True),
-                                                                'production carbon_storage (Mt)': ('float', None, True),
-                                                                'Total production': ('float', None, True),
-                                                                'Total production (uncut)': ('float', None, True),
-                                                                'production heat.hightemperatureheat (TWh)': ('float', None, True),
-                                                                'production heat.mediumtemperatureheat (TWh)': ('float', None, True),
-                                                                'production heat.lowtemperatureheat (TWh)': ('float', None, True),
-                                                                },
-              },
+                                                       'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                       'namespace': 'ns_energy',
+                                                       'dataframe_descriptor': {
+                                                           GlossaryEnergy.Years: ('float', None, True),
+                                                           f'production {GlossaryEnergy.methane} (TWh)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.biogas} (TWh)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.syngas} (TWh)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} (TWh)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.solid_fuel} (TWh)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.biomass_dry} (TWh)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.electricity} (TWh)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} (TWh)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.carbon_storage} (Mt)': ('float', None, True),
+                                                           'Total production': ('float', None, True),
+                                                           'Total production (uncut)': ('float', None, True),
+                                                           'production heat.hightemperatureheat (TWh)': (
+                                                           'float', None, True),
+                                                           'production heat.mediumtemperatureheat (TWh)': (
+                                                           'float', None, True),
+                                                           'production heat.lowtemperatureheat (TWh)': (
+                                                           'float', None, True),
+                                                           'production fuel.ethanol (TWh)': (
+                                                               'float', None, True),
+                                                           },
+                                                       },
+
         'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt',
-                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_CCS,
+                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                  'namespace': GlossaryEnergy.NS_CCS,
                                   'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                            'carbon_storage Limited by capture (Gt)': (
-                                                           'float', None, True), },}
-                                  ,
+                                                               'float', None, True), }, }
+        ,
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt',
                                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                                'namespace': 'ns_energy',
                                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                                        'carbon_capture needed by energy mix (Gt)': ('float', None, True),}},
-        GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': CCUS.ccs_list,
-                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False,
-                     'structuring': True},
+                                                                        'carbon_capture needed by energy mix (Gt)': (
+                                                                        'float', None, True), }},
+        GlossaryEnergy.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                  'possible_values': CCUS.ccs_list,
+                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                                  'editable': False,
+                                  'structuring': True},
     }
 
     DESC_OUT = {
         'CO2_emissions_sources': {'type': 'dataframe', 'unit': 'Gt'},
         'CO2_emissions_sinks': {'type': 'dataframe', 'unit': 'Gt'},
         'GHG_total_energy_emissions': {'type': 'dataframe', 'unit': 'Gt',
-                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryEnergy.NS_WITNESS},
+                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                       'namespace': GlossaryEnergy.NS_WITNESS},
         'GHG_emissions_per_energy': {'type': 'dict', 'subtype_descriptor': {'dict': 'dataframe'}, 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'},
     }
 
     name = f'{GHGemissionsDiscipline.name}.Energy'
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.model = None
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -142,23 +157,23 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                             dynamic_inputs[f'{AgricultureMixDiscipline.name}.{ghg}_per_use'] = {
                                 'type': 'dataframe', 'unit': 'kg/kWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'N2O_per_use': ('float', None, True),
-                                                     'CO2_per_use': ('float', None, True),
-                                                     'CH4_per_use': ('float', None, True),}}
+                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                         'N2O_per_use': ('float', None, True),
+                                                         'CO2_per_use': ('float', None, True),
+                                                         'CH4_per_use': ('float', None, True), }}
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'electricity (TWh)': ('float', None, True),
-                                                     'CO2_resource (Mt)': ('float', None, True),}}
+                                                     f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
+                                                     'CO2_resource (Mt)': ('float', None, True), }}
 
                         dynamic_inputs[f'{AgricultureMixDiscipline.name}.{GlossaryEnergy.EnergyProductionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh', 'namespace': GlossaryEnergy.NS_WITNESS,
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'biomass_dry': ('float', None, True),
-                                                     'CO2_resource (Mt)': ('float', None, True),}}
+                                                     GlossaryEnergy.biomass_dry: ('float', None, True),
+                                                     'CO2_resource (Mt)': ('float', None, True), }}
                     else:
                         for ghg in GHGEmissions.GHG_TYPE_LIST:
                             dynamic_inputs[f'{energy}.{ghg}_per_use'] = {
@@ -168,7 +183,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                          'N2O_per_use': ('float', None, True),
                                                          'CO2_per_use': ('float', None, True),
-                                                         'CH4_per_use': ('float', None, True),}
+                                                         'CH4_per_use': ('float', None, True), }
                             }
                         dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {
                             'type': 'dataframe', 'unit': 'PWh',
@@ -179,48 +194,48 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                      'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                      'platinum_resource (Mt)': ('float', None, True),
-                                                     'hydrogen.gaseous_hydrogen': ('float', None, True),
+                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': ('float', None, True),
                                                      'O2 (Mt)': ('float', None, True),
                                                      'carbon_resource (Mt)': ('float', None, True),
                                                      'oil_resource (Mt)': ('float', None, True),
-                                                     'syngas (TWh)': ('float', None, True),
-                                                     'fuel.liquid_fuel': ('float', None, True),
-                                                     'kerosene (TWh)': ('float', None, True),
-                                                     'gasoline (TWh)': ('float', None, True),
-                                                     'liquefied_petroleum_gas (TWh)': ('float', None, True),
-                                                     'heating_oil (TWh)': ('float', None, True),
-                                                     'ultra_low_sulfur_diesel (TWh)': ('float', None, True),
-                                                     'fuel.hydrotreated_oil_fuel': ('float', None, True),
+                                                     f'{GlossaryEnergy.syngas} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': ('float', None, True),
+                                                     f'{GlossaryEnergy.kerosene} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.gasoline} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.liquefied_petroleum_gas} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.heating_oil} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.ultra_low_sulfur_diesel} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}': ('float', None, True),
                                                      'copper_resource (Mt)': ('float', None, True),
                                                      'uranium_resource (Mt)': ('float', None, True),
-                                                     'fuel.liquid_fuel (TWh)': ('float', None, True),
-                                                     'electricity': ('float', None, True),
+                                                     f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)': ('float', None, True),
+                                                     GlossaryEnergy.electricity: ('float', None, True),
                                                      'N2O (Mt)': ('float', None, True),
                                                      'natural_gas_resource (Mt)': ('float', None, True),
-                                                     'biogas (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.biogas} (TWh)': ('float', None, True),
                                                      'mono_ethanol_amine_resource (Mt)': ('float', None, True),
-                                                     'methane': ('float', None, True),
-                                                     'wet_biomass (Mt)': ('float', None, True),
-                                                     'biogas': ('float', None, True),
+                                                     GlossaryEnergy.methane: ('float', None, True),
+                                                     f'{GlossaryEnergy.wet_biomass} (Mt)': ('float', None, True),
+                                                     GlossaryEnergy.biogas: ('float', None, True),
                                                      'sodium_hydroxide_resource (Mt)': ('float', None, True),
                                                      'natural_oil_resource (TWh)': ('float', None, True),
                                                      'methanol_resource (Mt)': ('float', None, True),
-                                                     'fuel.biodiesel': ('float', None, True),
+                                                     f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}': ('float', None, True),
                                                      'glycerol_resource (Mt)': ('float', None, True),
                                                      'coal_resource (Mt)': ('float', None, True),
-                                                     'solid_fuel': ('float', None, True),
+                                                     GlossaryEnergy.solid_fuel: ('float', None, True),
                                                      'CO2_resource (Mt)': ('float', None, True),
-                                                     'methane (TWh)': ('float', None, True),
-                                                     'solid_fuel (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.solid_fuel} (TWh)': ('float', None, True),
                                                      'wood (Mt)': ('float', None, True),
-                                                     'carbon_capture (Mt)': ('float', None, True),
-                                                     'syngas': ('float', None, True),
+                                                     f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
+                                                     GlossaryEnergy.syngas: ('float', None, True),
                                                      'char (Mt)': ('float', None, True),
                                                      'bio_oil (Mt)': ('float', None, True),
-                                                     'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
-                                                     'hydrogen.liquid_hydrogen': ('float', None, True),
-                                                     'biomass_dry (TWh)': ('float', None, True),
-                                                     'electricity (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}': ('float', None, True),
+                                                     f'{GlossaryEnergy.biomass_dry} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
                                                      'water_resource (Mt)': ('float', None, True),
                                                      'dioxygen_resource (Mt)': ('float', None, True),
                                                      }
@@ -234,46 +249,46 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                      'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                      'platinum_resource (Mt)': ('float', None, True),
-                                                     'hydrogen.gaseous_hydrogen': ('float', None, True),
+                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': ('float', None, True),
                                                      'O2 (Mt)': ('float', None, True),
                                                      'carbon_resource (Mt)': ('float', None, True),
                                                      'oil_resource (Mt)': ('float', None, True),
-                                                     'syngas (TWh)': ('float', None, True),
-                                                     'fuel.liquid_fuel': ('float', None, True),
-                                                     'kerosene (TWh)': ('float', None, True),
-                                                     'gasoline (TWh)': ('float', None, True),
-                                                     'liquefied_petroleum_gas (TWh)': ('float', None, True),
-                                                     'heating_oil (TWh)': ('float', None, True),
-                                                     'ultra_low_sulfur_diesel (TWh)': ('float', None, True),
-                                                     'fuel.hydrotreated_oil_fuel': ('float', None, True),
+                                                     f'{GlossaryEnergy.syngas} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}': ('float', None, True),
+                                                     f'{GlossaryEnergy.kerosene} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.gasoline} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.liquefied_petroleum_gas} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.heating_oil} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.ultra_low_sulfur_diesel} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel}': ('float', None, True),
                                                      'copper_resource (Mt)': ('float', None, True),
                                                      'uranium_resource (Mt)': ('float', None, True),
-                                                     'fuel.liquid_fuel (TWh)': ('float', None, True),
-                                                     'electricity': ('float', None, True),
+                                                     f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)': ('float', None, True),
+                                                     GlossaryEnergy.electricity: ('float', None, True),
                                                      'N2O (Mt)': ('float', None, True),
                                                      'natural_gas_resource (Mt)': ('float', None, True),
-                                                     'biogas (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.biogas} (TWh)': ('float', None, True),
                                                      'mono_ethanol_amine_resource (Mt)': ('float', None, True),
-                                                     'methane': ('float', None, True),
-                                                     'wet_biomass (Mt)': ('float', None, True),
-                                                     'biogas': ('float', None, True),
+                                                     GlossaryEnergy.methane: ('float', None, True),
+                                                     f'{GlossaryEnergy.wet_biomass} (Mt)': ('float', None, True),
+                                                     GlossaryEnergy.biogas: ('float', None, True),
                                                      'sodium_hydroxide_resource (Mt)': ('float', None, True),
                                                      'natural_oil_resource (TWh)': ('float', None, True),
                                                      'methanol_resource (Mt)': ('float', None, True),
-                                                     'fuel.biodiesel': ('float', None, True),
+                                                     f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}': ('float', None, True),
                                                      'glycerol_resource (Mt)': ('float', None, True),
                                                      'coal_resource (Mt)': ('float', None, True),
-                                                     'solid_fuel': ('float', None, True),
+                                                     GlossaryEnergy.solid_fuel: ('float', None, True),
                                                      'CO2_resource (Mt)': ('float', None, True),
-                                                     'methane (TWh)': ('float', None, True),
-                                                     'solid_fuel (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.solid_fuel} (TWh)': ('float', None, True),
                                                      'wood (Mt)': ('float', None, True),
-                                                     'carbon_capture (Mt)': ('float', None, True),
-                                                     'syngas': ('float', None, True),
+                                                     f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
+                                                     GlossaryEnergy.syngas: ('float', None, True),
                                                      'char (Mt)': ('float', None, True),
                                                      'bio_oil (Mt)': ('float', None, True),
-                                                     'hydrogen.gaseous_hydrogen (TWh)': ('float', None, True),
-                                                     'hydrogen.liquid_hydrogen': ('float', None, True),
+                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': ('float', None, True),
+                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen}': ('float', None, True),
                                                      'CH4 (Mt)': ('float', None, True),
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                      'water_resource (Mt)': ('float', None, True),
@@ -293,8 +308,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                     'carbon_capture': ('float', None, True),
-                                                     'carbon_storage': ('float', None, True),
+                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
+                                                     GlossaryEnergy.carbon_storage: ('float', None, True),
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                      'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                      'heat.mediumtemperatureheat (TWh)': ('float', None, True),
@@ -317,7 +332,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
             'GHG_emissions_per_energy': self.model.ghg_production_dict,
             'CO2_emissions_sources': self.model.CO2_sources_Gt,
             'CO2_emissions_sinks': self.model.CO2_sinks_Gt,
-            'GWP_emissions': self.model.gwp_emissions
+            'GWP_emissions': self.model.gwp_emissions,
 
         }
         self.store_sos_outputs_values(outputs_dict)
@@ -356,7 +371,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                     if 'Total CO2 by use' in co2_emission_column:
                         self.set_partial_derivative_for_other_types(
                             ('CO2_emissions_sources',
-                             co2_emission_column), (GlossaryEnergy.EnergyProductionDetailedValue, f'production {energy} (TWh)'),
+                             co2_emission_column),
+                            (GlossaryEnergy.EnergyProductionDetailedValue, f'production {energy} (TWh)'),
                             np.identity(len(years)) * value / 1e3)
                     else:
                         self.set_partial_derivative_for_other_types(
@@ -419,7 +435,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         for energy in energy_list:
             max_prod_grad = dtot_co2_emissions_sources[
                 f'Total CO2 by use (Gt) vs {energy}#co2_per_use']
-            if energy == 'biomass_dry':
+            if energy == GlossaryEnergy.biomass_dry:
                 for ghg in self.model.GHG_TYPE_LIST:
                     self.set_partial_derivative_for_other_types(
                         ('GHG_total_energy_emissions',
@@ -437,10 +453,11 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                 value = dtot_co2_emissions[f'Total {ghg} emissions vs prod{energy}']
                 self.set_partial_derivative_for_other_types(
                     ('GHG_total_energy_emissions',
-                     f'Total {ghg} emissions'), (GlossaryEnergy.EnergyProductionDetailedValue, f'production {energy} (TWh)'),
+                     f'Total {ghg} emissions'),
+                    (GlossaryEnergy.EnergyProductionDetailedValue, f'production {energy} (TWh)'),
                     np.identity(len(years)) * value / 1e3)
             ns_energy = energy
-            if energy == 'biomass_dry':
+            if energy == GlossaryEnergy.biomass_dry:
                 ns_energy = AgricultureMixDiscipline.name
             for col in self.model.sub_production_dict[energy].keys():
                 for ghg in self.model.GHG_TYPE_LIST:
@@ -454,8 +471,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
         # ------------------------------------#
         # -- CO2 emissions sinks gradients--#
         # ------------------------------------#
-        dtot_co2_emissions_sinks = self.model.compute_grad_CO2_emissions_sinks(
-            energy_production_detailed)
+        dtot_co2_emissions_sinks = self.model.compute_grad_CO2_emissions_sinks()
 
         for key, value in dtot_co2_emissions_sinks.items():
             co2_emission_column = key.split(' vs ')[0]
@@ -614,7 +630,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
             ghg_energy = GHG_emissions_per_energy[ghg][[
                 col for col in GHG_emissions_per_energy[ghg] if energy in col]].sum(axis=1).values
             if not (ghg_energy == 0).all():
-                new_serie = InstanciatedSeries(list(GHG_emissions_per_energy[ghg][GlossaryEnergy.Years].values), list(ghg_energy),
+                new_serie = InstanciatedSeries(list(GHG_emissions_per_energy[ghg][GlossaryEnergy.Years].values),
+                                               list(ghg_energy),
                                                energy,
                                                'bar')
 

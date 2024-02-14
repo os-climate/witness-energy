@@ -41,19 +41,19 @@ class FTPriceTestCase(unittest.TestCase):
         Initialize third data needed for testing
         '''
 
-
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
 
         self.resource_list = [
-            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource', 'copper_resource', 'platinum_resource']
+            'oil_resource', 'natural_gas_resource', 'uranium_resource', 'coal_resource', 'copper_resource',
+            'platinum_resource']
         self.ratio_available_resource = pd.DataFrame(
             {GlossaryEnergy.Years: np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)})
         for types in self.resource_list:
             self.ratio_available_resource[types] = np.linspace(
                 1, 1, len(self.ratio_available_resource.index))
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': np.ones(len(years)) * 20,
-                                           'syngas': 34
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: np.ones(len(years)) * 20,
+                                           GlossaryEnergy.syngas: 34
                                            })
         self.syngas_detailed_prices = pd.DataFrame({'SMR': np.ones(len(years)) * 34,
                                                     # price to be updated for
@@ -66,25 +66,26 @@ class FTPriceTestCase(unittest.TestCase):
                                      'BiomassGasification': 2.0
                                      }
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.2, 'syngas': 0.2})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.2, GlossaryEnergy.syngas: 0.2})
 
         self.invest_level = pd.DataFrame({GlossaryEnergy.Years: years,
-                                          GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
-                                                              4694500000.0, 4780750000.0, 4867000000.0,
-                                                              4969400000.0, 5071800000.0, 5174200000.0,
-                                                              5276600000.0, 5379000000.0, 5364700000.0,
-                                                              5350400000.0, 5336100000.0, 5321800000.0,
-                                                              5307500000.0, 5293200000.0, 5278900000.0,
-                                                              5264600000.0, 5250300000.0, 5236000000.0,
-                                                              5221700000.0, 5207400000.0, 5193100000.0,
-                                                              5178800000.0, 5164500000.0, 5150200000.0,
-                                                              5135900000.0, 5121600000.0, 5107300000.0,
-                                                              5093000000.0]) * 1.0e-9})
+                                          GlossaryEnergy.InvestValue: np.array(
+                                              [4435750000.0, 4522000000.0, 4608250000.0,
+                                               4694500000.0, 4780750000.0, 4867000000.0,
+                                               4969400000.0, 5071800000.0, 5174200000.0,
+                                               5276600000.0, 5379000000.0, 5364700000.0,
+                                               5350400000.0, 5336100000.0, 5321800000.0,
+                                               5307500000.0, 5293200000.0, 5278900000.0,
+                                               5264600000.0, 5250300000.0, 5236000000.0,
+                                               5221700000.0, 5207400000.0, 5193100000.0,
+                                               5178800000.0, 5164500000.0, 5150200000.0,
+                                               5135900000.0, 5121600000.0, 5107300000.0,
+                                               5093000000.0]) * 1.0e-9})
 
         # CO2 Taxe Data
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
 
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
@@ -152,8 +153,7 @@ class FTPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.syngas_ratio': np.ones(len(years)),
-                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices}
+                       }
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -200,8 +200,6 @@ class FTPriceTestCase(unittest.TestCase):
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                        f'{self.name}.syngas_ratio': np.ones(len(years)),
-                       f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
-                       f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
                        f'{self.name}.{ResourceMixModel.RATIO_USABLE_DEMAND}': self.ratio_available_resource,
                        f'{self.name}.is_apply_resource_ratio': True}
 
@@ -237,7 +235,8 @@ class FTPriceTestCase(unittest.TestCase):
             if column != GlossaryEnergy.Years:
                 for i in range(len(techno_production_with_ratio[column].values)):
                     self.assertAlmostEqual(techno_production_with_ratio[column].values[i],
-                                           techno_production_wo_ratio[column].values[i] * ratio2[i] / ratio[i], delta=1.0e-8)
+                                           techno_production_wo_ratio[column].values[i] * ratio2[i] / ratio[i],
+                                           delta=1.0e-8)
 
         techno_consumption_with_ratio = self.ee2.dm.get_value(
             f'{self.name}.{self.model_name}.{GlossaryEnergy.TechnoConsumptionValue}')
@@ -245,11 +244,11 @@ class FTPriceTestCase(unittest.TestCase):
             if column != GlossaryEnergy.Years:
                 for i in range(len(techno_consumption_with_ratio[column].values)):
                     self.assertAlmostEqual(techno_consumption_with_ratio[column].values[i],
-                                           techno_consumption_wo_ratio[column].values[i] * ratio2[i] / ratio[i], delta=1.0e-8)
+                                           techno_consumption_wo_ratio[column].values[i] * ratio2[i] / ratio[i],
+                                           delta=1.0e-8)
 
 
 if '__main__' == __name__:
-
     cls = FTPriceTestCase()
     cls.setUp()
     cls.test_03_FT_with_ratio_available_cc()

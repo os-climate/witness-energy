@@ -39,14 +39,14 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
 
         # for 1kwh of gas hydrogen, we get 0.98
         self.cost_details['hydrogen_needs'] = 1 / \
-            self.cost_details['efficiency']
+                                              self.cost_details['efficiency']
 
         self.cost_details[Electricity.name] = self.cost_details['elec_needs'] * \
-            self.prices[Electricity.name]
+                                              self.prices[Electricity.name]
 
         # Cost of hydrogen for 1kwh of LH2
         self.cost_details[GaseousHydrogen.name] = self.prices[GaseousHydrogen.name] * \
-            self.cost_details['hydrogen_needs']
+                                                  self.cost_details['hydrogen_needs']
 
         return self.cost_details[Electricity.name] + self.cost_details[GaseousHydrogen.name]
 
@@ -82,14 +82,16 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         Maybe add efficiency in consumption computation ? 
         """
 
-        
-
         # Consumption
-        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details['elec_needs'] * \
-                                                                                        self.production_detailed[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{Electricity.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                            'elec_needs'] * \
+                                                                                        self.production_detailed[
+                                                                                            f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
-        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details['hydrogen_needs'] * \
-                                                                                            self.production_detailed[f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
+        self.consumption_detailed[f'{GaseousHydrogen.name} ({self.product_energy_unit})'] = self.cost_details[
+                                                                                                'hydrogen_needs'] * \
+                                                                                            self.production_detailed[
+                                                                                                f'{LiquidHydrogenTechno.energy_name} ({self.product_energy_unit})']  # in kWH
 
         # self.production[f'{lowtemperatureheat.name} ({self.product_energy_unit})'] = (1 - self.techno_infos_dict['efficiency']) * \
         #     self.consumption[f'{GaseousHydrogen.name} ({self.product_energy_unit})']/\
@@ -103,4 +105,3 @@ class HydrogenLiquefaction(LiquidHydrogenTechno):
         # print(self.production.to_string())
         # print('')
         # print(self.consumption.to_string())
-

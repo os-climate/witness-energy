@@ -27,7 +27,6 @@ from energy_models.models.hydrotreated_oil_fuel.hefa_decarboxylation.hefa_decarb
 
 
 class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'HEFA decarboxylation',
@@ -46,7 +45,7 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     energy_name = HydrotreatedOilFuel.name
     # Source:
     # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3/tables/2
-    lifetime = 30   # years
+    lifetime = 30  # years
     construction_delay = 3  # years
 
     # conversion factors
@@ -67,12 +66,12 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
         'Invest_init': 347.5,
         'Invest_init_unit': 'M$',
         'Capex_init': 347.5 * 1e6 * dollar_per_gallon_to_dollar_per_m3 / 780
-        / (48.64 * 1e6),
+                      / (48.64 * 1e6),
         # https://biotechnologyforbiofuels.biomedcentral.com/articles/10.1186/s13068-017-0945-3
         # Mean value computed for production volume (mean value)
         'Capex_init_unit': '$/kg',
 
-        'efficiency': 0.753,     # https://core.ac.uk/download/pdf/37440495.pdf
+        'efficiency': 0.753,  # https://core.ac.uk/download/pdf/37440495.pdf
 
         'CO2_from_production': 0.03 * 44,
         # https://theicct.org/sites/default/files/publications/Alt-aviation-fuel-sustainability-mar2021.pdf
@@ -96,19 +95,21 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
     # most current commercial HEFA production removes oxygen through the
     # addition of hydrogen : hypothesis only 10% of decarboxylation
     initial_production = 9e6 * \
-        HydrotreatedOilFuel.data_energy_dict['density'] * \
-        HydrotreatedOilFuel.data_energy_dict['calorific_value'] * 0.1 / 1e9
+                         HydrotreatedOilFuel.data_energy_dict['density'] * \
+                         HydrotreatedOilFuel.data_energy_dict['calorific_value'] * 0.1 / 1e9
     # https://www.ieabioenergy.com/wp-content/uploads/2021/06/IEA-Bioenergy-Task-39-Progress-in-the-commercialisation-of-biojet-fuels-May-2021-1.pdf
     # (page 23)
     # Existing: Neste(2014), Total(2015), Eni(2015).
     # Source
     # https://www.etipbioenergy.eu/value-chains/products-end-use/products/hvo-hefa
     initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
-                                             'distrib': [100 * 3 / 6, 0, 0, 0, 100 * 2 / 6, 100 * 1 / 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                             'distrib': [100 * 3 / 6, 0, 0, 0, 100 * 2 / 6, 100 * 1 / 6, 0, 0, 0, 0, 0,
+                                                         0, 0, 0, 0, 0, 0, 0, 0,
                                                          0, 0, 0, 0, 0, 0, 0, 0, 0, 0]})
 
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: [347.5 / 1000 * i for i in [0.0, 0.0, 3.0]]})  # in G$
+        {'past years': np.arange(-construction_delay, 0),
+         GlossaryEnergy.InvestValue: [347.5 / 1000 * i for i in [0.0, 0.0, 3.0]]})  # in G$
 
     DESC_IN = {'techno_infos_dict': {'type': 'dict',
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
@@ -118,10 +119,12 @@ class HefaDecarboxylationDiscipline(HydrotreatedOilFuelTechnoDiscipline):
                                                                 'age': ('float', None, True),
                                                                 'distrib': ('float', None, True)}
                                        },
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     DESC_IN.update(HydrotreatedOilFuelTechnoDiscipline.DESC_IN)
     # -- add specific techno outputs to this
     DESC_OUT = HydrotreatedOilFuelTechnoDiscipline.DESC_OUT

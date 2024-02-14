@@ -47,7 +47,7 @@ class TradesDiscipline(SoSWrapp):
                                      SoSWrapp.SHARED_VISIBILITY, SoSWrapp.NAMESPACE: 'ns_scatter_scenario',
                                  'structuring': True},
                GlossaryEnergy.YearEnd: {'type': 'int', 'default': 2050, 'unit': '[-]',
-                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2,
                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_public'}}
@@ -67,7 +67,8 @@ class TradesDiscipline(SoSWrapp):
                 for scenario in scenario_list:
                     inputs[f'{scenario}{ns_value_long.split(ns_value_short)[1]}.co2_emissions'] = {
                         'type': 'dataframe', 'unit': 'Mt', 'visibility': 'Shared', 'namespace': 'ns_scatter_scenario'}
-                    inputs[f'{scenario}{ns_value_long.split(ns_value_short)[1]}.{GlossaryEnergy.EnergyProductionValue}'] = {
+                    inputs[
+                        f'{scenario}{ns_value_long.split(ns_value_short)[1]}.{GlossaryEnergy.EnergyProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'MWh', 'visibility': 'Shared', 'namespace': 'ns_scatter_scenario'}
 
                 self.add_inputs(inputs)
@@ -137,18 +138,18 @@ class TradesDiscipline(SoSWrapp):
             max_energy = max(list(energy_production.values()))
             maxs = max(max_energy, abs(min_energy))
             if maxs >= 1.0e9:
-                max_energy = max_energy / 1.0e9
-                min_energy = min_energy / 1.0e9
+                max_energy /= 1.0e9
+                min_energy /= 1.0e9
                 legend_letter_energy = 'G'
                 factor_energy = 1.0e9
-            elif maxs < 1.0e9 and maxs >= 1.0e6:
-                max_energy = max_energy / 1.0e6
-                min_energy = min_energy / 1.0e6
+            elif 1.0e9 > maxs >= 1.0e6:
+                max_energy /= 1.0e6
+                min_energy /= 1.0e6
                 legend_letter_energy = 'M'
                 factor_energy = 1.0e6
-            elif maxs < 1.0e6 and maxs >= 1.0e3:
-                max_energy = max_energy / 1.0e3
-                min_energy = min_energy / 1.0e3
+            elif 1.0e6 > maxs >= 1.0e3:
+                max_energy /= 1.0e3
+                min_energy /= 1.0e3
                 legend_letter_energy = 'k'
                 factor_energy = 1.0e3
             else:
@@ -158,15 +159,15 @@ class TradesDiscipline(SoSWrapp):
             max_value_co2 = max(list(CO2_emissions.values()))
 
             if max_value_co2 >= 1.0e9:
-                max_value_co2 = max_value_co2 / 1.0e9
+                max_value_co2 /= 1.0e9
                 legend_letter_co2 = 'G'
                 factor_co2 = 1.0e9
-            elif max_value_co2 < 1.0e9 and max_value_co2 >= 1.0e6:
-                max_value_co2 = max_value_co2 / 1.0e6
+            elif 1.0e9 > max_value_co2 >= 1.0e6:
+                max_value_co2 /= 1.0e6
                 legend_letter_co2 = 'M'
                 factor_co2 = 1.0e6
-            elif max_value_co2 < 1.0e6 and max_value_co2 >= 1.0e3:
-                max_value_co2 = max_value_co2 / 1.0e3
+            elif 1.0e6 > max_value_co2 >= 1.0e3:
+                max_value_co2 /= 1.0e3
                 legend_letter_co2 = 'k'
                 factor_co2 = 1.0e3
             else:

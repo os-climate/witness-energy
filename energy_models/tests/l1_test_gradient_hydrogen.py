@@ -54,11 +54,11 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.energy_name = 'hydrogen'
+        self.energy_name = GlossaryEnergy.hydrogen
 
         years = np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)
         self.years = years
-        
+
         self.electrolysis_techno_prices = pd.DataFrame(
             {'Electrolysis': np.array([0.09, 0.08974117039450046, 0.08948672733558984,
                                        0.089236536471781, 0.08899046935409588, 0.08874840310033885,
@@ -154,43 +154,44 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                           })
 
         self.smr_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                             'hydrogen.gaseous_hydrogen (TWh)': [230.779470] * len(years),
-                                             'electricity (TWh)': [82.649011] * len(years),
-                                             'syngas (TWh)': [3579.828092] * len(years),
+                                             f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [230.779470] * len(years),
+                                             f'{GlossaryEnergy.electricity} (TWh)': [82.649011] * len(years),
+                                             f'{GlossaryEnergy.syngas} (TWh)': [3579.828092] * len(years),
                                              f"{ResourceGlossary.Water['name']} (Mt)": [381.294427] * len(years)})
 
         self.smr_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                            'hydrogen.gaseous_hydrogen (TWh)': [2304.779470] * len(years),
+                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [2304.779470] * len(years),
                                             'CO2 from Flue Gas (Mt)': [844.027980] * len(years)})
 
         self.plasmacracking_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                       'hydrogen.gaseous_hydrogen (TWh)': np.linspace(1e-5, 1,
+                                                       f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': np.linspace(1e-5, 1,
                                                                                                       len(years)),
                                                        f"{ResourceGlossary.Carbon['name']} (Mt)": [0.008622] * len(
                                                            years)})
 
         self.plasmacracking_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                        'electricity (TWh)': [0.019325] * len(years),
-                                                        'methane (TWh)': [0.213945] * len(years)})
+                                                        f'{GlossaryEnergy.electricity} (TWh)': [0.019325] * len(years),
+                                                        f'{GlossaryEnergy.methane} (TWh)': [0.213945] * len(years)})
 
         self.electrolysis_consumption = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                      'electricity (TWh)': [4.192699] * len(years),
+                                                      f'{GlossaryEnergy.electricity} (TWh)': [4.192699] * len(years),
                                                       f"{ResourceGlossary.Water['name']} (Mt)": [0.021638] * len(
                                                           years)})
 
         self.electrolysis_production = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                     'hydrogen.gaseous_hydrogen (TWh)': [2.684940] * len(years),
+                                                     f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen} (TWh)': [2.684940] * len(years),
                                                      f"{ResourceGlossary.Dioxygen['name']} (Mt)": [0.019217] * len(
                                                          years)})
 
         self.electrolysis_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'Electrolysis': 0.0, 'electricity': 0.0, 'production': 0.0})
+            {GlossaryEnergy.Years: years, 'Electrolysis': 0.0, GlossaryEnergy.electricity: 0.0, 'production': 0.0})
 
         self.plasma_cracking_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'PlasmaCracking': -0.243905, 'carbon storage': -0.327803, 'methane': 0.0,
-             'electricity': 0.0, 'production': 0.0})
+            {GlossaryEnergy.Years: years, 'PlasmaCracking': -0.243905, 'carbon storage': -0.327803, GlossaryEnergy.methane: 0.0,
+             GlossaryEnergy.electricity: 0.0, 'production': 0.0})
         self.smr_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'WaterGasShift': 0.366208, 'syngas': 0.0, 'electricity': 0.0, 'production': 0.366208})
+            {GlossaryEnergy.Years: years, 'WaterGasShift': 0.366208, GlossaryEnergy.syngas: 0.0, GlossaryEnergy.electricity: 0.0,
+             'production': 0.366208})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [0.01486, 0.01722, 0.02027,
                      0.02901, 0.03405, 0.03908, 0.04469, 0.05029]
@@ -212,9 +213,9 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                       0.09214129913260598, 0.09236574581786147, 0.09259350059915213,
                                       0.0928246539459331]) * 1000
 
-        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, 'electricity': electricity_price,
-                                           'syngas': np.ones(len(years)) * 33.,
-                                           'methane': np.array(
+        self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years, GlossaryEnergy.electricity: electricity_price,
+                                           GlossaryEnergy.syngas: np.ones(len(years)) * 33.,
+                                           GlossaryEnergy.methane: np.array(
                                                [0.06363, 0.0612408613576689, 0.059181808246196024, 0.05738028027202377,
                                                 0.0557845721244601, 0.05435665353332419, 0.05225877624361548,
                                                 0.05045797192512811, 0.04888746457113824, 0.04750006564084081,
@@ -226,11 +227,11 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                 0.03436642036567466, 0.03393328183670935, 0.033521717015978045,
                                                 0.03312990690071806, 0.032756244237772174,
                                                 0.03239930253734476]) * 1000 / 1.5,
-                                           'hydrogen.gaseous_hydrogen': 50
+                                           f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 50
                                            })
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.02, 'syngas': 0.2, 'methane': -0.1})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.02, GlossaryEnergy.syngas: 0.2, GlossaryEnergy.methane: -0.1})
         self.invest_level = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.InvestValue: np.ones(len(years)) * 0.1715})
 
@@ -272,16 +273,16 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
 
         self.invest = pd.DataFrame({GlossaryEnergy.Years: years,
                                     GlossaryEnergy.InvestValue: np.array([4435750000.0, 4522000000.0, 4608250000.0,
-                                                        4694500000.0, 4780750000.0, 4867000000.0,
-                                                        4969400000.0, 5071800000.0, 5174200000.0,
-                                                        5276600000.0, 5379000000.0, 5364700000.0,
-                                                        5350400000.0, 5336100000.0, 5321800000.0,
-                                                        5307500000.0, 5293200000.0, 5278900000.0,
-                                                        5264600000.0, 5250300000.0, 5236000000.0,
-                                                        5221700000.0, 5207400000.0, 5193100000.0,
-                                                        5178800000.0, 5164500000.0, 5150200000.0,
-                                                        5135900000.0, 5121600000.0, 5107300000.0,
-                                                        5093000000.0]) * 1.0e-9})
+                                                                          4694500000.0, 4780750000.0, 4867000000.0,
+                                                                          4969400000.0, 5071800000.0, 5174200000.0,
+                                                                          5276600000.0, 5379000000.0, 5364700000.0,
+                                                                          5350400000.0, 5336100000.0, 5321800000.0,
+                                                                          5307500000.0, 5293200000.0, 5278900000.0,
+                                                                          5264600000.0, 5250300000.0, 5236000000.0,
+                                                                          5221700000.0, 5207400000.0, 5193100000.0,
+                                                                          5178800000.0, 5164500000.0, 5150200000.0,
+                                                                          5135900000.0, 5121600000.0, 5107300000.0,
+                                                                          5093000000.0]) * 1.0e-9})
         self.land_use_required_mock = pd.DataFrame(
             {GlossaryEnergy.Years: years, 'random techno (Gha)': 0.0})
 
@@ -293,16 +294,17 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: years, 'PlasmaCracking (Gha)': 0.0})
 
         self.invest_plasmacracking = pd.DataFrame({GlossaryEnergy.Years: years,
-                                                   GlossaryEnergy.InvestValue: [1.0e-11] + list(np.linspace(0.001, 0.4, len(years) - 1))})
+                                                   GlossaryEnergy.InvestValue: [1.0e-11] + list(
+                                                       np.linspace(0.001, 0.4, len(years) - 1))})
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(100, 100, len(years))))
 
         demand_ratio_dict[GlossaryEnergy.Years] = years
         self.all_streams_demand_ratio = pd.DataFrame(demand_ratio_dict)
-        self.all_streams_demand_ratio['syngas'] = np.linspace(
+        self.all_streams_demand_ratio[GlossaryEnergy.syngas] = np.linspace(
             100, 50, len(years))
-        self.all_streams_demand_ratio['electricity'] = np.linspace(
+        self.all_streams_demand_ratio[GlossaryEnergy.electricity] = np.linspace(
             60, 40, len(years))
 
         resource_ratio_dict = dict(
@@ -337,8 +339,10 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_level,
@@ -402,14 +406,17 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest_plasmacracking,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat([self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
-                                                                  axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
+                           [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
+                           axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -478,14 +485,17 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat([self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
-                                                                  axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
+                           [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
+                           axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -537,14 +547,17 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat([self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
-                                                                  axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
+                           [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
+                           axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -596,14 +609,17 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearEnd}': 2050,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, 2050 + 1)),
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': self.CO2_taxes,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': self.invest,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
-                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat([self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
-                                                                  axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
+                       f'{self.name}.{GlossaryEnergy.TransportMarginValue}': pd.concat(
+                           [self.margin[GlossaryEnergy.Years], self.margin[GlossaryEnergy.MarginValue] / 1.1],
+                           axis=1, keys=[GlossaryEnergy.Years, GlossaryEnergy.MarginValue]),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,
@@ -637,7 +653,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
     def test_06_hydrogen_jacobian(self):
 
         self.name = 'Test'
-        self.model_name = 'hydrogen.gaseous_hydrogen'
+        self.model_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
@@ -688,7 +704,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
                             discipline=disc, step=1.0e-16, derr_approx='complex_step', local_data=disc.local_data,
                             inputs=[f'{self.name}.{self.model_name}.WaterGasShift.{GlossaryEnergy.TechnoPricesValue}',
@@ -770,7 +786,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                     -9.435997374668482e-05, -8.703097533026997e-05,
                                                     -7.959580181418732e-05, -7.205334764454085e-05,
                                                     -6.515432417398242e-05, -5.75540845705268e-05]
-                                                   )})
+                                               )})
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
         # From future of hydrogen
@@ -778,7 +794,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
             {GlossaryEnergy.Years: years, 'transport': np.ones(len(years)) * 500.0})
 
         self.energy_prices = pd.DataFrame({GlossaryEnergy.Years: years,
-                                           'electricity': [173.742946887766, 161.84399453690324, 151.0934568827067,
+                                           GlossaryEnergy.electricity: [173.742946887766, 161.84399453690324, 151.0934568827067,
                                                            145.6720973278901, 139.49228409317507, 134.44503997718164,
                                                            132.45608774522722, 130.3584078226701, 127.52060230536652,
                                                            124.30846852212048, 121.876714113205, 118.62252128746763,
@@ -806,7 +822,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                            71.50963387473212, 71.1772779622413, 71.03516293997427,
                                                            69.38040456950807, 70.4079758082903, 71.08045334986878,
                                                            -3584275.060458262, -2329800.890993138],
-                                           'syngas': [42.028563729469255, 40.35463927282826, 29.575202670848103,
+                                           GlossaryEnergy.syngas: [42.028563729469255, 40.35463927282826, 29.575202670848103,
                                                       27.981919244567436, 28.4608102544913, 28.316848016389194,
                                                       28.452220125409035, 28.518772400245417, 28.501110014065095,
                                                       27.802297099840523, 27.54682646939144, 27.40656801644799,
@@ -833,7 +849,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                       -437160.30903796665, -447053.30091864016, -450237.3621336989,
                                                       -449052.56334736367, -444609.502771713, -437862.4445371982,
                                                       -425706.8529415283, -7278394.372789974, -4730642.794054429],
-                                           'methane': [36.24200626025384, 36.037823693272635, 37.922057939185905,
+                                           GlossaryEnergy.methane: [36.24200626025384, 36.037823693272635, 37.922057939185905,
                                                        37.90938443561647, 37.71337829342477, 37.615460321755776,
                                                        37.596894718251846, 37.60924247396737, 37.609470425462696,
                                                        37.60927931634897, 37.62597197711281, 37.59995375203008,
@@ -860,10 +876,10 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                        121.95161931317762, 157.0563442922703, 161.15421153352872,
                                                        165.15600888621702, 168.89473198397354, 172.84836967336923,
                                                        176.61716464734127, -253334.87584684434, -164597.48887207167],
-                                           'hydrogen.gaseous_hydrogen': 50
+                                           f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 50
                                            })
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryEnergy.Years: years, 'electricity': 0.02, 'syngas': 0.2, 'methane': 0.1})
+            {GlossaryEnergy.Years: years, GlossaryEnergy.electricity: 0.02, GlossaryEnergy.syngas: 0.2, GlossaryEnergy.methane: 0.1})
         # ---Ratios---
         demand_ratio_dict = dict(
             zip(EnergyMix.energy_list, np.linspace(0.2, 0.8, len(years))))
@@ -877,55 +893,97 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
             resource_ratio_dict)
         inputs_dict = {f'{self.name}.{GlossaryEnergy.YearStart}': GlossaryEnergy.YeartStartDefault,
                        f'{self.name}.{GlossaryEnergy.YearEnd}': GlossaryEnergy.YeartEndDefault,
-                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1)),
-                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1)),
+                       f'{self.name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}': get_static_CO2_emissions(
+                           np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1)),
+                       f'{self.name}.{GlossaryEnergy.ResourcesPriceValue}': get_static_prices(
+                           np.arange(GlossaryEnergy.YeartStartDefault, GlossaryEnergy.YeartEndDefault + 1)),
                        f'{self.name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                        f'{self.name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.InvestLevelValue}': invest_level_negative2,
                        f'{self.name}.{GlossaryEnergy.CO2TaxesValue}': pd.DataFrame({GlossaryEnergy.Years: years,
-                                                               GlossaryEnergy.CO2Tax: [123.54384121665328, 114.7082570056495,
-                                                                           111.79900662991061, 112.3606560123489,
-                                                                           112.24318143946093, 108.5973365343437,
-                                                                           111.64328685134457, 113.73818514404302,
-                                                                           115.44107859484396, 117.29642045913171,
-                                                                           119.82439960611056, 121.464647487607,
-                                                                           122.5798798443514, 122.71077795239975,
-                                                                           -1.7955406835675085e-164,
-                                                                           -9.38522063906998e-05, 59.58305264461431,
-                                                                           42.666185997774306, 58.18945121886229,
-                                                                           77.59910169875373, 79.02437166207574,
-                                                                           56.846842881037986, 36.84087540937685,
-                                                                           8.375739638451805, -26.271722405364585,
-                                                                           -73.13382129365696, -126.22396480678202,
-                                                                           -216.74846182912307, -320.8891223045025,
-                                                                           -454.43147688511283, -592.8993534945333,
-                                                                           -755.2557919477246, -771.1848158848073,
-                                                                           -652.3226212321947, -530.2039192199904,
-                                                                           -53.28278546561114, 262.27957667462624,
-                                                                           -12389.602358460908, -16331.512721893621,
-                                                                           -25706.169003479095, -29335.130871510242,
-                                                                           -30839.9018083875, -30222.41584546385,
-                                                                           -29516.449359907347, -28378.57140441338,
-                                                                           -27161.3708567085, -28583.725076098905,
-                                                                           -25519.90979099596, -21284.997839858734,
-                                                                           -13030.47433106795, -1.796069506092857e-177,
-                                                                           -8.646541630835338e-50,
-                                                                           -0.006235676979016444, 7.577971430943959,
-                                                                           7.805235704875154, 8.043943276838133,
-                                                                           8.194668613555146, 8.350701949669254,
-                                                                           8.511980365280179, 190.31707811919773,
-                                                                           35.44528076658935, 110.84893364939308,
-                                                                           401.56773487563987, 433.883395822344,
-                                                                           455.0193279201958, 467.252737051429,
-                                                                           476.77566104458674, 484.77931831720707,
-                                                                           492.4141556543145, 499.85661992787936,
-                                                                           507.25923472515206, 514.7195372202477,
-                                                                           522.1622160510997, 528.0688453927651,
-                                                                           532.2967343650598, 535.4132571425507,
-                                                                           537.3738970934646, 539.1620166124048,
-                                                                           539.4654629652432, -538303.205284354,
-                                                                           -349711.48482286936]
-                                                               }),
+                                                                                    GlossaryEnergy.CO2Tax: [
+                                                                                        123.54384121665328,
+                                                                                        114.7082570056495,
+                                                                                        111.79900662991061,
+                                                                                        112.3606560123489,
+                                                                                        112.24318143946093,
+                                                                                        108.5973365343437,
+                                                                                        111.64328685134457,
+                                                                                        113.73818514404302,
+                                                                                        115.44107859484396,
+                                                                                        117.29642045913171,
+                                                                                        119.82439960611056,
+                                                                                        121.464647487607,
+                                                                                        122.5798798443514,
+                                                                                        122.71077795239975,
+                                                                                        -1.7955406835675085e-164,
+                                                                                        -9.38522063906998e-05,
+                                                                                        59.58305264461431,
+                                                                                        42.666185997774306,
+                                                                                        58.18945121886229,
+                                                                                        77.59910169875373,
+                                                                                        79.02437166207574,
+                                                                                        56.846842881037986,
+                                                                                        36.84087540937685,
+                                                                                        8.375739638451805,
+                                                                                        -26.271722405364585,
+                                                                                        -73.13382129365696,
+                                                                                        -126.22396480678202,
+                                                                                        -216.74846182912307,
+                                                                                        -320.8891223045025,
+                                                                                        -454.43147688511283,
+                                                                                        -592.8993534945333,
+                                                                                        -755.2557919477246,
+                                                                                        -771.1848158848073,
+                                                                                        -652.3226212321947,
+                                                                                        -530.2039192199904,
+                                                                                        -53.28278546561114,
+                                                                                        262.27957667462624,
+                                                                                        -12389.602358460908,
+                                                                                        -16331.512721893621,
+                                                                                        -25706.169003479095,
+                                                                                        -29335.130871510242,
+                                                                                        -30839.9018083875,
+                                                                                        -30222.41584546385,
+                                                                                        -29516.449359907347,
+                                                                                        -28378.57140441338,
+                                                                                        -27161.3708567085,
+                                                                                        -28583.725076098905,
+                                                                                        -25519.90979099596,
+                                                                                        -21284.997839858734,
+                                                                                        -13030.47433106795,
+                                                                                        -1.796069506092857e-177,
+                                                                                        -8.646541630835338e-50,
+                                                                                        -0.006235676979016444,
+                                                                                        7.577971430943959,
+                                                                                        7.805235704875154,
+                                                                                        8.043943276838133,
+                                                                                        8.194668613555146,
+                                                                                        8.350701949669254,
+                                                                                        8.511980365280179,
+                                                                                        190.31707811919773,
+                                                                                        35.44528076658935,
+                                                                                        110.84893364939308,
+                                                                                        401.56773487563987,
+                                                                                        433.883395822344,
+                                                                                        455.0193279201958,
+                                                                                        467.252737051429,
+                                                                                        476.77566104458674,
+                                                                                        484.77931831720707,
+                                                                                        492.4141556543145,
+                                                                                        499.85661992787936,
+                                                                                        507.25923472515206,
+                                                                                        514.7195372202477,
+                                                                                        522.1622160510997,
+                                                                                        528.0688453927651,
+                                                                                        532.2967343650598,
+                                                                                        535.4132571425507,
+                                                                                        537.3738970934646,
+                                                                                        539.1620166124048,
+                                                                                        539.4654629652432,
+                                                                                        -538303.205284354,
+                                                                                        -349711.48482286936]
+                                                                                    }),
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.name}.{self.model_name}.{GlossaryEnergy.MarginValue}': self.margin,
@@ -985,7 +1043,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
     def test_08_gaseous_hydrogen_discipline_jacobian(self):
 
         self.name = 'Test'
-        self.energy_name = 'hydrogen.gaseous_hydrogen'
+        self.energy_name = f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}'
         self.ee = ExecutionEngine(self.name)
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_hydrogen': f'{self.name}',
@@ -1012,7 +1070,8 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart, GlossaryEnergy.YearEnd,
+            if key in [GlossaryEnergy.techno_list, GlossaryEnergy.CO2TaxesValue, GlossaryEnergy.YearStart,
+                       GlossaryEnergy.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']

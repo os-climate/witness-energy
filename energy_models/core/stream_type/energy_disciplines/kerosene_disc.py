@@ -35,11 +35,11 @@ class KeroseneDiscipline(EnergyDiscipline):
     }
 
     DESC_IN = {GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': ['AlcoholToFuel', 'BioFuel', 'EOR',
-                                                         'Refinery', 'HEFA', 'FischerTropsch'],
-                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_liquid_fuel',
-                                     'structuring': True, 'unit': '-'},
+                                            'possible_values': ['AlcoholToFuel', 'BioFuel', 'EOR',
+                                                                'Refinery', 'HEFA', 'FischerTropsch'],
+                                            'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+                                            'namespace': 'ns_liquid_fuel',
+                                            'structuring': True, 'unit': '-'},
                'data_fuel_dict': {'type': 'dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_liquid_fuel',

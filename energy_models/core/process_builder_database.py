@@ -49,7 +49,7 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
 
         return ns_ids
 
-    def create_builder_list(self, mods_dict, ns_dict=None, associate_namespace=False,  get_from_database=False):
+    def create_builder_list(self, mods_dict, ns_dict=None, associate_namespace=False, get_from_database=False):
         ''' 
         define a base namespace
         instantiate builders iterating over a list of module paths
@@ -64,7 +64,8 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
             builders.append(a_b)
         return builders
 
-    def set_builder_specific_ns_database(self, builders_list, ns_dict=None, associate_namespace=False, get_from_database=False):
+    def set_builder_specific_ns_database(self, builders_list, ns_dict=None, associate_namespace=False,
+                                         get_from_database=False):
         '''
         Associates specific namespace dictionaries with their respective builders and/or saves them to a database.
 
@@ -80,5 +81,5 @@ class ProcessBuilderDatabase(BaseProcessBuilder):
         '''
         ns_ids = self.process_namespace(ns_dict, get_from_database)
         for builder in builders_list:
-            if associate_namespace: 
+            if associate_namespace:
                 builder.associate_namespaces(ns_ids)

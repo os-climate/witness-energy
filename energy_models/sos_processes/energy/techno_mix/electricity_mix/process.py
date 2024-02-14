@@ -23,7 +23,6 @@ from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase impor
 
 
 class ProcessBuilder(EnergyProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Energy Technology Mix - Electricity Mix',
@@ -62,6 +61,7 @@ class ProcessBuilder(EnergyProcessBuilder):
             mods_dict[f'{energy_mix}.{electricity_name}.{techno_name}'] = self.get_techno_disc_path(
                 electricity_name, techno_name, sub_dir)
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict,
+                                                associate_namespace=self.associate_namespace)
 
         return builder_list

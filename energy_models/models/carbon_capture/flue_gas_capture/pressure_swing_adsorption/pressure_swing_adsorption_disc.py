@@ -40,7 +40,7 @@ class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
         'icon': 'fas fa-cloud fa-fw',
         'version': '',
     }
-    techno_name = 'flue_gas_capture.PressureSwingAdsorption'
+    techno_name = f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption'
     lifetime = 25  # SAEECCT Coal USC plant lifetime
     construction_delay = 1
 
@@ -51,7 +51,7 @@ class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
     # https://www.sciencedirect.com/science/article/pii/S1750583618307461?via%3Dihub#fig0040
     # Refered in this code as SAEECCT
 
-    elec_demand_capture = 810  # SAEECCT - MJ/tCO2
+    elec_demand_capture = 810  # SAEECCT - MJ/tCO2 page no:9, # https://sci-hub.et-fine.com/10.1016/j.ijggc.2019.03.006
     mj_to_kwh_factor = 0.277778
     # Hypothesis for max CO2 captured SAEECCT, USC plant 790 Kg/MWh CO2
     # emission and net power output 550 MW
@@ -78,8 +78,8 @@ class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
                                  'elec_demand': elec_demand_capture * mj_to_kwh_factor / 1000,
                                  'elec_demand_unit': 'kWh/kgCO2',
 
-                                 'heat_demand': 0,
-                                 'heat_demand_unit': 'kWh/kgCO2',
+                                 'heat_demand': 0.131,
+                                 'heat_demand_unit': 'kWh/kgCO2', # page no:34 # https://www.osti.gov/servlets/purl/1238374
 
                                  'CO2_capacity_peryear': c02_capacity_year,  # kg CO2 /year
                                  'CO2_capacity_peryear_unit': 'kg CO2/year',
@@ -116,17 +116,20 @@ class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
                                      'default': techno_infos_dict_default, 'unit': 'defined in dict'},
                'initial_production': {'type': 'float', 'unit': 'MtCO2', 'default': initial_capture},
                'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                       'dataframe_descriptor': {'age': ('int',  [0, 100], False),
-                                                                'distrib': ('float',  None, True)},
+                                       'dataframe_descriptor': {'age': ('int', [0, 100], False),
+                                                                'distrib': ('float', None, True)},
                                        'dataframe_edition_locked': False},
                GlossaryEnergy.FlueGasMean: {'type': 'dataframe', 'namespace': 'ns_flue_gas',
-                                 'visibility': CCTechnoDiscipline.SHARED_VISIBILITY, 'unit': '',
-                                 'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-                                                          GlossaryEnergy.FlueGasMean: ('float', None, True)}},
-               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$', 'default': invest_before_year_start,
-                                        'dataframe_descriptor': {'past years': ('int',  [-20, -1], False),
-                                                                 GlossaryEnergy.InvestValue: ('float',  None, True)},
-                                        'dataframe_edition_locked': False}}
+                                            'visibility': CCTechnoDiscipline.SHARED_VISIBILITY, 'unit': '',
+                                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                                     GlossaryEnergy.FlueGasMean: (
+                                                                     'float', None, True)}},
+               GlossaryEnergy.InvestmentBeforeYearStartValue: {'type': 'dataframe', 'unit': 'G$',
+                                                               'default': invest_before_year_start,
+                                                               'dataframe_descriptor': {
+                                                                   'past years': ('int', [-20, -1], False),
+                                                                   GlossaryEnergy.InvestValue: ('float', None, True)},
+                                                               'dataframe_edition_locked': False}}
     # -- add specific techno outputs to this
     DESC_IN.update(CCTechnoDiscipline.DESC_IN)
 

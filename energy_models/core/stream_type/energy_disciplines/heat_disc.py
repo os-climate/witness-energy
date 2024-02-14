@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
+
 import numpy as np
 import pandas as pd
 
@@ -44,7 +46,7 @@ class HeatDiscipline(SoSWrapp):
         'version': '',
     }
 
-    name = 'heat'
+    name = GlossaryEnergy.heat
     energy_name = name
     heat_list = [HighHeatDiscipline.energy_name,
                  MediumHeatDiscipline.energy_name,
@@ -52,7 +54,7 @@ class HeatDiscipline(SoSWrapp):
                  ]
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                'exp_min': {'type': 'bool', 'default': True, 'user_level': 2},
                'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -67,9 +69,9 @@ class HeatDiscipline(SoSWrapp):
                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_public', 'user_level': 2},
                GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                               'possible_values': EnergyMix.energy_list,
-                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                               'editable': False, 'structuring': True},
+                                            'possible_values': EnergyMix.energy_list,
+                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
+                                            'editable': False, 'structuring': True},
                }
 
     DESC_OUT = {GlossaryEnergy.EnergyPricesValue: {'type': 'dataframe', 'unit': '$/MWh'},
@@ -77,8 +79,12 @@ class HeatDiscipline(SoSWrapp):
                 GlossaryEnergy.EnergyConsumptionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh'},
                 GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh'},
-                #'energy_heat_flux_detailed': {'type': 'dataframe', 'unit': 'TWh/Gha'},
+                # 'energy_heat_flux_detailed': {'type': 'dataframe', 'unit': 'TWh/Gha'},
                 }
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.energy_list = None
 
     def setup_sos_disciplines(self):
         '''
@@ -94,30 +100,30 @@ class HeatDiscipline(SoSWrapp):
                     set(HeatDiscipline.heat_list).intersection(set(energy_mix_list)))
                 for energy in self.energy_list:
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyPricesValue}'] = {'type': 'dataframe',
-                                                                 'unit': '$/MWh',
-                                                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                 'namespace': GlossaryEnergy.NS_ENERGY_MIX
-                                                                 }
+                                                                                      'unit': '$/MWh',
+                                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                                      'namespace': GlossaryEnergy.NS_ENERGY_MIX
+                                                                                      }
                     dynamic_inputs[f'{energy}.energy_detailed_techno_prices'] = {'type': 'dataframe',
                                                                                  'unit': '$/MWh',
                                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                                  'namespace': GlossaryEnergy.NS_ENERGY_MIX
                                                                                  }
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyConsumptionValue}'] = {'type': 'dataframe',
-                                                                      'unit': 'PWh',
-                                                                      'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                      'namespace': GlossaryEnergy.NS_ENERGY_MIX
-                                                                      }
+                                                                                           'unit': 'PWh',
+                                                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                                           'namespace': GlossaryEnergy.NS_ENERGY_MIX
+                                                                                           }
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionValue}'] = {'type': 'dataframe',
-                                                                     'unit': 'PWh',
-                                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                     'namespace': GlossaryEnergy.NS_ENERGY_MIX
-                                                                     }
+                                                                                          'unit': 'PWh',
+                                                                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                                          'namespace': GlossaryEnergy.NS_ENERGY_MIX
+                                                                                          }
                     dynamic_inputs[f'{energy}.{GlossaryEnergy.EnergyProductionDetailedValue}'] = {'type': 'dataframe',
-                                                                              'unit': 'TWh',
-                                                                              'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                              'namespace': GlossaryEnergy.NS_ENERGY_MIX
-                                                                              }
+                                                                                                  'unit': 'TWh',
+                                                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                                                                  'namespace': GlossaryEnergy.NS_ENERGY_MIX
+                                                                                                  }
                     # dynamic_inputs[f'{energy}.energy_heat_flux_detailed'] = {'type': 'dataframe',
                     #                                                           'unit': 'TWh/Gha',
                     #                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -141,8 +147,7 @@ class HeatDiscipline(SoSWrapp):
         energy_production = pd.DataFrame({GlossaryEnergy.Years: years})
         energy_consumption = pd.DataFrame({GlossaryEnergy.Years: years})
         energy_production_detailed = pd.DataFrame({GlossaryEnergy.Years: years})
-        energy_heat_flux_detailed = pd.DataFrame({GlossaryEnergy.Years: years})
-        energy_prices['heat'] = 0
+        energy_prices[GlossaryEnergy.heat] = 0
         energy_prices['heat_production'] = 0
 
         # loop over heat energies
@@ -173,19 +178,20 @@ class HeatDiscipline(SoSWrapp):
             #     [energy_heat_flux_detailed, energy_heat_flux.drop(GlossaryEnergy.Years, axis=1)], axis=1)
 
             # mean price weighted with production for each energy
-            energy_prices['heat'] += [price * production for price,
+            energy_prices[GlossaryEnergy.heat] += [price * production for price,
                                                              production in
                                       zip(energy_prices[energy], energy_production[energy])]
             energy_prices['heat_production'] += energy_production[energy]
 
         # aggregations
-        energy_prices['heat'] = energy_prices['heat'] / \
+        energy_prices[GlossaryEnergy.heat] = energy_prices[GlossaryEnergy.heat] / \
                                 energy_prices['heat_production']
         energy_prices.drop('heat_production', axis=1)
         energy_production = energy_production.groupby(level=0, axis=1).sum() #.reset_index()
         energy_consumption = energy_consumption.groupby(level=0, axis=1).sum() #.reset_index()
         energy_production_detailed = energy_production_detailed.groupby(
             level=0, axis=1).sum()
+
         #energy_heat_flux_detailed = energy_heat_flux_detailed.groupby(level=0, axis=1).sum()
         #energy_production = energy_production.insert(0, GlossaryEnergy.Years, energy_production)
         cols = list(energy_production.columns)
@@ -205,7 +211,7 @@ class HeatDiscipline(SoSWrapp):
                         GlossaryEnergy.EnergyProductionValue: energy_production,
                         GlossaryEnergy.EnergyConsumptionValue: energy_consumption,
                         GlossaryEnergy.EnergyProductionDetailedValue: energy_production_detailed,
-                        #'energy_heat_flux_detailed': energy_heat_flux_detailed,
+                        # 'energy_heat_flux_detailed': energy_heat_flux_detailed,
                         }
 
         self.store_sos_outputs_values(outputs_dict)
@@ -284,7 +290,7 @@ class HeatDiscipline(SoSWrapp):
         new_chart = TwoAxesInstanciatedChart(
             GlossaryEnergy.Years, 'Prices [$/MWh]', chart_name=chart_name)
 
-        for energy in ['heat'] + self.energy_list:
+        for energy in [GlossaryEnergy.heat] + self.energy_list:
             display_energy_name = energy.split(".")[-1].replace("_", " ")
             serie = InstanciatedSeries(
                 energy_prices[GlossaryEnergy.Years].values.tolist(),

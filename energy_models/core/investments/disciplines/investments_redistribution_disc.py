@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 
 import numpy as np
 
@@ -50,7 +51,7 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
     ccs_list_desc_dict.update({'possible_values': CCUS.ccs_list})
     DESC_IN = {
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.EnergyListName: energy_list_desc_dict,
         GlossaryEnergy.CCSListName: ccs_list_desc_dict,
         GlossaryEnergy.ForestInvestmentValue: GlossaryEnergy.get_dynamic_variable(GlossaryEnergy.ForestInvestment),
@@ -63,6 +64,10 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
         GlossaryEnergy.EnergyInvestmentsWoTaxValue: GlossaryEnergy.EnergyInvestmentsWoTax,
     }
     _maturity = 'Research'
+
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.invest_redistribution_model = None
 
     def init_execution(self):
         self.invest_redistribution_model = InvestmentsRedistribution()
@@ -197,8 +202,9 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
             for techno in techno_list:
                 grad_inv_level_wrt_economics = percentage_gdp_invest_energy * identity * techno_invest_percentage_df[
                     techno].values / 100.
-                grad_inv_level_wrt_gdp_perc = identity * economics_df[GlossaryEnergy.OutputNetOfDamage].values * techno_invest_percentage_df[
-                    techno].values / 100.
+                grad_inv_level_wrt_gdp_perc = identity * economics_df[GlossaryEnergy.OutputNetOfDamage].values * \
+                                              techno_invest_percentage_df[
+                                                  techno].values / 100.
 
                 self.set_partial_derivative_for_other_types(
                     (f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
@@ -317,7 +323,8 @@ class InvestmentsRedistributionDisicpline(SoSWrapp):
                     invest = self.get_sosdisc_inputs(techno)
                     serie_agriculture = InstanciatedSeries(
                         invest[GlossaryEnergy.Years].values.tolist(),
-                        invest[GlossaryEnergy.InvestmentsValue].values.tolist(), techno.replace("_investment", ""), 'bar')
+                        invest[GlossaryEnergy.InvestmentsValue].values.tolist(), techno.replace("_investment", ""),
+                        'bar')
                     agriculture_chart.series.append(serie_agriculture)
                     serie = InstanciatedSeries(
                         invest[GlossaryEnergy.Years].values.tolist(),

@@ -49,24 +49,25 @@ class DemandModelJacobianTestCase(AbstractJacobianUnittest):
         self.energy_production_detailed = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                                         EnergyDemand.elec_prod_column: np.linspace(20000, 19000,
                                                                                                    len(self.years)),
-                                                        'production hydrogen.liquid_hydrogen (TWh)': np.linspace(20000,
+                                                        f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)': np.linspace(20000,
                                                                                                                  19000,
                                                                                                                  len(self.years)),
-                                                        'production fuel.liquid_fuel (TWh)': np.linspace(10000, 12000,
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)': np.linspace(10000, 12000,
                                                                                                          len(self.years)),
-                                                        'production fuel.biodiesel (TWh)': np.linspace(11000, 12000,
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel} (TWh)': np.linspace(11000, 12000,
                                                                                                        len(self.years)),
-                                                        'production methane (TWh)': np.linspace(5000., 6000.,
+                                                        f'production {GlossaryEnergy.methane} (TWh)': np.linspace(5000., 6000.,
                                                                                                 len(self.years)),
-                                                        'production biogas (TWh)': np.linspace(1000., 1500.,
+                                                        f'production {GlossaryEnergy.biogas} (TWh)': np.linspace(1000., 1500.,
                                                                                                len(self.years)),
-                                                        'production fuel.hydrotreated_oil_fuel (TWh)': np.linspace(
+                                                        f'production {GlossaryEnergy.fuel}.{GlossaryEnergy.hydrotreated_oil_fuel} (TWh)': np.linspace(
                                                             2000., 3000., len(self.years)),
                                                         })
         self.population = pd.DataFrame({GlossaryEnergy.Years: self.years,
                                         GlossaryEnergy.PopulationValue: np.linspace(7794.79, 9000., len(self.years))})
         self.transport_demand = pd.DataFrame({GlossaryEnergy.Years: self.years,
-                                              GlossaryEnergy.TransportDemandValue: np.linspace(33600., 30000., len(self.years))})
+                                              GlossaryEnergy.TransportDemandValue: np.linspace(33600., 30000.,
+                                                                                               len(self.years))})
 
     def tearDown(self):
         pass
