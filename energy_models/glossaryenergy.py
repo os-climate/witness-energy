@@ -103,6 +103,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CarbonCaptureAndStorageTechno = "CarbonCaptureAndStorageTechno"
     CarbonStorageTechno = "CarbonStorageTechno"
     DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
+    FoodStorageApplications = "food_storage_applications.FoodStorageApplicationsTechno"
+
     FlueGasCapture = f"{flue_gas_capture}.FlueGasTechno"
 
     CCSTechnoInvest = {

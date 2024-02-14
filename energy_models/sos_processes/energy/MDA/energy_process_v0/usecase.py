@@ -38,6 +38,7 @@ from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonSt
 from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
+from energy_models.core.stream_type.carbon_models.food_storage import FoodStorage
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -69,6 +70,9 @@ from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_s
 )
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
+)
+from energy_models.sos_processes.energy.techno_mix.carbon_utilization_mix.usecase import (
+    DEFAULT_FOOD_STORAGE_LIST,
 )
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
@@ -402,14 +406,18 @@ class Study(EnergyStudyManager):
             invest_ccs_mix_dict = {
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_COARSE),
                 CarbonCapture.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
-                CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLES_COARSE)
+                CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
+                CarbonUtilization.name: np.ones(GlossaryEnergy.NB_POLES_COARSE)
+
             }
 
         else:
             invest_ccs_mix_dict = {
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_FULL),
                 CarbonCapture.name: [2.0] + [25] * (GlossaryEnergy.NB_POLES_FULL - 1),
-                CarbonStorage.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1)
+                CarbonStorage.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1),
+                CarbonUtilization.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1)
+
             }
 
         if self.bspline:
@@ -538,6 +546,7 @@ class Study(EnergyStudyManager):
                 Syngas.name: 40.0,
                 CarbonCapture.name: 0.0,
                 CarbonStorage.name: 0.0,
+                CarbonUtilization.name: 0.0,
                 BioDiesel.name: 210.0,
                 LiquidHydrogen.name: 120.0,
                 Renewable.name: 90.0,
@@ -565,6 +574,7 @@ class Study(EnergyStudyManager):
                 Syngas.name: 0.0,
                 CarbonCapture.name: 0.0,
                 CarbonStorage.name: 0.0,
+                CarbonUtilization.name: 0.0,
                 BioDiesel.name: 0.0,
                 LiquidHydrogen.name: 0.0,
                 Renewable.name: 0.0,
@@ -617,6 +627,9 @@ class Study(EnergyStudyManager):
                 GlossaryEnergy.DirectAirCapture,
                 GlossaryEnergy.FlueGasCapture,
             ]
+            techno_list_carbon_utilization = [
+                GlossaryEnergy.FoodStorageApplications
+            ]
             techno_list_carbon_storage = [GlossaryEnergy.CarbonStorageTechno]
             invest_percentage_per_techno = {GlossaryEnergy.Years: self.years}
             all_techno_list = [
@@ -624,6 +637,8 @@ class Study(EnergyStudyManager):
                 techno_list_renewable,
                 techno_list_carbon_capture,
                 techno_list_carbon_storage,
+                techno_list_carbon_utilization,
+
             ]
             invest_percentage_per_techno.update(
                 {
@@ -683,6 +698,15 @@ class Study(EnergyStudyManager):
             values_dict[
                 f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
+
+        food_storage_list = [
+            techno for techno in DEFAULT_FOOD_STORAGE_LIST if techno in possible_technos
+        ]
+        if CarbonUtilization.name in DEFAULT_TECHNO_DICT:
+            values_dict[
+                f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonUtilization.name}.{FoodStorage.node_name}.{GlossaryEnergy.techno_list}"
+            ] = food_storage_list
+
 
         # IF coarse process no need of heat loss percentage (raw prod is net prod)
         # IF renewable and fossil in energy_list then coarse process

@@ -110,7 +110,7 @@ class BeverageCarbonationDiscipline(CUTechnoDiscipline):
 
     techno_info_dict = techno_infos_dict_default
 
-    initial_utilize = 10  # in Mt at year_start #https://www.iea.org/reports/putting-co2-to-use
+    initial_utilize = 10  # in Mt at year_start # https://www.iea.org/reports/putting-co2-to-use
     invest_before_year_start = pd.DataFrame(
         {'past years': np.arange(-construction_delay, 0), GlossaryEnergy.InvestValue: np.array([0.05093, 0.05093, 15.0930]) * 0.8 / 3000})
 

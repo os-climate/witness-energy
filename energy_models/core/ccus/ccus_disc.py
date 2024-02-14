@@ -26,6 +26,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -432,6 +433,11 @@ class CCUS_Discipline(SoSWrapp):
                 ('CCS_price', 'ccs_price_per_tCO2'),
                 (f'{CarbonStorage.name}.{GlossaryEnergy.EnergyPricesValue}', CarbonStorage.name),
                 np.identity(len(years)))
+        if CarbonUtilization.name in ccs_list:
+            self.set_partial_derivative_for_other_types(
+                ('CCS_price', 'ccs_price_per_tCO2'),
+                (f'{CarbonUtilization.name}.{GlossaryEnergy.EnergyPricesValue}', CarbonUtilization.name),
+                np.identity(len(years)))
 
     def get_chart_filter_list(self):
 
@@ -580,6 +586,16 @@ class CCUS_Discipline(SoSWrapp):
             x_serie_1,
             (co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1.0e3).tolist(),
             f'CO2 storage limited by CO2 to store')
+        new_chart.add_series(serie)
+
+        serie = InstanciatedSeries(
+            x_serie_1,
+            (co2_emissions[f'{CarbonUtilization.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 to store')
+        new_chart.add_series(serie)
+
+        serie = InstanciatedSeries(
+            x_serie_1,
+            (carbon_storage_by_invest / 1.0e3).tolist(), f'CO2 storage by invest')
         new_chart.add_series(serie)
 
         return new_chart

@@ -59,19 +59,7 @@ class ProcessBuilder(EnergyProcessBuilder):
             'carbon_disciplines', 'CarbonUtilization')
         mods_dict[f'{self.prefix_name}.{carbon_utilization_name}.{food_storage_name}'] = 'energy_models.core.stream_type.carbon_disciplines.food_storage_disc.FoodStorageDiscipline'
 
-        # for techno_name in self.techno_list:
-        #     mods_dict[f'{self.prefix_name}.{carbon_utilization_name}.{techno_name}'] = self.get_techno_disc_path(
-        #         carbon_utilization_name, food_storage_name, techno_name)
-        #
-        # builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
-        # return builder_list
 
-
-        # mods_dict[f'{self.prefix_name}.{carbon_utilization_name}.{food_storage_name}'] = 'energy_models.core.stream_type.carbon_disciplines.food_storage_disc.FoodStorageDiscipline'
-        #
-        #
-        # # 'energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc.DirectAirCaptureTechnoDiscipline'
-        print(self.techno_list)
         for full_techno_name in self.techno_list:
             list_dot = full_techno_name.split('.')
             sub_dir = list_dot[0]
