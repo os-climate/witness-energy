@@ -68,6 +68,7 @@ class IndependentInvest(BaseInvest):
         return energy_investment_wo_tax
 
     def compute_max_budget_constraint(self, energy_investment_wo_tax: np.ndarray, inputs_dict: dict):
+        max_budget_constraint_ref = inputs_dict[GlossaryEnergy.MaxBudgetConstraintRefValue]
         max_budget = inputs_dict[GlossaryEnergy.MaxBudgetValue][GlossaryEnergy.MaxBudgetValue].values
-        max_budget_constraint = max_budget - energy_investment_wo_tax[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values * 1000
-        return max_budget_constraint
+        overspending = energy_investment_wo_tax[GlossaryEnergy.EnergyInvestmentsWoTaxValue].values * 1000 - max_budget
+        return overspending / max_budget_constraint_ref

@@ -95,8 +95,9 @@ class Energy_Mix_Discipline(SoSWrapp):
                                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
                                          'editable': False, 'structuring': True},
                GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.TargetEnergyProductionValue: GlossaryEnergy.TargetEnergyProductionDf,
+               GlossaryEnergy.TargetProductionConstraintRefValue: GlossaryEnergy.TargetProductionConstraintRef,
                'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
                'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8,
@@ -185,7 +186,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                     'namespace': 'ns_energy',
                                                     'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                    'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                    'int', [1900, 2100], False),
                                                                              GlossaryEnergy.CO2Tax: (
                                                                              'float', None, True)}
                                                     },
@@ -580,10 +581,11 @@ class Energy_Mix_Discipline(SoSWrapp):
                      GlossaryEnergy.TotalProductionValue),
                     (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
                     dtotal_prod_denergy_prod)
+                target_production_constraint_ref = inputs_dict[GlossaryEnergy.TargetProductionConstraintRefValue]
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TargetProductionConstraintValue,),
                     (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
-                    dtotal_prod_denergy_prod * 1e6)
+                    - dtotal_prod_denergy_prod * 1e6 / target_production_constraint_ref)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyProductionDetailedValue,
                      GlossaryEnergy.TotalProductionValue),
@@ -686,7 +688,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                             (GlossaryEnergy.TargetProductionConstraintValue,), (
                                 f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
                                 f'{energy} ({stream_class_dict[energy].unit})'),
-                            scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * 1e6)
+                            - scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * 1e6 / target_production_constraint_ref)
                         self.set_partial_derivative_for_other_types(
                             (GlossaryEnergy.EnergyProductionDetailedValue, GlossaryEnergy.TotalProductionValue),
                             (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
@@ -1319,6 +1321,28 @@ class Energy_Mix_Discipline(SoSWrapp):
                 if chart_filter.filter_key == GlossaryEnergy.Years:
                     years_list = chart_filter.selected_values
 
+        if 'Target energy production constraint' in charts:
+            target_energy_production_df = self.get_sosdisc_inputs(GlossaryEnergy.TargetEnergyProductionValue)
+            target_energy_production = target_energy_production_df[GlossaryEnergy.TargetEnergyProductionValue].values * 1000
+            #target_energy_production[:] = 100
+            years = target_energy_production_df[GlossaryEnergy.Years].values
+            if target_energy_production.max() > 0:
+                chart_target_energy_production = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.TargetEnergyProductionDf['unit'],
+                                                            chart_name=GlossaryEnergy.TargetProductionConstraintValue,
+                                                            stacked_bar=True)
+
+                serie_target_energy_production = InstanciatedSeries(list(years), list(target_energy_production), 'Minimal energy production required',
+                                                      'dash_lines')
+                chart_target_energy_production.add_series(serie_target_energy_production)
+
+                energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)[
+                                     GlossaryEnergy.TotalProductionValue].values
+                serie_production = InstanciatedSeries(list(years), list(energy_production), "Energy production",
+                                                   'bar')
+                chart_target_energy_production.add_series(serie_production)
+                instanciated_charts.append(chart_target_energy_production)
+
+
         if 'Energy price' in charts and '$/MWh' in price_unit_list:
 
             new_chart = self.get_chart_energy_price_in_dollar_kwh_without_production_taxes()
@@ -1399,27 +1423,6 @@ class Energy_Mix_Discipline(SoSWrapp):
             new_chart = self.get_chart_energy_mix_losses(energy_list)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
-
-        if 'Target energy production constraint' in charts:
-            target_energy_production_df = self.get_sosdisc_inputs(GlossaryEnergy.TargetEnergyProductionValue)
-            target_energy_production = target_energy_production_df[GlossaryEnergy.TargetEnergyProductionValue].values * 1000
-            #target_energy_production[:] = 100
-            years = target_energy_production_df[GlossaryEnergy.Years].values
-            if target_energy_production.max() > 0:
-                chart_target_energy_production = TwoAxesInstanciatedChart(GlossaryEnergy.Years, GlossaryEnergy.TargetEnergyProductionDf['unit'],
-                                                            chart_name=GlossaryEnergy.TargetProductionConstraintValue,
-                                                            stacked_bar=True)
-
-                serie_target_energy_production = InstanciatedSeries(list(years), list(target_energy_production), GlossaryEnergy.TargetEnergyProductionValue,
-                                                      'dash_lines')
-                chart_target_energy_production.add_series(serie_target_energy_production)
-
-                energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)[
-                                     GlossaryEnergy.TotalProductionValue].values
-                serie_production = InstanciatedSeries(list(years), list(energy_production), "Energy production",
-                                                   'bar')
-                chart_target_energy_production.add_series(serie_production)
-                instanciated_charts.append(chart_target_energy_production)
 
         return instanciated_charts
 

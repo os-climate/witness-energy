@@ -53,10 +53,10 @@ class OneInvestDiscipline(SoSWrapp):
 
     DESC_IN = {
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.EnergyInvestmentsValue: {'type': 'dataframe', 'unit': '100G$',
                                                 'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                'int', [1900, 2100], False),
                                                                          GlossaryEnergy.EnergyInvestmentsValue: (
                                                                          'float', None, True)},
                                                 'dataframe_edition_locked': False,
@@ -65,7 +65,7 @@ class OneInvestDiscipline(SoSWrapp):
                                              'namespace': 'ns_public'},
         GlossaryEnergy.invest_mix: {'type': 'dataframe',
                                     'dataframe_descriptor': {
-                                        GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                        GlossaryEnergy.Years: ('int', [1900, 2100], False),
                                         f'{GlossaryEnergy.electricity}.SolarPv': ('float', None, True),
                                         f'{GlossaryEnergy.electricity}.WindOnshore': ('float', None, True),
                                         f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),

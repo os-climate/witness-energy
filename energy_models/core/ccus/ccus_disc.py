@@ -19,6 +19,7 @@ import logging
 import numpy as np
 import pandas as pd
 
+from copy import copy, deepcopy
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.ccus.ccus import CCUS
 from energy_models.core.energy_mix.energy_mix import EnergyMix
@@ -54,7 +55,8 @@ class CCUS_Discipline(SoSWrapp):
                                   'editable': False,
                                   'structuring': True},
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.YearEnd: {'type': 'int',
+                        'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public',  'range': [2000,2300]},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
@@ -161,7 +163,7 @@ class CCUS_Discipline(SoSWrapp):
                                              'CO2_resource for food (Mt)': ('float', None, True), }
                 }
 
-        self.add_inputs(dynamic_inputs)
+        self.add_inputs(dynamic_inputs),
         self.add_outputs(dynamic_outputs)
 
     def update_default_ccs_list(self):
@@ -244,7 +246,6 @@ class CCUS_Discipline(SoSWrapp):
         # -- New CO2 emissions gradients--#
         # --------------------------------#
 
-        alpha = inputs_dict['alpha']
         co2_emissions = self.get_sosdisc_outputs('co2_emissions_ccus')
         self.ccus_model.configure_parameters_update(inputs_dict)
         dtot_co2_emissions = self.ccus_model.compute_grad_CO2_emissions(co2_emissions)

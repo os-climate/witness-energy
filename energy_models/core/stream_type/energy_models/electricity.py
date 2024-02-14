@@ -26,8 +26,7 @@ class Electricity(EnergyType):
     default_techno_list = ['WindOffshore', 'WindOnshore', 'SolarPv', 'SolarThermal', 'Hydropower',
                            'CoalGen', 'OilGen', 'Nuclear', 'CombinedCycleGasTurbine',
                            'GasTurbine', 'BiogasFired', 'BiomassFired',
-                           'Geothermal', 'RenewableElectricitySimpleTechno',
-                           'RenewableElectricitySimpleTechnoDiscipline']
+                           'Geothermal']
 
     def __init__(self, name):
         super().__init__(name)
