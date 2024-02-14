@@ -60,7 +60,6 @@ class AmineScrubbingDiscipline(CCTechnoDiscipline):
                                  # with time 10%/10year according to Fasihi2019
                                  'heat_demand': 0.1034,
                                  'heat_demand_unit': 'kWh/kgCO2',  # https://www.osti.gov/servlets/purl/1482179
-                                 'heat_demand_unit': 'kWh/kgCO2',
                                  'WACC': 0.1,  # Weighted averaged cost of capital for the carbon capture plant
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.33,
