@@ -97,6 +97,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.TargetEnergyProductionValue: GlossaryEnergy.TargetEnergyProductionDf,
+               GlossaryEnergy.TargetProductionConstraintRefValue: GlossaryEnergy.TargetProductionConstraintRef,
                'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
                'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8,
@@ -582,10 +583,11 @@ class Energy_Mix_Discipline(SoSWrapp):
                      GlossaryEnergy.TotalProductionValue),
                     (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
                     dtotal_prod_denergy_prod)
+                target_production_constraint_ref = inputs_dict[GlossaryEnergy.TargetProductionConstraintRefValue]
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TargetProductionConstraintValue,),
                     (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
-                    dtotal_prod_denergy_prod * 1e6)
+                    - dtotal_prod_denergy_prod * 1e6 / target_production_constraint_ref)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyProductionDetailedValue,
                      GlossaryEnergy.TotalProductionValue),
@@ -688,7 +690,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                             (GlossaryEnergy.TargetProductionConstraintValue,), (
                                 f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
                                 f'{energy} ({stream_class_dict[energy].unit})'),
-                            scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * 1e6)
+                            - scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * 1e6 / target_production_constraint_ref)
                         self.set_partial_derivative_for_other_types(
                             (GlossaryEnergy.EnergyProductionDetailedValue, GlossaryEnergy.TotalProductionValue),
                             (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
