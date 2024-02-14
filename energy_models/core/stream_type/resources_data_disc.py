@@ -26,7 +26,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 
-
 class StreamDiscipline(SoSWrapp):
     # ontology information
     _ontology_data = {
