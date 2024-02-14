@@ -402,14 +402,16 @@ class Study(EnergyStudyManager):
             invest_ccs_mix_dict = {
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_COARSE),
                 CarbonCapture.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
-                CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLES_COARSE)
+                CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
+                CarbonUtilization.name: np.ones(GlossaryEnergy.NB_POLES_COARSE)
             }
 
         else:
             invest_ccs_mix_dict = {
                 GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_FULL),
                 CarbonCapture.name: [2.0] + [25] * (GlossaryEnergy.NB_POLES_FULL - 1),
-                CarbonStorage.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1)
+                CarbonStorage.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1),
+                CarbonUtilization.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1)
             }
 
         if self.bspline:
@@ -538,6 +540,7 @@ class Study(EnergyStudyManager):
                 Syngas.name: 40.0,
                 CarbonCapture.name: 0.0,
                 CarbonStorage.name: 0.0,
+                CarbonUtilization.name: 0.0,
                 BioDiesel.name: 210.0,
                 LiquidHydrogen.name: 120.0,
                 Renewable.name: 90.0,
@@ -565,6 +568,7 @@ class Study(EnergyStudyManager):
                 Syngas.name: 0.0,
                 CarbonCapture.name: 0.0,
                 CarbonStorage.name: 0.0,
+                CarbonUtilization.name: 0.0,
                 BioDiesel.name: 0.0,
                 LiquidHydrogen.name: 0.0,
                 Renewable.name: 0.0,

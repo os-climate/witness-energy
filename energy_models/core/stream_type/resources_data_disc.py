@@ -17,7 +17,8 @@ limitations under the License.
 import logging
 
 import numpy as np
-
+import pandas as pd
+import scipy.interpolate as sc
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
@@ -25,11 +26,37 @@ from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+def get_static_CO2_emissions(years):
+    resources_CO2_emissions_dict = {GlossaryEnergy.Years: years}
 
-class StreamDiscipline(SoSWrapp):
+    resources_CO2_emissions_dict.update({ResourceGlossary.GlossaryDict[resource]['name']:
+                                             ResourceGlossary.GlossaryDict[resource][GlossaryEnergy.CO2EmissionsValue]
+                                         for resource in ResourceGlossary.GlossaryDict.keys()})
+    return pd.DataFrame(resources_CO2_emissions_dict)
+
+
+def get_static_prices(years):
+    year_co2 = [2020, 2025, 2030, 2035, 2040, 2045, 2050]
+
+    # $/t
+    price_co2 = [40.0, 45.0, 52.0, 63.0, 74.0, 96.0, 119.0]
+
+    func = sc.interp1d(year_co2, price_co2,
+                       kind='linear', fill_value='extrapolate')
+
+    resources_prices_default_dict = {GlossaryEnergy.Years: years,
+                                     ResourceGlossary.GlossaryDict['CO2']['name']: func(years)}
+
+    resources_prices_default_dict.update(
+        {ResourceGlossary.GlossaryDict[resource]['name']: ResourceGlossary.GlossaryDict[resource]['price'] for resource
+         in ResourceGlossary.GlossaryDict.keys()})
+
+    return pd.DataFrame(resources_prices_default_dict)
+class ResourcesDisc(SoSWrapp):
     # ontology information
     _ontology_data = {
-        'label': 'Core Stream Type Model',
+        'label': 'Energy Data Resources Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -37,7 +64,7 @@ class StreamDiscipline(SoSWrapp):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fas fa-cubes fa-fw',
         'version': '',
     }
 

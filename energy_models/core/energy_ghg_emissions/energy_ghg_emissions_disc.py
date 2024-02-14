@@ -252,7 +252,6 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                      'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                      'platinum_resource (Mt)': ('float', None, True),
-
                                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': ('float', None, True),
                                                      'O2 (Mt)': ('float', None, True),
                                                      'carbon_resource (Mt)': ('float', None, True),
