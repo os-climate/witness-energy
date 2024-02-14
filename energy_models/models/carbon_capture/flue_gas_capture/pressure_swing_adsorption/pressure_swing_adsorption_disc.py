@@ -51,7 +51,7 @@ class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
     # https://www.sciencedirect.com/science/article/pii/S1750583618307461?via%3Dihub#fig0040
     # Refered in this code as SAEECCT
 
-    elec_demand_capture = 810  # SAEECCT - MJ/tCO2
+    elec_demand_capture = 810  # SAEECCT - MJ/tCO2 page no:9, # https://sci-hub.et-fine.com/10.1016/j.ijggc.2019.03.006
     mj_to_kwh_factor = 0.277778
     # Hypothesis for max CO2 captured SAEECCT, USC plant 790 Kg/MWh CO2
     # emission and net power output 550 MW
@@ -78,8 +78,8 @@ class PressureSwingAdsorptionDiscipline(CCTechnoDiscipline):
                                  'elec_demand': elec_demand_capture * mj_to_kwh_factor / 1000,
                                  'elec_demand_unit': 'kWh/kgCO2',
 
-                                 'heat_demand': 0,
-                                 'heat_demand_unit': 'kWh/kgCO2',
+                                 'heat_demand': 0.131,
+                                 'heat_demand_unit': 'kWh/kgCO2', # page no:34 # https://www.osti.gov/servlets/purl/1238374
 
                                  'CO2_capacity_peryear': c02_capacity_year,  # kg CO2 /year
                                  'CO2_capacity_peryear_unit': 'kg CO2/year',

@@ -51,8 +51,8 @@ class PiperazineProcessDiscipline(CCTechnoDiscipline):
     # Refered in this code as SAEECCT
 
     heat_to_power_lost = 0.262
-    heat_duty = 2700  # SAEECCT - MJ/tCO2
-    elec_demand_capture = 200  # SAEECCT - MJ/tCO2
+    heat_duty = 2700  # SAEECCT - MJ/tCO2  page no:9, # https://sci-hub.et-fine.com/10.1016/j.ijggc.2019.03.006
+    elec_demand_capture = 200  # SAEECCT - MJ/tCO2 page no:9, # https://sci-hub.et-fine.com/10.1016/j.ijggc.2019.03.006
     mj_to_kwh_factor = 0.277778
     # Hypothesis for max CO2 captured SAEECCT, USC plant 790 Kg/MWh CO2
     # emission and net power output 550 MW
