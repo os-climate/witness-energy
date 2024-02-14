@@ -1160,9 +1160,6 @@ class FischerTropsch(LiquidFuelTechno):
                                                                            'efficiency'].values)
 
             capex_grad = self.compute_dcapex_dsyngas_ratio()
-            dprodenergy_dsyngas_ratio = self.compute_dprod_dfluegas(
-                capex, invest, invest_before_ystart, techno_infos_dict, capex_grad)
-
             # RWGS
 
             dco2_needs_dsyngas_ratio = self.syngas_ratio_techno_rwgs.compute_dco2_needs_dsyngas_ratio()

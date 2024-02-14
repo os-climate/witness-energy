@@ -94,6 +94,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
         ns_dict = {'ns_public': self.name,
                    'ns_energy': self.name,
                    GlossaryEnergy.NS_CCS: self.name,
+                   GlossaryEnergy.NS_FUNCTIONS: self.name,
                    'ns_energy_study': self.name,
                    GlossaryEnergy.NS_WITNESS: self.name}
         self.ee.ns_manager.add_ns_def(ns_dict)

@@ -76,10 +76,10 @@ class ResourcesDisc(SoSWrapp):
     years = np.arange(year_start_default, year_end_default + 1)
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.ResourcesPriceValue: {'type': 'dataframe', 'unit': '[$/t]',
                                                     'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                    'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                    'int', [1900, 2100], False),
                                                                              'uranium_resource': ('float', None, True),
                                                                              'water_resource': ('float', None, True),
                                                                              'sea_water_resource': (
@@ -128,7 +128,7 @@ class ResourcesDisc(SoSWrapp):
                                                     'default': get_static_prices(years)},
                GlossaryEnergy.RessourcesCO2EmissionsValue: {'type': 'dataframe', 'unit': '[kgCO2/kg]',
                                                             'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                            'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                            'int', [1900, 2100], False),
                                                                                      'uranium_resource': (
                                                                                      'float', None, True),
                                                                                      'water_resource': (

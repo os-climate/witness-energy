@@ -784,7 +784,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                     -0.00010836777114685064, -0.00010147728121516361,
                                                     -9.435997374668482e-05, -8.703097533026997e-05,
                                                     -7.959580181418732e-05, -7.205334764454085e-05,
-                                                    -6.515432417398242e-05, -5.75540845705268e-05]
+                                                    -6.515432417398242e-05, -5.75540845705268e-05][:len(years)]
                                                )})
         self.margin = pd.DataFrame(
             {GlossaryEnergy.Years: years, GlossaryEnergy.MarginValue: np.ones(len(years)) * 110.0})
@@ -820,7 +820,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                            74.99219539004162, 73.40249943334788, 72.22664294400238,
                                                            71.50963387473212, 71.1772779622413, 71.03516293997427,
                                                            69.38040456950807, 70.4079758082903, 71.08045334986878,
-                                                           -3584275.060458262, -2329800.890993138],
+                                                           -3584275.060458262, -2329800.890993138][:len(years)],
                                            GlossaryEnergy.syngas: [42.028563729469255, 40.35463927282826, 29.575202670848103,
                                                       27.981919244567436, 28.4608102544913, 28.316848016389194,
                                                       28.452220125409035, 28.518772400245417, 28.501110014065095,
@@ -847,7 +847,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                       -390003.2486380353, -405411.9698128317, -421287.7163667318,
                                                       -437160.30903796665, -447053.30091864016, -450237.3621336989,
                                                       -449052.56334736367, -444609.502771713, -437862.4445371982,
-                                                      -425706.8529415283, -7278394.372789974, -4730642.794054429],
+                                                      -425706.8529415283, -7278394.372789974, -4730642.794054429][:len(years)],
                                            GlossaryEnergy.methane: [36.24200626025384, 36.037823693272635, 37.922057939185905,
                                                        37.90938443561647, 37.71337829342477, 37.615460321755776,
                                                        37.596894718251846, 37.60924247396737, 37.609470425462696,
@@ -874,7 +874,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                        52.685303924832965, 56.2277300574674, 70.42627292948146,
                                                        121.95161931317762, 157.0563442922703, 161.15421153352872,
                                                        165.15600888621702, 168.89473198397354, 172.84836967336923,
-                                                       176.61716464734127, -253334.87584684434, -164597.48887207167],
+                                                       176.61716464734127, -253334.87584684434, -164597.48887207167][:len(years)],
                                            f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': 50
                                            })
         self.energy_carbon_emissions = pd.DataFrame(
@@ -981,7 +981,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                                                         539.1620166124048,
                                                                                         539.4654629652432,
                                                                                         -538303.205284354,
-                                                                                        -349711.48482286936]
+                                                                                        -349711.48482286936][:len(years)]
                                                                                     }),
                        f'{self.name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.name}.{GlossaryEnergy.TransportCostValue}': self.transport,
@@ -1006,7 +1006,7 @@ class HydrogenJacobianTestCase(AbstractJacobianUnittest):
                                                               110.28022157, 110.28022157, 110.28022157, 110.28022157,
                                                               110.28022157, 110.28022157, 110.28022157, 110.28022157,
                                                               110.28022157, 110.28022157, 110.28022157, 110.28022157,
-                                                              110.28022157]),
+                                                              110.28022157][:len(years)]),
                        f'{self.name}.syngas_ratio_technos': self.syngas_ratio_technos,
                        f'{self.name}.energy_detailed_techno_prices': self.syngas_detailed_prices,
                        f'{self.name}.{GlossaryEnergy.AllStreamsDemandRatioValue}': self.all_streams_demand_ratio,

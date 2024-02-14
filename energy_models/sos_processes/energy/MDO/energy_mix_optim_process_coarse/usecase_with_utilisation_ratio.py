@@ -13,25 +13,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 '''
-from energy_models.sos_processes.energy.MDA.energy_mix_optim_sub_process.usecase import Study as StudyEnergyMixFull
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
-INVEST_DISC_NAME = "InvestmentDistribution"
+from energy_models.sos_processes.energy.MDO.energy_mix_optim_process.usecase import Study as subStudy
 
 
-class Study(StudyEnergyMixFull):
+class Study(subStudy):
     def __init__(
             self,
-            main_study=True,
+            file_path=__file__,
             execution_engine=None,
+            run_usecase=False
     ):
         super().__init__(
-            file_path=__file__,
-            main_study=main_study,
+            file_path=file_path,
             execution_engine=execution_engine,
-            techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            run_usecase=run_usecase,
+            use_utilisation_ratio=True
         )
+        self.techno_dict = DEFAULT_COARSE_TECHNO_DICT
+
 
 if "__main__" == __name__:
-    uc_cls = Study()
+    uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()

@@ -38,14 +38,14 @@ class ElectricityTechnoDiscipline(TechnoDiscipline):
                                                    'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                                    'namespace': 'ns_electricity',
                                                    'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                   'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                   'int', [1900, 2100], False),
                                                                             'transport': ('float', None, True)},
                                                    'dataframe_edition_locked': False},
                GlossaryEnergy.TransportMarginValue: {'type': 'dataframe', 'unit': '%',
                                                      'visibility': TechnoDiscipline.SHARED_VISIBILITY,
                                                      'namespace': 'ns_electricity',
                                                      'dataframe_descriptor': {GlossaryEnergy.Years: (
-                                                     'int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                                                     'int', [1900, 2100], False),
                                                                               GlossaryEnergy.MarginValue: (
                                                                               'float', None, True)},
                                                      'dataframe_edition_locked': False},

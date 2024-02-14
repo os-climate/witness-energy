@@ -52,7 +52,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
 
     DESC_IN = {
         GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
         GlossaryEnergy.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': EnergyMix.energy_list,
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
@@ -310,7 +310,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
             'GHG_emissions_per_energy': self.model.ghg_production_dict,
             'CO2_emissions_sources': self.model.CO2_sources_Gt,
             'CO2_emissions_sinks': self.model.CO2_sinks_Gt,
-            'GWP_emissions': self.model.gwp_emissions
+            'GWP_emissions': self.model.gwp_emissions,
 
         }
         self.store_sos_outputs_values(outputs_dict)

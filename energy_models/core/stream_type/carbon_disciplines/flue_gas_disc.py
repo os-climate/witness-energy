@@ -65,8 +65,8 @@ class FlueGasDiscipline(SoSWrapp):
                                  f'{GlossaryEnergy.electricity}.GasTurbine': GasTurbineDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.electricity}.CombinedCycleGasTurbine': CombinedCycleGasTurbineDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}.WaterGasShift': WaterGasShiftDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.liquid_fuel}.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
-                                 f'{GlossaryEnergy.liquid_fuel}.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.FischerTropsch': FischerTropschDiscipline.FLUE_GAS_RATIO,
+                                 f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel}.Refinery': RefineryDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.methane}.FossilGas': FossilGasDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.solid_fuel}.Pelletizing': PelletizingDiscipline.FLUE_GAS_RATIO,
                                  f'{GlossaryEnergy.syngas}.CoalGasification': CoalGasificationDiscipline.FLUE_GAS_RATIO,
@@ -78,7 +78,7 @@ class FlueGasDiscipline(SoSWrapp):
                                  }
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                             'possible_values': list(POSSIBLE_FLUE_GAS_TECHNOS.keys()),
                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_flue_gas',
@@ -141,7 +141,7 @@ class FlueGasDiscipline(SoSWrapp):
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': ns_variable,
                         'dataframe_descriptor': {
-                            GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
+                            GlossaryEnergy.Years: ('int', [1900, 2100], False),
                             'CO2 from Flue Gas (Mt)': ('float', None, False),
                             }
                     }

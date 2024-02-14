@@ -25,32 +25,22 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
+    def __init__(self, ee):
+        super().__init__(ee)
+        self.sub_process_repo = 'energy_models.sos_processes.energy.MDA'
+        self.sub_process_name = 'energy_mix_optim_sub_process'
 
     def get_builders(self):
-        builders = self.ee.factory.get_builder_from_process('energy_models.sos_processes.energy.MDA', 'energy_mix_optim_sub_process')
+        optim_name = "MDO"
 
-        designvariable_name = "DesignVariables"
-        func_manager_name = "FunctionsManager"
+        coupling_builder = self.ee.factory.get_builder_from_process(self.sub_process_repo, self.sub_process_name)
 
-        # design variables builder
-        ns_dict = {
-            'ns_optim': self.ee.study_name
-        }
-        mods_dict = {
-            designvariable_name: 'sostrades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
-        }
-        builder_dvar = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
-        builders.extend(builder_dvar)
+        # modify namespaces defined in the child process
+        self.ee.ns_manager.update_namespace_list_with_extra_ns(
+            optim_name, after_name=self.ee.study_name, clean_existing=True)  # optim_name
 
-        # function manager builder
+        # -- set optim builder
+        opt_builder = self.ee.factory.create_optim_builder(
+            optim_name, [coupling_builder])
 
-        ns_dict = {
-            #'ns_optim': self.ee.study_name
-        }
-        mods_dict = {
-            func_manager_name: 'sostrades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
-        }
-        builder_fmanager = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=False)
-        builders.extend(builder_fmanager)
-
-        return builders
+        return opt_builder
