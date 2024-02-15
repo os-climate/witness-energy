@@ -408,6 +408,7 @@ class Study(EnergyStudyManager):
                 CarbonCapture.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
                 CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
                 CarbonUtilization.name: np.ones(GlossaryEnergy.NB_POLES_COARSE)
+
             }
 
         else:
@@ -416,6 +417,7 @@ class Study(EnergyStudyManager):
                 CarbonCapture.name: [2.0] + [25] * (GlossaryEnergy.NB_POLES_FULL - 1),
                 CarbonStorage.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1),
                 CarbonUtilization.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1)
+
             }
 
         if self.bspline:
@@ -625,6 +627,9 @@ class Study(EnergyStudyManager):
                 GlossaryEnergy.DirectAirCapture,
                 GlossaryEnergy.FlueGasCapture,
             ]
+            techno_list_carbon_utilization = [
+                GlossaryEnergy.FoodStorageApplications
+            ]
             techno_list_carbon_storage = [GlossaryEnergy.CarbonStorageTechno]
             invest_percentage_per_techno = {GlossaryEnergy.Years: self.years}
             all_techno_list = [
@@ -632,6 +637,8 @@ class Study(EnergyStudyManager):
                 techno_list_renewable,
                 techno_list_carbon_capture,
                 techno_list_carbon_storage,
+                techno_list_carbon_utilization,
+
             ]
             invest_percentage_per_techno.update(
                 {
@@ -691,6 +698,15 @@ class Study(EnergyStudyManager):
             values_dict[
                 f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonCapture.name}.{FlueGas.node_name}.{GlossaryEnergy.techno_list}"
             ] = flue_gas_list
+
+        food_storage_list = [
+            techno for techno in DEFAULT_FOOD_STORAGE_LIST if techno in possible_technos
+        ]
+        if CarbonUtilization.name in DEFAULT_TECHNO_DICT:
+            values_dict[
+                f"{self.study_name}.{GlossaryEnergy.CCUS}.{CarbonUtilization.name}.{FoodStorage.node_name}.{GlossaryEnergy.techno_list}"
+            ] = food_storage_list
+
 
         # IF coarse process no need of heat loss percentage (raw prod is net prod)
         # IF renewable and fossil in energy_list then coarse process

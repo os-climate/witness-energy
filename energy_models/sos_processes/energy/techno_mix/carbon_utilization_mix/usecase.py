@@ -35,8 +35,9 @@ DEFAULT_FOOD_STORAGE_LIST = ['food_storage_applications.BeverageCarbonation', 'f
                              'food_storage_applications.AlgaeCultivation']
 TECHNOLOGIES_LIST_DEV = ['food_storage_applications.BeverageCarbonation', 'food_storage_applications.CarbonatedWater',
                              'food_storage_applications.AlgaeCultivation']
-FOOD_STORAGE_TECHNOLOGIES_LIST_DEV = ['carbon_utilization.food_storage_applications.BeverageCarbonation',
-                                      'carbon_utilization.food_storage_applications.CarbonatedWater']
+
+FOOD_STORAGE_TECHNOLOGIES_LIST_DEV = ['carbon_utilization.food_storage_applications.BeverageCarbonation', 'carbon_utilization.food_storage_applications.CarbonatedWater', 'carbon_utilization.food_storage_applications.AlgaeCultivation']
+
 
 
 class Study(EnergyMixStudyManager):
@@ -167,23 +168,12 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.{GlossaryEnergy.CO2TaxesValue}': self.co2_taxes,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyPricesValue}': self.energy_prices,
                     f'{self.study_name}.{energy_mix_name}.{GlossaryEnergy.EnergyCO2EmissionsValue}': self.energy_carbon_emissions,
-                    # f'{self.study_name}.{energy_mix_name}.electricity.CoalGen.flue_gas_co2_ratio': np.array([0.13]),
-                    # f'{self.study_name}.{energy_mix_name}.electricity.GasTurbine.flue_gas_co2_ratio': np.array([0.035]),
-                    # f'{self.study_name}.{energy_mix_name}.electricity.CombinedCycleGasTurbine.flue_gas_co2_ratio': np.array([0.035]),
-                    # f'{self.study_name}.{energy_mix_name}.hydrogen.gaseous_hydrogen.WaterGasShift.flue_gas_co2_ratio': np.array([0.175]),
-                    # f'{self.study_name}.{energy_mix_name}.liquid_fuel.FischerTropsch.flue_gas_co2_ratio': np.array([0.12]),
-                    # f'{self.study_name}.{energy_mix_name}.liquid_fuel.Refinery.flue_gas_co2_ratio': np.array([0.12]),
-                    # f'{self.study_name}.{energy_mix_name}.methane.FossilGas.flue_gas_co2_ratio': np.array([0.085]),
-                    # f'{self.study_name}.{energy_mix_name}.solid_fuel.Pelletizing.flue_gas_co2_ratio': np.array([0.12]),
-                    # f'{self.study_name}.{energy_mix_name}.syngas.CoalGasification.flue_gas_co2_ratio': np.array([0.13]),
-                    # f'{self.study_name}.{energy_mix_name}.syngas.Pyrolysis.flue_gas_co2_ratio': np.array([0.13]),
-                    # f'{self.study_name}.{energy_mix_name}.fossil.FossilSimpleTechno.flue_gas_co2_ratio': np.array([0.12]),
-                    f'{self.study_name}.carbon_utilization.food_storage_applications.CarbonatedWater.food_storage_co2_ratio': np.array([0.035]),
+                   f'{self.study_name}.carbon_utilization.food_storage_applications.CarbonatedWater.food_storage_co2_ratio': np.array([0.035]),
                     f'{self.study_name}.carbon_utilization.food_storage_applications.BeverageCarbonation.food_storage_co2_ratio': np.array([0.035]),
                     f'{self.study_name}.carbon_utilization.food_storage_applications.AlgaeCultivation.food_storage_co2_ratio': np.array([0.035]),
                     f'{self.study_name}.carbon_utilization.food_storage_applications.FoodStorageApplicationsTechno.food_storage_co2_ratio': np.array(
                         [0.035]),
-
+                   #
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.CarbonatedWater.{GlossaryEnergy.TechnoProductionValue}': carbonatedwater_prod,
                     # f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.CarbonatedWater.{GlossaryEnergy.TechnoProductionValue}': carbonatedwater_prod,
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.BeverageCarbonation.{GlossaryEnergy.TechnoProductionValue}': beveragecarbonation_production,
@@ -209,7 +199,6 @@ class Study(EnergyMixStudyManager):
                     invest_level_techno = pd.DataFrame({GlossaryEnergy.Years: self.invest_level[GlossaryEnergy.Years].values,
                                                         GlossaryEnergy.InvestValue: self.invest_level[GlossaryEnergy.InvestValue].values * investment_mix[techno].values / investment_mix_sum})
                     values_dict[f'{self.study_name}.{ccs_name}.{techno}.{GlossaryEnergy.InvestLevelValue}'] = invest_level_techno
-                    # print(f'{self.study_name}.{ccs_name}.{techno}.{GlossaryEnergy.InvestLevelValue}')
             else:
                 values_dict[f'{self.study_name}.{ccs_name}.{GlossaryEnergy.InvestLevelValue}'] = self.invest_level
 

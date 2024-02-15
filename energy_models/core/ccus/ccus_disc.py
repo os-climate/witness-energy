@@ -74,6 +74,9 @@ class CCUS_Discipline(SoSWrapp):
 
                                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                         GlossaryEnergy.carbon_capture: ('float', None, True),
+                                                                        'carbonated_beverage (Mt)': (
+                                                                        'float', None, True),
+
                                                                         'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                                         'CO2 from Food Storage (Mt)': ('float', None, True),
                                                                         GlossaryEnergy.carbon_storage: ('float', None, True),
@@ -94,6 +97,7 @@ class CCUS_Discipline(SoSWrapp):
                                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
                                                                     'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                                     'CO2 from Food Storage (Mt)': ('float', None, True),
+                                                                    'carbonated_beverage (Mt)': ('float', None, True),
                                                                     GlossaryEnergy.carbon_storage: ('float', None, True),
                                                                     'carbon_capture from energy mix (Gt)': (
                                                                     'float', None, True),
@@ -155,6 +159,7 @@ class CCUS_Discipline(SoSWrapp):
                                                  GlossaryEnergy.carbon_capture: ('float', None, True),
                                                  'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                  'CO2 from Food Storage (Mt)': ('float', None, True),
+                                                 'carbonated_beverage (Mt)': ('float', None, True),
                                                  GlossaryEnergy.carbon_storage: ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  'heat.mediumtemperatureheat (TWh)': ('float', None, True),
@@ -436,6 +441,11 @@ class CCUS_Discipline(SoSWrapp):
                 ('CCS_price', 'ccs_price_per_tCO2'),
                 (f'{CarbonStorage.name}.{GlossaryEnergy.EnergyPricesValue}', CarbonStorage.name),
                 np.identity(len(years)))
+        if CarbonUtilization.name in ccs_list:
+            self.set_partial_derivative_for_other_types(
+                ('CCS_price', 'ccs_price_per_tCO2'),
+                (f'{CarbonUtilization.name}.{GlossaryEnergy.EnergyPricesValue}', CarbonUtilization.name),
+                np.identity(len(years)))
 
     def get_chart_filter_list(self):
 
@@ -584,6 +594,16 @@ class CCUS_Discipline(SoSWrapp):
             x_serie_1,
             (co2_emissions[f'{CarbonStorage.name} Limited by capture (Mt)'].values / 1.0e3).tolist(),
             f'CO2 storage limited by CO2 to store')
+        new_chart.add_series(serie)
+
+        serie = InstanciatedSeries(
+            x_serie_1,
+            (co2_emissions[f'{CarbonUtilization.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 to store')
+        new_chart.add_series(serie)
+
+        serie = InstanciatedSeries(
+            x_serie_1,
+            (carbon_storage_by_invest / 1.0e3).tolist(), f'CO2 storage by invest')
         new_chart.add_series(serie)
 
         return new_chart

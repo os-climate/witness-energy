@@ -27,6 +27,9 @@ from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
+def get_static_CO2_emissions(years):
+    resources_CO2_emissions_dict = {GlossaryEnergy.Years: years}
+
 
 def get_static_CO2_emissions(years):
     resources_CO2_emissions_dict = {GlossaryEnergy.Years: years}

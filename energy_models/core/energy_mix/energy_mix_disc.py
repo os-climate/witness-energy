@@ -338,6 +338,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      GlossaryEnergy.carbon_capture: ('float', None, True),
+                                                     'carbonated_beverage (Mt)': ('float', None, True),
+
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                      GlossaryEnergy.carbon_storage: ('float', None, True), }}
 

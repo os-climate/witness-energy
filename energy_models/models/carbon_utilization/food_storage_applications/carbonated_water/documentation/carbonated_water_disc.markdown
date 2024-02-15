@@ -1,48 +1,50 @@
 **Definition :**
 
-Amine scrubbing is a way to capture and so to remove carbone dioxyde from the air.
-A chimical reaction between amine (RNH2) and carbone dioxyde is used as followed:
-RNH2 + CO2  <-->  RNHCOO- + H+
+What Is Carbonated Water? [^1]
 
-In all the molecule familly amine,  MonoEthanolamine C2H7NO (shortly called MEA) is usually used for amine scrubbing.
-In this case, Direct Air Capture (DAC) case is considered. In other words, carbone dioxyde is captured directly from ambiant air, with usual CO2 concentration. That is different from the "flue gas" case, which capture CO2 from a high CO2 concentrated gas. A specific section deals with flue gas case.
+Carbonated water is H2O that has been infused with carbon dioxide gas under pressure. The carbonation is generally kept in the water through a concealed container, like a bottle or can, and will slowly release once the lid has been opened, forming bubbles of carbon dioxide gas. 
 
-Amine scrubbing will be an important technology for CO2 capture and storage. The degradation of the amine at 100–150 °C limits the maximum T/P and therefore the energy performance of the solvent regeneration.
+Carbonated water is also referred to as sparkling water, club soda, soda water, seltzer water, and fizzy water. Whatever name you associate with this bubbly drink, it’s a delicious beverage for people who opt for less traditional hydration methods. 
 
-Different set-up can be used for the system. The following figure extracted from [^1] is an example
+There are several types of carbonated beverages, some more healthy than others. These are some of the most popular:
 
-![](set_up.PNG)
+Soda, Water, Sparkling wine, Energy drinks, Juice.
 
-**Datas :**
+Carbonated water efficientcy is 90% . [^2]
 
-One critical point of this method is the efficiency of the amine. How much amine is needed to capture 1kg of CO2 ?
-Quote from [^2] gives the information : "it is clear that at 400ppm of C02 and T=293K, the capacity of the resine is still ~1.1mol C02/kg which is crucial for application in a DAC process."
-First, the situation described is a DAC situation, as 400ppm of C02 is the average concentration of CO2 in atmosphere, and 293K is the average temperature. [^4]
-Secondly, knowing CO2's molar mass is 44 kg/mol, an other way to formulate the quote is :
-1kg of amine can capture 48.4kg of CO2. So, (1/48.4 =) 0.0207 kg of amine is needed for 1kg of CO2 captured. [^5]
 
-[^3] Amine scrubbing global efficientcy is 90% of CO2 capture. this is given in the comment at the bottom of the set up figure.
+**Chemical Reaction:**
 
-[^7] Amine scrubbing with thermal regeneration will be an important technology for CO2 capture from fossil fuel combustion to manage global climate change. In this process, CO2 is absorbed in a countercurrent contactor at 40–70°C. The solvent is heated to 100–150°C and stripped with steam to produce pure CO2. [^6]
+When CO2 dissolves in H2O, water and gaseous carbon dioxide react to form a dilute solution of carbonic acid (H2CO3).
+
+**The chemical reaction for this process is: H2O + CO2 ⇋ H2CO3**  [^3]
+
+Softdrink making process:
+
+![img.png](img.png) [^9]
+
+
 
 **Calculation :**
 
-Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and CO2 from direct air is in Mt.
+Consumption of co2 and water liter/liter of carbonated water. [^6], [^7] where, heat demand and elec demand is in kWh/kg [^4], [^5] and total utilization is in Mt. [^8]
 
-[^1] gives more detail about the economical part. It assumed that MEA price is 1300$/ton
-Plus, detailed about the sharing of Capex and Opex are given
+**Datas :**
 
+[^1]: Carbonated water, [Introduction](https://quenchwater.com/blog/how-does-carbonation-work/)
 
-[^1]: Husebye, J., Brunsvold, A.L., Roussanaly, S. and Zhang, X., 2012. Techno economic evaluation of amine based CO2 capture: impact of CO2 concentration and steam supply. Energy Procedia, 23, pp.381-390.
+[^2]: Carbonated water Efficiency, [Efficiency](https://www.scripps.org/news_items/5224-are-carbonated-beverages-harming-your-health)
 
-[^2]: Buijs, W. and De Flart, S., 2017. Direct air capture of CO2 with an amine resin: A molecular modeling study of the CO2 capturing process. Industrial & engineering chemistry research, 56(43), pp.12297-12304.
+[^3]: Carbonated water: Process, [Process](https://letstalkscience.ca/educational-resources/stem-explained/chemistry-pop)
 
-[^3]: Fasihi, M., Efimova, O. and Breyer, C., 2019. Techno-economic assessment of CO2 direct air capture plants. Journal of cleaner production, 224, pp.957-980.
+[^4]: Elec Used, [Elec Demand](https://www.google.com/search?q=carbonated+water+process+how+much+electricity+used+in+kwh+&sca_esv=b9eca7660d2a1203&rlz=1C1UEAD_enIN1000IN1000&sxsrf=ACQVn0_mLwbL4I9MG04Nw-xDXYROrfmkdg%3A1707333796755&ei=pNjDZafhLdKeseMP8OGy6Ao&ved=0ahUKEwinw9-D-pmEAxVST2wGHfCwDK0Q4dUDCBA&uact=5&oq=carbonated+water+process+how+much+electricity+used+in+kwh+&gs_lp=Egxnd3Mtd2l6LXNlcnAiOmNhcmJvbmF0ZWQgd2F0ZXIgcHJvY2VzcyBob3cgbXVjaCBlbGVjdHJpY2l0eSB1c2VkIGluIGt3aCBIAFAAWABwAHgBkAEAmAEAoAEAqgEAuAEDyAEA-AEB4gMEGAAgQQ&sclient=gws-wiz-serp#ip=1)
 
-[^4]: Keith, D.W., Holmes, G., Angelo, D.S. and Heidel, K., 2018. A process for capturing CO2 from the atmosphere. Joule, 2(8), pp.1573-1594.
+[^5]: Heat Used, [Heat Used](https://pubs.acs.org/doi/10.1021/acssuschemeng.0c08561)
 
-[^5]: Vo, T.T., Wall, D.M., Ring, D., Rajendran, K. and Murphy, J.D., 2018. Techno-economic analysis of biogas upgrading via amine scrubber, carbon capture and ex-situ methanation. Applied energy, 212, pp.1191-1202.
+[^6]: Water required, [Water demand](https://en.wikipedia.org/wiki/Bottled_water)
 
-[^6]: Amine scrubbing some amount of heat is required,[science direct](https://www.sciencedirect.com/science/article/abs/pii/S2211339812000081#:~:text=Amine%20scrubbing%20will%20be%20an,performance%20of%20the%20solvent%20regeneration) 
+[^7]: CO2 needs, [CO2 needs](https://www.sciencedirect.com/topics/agricultural-and-biological-sciences/carbonation)
 
-[^7]: Amine scrubbing, [heat](https://www.sciencedirect.com/science/article/abs/pii/S2211339812000081)
+[^8]: Total CO2 Utilization, [iea](https://www.iea.org/reports/putting-co2-to-use)
+
+[^9]: Softdrink making process, [Making Process](https://www.penglaimachines.com/CO2-drink-beverage-mixing-equipment-blending-machine.html)

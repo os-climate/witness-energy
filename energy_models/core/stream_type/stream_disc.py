@@ -96,6 +96,8 @@ class StreamDiscipline(SoSWrapp):
 
                                                  f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
                                                  'amine (Mt)': ('float', None, True),
+                                                 'Food Storage (Mt)': ('float', None, True),
+
                                                  f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
                                                  'calcium (Mt)': ('float', None, True),
                                                  'potassium (Mt)': ('float', None, True),
@@ -112,6 +114,7 @@ class StreamDiscipline(SoSWrapp):
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  'amine (Mt)': ('float', None, True),
+                                                 'Food Storage (Mt)': ('float', None, True),
                                                  f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
                                                  'calcium (Mt)': ('float', None, True),
                                                  'nitrogen (Mt)': ('float', None, True),
@@ -134,7 +137,7 @@ class StreamDiscipline(SoSWrapp):
                                                  'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                  'beverage food production (Mt)': ('float', None, False),
                                                  f'{GlossaryEnergy.carbon_storage} (Mt)': ('float', None, True),
-                                                 f'{GlossaryEnergy.carbon_utilization} (Mt)': ('float', None, True),
+                                                 'carbonated_beverage (Mt)': ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                  'heat.lowtemperatureheat (TWh)': ('float', None, True),
