@@ -338,13 +338,13 @@ class CarbonUtilization(BaseStream):
                 # dtechno_mix/dflue gas prod = dpi/ptot -pidpj/ptot**2 for j in flue gas capture
                 # then  we add  -pidpj/ptot**2 for j in flue gas capture no
                 # matter if i is flue gas capture
-                if element_other.startswith('food_storage_applications') and self.food_storage_percentage is not None:
-                    prodj = self.sub_production_dict[element_other][
-                        f'{self.name} ({self.unit})'].values
-                    grad_element_mix_vs_prod[f'fs_prod {element}'] -= dprod_element_dict[element_other] * prodj * \
-                        dfoodstorage * dfs_ratio_dfs_prod * \
-                        prod_element_dict[element] / \
-                        prod_total_for_mix_weight**2
+                # if element_other.startswith('food_storage_applications') and self.food_storage_percentage is not None:
+                #     prodj = self.sub_production_dict[element_other][
+                #         f'{self.name} ({self.unit})'].values
+                #     grad_element_mix_vs_prod[f'fs_prod {element}'] -= dprod_element_dict[element_other] * prodj * \
+                #         dfoodstorage * dfs_ratio_dfs_prod * \
+                #         prod_element_dict[element] / \
+                #         prod_total_for_mix_weight**2
                 if element_other != element:
                     # dtechno_mix(p2)/dprod1 = -p2dp1/ptot**2
                     grad_element_mix_vs_prod[f'{element} {element_other}'] = -dprod_element_dict[element] * \

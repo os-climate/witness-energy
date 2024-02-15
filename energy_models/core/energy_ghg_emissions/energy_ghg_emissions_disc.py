@@ -90,6 +90,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                            f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)': ('float', None, True),
                                                            f'production {GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
                                                            f'production {GlossaryEnergy.carbon_storage} (Mt)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.carbon_utilization} (Mt)': (
+                                                           'float', None, True),
                                                            'Total production': ('float', None, True),
                                                            'Total production (uncut)': ('float', None, True),
                                                            'production heat.hightemperatureheat (TWh)': (

@@ -596,10 +596,10 @@ class CCUS_Discipline(SoSWrapp):
             f'CO2 storage limited by CO2 to store')
         new_chart.add_series(serie)
 
-        serie = InstanciatedSeries(
-            x_serie_1,
-            (co2_emissions[f'{CarbonUtilization.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 to store')
-        new_chart.add_series(serie)
+        # serie = InstanciatedSeries(
+        #     x_serie_1,
+        #     (co2_emissions[f'{CarbonUtilization.name} to be stored (Mt)'].values / 1.0e3).tolist(), f'CO2 to store')
+        # new_chart.add_series(serie)
 
         serie = InstanciatedSeries(
             x_serie_1,
