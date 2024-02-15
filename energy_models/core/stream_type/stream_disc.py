@@ -135,7 +135,7 @@ class StreamDiscipline(SoSWrapp):
 
                                                  f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
                                                  'CO2 from Flue Gas (Mt)': ('float', None, True),
-                                                 'beverage food production (Mt)': ('float', None, False),
+                                                 'beverage food (Mt)': ('float', None, False),
                                                  f'{GlossaryEnergy.carbon_storage} (Mt)': ('float', None, True),
                                                  'carbonated_beverage (Mt)': ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),

@@ -83,7 +83,7 @@ class CarbonatedWater(CUTechno):
 
         # Production
 
-        self.production_detailed[f'beverage food production ({self.mass_unit})'] = self.production_detailed[
+        self.production_detailed[f'Carbonated Food ({self.mass_unit})'] = self.production_detailed[
             f'{CUTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
@@ -98,7 +98,7 @@ class CarbonatedWater(CUTechno):
                                                                         self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})'] / \
                                                                         self.cost_details['efficiency']
 
-        self.consumption_detailed[f'{CarbonUtilization.food_storage_name} ({self.mass_unit})'] = self.techno_infos_dict['co2_needs'] * \
+        self.consumption_detailed[f'Carbonated Food ({self.mass_unit})'] = self.techno_infos_dict['co2_needs'] * \
                                                                                                  self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']
 
         # # Productions

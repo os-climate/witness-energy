@@ -24,7 +24,7 @@ from energy_models.glossaryenergy import GlossaryEnergy
 
 class CarbonUtilization(BaseStream):
     name = 'carbon_utilization'
-    food_storage_name = 'beverage food production'
+    food_storage_name = 'beverage food'
     unit = 'Mt'
     default_techno_list = ['food_storage_applications.AlgaeCultivation',
                            'food_storage_applications.BeverageCarbonation',

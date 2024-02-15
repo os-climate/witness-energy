@@ -108,7 +108,7 @@ class FoodStorageDiscipline(SoSWrapp):
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': ns_variable,
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                 'beverage food production (Mt)': ('float', None, False),
+                                                 'beverage food (Mt)': ('float', None, False),
                                                  }
                     }
 
