@@ -281,6 +281,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}': ('float', None, True),
                                                      'glycerol_resource (Mt)': ('float', None, True),
                                                      'coal_resource (Mt)': ('float', None, True),
+                                                     'Food Storage (Mt)': ('float', None, True),
+
                                                      GlossaryEnergy.solid_fuel: ('float', None, True),
                                                      'CO2_resource (Mt)': ('float', None, True),
                                                      f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),

@@ -34,7 +34,7 @@ TECHNOLOGIES_FOOD_STORAGE_LIST_COARSE = ['food_storage_applications.BeverageCarb
 DEFAULT_FOOD_STORAGE_LIST = ['food_storage_applications.BeverageCarbonation']
 TECHNOLOGIES_LIST_DEV = ['food_storage_applications.BeverageCarbonation', 'food_storage_applications.CarbonatedWater',
                              'food_storage_applications.AlgaeCultivation']
-FOOD_STORAGE_TECHNOLOGIES_LIST_DEV = ['carbon_utilization.food_storage_applications.BeverageCarbonation', 'carbon_utilization.food_storage_applications.CarbonatedWater']
+FOOD_STORAGE_TECHNOLOGIES_LIST_DEV = ['carbon_utilization.food_storage_applications.BeverageCarbonation', 'carbon_utilization.food_storage_applications.CarbonatedWater', 'carbon_utilization.food_storage_applications.AlgaeCultivation']
 
 
 class Study(EnergyMixStudyManager):
@@ -170,7 +170,7 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.carbon_utilization.food_storage_applications.AlgaeCultivation.food_storage_co2_ratio': np.array([0.035]),
                     f'{self.study_name}.carbon_utilization.food_storage_applications.FoodStorageApplicationsTechno.food_storage_co2_ratio': np.array(
                         [0.035]),
-
+                   #
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.CarbonatedWater.{GlossaryEnergy.TechnoProductionValue}': carbonatedwater_prod,
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.BeverageCarbonation.{GlossaryEnergy.TechnoProductionValue}': beveragecarbonation_production,
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.AlgaeCultivation.{GlossaryEnergy.TechnoProductionValue}': algaecultivation_production,

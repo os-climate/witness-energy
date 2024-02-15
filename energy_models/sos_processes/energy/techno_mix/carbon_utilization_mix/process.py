@@ -69,7 +69,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         #
         mods_dict[
             f'{self.prefix_name}.{carbon_utilization_name}.food_storage_applications'] = 'energy_models.core.stream_type.carbon_disciplines.food_storage_disc.FoodStorageDiscipline'
-        #
+
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
 
         return builder_list

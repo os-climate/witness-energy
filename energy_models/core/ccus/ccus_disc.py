@@ -74,6 +74,9 @@ class CCUS_Discipline(SoSWrapp):
 
                                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                         GlossaryEnergy.carbon_capture: ('float', None, True),
+                                                                        'carbonated_beverage (Mt)': (
+                                                                        'float', None, True),
+
                                                                         'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                                         GlossaryEnergy.carbon_storage: ('float', None, True),
                                                                         'carbon_capture from energy mix (Gt)': (
@@ -92,6 +95,8 @@ class CCUS_Discipline(SoSWrapp):
                                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
                                                                     'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                                    'carbonated_beverage (Mt)': ('float', None, True),
+
                                                                     GlossaryEnergy.carbon_storage: ('float', None, True),
                                                                     'carbon_capture from energy mix (Gt)': (
                                                                     'float', None, True),
@@ -152,6 +157,8 @@ class CCUS_Discipline(SoSWrapp):
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  GlossaryEnergy.carbon_capture: ('float', None, True),
                                                  'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                 'carbonated_beverage (Mt)': ('float', None, True),
+
                                                  GlossaryEnergy.carbon_storage: ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  'heat.mediumtemperatureheat (TWh)': ('float', None, True),
