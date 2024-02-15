@@ -27,6 +27,7 @@ from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -96,7 +97,9 @@ class EnergyMix(BaseStream):
     only_energy_list = list(energy_class_dict.keys())
 
     stream_class_dict = {CarbonCapture.name: CarbonCapture,
-                         CarbonStorage.name: CarbonStorage, }
+                         CarbonStorage.name: CarbonStorage,
+                         CarbonUtilization.name: CarbonUtilization,
+                         }
     ccs_list = list(stream_class_dict.keys())
     stream_class_dict.update(energy_class_dict)
 
@@ -105,6 +108,7 @@ class EnergyMix(BaseStream):
     CO2_list = [f'{CarbonCapture.name} (Mt)',
                 f'{CarbonCapture.flue_gas_name} (Mt)',
                 f'{CarbonStorage.name} (Mt)',
+                f'{CarbonUtilization.name} (Mt)',
                 f'{CO2.name} (Mt)',
                 f'{Carbon.name} (Mt)']
     solidFuel_name = SolidFuel.name
@@ -953,8 +957,11 @@ class EnergyMix(BaseStream):
         return dtot_CO2_emissions
 
     def compute_target_production_constraint(self, inputs_dict: dict):
+        target_production_constraint_ref = inputs_dict[GlossaryEnergy.TargetProductionConstraintRefValue]
         target_energy_production = inputs_dict[GlossaryEnergy.TargetEnergyProductionValue][GlossaryEnergy.TargetEnergyProductionValue].values
-        self.target_production_constraint = self.production[GlossaryEnergy.TotalProductionValue].values * 1000 - target_energy_production
+        actual_production_twh = self.production[GlossaryEnergy.TotalProductionValue].values * 1000
+        missing_production = target_energy_production - actual_production_twh
+        self.target_production_constraint = missing_production / target_production_constraint_ref
 
     def compute(self, inputs: dict, exp_min=True):
         self.configure_parameters_update(inputs)

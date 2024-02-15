@@ -97,6 +97,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.TargetEnergyProductionValue: GlossaryEnergy.TargetEnergyProductionDf,
+               GlossaryEnergy.TargetProductionConstraintRefValue: GlossaryEnergy.TargetProductionConstraintRef,
                'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                          'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_energy_study'},
                'primary_energy_percentage': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.8,
@@ -276,7 +277,6 @@ class Energy_Mix_Discipline(SoSWrapp):
                                         f'{ns_energy}.{GlossaryEnergy.LandUseRequiredValue}']:
                             dynamic_inputs[new_var].update({'namespace': GlossaryEnergy.NS_WITNESS,
                                                             'visibility': SoSWrapp.SHARED_VISIBILITY})
-
                     if energy in self.energy_class_dict:
                         # Biomass energy is computed by the agriculture model
                         dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.CO2EmissionsValue}'] = {
@@ -321,6 +321,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+
                                                      f'{GlossaryEnergy.renewable} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.fossil} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True), }}
@@ -328,6 +329,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                             'type': 'dataframe', 'unit': 'PWh', 'visibility': SoSWrapp.SHARED_VISIBILITY,
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+
                                                      f'{GlossaryEnergy.renewable} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.fossil} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True), }}
@@ -336,6 +338,8 @@ class Energy_Mix_Discipline(SoSWrapp):
                             'namespace': GlossaryEnergy.NS_CCS,
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      GlossaryEnergy.carbon_capture: ('float', None, True),
+                                                     'carbonated_beverage (Mt)': ('float', None, True),
+
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                      GlossaryEnergy.carbon_storage: ('float', None, True), }}
 
@@ -512,7 +516,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         # -- biomass dry values are coming from agriculture mix discipline, but needs to be used in model with biomass dry name
         inputs_dict = {}
         inputs_dict.update(inputs_dict_orig)
-        energy_list = inputs_dict[GlossaryEnergy.energy_list] + inputs_dict[GlossaryEnergy.ccs_list]
+        energy_list = inputs_dict[GlossaryEnergy.energy_list] #+ inputs_dict[GlossaryEnergy.ccs_list]
         self.update_biomass_dry_name(inputs_dict_orig, inputs_dict)
         outputs_dict = self.get_sosdisc_outputs()
         stream_class_dict = EnergyMix.stream_class_dict
@@ -580,10 +584,11 @@ class Energy_Mix_Discipline(SoSWrapp):
                      GlossaryEnergy.TotalProductionValue),
                     (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
                     dtotal_prod_denergy_prod)
+                target_production_constraint_ref = inputs_dict[GlossaryEnergy.TargetProductionConstraintRefValue]
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.TargetProductionConstraintValue,),
                     (f'{ns_energy}.{GlossaryEnergy.EnergyProductionValue}', energy),
-                    dtotal_prod_denergy_prod * 1e6)
+                    - dtotal_prod_denergy_prod * 1e6 / target_production_constraint_ref)
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.EnergyProductionDetailedValue,
                      GlossaryEnergy.TotalProductionValue),
@@ -686,7 +691,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                             (GlossaryEnergy.TargetProductionConstraintValue,), (
                                 f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',
                                 f'{energy} ({stream_class_dict[energy].unit})'),
-                            scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * 1e6)
+                            - scaling_factor_energy_consumption * dtotal_prod_denergy_cons / scaling_factor_energy_production * 1e6 / target_production_constraint_ref)
                         self.set_partial_derivative_for_other_types(
                             (GlossaryEnergy.EnergyProductionDetailedValue, GlossaryEnergy.TotalProductionValue),
                             (f'{ns_energy_input}.{GlossaryEnergy.EnergyConsumptionValue}',

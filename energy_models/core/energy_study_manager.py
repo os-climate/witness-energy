@@ -18,6 +18,7 @@ from importlib import import_module
 
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -50,9 +51,14 @@ from energy_models.sos_processes.energy.techno_mix.biomass_dry_mix.usecase impor
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     TECHNOLOGIES_LIST_DEV as CarbonCapture_technos_dev,
 )
+from energy_models.sos_processes.energy.techno_mix.carbon_utilization_mix.usecase import (
+    TECHNOLOGIES_LIST_DEV as CarbonUtilization_technos_dev,
+)
+
 from energy_models.sos_processes.energy.techno_mix.carbon_storage_mix.usecase import (
     TECHNOLOGIES_LIST_DEV as CarbonStorage_technos_dev,
 )
+
 from energy_models.sos_processes.energy.techno_mix.electricity_mix.usecase import (
     TECHNOLOGIES_LIST_DEV as Electricity_technos_dev,
 )
@@ -113,7 +119,9 @@ DEFAULT_TECHNO_DICT = {Methane.name: {'type': ENERGY_TYPE, 'value': Methane_tech
                        Ethanol.name: {'type': ENERGY_TYPE, 'value': Ethanol_technos_dev},
                        LiquidHydrogen.name: {'type': ENERGY_TYPE, 'value': LiquidHydrogen_technos_dev},
                        CarbonCapture.name: {'type': CCUS_TYPE, 'value': CarbonCapture_technos_dev},
-                       CarbonStorage.name: {'type': CCUS_TYPE, 'value': CarbonStorage_technos_dev}}
+                       CarbonStorage.name: {'type': CCUS_TYPE, 'value': CarbonStorage_technos_dev},
+                       CarbonUtilization.name: {'type': CCUS_TYPE, 'value': CarbonUtilization_technos_dev},
+                       }
 
 DEFAULT_TECHNO_DICT_DEV = {
     Methane.name: {"type": ENERGY_TYPE, "value": Methane_technos_dev},
@@ -145,6 +153,7 @@ DEFAULT_TECHNO_DICT_DEV = {
     LiquidHydrogen.name: {"type": ENERGY_TYPE, "value": LiquidHydrogen_technos_dev},
     CarbonCapture.name: {"type": CCUS_TYPE, "value": CarbonCapture_technos_dev},
     CarbonStorage.name: {"type": CCUS_TYPE, "value": CarbonStorage_technos_dev},
+    CarbonUtilization.name: {'type': CCUS_TYPE, 'value': CarbonUtilization_technos_dev},
 }
 
 DEFAULT_COARSE_TECHNO_DICT = {

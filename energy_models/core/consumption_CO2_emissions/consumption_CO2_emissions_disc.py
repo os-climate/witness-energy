@@ -64,6 +64,7 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
         'scaling_factor_energy_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
 
+
         GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
                                                        'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                        'namespace': 'ns_energy',
@@ -162,6 +163,11 @@ class ConsumptionCO2EmissionsDiscipline(SoSWrapp):
                                                      'oil_resource (Mt)': ('float', None, True),
                                                      'copper_resource (Mt)': ('float', None, True),
                                                      'uranium_resource (Mt)': ('float', None, True),
+                                                     'nitrogen_resource (Mt)': ('float', None, True),
+                                                     'phosphorus_resource (Mt)': ('float', None, True),
+                                                     'beverage_carbonation_resource (Mt)': ('float', None, True),
+                                                     'carbonated_water_resource (Mt)': ('float', None, True),
+                                                     'algae_cultivation_resource (Mt)': ('float', None, True),
                                                      f'{GlossaryEnergy.fuel}.{GlossaryEnergy.liquid_fuel} (TWh)': ('float', None, True),
                                                      'natural_gas_resource (Mt)': ('float', None, True),
                                                      f'{GlossaryEnergy.biogas} (TWh)': ('float', None, True),

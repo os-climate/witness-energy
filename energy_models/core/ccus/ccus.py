@@ -23,6 +23,8 @@ from energy_models.core.stream_type.carbon_models.carbon import Carbon
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
+
 from energy_models.glossaryenergy import GlossaryEnergy
 
 
@@ -43,9 +45,12 @@ class CCUS(BaseStream):
     CO2_list = [f'{CarbonCapture.name} (Mt)',
                 f'{CarbonCapture.flue_gas_name} (Mt)',
                 f'{CarbonStorage.name} (Mt)',
+                f'{CarbonUtilization.name} (Mt)',
+                f'{CarbonUtilization.food_storage_name} (Mt)',
+
                 f'{CO2.name} (Mt)',
                 f'{Carbon.name} (Mt)']
-    ccs_list = [CarbonCapture.name, CarbonStorage.name]
+    ccs_list = [CarbonCapture.name, CarbonStorage.name, CarbonUtilization.name ]
 
     def __init__(self, name):
         '''
@@ -250,6 +255,8 @@ class CCUS(BaseStream):
             self.CCS_price['ccs_price_per_tCO2'] += self.energy_prices[CarbonCapture.name]
         if CarbonStorage.name in self.sub_prices:
             self.CCS_price['ccs_price_per_tCO2'] += self.sub_prices[CarbonStorage.name]
+        if CarbonUtilization.name in self.sub_prices:
+            self.CCS_price['ccs_price_per_tCO2'] += self.sub_prices[CarbonUtilization.name]
 
     def compute_carbon_storage_constraint(self):
         '''

@@ -55,6 +55,9 @@ class IndependentInvestDiscipline(SoSWrapp):
         GlossaryEnergy.invest_mix: {'type': 'dataframe', 'unit': 'G$',
                                     'dataframe_edition_locked': False,
                                     'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                             'carbon_utilization.food_storage_applications.BeverageCarbonation': ('float', None, True),
+                                                             'carbon_utilization.food_storage_applications.CarbonatedWater': ('float', None, True),
+                                                             'carbon_utilization.food_storage_applications.AlgaeCultivation': ('float', None, True),
                                                              f'{GlossaryEnergy.electricity}.SolarPv': ('float', None, True),
                                                              f'{GlossaryEnergy.electricity}.WindOnshore': ('float', None, True),
                                                              f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),
@@ -151,6 +154,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                                                'namespace': 'ns_invest',
                                                'dataframe_edition_locked': False},
         GlossaryEnergy.MaxBudgetValue : GlossaryEnergy.MaxBudgetDf,
+        GlossaryEnergy.MaxBudgetConstraintRefValue: GlossaryEnergy.MaxBudgetConstraintRef
     }
 
     energy_name = "one_invest"
@@ -278,6 +282,8 @@ class IndependentInvestDiscipline(SoSWrapp):
         identity = np.identity(delta_years)
         ones = np.ones(delta_years)
 
+        max_budget_constraint_ref = inputs_dict[GlossaryEnergy.MaxBudgetConstraintRefValue]
+
         for techno in self.independent_invest_model.distribution_list:
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.EnergyInvestmentsWoTaxValue, GlossaryEnergy.EnergyInvestmentsWoTaxValue),
@@ -292,7 +298,7 @@ class IndependentInvestDiscipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 (GlossaryEnergy.MaxBudgetConstraintValue,),
                 (GlossaryEnergy.invest_mix, techno),
-                identity)
+                identity / max_budget_constraint_ref)
 
             self.set_partial_derivative_for_other_types(
                 (f'{techno}.{GlossaryEnergy.InvestLevelValue}', GlossaryEnergy.InvestValue),
@@ -312,7 +318,7 @@ class IndependentInvestDiscipline(SoSWrapp):
         self.set_partial_derivative_for_other_types(
             (GlossaryEnergy.MaxBudgetConstraintValue,),
             (GlossaryEnergy.ForestInvestmentValue, GlossaryEnergy.ForestInvestmentValue),
-            identity)
+            identity / max_budget_constraint_ref)
 
         energy_list = inputs_dict[GlossaryEnergy.energy_list]
         if BiomassDry.name in energy_list:
@@ -330,7 +336,7 @@ class IndependentInvestDiscipline(SoSWrapp):
                 self.set_partial_derivative_for_other_types(
                     (GlossaryEnergy.MaxBudgetConstraintValue,),
                     (techno, GlossaryEnergy.InvestmentsValue),
-                    identity)
+                    identity / max_budget_constraint_ref)
 
     def get_chart_filter_list(self):
 

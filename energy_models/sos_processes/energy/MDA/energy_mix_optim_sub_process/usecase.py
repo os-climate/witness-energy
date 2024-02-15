@@ -391,7 +391,7 @@ class Study(EnergyStudyManager):
             'activated_elem': [[True] * GlossaryEnergy.NB_POLES_UTILIZATION_RATIO] * n_dvar_ur,
             'lower_bnd': [low_bound] * n_dvar_ur,
             'upper_bnd': [upper_bound] * n_dvar_ur,
-            'enable_variable': [False] * n_dvar_ur
+            'enable_variable': [True] * n_dvar_ur
         }
 
         dspace_ur = pd.DataFrame(dspace_ur)
@@ -678,6 +678,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.design_space": dspace,
             f"{self.study_name}.{self.coupling_name}.FunctionsManager.function_df": func_df,
             f"{self.study_name}.{self.coupling_name}.max_mda_iter": 200,
+            f"{self.study_name}.{self.coupling_name}.sub_mda_class": "MDANewtonRaphson",
         }
 
         dvar_values = self.get_dvar_values(dspace)

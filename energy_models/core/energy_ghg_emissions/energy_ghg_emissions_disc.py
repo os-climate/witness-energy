@@ -72,6 +72,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                             'namespace': GlossaryEnergy.NS_WITNESS, 'user_level': 3},
         GlossaryEnergy.EnergyProductionDetailedValue: {'type': 'dataframe', 'unit': 'TWh',
+
                                                        'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                        'namespace': 'ns_energy',
                                                        'dataframe_descriptor': {
@@ -89,6 +90,8 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                            f'production {GlossaryEnergy.hydrogen}.{GlossaryEnergy.liquid_hydrogen} (TWh)': ('float', None, True),
                                                            f'production {GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
                                                            f'production {GlossaryEnergy.carbon_storage} (Mt)': ('float', None, True),
+                                                           f'production {GlossaryEnergy.carbon_utilization} (Mt)': (
+                                                           'float', None, True),
                                                            'Total production': ('float', None, True),
                                                            'Total production (uncut)': ('float', None, True),
                                                            'production heat.hightemperatureheat (TWh)': (
@@ -194,6 +197,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                      'heat.lowtemperatureheat (TWh)': ('float', None, True),
                                                      'platinum_resource (Mt)': ('float', None, True),
+
                                                      f'{GlossaryEnergy.hydrogen}.{GlossaryEnergy.gaseous_hydrogen}': ('float', None, True),
                                                      'O2 (Mt)': ('float', None, True),
                                                      'carbon_resource (Mt)': ('float', None, True),
@@ -228,6 +232,7 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.solid_fuel} (TWh)': ('float', None, True),
                                                      'wood (Mt)': ('float', None, True),
+
                                                      f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
                                                      GlossaryEnergy.syngas: ('float', None, True),
                                                      'char (Mt)': ('float', None, True),
@@ -278,11 +283,14 @@ class EnergyGHGEmissionsDiscipline(SoSWrapp):
                                                      f'{GlossaryEnergy.fuel}.{GlossaryEnergy.biodiesel}': ('float', None, True),
                                                      'glycerol_resource (Mt)': ('float', None, True),
                                                      'coal_resource (Mt)': ('float', None, True),
+                                                     'Food Storage (Mt)': ('float', None, True),
+
                                                      GlossaryEnergy.solid_fuel: ('float', None, True),
                                                      'CO2_resource (Mt)': ('float', None, True),
                                                      f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
                                                      f'{GlossaryEnergy.solid_fuel} (TWh)': ('float', None, True),
                                                      'wood (Mt)': ('float', None, True),
+
                                                      f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
                                                      GlossaryEnergy.syngas: ('float', None, True),
                                                      'char (Mt)': ('float', None, True),
