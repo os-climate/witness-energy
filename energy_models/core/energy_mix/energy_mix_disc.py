@@ -1336,7 +1336,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                 chart_target_energy_production.add_series(serie_target_energy_production)
 
                 energy_production = self.get_sosdisc_outputs(GlossaryEnergy.EnergyProductionValue)[
-                                     GlossaryEnergy.TotalProductionValue].values
+                                     GlossaryEnergy.TotalProductionValue].values * 1000
                 serie_production = InstanciatedSeries(list(years), list(energy_production), "Energy production",
                                                    'bar')
                 chart_target_energy_production.add_series(serie_production)
