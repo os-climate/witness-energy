@@ -277,7 +277,6 @@ class Energy_Mix_Discipline(SoSWrapp):
                                         f'{ns_energy}.{GlossaryEnergy.LandUseRequiredValue}']:
                             dynamic_inputs[new_var].update({'namespace': GlossaryEnergy.NS_WITNESS,
                                                             'visibility': SoSWrapp.SHARED_VISIBILITY})
-
                     if energy in self.energy_class_dict:
                         # Biomass energy is computed by the agriculture model
                         dynamic_inputs[f'{ns_energy}.{GlossaryEnergy.CO2EmissionsValue}'] = {
@@ -515,7 +514,7 @@ class Energy_Mix_Discipline(SoSWrapp):
         # -- biomass dry values are coming from agriculture mix discipline, but needs to be used in model with biomass dry name
         inputs_dict = {}
         inputs_dict.update(inputs_dict_orig)
-        energy_list = inputs_dict[GlossaryEnergy.energy_list] + inputs_dict[GlossaryEnergy.ccs_list]
+        energy_list = inputs_dict[GlossaryEnergy.energy_list] #+ inputs_dict[GlossaryEnergy.ccs_list]
         self.update_biomass_dry_name(inputs_dict_orig, inputs_dict)
         outputs_dict = self.get_sosdisc_outputs()
         stream_class_dict = EnergyMix.stream_class_dict

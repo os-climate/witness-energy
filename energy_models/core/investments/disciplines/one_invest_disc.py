@@ -66,6 +66,12 @@ class OneInvestDiscipline(SoSWrapp):
         GlossaryEnergy.invest_mix: {'type': 'dataframe',
                                     'dataframe_descriptor': {
                                         GlossaryEnergy.Years: ('int', [1900, 2100], False),
+                                        'carbon_utilization.food_storage_applications.BeverageCarbonation': (
+                                        'float', None, True),
+                                        'carbon_utilization.food_storage_applications.CarbonatedWater': (
+                                        'float', None, True),
+                                        'carbon_utilization.food_storage_applications.AlgaeCultivation': (
+                                        'float', None, True),
                                         f'{GlossaryEnergy.electricity}.SolarPv': ('float', None, True),
                                         f'{GlossaryEnergy.electricity}.WindOnshore': ('float', None, True),
                                         f'{GlossaryEnergy.electricity}.CoalGen': ('float', None, True),

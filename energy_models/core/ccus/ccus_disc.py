@@ -26,6 +26,7 @@ from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
+from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -74,6 +75,7 @@ class CCUS_Discipline(SoSWrapp):
                                                'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                         GlossaryEnergy.carbon_capture: ('float', None, True),
                                                                         'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                                        'CO2 from Food Storage (Mt)': ('float', None, True),
                                                                         GlossaryEnergy.carbon_storage: ('float', None, True),
                                                                         'carbon_capture from energy mix (Gt)': (
                                                                         'float', None, True),
@@ -91,6 +93,7 @@ class CCUS_Discipline(SoSWrapp):
                                            'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                                     GlossaryEnergy.carbon_capture: ('float', None, True),
                                                                     'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                                    'CO2 from Food Storage (Mt)': ('float', None, True),
                                                                     GlossaryEnergy.carbon_storage: ('float', None, True),
                                                                     'carbon_capture from energy mix (Gt)': (
                                                                     'float', None, True),
@@ -151,6 +154,7 @@ class CCUS_Discipline(SoSWrapp):
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                  GlossaryEnergy.carbon_capture: ('float', None, True),
                                                  'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                 'CO2 from Food Storage (Mt)': ('float', None, True),
                                                  GlossaryEnergy.carbon_storage: ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  'heat.mediumtemperatureheat (TWh)': ('float', None, True),

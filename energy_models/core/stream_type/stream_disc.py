@@ -132,7 +132,9 @@ class StreamDiscipline(SoSWrapp):
 
                                                  f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
                                                  'CO2 from Flue Gas (Mt)': ('float', None, True),
+                                                 'beverage food production (Mt)': ('float', None, False),
                                                  f'{GlossaryEnergy.carbon_storage} (Mt)': ('float', None, True),
+                                                 f'{GlossaryEnergy.carbon_utilization} (Mt)': ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                  'heat.lowtemperatureheat (TWh)': ('float', None, True),
@@ -647,12 +649,12 @@ class StreamDiscipline(SoSWrapp):
         techno_list = self.get_sosdisc_inputs(GlossaryEnergy.techno_list)
         energy_production = self.get_sosdisc_outputs(
             GlossaryEnergy.EnergyProductionDetailedValue)
+
         techno_production = energy_production[[GlossaryEnergy.Years]]
         display_techno_list = []
 
         for techno in techno_list:
-
-            if self.energy_name in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage]:
+            if self.energy_name in [GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, GlossaryEnergy.carbon_utilization]:
                 unit = '(Mt)'
             else:
                 unit = '(TWh)'

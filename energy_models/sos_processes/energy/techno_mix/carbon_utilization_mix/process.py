@@ -71,7 +71,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         #
         #
         # # 'energy_models.models.carbon_capture.direct_air_capture.direct_air_capture_techno.direct_air_capture_techno_disc.DirectAirCaptureTechnoDiscipline'
-        print(self.techno_list)
+
         for full_techno_name in self.techno_list:
             list_dot = full_techno_name.split('.')
             sub_dir = list_dot[0]

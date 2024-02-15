@@ -31,10 +31,12 @@ TECHNOLOGIES_LIST = ['food_storage_applications.BeverageCarbonation', 'food_stor
                              'food_storage_applications.AlgaeCultivation']
 TECHNOLOGIES_LIST_COARSE = ['food_storage_applications.BeverageCarbonation']
 TECHNOLOGIES_FOOD_STORAGE_LIST_COARSE = ['food_storage_applications.BeverageCarbonation']
-DEFAULT_FOOD_STORAGE_LIST = ['food_storage_applications.BeverageCarbonation']
+DEFAULT_FOOD_STORAGE_LIST = ['food_storage_applications.BeverageCarbonation', 'food_storage_applications.CarbonatedWater',
+                             'food_storage_applications.AlgaeCultivation']
 TECHNOLOGIES_LIST_DEV = ['food_storage_applications.BeverageCarbonation', 'food_storage_applications.CarbonatedWater',
                              'food_storage_applications.AlgaeCultivation']
-FOOD_STORAGE_TECHNOLOGIES_LIST_DEV = ['carbon_utilization.food_storage_applications.BeverageCarbonation', 'carbon_utilization.food_storage_applications.CarbonatedWater']
+FOOD_STORAGE_TECHNOLOGIES_LIST_DEV = ['carbon_utilization.food_storage_applications.BeverageCarbonation',
+                                      'carbon_utilization.food_storage_applications.CarbonatedWater']
 
 
 class Study(EnergyMixStudyManager):
@@ -142,12 +144,12 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{GlossaryEnergy.YearEnd}': self.year_end,
                        # f'{self.study_name}.{ccs_name}.{food_storage_name}.{GlossaryEnergy.food_storage_emission_techno_list}': DEFAULT_FOOD_STORAGE_LIST,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.techno_list}': self.technologies_list,
-                       f'{self.study_name}.{ccs_name}.food_storage_applications.{GlossaryEnergy.techno_list}': FOOD_STORAGE_TECHNOLOGIES_LIST_DEV,
-                       f'{self.study_name}.{ccs_name}.food_storage_applications.food_storage_mean': self.food_storage_mean,
+                       f'{self.study_name}.{ccs_name}.{food_storage_name}.{GlossaryEnergy.techno_list}': FOOD_STORAGE_TECHNOLOGIES_LIST_DEV,
+                       f'{self.study_name}.{ccs_name}.{food_storage_name}': self.food_storage_mean,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.study_name}.{ccs_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{ccs_name}.invest_techno_mix': investment_mix,
-                       f'{self.study_name}.{GlossaryEnergy.ccs_list}' : ['carbon_capture', 'carbon_storage', 'carbon_utilization']
+                       f'{self.study_name}.{GlossaryEnergy.ccs_list}': ['carbon_utilization'] #'carbon_capture', 'carbon_storage',
 
 
                        }
@@ -183,6 +185,7 @@ class Study(EnergyMixStudyManager):
                         [0.035]),
 
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.CarbonatedWater.{GlossaryEnergy.TechnoProductionValue}': carbonatedwater_prod,
+                    # f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.CarbonatedWater.{GlossaryEnergy.TechnoProductionValue}': carbonatedwater_prod,
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.BeverageCarbonation.{GlossaryEnergy.TechnoProductionValue}': beveragecarbonation_production,
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.AlgaeCultivation.{GlossaryEnergy.TechnoProductionValue}': algaecultivation_production,
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.FoodStorageApplicationsTechno.{GlossaryEnergy.TechnoProductionValue}': foodstorageapplicationstechno_prod,
@@ -191,17 +194,6 @@ class Study(EnergyMixStudyManager):
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.BeverageCarbonation.{GlossaryEnergy.TechnoConsumptionValue}': beveragecarbonation_consumption,
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.AlgaeCultivation.{GlossaryEnergy.TechnoConsumptionValue}': algaecultivation_consumption,
                     f'{self.study_name}.CCUS.carbon_utilization.food_storage_applications.FoodStorageApplicationsTechno.{GlossaryEnergy.TechnoConsumptionValue}': foodstorageapplicationstechno_cons,
-
-                    # f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.electricity.CoalGen.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    # f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.electricity.GasTurbine.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    # f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.electricity.CombinedCycleGasTurbine.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    # f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.hydrogen.gaseous_hydrogen.WaterGasShift.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    # f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.liquid_fuel.FischerTropsch.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    # f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.liquid_fuel.Refinery.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    # f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.methane.FossilGas.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    # f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.solid_fuel.Pelletizing.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    # f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.syngas.CoalGasification.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
-                    # f"{self.study_name}.{energy_mix_name}.carbon_capture.flue_gas_capture.fossil.FossilSimpleTechno.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
                     f"{self.study_name}.{energy_mix_name}.carbon_utilization.food_storage_applications.carbon_utilization.food_storage_applications.BeverageCarbonation.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
                     f"{self.study_name}.{energy_mix_name}.carbon_utilization.food_storage_applications.carbon_utilization.food_storage_applications.CarbonatedWater.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,
                     f"{self.study_name}.{energy_mix_name}.carbon_utilization.food_storage_applications.carbon_utilization.food_storage_applications.AlgaeCultivation.{GlossaryEnergy.TechnoCapitalValue}": self.techno_capital,

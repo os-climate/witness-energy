@@ -47,7 +47,7 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
                                        'visibility': 'Shared',
                                        'namespace': 'ns_food_storage', 'unit': 'Mt',
                                        'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                                'CO2 from Food Storage': ('float', None, False)}},
+                                                                'beverage food production': ('float', None, False)}},
                'food_storage_prod_ratio': {'type': 'dataframe',
                                        'visibility': 'Shared',
                                        'namespace': 'ns_food_storage', 'unit': '-',
@@ -108,308 +108,308 @@ class CarbonUtilizationDiscipline(StreamDiscipline):
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
-    def compute_sos_jacobian(self):
-        '''
-             Compute gradient of coupling outputs vs coupling inputs
-        '''
-        super().compute_sos_jacobian()
-
-        inputs_dict = self.get_sosdisc_inputs()
-        outputs_dict = self.get_sosdisc_outputs()
-        list_columns_energyprod = list(
-            outputs_dict[GlossaryEnergy.EnergyProductionValue].columns)
-        list_columns_consumption = list(
-            outputs_dict[GlossaryEnergy.EnergyConsumptionValue].columns)
-        technologies_list = inputs_dict[GlossaryEnergy.techno_list]
-        carbon_utilization_type = outputs_dict['carbon_utilization_type']
-        carbon_utilization_type_woratio = outputs_dict['carbon_utilization_type_woratio']
-
-        mix_weight = outputs_dict['techno_mix']
-        len_matrix = len(carbon_utilization_type)
-        scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
-        grad_vs_food_storage_prod = {column: np.zeros(
-            len_matrix) for column in list_columns_consumption if column != GlossaryEnergy.Years}
-        grad_vs_food_storage_prod_woratio = {column: np.zeros(
-            len_matrix) for column in list_columns_consumption if column != GlossaryEnergy.Years}
-        grad_cons_vs_prod = {column: np.zeros(
-            len_matrix) for column in list_columns_consumption if column != GlossaryEnergy.Years}
-        grad_cons_vs_prod_woratio = {column: np.zeros(
-            len_matrix) for column in list_columns_consumption if column != GlossaryEnergy.Years}
-        if self.energy_model.food_storage_percentage is not None:
-            dfoodstorage = self.energy_model.compute_dfood_storage_with_exp_min(np.divide(
-                inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values,
-                carbon_utilization_type['food storage'].values,
-                out=np.zeros_like(
-                    inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values),
-                where=carbon_utilization_type['food storage'].values != 0.0))
-            dfs_ratio = np.divide(- inputs_dict['food_storage_production'][
-                CarbonUtilization.food_storage_name].values * scaling_factor_energy_production,
-                (carbon_utilization_type['food storage'].values)
-                ** 2, out=np.zeros_like(
-                -inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values),
-                where=carbon_utilization_type['food storage'].values != 0.0)
-            grad_price_vs_fs_prod = np.zeros(len_matrix)
-            grad_price_wotaxes_vs_fs_prod = np.zeros(len_matrix)
-        if self.energy_model.food_storage_percentage_woratio is not None:
-            dfoodstorage_woratio = self.energy_model.compute_dfood_storage_with_exp_min(np.divide(
-                inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values,
-                carbon_utilization_type_woratio['food storage'].values,
-                out=np.zeros_like(
-                    inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values),
-                where=carbon_utilization_type_woratio['food storage'].values != 0.0))
-            dfs_ratio_woratio = np.divide(- inputs_dict['food_storage_production'][
-                CarbonUtilization.food_storage_name].values * scaling_factor_energy_production,
-                (carbon_utilization_type_woratio['food storage'].values)
-                ** 2, out=np.zeros_like(
-                -inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values),
-                where=carbon_utilization_type_woratio['food storage'].values != 0.0)
-
-            grad_price_vs_fs_prod = np.zeros(len_matrix)
-            grad_price_wotaxes_vs_fs_prod = np.zeros(len_matrix)
-
-        for techno in technologies_list:
-            if techno.startswith('food_storage_applications'):
-                self.set_partial_derivative_for_other_types(
-                    ('carbon_utilization_type',
-                     'FSA'), (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
-                    np.identity(len_matrix) * scaling_factor_energy_production)
-                self.set_partial_derivative_for_other_types(
-                    ('carbon_utilization_type_woratio',
-                     'FSA'), (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
-                    np.identity(len_matrix) * scaling_factor_energy_production)
-            elif techno.startswith('food_storage_capture'):
-                self.set_partial_derivative_for_other_types(
-                    ('carbon_utilization_type',
-                     'food storage'), (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
-                    np.identity(len_matrix) * scaling_factor_energy_production)
-                self.set_partial_derivative_for_other_types(
-                    ('carbon_utilization_type_woratio',
-                     'food storage'), (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
-                    np.identity(len_matrix) * scaling_factor_energy_production)
-
-                if self.energy_model.food_storage_percentage is not None:
-                    # if the prod of carbon capture is higher than flue gas production then
-                    # total production of carbon capture is not influenced by
-                    # flue gas capture
-                    food_storage_perc_grad_not_limited = np.where(
-                        self.energy_model.food_storage_percentage < 0.9991, 0.0, 0.9991)
-                    food_storage_perc_grad_limited = np.where(
-                        self.energy_model.food_storage_percentage < 0.9991, 1.0, 0.0)
-                    grad_foodstorage_limited = self.energy_model.food_storage_percentage * scaling_factor_energy_production + \
-                        carbon_utilization_type['food storage'].values * \
-                        dfoodstorage * dfs_ratio
-                    self.set_partial_derivative_for_other_types(
-                        ('carbon_utilization_type',
-                         'food storage limited'),
-                        (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                         f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
-                        np.identity(len_matrix) * grad_foodstorage_limited)
-
-                    self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.LandUseRequiredValue, f'{techno} (Gha)'), (
-                            f'{techno}.{GlossaryEnergy.LandUseRequiredValue}', f'{techno} (Gha)'),
-                        np.identity(
-                            len_matrix) * food_storage_perc_grad_not_limited
-                        + np.identity(len_matrix) * food_storage_perc_grad_limited * self.energy_model.food_storage_percentage)
-                    list_columnstechnoprod = list(
-                        inputs_dict[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'].columns)
-                    list_columnstechnocons = list(
-                        inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'].columns)
-                    techno_prod_name_with_unit = [
-                        tech for tech in list_columnstechnoprod if tech.startswith(self.energy_name)][0]
-                    for column_name in list_columns_energyprod:
-
-                        if column_name != GlossaryEnergy.Years:
-                            if column_name == self.energy_name:
-                                self.set_partial_derivative_for_other_types(
-                                    (GlossaryEnergy.EnergyProductionValue, column_name), (
-                                        f'{techno}.{GlossaryEnergy.TechnoProductionValue}', techno_prod_name_with_unit),
-                                    np.identity(len_matrix) / scaling_factor_energy_production * grad_foodstorage_limited)
-                                self.set_partial_derivative_for_other_types(
-                                    (GlossaryEnergy.EnergyProductionValue, column_name), (
-                                        'food_storage_production', CarbonUtilization.food_storage_name),
-                                    np.identity(len_matrix) / scaling_factor_energy_production * dfoodstorage)
-                            else:
-                                for col_technoprod in list_columnstechnoprod:
-                                    if column_name == col_technoprod:
-                                        self.set_partial_derivative_for_other_types(
-                                            (GlossaryEnergy.EnergyProductionValue, column_name), (
-                                                f'{techno}.{GlossaryEnergy.TechnoProductionValue}', col_technoprod),
-                                            inputs_dict['scaling_factor_techno_production'] * np.identity(
-                                                len_matrix) / scaling_factor_energy_production * dfoodstorage)
-
-                    for column_name in list_columns_consumption:
-
-                        if column_name != GlossaryEnergy.Years:
-                            # loop on resources
-                            for col_technoprod in list_columnstechnocons:
-                                if column_name == col_technoprod:
-                                    self.set_partial_derivative_for_other_types(
-                                        (GlossaryEnergy.EnergyConsumptionValue, column_name), (
-                                            f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}', col_technoprod),
-                                        inputs_dict['scaling_factor_techno_consumption'] * np.identity(len_matrix) /
-                                        inputs_dict[
-                                            'scaling_factor_energy_consumption'] * self.energy_model.food_storage_percentage)
-
-                                    grad_cons_vs_prod[
-                                        column_name] -= inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'][
-                                        column_name].values / inputs_dict[
-                                        'scaling_factor_techno_consumption']
-                    # Gradient vs flue gas production
-                    for column_name in list_columnstechnocons:
-                        if column_name != GlossaryEnergy.Years:
-                            grad_vs_food_storage_prod[column_name] += np.divide(
-                                inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'][column_name].values,
-                                self.energy_model.carbon_utilization_type['food storage'].values *
-                                food_storage_perc_grad_limited,
-                                out=np.zeros_like(
-                                    inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'][column_name].values),
-                                where=self.energy_model.carbon_utilization_type[
-                                    'food storage'].values * food_storage_perc_grad_limited != 0)
-                else:
-                    self.set_partial_derivative_for_other_types(
-                        ('carbon_utilization_type',
-                         'food storage limited'),
-                        (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                         f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
-                        np.identity(len_matrix) * scaling_factor_energy_production)
-
-                # ---_woratio case (had to separate the two conditions)
-                if self.energy_model.food_storage_percentage_woratio is not None:
-                    # if the prod of carbon capture is higher than flue gas production then
-                    # total production of carbon capture is not influenced by
-                    # flue gas capture
-                    food_storage_perc_woratio_grad_limited = np.where(
-                        self.energy_model.food_storage_percentage_woratio < 0.9991, 1.0, 0.0)
-                    grad_foodstorage_limited_woratio = self.energy_model.food_storage_percentage_woratio * scaling_factor_energy_production + \
-                        carbon_utilization_type_woratio['food storage'].values * \
-                        dfoodstorage_woratio * dfs_ratio_woratio
-                    self.set_partial_derivative_for_other_types(
-                        ('carbon_utilization_type_woratio',
-                         'food storage limited'),
-                        (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                         f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
-                        np.identity(len_matrix) * grad_foodstorage_limited_woratio)
-
-                    list_columnstechnoprod = list(
-                        inputs_dict[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'].columns)
-                    list_columnstechnocons = list(
-                        inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'].columns)
-                    techno_prod_name_with_unit = [
-                        tech for tech in list_columnstechnoprod if tech.startswith(self.energy_name)][0]
-
-                    for column_name in list_columns_consumption:
-                        if column_name != GlossaryEnergy.Years:
-                            # loop on resources
-                            for col_technoprod in list_columnstechnocons:
-                                if column_name == col_technoprod:
-                                    self.set_partial_derivative_for_other_types(
-                                        (GlossaryEnergy.EnergyConsumptionWithoutRatioValue, column_name), (
-                                            f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}', col_technoprod),
-                                        inputs_dict['scaling_factor_techno_consumption'] * np.identity(len_matrix) /
-                                        inputs_dict[
-                                            'scaling_factor_energy_consumption'] * self.energy_model.food_storage_percentage_woratio)
-                                    grad_cons_vs_prod_woratio[
-                                        column_name] -= inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'][
-                                        column_name].values / inputs_dict[
-                                        'scaling_factor_techno_consumption']
-                    # Gradient vs flue gas production
-                    for column_name in list_columnstechnocons:
-                        if column_name != GlossaryEnergy.Years:
-                            grad_vs_food_storage_prod_woratio[column_name] += np.divide(
-                                inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'][column_name].values,
-                                self.energy_model.carbon_utilization_type_woratio[
-                                    'food storage'].values * food_storage_perc_woratio_grad_limited, out=np.zeros_like(
-                                    inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'][column_name].values),
-                                where=self.energy_model.carbon_utilization_type_woratio[
-                                    'food storage'].values * food_storage_perc_woratio_grad_limited != 0)
-                else:
-                    self.set_partial_derivative_for_other_types(
-                        ('carbon_utilization_type_woratio',
-                         'food storage limited'),
-                        (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
-                         f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
-                        np.identity(len_matrix) * inputs_dict['scaling_factor_techno_production'])
-
-            if self.energy_model.food_storage_percentage is not None:
-                mix_weight_techno = mix_weight[techno].values / 100.0
-
-                grad_techno_mix_vs_fs_prod = self.grad_techno_mix_vs_prod_dict[
-                    f'fs_prod {techno}']
-                #                     grad_techno_mix_vs_prod = (
-                #                         outputs_dict[GlossaryEnergy.EnergyProductionValue][self.energy_name].values -
-                #                         inputs_dict[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'][column_name].values
-                #                     ) / outputs_dict[GlossaryEnergy.EnergyProductionValue][self.energy_name].values**2
-
-                # The mix_weight_techno is zero means that the techno is negligible else we do nothing
-                # np.sign gives 0 if zero and 1 if value so it suits well
-                # with our needs
-                grad_techno_mix_vs_fs_prod = grad_techno_mix_vs_fs_prod * \
-                    np.sign(mix_weight_techno)
-
-                self.set_partial_derivative_for_other_types(
-                    ('techno_mix', techno), ('food_storage_production',
-                                             CarbonUtilization.food_storage_name),
-                    np.identity(len_matrix) * 100.0 * grad_techno_mix_vs_fs_prod)
-
-                grad_price_vs_fs_prod += inputs_dict[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'][techno].values * \
-                    grad_techno_mix_vs_fs_prod
-                grad_price_wotaxes_vs_fs_prod += inputs_dict[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'][f'{techno}_wotaxes'].values * \
-                    grad_techno_mix_vs_fs_prod
-
-        if self.energy_model.food_storage_percentage is not None:
-
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyPricesValue, self.energy_name), ('food_storage_production',
-                                                      CarbonUtilization.food_storage_name),
-                np.identity(len_matrix) * grad_price_vs_fs_prod)
-
-            self.set_partial_derivative_for_other_types(
-                (GlossaryEnergy.EnergyPricesValue, f'{self.energy_name}_wotaxes'), (
-                    'food_storage_production', CarbonUtilization.food_storage_name),
-                np.identity(len_matrix) * grad_price_wotaxes_vs_fs_prod)
-
-            self.set_partial_derivative_for_other_types(
-                ('carbon_utilization_type',
-                 'food storage limited'), (f'food_storage_production', CarbonUtilization.food_storage_name),
-                np.identity(len_matrix) * dfoodstorage)
-
-            # added
-            self.set_partial_derivative_for_other_types(
-                ('carbon_utilization_type_woratio',
-                 'food storage limited'), (f'food_storage_production', CarbonUtilization.food_storage_name),
-                np.identity(len_matrix) * dfoodstorage_woratio)
-
-            for column_name in list_columns_consumption:
-                if column_name != GlossaryEnergy.Years:
-                    self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.EnergyConsumptionValue, column_name), (
-                            'food_storage_production', CarbonUtilization.food_storage_name),
-                        np.identity(len_matrix) * grad_vs_food_storage_prod[column_name] * dfoodstorage)
-                    for techno_cons in technologies_list:
-                        if techno_cons.startswith('food_storage_capture'):
-                            self.set_partial_derivative_for_other_types(
-                                (GlossaryEnergy.EnergyConsumptionValue, column_name), (
-                                    f'{techno_cons}.{GlossaryEnergy.TechnoProductionValue}', techno_prod_name_with_unit),
-                                -np.identity(len_matrix) *
-                                inputs_dict['scaling_factor_energy_consumption'] * grad_cons_vs_prod[
-                                    column_name] * dfs_ratio * dfoodstorage)
-
-        if self.energy_model.food_storage_percentage_woratio is not None:
-            for column_name in list_columns_consumption:
-                if column_name != GlossaryEnergy.Years:
-                    self.set_partial_derivative_for_other_types(
-                        (GlossaryEnergy.EnergyConsumptionWithoutRatioValue, column_name), (
-                            'food_storage_production', CarbonUtilization.food_storage_name),
-                        np.identity(len_matrix) * grad_vs_food_storage_prod_woratio[column_name] * dfoodstorage_woratio)
-                    for techno_cons in technologies_list:
-                        if techno_cons.startswith('food_storage_capture'):
-                            self.set_partial_derivative_for_other_types(
-                                (GlossaryEnergy.EnergyConsumptionWithoutRatioValue, column_name), (
-                                    f'{techno_cons}.{GlossaryEnergy.TechnoProductionValue}', techno_prod_name_with_unit),
-                                -np.identity(len_matrix) *
-                                inputs_dict['scaling_factor_energy_consumption'] * grad_cons_vs_prod_woratio[
-                                    column_name] * dfs_ratio_woratio * dfoodstorage_woratio)
+    # def compute_sos_jacobian(self):
+    #     '''
+    #          Compute gradient of coupling outputs vs coupling inputs
+    #     '''
+    #     super().compute_sos_jacobian()
+    #
+    #     inputs_dict = self.get_sosdisc_inputs()
+    #     outputs_dict = self.get_sosdisc_outputs()
+    #     list_columns_energyprod = list(
+    #         outputs_dict[GlossaryEnergy.EnergyProductionValue].columns)
+    #     list_columns_consumption = list(
+    #         outputs_dict[GlossaryEnergy.EnergyConsumptionValue].columns)
+    #     technologies_list = inputs_dict[GlossaryEnergy.techno_list]
+    #     carbon_utilization_type = outputs_dict['carbon_utilization_type']
+    #     carbon_utilization_type_woratio = outputs_dict['carbon_utilization_type_woratio']
+    #
+    #     mix_weight = outputs_dict['techno_mix']
+    #     len_matrix = len(carbon_utilization_type)
+    #     scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
+    #     grad_vs_food_storage_prod = {column: np.zeros(
+    #         len_matrix) for column in list_columns_consumption if column != GlossaryEnergy.Years}
+    #     grad_vs_food_storage_prod_woratio = {column: np.zeros(
+    #         len_matrix) for column in list_columns_consumption if column != GlossaryEnergy.Years}
+    #     grad_cons_vs_prod = {column: np.zeros(
+    #         len_matrix) for column in list_columns_consumption if column != GlossaryEnergy.Years}
+    #     grad_cons_vs_prod_woratio = {column: np.zeros(
+    #         len_matrix) for column in list_columns_consumption if column != GlossaryEnergy.Years}
+    #     if self.energy_model.food_storage_percentage is not None:
+    #         dfoodstorage = self.energy_model.compute_dfood_storage_with_exp_min(np.divide(
+    #             inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values,
+    #             carbon_utilization_type['food storage'].values,
+    #             out=np.zeros_like(
+    #                 inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values),
+    #             where=carbon_utilization_type['food storage'].values != 0.0))
+    #         dfs_ratio = np.divide(- inputs_dict['food_storage_production'][
+    #             CarbonUtilization.food_storage_name].values * scaling_factor_energy_production,
+    #             (carbon_utilization_type['food storage'].values)
+    #             ** 2, out=np.zeros_like(
+    #             -inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values),
+    #             where=carbon_utilization_type['food storage'].values != 0.0)
+    #         grad_price_vs_fs_prod = np.zeros(len_matrix)
+    #         grad_price_wotaxes_vs_fs_prod = np.zeros(len_matrix)
+    #     if self.energy_model.food_storage_percentage_woratio is not None:
+    #         dfoodstorage_woratio = self.energy_model.compute_dfood_storage_with_exp_min(np.divide(
+    #             inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values,
+    #             carbon_utilization_type_woratio['food storage'].values,
+    #             out=np.zeros_like(
+    #                 inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values),
+    #             where=carbon_utilization_type_woratio['food storage'].values != 0.0))
+    #         dfs_ratio_woratio = np.divide(- inputs_dict['food_storage_production'][
+    #             CarbonUtilization.food_storage_name].values * scaling_factor_energy_production,
+    #             (carbon_utilization_type_woratio['food storage'].values)
+    #             ** 2, out=np.zeros_like(
+    #             -inputs_dict['food_storage_production'][CarbonUtilization.food_storage_name].values),
+    #             where=carbon_utilization_type_woratio['food storage'].values != 0.0)
+    #
+    #         grad_price_vs_fs_prod = np.zeros(len_matrix)
+    #         grad_price_wotaxes_vs_fs_prod = np.zeros(len_matrix)
+    #
+    #     for techno in technologies_list:
+    #         if techno.startswith('food_storage_applications'):
+    #             self.set_partial_derivative_for_other_types(
+    #                 ('carbon_utilization_type',
+    #                  'FSA'), (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
+    #                 np.identity(len_matrix) * scaling_factor_energy_production)
+    #             self.set_partial_derivative_for_other_types(
+    #                 ('carbon_utilization_type_woratio',
+    #                  'FSA'), (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
+    #                 np.identity(len_matrix) * scaling_factor_energy_production)
+    #         elif techno.startswith('food_storage_capture'):
+    #             self.set_partial_derivative_for_other_types(
+    #                 ('carbon_utilization_type',
+    #                  'food storage'), (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
+    #                 np.identity(len_matrix) * scaling_factor_energy_production)
+    #             self.set_partial_derivative_for_other_types(
+    #                 ('carbon_utilization_type_woratio',
+    #                  'food storage'), (f'{techno}.{GlossaryEnergy.TechnoProductionValue}', f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
+    #                 np.identity(len_matrix) * scaling_factor_energy_production)
+    #
+    #             if self.energy_model.food_storage_percentage is not None:
+    #                 # if the prod of carbon capture is higher than flue gas production then
+    #                 # total production of carbon capture is not influenced by
+    #                 # flue gas capture
+    #                 food_storage_perc_grad_not_limited = np.where(
+    #                     self.energy_model.food_storage_percentage < 0.9991, 0.0, 0.9991)
+    #                 food_storage_perc_grad_limited = np.where(
+    #                     self.energy_model.food_storage_percentage < 0.9991, 1.0, 0.0)
+    #                 grad_foodstorage_limited = self.energy_model.food_storage_percentage * scaling_factor_energy_production + \
+    #                     carbon_utilization_type['food storage'].values * \
+    #                     dfoodstorage * dfs_ratio
+    #                 self.set_partial_derivative_for_other_types(
+    #                     ('carbon_utilization_type',
+    #                      'food storage limited'),
+    #                     (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
+    #                      f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
+    #                     np.identity(len_matrix) * grad_foodstorage_limited)
+    #
+    #                 self.set_partial_derivative_for_other_types(
+    #                     (GlossaryEnergy.LandUseRequiredValue, f'{techno} (Gha)'), (
+    #                         f'{techno}.{GlossaryEnergy.LandUseRequiredValue}', f'{techno} (Gha)'),
+    #                     np.identity(
+    #                         len_matrix) * food_storage_perc_grad_not_limited
+    #                     + np.identity(len_matrix) * food_storage_perc_grad_limited * self.energy_model.food_storage_percentage)
+    #                 list_columnstechnoprod = list(
+    #                     inputs_dict[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'].columns)
+    #                 list_columnstechnocons = list(
+    #                     inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'].columns)
+    #                 techno_prod_name_with_unit = [
+    #                     tech for tech in list_columnstechnoprod if tech.startswith(self.energy_name)][0]
+    #                 for column_name in list_columns_energyprod:
+    #
+    #                     if column_name != GlossaryEnergy.Years:
+    #                         if column_name == self.energy_name:
+    #                             self.set_partial_derivative_for_other_types(
+    #                                 (GlossaryEnergy.EnergyProductionValue, column_name), (
+    #                                     f'{techno}.{GlossaryEnergy.TechnoProductionValue}', techno_prod_name_with_unit),
+    #                                 np.identity(len_matrix) / scaling_factor_energy_production * grad_foodstorage_limited)
+    #                             self.set_partial_derivative_for_other_types(
+    #                                 (GlossaryEnergy.EnergyProductionValue, column_name), (
+    #                                     'food_storage_production', CarbonUtilization.food_storage_name),
+    #                                 np.identity(len_matrix) / scaling_factor_energy_production * dfoodstorage)
+    #                         else:
+    #                             for col_technoprod in list_columnstechnoprod:
+    #                                 if column_name == col_technoprod:
+    #                                     self.set_partial_derivative_for_other_types(
+    #                                         (GlossaryEnergy.EnergyProductionValue, column_name), (
+    #                                             f'{techno}.{GlossaryEnergy.TechnoProductionValue}', col_technoprod),
+    #                                         inputs_dict['scaling_factor_techno_production'] * np.identity(
+    #                                             len_matrix) / scaling_factor_energy_production * dfoodstorage)
+    #
+    #                 for column_name in list_columns_consumption:
+    #
+    #                     if column_name != GlossaryEnergy.Years:
+    #                         # loop on resources
+    #                         for col_technoprod in list_columnstechnocons:
+    #                             if column_name == col_technoprod:
+    #                                 self.set_partial_derivative_for_other_types(
+    #                                     (GlossaryEnergy.EnergyConsumptionValue, column_name), (
+    #                                         f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}', col_technoprod),
+    #                                     inputs_dict['scaling_factor_techno_consumption'] * np.identity(len_matrix) /
+    #                                     inputs_dict[
+    #                                         'scaling_factor_energy_consumption'] * self.energy_model.food_storage_percentage)
+    #
+    #                                 grad_cons_vs_prod[
+    #                                     column_name] -= inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'][
+    #                                     column_name].values / inputs_dict[
+    #                                     'scaling_factor_techno_consumption']
+    #                 # Gradient vs flue gas production
+    #                 for column_name in list_columnstechnocons:
+    #                     if column_name != GlossaryEnergy.Years:
+    #                         grad_vs_food_storage_prod[column_name] += np.divide(
+    #                             inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'][column_name].values,
+    #                             self.energy_model.carbon_utilization_type['food storage'].values *
+    #                             food_storage_perc_grad_limited,
+    #                             out=np.zeros_like(
+    #                                 inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'][column_name].values),
+    #                             where=self.energy_model.carbon_utilization_type[
+    #                                 'food storage'].values * food_storage_perc_grad_limited != 0)
+    #             else:
+    #                 self.set_partial_derivative_for_other_types(
+    #                     ('carbon_utilization_type',
+    #                      'food storage limited'),
+    #                     (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
+    #                      f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
+    #                     np.identity(len_matrix) * scaling_factor_energy_production)
+    #
+    #             # ---_woratio case (had to separate the two conditions)
+    #             if self.energy_model.food_storage_percentage_woratio is not None:
+    #                 # if the prod of carbon capture is higher than flue gas production then
+    #                 # total production of carbon capture is not influenced by
+    #                 # flue gas capture
+    #                 food_storage_perc_woratio_grad_limited = np.where(
+    #                     self.energy_model.food_storage_percentage_woratio < 0.9991, 1.0, 0.0)
+    #                 grad_foodstorage_limited_woratio = self.energy_model.food_storage_percentage_woratio * scaling_factor_energy_production + \
+    #                     carbon_utilization_type_woratio['food storage'].values * \
+    #                     dfoodstorage_woratio * dfs_ratio_woratio
+    #                 self.set_partial_derivative_for_other_types(
+    #                     ('carbon_utilization_type_woratio',
+    #                      'food storage limited'),
+    #                     (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
+    #                      f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
+    #                     np.identity(len_matrix) * grad_foodstorage_limited_woratio)
+    #
+    #                 list_columnstechnoprod = list(
+    #                     inputs_dict[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'].columns)
+    #                 list_columnstechnocons = list(
+    #                     inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'].columns)
+    #                 techno_prod_name_with_unit = [
+    #                     tech for tech in list_columnstechnoprod if tech.startswith(self.energy_name)][0]
+    #
+    #                 for column_name in list_columns_consumption:
+    #                     if column_name != GlossaryEnergy.Years:
+    #                         # loop on resources
+    #                         for col_technoprod in list_columnstechnocons:
+    #                             if column_name == col_technoprod:
+    #                                 self.set_partial_derivative_for_other_types(
+    #                                     (GlossaryEnergy.EnergyConsumptionWithoutRatioValue, column_name), (
+    #                                         f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}', col_technoprod),
+    #                                     inputs_dict['scaling_factor_techno_consumption'] * np.identity(len_matrix) /
+    #                                     inputs_dict[
+    #                                         'scaling_factor_energy_consumption'] * self.energy_model.food_storage_percentage_woratio)
+    #                                 grad_cons_vs_prod_woratio[
+    #                                     column_name] -= inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'][
+    #                                     column_name].values / inputs_dict[
+    #                                     'scaling_factor_techno_consumption']
+    #                 # Gradient vs flue gas production
+    #                 for column_name in list_columnstechnocons:
+    #                     if column_name != GlossaryEnergy.Years:
+    #                         grad_vs_food_storage_prod_woratio[column_name] += np.divide(
+    #                             inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'][column_name].values,
+    #                             self.energy_model.carbon_utilization_type_woratio[
+    #                                 'food storage'].values * food_storage_perc_woratio_grad_limited, out=np.zeros_like(
+    #                                 inputs_dict[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'][column_name].values),
+    #                             where=self.energy_model.carbon_utilization_type_woratio[
+    #                                 'food storage'].values * food_storage_perc_woratio_grad_limited != 0)
+    #             else:
+    #                 self.set_partial_derivative_for_other_types(
+    #                     ('carbon_utilization_type_woratio',
+    #                      'food storage limited'),
+    #                     (f'{techno}.{GlossaryEnergy.TechnoProductionValue}',
+    #                      f'{CarbonUtilization.name} ({CarbonUtilization.unit})'),
+    #                     np.identity(len_matrix) * inputs_dict['scaling_factor_techno_production'])
+    #
+    #         if self.energy_model.food_storage_percentage is not None:
+    #             mix_weight_techno = mix_weight[techno].values / 100.0
+    #
+    #             grad_techno_mix_vs_fs_prod = self.grad_techno_mix_vs_prod_dict[
+    #                 f'fs_prod {techno}']
+    #             #                     grad_techno_mix_vs_prod = (
+    #             #                         outputs_dict[GlossaryEnergy.EnergyProductionValue][self.energy_name].values -
+    #             #                         inputs_dict[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'][column_name].values
+    #             #                     ) / outputs_dict[GlossaryEnergy.EnergyProductionValue][self.energy_name].values**2
+    #
+    #             # The mix_weight_techno is zero means that the techno is negligible else we do nothing
+    #             # np.sign gives 0 if zero and 1 if value so it suits well
+    #             # with our needs
+    #             grad_techno_mix_vs_fs_prod = grad_techno_mix_vs_fs_prod * \
+    #                 np.sign(mix_weight_techno)
+    #
+    #             self.set_partial_derivative_for_other_types(
+    #                 ('techno_mix', techno), ('food_storage_production',
+    #                                          CarbonUtilization.food_storage_name),
+    #                 np.identity(len_matrix) * 100.0 * grad_techno_mix_vs_fs_prod)
+    #
+    #             grad_price_vs_fs_prod += inputs_dict[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'][techno].values * \
+    #                 grad_techno_mix_vs_fs_prod
+    #             grad_price_wotaxes_vs_fs_prod += inputs_dict[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'][f'{techno}_wotaxes'].values * \
+    #                 grad_techno_mix_vs_fs_prod
+    #
+    #     if self.energy_model.food_storage_percentage is not None:
+    #
+    #         self.set_partial_derivative_for_other_types(
+    #             (GlossaryEnergy.EnergyPricesValue, self.energy_name), ('food_storage_production',
+    #                                                   CarbonUtilization.food_storage_name),
+    #             np.identity(len_matrix) * grad_price_vs_fs_prod)
+    #
+    #         self.set_partial_derivative_for_other_types(
+    #             (GlossaryEnergy.EnergyPricesValue, f'{self.energy_name}_wotaxes'), (
+    #                 'food_storage_production', CarbonUtilization.food_storage_name),
+    #             np.identity(len_matrix) * grad_price_wotaxes_vs_fs_prod)
+    #
+    #         self.set_partial_derivative_for_other_types(
+    #             ('carbon_utilization_type',
+    #              'food storage limited'), (f'food_storage_production', CarbonUtilization.food_storage_name),
+    #             np.identity(len_matrix) * dfoodstorage)
+    #
+    #         # added
+    #         self.set_partial_derivative_for_other_types(
+    #             ('carbon_utilization_type_woratio',
+    #              'food storage limited'), (f'food_storage_production', CarbonUtilization.food_storage_name),
+    #             np.identity(len_matrix) * dfoodstorage_woratio)
+    #
+    #         for column_name in list_columns_consumption:
+    #             if column_name != GlossaryEnergy.Years:
+    #                 self.set_partial_derivative_for_other_types(
+    #                     (GlossaryEnergy.EnergyConsumptionValue, column_name), (
+    #                         'food_storage_production', CarbonUtilization.food_storage_name),
+    #                     np.identity(len_matrix) * grad_vs_food_storage_prod[column_name] * dfoodstorage)
+    #                 for techno_cons in technologies_list:
+    #                     if techno_cons.startswith('food_storage_capture'):
+    #                         self.set_partial_derivative_for_other_types(
+    #                             (GlossaryEnergy.EnergyConsumptionValue, column_name), (
+    #                                 f'{techno_cons}.{GlossaryEnergy.TechnoProductionValue}', techno_prod_name_with_unit),
+    #                             -np.identity(len_matrix) *
+    #                             inputs_dict['scaling_factor_energy_consumption'] * grad_cons_vs_prod[
+    #                                 column_name] * dfs_ratio * dfoodstorage)
+    #
+    #     if self.energy_model.food_storage_percentage_woratio is not None:
+    #         for column_name in list_columns_consumption:
+    #             if column_name != GlossaryEnergy.Years:
+    #                 self.set_partial_derivative_for_other_types(
+    #                     (GlossaryEnergy.EnergyConsumptionWithoutRatioValue, column_name), (
+    #                         'food_storage_production', CarbonUtilization.food_storage_name),
+    #                     np.identity(len_matrix) * grad_vs_food_storage_prod_woratio[column_name] * dfoodstorage_woratio)
+    #                 for techno_cons in technologies_list:
+    #                     if techno_cons.startswith('food_storage_capture'):
+    #                         self.set_partial_derivative_for_other_types(
+    #                             (GlossaryEnergy.EnergyConsumptionWithoutRatioValue, column_name), (
+    #                                 f'{techno_cons}.{GlossaryEnergy.TechnoProductionValue}', techno_prod_name_with_unit),
+    #                             -np.identity(len_matrix) *
+    #                             inputs_dict['scaling_factor_energy_consumption'] * grad_cons_vs_prod_woratio[
+    #                                 column_name] * dfs_ratio_woratio * dfoodstorage_woratio)
 
     def get_chart_filter_list(self):
 

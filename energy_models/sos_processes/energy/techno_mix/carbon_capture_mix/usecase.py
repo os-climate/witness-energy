@@ -61,6 +61,9 @@ TECHNOLOGIES_LIST_DEV = [f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing', 
 DIRECT_AIR_TECHNOLOGIES_LIST_DEV = [f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
                                     f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing']
 
+DIRECT_AIR_TECHNOLOGIES_LIST_DEV = [f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.AmineScrubbing',
+                                    f'{GlossaryEnergy.carbon_capture}.{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing']
+
 class Study(EnergyMixStudyManager):
     def __init__(self, year_start=GlossaryEnergy.YeartStartDefault, year_end=2050,
                  technologies_list=TECHNOLOGIES_LIST,

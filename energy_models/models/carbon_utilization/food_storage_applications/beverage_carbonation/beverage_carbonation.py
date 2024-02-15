@@ -83,7 +83,7 @@ class BeverageCarbonation(CUTechno):
 
         # Production
 
-        self.production_detailed[f'carbonated_beverage ({self.mass_unit})'] = self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']
+        self.production_detailed[f'beverage food production ({self.mass_unit})'] = self.production_detailed[f'{CUTechno.energy_name} ({self.product_energy_unit})']
 
         # Consumption
 

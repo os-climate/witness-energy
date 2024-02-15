@@ -55,7 +55,7 @@ class FoodStorageDiscipline(SoSWrapp):
     }
 
     DESC_IN = {GlossaryEnergy.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryEnergy.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryEnergy.YearEnd: GlossaryEnergy.YearEndVar,
                GlossaryEnergy.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': list(POSSIBLE_FOOD_STORAGE_TECHNOS.keys()),
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_food_storage',
@@ -108,7 +108,7 @@ class FoodStorageDiscipline(SoSWrapp):
                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                         'namespace': ns_variable,
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('int', [1900, GlossaryEnergy.YeartEndDefault], False),
-                                                 'CO2 from Food Storage (Mt)': ('float', None, False),
+                                                 'beverage food production (Mt)': ('float', None, False),
                                                  }
                     }
 
@@ -123,6 +123,7 @@ class FoodStorageDiscipline(SoSWrapp):
     def run(self):
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
+        # -- configure class with inputs
         # -- configure class with inputs
         self.energy_model.configure_parameters_update(inputs_dict)
         # -- compute informations

@@ -65,6 +65,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     wet_biomass = "wet_biomass"
     carbon_capture = "carbon_capture"
     carbon_storage = "carbon_storage"
+    carbon_utilization = "carbon_utilization"
     direct_air_capture = "direct_air_capture"
     flue_gas_capture = "flue_gas_capture"
     heat = "heat"

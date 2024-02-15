@@ -38,6 +38,7 @@ from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonSt
 from energy_models.core.stream_type.carbon_models.carbon_utilization import CarbonUtilization
 
 from energy_models.core.stream_type.carbon_models.flue_gas import FlueGas
+from energy_models.core.stream_type.carbon_models.food_storage import FoodStorage
 from energy_models.core.stream_type.energy_models.biodiesel import BioDiesel
 from energy_models.core.stream_type.energy_models.biogas import BioGas
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -70,9 +71,12 @@ from energy_models.models.carbon_storage.pure_carbon_solid_storage.pure_carbon_s
 from energy_models.sos_processes.energy.techno_mix.carbon_capture_mix.usecase import (
     DEFAULT_FLUE_GAS_LIST,
 )
+
+from energy_models.sos_processes.energy.techno_mix.carbon_utilization_mix.usecase import (
+    DEFAULT_FOOD_STORAGE_LIST,
+)
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-
 
 CCS_NAME = 'CCUS'
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE

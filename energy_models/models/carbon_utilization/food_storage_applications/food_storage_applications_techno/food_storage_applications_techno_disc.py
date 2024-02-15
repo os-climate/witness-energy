@@ -121,13 +121,13 @@ class FoodStorageApplicationsTechnoDiscipline(CUTechnoDiscipline):
         self.techno_model = FoodStorageApplicationsTechno(self.techno_name)
         self.techno_model.configure_parameters(inputs_dict)
 
-    def compute_sos_jacobian(self):
-        # Grad of price vs energyprice
-
-        CUTechnoDiscipline.compute_sos_jacobian(self)
-
-        grad_dict = self.techno_model.grad_price_vs_energy_price()
-        carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
-
-        self.set_partial_derivatives_techno(
-            grad_dict, carbon_emissions)
+    # def compute_sos_jacobian(self):
+    #     # Grad of price vs energyprice
+    #
+    #     CUTechnoDiscipline.compute_sos_jacobian(self)
+    #
+    #     grad_dict = self.techno_model.grad_price_vs_energy_price()
+    #     carbon_emissions = self.get_sosdisc_outputs(GlossaryEnergy.CO2EmissionsValue)
+    #
+    #     self.set_partial_derivatives_techno(
+    #         grad_dict, carbon_emissions)
