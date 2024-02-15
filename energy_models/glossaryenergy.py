@@ -114,7 +114,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YeartEndDefault],
                 False,
             ),
-            "invest": ("float", None, True),
+            "invest": ("float", [0., 1e30], True),
         },
     }
 
@@ -129,7 +129,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YeartEndDefault],
                 False,
             ),
-            "invest": ("float", None, True),
+            "invest": ("float", [0., 1e30], True),
         },
     }
     TechnoCapitalDf = {
@@ -143,7 +143,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YeartEndDefault],
                 False,
             ),
-            GlossaryWitnessCore.Capital: ("float", None, False),
+            GlossaryWitnessCore.Capital: ("float", [0., 1e30], False),
         },
     }
 
@@ -175,7 +175,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
                 [1900, GlossaryWitnessCore.YeartEndDefault],
                 False,
             ),
-            GlossaryWitnessCore.Capital: ("float", None, False),
+            GlossaryWitnessCore.Capital: ("float", [0., 1e30], False),
         },
     }
 
@@ -200,8 +200,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "type": "dataframe",
         "unit": "%",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("int", None, False),
-            EnergyInvestPercentageGDPName: ("float", None, True),
+            GlossaryWitnessCore.Years: ("int", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            EnergyInvestPercentageGDPName: ("float", [0, 100], True),
         },
         "description": "percentage of total energy investment in each of the energy technologies",
     }
@@ -213,8 +213,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", None, False),
-            GlossaryWitnessCore.InvestmentsValue: ("float", None, False),
+            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.InvestmentsValue: ("float", [0., 1e30], False),
         },
         "namespace": "ns_forest",
         "dataframe_edition_locked": False,
@@ -228,7 +228,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "visibility": "Shared",
         "dataframe_descriptor": {
             GlossaryWitnessCore.Years: ("float", None, False),
-            GlossaryWitnessCore.InvestmentsValue: ("float", None, False),
+            GlossaryWitnessCore.InvestmentsValue: ("float", [0., 1e30], False),
         },
         "namespace": "ns_forest",
         "dataframe_edition_locked": False,
@@ -241,8 +241,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", None, False),
-            GlossaryWitnessCore.InvestmentsValue: ("float", None, False),
+            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            GlossaryWitnessCore.InvestmentsValue: ("float", [0., 1e30], False),
         },
         "namespace": "ns_crop",
         "dataframe_edition_locked": False,
@@ -285,8 +285,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", None, False),
-            ForestInvestmentValue: ("float", None, False),
+            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            ForestInvestmentValue: ("float", [0., 1e30], False),
         },
         "namespace": "ns_invest",
         "dataframe_edition_locked": False,
@@ -298,8 +298,8 @@ class GlossaryEnergy(GlossaryWitnessCore):
         "unit": "G$",
         "visibility": "Shared",
         "dataframe_descriptor": {
-            GlossaryWitnessCore.Years: ("float", None, False),
-            CarbonCapturedValue: ("float", None, False),
+            GlossaryWitnessCore.Years: ("float", [1900, GlossaryWitnessCore.YeartEndDefault], False),
+            CarbonCapturedValue: ("float", [0., 1e30], False),
         },
         "namespace": "ns_invest",
         "dataframe_edition_locked": False,
