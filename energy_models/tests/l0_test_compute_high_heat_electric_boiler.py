@@ -29,7 +29,7 @@ class ElectricBoilerTestCase(unittest.TestCase):
     """
     Electric Boiler test class
     """
-
+#test
     def setUp(self):
         '''
         Initialize third data needed for testing
