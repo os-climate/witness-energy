@@ -105,6 +105,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     CarbonStorageTechno = "CarbonStorageTechno"
     DirectAirCapture = "direct_air_capture.DirectAirCaptureTechno"
     FoodStorageApplications = "food_storage_applications.FoodStorageApplicationsTechno"
+    food_storage_applications = 'food_storage_applications'
 
     FlueGasCapture = f"{flue_gas_capture}.FlueGasTechno"
 

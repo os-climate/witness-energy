@@ -1,6 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
-Modifications on 2023/10/23-2023/11/16 Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,8 +12,8 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
 
+'''
 import numpy as np
 import pandas as pd
 
@@ -116,6 +115,7 @@ class CarbonUtilization(BaseStream):
                                              'food_storage_limited': 0.0})
         food_storage_percentage = None
         fs_ratio = None
+
         diff_food_storage = self.food_storage_production - \
                        carbon_utilization_type['food storage'].values
         if min(diff_food_storage.real) < 0:

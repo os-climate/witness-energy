@@ -93,16 +93,18 @@ class StreamDiscipline(SoSWrapp):
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-
                                                  f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
                                                  'amine (Mt)': ('float', None, True),
+                                                 'water_resource (Mt)': ('float', None, True),
+                                                 'beverage food (Mt)': ('float', None, True),
                                                  'Food Storage (Mt)': ('float', None, True),
-
                                                  f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
                                                  'calcium (Mt)': ('float', None, True),
                                                  'potassium (Mt)': ('float', None, True),
                                                  'nitrogen (Mt)': ('float', None, True),
                                                  'phosphorus (Mt)': ('float', None, True),
+                                                 'Carbonated Food (Mt)': ('float', None, True),
+                                                 'biomass_dry (Mt)': ('float', None, True),
                                                  f'{GlossaryEnergy.biomass_dry} (TWh)': ('float', None, True),
                                                  f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
                                                  'carbon_resource (Mt)': ('float', None, True),
@@ -113,13 +115,16 @@ class StreamDiscipline(SoSWrapp):
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoConsumptionWithoutRatioValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
+                                                 'beverage food (Mt)': ('float', None, True),
+                                                 'water_resource (Mt)': ('float', None, True),
                                                  'amine (Mt)': ('float', None, True),
                                                  'Food Storage (Mt)': ('float', None, True),
                                                  f'{GlossaryEnergy.methane} (TWh)': ('float', None, True),
                                                  'calcium (Mt)': ('float', None, True),
                                                  'nitrogen (Mt)': ('float', None, True),
                                                  'potassium (Mt)': ('float', None, True),
-
+                                                 'Carbonated Food (Mt)': ('float', None, True),
+                                                 'biomass_dry (Mt)': ('float', None, True),
                                                  f'{GlossaryEnergy.electricity} (TWh)': ('float', None, True),
                                                  f'{GlossaryEnergy.biomass_dry} (TWh)': ('float', None, True),
                                                  f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
@@ -132,21 +137,22 @@ class StreamDiscipline(SoSWrapp):
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoProductionValue}'] = {
                         'type': 'dataframe', 'unit': 'TWh or Mt',
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-
                                                  f'{GlossaryEnergy.carbon_capture} (Mt)': ('float', None, True),
                                                  'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                  'beverage food (Mt)': ('float', None, False),
                                                  f'{GlossaryEnergy.carbon_storage} (Mt)': ('float', None, True),
+                                                 f'{GlossaryEnergy.carbon_utilization} (Mt)': ('float', None, True),
                                                  'carbonated_beverage (Mt)': ('float', None, True),
                                                  'heat.hightemperatureheat (TWh)': ('float', None, True),
                                                  'heat.mediumtemperatureheat (TWh)': ('float', None, True),
                                                  'heat.lowtemperatureheat (TWh)': ('float', None, True),
+                                                 'Carbonated Food (Mt)': ('float', None, True),
+                                                 'biomass_dry (Mt)': ('float', None, True),
                                                  }}
 
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.TechnoPricesValue}'] = {
                         'type': 'dataframe', 'unit': '$/MWh',
                         'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
-
                                                  f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing': ('float', None, True),
                                                  f'{GlossaryEnergy.direct_air_capture}.AmineScrubbing_wotaxes': ('float', None, True),
                                                  f'{GlossaryEnergy.direct_air_capture}.CalciumPotassiumScrubbing': ('float', None, True),
@@ -163,6 +169,12 @@ class StreamDiscipline(SoSWrapp):
                                                  f'{GlossaryEnergy.flue_gas_capture}.PiperazineProcess_wotaxes': ('float', None, True),
                                                  f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption': ('float', None, True),
                                                  f'{GlossaryEnergy.flue_gas_capture}.PressureSwingAdsorption_wotaxes': ('float', None, True),
+                                                 f'{GlossaryEnergy.food_storage_applications}.BeverageCarbonation': ('float', None, True),
+                                                 f'{GlossaryEnergy.food_storage_applications}.BeverageCarbonation_wotaxes': ('float', None, True),
+                                                 f'{GlossaryEnergy.food_storage_applications}.CarbonatedWater': ('float', None, True),
+                                                 f'{GlossaryEnergy.food_storage_applications}.CarbonatedWater_wotaxes': ('float', None, True),
+                                                 f'{GlossaryEnergy.food_storage_applications}.AlgaeCultivation': ('float', None, True),
+                                                 f'{GlossaryEnergy.food_storage_applications}.AlgaeCultivation_wotaxes': ('float', None, True),
                                                  'BiomassBuryingFossilization': ('float', None, True),
                                                  'BiomassBuryingFossilization_wotaxes': ('float', None, True),
                                                  'DeepOceanInjection': ('float', None, True),
@@ -177,6 +189,7 @@ class StreamDiscipline(SoSWrapp):
                                                  'GeologicMineralization_wotaxes': ('float', None, True),
                                                  'PureCarbonSolidStorage': ('float', None, True),
                                                  'PureCarbonSolidStorage_wotaxes': ('float', None, True),
+                                                 'Carbonated Food (Mt)': ('float', None, True),
                                                  }}
                     dynamic_inputs[f'{techno}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                         'type': 'dataframe', 'unit': 'Gha',

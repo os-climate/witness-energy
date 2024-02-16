@@ -339,7 +339,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                             'dataframe_descriptor': {GlossaryEnergy.Years: ('float', None, True),
                                                      GlossaryEnergy.carbon_capture: ('float', None, True),
                                                      'carbonated_beverage (Mt)': ('float', None, True),
-
+                                                     GlossaryEnergy.carbon_utilization: ('float', None, True),
                                                      'CO2 from Flue Gas (Mt)': ('float', None, True),
                                                      GlossaryEnergy.carbon_storage: ('float', None, True), }}
 
@@ -350,6 +350,7 @@ class Energy_Mix_Discipline(SoSWrapp):
                                                      GlossaryEnergy.carbon_capture: ('float', None, True),
                                                      'carbon_capture_wotaxes': ('float', None, True),
                                                      GlossaryEnergy.carbon_storage: ('float', None, True),
+                                                     GlossaryEnergy.carbon_utilization: ('float', None, True),
                                                      'carbon_storage_wotaxes': ('float', None, True), }}
                         dynamic_inputs[f'{ccs_name}.{GlossaryEnergy.LandUseRequiredValue}'] = {
                             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY,
@@ -533,7 +534,7 @@ class Energy_Mix_Discipline(SoSWrapp):
             'total_prod_minus_min_prod_constraint_ref']
         production_energy_net_pos = outputs_dict['production_energy_net_positive']
         energies = [j for j in energy_list if j not in [
-            GlossaryEnergy.carbon_storage, GlossaryEnergy.carbon_capture]]
+            GlossaryEnergy.carbon_storage, GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_utilization]]
         mix_weight = outputs_dict['energy_mix']
         scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         scaling_factor_energy_consumption = inputs_dict['scaling_factor_energy_consumption']
@@ -1656,7 +1657,8 @@ class Energy_Mix_Discipline(SoSWrapp):
         for reactant in energy_production_detailed.columns:
             if reactant not in [GlossaryEnergy.Years, GlossaryEnergy.TotalProductionValue, 'Total production (uncut)'] \
                     and GlossaryEnergy.carbon_capture not in reactant \
-                    and GlossaryEnergy.carbon_storage not in reactant:
+                    and GlossaryEnergy.carbon_storage not in reactant\
+                    and GlossaryEnergy.carbon_utilization not in reactant:
                 energy_twh = energy_production_detailed[reactant].values
                 legend_title = f'{reactant}'.replace(
                     "(TWh)", "").replace('production', '')
@@ -1719,7 +1721,8 @@ class Energy_Mix_Discipline(SoSWrapp):
         for reactant in energy_production_detailed.columns:
             if reactant not in [GlossaryEnergy.Years, GlossaryEnergy.TotalProductionValue] \
                     and GlossaryEnergy.carbon_capture not in reactant \
-                    and GlossaryEnergy.carbon_storage not in reactant:
+                    and GlossaryEnergy.carbon_storage not in reactant\
+                    and GlossaryEnergy.carbon_utilization not in reactant:
                 energy_twh = energy_production_detailed[reactant].values
                 legend_title = f'{reactant}'.replace(
                     "(TWh)", "").replace('production', '')

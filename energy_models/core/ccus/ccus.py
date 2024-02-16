@@ -50,7 +50,7 @@ class CCUS(BaseStream):
 
                 f'{CO2.name} (Mt)',
                 f'{Carbon.name} (Mt)']
-    ccs_list = [CarbonCapture.name, CarbonStorage.name, CarbonUtilization.name ]
+    ccs_list = [CarbonCapture.name, CarbonStorage.name, CarbonUtilization.name]
 
     def __init__(self, name):
         '''

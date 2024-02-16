@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+
 import pickle
 import unittest
 from os.path import join, dirname
@@ -43,8 +44,7 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
 
         self.energy_list = [energy for energy in EnergyMix.energy_list if energy not in [
             GlossaryEnergy.fossil, GlossaryEnergy.renewable, f'{GlossaryEnergy.fuel}.{GlossaryEnergy.ethanol}', GlossaryEnergy.carbon_capture, GlossaryEnergy.carbon_storage, f'{GlossaryEnergy.heat}.lowtemperatureheat',
-            f'{GlossaryEnergy.heat}.mediumtemperatureheat', f'{GlossaryEnergy.heat}.hightemperatureheat', GlossaryEnergy.biomass_dry,
-          GlossaryEnergy.carbon_utilization]]
+            f'{GlossaryEnergy.heat}.mediumtemperatureheat', f'{GlossaryEnergy.heat}.hightemperatureheat', GlossaryEnergy.biomass_dry, GlossaryEnergy.carbon_utilization,]]
 
         pkl_file = open(
             join(dirname(__file__), 'data_tests/mda_energy_data_streams_output_dict.pkl'), 'rb')
@@ -59,11 +59,6 @@ class GHGEnergyEmissionsDiscTestCase(unittest.TestCase):
         self.energy_production, self.energy_consumption = {}, {}
 
         for i, energy in enumerate(self.energy_list):
-            # print('')
-            # print('energy', energy)
-            # print(streams_outputs_dict[f'{energy}'])
-            # print('***********************************')
-            # if energy != GlossaryEnergy.carbon_utilization:
             self.CO2_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CO2_per_use']['value']
             self.CH4_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['CH4_per_use']['value']
             self.N2O_per_use[f'{energy}'] = streams_outputs_dict[f'{energy}']['N2O_per_use']['value']
