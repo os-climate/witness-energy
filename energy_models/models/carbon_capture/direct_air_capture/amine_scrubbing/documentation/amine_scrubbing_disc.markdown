@@ -25,6 +25,8 @@ Secondly, knowing CO2's molar mass is 44 kg/mol, an other way to formulate the q
 
 [^7] Amine scrubbing with thermal regeneration will be an important technology for CO2 capture from fossil fuel combustion to manage global climate change. In this process, CO2 is absorbed in a countercurrent contactor at 40–70°C. The solvent is heated to 100–150°C and stripped with steam to produce pure CO2. [^6]
 
+[^8]Amine scrubbing heat demand is 0.1034 kwh/kg co2, [^9]electricity demand 0.22 kwh/kg co2.
+
 **Calculation :**
 
 Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and CO2 from direct air is in Mt.
@@ -46,3 +48,7 @@ Plus, detailed about the sharing of Capex and Opex are given
 [^6]: Amine scrubbing some amount of heat is required,[science direct](https://www.sciencedirect.com/science/article/abs/pii/S2211339812000081#:~:text=Amine%20scrubbing%20will%20be%20an,performance%20of%20the%20solvent%20regeneration) 
 
 [^7]: Amine scrubbing, [heat](https://www.sciencedirect.com/science/article/abs/pii/S2211339812000081)
+
+[^8]: [Amine scrubbing heat demand unit kwh/kg CO2](https://www.osti.gov/servlets/purl/1482179)
+
+[^9]: [Amine scrubbing electricity demand unit kwh/kg CO2](https://www.rsc.org/suppdata/d0/ee/d0ee00787k/d0ee00787k1.pdf)

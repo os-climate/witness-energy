@@ -31,9 +31,12 @@ Note : Datas extracted from [^1] concerns a study about a 1Mt CO2/year DAC plant
 **Datas :**
 Technical data was found in [^1], [^2], [^3] and [^4].
 
+Calcium potassium scrubbing process heat demand 1.42 kwh/kg co2 [^7], electricity need 0.366 kwh/kg co2 [^7].
+
 **Calculation[^5] :**
 
 Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and CO2 from direct air is in Mt.
+
 
 
 [^1]: https://www.cell.com/joule/pdfExtended/S2542-4351(18)30225-3
@@ -47,3 +50,5 @@ Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and 
 [^5]: [Calcium potassium scrubbing, ](https://www.sciencedirect.com/science/article/pii/S2588913318300152)
 
 [^6]: [Calcium potassium scrubbing process, ](https://www.sciencedirect.com/topics/earth-and-planetary-sciences/wet-scrubber)
+
+[^7]: [calcium potassium scrubbing heat and electricity demand](https://www.sciencedirect.com/science/article/pii/S2590174523001459)

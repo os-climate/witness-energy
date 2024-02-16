@@ -9,6 +9,10 @@ Fundamentals of Piperazine process[^2][^6]
 
 ![](piperazine.PNG)
 
+**Datas :**
+
+Piperazine heat duty 2700 MJ/tCO2, electricity demand 200 MJ/tCO2[^7].
+
 **Calculation[^3] :**
 
 An average CO2 concentration in flue gases is calculated (Flue_gas_capture model) for the global energy mix, then the capture technology price is recalculated taking into account this variations.
@@ -28,3 +32,5 @@ Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and 
 [^5]: Piperazine process: Electricity used, [Sciencedirect](https://www.sciencedirect.com/science/article/pii/S2949839223000548)
 
 [^6]: [Piperazine Working](https://pubchem.ncbi.nlm.nih.gov/compound/Piperazine#section=Methods-of-Manufacturing)
+
+[^7]: [Piperazine heat and electricity demands](https://sci-hub.et-fine.com/10.1016/j.ijggc.2019.03.006)

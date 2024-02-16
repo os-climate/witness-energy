@@ -10,6 +10,10 @@ These membranes are capable of near perfect selectivity for CO2 (>1,000). Howeve
 Fundamentals of CO2 membranes[^2]
 ![](membranes.PNG)
 
+**Datas :**
+
+CO2 membrane heat demand is 0.2485 keh/kg CO2[^5],electricity demand is 1000 MJ/tCO2[^6].
+
 **Calculation :**
 
 An average CO2 concentration in flue gases is calculated (Flue_gas_capture model) for the global energy mix, then the capture technology price is recalculated taking into account this variations. [^3]
@@ -24,3 +28,7 @@ Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and 
 [^3]: A sequential approach for the economic evaluation of new CO2 capture technologies for power plants, [Approach](https://www.sciencedirect.com/science/article/pii/S1750583618307461?via%3Dihub)
 
 [^4]: CO2 membrane working, [Sciencedirect](https://www.sciencedirect.com/science/article/abs/pii/S0301479722014864#:~:text=For%20separation%20of%2090%25%20of,including%20final%20CO2%20compression)
+
+[^5]: [CO2 membrane electricity demand](https://sci-hub.et-fine.com/10.1016/j.ijggc.2019.03.006)
+
+[^6]: [CO2 memberane heat demand](https://www.osti.gov/servlets/purl/1366433#:~:text=The%20least%20equivalent%20work%20is,from%20DOE%2FNETL%20report%20for)

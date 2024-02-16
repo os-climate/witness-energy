@@ -11,6 +11,10 @@ Fundamentals of Monoethanolamine process[^6]
 [^2]
 ![](mea.PNG)
 
+**Datas :**
+
+Mono ethanol amine heat duty 2559 MJ/tCO2, electricity demand 122 MJ/tCO2[^7].
+
 **Calculation[^3] :**
 
 An average CO2 concentration in flue gases is calculated (Flue_gas_capture model) for the global energy mix, then the capture technology price is recalculated taking into account this variations.
@@ -29,3 +33,5 @@ Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and 
 [^5]: Monoethanolamine, [Sciencedirect](https://www.sciencedirect.com/science/article/abs/pii/S0016236119320150)
 
 [^6]: Monoethanolamine process: produces some amount of heat, [Monoethanolamine process](https://spiral.imperial.ac.uk/bitstream/10044/1/18081/1/Brand-CV-2013-PhD-Thesis.pdf)
+
+[^7]: [Monoenthanolamine heat and electricity demand](https://sci-hub.et-fine.com/10.1016/j.ijggc.2019.03.006)

@@ -13,6 +13,10 @@ Fundamentals of Calcium Looping[^4][^6]
 [^2]
 ![](cal.PNG)
 
+**Datas :**
+
+Calcium looping heat duty 18 MJ/tCO2, electricity demand 338 MJ/tCO2[^7].
+
 **Calculation :**
 
 An average CO2 concentration in flue gases is calculated (Flue_gas_capture model) for the global energy mix, then the capture technology price is recalculated taking into account this variations.
@@ -31,4 +35,6 @@ Heat consumption is calculated in TWh. where, heat demand is in kWh/kg(CO2) and 
 [^5]: Electricity used in Calcium Looping, [Wikipedia](https://en.wikipedia.org/wiki/Calcium_looping)
 
 [^6]: Produces some amount of heat, [Heat](https://link.springer.com/article/10.1007/s43979-022-00034-4)
+
+[^7]: [Calcium looping heat and electricity needs](https://sci-hub.et-fine.com/10.1016/j.ijggc.2019.03.006 )
 

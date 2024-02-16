@@ -4,6 +4,10 @@ Adsorption processes rely on the use of highly porous solids such as activated c
 Fundamentals of Pressure swing adsorption[^2]
 ![](psa.PNG)
 
+**Datas :**
+
+Pressure swing adsorption electricity demand 810 MJ/tCO2[^4], heat demand 0.131 kwh/kg CO2[^5].
+
 **Calculation :**
 
 An average CO2 concentration in flue gases is calculated (Flue_gas_capture model) for the global energy mix, then the capture technology price is recalculated taking into account this variations.
@@ -13,3 +17,7 @@ An average CO2 concentration in flue gases is calculated (Flue_gas_capture model
 [^2]: CCS can be applied to processes with large-scale emissions, [Processes with emissions](https://www.steel-360.com/technology-next/ccs-can-be-applied-to-processes-with-large-scale-emissions)
 
 [^3]: A sequential approach for the economic evaluation of new CO2 capture technologies for power plants, [Sciencedirect](https://www.sciencedirect.com/science/article/pii/S1750583618307461?via%3Dihub)
+
+[^4]: [Pressure swing adsorption electricity demand](https://sci-hub.et-fine.com/10.1016/j.ijggc.2019.03.006)
+
+[^5]: [heat demad](https://www.osti.gov/servlets/purl/1238374)
