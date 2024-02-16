@@ -30,6 +30,7 @@ class GlossaryEnergy(GlossaryWitnessCore):
     )
     NB_POLES_COARSE: int = 20  # number of poles in witness coarse
     NB_POLES_FULL: int = 8  # number of poles in witness full
+    NB_POLE_ENERGY_MIX_PROCESS = 12
 
     YeartEndDefault = 2050
     YearEndVar = {
