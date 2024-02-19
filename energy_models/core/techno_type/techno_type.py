@@ -226,8 +226,9 @@ class TechnoType:
         if self.is_apply_resource_ratio:
             self.ratio_available_resource = inputs_dict[ResourceMixModel.RATIO_USABLE_DEMAND]
 
-        self.utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][
-            GlossaryEnergy.UtilisationRatioValue].values
+        if inputs_dict[GlossaryEnergy.UtilisationRatioValue] is not None:
+            self.utilisation_ratio = inputs_dict[GlossaryEnergy.UtilisationRatioValue][
+                GlossaryEnergy.UtilisationRatioValue].values
 
     def configure_parameters_update(self, inputs_dict):
         '''
