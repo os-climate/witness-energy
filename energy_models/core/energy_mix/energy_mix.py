@@ -955,7 +955,7 @@ class EnergyMix(BaseStream):
     def compute_target_production_constraint(self, inputs_dict: dict):
         target_production_constraint_ref = inputs_dict[GlossaryEnergy.TargetProductionConstraintRefValue]
         target_energy_production = inputs_dict[GlossaryEnergy.TargetEnergyProductionValue][GlossaryEnergy.TargetEnergyProductionValue].values
-        actual_production_twh = self.production[GlossaryEnergy.TotalProductionValue].values * 1000
+        actual_production_twh = self.production[GlossaryEnergy.TotalProductionValue].values
         missing_production = target_energy_production - actual_production_twh
         self.target_production_constraint = missing_production / target_production_constraint_ref
 
