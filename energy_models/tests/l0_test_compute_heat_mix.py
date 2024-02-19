@@ -55,6 +55,7 @@ class HeatMixTestCase(unittest.TestCase):
         energy_mix_emission_dic['heat.hightemperatureheat.GeothermalHighHeat'] = np.ones(len(self.years)) * 40.0
         energy_mix_emission_dic['heat.hightemperatureheat.CHPHighHeat'] = np.ones(len(self.years)) * 50.0
         energy_mix_emission_dic['heat.hightemperatureheat.HydrogenBoilerHighHeat'] = np.ones(len(self.years)) * 60.0
+        energy_mix_emission_dic['heat.hightemperatureheat.SofcgtHighHeat'] = np.ones(len(self.years)) * 60.0
 
         energy_mix_emission_dic['heat.lowtemperatureheat.NaturalGasBoilerLowHeat'] = np.ones(len(self.years)) * 10.0
         energy_mix_emission_dic['heat.lowtemperatureheat.ElectricBoilerLowHeat'] = np.ones(len(self.years)) * 20.0
@@ -87,6 +88,7 @@ class HeatMixTestCase(unittest.TestCase):
         energy_mix_high_heat_production_dic['GeothermalHighHeat'] = np.ones(len(self.years)) * 5
         energy_mix_high_heat_production_dic['CHPHighHeat'] = np.ones(len(self.years)) * 6
         energy_mix_high_heat_production_dic['HydrogenBoilerHighHeat'] = np.ones(len(self.years)) * 7
+        energy_mix_high_heat_production_dic['SofcgtHighHeat'] = np.ones(len(self.years)) * 8
         self.high_heat_production = pd.DataFrame(energy_mix_high_heat_production_dic)
 
         energy_mix_low_heat_production_dic = {}
@@ -123,11 +125,11 @@ class HeatMixTestCase(unittest.TestCase):
                        GlossaryEnergy.YearEnd: self.year_end,
                        GlossaryEnergy.energy_list: self.energy_list, #['heat.hightemperatureheat', 'heat.lowtemperatureheat', 'heat.mediumtemperatureheat'], #'heat.mediumtemperatureheat',
                        'heat.hightemperatureheat.technologies_list': ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                           'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat'],
+                           'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat','SofcgtHighHeat'],
                        'heat.lowtemperatureheat.technologies_list': ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
-                           'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat'],
+                           'HeatPumpLowHeat', 'GeothermalLowHeat', 'CHPLowHeat', 'HydrogenBoilerLowHeat','SofcgtHighHeat'],
                        'heat.mediumtemperatureheat.technologies_list': ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
-                           'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat'],
+                           'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat','SofcgtHighHeat'],
                        'CO2_emission_mix': self.energy_mix,
                        GlossaryEnergy.TargetHeatProductionValue: self.target_production,
                        f'heat.hightemperatureheat.{GlossaryEnergy.EnergyProductionValue}': self.high_heat_production,
@@ -174,7 +176,7 @@ class HeatMixTestCase(unittest.TestCase):
                        'heat.hightemperatureheat.technologies_list': ['NaturalGasBoilerHighHeat',
                                                                       'ElectricBoilerHighHeat',
                                                                       'HeatPumpHighHeat', 'GeothermalHighHeat',
-                                                                      'CHPHighHeat', 'HydrogenBoilerHighHeat'],
+                                                                      'CHPHighHeat', 'HydrogenBoilerHighHeat','SofcgtHighHeat'],
                        'heat.lowtemperatureheat.technologies_list': ['NaturalGasBoilerLowHeat', 'ElectricBoilerLowHeat',
                                                                      'HeatPumpLowHeat', 'GeothermalLowHeat',
                                                                      'CHPLowHeat', 'HydrogenBoilerLowHeat'],

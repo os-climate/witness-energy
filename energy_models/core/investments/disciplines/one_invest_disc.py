@@ -92,6 +92,8 @@ class OneInvestDiscipline(SoSWrapp):
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.CHPHighHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.HydrogenBoilerHighHeat': (
                                         'float', None, True),
+                                        f'{GlossaryEnergy.heat}.{GlossaryEnergy.hightemperatureheat}.SofcgtHighHeat': (
+                                        'float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.NaturalGasBoilerLowHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.ElectricBoilerLowHeat': ('float', None, True),
                                         f'{GlossaryEnergy.heat}.{GlossaryEnergy.lowtemperatureheat}.HeatPumpLowHeat': ('float', None, True),

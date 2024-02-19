@@ -23,12 +23,12 @@ from energy_models.core.stream_type.energy_models.heat import hightemperaturehea
 from energy_models.glossaryenergy import GlossaryEnergy
 
 DEFAULT_TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat','SofcgtHighHeat']
 TECHNOLOGIES_LIST = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
-TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerHighHeat']
+                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat','SofcgtHighHeat']
+TECHNOLOGIES_LIST_COARSE = ['NaturalGasBoilerHighHeat','SofcgtHighHeat']
 TECHNOLOGIES_LIST_DEV = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                         'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat','SofcgtHighHeat']
 
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -73,7 +73,10 @@ class Study(EnergyMixStudyManager):
         if 'HydrogenBoilerHighHeat' in self.technologies_list:
             invest_high_heat_mix_dict['HydrogenBoilerHighHeat'] = list(np.ones(
                 len(l_ctrl)) * 0.001)
-
+        if 'SofcgtHighHeat' in self.technologies_list:
+            invest_high_heat_mix_dict['SofcgtHighHeat'] = list(np.ones(
+                len(l_ctrl)) * 0.001)
+            
         if self.bspline:
             invest_high_heat_mix_dict[GlossaryEnergy.Years] = self.years
 
@@ -135,6 +138,7 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.{energy_name}.GeothermalHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.CHPHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.HydrogenBoilerHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
+                       f'{self.study_name}.{energy_name}.SofcgtHighHeat.{GlossaryEnergy.MarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportCostValue}': self.transport,
                        f'{self.study_name}.{energy_name}.{GlossaryEnergy.TransportMarginValue}': self.margin,
                        f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,

@@ -85,6 +85,7 @@ class EnergyDiscipline(StreamDiscipline):
                         'type': 'dataframe', 'unit': 'Gha',
                         'dataframe_descriptor': {'years': ('float', None, True),
                                                  'Crop (Gha)': ('float', None, True),
+                                                 'SofcgtHighHeat (Gha)': ('float', None, True),
                                                  'HydrogenBoilerHighHeat (Gha)': ('float', None, True),
                                                  'HydrogenBoilerMediumHeat (Gha)': ('float', None, True),
                                                  'HydrogenBoilerLowHeat (Gha)': ('float', None, True),

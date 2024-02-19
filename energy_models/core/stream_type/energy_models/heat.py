@@ -44,7 +44,7 @@ class hightemperatureheat(EnergyType):
     name = GlossaryEnergy.heat + '.' + 'hightemperatureheat'
     short_name = 'high heat'
     default_techno_list = ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                           'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                           'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat','SofcgtHighHeat']
     data_energy_dict = {'maturity': 5,
                         'density': 100,
                         'Lowest_Temperature': 400,

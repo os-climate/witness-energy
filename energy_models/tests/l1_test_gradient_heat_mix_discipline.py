@@ -56,7 +56,7 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
 
         heat_energy_list= ['heat.hightemperatureheat', 'heat.lowtemperatureheat', 'heat.mediumtemperatureheat']
         high_heat_techno_list =  ['NaturalGasBoilerHighHeat', 'ElectricBoilerHighHeat',
-                           'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat']
+                           'HeatPumpHighHeat', 'GeothermalHighHeat', 'CHPHighHeat', 'HydrogenBoilerHighHeat','SofcgtHighHeat']
         medium_heat_techno_list = ['NaturalGasBoilerMediumHeat', 'ElectricBoilerMediumHeat',
                            'HeatPumpMediumHeat', 'GeothermalMediumHeat', 'CHPMediumHeat', 'HydrogenBoilerMediumHeat']
 
@@ -71,6 +71,7 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
         energy_mix_emission_dic['heat.hightemperatureheat.GeothermalHighHeat'] = np.ones(len(self.years)) * 40.0
         energy_mix_emission_dic['heat.hightemperatureheat.CHPHighHeat'] = np.ones(len(self.years)) * 50.0
         energy_mix_emission_dic['heat.hightemperatureheat.HydrogenBoilerHighHeat'] = np.ones(len(self.years)) * 60.0
+        energy_mix_emission_dic['heat.hightemperatureheat.SofcgtHighHeat'] = np.ones(len(self.years)) * 70.0
 
         energy_mix_emission_dic['heat.lowtemperatureheat.NaturalGasBoilerLowHeat'] = np.ones(len(self.years)) * 10.0
         energy_mix_emission_dic['heat.lowtemperatureheat.ElectricBoilerLowHeat'] = np.ones(len(self.years)) * 20.0
@@ -104,6 +105,7 @@ class HeatMixJacobianTestCase(AbstractJacobianUnittest):
         energy_mix_high_heat_production_dic['GeothermalHighHeat'] = np.ones(len(self.years)) * 5
         energy_mix_high_heat_production_dic['CHPHighHeat'] = np.ones(len(self.years)) * 6
         energy_mix_high_heat_production_dic['HydrogenBoilerHighHeat'] = np.ones(len(self.years)) * 7
+        energy_mix_high_heat_production_dic['SofcgtHighHeat'] = np.ones(len(self.years)) * 7
         self.high_heat_production = pd.DataFrame(energy_mix_high_heat_production_dic)
 
         energy_mix_low_heat_production_dic = {}

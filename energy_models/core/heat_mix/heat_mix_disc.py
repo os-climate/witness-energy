@@ -67,6 +67,8 @@ class Heat_Mix_Discipline(SoSWrapp):
                                                                         'float', None, True),
                                                                     'heat.hightemperatureheat.HydrogenBoilerHighHeat': (
                                                                         'float', None, True),
+                                                                    'heat.hightemperatureheat.SofcgtHighHeat': (
+                                                                        'float', None, True),  
                                                                     'heat.lowtemperatureheat.NaturalGasBoilerLowHeat': (
                                                                         'float', None, True),
                                                                     'heat.lowtemperatureheat.ElectricBoilerLowHeat': (
