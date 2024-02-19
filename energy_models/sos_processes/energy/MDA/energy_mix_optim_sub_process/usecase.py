@@ -124,10 +124,7 @@ class Study(EnergyStudyManager):
         # is taken into account)
 
         # invest from WEI 2020 miss hydrogen
-        if self.coarse_mode:
-            years = np.arange(GlossaryEnergy.NB_POLES_COARSE)
-        else:
-            years = np.arange(GlossaryEnergy.NB_POLES_FULL)
+        years = np.arange(GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS)
 
         invest_energy_mix_dict = {
             GlossaryEnergy.Years: years,
@@ -169,16 +166,16 @@ class Study(EnergyStudyManager):
     def get_investments_ccs_mix(self):
         if self.coarse_mode:
             invest_ccs_mix_dict = {
-                GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_COARSE),
-                CarbonCapture.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
-                CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLES_COARSE),
+                GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS),
+                CarbonCapture.name: np.ones(GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS),
+                CarbonStorage.name: np.ones(GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS),
             }
 
         else:
             invest_ccs_mix_dict = {
-                GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLES_FULL),
-                CarbonCapture.name: [2.0] + [25] * (GlossaryEnergy.NB_POLES_FULL - 1),
-                CarbonStorage.name: [0.003] + [5] * (GlossaryEnergy.NB_POLES_FULL - 1),
+                GlossaryEnergy.Years: np.arange(GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS),
+                CarbonCapture.name: [2.0] + [25] * (GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS - 1),
+                CarbonStorage.name: [0.003] + [5] * (GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS - 1),
             }
 
         if self.bspline:
@@ -308,13 +305,13 @@ class Study(EnergyStudyManager):
                     'namespace_out': 'ns_invest'
                 }
                 if self.use_utilisation_ratio:
-                    design_var_descriptor[f'{energy}.{technology}.utilization_ratio_array'] = {
-                        'out_name': f'{energy}.{technology}.{GlossaryEnergy.UtilisationRatioValue}',
+                    design_var_descriptor[f'EnergyMix.{energy}.{technology}.utilization_ratio_array'] = {
+                        'out_name': f'EnergyMix.{energy}.{technology}.{GlossaryEnergy.UtilisationRatioValue}',
                         'out_type': 'dataframe',
                         'key': GlossaryEnergy.UtilisationRatioValue,
                         'index': self.years,
                         'index_name': GlossaryEnergy.Years,
-                        'namespace_in': GlossaryEnergy.NS_ENERGY_MIX,
+                        'namespace_in': GlossaryEnergy.NS_WITNESS,
                         'namespace_out': GlossaryEnergy.NS_WITNESS
                     }
 
@@ -336,13 +333,13 @@ class Study(EnergyStudyManager):
 
                 if self.use_utilisation_ratio:
                     # add design variable for utilization ratio per technology
-                    design_var_descriptor[f'{ccs}.{technology}.utilization_ratio_array'] = {
-                        'out_name': f'{ccs}.{technology}.{GlossaryEnergy.UtilisationRatioValue}',
+                    design_var_descriptor[f'{GlossaryEnergy.CCUS}.{ccs}.{technology}.utilization_ratio_array'] = {
+                        'out_name': f'{GlossaryEnergy.CCUS}.{ccs}.{technology}.{GlossaryEnergy.UtilisationRatioValue}',
                         'out_type': 'dataframe',
                         'key': GlossaryEnergy.UtilisationRatioValue,
                         'index': self.years,
                         'index_name': GlossaryEnergy.Years,
-                        'namespace_in': GlossaryEnergy.NS_CCS,
+                        'namespace_in': GlossaryEnergy.NS_WITNESS,
                         'namespace_out': GlossaryEnergy.NS_WITNESS
                     }
 
@@ -376,19 +373,25 @@ class Study(EnergyStudyManager):
 
     def make_dspace_utilisation_ratio(self) -> pd.DataFrame:
         variables = []
-        for energy_or_ccs in self.energy_list + self.ccs_list:
+        for energy_or_ccs in self.energy_list:
             for techno in self.dict_technos[energy_or_ccs]:
                 variables.append(
-                    f"{energy_or_ccs}.{techno}.utilization_ratio_array"
+                    f"EnergyMix.{energy_or_ccs}.{techno}.utilization_ratio_array"
                 )
-        low_bound = [1e-6] * GlossaryEnergy.NB_POLES_UTILIZATION_RATIO
-        upper_bound = [100.] * GlossaryEnergy.NB_POLES_UTILIZATION_RATIO
-        value = [100.] * GlossaryEnergy.NB_POLES_UTILIZATION_RATIO
+
+        for energy_or_ccs in self.ccs_list:
+            for techno in self.dict_technos[energy_or_ccs]:
+                variables.append(
+                    f"{GlossaryEnergy.CCUS}.{energy_or_ccs}.{techno}.utilization_ratio_array"
+                )
+        low_bound = [1.] * GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS
+        upper_bound = [100.] * GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS
+        value = [100.] * GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS
         n_dvar_ur = len(variables)
         dspace_ur = {
             'variable': variables,
             'value': [value] * n_dvar_ur,
-            'activated_elem': [[True] * GlossaryEnergy.NB_POLES_UTILIZATION_RATIO] * n_dvar_ur,
+            'activated_elem': [[True] * GlossaryEnergy.NB_POLE_ENERGY_MIX_PROCESS] * n_dvar_ur,
             'lower_bnd': [low_bound] * n_dvar_ur,
             'upper_bnd': [upper_bound] * n_dvar_ur,
             'enable_variable': [True] * n_dvar_ur
@@ -422,10 +425,10 @@ class Study(EnergyStudyManager):
                 })
 
                 if self.use_utilisation_ratio:
-                    array_utilization_ratio_var_name = f"{ccs}.{technology}.utilization_ratio_array"
+                    array_utilization_ratio_var_name = f"{GlossaryEnergy.CCUS}.{ccs}.{technology}.utilization_ratio_array"
                     value = dspace.loc[dspace['variable'] == array_utilization_ratio_var_name, 'value'].values[0]
                     out_dict.update({
-                        f"{self.study_name}.{self.coupling_name}.{GlossaryEnergy.CCUS}.{ccs}.{technology}.utilization_ratio_array": np.array(value)
+                        f"{self.study_name}.{self.coupling_name}.{array_utilization_ratio_var_name}": np.array(value)
                     })
 
         for energy in self.energy_list:
@@ -440,10 +443,10 @@ class Study(EnergyStudyManager):
                 })
 
                 if self.use_utilisation_ratio:
-                    array_utilization_ratio_var_name = f"{energy}.{technology}.utilization_ratio_array"
+                    array_utilization_ratio_var_name = f"EnergyMix.{energy}.{technology}.utilization_ratio_array"
                     value = dspace.loc[dspace['variable'] == array_utilization_ratio_var_name, 'value'].values[0]
                     out_dict.update({
-                        f"{self.study_name}.{self.coupling_name}.EnergyMix.{energy}.{technology}.utilization_ratio_array": np.array(
+                        f"{self.study_name}.{self.coupling_name}.{array_utilization_ratio_var_name}": np.array(
                             value)
                     })
 
@@ -592,7 +595,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.AllStreamsDemandRatioValue}": all_streams_demand_ratio,
             f"{self.study_name}.is_stream_demand": True,
             f"{self.study_name}.max_mda_iter": 50,
-            f"{self.study_name}.sub_mda_class": "MDAGaussSeidel",
+            f"{self.study_name}.sub_mda_class": "GSPureNewtonMDA",
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.RessourcesCO2EmissionsValue}": resources_CO2_emissions,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.ResourcesPriceValue}": resources_prices,
             f"{self.study_name}.{self.coupling_name}.{energy_mix_name}.{GlossaryEnergy.TargetEnergyProductionValue}": target_energy_prod,
@@ -678,7 +681,7 @@ class Study(EnergyStudyManager):
             f"{self.study_name}.design_space": dspace,
             f"{self.study_name}.{self.coupling_name}.FunctionsManager.function_df": func_df,
             f"{self.study_name}.{self.coupling_name}.max_mda_iter": 200,
-            f"{self.study_name}.{self.coupling_name}.sub_mda_class": "MDANewtonRaphson",
+            f"{self.study_name}.{self.coupling_name}.sub_mda_class": "GSPureNewtonMDA",
         }
 
         dvar_values = self.get_dvar_values(dspace)
